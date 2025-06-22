@@ -6,13 +6,13 @@
     <title>Organic Hypo Solutions - USDA Certified Organic HOCl Disinfection Services Utah</title>
     
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEKE217VEY"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEKE217WEY"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      gtag('config', 'G-HEKE217VEY');
+      gtag('config', 'G-HEKE217WEY');
     </script>
     
     <!-- Bootstrap CSS for professional styling -->
@@ -312,24 +312,24 @@
                     <div class="card shadow">
                         <div class="card-body">
                             <h5 class="card-title fw-bold mb-4">Request a Free Quote</h5>
-                            <form>
+                            <form action="https://formspree.io/f/xnnavope" method="POST" id="quoteForm">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Name *</label>
-                                        <input type="text" class="form-control" required>
+                                        <input type="text" name="name" class="form-control" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Phone *</label>
-                                        <input type="tel" class="form-control" required>
+                                        <input type="tel" name="phone" class="form-control" required>
                                     </div>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Email *</label>
-                                    <input type="email" class="form-control" required>
+                                    <input type="email" name="email" class="form-control" required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Service Type</label>
-                                    <select class="form-control">
+                                    <select name="service_type" class="form-control">
                                         <option>Commercial Fogging Service</option>
                                         <option>Residential Sanitization</option>
                                         <option>Emergency Response</option>
@@ -340,11 +340,11 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Square Footage</label>
-                                        <input type="text" class="form-control" placeholder="Approximate sq ft">
+                                        <input type="text" name="square_footage" class="form-control" placeholder="Approximate sq ft">
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Preferred Contact</label>
-                                        <select class="form-control">
+                                        <select name="preferred_contact" class="form-control">
                                             <option>Phone</option>
                                             <option>Email</option>
                                             <option>Text</option>
@@ -353,9 +353,15 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Message</label>
-                                    <textarea class="form-control" rows="4" placeholder="Tell us about your sanitization needs..."></textarea>
+                                    <textarea name="message" class="form-control" rows="4" placeholder="Tell us about your sanitization needs..."></textarea>
                                 </div>
-                                <button type="submit" class="btn btn-primary btn-lg w-100" onclick="gtag('event', 'form_submit', {'event_category': 'Contact', 'event_label': 'Quote Request'});">Request Free Quote</button>
+                                
+                                <!-- Hidden field to specify where emails should go -->
+                                <input type="hidden" name="_to" value="ohshocl@gmail.com">
+                                <input type="hidden" name="_subject" value="New Quote Request from OHS Website">
+                                <input type="hidden" name="_next" value="https://organichyposolutions.com?success=true">
+                                
+                                <button type="submit" class="btn btn-primary btn-lg w-100" id="submitBtn">Request Free Quote</button>
                                 <p class="text-center mt-2"><small class="text-muted">We'll respond within 2 hours during business hours</small></p>
                             </form>
                         </div>
@@ -447,6 +453,36 @@
                 }
             });
         });
+
+        // Enhanced form submission handling
+        document.getElementById('quoteForm').addEventListener('submit', function(e) {
+            // Track the form submission
+            gtag('event', 'form_submit', {
+                'event_category': 'Contact',
+                'event_label': 'Quote Request'
+            });
+            
+            // Show loading state
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = 'Sending...';
+            submitBtn.disabled = true;
+            
+            // The form will automatically submit to Formspree
+            // After 2 seconds, restore button state (in case of issues)
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 2000);
+        });
+
+        // Check for success parameter in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('success') === 'true') {
+            alert('Thank you! Your quote request has been sent successfully. We\'ll respond within 2 hours during business hours.');
+            // Remove the success parameter from URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
 
         // Enhanced Google Analytics event tracking
         function trackEvent(action, category, label) {
