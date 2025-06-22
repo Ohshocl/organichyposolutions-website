@@ -493,16 +493,42 @@
                     <h5 class="modal-title" id="quoteModalLabel">🏢 Request Service Quote</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-0">
-                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSe-xsWUDugAnXUyWho536dXdMSowda_R_A09Td9n8irkc4ogA/viewform?embedded=true" 
-                            width="100%" 
-                            height="800" 
-                            frameborder="0" 
-                            marginheight="0" 
-                            marginwidth="0"
-                            class="form-iframe">
-                        Loading…
-                    </iframe>
+                <div class="modal-body">
+                    <div class="text-center mb-3">
+                        <p>Fill out our quick form to get your free quote:</p>
+                        <a href="https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform" 
+                           target="_blank" 
+                           class="btn btn-primary btn-lg">
+                            📋 Open Service Quote Form
+                        </a>
+                        <p class="mt-2"><small class="text-muted">Form opens in a new window</small></p>
+                    </div>
+                    
+                    <!-- Try iframe first, fallback to link if blocked -->
+                    <div class="iframe-container" style="position: relative;">
+                        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfLZBqWVeQDKp_hGZ6ZNgSWgEO4FWJ8QK_dz1spvQC-KDvJCQ/viewform?embedded=true" 
+                                width="100%" 
+                                height="700" 
+                                frameborder="0" 
+                                marginheight="0" 
+                                marginwidth="0"
+                                class="form-iframe"
+                                onload="this.style.display='block'"
+                                onerror="showFormFallback('quote')">
+                            Loading form...
+                        </iframe>
+                        <div id="quote-fallback" style="display:none;" class="text-center p-4">
+                            <div class="alert alert-info">
+                                <h6>📱 Having trouble viewing the form?</h6>
+                                <p>No problem! Click the button below to open it in a new window:</p>
+                                <a href="https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform" 
+                                   target="_blank" 
+                                   class="btn btn-primary">
+                                    Open Service Quote Form
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -516,16 +542,42 @@
                     <h5 class="modal-title" id="productModalLabel">🛒 Order HOCl Products</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-0">
-                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeP1DNtb1uL66VNgIOqrkNGellZOaWISQqWUVAXSwqdV9nicw/viewform?embedded=true" 
-                            width="100%" 
-                            height="800" 
-                            frameborder="0" 
-                            marginheight="0" 
-                            marginwidth="0"
-                            class="form-iframe">
-                        Loading…
-                    </iframe>
+                <div class="modal-body">
+                    <div class="text-center mb-3">
+                        <p>Order your USDA Certified Organic HOCl products:</p>
+                        <a href="https://docs.google.com/forms/d/1GsJjlVXGAIEJkxBYiAlnlBX8LIV50E0giuNFqIvZ6vI/viewform" 
+                           target="_blank" 
+                           class="btn btn-success btn-lg">
+                            🛒 Open Product Order Form
+                        </a>
+                        <p class="mt-2"><small class="text-muted">Form opens in a new window</small></p>
+                    </div>
+                    
+                    <!-- Try iframe first, fallback to link if blocked -->
+                    <div class="iframe-container" style="position: relative;">
+                        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSe-qqrYu8JZ4yNSL6yGjKZnYxPJ7fL6LbU3OqkNLcT-v_LNFA/viewform?embedded=true" 
+                                width="100%" 
+                                height="700" 
+                                frameborder="0" 
+                                marginheight="0" 
+                                marginwidth="0"
+                                class="form-iframe"
+                                onload="this.style.display='block'"
+                                onerror="showFormFallback('product')">
+                            Loading form...
+                        </iframe>
+                        <div id="product-fallback" style="display:none;" class="text-center p-4">
+                            <div class="alert alert-info">
+                                <h6>📱 Having trouble viewing the form?</h6>
+                                <p>No problem! Click the button below to open it in a new window:</p>
+                                <a href="https://docs.google.com/forms/d/1GsJjlVXGAIEJkxBYiAlnlBX8LIV50E0giuNFqIvZ6vI/viewform" 
+                                   target="_blank" 
+                                   class="btn btn-success">
+                                    Open Product Order Form
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -579,4 +631,28 @@
     
     <!-- JavaScript -->
     <script>
+        // Form fallback function
+        function showFormFallback(formType) {
+            document.getElementById(formType + '-fallback').style.display = 'block';
+        }
+        
+        // Check if iframes are blocked and show fallback
+        window.addEventListener('load', function() {
+            // Check quote form iframe
+            setTimeout(function() {
+                const quoteIframe = document.querySelector('#quoteModal iframe');
+                if (quoteIframe && quoteIframe.contentDocument === null) {
+                    showFormFallback('quote');
+                }
+            }, 2000);
+            
+            // Check product form iframe
+            setTimeout(function() {
+                const productIframe = document.querySelector('#productModal iframe');
+                if (productIframe && productIframe.contentDocument === null) {
+                    showFormFallback('product');
+                }
+            }, 2000);
+        });
+
         // Get navbar collapse element
