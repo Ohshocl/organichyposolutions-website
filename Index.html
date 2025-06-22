@@ -106,7 +106,7 @@
                     </div>
                     
                     <div class="d-grid gap-2 d-md-flex">
-                        <a href="#contact" class="btn btn-light btn-lg px-4 me-md-2">Get Service Quote</a>
+                        <button class="btn btn-light btn-lg px-4 me-md-2" onclick="showServiceForm()">Get Service Quote</button>
                         <a href="tel:+18017125663" class="btn btn-outline-light btn-lg px-4">📞 (801) 712-5663</a>
                     </div>
                 </div>
@@ -202,7 +202,7 @@
                                 <li>✅ 12-18 Month Shelf Life</li>
                             </ul>
                             <div class="mt-3">
-                                <a href="#retail-form" class="btn btn-primary me-2">Order Products</a>
+                                <button class="btn btn-primary me-2" onclick="showRetailForm()">Order Products</button>
                                 <small class="text-muted d-block mt-1">Browse our retail product line</small>
                             </div>
                         </div>
@@ -270,36 +270,39 @@
     <!-- Forms Section -->
     <section class="py-5 bg-light" id="contact">
         <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="display-5 fw-bold">Get Your Quote or Order Products</h2>
-                <p class="lead">Choose the right form for your needs</p>
-            </div>
-            
-            <!-- Form Selection Buttons -->
-            <div class="row justify-content-center mb-5">
-                <div class="col-lg-8">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <div class="card h-100 border-primary shadow-sm">
-                                <div class="card-body text-center p-4">
-                                    <div class="display-4 text-primary mb-3">🏢</div>
-                                    <h5 class="card-title fw-bold">Service Quote</h5>
-                                    <p class="card-text">Get a quote for commercial or residential fogging services</p>
-                                    <button class="btn btn-primary btn-lg w-100" onclick="showServiceForm()">
-                                        Get Service Quote
-                                    </button>
+            <!-- Form Selection (Default View) -->
+            <div id="form-selection" class="form-selection-view">
+                <div class="text-center mb-5">
+                    <h2 class="display-5 fw-bold">Get Your Quote or Order Products</h2>
+                    <p class="lead">Choose the right form for your needs</p>
+                </div>
+                
+                <!-- Form Selection Buttons -->
+                <div class="row justify-content-center mb-5">
+                    <div class="col-lg-8">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100 border-primary shadow-sm">
+                                    <div class="card-body text-center p-4">
+                                        <div class="display-4 text-primary mb-3">🏢</div>
+                                        <h5 class="card-title fw-bold">Service Quote</h5>
+                                        <p class="card-text">Get a quote for commercial or residential fogging services</p>
+                                        <button class="btn btn-primary btn-lg w-100" onclick="showServiceForm()">
+                                            Get Service Quote
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <div class="card h-100 border-success shadow-sm">
-                                <div class="card-body text-center p-4">
-                                    <div class="display-4 text-success mb-3">🛒</div>
-                                    <h5 class="card-title fw-bold">Product Order</h5>
-                                    <p class="card-text">Order HOCl products for home or business use</p>
-                                    <button class="btn btn-success btn-lg w-100" onclick="showRetailForm()">
-                                        Order Products
-                                    </button>
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100 border-success shadow-sm">
+                                    <div class="card-body text-center p-4">
+                                        <div class="display-4 text-success mb-3">🛒</div>
+                                        <h5 class="card-title fw-bold">Product Order</h5>
+                                        <p class="card-text">Order HOCl products for home or business use</p>
+                                        <button class="btn btn-success btn-lg w-100" onclick="showRetailForm()">
+                                            Order Products
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -357,43 +360,45 @@
                 </div>
             </div>
 
-            <!-- Contact Information -->
-            <div class="row mt-5">
-                <div class="col-lg-6">
-                    <h3 class="fw-bold mb-4">Contact Information</h3>
-                    <div class="contact-info">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <h6 class="fw-bold">📞 Phone</h6>
-                                <a href="tel:+18017125663" class="fs-5">(801) 712-5663</a>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <h6 class="fw-bold">✉️ Email</h6>
-                                <a href="mailto:ohshocl@gmail.com">ohshocl@gmail.com</a>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <h6 class="fw-bold">📍 Service Area</h6>
-                                <p>Utah and surrounding areas</p>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <h6 class="fw-bold">⏰ Hours</h6>
-                                <p>Monday-Friday: 8AM-6PM<br>Emergency services available</p>
+            <!-- Contact Information Section -->
+            <div id="contact-info-section">
+                <div class="row mt-5">
+                    <div class="col-lg-6">
+                        <h3 class="fw-bold mb-4">Contact Information</h3>
+                        <div class="contact-info">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="fw-bold">📞 Phone</h6>
+                                    <a href="tel:+18017125663" class="fs-5">(801) 712-5663</a>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="fw-bold">✉️ Email</h6>
+                                    <a href="mailto:ohshocl@gmail.com">ohshocl@gmail.com</a>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="fw-bold">📍 Service Area</h6>
+                                    <p>Utah and surrounding areas</p>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <h6 class="fw-bold">⏰ Hours</h6>
+                                    <p>Monday-Friday: 8AM-6PM<br>Emergency services available</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title fw-bold mb-3">Why Choose OHS?</h5>
-                            <ul class="list-unstyled">
-                                <li class="mb-2">🥇 <strong>Only USDA Certified Organic HOCl in Utah</strong></li>
-                                <li class="mb-2">🔬 <strong>100x more effective than bleach</strong></li>
-                                <li class="mb-2">👶 <strong>Safe enough for nurseries and food contact</strong></li>
-                                <li class="mb-2">🌍 <strong>Environmentally responsible</strong></li>
-                                <li class="mb-2">📋 <strong>Fully licensed and insured</strong></li>
-                                <li class="mb-2">⚡ <strong>Emergency response available</strong></li>
-                            </ul>
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold mb-3">Why Choose OHS?</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2">🥇 <strong>Only USDA Certified Organic HOCl in Utah</strong></li>
+                                    <li class="mb-2">🔬 <strong>100x more effective than bleach</strong></li>
+                                    <li class="mb-2">👶 <strong>Safe enough for nurseries and food contact</strong></li>
+                                    <li class="mb-2">🌍 <strong>Environmentally responsible</strong></li>
+                                    <li class="mb-2">📋 <strong>Fully licensed and insured</strong></li>
+                                    <li class="mb-2">⚡ <strong>Emergency response available</strong></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -523,13 +528,18 @@
 
         // Form switching functions
         function showServiceForm() {
+            // Hide form selection and contact info
+            document.getElementById('form-selection').style.display = 'none';
+            document.getElementById('contact-info-section').style.display = 'none';
+            
+            // Show service form
             document.getElementById('service-form-section').style.display = 'block';
             document.getElementById('retail-form-section').style.display = 'none';
             
             // Scroll to form
             document.getElementById('service-form-section').scrollIntoView({
                 behavior: 'smooth',
-                block: 'center'
+                block: 'start'
             });
             
             // Track event
@@ -540,13 +550,18 @@
         }
 
         function showRetailForm() {
+            // Hide form selection and contact info
+            document.getElementById('form-selection').style.display = 'none';
+            document.getElementById('contact-info-section').style.display = 'none';
+            
+            // Show retail form
             document.getElementById('retail-form-section').style.display = 'block';
             document.getElementById('service-form-section').style.display = 'none';
             
             // Scroll to form
             document.getElementById('retail-form-section').scrollIntoView({
                 behavior: 'smooth',
-                block: 'center'
+                block: 'start'
             });
             
             // Track event
@@ -557,8 +572,13 @@
         }
 
         function hideForms() {
+            // Hide both forms
             document.getElementById('service-form-section').style.display = 'none';
             document.getElementById('retail-form-section').style.display = 'none';
+            
+            // Show form selection and contact info
+            document.getElementById('form-selection').style.display = 'block';
+            document.getElementById('contact-info-section').style.display = 'block';
             
             // Scroll back to form selection
             document.getElementById('contact').scrollIntoView({
