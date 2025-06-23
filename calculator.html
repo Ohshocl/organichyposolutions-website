@@ -1,1 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Cost Calculator - Organic Hypo Solutions - USDA Certified Organic HOCl</title>
+    <meta name="description" content="Get instant pricing for USDA Certified Organic hypochlorous acid sanitization services. Professional fogging for Utah businesses and homes.">
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEKE217WEY"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-HEKE217WEY');
+    </script>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .calculator-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .calc-input {
+            margin-bottom: 20px;
+        }
+        .calc-result {
+            background: linear-gradient(135deg, #4CAF50 0%, #2196F3 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .price-breakdown {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .service-feature {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        .contact-section {
+            background: #f8f9fa;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="index.html">
+                🌿 Organic Hypo Solutions
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
+                    <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
+    <div class="container my-5">
+        <div class="calculator-section">
+            <div class="text-center mb-4">
+                <h1 class="display-4 fw-bold text-primary">📊 Service Cost Calculator</h1>
+                <p class="lead">Get an instant quote for your USDA Certified Organic HOCl sanitization service</p>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <!-- Square Footage Input -->
+                    <div class="calc-input">
+                        <label class="form-label fw-bold">🏢 Facility Size (Square Feet)</label>
+                        <input type="range" class="form-range" id="squareFootage" 
+                               min="500" max="50000" value="3500" step="250"
+                               oninput="updateCalculator()">
+                        <div class="d-flex justify-content-between">
+                            <small>500 sq ft</small>
+                            <strong id="sqftDisplay">3,500 sq ft</strong>
+                            <small>50,000+ sq ft</small>
+                        </div>
+                    </div>
+
+                    <!-- Service Type -->
+                    <div class="calc-input">
+                        <label class="form-label fw-bold">🏗️ Service Type</label>
+                        <select class="form-select" id="serviceType" onchange="updateCalculator()">
+                            <option value="commercial">🏢 Commercial Facility</option>
+                            <option value="residential">🏠 Residential Property</option>
+                            <option value="healthcare">🏥 Healthcare Facility</option>
+                            <option value="education">🎓 Educational Facility</option>
+                            <option value="food">🍽️ Food Service</option>
+                            <option value="fitness">💪 Fitness Center</option>
+                            <option value="emergency">🚨 Emergency Service</option>
+                        </select>
+                    </div>
+
+                    <!-- Service Frequency -->
+                    <div class="calc-input">
+                        <label class="form-label fw-bold">📅 Service Frequency</label>
+                        <select class="form-select" id="frequency" onchange="updateCalculator()">
+                            <option value="monthly">Monthly Service</option>
+                            <option value="biweekly">Bi-Weekly Service</option>
+                            <option value="weekly">Weekly Service</option>
+                            <option value="quarterly">Quarterly Service</option>
+                            <option value="onetime">One-Time Service</option>
+                        </select>
+                    </div>
+
+                    <!-- Complexity Level -->
+                    <div class="calc-input">
+                        <label class="form-label fw-bold">⚙️ Facility Complexity</label>
+                        <select class="form-select" id="complexity" onchange="updateCalculator()">
+                            <option value="standard">Standard Layout</option>
+                            <option value="moderate">Moderate Complexity</option>
+                            <option value="complex">High Complexity</option>
+                        </select>
+                    </div>
+
+                    <!-- Additional Services -->
+                    <div class="calc-input">
+                        <label class="form-label fw-bold">➕ Additional Services</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="odorElimination" onchange="updateCalculator()">
+                            <label class="form-check-label" for="odorElimination">
+                                Odor Elimination Treatment (+$50)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="allergyTreatment" onchange="updateCalculator()">
+                            <label class="form-check-label" for="allergyTreatment">
+                                Allergy Reduction Treatment (+$75)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="documentation" onchange="updateCalculator()">
+                            <label class="form-check-label" for="documentation">
+                                Professional Documentation (+$100)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <!-- Results Section -->
+                    <div class="calc-result">
+                        <h3 class="fw-bold mb-3">💰 Your Service Quote</h3>
+                        <div class="display-4 fw-bold mb-2" id="totalPrice">$620</div>
+                        <p class="fs-5 mb-3" id="priceFrequency">per month</p>
+                        
+                        <div class="price-breakdown">
+                            <h5 class="fw-bold mb-3">📋 Breakdown</h5>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Base Service:</span>
+                                <span id="basePrice">$570</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Complexity Adjustment:</span>
+                                <span id="complexityPrice">$0</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Additional Services:</span>
+                                <span id="addonsPrice">$0</span>
+                            </div>
+                            <hr class="border-light">
+                            <div class="d-flex justify-content-between fw-bold fs-5">
+                                <span>Total <span id="breakdownFrequency">Monthly</span>:</span>
+                                <span id="breakdownTotal">$620</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button class="btn btn-light btn-lg me-2" onclick="requestQuote()">
+                                📋 Request Official Quote
+                            </button>
+                            <button class="btn btn-outline-light btn-lg" onclick="callNow()">
+                                📞 Call (801) 712-5663
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Service Features -->
+                    <div class="mt-4">
+                        <h5 class="fw-bold mb-3">✅ What's Included</h5>
+                        <div class="service-feature">
+                            <strong>🦠 99.9% Pathogen Elimination</strong><br>
+                            <small>Hospital-grade disinfection with USDA Certified Organic HOCl</small>
+                        </div>
+                        <div class="service-feature">
+                            <strong>👶 Safe for All Ages</strong><br>
+                            <small>Food contact safe, baby and pet friendly</small>
+                        </div>
+                        <div class="service-feature">
+                            <strong>🌱 Environmentally Responsible</strong><br>
+                            <small>Biodegrades to harmless salt water, zero toxic residue</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <section class="py-5">
+            <div class="container">
+                <h2 class="text-center mb-5">❓ Calculator FAQ</h2>
+                <div class="row">
+                    <div class="col-lg-8 mx-auto">
+                        <div class="accordion" id="calculatorFAQ">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                        How accurate is this calculator?
+                                    </button>
+                                </h2>
+                                <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#calculatorFAQ">
+                                    <div class="accordion-body">
+                                        Our calculator provides estimates based on industry standards and our actual service rates. Final pricing may vary based on site assessment, accessibility, and specific requirements. We guarantee all official quotes will be within 10% of calculator estimates.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                        What factors affect the final price?
+                                    </button>
+                                </h2>
+                                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#calculatorFAQ">
+                                    <div class="accordion-body">
+                                        Pricing factors include: facility size, service type, frequency, complexity (multi-level, HVAC systems, specialized equipment), location accessibility, and any additional services like odor elimination or professional documentation.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                        Do you offer volume discounts?
+                                    </button>
+                                </h2>
+                                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#calculatorFAQ">
+                                    <div class="accordion-body">
+                                        Yes! We offer significant discounts for longer service commitments and larger facilities. Annual contracts receive up to 15% discount, and facilities over 10,000 sq ft qualify for volume pricing.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h3 class="fw-bold">Ready to Schedule Service?</h3>
+                <p class="lead">Contact us today for your official quote and service scheduling</p>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-3 text-center mb-3">
+                    <a href="tel:+18017125663" class="btn btn-primary btn-lg">
+                        📞 (801) 712-5663
+                    </a>
+                </div>
+                <div class="col-md-3 text-center mb-3">
+                    <a href="mailto:ohshocl@gmail.com" class="btn btn-success btn-lg">
+                        ✉️ Email Us
+                    </a>
+                </div>
+                <div class="col-md-3 text-center mb-3">
+                    <button class="btn btn-warning btn-lg" onclick="requestQuote()">
+                        📋 Get Quote
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Pricing algorithm based on business model
+        const pricingRules = {
+            baseRates: {
+                commercial: 0.125,
+                residential: 0.15,
+                healthcare: 0.14,
+                education: 0.12,
+                food: 0.135,
+                fitness: 0.13,
+                emergency: 0.25
+            },
+            frequencyMultipliers: {
+                monthly: 1.0,
+                biweekly: 1.8,
+                weekly: 3.5,
+                quarterly: 0.35,
+                onetime: 1.4
+            },
+            complexityAdjustments: {
+                standard: 1.0,
+                moderate: 1.15,
+                complex: 1.3
+            },
+            minimums: {
+                commercial: 450,
+                residential: 200,
+                healthcare: 500,
+                education: 400,
+                food: 400,
+                fitness: 350,
+                emergency: 600
+            }
+        };
+
+        function updateCalculator() {
+            const sqft = parseInt(document.getElementById('squareFootage').value);
+            const serviceType = document.getElementById('serviceType').value;
+            const frequency = document.getElementById('frequency').value;
+            const complexity = document.getElementById('complexity').value;
+            
+            document.getElementById('sqftDisplay').textContent = sqft.toLocaleString() + ' sq ft';
+            
+            const baseRate = pricingRules.baseRates[serviceType];
+            let basePrice = sqft * baseRate;
+            const minimum = pricingRules.minimums[serviceType];
+            basePrice = Math.max(basePrice, minimum);
+            
+            const complexityMultiplier = pricingRules.complexityAdjustments[complexity];
+            basePrice *= complexityMultiplier;
+            
+            const frequencyMultiplier = pricingRules.frequencyMultipliers[frequency];
+            let totalPrice = basePrice * frequencyMultiplier;
+            
+            const complexityAdjustment = basePrice * (complexityMultiplier - 1);
+            
+            let addonsTotal = 0;
+            const frequencyFactor = frequency === 'onetime' ? 1 : frequencyMultiplier;
+            
+            if (document.getElementById('odorElimination').checked) {
+                addonsTotal += 50 * frequencyFactor;
+            }
+            if (document.getElementById('allergyTreatment').checked) {
+                addonsTotal += 75 * frequencyFactor;
+            }
+            if (document.getElementById('documentation').checked) {
+                addonsTotal += 100 * frequencyFactor;
+            }
+            
+            totalPrice += addonsTotal;
+            
+            document.getElementById('basePrice').textContent = '$' + Math.round(basePrice).toLocaleString();
+            document.getElementById('complexityPrice').textContent = '$' + Math.round(complexityAdjustment).toLocaleString();
+            document.getElementById('addonsPrice').textContent = '$' + Math.round(addonsTotal).toLocaleString();
+            
+            let frequencyText = frequency.charAt(0).toUpperCase() + frequency.slice(1);
+            if (frequencyText === 'Onetime') frequencyText = 'One-Time';
+            if (frequencyText === 'Biweekly') frequencyText = 'Bi-Weekly';
+            
+            document.getElementById('totalPrice').textContent = '$' + Math.round(totalPrice).toLocaleString();
+            document.getElementById('priceFrequency').textContent = frequency === 'onetime' ? 'one-time service' : 'per ' + frequency.replace('ly', '').replace('time', '-time');
+            document.getElementById('breakdownFrequency').textContent = frequencyText;
+            document.getElementById('breakdownTotal').textContent = '$' + Math.round(totalPrice).toLocaleString();
+        }
+
+        function requestQuote() {
+            window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
+        }
+
+        function callNow() {
+            window.open('tel:+18017125663');
+        }
+
+        updateCalculator();
+    </script>
+</body>
+</html>
