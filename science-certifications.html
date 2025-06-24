@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Science & Certifications - Organic Hypo Solutions</title>
+    <title>Science & Certifications - Organic Hyposolutions</title>
     <meta name="description" content="Scientific research and regulatory certifications proving hypochlorous acid's safety and efficacy. EPA registered, USDA Certified Organic, FDA approved.">
     
     <!-- Bootstrap CSS -->
@@ -63,6 +63,17 @@
             background: #e8f5e8;
             font-weight: bold;
         }
+
+        /* Highlight animation for linked sections */
+        .cert-highlight {
+            animation: highlightFade 3s ease-in-out;
+        }
+        
+        @keyframes highlightFade {
+            0% { background-color: #fff3cd; }
+            50% { background-color: #fff3cd; }
+            100% { background-color: transparent; }
+        }
     </style>
 </head>
 <body>
@@ -70,7 +81,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
             <a class="navbar-brand fw-bold text-success" href="index.html">
-                <i class="fas fa-leaf me-2"></i>Organic Hypo Solutions
+                <i class="fas fa-leaf me-2"></i>Organic Hyposolutions
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -81,6 +92,7 @@
                     <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
                     <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
                     <li class="nav-item"><a class="nav-link active" href="science-certifications.html">Science & Certifications</a></li>
+                    <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
                     <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
                 </ul>
@@ -116,7 +128,7 @@
             </div>
 
             <div class="row g-4">
-                <div class="col-lg-6 col-md-6">
+                <div class="col-lg-6 col-md-6" id="epa-registration">
                     <div class="card certification-card h-100">
                         <div class="card-body text-center p-4">
                             <div class="text-success mb-3">
@@ -130,7 +142,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-6 col-md-6">
+                <div class="col-lg-6 col-md-6" id="usda-certification">
                     <div class="card certification-card h-100">
                         <div class="card-body text-center p-4">
                             <div class="text-success mb-3">
@@ -144,7 +156,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-6 col-md-6">
+                <div class="col-lg-6 col-md-6" id="fda-approval">
                     <div class="card certification-card h-100">
                         <div class="card-body text-center p-4">
                             <div class="text-success mb-3">
@@ -158,7 +170,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-6 col-md-6">
+                <div class="col-lg-6 col-md-6" id="who-recognition">
                     <div class="card certification-card h-100">
                         <div class="card-body text-center p-4">
                             <div class="text-success mb-3">
@@ -378,7 +390,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <h5 class="fw-bold mb-3">
-                        <i class="fas fa-leaf me-2"></i>Organic Hypo Solutions
+                        <i class="fas fa-leaf me-2"></i>Organic Hyposolutions
                     </h5>
                     <p class="text-muted">Utah's premier provider of USDA Certified Organic hypochlorous acid sanitization services and products.</p>
                 </div>
@@ -394,10 +406,10 @@
                 <div class="col-md-3">
                     <h6 class="fw-bold mb-3">Contact Info</h6>
                     <p class="text-muted mb-1">
-                        <i class="fas fa-phone me-2"></i>(801) 555-0123
+                        <i class="fas fa-phone me-2"></i>(801) 712-5663
                     </p>
                     <p class="text-muted mb-1">
-                        <i class="fas fa-envelope me-2"></i>info@organichyposolutions.com
+                        <i class="fas fa-envelope me-2"></i>ohshocl@gmail.com
                     </p>
                     <p class="text-muted">
                         <i class="fas fa-map-marker-alt me-2"></i>Salt Lake City, Utah
@@ -407,7 +419,7 @@
             <hr class="my-4">
             <div class="row align-items-center">
                 <div class="col-md-6">
-                    <p class="mb-0 text-muted">&copy; 2025 Organic Hypo Solutions. All rights reserved.</p>
+                    <p class="mb-0 text-muted">&copy; 2025 Organic Hyposolutions. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <small class="text-muted">EPA #97801-1 | USDA Certified Organic | FDA Food Contact Approved</small>
@@ -426,6 +438,24 @@
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-HEKE217WEY');
+    </script>
+
+    <!-- Highlight linked sections -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if there's a hash in the URL
+            const hash = window.location.hash;
+            if (hash) {
+                const targetElement = document.querySelector(hash);
+                if (targetElement) {
+                    // Add highlight animation
+                    targetElement.classList.add('cert-highlight');
+                    
+                    // Smooth scroll to the element
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
     </script>
 </body>
 </html>
