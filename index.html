@@ -126,6 +126,61 @@
             font-style: italic;
             margin-top: 8px;
         }
+        .stat-item {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .stat-item:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
+        }
+        .tooltip-content {
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            min-width: 280px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+            text-align: left;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .tooltip-content::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 8px solid transparent;
+            border-top-color: rgba(0,0,0,0.9);
+        }
+        .stat-item:hover .tooltip-content {
+            opacity: 1;
+            visibility: visible;
+        }
+        .tooltip-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #4CAF50;
+        }
+        .tooltip-reference {
+            font-size: 0.75em;
+            color: #ccc;
+            font-style: italic;
+            margin-top: 8px;
+            border-top: 1px solid #444;
+            padding-top: 6px;
+        }
     </style>
 </head>
 <body>
@@ -143,6 +198,7 @@
                     <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
                     <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
+                    <li class="nav-item"><a class="nav-link" href="science-certifications.html">Science & Certifications</a></li>
                     <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
                     <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
@@ -167,13 +223,21 @@
                     
                     <!-- Certification Badges -->
                     <div class="mb-4">
-                        <span class="cert-badge">🇺🇸 USDA Certified Organic</span>
-                        <span class="cert-badge">✅ EPA Registered #97801-1</span>
-                        <span class="cert-badge">🏥 FDA Food Contact Approved</span>
-                        <span class="cert-badge">
-                            🌍 WHO Essential Medicine
-                            <div class="who-subtitle">(World Health Organization)</div>
-                        </span>
+                        <a href="science-certifications.html#usda-certification" class="text-decoration-none">
+                            <span class="cert-badge">🇺🇸 USDA Certified Organic</span>
+                        </a>
+                        <a href="science-certifications.html#epa-registration" class="text-decoration-none">
+                            <span class="cert-badge">✅ EPA Registered #97801-1</span>
+                        </a>
+                        <a href="science-certifications.html#fda-approval" class="text-decoration-none">
+                            <span class="cert-badge">🏥 FDA Food Contact Approved</span>
+                        </a>
+                        <a href="science-certifications.html#who-recognition" class="text-decoration-none">
+                            <span class="cert-badge">
+                                🌍 WHO Essential Medicine
+                                <div class="who-subtitle">(World Health Organization)</div>
+                            </span>
+                        </a>
                     </div>
                     
                     <div class="d-grid gap-2 d-md-flex">
@@ -186,20 +250,56 @@
                         <h3 class="mb-3">Why Choose HOCl?</h3>
                         <div class="row text-center">
                             <div class="col-6 mb-3">
-                                <h4>🦠 99.9%</h4>
-                                <p>Pathogen Elimination</p>
+                                <div class="stat-item">
+                                    <h4>🦠 99.9%</h4>
+                                    <p>Pathogen Elimination</p>
+                                    <div class="tooltip-content">
+                                        <div class="tooltip-title">99.9% Pathogen Elimination</div>
+                                        HOCl achieves 99.9% kill rates against vegetative bacteria, spores, viruses, and fungi within 10-second contact time, making it more effective than traditional disinfectants.
+                                        <div class="tooltip-reference">
+                                            *Source: "Comparative Antimicrobial Efficacy of Hypochlorous Acid vs. Sodium Hypochlorite" - Journal of Antimicrobial Chemotherapy, 2019
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-6 mb-3">
-                                <h4>👶 100%</h4>
-                                <p>Safe for Babies & Pets</p>
+                                <div class="stat-item">
+                                    <h4>👶 100%</h4>
+                                    <p>Safe for Babies & Pets</p>
+                                    <div class="tooltip-content">
+                                        <div class="tooltip-title">100% Safe for Babies & Pets</div>
+                                        Your white blood cells naturally produce HOCl as their primary antimicrobial defense. Commercial HOCl mimics this exact natural process, making it inherently safe for humans and animals.
+                                        <div class="tooltip-reference">
+                                            *Source: "Hypochlorous Acid: The Natural Antimicrobial of the Human Immune System" - Nature Immunology, 2018
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-6">
-                                <h4>⚡ 10x</h4>
-                                <p>Faster than Bleach</p>
+                                <div class="stat-item">
+                                    <h4>⚡ 10x</h4>
+                                    <p>Faster than Bleach</p>
+                                    <div class="tooltip-content">
+                                        <div class="tooltip-title">10x Faster Than Bleach</div>
+                                        HOCl demonstrates 100x greater antimicrobial activity than sodium hypochlorite (bleach) at equivalent concentrations, with 10-second kill times vs. 1-5 minutes for bleach.
+                                        <div class="tooltip-reference">
+                                            *Source: Multiple peer-reviewed studies comparing HOCl efficacy rates vs. traditional disinfectants
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-6">
-                                <h4>🌱 0</h4>
-                                <p>Harmful Residue</p>
+                                <div class="stat-item">
+                                    <h4>🌱 0</h4>
+                                    <p>Harmful Residue</p>
+                                    <div class="tooltip-content">
+                                        <div class="tooltip-title">Zero Harmful Residue</div>
+                                        After disinfection, HOCl rapidly biodegrades into harmless salt water. No toxic residues, no bioaccumulation, and no environmental persistence.
+                                        <div class="tooltip-reference">
+                                            *Source: "Environmental Fate and Ecotoxicity of Hypochlorous Acid Disinfectants" - Environmental Science & Technology, 2022
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -209,71 +309,8 @@
     </section>
 
     <!-- Why Choose HOCl Section -->
-    <section class="why-choose-section">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="display-5 fw-bold">Why Choose Hypochlorous Acid?</h2>
-                <p class="lead">Backed by rigorous scientific research and regulatory approval</p>
-            </div>
-            <div class="row">
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="benefit-card text-center">
-                        <div class="benefit-icon">🦠</div>
-                        <h5 class="fw-bold">99.9% Pathogen Elimination</h5>
-                        <p>Eliminates bacteria, viruses, fungi, and spores within seconds</p>
-                        <button class="faq-toggle" onclick="toggleFaq('pathogen-faq')">Why is this important? ▼</button>
-                        <div id="pathogen-faq" class="faq-content">
-                            <strong>The Science:</strong> HOCl achieves 99.9% kill rates against vegetative bacteria, spores, viruses, and fungi within 10-second contact time, making it more effective than traditional disinfectants.
-                            <div class="research-reference">
-                                *Source: "Comparative Antimicrobial Efficacy of Hypochlorous Acid vs. Sodium Hypochlorite" - Journal of Antimicrobial Chemotherapy, 2019
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="benefit-card text-center">
-                        <div class="benefit-icon">👶</div>
-                        <h5 class="fw-bold">100% Safe for Babies & Pets</h5>
-                        <p>Non-toxic, non-irritating, and safe for direct contact</p>
-                        <button class="faq-toggle" onclick="toggleFaq('safety-faq')">Why is this safer? ▼</button>
-                        <div id="safety-faq" class="faq-content">
-                            <strong>Natural Safety:</strong> Your white blood cells naturally produce HOCl as their primary antimicrobial defense. Commercial HOCl mimics this exact natural process, making it inherently safe for humans and animals.
-                            <div class="research-reference">
-                                *Source: "Hypochlorous Acid: The Natural Antimicrobial of the Human Immune System" - Nature Immunology, 2018
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="benefit-card text-center">
-                        <div class="benefit-icon">⚡</div>
-                        <h5 class="fw-bold">10x Faster Than Bleach</h5>
-                        <p>Rapid action with superior antimicrobial activity</p>
-                        <button class="faq-toggle" onclick="toggleFaq('speed-faq')">How much faster? ▼</button>
-                        <div id="speed-faq" class="faq-content">
-                            <strong>Superior Performance:</strong> HOCl demonstrates 100x greater antimicrobial activity than sodium hypochlorite (bleach) at equivalent concentrations, with 10-second kill times vs. 1-5 minutes for bleach.
-                            <div class="research-reference">
-                                *Source: Multiple peer-reviewed studies comparing HOCl efficacy rates vs. traditional disinfectants
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="benefit-card text-center">
-                        <div class="benefit-icon">🌱</div>
-                        <h5 class="fw-bold">Zero Harmful Residue</h5>
-                        <p>Biodegrades to harmless salt water</p>
-                        <button class="faq-toggle" onclick="toggleFaq('residue-faq')">What happens after use? ▼</button>
-                        <div id="residue-faq" class="faq-content">
-                            <strong>Environmental Friendly:</strong> After disinfection, HOCl rapidly biodegrades into harmless salt water. No toxic residues, no bioaccumulation, and no environmental persistence.
-                            <div class="research-reference">
-                                *Source: "Environmental Fate and Ecotoxicity of Hypochlorous Acid Disinfectants" - Environmental Science & Technology, 2022
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <section class="why-choose-section" style="display: none;">
+        <!-- This section is now integrated into the hero stats above -->
     </section>
 
     <!-- Our Standards Section -->
@@ -458,20 +495,5 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        function toggleFaq(faqId) {
-            const faqContent = document.getElementById(faqId);
-            const toggleButton = faqContent.previousElementSibling;
-            
-            if (faqContent.style.display === "none" || faqContent.style.display === "") {
-                faqContent.style.display = "block";
-                toggleButton.innerHTML = toggleButton.innerHTML.replace("▼", "▲");
-            } else {
-                faqContent.style.display = "none";
-                toggleButton.innerHTML = toggleButton.innerHTML.replace("▲", "▼");
-            }
-        }
-    </script>
 </body>
 </html>
