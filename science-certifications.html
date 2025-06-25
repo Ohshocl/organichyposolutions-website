@@ -15,17 +15,17 @@
         /* Fixed header styles */
         .fixed-header {
             position: fixed;
-            top: 50px; /* Account for disclaimer bar */
+            top: 60px; /* Account for disclaimer bar height */
             left: 0;
             right: 0;
-            z-index: 1030;
+            z-index: 1040;
             background: white;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
         /* Add padding to body to account for fixed header */
         body {
-            padding-top: 130px; /* Adjusted for disclaimer + navbar height */
+            padding-top: 140px; /* Disclaimer (60px) + Navbar (80px) */
         }
         
         /* Ensure disclaimer bar is also fixed */
@@ -34,16 +34,12 @@
             top: 0;
             left: 0;
             right: 0;
-            z-index: 1040;
+            z-index: 1050;
             height: auto;
-            min-height: 50px;
+            padding: 8px 0;
         }
         
-        /* Adjust navbar position to account for disclaimer */
-        .navbar.fixed-header {
-            top: 50px; /* Height of disclaimer bar */
-            z-index: 1030;
-        }
+        /* Remove the duplicate navbar positioning - only use .fixed-header */
         
         .hero-section {
             background: linear-gradient(135deg, #2c5530 0%, #5a9367 100%);
@@ -117,15 +113,15 @@
         /* Mobile responsive adjustments */
         @media (max-width: 768px) {
             body {
-                padding-top: 150px; /* Increase for mobile - disclaimer + navbar */
+                padding-top: 160px; /* More space for mobile */
             }
             
             .disclaimer-bar {
-                min-height: 60px; /* Account for text wrapping */
+                padding: 10px 0;
             }
             
-            .navbar.fixed-header {
-                top: 60px; /* Adjust for taller disclaimer on mobile */
+            .fixed-header {
+                top: 70px; /* Account for taller disclaimer on mobile */
             }
         }
     </style>
