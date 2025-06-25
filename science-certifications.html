@@ -15,7 +15,7 @@
         /* Fixed header styles */
         .fixed-header {
             position: fixed;
-            top: 0;
+            top: 50px; /* Account for disclaimer bar */
             left: 0;
             right: 0;
             z-index: 1030;
@@ -25,7 +25,7 @@
         
         /* Add padding to body to account for fixed header */
         body {
-            padding-top: 120px; /* Adjust this value based on header height */
+            padding-top: 130px; /* Adjusted for disclaimer + navbar height */
         }
         
         /* Ensure disclaimer bar is also fixed */
@@ -34,12 +34,15 @@
             top: 0;
             left: 0;
             right: 0;
-            z-index: 1031;
+            z-index: 1040;
+            height: auto;
+            min-height: 50px;
         }
         
         /* Adjust navbar position to account for disclaimer */
         .navbar.fixed-header {
             top: 50px; /* Height of disclaimer bar */
+            z-index: 1030;
         }
         
         .hero-section {
@@ -114,11 +117,15 @@
         /* Mobile responsive adjustments */
         @media (max-width: 768px) {
             body {
-                padding-top: 140px; /* Increase for mobile */
+                padding-top: 150px; /* Increase for mobile - disclaimer + navbar */
+            }
+            
+            .disclaimer-bar {
+                min-height: 60px; /* Account for text wrapping */
             }
             
             .navbar.fixed-header {
-                top: 50px;
+                top: 60px; /* Adjust for taller disclaimer on mobile */
             }
         }
     </style>
