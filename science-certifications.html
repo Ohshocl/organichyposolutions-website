@@ -12,6 +12,36 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* Fixed header styles */
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Add padding to body to account for fixed header */
+        body {
+            padding-top: 120px; /* Adjust this value based on header height */
+        }
+        
+        /* Ensure disclaimer bar is also fixed */
+        .disclaimer-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1031;
+        }
+        
+        /* Adjust navbar position to account for disclaimer */
+        .navbar.fixed-header {
+            top: 50px; /* Height of disclaimer bar */
+        }
+        
         .hero-section {
             background: linear-gradient(135deg, #2c5530 0%, #5a9367 100%);
             color: white;
@@ -80,11 +110,31 @@
             color: #6c757d;
             line-height: 1.4;
         }
+        
+        /* Mobile responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 140px; /* Increase for mobile */
+            }
+            
+            .navbar.fixed-header {
+                top: 50px;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <!-- Educational Disclaimer - Fixed at top -->
+    <div class="alert alert-info mb-0 disclaimer-bar" role="alert">
+        <div class="container">
+            <strong>Educational Information:</strong> Content provided for educational purposes only. 
+            Not intended to diagnose, treat, cure, or prevent any disease. Individual results may vary.
+            <a href="legal-information.html" class="alert-link">See Legal Information for complete disclaimers.</a>
+        </div>
+    </div>
+
+    <!-- Navigation - Fixed Header -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-header">
         <div class="container">
             <a class="navbar-brand fw-bold text-success" href="index.html">
                 <i class="fas fa-leaf me-2"></i>Organic HypoSolutions
@@ -106,15 +156,6 @@
             </div>
         </div>
     </nav>
-
-    <!-- Educational Disclaimer -->
-    <div class="alert alert-info mb-0" role="alert">
-        <div class="container">
-            <strong>Educational Information:</strong> Content provided for educational purposes only. 
-            Not intended to diagnose, treat, cure, or prevent any disease. Individual results may vary.
-            <a href="legal-information.html" class="alert-link">See Legal Information for complete disclaimers.</a>
-        </div>
-    </div>
 
     <!-- Hero Section -->
     <section class="hero-section">
@@ -503,25 +544,4 @@
                 </div>
                 <div class="col-md-4 text-center">
                     <div class="mb-3">
-                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGhElEQVR4nO2dTYgcRRTH/6+6Z2YTIyaQBBONHwRBQRFBEBEPKh5E8KQnD4KCBy8ePHjw4MGDB714EBHEk4KCB08ePAiCBw8ePHjw4MGDB0/iQRDEg4KCBxHBg+BBEBHfq+6Z7p7Z2Z3Z3Z3u6e7/D4qZ6eruql/Xq3r1Xr2qARFJgQAgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiCE="
-                             alt="QR Code for Organic Hypo Solutions"
-                             class="footer-qr-code"
-                             title="Scan to visit organichyposolutions.com">
-                    </div>
-                    <p><small>📱 Scan QR Code<br>organichyposolutions.com</small></p>
-                </div>
-                <div class="col-md-4 text-md-end">
-                    <p>📞 (801) 712-5663 | ✉️ ohshocl@gmail.com</p>
-                    <div class="mb-2">
-                        <a href="legal-information.html" class="text-white text-decoration-none me-3">Legal Information</a>
-                        <a href="science-certifications.html" class="text-white text-decoration-none">Certifications</a>
-                    </div>
-                    <p><small>&copy; 2025 Organic Hyposolutions. All rights reserved.</small></p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGhElEQVR4nO2dTYgcRRTH/6+6Z2YTIyaQBBONHwRBQRFBEBEPKh5E8KQnD4KCBy8ePHjw4MGDB714EBHEk4KCB08ePAiCBw8ePHjw4MGDB0/iQRDEg4KCBxHBg+BBEBHfq+6Z7p7Z2Z3Z3Z3u6e7/D4qZ6uruql/Xq3r1Xr2qARFJgQAgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICX+gAEEkIiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASI...*lines truncated*
