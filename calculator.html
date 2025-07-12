@@ -63,9 +63,17 @@
             padding: 15px;
             margin-top: 15px;
         }
-        .dual-machine-notice {
+        .volume-discount-notice {
             background: #d1ecf1;
             border: 1px solid #b7d4ea;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            display: none;
+        }
+        .subscription-notice {
+            background: #e7f3ff;
+            border: 1px solid #b3d7ff;
             border-radius: 8px;
             padding: 15px;
             margin-top: 10px;
@@ -119,11 +127,11 @@
                     <div class="calc-input">
                         <label class="form-label fw-bold">🏢 Facility Size (Square Feet)</label>
                         <input type="range" class="form-range" id="squareFootage" 
-                               min="500" max="50000" value="3500" step="250"
+                               min="500" max="50000" value="1500" step="250"
                                oninput="updateCalculator()">
                         <div class="d-flex justify-content-between">
                             <small>500 sq ft</small>
-                            <strong id="sqftDisplay">3,500 sq ft</strong>
+                            <strong id="sqftDisplay">1,500 sq ft</strong>
                             <small>50,000+ sq ft</small>
                         </div>
                     </div>
@@ -170,7 +178,7 @@
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="adhocFogging" onchange="updateCalculator()">
                             <label class="form-check-label" for="adhocFogging">
-                                Additional adhoc backpack fogging requests - additional sqft can be calculated on site
+                                Additional targeted fogging for high-touch areas
                             </label>
                         </div>
                     </div>
@@ -182,10 +190,18 @@
                         <small class="text-muted">Travel charges at $0.70 per mile apply beyond 25-mile radius.</small>
                     </div>
 
-                    <!-- Dual Machine Notice -->
-                    <div class="dual-machine-notice" id="dualMachineNotice">
-                        <h6 class="fw-bold mb-2">⚡ Large Facility Service</h6>
-                        <p class="mb-0">Facilities over 20,000 sq ft require dual machine service for optimal coverage and efficiency.</p>
+                    <!-- Volume Discount Notice -->
+                    <div class="volume-discount-notice" id="volumeDiscountNotice">
+                        <h6 class="fw-bold mb-2">💰 Volume Pricing Available</h6>
+                        <p class="mb-0">Facilities over 20,000 sq ft qualify for volume pricing at $0.08 per sq ft - significant savings for large facilities!</p>
+                    </div>
+
+                    <!-- Subscription Notice -->
+                    <div class="subscription-notice" id="subscriptionNotice">
+                        <h6 class="fw-bold mb-2">📅 Subscription Plans Available</h6>
+                        <p class="mb-1"><strong>Residential:</strong> $199/month (monthly) or $349/month (bi-weekly)</p>
+                        <p class="mb-1"><strong>Commercial:</strong> $399/month (monthly) or $699/month (bi-weekly)</p>
+                        <p class="mb-0"><strong>Healthcare:</strong> $1,499/month (weekly service)</p>
                     </div>
                 </div>
 
@@ -193,14 +209,14 @@
                     <!-- Results Section -->
                     <div class="calc-result">
                         <h3 class="fw-bold mb-3">💰 Your Service Quote</h3>
-                        <div class="display-4 fw-bold mb-2" id="totalPrice">$620</div>
-                        <p class="fs-5 mb-3" id="priceFrequency">per month</p>
+                        <div class="display-4 fw-bold mb-2" id="totalPrice">$187</div>
+                        <p class="fs-5 mb-3" id="priceFrequency">per service</p>
                         
                         <div class="price-breakdown">
                             <h5 class="fw-bold mb-3">📋 Breakdown</h5>
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Base Service:</span>
-                                <span id="basePrice">$570</span>
+                                <span id="basePrice">$187</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Complexity Adjustment:</span>
@@ -210,14 +226,18 @@
                                 <span>Travel Costs:</span>
                                 <span id="travelPrice">$0</span>
                             </div>
+                            <div class="d-flex justify-content-between mb-2" id="additionalRow" style="display: none;">
+                                <span>Additional Services:</span>
+                                <span id="additionalPrice">$0</span>
+                            </div>
                             <div class="d-flex justify-content-between mb-2" id="volumeDiscountRow" style="display: none;">
-                                <span>Volume Discount (20k+ sq ft):</span>
-                                <span id="volumeDiscount">-$0</span>
+                                <span>Volume Discount:</span>
+                                <span id="volumeDiscount" class="text-warning">-$0</span>
                             </div>
                             <hr class="border-light">
                             <div class="d-flex justify-content-between fw-bold fs-5">
-                                <span>Total <span id="breakdownFrequency">Monthly</span>:</span>
-                                <span id="breakdownTotal">$620</span>
+                                <span>Total <span id="breakdownFrequency">Service</span>:</span>
+                                <span id="breakdownTotal">$187</span>
                             </div>
                         </div>
 
@@ -229,8 +249,11 @@
                                 📞 Call (801) 712-5663
                             </button>
                         </div>
-                    </div>
 
+                        <div class="mt-3">
+                            <small class="text-white-50">Subscription plans available for recurring service needs</small>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -247,13 +270,31 @@
                     <div class="col-lg-4 mb-3">
                         <div class="service-feature h-100">
                             <strong>👶 Safe for All Ages</strong><br>
-                            <small>Food contact safe, baby and pet friendly</small>
+                            <small>Food contact safe, baby and pet friendly - no harsh chemicals</small>
                         </div>
                     </div>
                     <div class="col-lg-4 mb-3">
                         <div class="service-feature h-100">
                             <strong>🌱 Environmentally Responsible</strong><br>
                             <small>Biodegrades to harmless salt water, zero toxic residue</small>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mb-3">
+                        <div class="service-feature h-100">
+                            <strong>📊 Professional Documentation</strong><br>
+                            <small>PPM readings, bacterial testing, coverage verification included</small>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mb-3">
+                        <div class="service-feature h-100">
+                            <strong>🔬 Real-time Monitoring</strong><br>
+                            <small>250+ PPM concentration maintained throughout 10+ minute contact time</small>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mb-3">
+                        <div class="service-feature h-100">
+                            <strong>✅ EPA Registered</strong><br>
+                            <small>EPA #97801-1 registration with FDA food contact approval</small>
                         </div>
                     </div>
                 </div>
@@ -265,9 +306,10 @@
                             <h6 class="fw-bold mb-2">🤧 Allergy & Pet Benefits</h6>
                             <p class="mb-2">Our USDA Certified Organic HOCl service can help reduce allergens and create a healthier environment for:</p>
                             <ul class="mb-2">
-                                <li>Children with allergies and sensitivities</li>
-                                <li>Pet owners dealing with dander and odors</li>
-                                <li>Families seeking chemical-free sanitization</li>
+                                <li>Children with allergies and respiratory sensitivities</li>
+                                <li>Pet owners dealing with dander, odors, and allergens</li>
+                                <li>Families seeking chemical-free sanitization solutions</li>
+                                <li>Individuals with chemical sensitivities or MCS</li>
                             </ul>
                         </div>
                         <div class="col-lg-4 d-flex align-items-center">
@@ -307,19 +349,19 @@
                                 </h2>
                                 <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#calculatorFAQ">
                                     <div class="accordion-body">
-                                        Pricing factors include: facility size, service type, frequency, complexity (multi-level, HVAC systems, specialized equipment), location accessibility, travel distance from Salt Lake City, and dual machine requirements for large facilities over 20,000 sq ft.
+                                        Pricing factors include: facility size, service type, frequency, complexity (multi-level, HVAC systems, specialized equipment), location accessibility, travel distance from Salt Lake City, and any specialized requirements for compliance documentation.
                                     </div>
                                 </div>
                             </div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                                        Do you offer volume discounts?
+                                        Do you offer subscription plans?
                                     </button>
                                 </h2>
                                 <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#calculatorFAQ">
                                     <div class="accordion-body">
-                                        Yes! We offer significant discounts for longer service commitments and larger facilities. Annual contracts receive up to 15% discount, and facilities over 20,000 sq ft qualify for volume pricing at $0.08 per sq ft.
+                                        Yes! We offer subscription plans with fixed monthly pricing: Residential plans from $199/month, Commercial plans from $399/month, and Healthcare plans at $1,499/month. These plans include guaranteed service frequency and priority scheduling.
                                     </div>
                                 </div>
                             </div>
@@ -335,6 +377,18 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                        What are your volume discounts?
+                                    </button>
+                                </h2>
+                                <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#calculatorFAQ">
+                                    <div class="accordion-body">
+                                        Facilities over 20,000 sq ft qualify for volume pricing at $0.08 per sq ft (compared to standard $0.10-$0.15 rates). Annual contracts receive additional 15% discounts. Large facilities may also qualify for dual-machine service for faster completion.
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -343,33 +397,28 @@
     </div>
 
     <!-- Contact Section -->
-    <section class="contact-section">
-        <div class="container">
-            <div class="text-center mb-4">
-                <h3 class="fw-bold">Ready to Schedule Service?</h3>
-                <p class="lead">Contact us today for your official quote and service scheduling</p>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-md-3 text-center mb-3">
-                    <a href="tel:+18017125663" class="btn btn-primary btn-lg">
-                        📞 (801) 712-5663
-                    </a>
-                </div>
-                <div class="col-md-3 text-center mb-3">
-                    <a href="mailto:ohshocl@gmail.com" class="btn btn-success btn-lg">
-                        ✉️ Email Us
-                    </a>
-                </div>
-                <div class="col-md-3 text-center mb-3">
-                    <button class="btn btn-warning btn-lg" onclick="requestQuote()">
-                        📋 Get Quote
-                    </button>
-                </div>
+    <section class="py-5 bg-primary text-white">
+        <div class="container text-center">
+            <h2 class="mb-4">Ready to Schedule Your Service?</h2>
+            <p class="lead mb-4">Contact us today for your official quote and service scheduling</p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="tel:+18017125663" class="btn btn-light btn-lg">
+                    📞 (801) 712-5663
+                </a>
+                <a href="mailto:ohshocl@gmail.com" class="btn btn-outline-light btn-lg">
+                    ✉️ Email Us
+                </a>
+                <button class="btn btn-outline-light btn-lg" onclick="requestQuote()">
+                    📋 Get Official Quote
+                </button>
+                <a href="https://docs.google.com/forms/d/1GsJjlVXGAIEJkxBYiAlnlBX8LIV50E0giuNFqIvZ6vI/viewform" target="_blank" class="btn btn-warning btn-lg">
+                    🛒 Order Products
+                </a>
             </div>
         </div>
     </section>
 
-<!-- Footer -->
+    <!-- Footer -->
     <footer class="bg-dark text-white py-4">
         <div class="container">
             <div class="row align-items-center">
@@ -389,7 +438,7 @@
                 </div>
                 <div class="col-md-4 text-center">
                     <div class="mb-3">
-                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGhElEQVR4nO2dTYgcRRTH/6+6Z2YTIyaQBBONHwRBQRFBEBEPKh5E8KQnD4KCBy8ePHjw4MGDB714EBHEk4KCB08ePAiCBw8ePHjw4MGDB0/iQRDEg4KCBxHBg+BBEBHfq+6Z7p7Z2Z3Z3Z3u6e7/D4qZ6eruql/Xq3r1Xr2qARFJgQAgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiCE="
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGhElEQVR4nO2dTYgcRRTH/6+6Z2YTIyaQBBONHwRBQRFBEBEPKh5E8KQnD4KCBy8ePHjw4MGDB714EBHEk4KCB08ePAiCBw8ePHjw4MGDB0/iQRDEg4KCBxHBg+BBEBHfq+6Z7p7Z2Z3Z3Z3u6e7/D4qZ6uruql/Xq3r1Xr2qARFJgQAgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiCE="
                              alt="QR Code for Organic Hypo Solutions"
                              class="footer-qr-code"
                              title="Scan to visit organichyposolutions.com">
@@ -410,7 +459,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Updated pricing algorithm with new business requirements
+        // Updated pricing algorithm with new subscription plans and updated rates
         const pricingRules = {
             baseRates: {
                 commercial: 0.125,
@@ -421,7 +470,7 @@
                 fitness: 0.13,
                 emergency: 0.25
             },
-            volumeRate: 0.08, // New volume pricing for 20k+ sq ft
+            volumeRate: 0.08, // Volume pricing for 20k+ sq ft
             frequencyMultipliers: {
                 monthly: 1.0,
                 biweekly: 1.8,
@@ -435,8 +484,8 @@
                 complex: 1.3
             },
             minimums: {
-                commercial: 450,
-                residential: 200,
+                commercial: 300,
+                residential: 250,
                 healthcare: 500,
                 education: 400,
                 food: 400,
@@ -452,19 +501,37 @@
             const serviceType = document.getElementById('serviceType').value;
             const frequency = document.getElementById('frequency').value;
             const complexity = document.getElementById('complexity').value;
+            const additionalServices = document.getElementById('adhocFogging').checked;
             
             document.getElementById('sqftDisplay').textContent = sqft.toLocaleString() + ' sq ft';
             
-            // Check for dual machine requirement
-            const dualMachineNotice = document.getElementById('dualMachineNotice');
+            // Show/hide notices based on inputs
+            const volumeDiscountNotice = document.getElementById('volumeDiscountNotice');
+            const subscriptionNotice = document.getElementById('subscriptionNotice');
             const volumeDiscountRow = document.getElementById('volumeDiscountRow');
+            const additionalRow = document.getElementById('additionalRow');
             
+            // Show volume discount notice for large facilities
             if (sqft > 20000) {
-                dualMachineNotice.style.display = 'block';
+                volumeDiscountNotice.style.display = 'block';
                 volumeDiscountRow.style.display = 'flex';
             } else {
-                dualMachineNotice.style.display = 'none';
+                volumeDiscountNotice.style.display = 'none';
                 volumeDiscountRow.style.display = 'none';
+            }
+            
+            // Show subscription notice for recurring services
+            if (frequency === 'monthly' || frequency === 'biweekly' || frequency === 'weekly') {
+                subscriptionNotice.style.display = 'block';
+            } else {
+                subscriptionNotice.style.display = 'none';
+            }
+            
+            // Show additional services row if checked
+            if (additionalServices) {
+                additionalRow.style.display = 'flex';
+            } else {
+                additionalRow.style.display = 'none';
             }
             
             // Calculate base price with volume pricing consideration
@@ -481,53 +548,74 @@
             
             // Apply complexity adjustment
             const complexityMultiplier = pricingRules.complexityAdjustments[complexity];
-            basePrice *= complexityMultiplier;
+            const complexityAdjustment = basePrice * (complexityMultiplier - 1);
+            const adjustedBasePrice = basePrice * complexityMultiplier;
             
-            // Calculate dual machine cost (double the service for 20k+ sq ft)
-            if (sqft > 20000) {
-                basePrice *= 2; // Double cost for dual machine requirement
-            }
-            
-            // Apply frequency multiplier
-            const frequencyMultiplier = pricingRules.frequencyMultipliers[frequency];
-            let totalPrice = basePrice * frequencyMultiplier;
-            
-            // Calculate adjustments for display
-            const complexityAdjustment = basePrice * (complexityMultiplier - 1) / complexityMultiplier;
-            
-            // Calculate travel costs (example: assuming 30 miles average for demonstration)
-            // In real implementation, this would be calculated based on actual address
+            // Calculate travel costs (example: assuming 30 miles average)
             const estimatedDistance = 30; // miles from Salt Lake City
             let travelCosts = 0;
             if (estimatedDistance > pricingRules.baseTravelRadius) {
                 const extraMiles = estimatedDistance - pricingRules.baseTravelRadius;
-                travelCosts = extraMiles * pricingRules.travelRate * frequencyMultiplier;
+                travelCosts = extraMiles * pricingRules.travelRate;
             }
             
-            totalPrice += travelCosts;
+            // Calculate additional services cost
+            let additionalCost = 0;
+            if (additionalServices) {
+                additionalCost = Math.max(50, sqft * 0.02); // $50 minimum or 2 cents per sq ft
+            }
             
             // Calculate volume discount display (this is already factored into the lower rate)
             let volumeDiscountAmount = 0;
             if (sqft > 20000) {
                 const standardRate = pricingRules.baseRates[serviceType];
-                const savings = (standardRate - pricingRules.volumeRate) * sqft * frequencyMultiplier;
+                const savings = (standardRate - pricingRules.volumeRate) * sqft;
                 volumeDiscountAmount = savings;
             }
             
-            // Update display elements
-            document.getElementById('basePrice').textContent = '$' + Math.round(basePrice * frequencyMultiplier).toLocaleString();
-            document.getElementById('complexityPrice').textContent = '$' + Math.round(complexityAdjustment * frequencyMultiplier).toLocaleString();
-            document.getElementById('travelPrice').textContent = '$' + Math.round(travelCosts).toLocaleString();
-            document.getElementById('volumeDiscount').textContent = '-$' + Math.round(volumeDiscountAmount).toLocaleString();
+            // Calculate final per-service price
+            let totalServicePrice = adjustedBasePrice + travelCosts + additionalCost - volumeDiscountAmount;
             
+            // Apply frequency multiplier for display purposes
+            const frequencyMultiplier = pricingRules.frequencyMultipliers[frequency];
+            let finalPrice = totalServicePrice;
+            
+            // For recurring services, show appropriate pricing
+            if (frequency === 'biweekly') {
+                finalPrice = totalServicePrice * 2; // 2 services per month
+            } else if (frequency === 'weekly') {
+                finalPrice = totalServicePrice * 4; // 4 services per month
+            } else if (frequency === 'quarterly') {
+                finalPrice = totalServicePrice / 3; // 1 service every 3 months
+            } else if (frequency === 'onetime') {
+                finalPrice = totalServicePrice * frequencyMultiplier;
+            }
+            
+            // Update display elements
+            document.getElementById('basePrice').textContent = ' + Math.round(adjustedBasePrice).toLocaleString();
+            document.getElementById('complexityPrice').textContent = ' + Math.round(complexityAdjustment).toLocaleString();
+            document.getElementById('travelPrice').textContent = ' + Math.round(travelCosts).toLocaleString();
+            document.getElementById('additionalPrice').textContent = ' + Math.round(additionalCost).toLocaleString();
+            document.getElementById('volumeDiscount').textContent = '- + Math.round(volumeDiscountAmount).toLocaleString();
+            
+            // Set frequency display text
             let frequencyText = frequency.charAt(0).toUpperCase() + frequency.slice(1);
             if (frequencyText === 'Onetime') frequencyText = 'One-Time';
             if (frequencyText === 'Biweekly') frequencyText = 'Bi-Weekly';
             
-            document.getElementById('totalPrice').textContent = '$' + Math.round(totalPrice).toLocaleString();
-            document.getElementById('priceFrequency').textContent = frequency === 'onetime' ? 'one-time service' : 'per ' + frequency.replace('ly', '').replace('time', '-time');
+            // Update price display
+            document.getElementById('totalPrice').textContent = ' + Math.round(finalPrice).toLocaleString();
+            document.getElementById('breakdownTotal').textContent = ' + Math.round(finalPrice).toLocaleString();
             document.getElementById('breakdownFrequency').textContent = frequencyText;
-            document.getElementById('breakdownTotal').textContent = '$' + Math.round(totalPrice).toLocaleString();
+            
+            // Update frequency display
+            if (frequency === 'onetime') {
+                document.getElementById('priceFrequency').textContent = 'one-time service';
+            } else if (frequency === 'monthly' || frequency === 'biweekly' || frequency === 'weekly') {
+                document.getElementById('priceFrequency').textContent = 'per month';
+            } else if (frequency === 'quarterly') {
+                document.getElementById('priceFrequency').textContent = 'per month average';
+            }
         }
 
         function requestQuote() {
