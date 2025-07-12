@@ -127,11 +127,11 @@
                     <div class="calc-input">
                         <label class="form-label fw-bold">🏢 Facility Size (Square Feet)</label>
                         <input type="range" class="form-range" id="squareFootage" 
-                               min="500" max="50000" value="3500" step="250"
+                               min="500" max="50000" value="1500" step="250"
                                oninput="updateCalculator()">
                         <div class="d-flex justify-content-between">
                             <small>500 sq ft</small>
-                            <strong id="sqftDisplay">3,500 sq ft</strong>
+                            <strong id="sqftDisplay">1,500 sq ft</strong>
                             <small>50,000+ sq ft</small>
                         </div>
                     </div>
@@ -209,14 +209,14 @@
                     <!-- Results Section -->
                     <div class="calc-result">
                         <h3 class="fw-bold mb-3">💰 Your Service Quote</h3>
-                        <div class="display-4 fw-bold mb-2" id="totalPrice">$437</div>
+                        <div class="display-4 fw-bold mb-2" id="totalPrice">$187</div>
                         <p class="fs-5 mb-3" id="priceFrequency">per service</p>
                         
                         <div class="price-breakdown">
                             <h5 class="fw-bold mb-3">📋 Breakdown</h5>
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Base Service:</span>
-                                <span id="basePrice">$437</span>
+                                <span id="basePrice">$187</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2" id="complexityRow">
                                 <span>Complexity Adjustment:</span>
@@ -237,7 +237,7 @@
                             <hr class="border-light">
                             <div class="d-flex justify-content-between fw-bold fs-5">
                                 <span>Total Service Cost:</span>
-                                <span id="breakdownTotal">$437</span>
+                                <span id="breakdownTotal">$187</span>
                             </div>
                         </div>
 
@@ -516,6 +516,7 @@
             const complexity = document.getElementById('complexity').value;
             const additionalServices = document.getElementById('adhocFogging').checked;
             
+            // Update square footage display
             document.getElementById('sqftDisplay').textContent = sqft.toLocaleString() + ' sq ft';
             
             // Show/hide notices based on inputs
@@ -524,9 +525,119 @@
             const volumeDiscountRow = document.getElementById('volumeDiscountRow');
             const additionalRow = document.getElementById('additionalRow');
             
+            // Show volume discount notice for large facilities
             if (sqft > 20000) {
                 volumeDiscountNotice.style.display = 'block';
                 volumeDiscountRow.style.display = 'flex';
             } else {
                 volumeDiscountNotice.style.display = 'none';
-                volumeDiscountRow
+                volumeDiscountRow.style.display = 'none';
+            }
+            
+            // Show subscription notice for recurring services
+            if (frequency === 'monthly' || frequency === 'biweekly' || frequency === 'weekly') {
+                subscriptionNotice.style.display = 'block';
+            } else {
+                subscriptionNotice.style.display = 'none';
+            }
+            
+            // Show additional services row if checked
+            if (additionalServices) {
+                additionalRow.style.display = 'flex';
+            } else {
+                additionalRow.style.display = 'none';
+            }
+            
+            // Calculate base price with volume pricing consideration
+            let baseRate;
+            if (sqft > 20000) {
+                baseRate = pricingRules.volumeRate; // Use volume pricing for 20k+ sq ft
+            } else {
+                baseRate = pricingRules.baseRates[serviceType];
+            }
+            
+            let basePrice = sqft * baseRate;
+            const minimum = pricingRules.minimums[serviceType];
+            basePrice = Math.max(basePrice, minimum);
+            
+            // Apply complexity adjustment
+            const complexityMultiplier = pricingRules.complexityAdjustments[complexity];
+            const complexityAdjustment = basePrice * (complexityMultiplier - 1);
+            const adjustedBasePrice = basePrice * complexityMultiplier;
+            
+            // Calculate travel costs (example: assuming 30 miles average)
+            const estimatedDistance = 30; // miles from Salt Lake City
+            let travelCosts = 0;
+            if (estimatedDistance > pricingRules.baseTravelRadius) {
+                const extraMiles = estimatedDistance - pricingRules.baseTravelRadius;
+                travelCosts = extraMiles * pricingRules.travelRate;
+            }
+            
+            // Calculate additional services cost
+            let additionalCost = 0;
+            if (additionalServices) {
+                additionalCost = Math.max(50, sqft * 0.02); // $50 minimum or 2 cents per sq ft
+            }
+            
+            // Calculate volume discount display (this is already factored into the lower rate)
+            let volumeDiscountAmount = 0;
+            if (sqft > 20000) {
+                const standardRate = pricingRules.baseRates[serviceType];
+                const savings = (standardRate - pricingRules.volumeRate) * sqft;
+                volumeDiscountAmount = savings;
+            }
+            
+            // Calculate final per-service price
+            let totalServicePrice = adjustedBasePrice + travelCosts + additionalCost - volumeDiscountAmount;
+            
+            // Apply frequency multiplier for display purposes
+            const frequencyMultiplier = pricingRules.frequencyMultipliers[frequency];
+            let finalPrice = totalServicePrice;
+            
+            // For recurring services, show monthly equivalent for comparison
+            if (frequency === 'biweekly') {
+                finalPrice = totalServicePrice * 2; // 2 services per month
+            } else if (frequency === 'weekly') {
+                finalPrice = totalServicePrice * 4; // 4 services per month
+            } else if (frequency === 'quarterly') {
+                finalPrice = totalServicePrice / 3; // 1 service every 3 months
+            }
+            
+            // Update display elements
+            document.getElementById('basePrice').textContent = ' + Math.round(adjustedBasePrice).toLocaleString();
+            document.getElementById('complexityPrice').textContent = ' + Math.round(complexityAdjustment).toLocaleString();
+            document.getElementById('travelPrice').textContent = ' + Math.round(travelCosts).toLocaleString();
+            document.getElementById('additionalPrice').textContent = ' + Math.round(additionalCost).toLocaleString();
+            document.getElementById('volumeDiscount').textContent = '- + Math.round(volumeDiscountAmount).toLocaleString();
+            
+            // Set frequency display text
+            let frequencyText = frequency.charAt(0).toUpperCase() + frequency.slice(1);
+            if (frequencyText === 'Onetime') frequencyText = 'One-Time';
+            if (frequencyText === 'Biweekly') frequencyText = 'Bi-Weekly';
+            
+            // Update price display
+            document.getElementById('totalPrice').textContent = ' + Math.round(finalPrice).toLocaleString();
+            document.getElementById('breakdownTotal').textContent = ' + Math.round(finalPrice).toLocaleString();
+            
+            // Update frequency display
+            if (frequency === 'onetime') {
+                document.getElementById('priceFrequency').textContent = 'one-time service';
+            } else if (frequency === 'monthly' || frequency === 'biweekly' || frequency === 'weekly') {
+                document.getElementById('priceFrequency').textContent = 'per month';
+            } else if (frequency === 'quarterly') {
+                document.getElementById('priceFrequency').textContent = 'per month average';
+            }
+        }
+
+        function requestQuote() {
+            window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
+        }
+
+        function callNow() {
+            window.open('tel:+18017125663');
+        }
+
+        // Initialize calculator on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCalculator();
+        });
