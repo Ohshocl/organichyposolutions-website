@@ -128,7 +128,7 @@
                         <label class="form-label fw-bold">🏢 Facility Size (Square Feet)</label>
                         <input type="range" class="form-range" id="squareFootage" 
                                min="500" max="50000" value="1500" step="250"
-                               oninput="updateCalculator()">
+                               oninput="updateCalculator()" onchange="updateCalculator()">
                         <div class="d-flex justify-content-between">
                             <small>500 sq ft</small>
                             <strong id="sqftDisplay">1,500 sq ft</strong>
@@ -209,14 +209,14 @@
                     <!-- Results Section -->
                     <div class="calc-result">
                         <h3 class="fw-bold mb-3">💰 Your Service Quote</h3>
-                        <div class="display-4 fw-bold mb-2" id="totalPrice">$187</div>
+                        <div class="display-4 fw-bold mb-2" id="totalPrice">$0</div>
                         <p class="fs-5 mb-3" id="priceFrequency">per service</p>
                         
                         <div class="price-breakdown">
                             <h5 class="fw-bold mb-3">📋 Breakdown</h5>
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Base Service:</span>
-                                <span id="basePrice">$187</span>
+                                <span id="basePrice">$0</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2" id="complexityRow">
                                 <span>Complexity Adjustment:</span>
@@ -237,7 +237,7 @@
                             <hr class="border-light">
                             <div class="d-flex justify-content-between fw-bold fs-5">
                                 <span>Total Service Cost:</span>
-                                <span id="breakdownTotal">$187</span>
+                                <span id="breakdownTotal">$0</span>
                             </div>
                         </div>
 
@@ -639,5 +639,24 @@
 
         // Initialize calculator on page load
         document.addEventListener('DOMContentLoaded', function() {
-            updateCalculator();
+            // Set up event listeners for all form elements
+            const squareFootageSlider = document.getElementById('squareFootage');
+            const serviceTypeSelect = document.getElementById('serviceType');
+            const frequencySelect = document.getElementById('frequency');
+            const complexitySelect = document.getElementById('complexity');
+            const additionalCheckbox = document.getElementById('adhocFogging');
+            
+            // Add event listeners
+            squareFootageSlider.addEventListener('input', updateCalculator);
+            squareFootageSlider.addEventListener('change', updateCalculator);
+            serviceTypeSelect.addEventListener('change', updateCalculator);
+            frequencySelect.addEventListener('change', updateCalculator);
+            complexitySelect.addEventListener('change', updateCalculator);
+            additionalCheckbox.addEventListener('change', updateCalculator);
+            
+            // Update the display to show the initial slider value without calculating
+            const sqft = parseInt(squareFootageSlider.value);
+            document.getElementById('sqftDisplay').textContent = sqft.toLocaleString() + ' sq ft';
+            
+            console.log('Calculator ready - adjust inputs to see pricing');
         });
