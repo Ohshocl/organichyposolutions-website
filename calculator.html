@@ -221,7 +221,7 @@
                     <div class="calc-input">
                         <label class="form-label fw-bold">📝 Contract Options</label>
                         <div class="subscription-options">
-                            <div class="subscription-option" id="payPerService" onclick="selectSubscription('payPerService')">
+                            <div class="subscription-option selected" id="payPerService" onclick="selectSubscription('payPerService')">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <strong>Pay Per Service</strong>
@@ -573,4 +573,227 @@
                 </div>
                 <div class="col-md-4 text-center">
                     <div class="mb-3">
-                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGhElEQVR4nO2dTYgcRRTH/6+6Z2YTIyaQBBONHwRBQRFBEBEPKh5E8KQnD4KCBy8ePHjw4MGDB714EBHEk4KCB08ePAiCBw8ePHjw4MGDB0/iQRDEg4KCBxHBg+BBEBHfq+6Z7p7Z2Z3Z3Z3u6e7/D4qZ6uruql/Xq3r1Xr2qARFJgQAgIiASICIgEiAiIBIgIiASICIgEiAiIB
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGhElEQVR4nO2dTYgcRRTH/6+6Z2YTIyaQBBONHwRBQRFBEBEPKh5E8KQnD4KCBy8ePHjw4MGDB714EBHEk4KCB08ePAiCBw8ePHjw4MGDB0/iQRDEg4KCBxHBg+BBEBHfq+6Z7p7Z2Z3Z3Z3u6e7/D4qZ6uruql/Xq3r1Xr2qARFJgQAgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiCE="
+                               alt="QR Code for Organic Hypo Solutions"
+                               class="footer-qr-code"
+                               title="Scan to visit organichyposolutions.com">
+                    </div>
+                    <p><small>📱 Scan QR Code<br>organichyposolutions.com</small></p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <p>📞 (801) 712-5663 | ✉️ ohshocl@gmail.com</p>
+                    <div class="mb-2">
+                        <a href="legal-information.html" class="text-white text-decoration-none me-3">Legal Information</a>
+                        <a href="science-certifications.html" class="text-white text-decoration-none">Certifications</a>
+                    </div>
+                    <p><small>&copy; 2025 Organic Hyposolutions. All rights reserved.</small></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Global variables to track current selection
+        let currentSubscription = 'payPerService';
+
+        // Updated pricing algorithm with new business requirements
+        const pricingRules = {
+            baseRates: {
+                commercial: 0.125,
+                residential: 0.15,
+                healthcare: 0.14,
+                education: 0.12,
+                food: 0.135,
+                fitness: 0.13,
+                emergency: 0.25
+            },
+            volumeRate: 0.08, // New volume pricing for 20k+ sq ft
+            frequencyMultipliers: {
+                monthly: 1.0,
+                biweekly: 1.8,
+                weekly: 3.5,
+                quarterly: 0.35,
+                onetime: 1.4
+            },
+            complexityAdjustments: {
+                standard: 1.0,
+                moderate: 1.15,
+                complex: 1.3
+            },
+            minimums: {
+                commercial: 450,
+                residential: 200,
+                healthcare: 500,
+                education: 400,
+                food: 400,
+                fitness: 350,
+                emergency: 600
+            },
+            travelRate: 0.70, // $0.70 per mile
+            baseTravelRadius: 25, // Free travel within 25 miles
+            subscriptionDiscounts: {
+                payPerService: 0,
+                monthlyContract: 0.15,
+                bimonthlyContract: 0.10,
+                annualContract: 0.20
+            }
+        };
+
+        function selectSubscription(subscriptionType) {
+            // Update selection tracking
+            currentSubscription = subscriptionType;
+
+            // Remove selected class from all options
+            document.querySelectorAll('.subscription-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+
+            // Add selected class to clicked option
+            document.getElementById(subscriptionType).classList.add('selected');
+
+            // Update calculator display
+            updateCalculator();
+        }
+
+        function updateCalculator() {
+            const sqft = parseInt(document.getElementById('squareFootage').value);
+            const serviceType = document.getElementById('serviceType').value;
+            const frequency = document.getElementById('frequency').value;
+            const complexity = document.getElementById('complexity').value;
+            
+            document.getElementById('sqftDisplay').textContent = sqft.toLocaleString() + ' sq ft';
+            
+            // Check for dual machine requirement
+            const dualMachineNotice = document.getElementById('dualMachineNotice');
+            const volumeDiscountRow = document.getElementById('volumeDiscountRow');
+            
+            if (sqft > 20000) {
+                dualMachineNotice.style.display = 'block';
+                volumeDiscountRow.style.display = 'flex';
+            } else {
+                dualMachineNotice.style.display = 'none';
+                volumeDiscountRow.style.display = 'none';
+            }
+            
+            // Calculate base price with volume pricing consideration
+            let baseRate;
+            if (sqft > 20000) {
+                baseRate = pricingRules.volumeRate; // Use volume pricing for 20k+ sq ft
+            } else {
+                baseRate = pricingRules.baseRates[serviceType];
+            }
+            
+            let basePrice = sqft * baseRate;
+            const minimum = pricingRules.minimums[serviceType];
+            basePrice = Math.max(basePrice, minimum);
+            
+            // Apply complexity adjustment
+            const complexityMultiplier = pricingRules.complexityAdjustments[complexity];
+            basePrice *= complexityMultiplier;
+            
+            // Calculate dual machine cost (double the service for 20k+ sq ft)
+            if (sqft > 20000) {
+                basePrice *= 2; // Double cost for dual machine requirement
+            }
+            
+            // Apply frequency multiplier
+            const frequencyMultiplier = pricingRules.frequencyMultipliers[frequency];
+            let totalPrice = basePrice * frequencyMultiplier;
+            
+            // Calculate adjustments for display
+            const complexityAdjustment = basePrice * (complexityMultiplier - 1) / complexityMultiplier;
+            
+            // Calculate travel costs (example: assuming 30 miles average for demonstration)
+            // In real implementation, this would be calculated based on actual address
+            const estimatedDistance = 30; // miles from Salt Lake City
+            let travelCosts = 0;
+            if (estimatedDistance > pricingRules.baseTravelRadius) {
+                const extraMiles = estimatedDistance - pricingRules.baseTravelRadius;
+                travelCosts = extraMiles * pricingRules.travelRate * frequencyMultiplier;
+            }
+            
+            totalPrice += travelCosts;
+            
+            // Calculate volume discount display (this is already factored into the lower rate)
+            let volumeDiscountAmount = 0;
+            if (sqft > 20000) {
+                const standardRate = pricingRules.baseRates[serviceType];
+                const savings = (standardRate - pricingRules.volumeRate) * sqft * frequencyMultiplier;
+                volumeDiscountAmount = savings;
+            }
+            
+            // Update one-time service display elements
+            document.getElementById('basePrice').textContent = '$' + Math.round(basePrice * frequencyMultiplier).toLocaleString();
+            document.getElementById('complexityPrice').textContent = '$' + Math.round(complexityAdjustment * frequencyMultiplier).toLocaleString();
+            document.getElementById('travelPrice').textContent = '$' + Math.round(travelCosts).toLocaleString();
+            document.getElementById('volumeDiscount').textContent = '-$' + Math.round(volumeDiscountAmount).toLocaleString();
+            
+            let frequencyText = frequency.charAt(0).toUpperCase() + frequency.slice(1);
+            if (frequencyText === 'Onetime') frequencyText = 'One-Time';
+            if (frequencyText === 'Biweekly') frequencyText = 'Bi-Weekly';
+            
+            document.getElementById('totalPrice').textContent = '$' + Math.round(totalPrice).toLocaleString();
+            document.getElementById('priceFrequency').textContent = frequency === 'onetime' ? 'one-time service' : 'per ' + frequency.replace('ly', '').replace('time', '-time');
+            document.getElementById('breakdownTotal').textContent = '$' + Math.round(totalPrice).toLocaleString();
+
+            // Handle subscription pricing display
+            const subscriptionResults = document.getElementById('subscriptionResults');
+            const annualBonusRow = document.getElementById('annualBonusRow');
+
+            if (currentSubscription !== 'payPerService') {
+                // Show subscription section
+                subscriptionResults.style.display = 'block';
+                
+                // Calculate contract pricing
+                const discount = pricingRules.subscriptionDiscounts[currentSubscription];
+                const contractPrice = totalPrice * (1 - discount);
+                const savings = totalPrice - contractPrice;
+
+                // Update contract display
+                document.getElementById('contractPrice').textContent = '$' + Math.round(contractPrice).toLocaleString();
+                document.getElementById('contractServicePrice').textContent = '$' + Math.round(totalPrice).toLocaleString();
+                document.getElementById('contractDiscountAmount').textContent = '-$' + Math.round(savings).toLocaleString();
+                document.getElementById('contractTotalPrice').textContent = '$' + Math.round(contractPrice).toLocaleString();
+                document.getElementById('contractSavings').textContent = 'Save $' + Math.round(savings).toLocaleString();
+
+                // Handle frequency text for contracts
+                let contractFrequencyText = 'per service';
+                if (currentSubscription === 'monthlyContract') {
+                    contractFrequencyText = 'per month';
+                } else if (currentSubscription === 'bimonthlyContract') {
+                    contractFrequencyText = 'per service (bi-monthly)';
+                } else if (currentSubscription === 'annualContract') {
+                    contractFrequencyText = 'per service (annual rate)';
+                    annualBonusRow.style.display = 'flex';
+                    document.getElementById('annualBonusValue').textContent = '$' + Math.round(totalPrice * 2).toLocaleString() + ' value';
+                } else {
+                    annualBonusRow.style.display = 'none';
+                }
+
+                document.getElementById('contractFrequency').textContent = contractFrequencyText;
+            } else {
+                // Hide subscription section for pay per service
+                subscriptionResults.style.display = 'none';
+                annualBonusRow.style.display = 'none';
+            }
+        }
+
+        function requestQuote() {
+            window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
+        }
+
+        function requestContractQuote() {
+            // You could use a different form for contract quotes or modify the existing one
+            window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
+        }
+
+        function callNow() {
+            window.open('tel:+18017125663');
+        }
+
+        // Initialize calculator
+        updateCalculator();
+    </script>
+</body>
+</html>
