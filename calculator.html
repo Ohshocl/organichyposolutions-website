@@ -35,21 +35,7 @@
             margin-top: 20px;
             text-align: center;
         }
-        .subscription-section {
-            background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 10px;
-            margin-top: 20px;
-            text-align: center;
-        }
         .price-breakdown {
-            background: rgba(255,255,255,0.1);
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-        }
-        .subscription-breakdown {
             background: rgba(255,255,255,0.1);
             padding: 15px;
             border-radius: 8px;
@@ -92,44 +78,14 @@
             padding: 15px;
             margin-top: 15px;
         }
-        .subscription-options {
+        .debug-info {
             background: #f8f9fa;
+            border: 1px solid #dee2e6;
             border-radius: 8px;
             padding: 15px;
             margin-top: 15px;
-        }
-        .subscription-option {
-            background: white;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 10px 0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .subscription-option:hover {
-            border-color: #6f42c1;
-            transform: translateY(-2px);
-        }
-        .subscription-option.selected {
-            border-color: #6f42c1;
-            background: #f8f5ff;
-        }
-        .subscription-badge {
-            background: #6f42c1;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            margin-left: 10px;
-        }
-        .savings-highlight {
-            background: #28a745;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
+            font-family: monospace;
             font-size: 0.9rem;
-            margin-left: 10px;
         }
     </style>
 </head>
@@ -173,7 +129,7 @@
                         <label class="form-label fw-bold">🏢 Facility Size (Square Feet)</label>
                         <input type="range" class="form-range" id="squareFootage" 
                                min="500" max="50000" value="3500" step="250"
-                               oninput="updateCalculator()">
+                               oninput="updateCalculator()" onchange="updateCalculator()">
                         <div class="d-flex justify-content-between">
                             <small>500 sq ft</small>
                             <strong id="sqftDisplay">3,500 sq ft</strong>
@@ -217,55 +173,6 @@
                         </select>
                     </div>
 
-                    <!-- Subscription Options -->
-                    <div class="calc-input">
-                        <label class="form-label fw-bold">📝 Contract Options</label>
-                        <div class="subscription-options">
-                            <div class="subscription-option selected" id="payPerService" onclick="selectSubscription('payPerService')">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>Pay Per Service</strong>
-                                        <br><small class="text-muted">No contract required</small>
-                                    </div>
-                                    <div>Standard Rates</div>
-                                </div>
-                            </div>
-                            
-                            <div class="subscription-option" id="monthlyContract" onclick="selectSubscription('monthlyContract')">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>Monthly Contract</strong>
-                                        <span class="subscription-badge">15% OFF</span>
-                                        <br><small class="text-muted">30-day cancellation notice</small>
-                                    </div>
-                                    <div class="text-success fw-bold">Save 15%</div>
-                                </div>
-                            </div>
-                            
-                            <div class="subscription-option" id="bimonthlyContract" onclick="selectSubscription('bimonthlyContract')">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>Bi-Monthly Contract</strong>
-                                        <span class="subscription-badge">10% OFF</span>
-                                        <br><small class="text-muted">Service every 2 months</small>
-                                    </div>
-                                    <div class="text-success fw-bold">Save 10%</div>
-                                </div>
-                            </div>
-                            
-                            <div class="subscription-option" id="annualContract" onclick="selectSubscription('annualContract')">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>Annual Prepaid Contract</strong>
-                                        <span class="subscription-badge">20% OFF</span>
-                                        <br><small class="text-muted">Includes 2 complimentary treatments</small>
-                                    </div>
-                                    <div class="text-success fw-bold">Save 20% + Bonuses</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Additional Services -->
                     <div class="calc-input">
                         <label class="form-label fw-bold">➕ Additional Services</label>
@@ -289,14 +196,20 @@
                         <h6 class="fw-bold mb-2">⚡ Large Facility Service</h6>
                         <p class="mb-0">Facilities over 20,000 sq ft require dual machine service for optimal coverage and efficiency.</p>
                     </div>
+
+                    <!-- Debug Information (hidden in production) -->
+                    <div class="debug-info" id="debugInfo" style="display: none;">
+                        <h6 class="fw-bold mb-2">🔧 Debug Information</h6>
+                        <div id="debugContent">Calculator loaded...</div>
+                    </div>
                 </div>
 
                 <div class="col-lg-6">
-                    <!-- One-Time Service Results Section -->
+                    <!-- Results Section -->
                     <div class="calc-result">
-                        <h3 class="fw-bold mb-3">💰 One-Time Service Quote</h3>
+                        <h3 class="fw-bold mb-3">💰 Your Service Quote</h3>
                         <div class="display-4 fw-bold mb-2" id="totalPrice">$620</div>
-                        <p class="fs-5 mb-3" id="priceFrequency">per service</p>
+                        <p class="fs-5 mb-3" id="priceFrequency">per month</p>
                         
                         <div class="price-breakdown">
                             <h5 class="fw-bold mb-3">📋 Breakdown</h5>
@@ -318,7 +231,7 @@
                             </div>
                             <hr class="border-light">
                             <div class="d-flex justify-content-between fw-bold fs-5">
-                                <span>Total Per Service:</span>
+                                <span>Total <span id="breakdownFrequency">Monthly</span>:</span>
                                 <span id="breakdownTotal">$620</span>
                             </div>
                         </div>
@@ -331,42 +244,11 @@
                                 📞 Call (801) 712-5663
                             </button>
                         </div>
-                    </div>
 
-                    <!-- Subscription/Contract Results Section -->
-                    <div class="subscription-section" id="subscriptionResults" style="display: none;">
-                        <h3 class="fw-bold mb-3">📅 Contract Pricing</h3>
-                        <div class="display-4 fw-bold mb-2" id="contractPrice">$527</div>
-                        <p class="fs-5 mb-1" id="contractFrequency">per month</p>
-                        <p class="mb-3"><span class="savings-highlight" id="contractSavings">Save $93/month</span></p>
-                        
-                        <div class="subscription-breakdown">
-                            <h5 class="fw-bold mb-3">📋 Contract Benefits</h5>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Service Price:</span>
-                                <span id="contractServicePrice">$620</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Contract Discount:</span>
-                                <span id="contractDiscountAmount">-$93</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2" id="annualBonusRow" style="display: none;">
-                                <span>Annual Bonus (2 free services):</span>
-                                <span id="annualBonusValue">$1,240 value</span>
-                            </div>
-                            <hr class="border-light">
-                            <div class="d-flex justify-content-between fw-bold fs-5">
-                                <span>Contract Price:</span>
-                                <span id="contractTotalPrice">$527</span>
-                            </div>
-                        </div>
-
-                        <div class="mt-4">
-                            <button class="btn btn-light btn-lg me-2" onclick="requestContractQuote()">
-                                📋 Request Contract Quote
-                            </button>
-                            <button class="btn btn-outline-light btn-lg" onclick="callNow()">
-                                📞 Call (801) 712-5663
+                        <!-- Debug button (hidden for production) -->
+                        <div class="mt-2" style="display: none;">
+                            <button class="btn btn-outline-light btn-sm" onclick="toggleDebug()">
+                                🔧 Toggle Debug
                             </button>
                         </div>
                     </div>
@@ -415,28 +297,6 @@
                     </div>
                 </div>
 
-                <!-- Contract Benefits - Full Width -->
-                <div class="allergen-info mt-4">
-                    <div class="row">
-                        <div class="col-lg-8">
-                            <h6 class="fw-bold mb-2">📝 Contract Benefits</h6>
-                            <p class="mb-2">Our service contracts provide significant value and peace of mind:</p>
-                            <ul class="mb-2">
-                                <li><strong>Monthly Contracts:</strong> 15% discount, 30-day cancellation notice, Net 30 payment terms</li>
-                                <li><strong>Bi-Monthly Contracts:</strong> 10% discount for service every 2 months</li>
-                                <li><strong>Annual Prepaid Contracts:</strong> 20% discount + 2 complimentary treatments (up to $1,240 value)</li>
-                                <li>Priority scheduling and dedicated account management</li>
-                                <li>Protection from price increases during contract term</li>
-                            </ul>
-                        </div>
-                        <div class="col-lg-4 d-flex align-items-center">
-                            <a href="legal-information.html" class="btn btn-outline-primary btn-sm text-decoration-none">
-                                📚 View Contract Terms
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Allergen Information - Full Width -->
                 <div class="allergen-info mt-4">
                     <div class="row">
@@ -481,12 +341,12 @@
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                                        What are the benefits of service contracts?
+                                        What factors affect the final price?
                                     </button>
                                 </h2>
                                 <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#calculatorFAQ">
                                     <div class="accordion-body">
-                                        Service contracts provide significant savings (10-20% discount), priority scheduling, protection from price increases, Net 30 payment terms for commercial accounts, and dedicated account management. Annual contracts include 2 complimentary treatments worth up to $1,240.
+                                        Pricing factors include: facility size, service type, frequency, complexity (multi-level, HVAC systems, specialized equipment), location accessibility, travel distance from Salt Lake City, and dual machine requirements for large facilities over 20,000 sq ft.
                                     </div>
                                 </div>
                             </div>
@@ -573,10 +433,10 @@
                 </div>
                 <div class="col-md-4 text-center">
                     <div class="mb-3">
-                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGhElEQVR4nO2dTYgcRRTH/6+6Z2YTIyaQBBONHwRBQRFBEBEPKh5E8KQnD4KCBy8ePHjw4MGDB714EBHEk4KCB08ePAiCBw8ePHjw4MGDB0/iQRDEg4KCBxHBg+BBEBHfq+6Z7p7Z2Z3Z3Z3u6e7/D4qZ6uruql/Xq3r1Xr2qARFJgQAgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiCE="
-                               alt="QR Code for Organic Hypo Solutions"
-                               class="footer-qr-code"
-                               title="Scan to visit organichyposolutions.com">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGhElEQVR4nO2dTYgcRRTH/6+6Z2YTIyaQBBONHwRBQRFBEBEPKh5E8KQnD4KCBy8ePHjw4MGDB714EBHEk4KCB08ePAiCBw8ePHjw4MGDB0/iQRDEg4KCBxHBg+BBEBHfq+6Z7p7Z2Z3Z3Z3u6e7/D4qZ6uruql/Xq3r1Xr2qARFJgQAgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiCE="
+                             alt="QR Code for Organic Hypo Solutions"
+                             class="footer-qr-code"
+                             title="Scan to visit organichyposolutions.com">
                     </div>
                     <p><small>📱 Scan QR Code<br>organichyposolutions.com</small></p>
                 </div>
@@ -594,10 +454,24 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Global variables to track current selection
-        let currentSubscription = 'payPerService';
+        // Debug function to show/hide debug information
+        // For development: call toggleDebug() in browser console to enable debug mode
+        function toggleDebug() {
+            const debugInfo = document.getElementById('debugInfo');
+            debugInfo.style.display = debugInfo.style.display === 'none' ? 'block' : 'none';
+            console.log('Debug mode toggled. Debug panel visible:', debugInfo.style.display !== 'none');
+        }
 
-        // Updated pricing algorithm with new business requirements
+        // Enhanced logging function
+        function logDebug(message) {
+            console.log('Calculator Debug:', message);
+            const debugContent = document.getElementById('debugContent');
+            if (debugContent) {
+                debugContent.innerHTML += '<br>' + new Date().toLocaleTimeString() + ': ' + message;
+            }
+        }
+
+        // Updated pricing algorithm with enhanced error handling
         const pricingRules = {
             baseRates: {
                 commercial: 0.125,
@@ -631,169 +505,189 @@
                 emergency: 600
             },
             travelRate: 0.70, // $0.70 per mile
-            baseTravelRadius: 25, // Free travel within 25 miles
-            subscriptionDiscounts: {
-                payPerService: 0,
-                monthlyContract: 0.15,
-                bimonthlyContract: 0.10,
-                annualContract: 0.20
-            }
+            baseTravelRadius: 25 // Free travel within 25 miles
         };
 
-        function selectSubscription(subscriptionType) {
-            // Update selection tracking
-            currentSubscription = subscriptionType;
-
-            // Remove selected class from all options
-            document.querySelectorAll('.subscription-option').forEach(option => {
-                option.classList.remove('selected');
-            });
-
-            // Add selected class to clicked option
-            document.getElementById(subscriptionType).classList.add('selected');
-
-            // Update calculator display
-            updateCalculator();
-        }
-
         function updateCalculator() {
-            const sqft = parseInt(document.getElementById('squareFootage').value);
-            const serviceType = document.getElementById('serviceType').value;
-            const frequency = document.getElementById('frequency').value;
-            const complexity = document.getElementById('complexity').value;
-            
-            document.getElementById('sqftDisplay').textContent = sqft.toLocaleString() + ' sq ft';
-            
-            // Check for dual machine requirement
-            const dualMachineNotice = document.getElementById('dualMachineNotice');
-            const volumeDiscountRow = document.getElementById('volumeDiscountRow');
-            
-            if (sqft > 20000) {
-                dualMachineNotice.style.display = 'block';
-                volumeDiscountRow.style.display = 'flex';
-            } else {
-                dualMachineNotice.style.display = 'none';
-                volumeDiscountRow.style.display = 'none';
-            }
-            
-            // Calculate base price with volume pricing consideration
-            let baseRate;
-            if (sqft > 20000) {
-                baseRate = pricingRules.volumeRate; // Use volume pricing for 20k+ sq ft
-            } else {
-                baseRate = pricingRules.baseRates[serviceType];
-            }
-            
-            let basePrice = sqft * baseRate;
-            const minimum = pricingRules.minimums[serviceType];
-            basePrice = Math.max(basePrice, minimum);
-            
-            // Apply complexity adjustment
-            const complexityMultiplier = pricingRules.complexityAdjustments[complexity];
-            basePrice *= complexityMultiplier;
-            
-            // Calculate dual machine cost (double the service for 20k+ sq ft)
-            if (sqft > 20000) {
-                basePrice *= 2; // Double cost for dual machine requirement
-            }
-            
-            // Apply frequency multiplier
-            const frequencyMultiplier = pricingRules.frequencyMultipliers[frequency];
-            let totalPrice = basePrice * frequencyMultiplier;
-            
-            // Calculate adjustments for display
-            const complexityAdjustment = basePrice * (complexityMultiplier - 1) / complexityMultiplier;
-            
-            // Calculate travel costs (example: assuming 30 miles average for demonstration)
-            // In real implementation, this would be calculated based on actual address
-            const estimatedDistance = 30; // miles from Salt Lake City
-            let travelCosts = 0;
-            if (estimatedDistance > pricingRules.baseTravelRadius) {
-                const extraMiles = estimatedDistance - pricingRules.baseTravelRadius;
-                travelCosts = extraMiles * pricingRules.travelRate * frequencyMultiplier;
-            }
-            
-            totalPrice += travelCosts;
-            
-            // Calculate volume discount display (this is already factored into the lower rate)
-            let volumeDiscountAmount = 0;
-            if (sqft > 20000) {
-                const standardRate = pricingRules.baseRates[serviceType];
-                const savings = (standardRate - pricingRules.volumeRate) * sqft * frequencyMultiplier;
-                volumeDiscountAmount = savings;
-            }
-            
-            // Update one-time service display elements
-            document.getElementById('basePrice').textContent = '$' + Math.round(basePrice * frequencyMultiplier).toLocaleString();
-            document.getElementById('complexityPrice').textContent = '$' + Math.round(complexityAdjustment * frequencyMultiplier).toLocaleString();
-            document.getElementById('travelPrice').textContent = '$' + Math.round(travelCosts).toLocaleString();
-            document.getElementById('volumeDiscount').textContent = '-$' + Math.round(volumeDiscountAmount).toLocaleString();
-            
-            let frequencyText = frequency.charAt(0).toUpperCase() + frequency.slice(1);
-            if (frequencyText === 'Onetime') frequencyText = 'One-Time';
-            if (frequencyText === 'Biweekly') frequencyText = 'Bi-Weekly';
-            
-            document.getElementById('totalPrice').textContent = '$' + Math.round(totalPrice).toLocaleString();
-            document.getElementById('priceFrequency').textContent = frequency === 'onetime' ? 'one-time service' : 'per ' + frequency.replace('ly', '').replace('time', '-time');
-            document.getElementById('breakdownTotal').textContent = '$' + Math.round(totalPrice).toLocaleString();
-
-            // Handle subscription pricing display
-            const subscriptionResults = document.getElementById('subscriptionResults');
-            const annualBonusRow = document.getElementById('annualBonusRow');
-
-            if (currentSubscription !== 'payPerService') {
-                // Show subscription section
-                subscriptionResults.style.display = 'block';
+            try {
+                logDebug('updateCalculator() called');
                 
-                // Calculate contract pricing
-                const discount = pricingRules.subscriptionDiscounts[currentSubscription];
-                const contractPrice = totalPrice * (1 - discount);
-                const savings = totalPrice - contractPrice;
-
-                // Update contract display
-                document.getElementById('contractPrice').textContent = '$' + Math.round(contractPrice).toLocaleString();
-                document.getElementById('contractServicePrice').textContent = '$' + Math.round(totalPrice).toLocaleString();
-                document.getElementById('contractDiscountAmount').textContent = '-$' + Math.round(savings).toLocaleString();
-                document.getElementById('contractTotalPrice').textContent = '$' + Math.round(contractPrice).toLocaleString();
-                document.getElementById('contractSavings').textContent = 'Save $' + Math.round(savings).toLocaleString();
-
-                // Handle frequency text for contracts
-                let contractFrequencyText = 'per service';
-                if (currentSubscription === 'monthlyContract') {
-                    contractFrequencyText = 'per month';
-                } else if (currentSubscription === 'bimonthlyContract') {
-                    contractFrequencyText = 'per service (bi-monthly)';
-                } else if (currentSubscription === 'annualContract') {
-                    contractFrequencyText = 'per service (annual rate)';
-                    annualBonusRow.style.display = 'flex';
-                    document.getElementById('annualBonusValue').textContent = '$' + Math.round(totalPrice * 2).toLocaleString() + ' value';
-                } else {
-                    annualBonusRow.style.display = 'none';
+                // Get values with error checking
+                const sqftElement = document.getElementById('squareFootage');
+                const serviceTypeElement = document.getElementById('serviceType');
+                const frequencyElement = document.getElementById('frequency');
+                const complexityElement = document.getElementById('complexity');
+                
+                if (!sqftElement || !serviceTypeElement || !frequencyElement || !complexityElement) {
+                    logDebug('ERROR: Missing form elements');
+                    return;
                 }
 
-                document.getElementById('contractFrequency').textContent = contractFrequencyText;
-            } else {
-                // Hide subscription section for pay per service
-                subscriptionResults.style.display = 'none';
-                annualBonusRow.style.display = 'none';
+                const sqft = parseInt(sqftElement.value);
+                const serviceType = serviceTypeElement.value;
+                const frequency = frequencyElement.value;
+                const complexity = complexityElement.value;
+                
+                logDebug(`Input values: sqft=${sqft}, serviceType=${serviceType}, frequency=${frequency}, complexity=${complexity}`);
+                
+                // Update square footage display
+                const sqftDisplay = document.getElementById('sqftDisplay');
+                if (sqftDisplay) {
+                    sqftDisplay.textContent = sqft.toLocaleString() + ' sq ft';
+                }
+                
+                // Check for dual machine requirement
+                const dualMachineNotice = document.getElementById('dualMachineNotice');
+                const volumeDiscountRow = document.getElementById('volumeDiscountRow');
+                
+                if (sqft > 20000) {
+                    logDebug('Triggering dual machine and volume discount for sqft > 20,000');
+                    if (dualMachineNotice) dualMachineNotice.style.display = 'block';
+                    if (volumeDiscountRow) volumeDiscountRow.style.display = 'flex';
+                } else {
+                    if (dualMachineNotice) dualMachineNotice.style.display = 'none';
+                    if (volumeDiscountRow) volumeDiscountRow.style.display = 'none';
+                }
+                
+                // Calculate base price with volume pricing consideration
+                let baseRate;
+                if (sqft > 20000) {
+                    baseRate = pricingRules.volumeRate; // Use volume pricing for 20k+ sq ft
+                    logDebug(`Using volume rate: ${baseRate}`);
+                } else {
+                    baseRate = pricingRules.baseRates[serviceType];
+                    logDebug(`Using service type rate: ${baseRate}`);
+                }
+                
+                let basePrice = sqft * baseRate;
+                const minimum = pricingRules.minimums[serviceType];
+                basePrice = Math.max(basePrice, minimum);
+                logDebug(`Base price after minimum check: ${basePrice}`);
+                
+                // Apply complexity adjustment
+                const complexityMultiplier = pricingRules.complexityAdjustments[complexity];
+                basePrice *= complexityMultiplier;
+                logDebug(`Base price after complexity (${complexityMultiplier}): ${basePrice}`);
+                
+                // Calculate dual machine cost (double the service for 20k+ sq ft)
+                if (sqft > 20000) {
+                    basePrice *= 2; // Double cost for dual machine requirement
+                    logDebug(`Base price after dual machine doubling: ${basePrice}`);
+                }
+                
+                // Apply frequency multiplier
+                const frequencyMultiplier = pricingRules.frequencyMultipliers[frequency];
+                let totalPrice = basePrice * frequencyMultiplier;
+                logDebug(`Total price after frequency (${frequencyMultiplier}): ${totalPrice}`);
+                
+                // Calculate adjustments for display
+                const complexityAdjustment = basePrice * (complexityMultiplier - 1) / complexityMultiplier;
+                
+                // Calculate travel costs (example: assuming 30 miles average for demonstration)
+                const estimatedDistance = 30; // miles from Salt Lake City
+                let travelCosts = 0;
+                if (estimatedDistance > pricingRules.baseTravelRadius) {
+                    const extraMiles = estimatedDistance - pricingRules.baseTravelRadius;
+                    travelCosts = extraMiles * pricingRules.travelRate * frequencyMultiplier;
+                }
+                logDebug(`Travel costs: ${travelCosts}`);
+                
+                totalPrice += travelCosts;
+                logDebug(`Final total price: ${totalPrice}`);
+                
+                // Calculate volume discount display (this is already factored into the lower rate)
+                let volumeDiscountAmount = 0;
+                if (sqft > 20000) {
+                    const standardRate = pricingRules.baseRates[serviceType];
+                    const savings = (standardRate - pricingRules.volumeRate) * sqft * frequencyMultiplier;
+                    volumeDiscountAmount = savings;
+                    logDebug(`Volume discount amount: ${volumeDiscountAmount}`);
+                }
+                
+                // Update display elements with error checking
+                const elements = {
+                    'basePrice': '$' + Math.round(basePrice * frequencyMultiplier).toLocaleString(),
+                    'complexityPrice': '$' + Math.round(complexityAdjustment * frequencyMultiplier).toLocaleString(),
+                    'travelPrice': '$' + Math.round(travelCosts).toLocaleString(),
+                    'volumeDiscount': '-$' + Math.round(volumeDiscountAmount).toLocaleString(),
+                    'totalPrice': '$' + Math.round(totalPrice).toLocaleString(),
+                    'breakdownTotal': '$' + Math.round(totalPrice).toLocaleString()
+                };
+
+                for (const [id, value] of Object.entries(elements)) {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.textContent = value;
+                        logDebug(`Updated ${id}: ${value}`);
+                    } else {
+                        logDebug(`ERROR: Element ${id} not found`);
+                    }
+                }
+                
+                // Update frequency text
+                let frequencyText = frequency.charAt(0).toUpperCase() + frequency.slice(1);
+                if (frequencyText === 'Onetime') frequencyText = 'One-Time';
+                if (frequencyText === 'Biweekly') frequencyText = 'Bi-Weekly';
+                
+                const priceFrequencyElement = document.getElementById('priceFrequency');
+                const breakdownFrequencyElement = document.getElementById('breakdownFrequency');
+                
+                if (priceFrequencyElement) {
+                    priceFrequencyElement.textContent = frequency === 'onetime' ? 'one-time service' : 'per ' + frequency.replace('ly', '').replace('time', '-time');
+                }
+                
+                if (breakdownFrequencyElement) {
+                    breakdownFrequencyElement.textContent = frequencyText;
+                }
+                
+                logDebug('Calculator update completed successfully');
+                
+            } catch (error) {
+                logDebug('ERROR in updateCalculator: ' + error.message);
+                console.error('Calculator Error:', error);
             }
         }
 
         function requestQuote() {
-            window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
-        }
-
-        function requestContractQuote() {
-            // You could use a different form for contract quotes or modify the existing one
-            window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
+            try {
+                window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
+            } catch (error) {
+                logDebug('ERROR opening quote form: ' + error.message);
+            }
         }
 
         function callNow() {
-            window.open('tel:+18017125663');
+            try {
+                window.open('tel:+18017125663');
+            } catch (error) {
+                logDebug('ERROR initiating call: ' + error.message);
+            }
         }
 
-        // Initialize calculator
-        updateCalculator();
+        // Initialize calculator when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            logDebug('DOM Content Loaded - Initializing calculator');
+            
+            // Add event listeners as backup
+            const slider = document.getElementById('squareFootage');
+            if (slider) {
+                slider.addEventListener('input', updateCalculator);
+                slider.addEventListener('change', updateCalculator);
+                logDebug('Event listeners added to slider');
+            }
+            
+            // Initialize calculator
+            setTimeout(() => {
+                updateCalculator();
+                logDebug('Initial calculator update completed');
+            }, 100);
+        });
+
+        // Also initialize when page is fully loaded
+        window.addEventListener('load', function() {
+            logDebug('Window fully loaded - Running backup initialization');
+            updateCalculator();
+        });
     </script>
 </body>
 </html>
