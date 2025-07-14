@@ -1,5 +1,3 @@
-calculator
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,7 +35,21 @@ calculator
             margin-top: 20px;
             text-align: center;
         }
+        .subscription-section {
+            background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
         .price-breakdown {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .subscription-breakdown {
             background: rgba(255,255,255,0.1);
             padding: 15px;
             border-radius: 8px;
@@ -79,6 +91,45 @@ calculator
             border-radius: 8px;
             padding: 15px;
             margin-top: 15px;
+        }
+        .subscription-options {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .subscription-option {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .subscription-option:hover {
+            border-color: #6f42c1;
+            transform: translateY(-2px);
+        }
+        .subscription-option.selected {
+            border-color: #6f42c1;
+            background: #f8f5ff;
+        }
+        .subscription-badge {
+            background: #6f42c1;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+        .savings-highlight {
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            margin-left: 10px;
         }
     </style>
 </head>
@@ -166,6 +217,55 @@ calculator
                         </select>
                     </div>
 
+                    <!-- Subscription Options -->
+                    <div class="calc-input">
+                        <label class="form-label fw-bold">📝 Contract Options</label>
+                        <div class="subscription-options">
+                            <div class="subscription-option" id="payPerService" onclick="selectSubscription('payPerService')">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>Pay Per Service</strong>
+                                        <br><small class="text-muted">No contract required</small>
+                                    </div>
+                                    <div>Standard Rates</div>
+                                </div>
+                            </div>
+                            
+                            <div class="subscription-option" id="monthlyContract" onclick="selectSubscription('monthlyContract')">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>Monthly Contract</strong>
+                                        <span class="subscription-badge">15% OFF</span>
+                                        <br><small class="text-muted">30-day cancellation notice</small>
+                                    </div>
+                                    <div class="text-success fw-bold">Save 15%</div>
+                                </div>
+                            </div>
+                            
+                            <div class="subscription-option" id="bimonthlyContract" onclick="selectSubscription('bimonthlyContract')">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>Bi-Monthly Contract</strong>
+                                        <span class="subscription-badge">10% OFF</span>
+                                        <br><small class="text-muted">Service every 2 months</small>
+                                    </div>
+                                    <div class="text-success fw-bold">Save 10%</div>
+                                </div>
+                            </div>
+                            
+                            <div class="subscription-option" id="annualContract" onclick="selectSubscription('annualContract')">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>Annual Prepaid Contract</strong>
+                                        <span class="subscription-badge">20% OFF</span>
+                                        <br><small class="text-muted">Includes 2 complimentary treatments</small>
+                                    </div>
+                                    <div class="text-success fw-bold">Save 20% + Bonuses</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Additional Services -->
                     <div class="calc-input">
                         <label class="form-label fw-bold">➕ Additional Services</label>
@@ -192,11 +292,11 @@ calculator
                 </div>
 
                 <div class="col-lg-6">
-                    <!-- Results Section -->
+                    <!-- One-Time Service Results Section -->
                     <div class="calc-result">
-                        <h3 class="fw-bold mb-3">💰 Your Service Quote</h3>
+                        <h3 class="fw-bold mb-3">💰 One-Time Service Quote</h3>
                         <div class="display-4 fw-bold mb-2" id="totalPrice">$620</div>
-                        <p class="fs-5 mb-3" id="priceFrequency">per month</p>
+                        <p class="fs-5 mb-3" id="priceFrequency">per service</p>
                         
                         <div class="price-breakdown">
                             <h5 class="fw-bold mb-3">📋 Breakdown</h5>
@@ -218,7 +318,7 @@ calculator
                             </div>
                             <hr class="border-light">
                             <div class="d-flex justify-content-between fw-bold fs-5">
-                                <span>Total <span id="breakdownFrequency">Monthly</span>:</span>
+                                <span>Total Per Service:</span>
                                 <span id="breakdownTotal">$620</span>
                             </div>
                         </div>
@@ -233,10 +333,47 @@ calculator
                         </div>
                     </div>
 
+                    <!-- Subscription/Contract Results Section -->
+                    <div class="subscription-section" id="subscriptionResults" style="display: none;">
+                        <h3 class="fw-bold mb-3">📅 Contract Pricing</h3>
+                        <div class="display-4 fw-bold mb-2" id="contractPrice">$527</div>
+                        <p class="fs-5 mb-1" id="contractFrequency">per month</p>
+                        <p class="mb-3"><span class="savings-highlight" id="contractSavings">Save $93/month</span></p>
+                        
+                        <div class="subscription-breakdown">
+                            <h5 class="fw-bold mb-3">📋 Contract Benefits</h5>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Service Price:</span>
+                                <span id="contractServicePrice">$620</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Contract Discount:</span>
+                                <span id="contractDiscountAmount">-$93</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2" id="annualBonusRow" style="display: none;">
+                                <span>Annual Bonus (2 free services):</span>
+                                <span id="annualBonusValue">$1,240 value</span>
+                            </div>
+                            <hr class="border-light">
+                            <div class="d-flex justify-content-between fw-bold fs-5">
+                                <span>Contract Price:</span>
+                                <span id="contractTotalPrice">$527</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button class="btn btn-light btn-lg me-2" onclick="requestContractQuote()">
+                                📋 Request Contract Quote
+                            </button>
+                            <button class="btn btn-outline-light btn-lg" onclick="callNow()">
+                                📞 Call (801) 712-5663
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-   <!-- Service Features - Full Width -->
+            <!-- Service Features - Full Width -->
             <div class="mt-5">
                 <h5 class="fw-bold mb-4 text-center">✅ What's Included</h5>
                 <div class="row">
@@ -274,6 +411,28 @@ calculator
                         <div class="service-feature h-100">
                             <strong>✅ EPA Registered</strong><br>
                             <small>EPA #97801-1 registration with FDA food contact approval</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contract Benefits - Full Width -->
+                <div class="allergen-info mt-4">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h6 class="fw-bold mb-2">📝 Contract Benefits</h6>
+                            <p class="mb-2">Our service contracts provide significant value and peace of mind:</p>
+                            <ul class="mb-2">
+                                <li><strong>Monthly Contracts:</strong> 15% discount, 30-day cancellation notice, Net 30 payment terms</li>
+                                <li><strong>Bi-Monthly Contracts:</strong> 10% discount for service every 2 months</li>
+                                <li><strong>Annual Prepaid Contracts:</strong> 20% discount + 2 complimentary treatments (up to $1,240 value)</li>
+                                <li>Priority scheduling and dedicated account management</li>
+                                <li>Protection from price increases during contract term</li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-4 d-flex align-items-center">
+                            <a href="legal-information.html" class="btn btn-outline-primary btn-sm text-decoration-none">
+                                📚 View Contract Terms
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -322,12 +481,12 @@ calculator
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                                        What factors affect the final price?
+                                        What are the benefits of service contracts?
                                     </button>
                                 </h2>
                                 <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#calculatorFAQ">
                                     <div class="accordion-body">
-                                        Pricing factors include: facility size, service type, frequency, complexity (multi-level, HVAC systems, specialized equipment), location accessibility, travel distance from Salt Lake City, and dual machine requirements for large facilities over 20,000 sq ft.
+                                        Service contracts provide significant savings (10-20% discount), priority scheduling, protection from price increases, Net 30 payment terms for commercial accounts, and dedicated account management. Annual contracts include 2 complimentary treatments worth up to $1,240.
                                     </div>
                                 </div>
                             </div>
@@ -339,7 +498,7 @@ calculator
                                 </h2>
                                 <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#calculatorFAQ">
                                     <div class="accordion-body">
-                                        Yes! We offer significant discounts for longer service commitments and larger facilities. Annual contracts receive up to 15% discount, and facilities over 20,000 sq ft qualify for volume pricing at $0.08 per sq ft.
+                                        Yes! We offer significant discounts for longer service commitments and larger facilities. Annual contracts receive up to 20% discount, and facilities over 20,000 sq ft qualify for volume pricing at $0.08 per sq ft.
                                     </div>
                                 </div>
                             </div>
@@ -394,7 +553,7 @@ calculator
         </div>
     </section>
 
-<!-- Footer -->
+    <!-- Footer -->
     <footer class="bg-dark text-white py-4">
         <div class="container">
             <div class="row align-items-center">
@@ -414,157 +573,4 @@ calculator
                 </div>
                 <div class="col-md-4 text-center">
                     <div class="mb-3">
-                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGhElEQVR4nO2dTYgcRRTH/6+6Z2YTIyaQBBONHwRBQRFBEBEPKh5E8KQnD4KCBy8ePHjw4MGDB714EBHEk4KCB08ePAiCBw8ePHjw4MGDB0/iQRDEg4KCBxHBg+BBEBHfq+6Z7p7Z2Z3Z3Z3u6e7/D4qZ6eruql/Xq3r1Xr2qARFJgQAgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiCE="
-                             alt="QR Code for Organic Hypo Solutions"
-                             class="footer-qr-code"
-                             title="Scan to visit organichyposolutions.com">
-                    </div>
-                    <p><small>📱 Scan QR Code<br>organichyposolutions.com</small></p>
-                </div>
-                <div class="col-md-4 text-md-end">
-                    <p>📞 (801) 712-5663 | ✉️ ohshocl@gmail.com</p>
-                    <div class="mb-2">
-                        <a href="legal-information.html" class="text-white text-decoration-none me-3">Legal Information</a>
-                        <a href="science-certifications.html" class="text-white text-decoration-none">Certifications</a>
-                    </div>
-                    <p><small>&copy; 2025 Organic Hyposolutions. All rights reserved.</small></p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Updated pricing algorithm with new business requirements
-        const pricingRules = {
-            baseRates: {
-                commercial: 0.125,
-                residential: 0.15,
-                healthcare: 0.14,
-                education: 0.12,
-                food: 0.135,
-                fitness: 0.13,
-                emergency: 0.25
-            },
-            volumeRate: 0.08, // New volume pricing for 20k+ sq ft
-            frequencyMultipliers: {
-                monthly: 1.0,
-                biweekly: 1.8,
-                weekly: 3.5,
-                quarterly: 0.35,
-                onetime: 1.4
-            },
-            complexityAdjustments: {
-                standard: 1.0,
-                moderate: 1.15,
-                complex: 1.3
-            },
-            minimums: {
-                commercial: 450,
-                residential: 200,
-                healthcare: 500,
-                education: 400,
-                food: 400,
-                fitness: 350,
-                emergency: 600
-            },
-            travelRate: 0.70, // $0.70 per mile
-            baseTravelRadius: 25 // Free travel within 25 miles
-        };
-
-        function updateCalculator() {
-            const sqft = parseInt(document.getElementById('squareFootage').value);
-            const serviceType = document.getElementById('serviceType').value;
-            const frequency = document.getElementById('frequency').value;
-            const complexity = document.getElementById('complexity').value;
-            
-            document.getElementById('sqftDisplay').textContent = sqft.toLocaleString() + ' sq ft';
-            
-            // Check for dual machine requirement
-            const dualMachineNotice = document.getElementById('dualMachineNotice');
-            const volumeDiscountRow = document.getElementById('volumeDiscountRow');
-            
-            if (sqft > 20000) {
-                dualMachineNotice.style.display = 'block';
-                volumeDiscountRow.style.display = 'flex';
-            } else {
-                dualMachineNotice.style.display = 'none';
-                volumeDiscountRow.style.display = 'none';
-            }
-            
-            // Calculate base price with volume pricing consideration
-            let baseRate;
-            if (sqft > 20000) {
-                baseRate = pricingRules.volumeRate; // Use volume pricing for 20k+ sq ft
-            } else {
-                baseRate = pricingRules.baseRates[serviceType];
-            }
-            
-            let basePrice = sqft * baseRate;
-            const minimum = pricingRules.minimums[serviceType];
-            basePrice = Math.max(basePrice, minimum);
-            
-            // Apply complexity adjustment
-            const complexityMultiplier = pricingRules.complexityAdjustments[complexity];
-            basePrice *= complexityMultiplier;
-            
-            // Calculate dual machine cost (double the service for 20k+ sq ft)
-            if (sqft > 20000) {
-                basePrice *= 2; // Double cost for dual machine requirement
-            }
-            
-            // Apply frequency multiplier
-            const frequencyMultiplier = pricingRules.frequencyMultipliers[frequency];
-            let totalPrice = basePrice * frequencyMultiplier;
-            
-            // Calculate adjustments for display
-            const complexityAdjustment = basePrice * (complexityMultiplier - 1) / complexityMultiplier;
-            
-            // Calculate travel costs (example: assuming 30 miles average for demonstration)
-            // In real implementation, this would be calculated based on actual address
-            const estimatedDistance = 30; // miles from Salt Lake City
-            let travelCosts = 0;
-            if (estimatedDistance > pricingRules.baseTravelRadius) {
-                const extraMiles = estimatedDistance - pricingRules.baseTravelRadius;
-                travelCosts = extraMiles * pricingRules.travelRate * frequencyMultiplier;
-            }
-            
-            totalPrice += travelCosts;
-            
-            // Calculate volume discount display (this is already factored into the lower rate)
-            let volumeDiscountAmount = 0;
-            if (sqft > 20000) {
-                const standardRate = pricingRules.baseRates[serviceType];
-                const savings = (standardRate - pricingRules.volumeRate) * sqft * frequencyMultiplier;
-                volumeDiscountAmount = savings;
-            }
-            
-            // Update display elements
-            document.getElementById('basePrice').textContent = '$' + Math.round(basePrice * frequencyMultiplier).toLocaleString();
-            document.getElementById('complexityPrice').textContent = '$' + Math.round(complexityAdjustment * frequencyMultiplier).toLocaleString();
-            document.getElementById('travelPrice').textContent = '$' + Math.round(travelCosts).toLocaleString();
-            document.getElementById('volumeDiscount').textContent = '-$' + Math.round(volumeDiscountAmount).toLocaleString();
-            
-            let frequencyText = frequency.charAt(0).toUpperCase() + frequency.slice(1);
-            if (frequencyText === 'Onetime') frequencyText = 'One-Time';
-            if (frequencyText === 'Biweekly') frequencyText = 'Bi-Weekly';
-            
-            document.getElementById('totalPrice').textContent = '$' + Math.round(totalPrice).toLocaleString();
-            document.getElementById('priceFrequency').textContent = frequency === 'onetime' ? 'one-time service' : 'per ' + frequency.replace('ly', '').replace('time', '-time');
-            document.getElementById('breakdownFrequency').textContent = frequencyText;
-            document.getElementById('breakdownTotal').textContent = '$' + Math.round(totalPrice).toLocaleString();
-        }
-
-        function requestQuote() {
-            window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
-        }
-
-        function callNow() {
-            window.open('tel:+18017125663');
-        }
-
-        // Initialize calculator
-        updateCalculator();
-    </script>
-</body>
-</html>
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGhElEQVR4nO2dTYgcRRTH/6+6Z2YTIyaQBBONHwRBQRFBEBEPKh5E8KQnD4KCBy8ePHjw4MGDB714EBHEk4KCB08ePAiCBw8ePHjw4MGDB0/iQRDEg4KCBxHBg+BBEBHfq+6Z7p7Z2Z3Z3Z3u6e7/D4qZ6uruql/Xq3r1Xr2qARFJgQAgIiASICIgEiAiIBIgIiASICIgEiAiIB
