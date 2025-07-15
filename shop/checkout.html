@@ -454,40 +454,7 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold text-primary d-flex align-items-center" href="../index.html">
-                <!-- OHS Logo -->
-                <svg width="40" height="40" viewBox="0 0 400 250" class="me-2">
-                    <rect width="400" height="250" fill="#2E5EAA"/>
-                    <text x="200" y="180" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="100" font-weight="bold">OHS</text>
-                    <text x="200" y="210" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="20">Organic HypoSolutions</text>
-                    <!-- Green leaf accent -->
-                    <path d="M 320 80 Q 340 60 360 80 Q 340 100 320 80" fill="#4ADE80"/>
-                    <path d="M 330 70 Q 350 50 370 70 Q 350 90 330 70" fill="#22C55E"/>
-                </svg>
-                Organic HypoSolutions
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="cart.html">
-                            <i class="fas fa-shopping-cart"></i> Cart
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../contact.html">
-                            <i class="fas fa-headset"></i> Support
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+>
 
     <!-- Checkout Header -->
     <section class="checkout-header">
@@ -711,12 +678,12 @@
                             </div>
 
                             <!-- Credit Card Form -->
-                            <div id="cardPaymentForm">
+                            <div id="cardPaymentForm" style="display: block;">
                                 <div class="row g-3 mt-3">
                                     <div class="col-12">
                                         <label for="cardElement" class="form-label">Card Information *</label>
                                         <div id="cardElement" class="stripe-element">
-                                            <!-- Stripe Elements will create form elements here -->
+                                            <!-- Card form will be created here -->
                                         </div>
                                         <div class="error-message" id="cardError"></div>
                                     </div>
@@ -728,12 +695,18 @@
                                 <div class="alert alert-info mt-3">
                                     <h6><i class="fas fa-info-circle"></i> Net 30 Payment Terms</h6>
                                     <p class="mb-2">Available for approved business customers with established credit.</p>
-                                    <ul class="mb-0">
+                                    <ul class="mb-2">
                                         <li>Minimum order: $500</li>
                                         <li>Credit approval required</li>
                                         <li>Payment due within 30 days</li>
                                         <li>2% discount for payments within 10 days</li>
                                     </ul>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="acceptNet30Terms">
+                                        <label class="form-check-label" for="acceptNet30Terms">
+                                            I accept Net 30 payment terms and authorize credit check
+                                        </label>
+                                    </div>
                                 </div>
                                 <div class="under-construction mt-2">
                                     <i class="fas fa-wrench"></i> Net 30 terms require credit approval - call (801) 712-5663
@@ -744,7 +717,29 @@
                             <div id="achPaymentForm" style="display: none;">
                                 <div class="alert alert-info mt-3">
                                     <h6><i class="fas fa-info-circle"></i> ACH Bank Transfer</h6>
-                                    <p class="mb-0">Direct bank transfer for large orders. Processing time: 1-3 business days.</p>
+                                    <p class="mb-2">Direct bank transfer for large orders. Processing time: 1-3 business days.</p>
+                                    <div class="row g-3 mt-2">
+                                        <div class="col-md-6">
+                                            <label for="bankRoutingNumber" class="form-label">Routing Number</label>
+                                            <input type="text" class="form-control" id="bankRoutingNumber" placeholder="123456789" maxlength="9">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="bankAccountNumber" class="form-label">Account Number</label>
+                                            <input type="text" class="form-control" id="bankAccountNumber" placeholder="Account Number">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="bankAccountType" class="form-label">Account Type</label>
+                                            <select class="form-select" id="bankAccountType">
+                                                <option value="">Select type</option>
+                                                <option value="checking">Checking</option>
+                                                <option value="savings">Savings</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="bankName" class="form-label">Bank Name</label>
+                                            <input type="text" class="form-control" id="bankName" placeholder="Bank Name">
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="under-construction mt-2">
                                     <i class="fas fa-wrench"></i> ACH processing under construction - call (801) 712-5663
@@ -1076,6 +1071,9 @@
             setupFormValidation();
             setupEventListeners();
             
+            // Initialize payment method selection
+            selectPaymentMethod('card'); // Default to card payment
+            
             // Check if cart is empty
             if (cart.length === 0) {
                 alert('Your cart is empty. Redirecting to products page.');
@@ -1084,35 +1082,33 @@
         });
 
         function initializeCheckout() {
-            // Initialize Stripe (use your test key for now)
-            stripe = Stripe('pk_test_51234567890123456789012345678901234567890123456789012345678901234'); // Replace with your actual key
-            
-            // Create card element
-            const elements = stripe.elements();
-            cardElement = elements.create('card', {
-                style: {
-                    base: {
-                        fontSize: '16px',
-                        color: '#424770',
-                        '::placeholder': {
-                            color: '#aab7c4',
-                        },
-                    },
-                },
-            });
-            
-            cardElement.mount('#cardElement');
-            
-            // Handle card element events
-            cardElement.on('change', function(event) {
-                const displayError = document.getElementById('cardError');
-                if (event.error) {
-                    displayError.textContent = event.error.message;
-                    displayError.style.display = 'block';
-                } else {
-                    displayError.style.display = 'none';
-                }
-            });
+            // Initialize Stripe (commented out for now - will work without actual key)
+            try {
+                // stripe = Stripe('pk_test_51234567890123456789012345678901234567890123456789012345678901234'); // Replace with your actual key
+                
+                // Create card element (simulate for now)
+                // const elements = stripe.elements();
+                // cardElement = elements.create('card', {
+                //     style: {
+                //         base: {
+                //             fontSize: '16px',
+                //             color: '#424770',
+                //             '::placeholder': {
+                //                 color: '#aab7c4',
+                //             },
+                //         },
+                //     },
+                // });
+                
+                // cardElement.mount('#cardElement');
+                
+                // For now, create a simple card input form
+                createCardInputForm();
+                
+            } catch (error) {
+                console.log('Stripe not configured, using placeholder form');
+                createCardInputForm();
+            }
             
             // Show business section for wholesale customers
             if (isWholesaleCustomer) {
@@ -1121,6 +1117,65 @@
                     input.setAttribute('required', 'required');
                 });
             }
+        }
+
+        function createCardInputForm() {
+            // Create placeholder card input form
+            const cardElementDiv = document.getElementById('cardElement');
+            cardElementDiv.innerHTML = `
+                <div class="row g-2">
+                    <div class="col-12">
+                        <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                        <label class="form-label">Card Number</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="text" class="form-control" id="cardExpiry" placeholder="MM/YY" maxlength="5" required>
+                        <label class="form-label">Expiry Date</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="text" class="form-control" id="cardCvc" placeholder="123" maxlength="4" required>
+                        <label class="form-label">CVC</label>
+                    </div>
+                    <div class="col-12">
+                        <input type="text" class="form-control" id="cardName" placeholder="Name on Card" required>
+                        <label class="form-label">Cardholder Name</label>
+                    </div>
+                </div>
+            `;
+            
+            // Add input formatting
+            setupCardInputFormatting();
+        }
+
+        function setupCardInputFormatting() {
+            // Card number formatting
+            document.getElementById('cardNumber').addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+                let formattedValue = '';
+                
+                for (let i = 0; i < value.length; i++) {
+                    if (i > 0 && i % 4 === 0) {
+                        formattedValue += ' ';
+                    }
+                    formattedValue += value[i];
+                }
+                
+                e.target.value = formattedValue;
+            });
+            
+            // Expiry date formatting
+            document.getElementById('cardExpiry').addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length >= 2) {
+                    value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                }
+                e.target.value = value;
+            });
+            
+            // CVC formatting
+            document.getElementById('cardCvc').addEventListener('input', function(e) {
+                e.target.value = e.target.value.replace(/\D/g, '');
+            });
         }
 
         function setupEventListeners() {
@@ -1253,13 +1308,19 @@
         }
 
         function selectPaymentMethod(method) {
+            console.log('Selecting payment method:', method); // Debug log
             paymentMethod = method;
             
-            // Update UI
+            // Update UI - remove active class from all payment methods
             document.querySelectorAll('.payment-method').forEach(el => {
                 el.classList.remove('active');
             });
-            document.querySelector(`[data-method="${method}"]`).classList.add('active');
+            
+            // Add active class to selected method
+            const selectedMethod = document.querySelector(`[data-method="${method}"]`);
+            if (selectedMethod) {
+                selectedMethod.classList.add('active');
+            }
             
             // Show/hide payment forms
             document.getElementById('cardPaymentForm').style.display = method === 'card' ? 'block' : 'none';
@@ -1268,16 +1329,41 @@
             
             // Update order button text
             const orderBtn = document.getElementById('placeOrderBtn');
+            const spinner = document.getElementById('orderSpinner');
+            
             switch(method) {
                 case 'card':
-                    orderBtn.innerHTML = '<i class="fas fa-lock me-2"></i>Place Secure Order';
+                    orderBtn.innerHTML = '<i class="fas fa-lock me-2"></i>Place Secure Order <div class="loading-spinner ms-2" id="orderSpinner" style="display: none;"></div>';
                     break;
                 case 'net30':
-                    orderBtn.innerHTML = '<i class="fas fa-file-invoice me-2"></i>Submit Net 30 Order';
+                    orderBtn.innerHTML = '<i class="fas fa-file-invoice me-2"></i>Submit Net 30 Order <div class="loading-spinner ms-2" id="orderSpinner" style="display: none;"></div>';
                     break;
                 case 'ach':
-                    orderBtn.innerHTML = '<i class="fas fa-university me-2"></i>Process ACH Payment';
+                    orderBtn.innerHTML = '<i class="fas fa-university me-2"></i>Process ACH Payment <div class="loading-spinner ms-2" id="orderSpinner" style="display: none;"></div>';
                     break;
+            }
+            
+            // Update form validation requirements
+            updateFormValidation(method);
+        }
+
+        function updateFormValidation(method) {
+            // Clear previous requirements
+            document.querySelectorAll('#cardPaymentForm input, #net30PaymentForm input, #achPaymentForm input').forEach(input => {
+                input.removeAttribute('required');
+            });
+            
+            // Set requirements based on selected method
+            if (method === 'card') {
+                document.querySelectorAll('#cardPaymentForm input').forEach(input => {
+                    input.setAttribute('required', 'required');
+                });
+            } else if (method === 'net30') {
+                document.getElementById('acceptNet30Terms').setAttribute('required', 'required');
+            } else if (method === 'ach') {
+                document.querySelectorAll('#achPaymentForm input[type="text"], #achPaymentForm select').forEach(input => {
+                    input.setAttribute('required', 'required');
+                });
             }
         }
 
@@ -1469,4 +1555,306 @@
 
         function simulatePaymentProcessing() {
             return new Promise(resolve => {
-                setTimeout(resolve
+                setTimeout(resolve, 2000); // Simulate 2 second processing time
+            });
+        }
+
+        function calculateOrderTotal() {
+            let subtotal = 0;
+            
+            cart.forEach(item => {
+                const product = productDatabase[item.productId];
+                if (!product) return;
+                
+                const currentPrice = isWholesaleCustomer ? product.wholesalePrice : product.price;
+                const volumeDiscount = calculateVolumeDiscount(item.quantity);
+                const discountedPrice = currentPrice * (1 - volumeDiscount);
+                subtotal += discountedPrice * item.quantity;
+            });
+            
+            const tax = subtotal * TAX_RATE;
+            return subtotal + tax;
+        }
+
+        function applyPromoCode() {
+            const promoCode = document.getElementById('promoCode').value.trim();
+            
+            if (!promoCode) {
+                alert('Please enter a promo code.');
+                return;
+            }
+            
+            // Simulate promo code validation
+            alert('Promo code functionality is under construction. Please call (801) 712-5663 for discount codes.');
+            
+            // TODO: Implement actual promo code validation
+            // This would integrate with Stripe coupons or your own discount system
+        }
+
+        // Digital wallet functions
+        function payWithApplePay() {
+            alert('Apple Pay integration is under construction. Please use credit card payment or call (801) 712-5663.');
+            // TODO: Implement Apple Pay with Stripe
+        }
+
+        function payWithGooglePay() {
+            alert('Google Pay integration is under construction. Please use credit card payment or call (801) 712-5663.');
+            // TODO: Implement Google Pay with Stripe
+        }
+
+        function payWithPayPal() {
+            alert('PayPal integration is under construction. Please use credit card payment or call (801) 712-5663.');
+            // TODO: Implement PayPal integration
+        }
+
+        // Address validation (placeholder for future implementation)
+        function validateAddress(address) {
+            // TODO: Integrate with address validation service (USPS, UPS, etc.)
+            return true;
+        }
+
+        // Inventory verification (placeholder for future implementation)
+        function verifyInventory() {
+            // TODO: Real-time inventory check before payment
+            return true;
+        }
+
+        // Fraud detection (placeholder for future implementation)
+        function checkFraud(orderData) {
+            // TODO: Integrate with Stripe Radar or other fraud detection
+            return { riskScore: 'low', approved: true };
+        }
+
+        // Auto-fill address from ZIP code
+        document.getElementById('billingZip').addEventListener('blur', function() {
+            const zip = this.value;
+            if (zip.length === 5) {
+                // TODO: Implement ZIP code to city/state lookup
+                // This could use a service like Zippopotam.us or SmartyStreets
+            }
+        });
+
+        // Customer type detection
+        function detectCustomerType() {
+            // Check if business information is filled
+            const companyName = document.getElementById('companyName').value;
+            const businessType = document.getElementById('businessType').value;
+            
+            if (companyName || businessType) {
+                isWholesaleCustomer = true;
+                localStorage.setItem('ohsWholesaleCustomer', 'true');
+                updateOrderTotals();
+            }
+        }
+
+        // Real-time total updates
+        document.addEventListener('input', function(e) {
+            if (e.target.matches('#companyName, #businessType')) {
+                detectCustomerType();
+            }
+        });
+
+        // Handle back button to prevent form data loss
+        window.addEventListener('beforeunload', function(e) {
+            // Save form data to localStorage for recovery
+            const formData = new FormData(document.getElementById('checkoutForm'));
+            const formObject = {};
+            formData.forEach((value, key) => {
+                formObject[key] = value;
+            });
+            localStorage.setItem('ohsCheckoutFormData', JSON.stringify(formObject));
+        });
+
+        // Restore form data on page load
+        function restoreFormData() {
+            const savedData = localStorage.getItem('ohsCheckoutFormData');
+            if (savedData) {
+                const formData = JSON.parse(savedData);
+                Object.entries(formData).forEach(([key, value]) => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        element.value = value;
+                        if (element.type === 'checkbox') {
+                            element.checked = value === 'on';
+                        }
+                    }
+                });
+            }
+        }
+
+        // Call restore function after DOM is loaded
+        document.addEventListener('DOMContentLoaded', restoreFormData);
+
+        // Clear saved form data after successful order
+        function clearFormData() {
+            localStorage.removeItem('ohsCheckoutFormData');
+        }
+
+        // Accessibility improvements
+        document.addEventListener('keydown', function(e) {
+            // Allow Enter key to submit form
+            if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                document.getElementById('placeOrderBtn').click();
+            }
+        });
+
+        // Progress indicator updates
+        function updateProgressIndicator(step) {
+            const steps = document.querySelectorAll('.step');
+            steps.forEach((stepEl, index) => {
+                if (index < step - 1) {
+                    stepEl.classList.add('completed');
+                    stepEl.classList.remove('active');
+                } else if (index === step - 1) {
+                    stepEl.classList.add('active');
+                    stepEl.classList.remove('completed');
+                } else {
+                    stepEl.classList.remove('active', 'completed');
+                }
+            });
+        }
+
+        // Update progress as user fills form
+        document.addEventListener('input', function() {
+            const form = document.getElementById('checkoutForm');
+            const totalFields = form.querySelectorAll('input[required], select[required]').length;
+            const filledFields = Array.from(form.querySelectorAll('input[required], select[required]')).filter(field => field.value).length;
+            
+            const progressPercentage = (filledFields / totalFields) * 100;
+            
+            if (progressPercentage < 25) {
+                updateProgressIndicator(2);
+            } else if (progressPercentage < 75) {
+                updateProgressIndicator(3);
+            } else {
+                updateProgressIndicator(4);
+            }
+        });
+
+        // Enhanced error handling
+        function showError(message, type = 'error') {
+            const alertClass = type === 'error' ? 'alert-danger' : 'alert-warning';
+            const alertHTML = `
+                <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            // Insert at top of form
+            const form = document.getElementById('checkoutForm');
+            form.insertAdjacentHTML('afterbegin', alertHTML);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                const alert = form.querySelector('.alert');
+                if (alert) {
+                    alert.remove();
+                }
+            }, 5000);
+        }
+
+        // Enhanced success handling
+        function showSuccess(message) {
+            const alertHTML = `
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            const form = document.getElementById('checkoutForm');
+            form.insertAdjacentHTML('afterbegin', alertHTML);
+        }
+
+        // Network error handling
+        function handleNetworkError(error) {
+            console.error('Network error:', error);
+            showError('Network error occurred. Please check your connection and try again.');
+        }
+
+        // Retry mechanism for failed requests
+        async function retryRequest(requestFunction, maxRetries = 3) {
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    return await requestFunction();
+                } catch (error) {
+                    if (i === maxRetries - 1) throw error;
+                    await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1))); // Exponential backoff
+                }
+            }
+        }
+
+        // Order summary expansion for mobile
+        function toggleOrderSummary() {
+            const orderSummary = document.querySelector('.order-summary');
+            orderSummary.classList.toggle('expanded');
+        }
+
+        // Add mobile-specific enhancements
+        if (window.innerWidth <= 768) {
+            // Make order summary collapsible on mobile
+            const orderSummaryHeader = document.querySelector('.order-summary h5');
+            if (orderSummaryHeader) {
+                orderSummaryHeader.style.cursor = 'pointer';
+                orderSummaryHeader.addEventListener('click', toggleOrderSummary);
+            }
+        }
+
+        // Performance monitoring
+        function trackPerformance() {
+            // Track page load time
+            window.addEventListener('load', function() {
+                const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+                gtag('event', 'page_load_time', {
+                    'event_category': 'performance',
+                    'event_label': 'checkout',
+                    'value': loadTime
+                });
+            });
+        }
+
+        // Initialize performance tracking
+        trackPerformance();
+
+        // Security enhancements
+        function enhanceSecurity() {
+            // Disable right-click context menu on sensitive elements
+            document.querySelectorAll('.stripe-element, #cardElement').forEach(element => {
+                element.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                });
+            });
+
+            // Clear sensitive data on page unload
+            window.addEventListener('beforeunload', function() {
+                // Clear any sensitive form data
+                if (cardElement) {
+                    cardElement.clear();
+                }
+            });
+        }
+
+        // Initialize security enhancements
+        enhanceSecurity();
+
+        // Final initialization
+        function finalizeInitialization() {
+            // Set focus to first field
+            document.getElementById('firstName').focus();
+            
+            // Initialize tooltips if any
+            const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltips.forEach(tooltip => {
+                new bootstrap.Tooltip(tooltip);
+            });
+        }
+
+        // Run final initialization
+        document.addEventListener('DOMContentLoaded', finalizeInitialization);
+    </script>
+</body>
+</html>
