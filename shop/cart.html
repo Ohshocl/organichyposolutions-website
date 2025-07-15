@@ -1,1 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Organic Hypo Solutions | USDA Certified Organic HOCl Products</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Complete your order of USDA Certified Organic HOCl products. Secure checkout with volume discounts and wholesale pricing available.">
+    <meta name="keywords" content="HOCl cart, organic disinfectant order, hypochlorous acid checkout, Utah sanitizer purchase">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Shopping Cart - Organic Hypo Solutions">
+    <meta property="og:description" content="Complete your order of premium USDA Certified Organic HOCl products">
+    <meta property="og:url" content="https://organichyposolutions.com/shop/cart.html">
+    <meta property="og:type" content="website">
+    
+    <!-- Schema Markup for Shopping Cart -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Shopping Cart",
+      "description": "Complete your order of USDA Certified Organic HOCl products with secure Stripe checkout",
+      "url": "https://organichyposolutions.com/shop/cart.html",
+      "provider": {
+        "@type": "Organization",
+        "name": "Organic Hypo Solutions",
+        "url": "https://organichyposolutions.com"
+      }
+    }
+    </script>
+    
+    <style>
+        :root {
+            --primary-color: #28a745;
+            --secondary-color: #6c757d;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --light-bg: #f8f9fa;
+            --premium-gold: #ffd700;
+            --wholesale-blue: #0056b3;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), #20c997);
+            color: white;
+            padding: 3rem 0;
+        }
+
+        .cart-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin-top: -2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .cart-item {
+            border-bottom: 1px solid #e9ecef;
+            padding: 1.5rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .cart-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quantity-btn {
+            width: 35px;
+            height: 35px;
+            border: 1px solid #dee2e6;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .quantity-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .quantity-input {
+            width: 60px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 0.375rem;
+        }
+
+        .pricing-tier {
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .volume-discount {
+            background: linear-gradient(45deg, var(--warning-color), #ff6b35);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .wholesale-badge {
+            background: linear-gradient(45deg, var(--wholesale-blue), #007bff);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .premium-product {
+            position: relative;
+            background: linear-gradient(45deg, #fff8dc, #f0f8ff);
+            border-left: 4px solid var(--premium-gold);
+        }
+
+        .premium-badge {
+            position: absolute;
+            top: -8px;
+            right: 15px;
+            background: var(--premium-gold);
+            color: #333;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(255,215,0,0.3);
+        }
+
+        .cart-summary {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            border: 1px solid #dee2e6;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .total-row {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .checkout-section {
+            background: white;
+            border-radius: 12px;
+            border: 2px solid var(--primary-color);
+            padding: 2rem;
+        }
+
+        .payment-methods {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+
+        .payment-method {
+            padding: 0.5rem 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .security-badges {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .security-badge {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .recommendations {
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .recommendation-item {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            border: 1px solid #dee2e6;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .recommendation-item:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .service-booking-card {
+            background: linear-gradient(135deg, #e8f5e8, #f0f8ff);
+            border: 2px dashed var(--primary-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+
+        .social-sharing {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .share-btn {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 0.25rem;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .share-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #666;
+        }
+
+        .under-construction {
+            background: linear-gradient(45deg, #ff6b35, var(--warning-color));
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            display: inline-block;
+            margin: 0.5rem 0;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .cart-item {
+                padding: 1rem 0;
+            }
+            
+            .product-image {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .payment-methods {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .hero-section {
+                padding: 2rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="../index.html">
+                🌿 Organic Hypo Solutions
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="../index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../services.html">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../products.html">Products</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../calculator.html">Calculator</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../about.html">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../contact.html">Contact</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" href="cart.html">
+                            <i class="fas fa-shopping-cart"></i> Cart 
+                            <span id="cartBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">0</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="text-center">
+                <h1 class="display-5 fw-bold mb-3">Your Shopping Cart</h1>
+                <p class="lead mb-0">Complete your order of premium USDA Certified Organic HOCl products</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Cart Content -->
+    <div class="container py-4">
+        <div class="cart-container p-4">
+            
+            <!-- Cart Items Section -->
+            <div id="cartContent" class="row">
+                
+                <!-- Left Column - Cart Items -->
+                <div class="col-lg-8">
+                    
+                    <!-- Cart Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="fw-bold mb-0">Shopping Cart</h3>
+                        <div>
+                            <span id="itemCount" class="text-muted">0 items</span>
+                            <button class="btn btn-outline-danger btn-sm ms-3" onclick="clearCart()">
+                                <i class="fas fa-trash"></i> Clear Cart
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cart Items Container -->
+                    <div id="cartItems">
+                        <!-- Cart items will be dynamically inserted here -->
+                    </div>
+
+                    <!-- Empty Cart State -->
+                    <div id="emptyCart" class="empty-cart" style="display: none;">
+                        <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
+                        <h4>Your cart is empty</h4>
+                        <p class="mb-4">Looks like you haven't added any items to your cart yet.</p>
+                        <a href="../products.html" class="btn btn-primary btn-lg">
+                            <i class="fas fa-shopping-bag"></i> Shop Products
+                        </a>
+                    </div>
+
+                    <!-- Service Booking Integration -->
+                    <div class="service-booking-card">
+                        <h5 class="fw-bold text-primary mb-3">
+                            <i class="fas fa-spray-can"></i> Add Professional Service
+                        </h5>
+                        <p class="mb-3">Combine product orders with professional sanitization services for maximum protection.</p>
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <a href="../calculator.html" class="btn btn-outline-primary w-100">
+                                    <i class="fas fa-calculator"></i> Calculate Service Cost
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="../services.html" class="btn btn-primary w-100">
+                                    <i class="fas fa-calendar-plus"></i> Book Service
+                                </a>
+                            </div>
+                        </div>
+                        <div class="under-construction mt-2">
+                            <i class="fas fa-wrench"></i> Service booking integration under construction
+                        </div>
+                    </div>
+
+                    <!-- Product Recommendations -->
+                    <div class="recommendations">
+                        <h5 class="fw-bold mb-3">
+                            <i class="fas fa-lightbulb"></i> Customers Also Bought
+                        </h5>
+                        <div class="row g-3" id="recommendations">
+                            <!-- Recommendations will be dynamically inserted -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Column - Order Summary -->
+                <div class="col-lg-4">
+                    
+                    <!-- Cart Summary -->
+                    <div class="cart-summary p-3 mb-4">
+                        <h5 class="fw-bold mb-3">Order Summary</h5>
+                        
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span id="subtotal">$0.00</span>
+                        </div>
+                        
+                        <div class="summary-row" id="volumeDiscountRow" style="display: none;">
+                            <span>Volume Discount:</span>
+                            <span id="volumeDiscount" class="text-success">-$0.00</span>
+                        </div>
+                        
+                        <div class="summary-row" id="wholesaleDiscountRow" style="display: none;">
+                            <span>Wholesale Pricing:</span>
+                            <span id="wholesaleDiscount" class="text-primary">-$0.00</span>
+                        </div>
+                        
+                        <div class="summary-row">
+                            <span>Shipping:</span>
+                            <span id="shipping" class="text-success fw-bold">FREE</span>
+                        </div>
+                        
+                        <div class="summary-row">
+                            <span>Tax (UT 7.75%):</span>
+                            <span id="tax">$0.00</span>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="summary-row total-row">
+                            <span>Total:</span>
+                            <span id="total">$0.00</span>
+                        </div>
+                        
+                        <div id="freeShippingProgress" class="mt-3" style="display: none;">
+                            <small class="text-muted">Add <span id="freeShippingAmount"></span> more for free shipping!</small>
+                            <div class="progress mt-1">
+                                <div id="freeShippingBar" class="progress-bar bg-success" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <div id="wholesaleMinimum" class="mt-3" style="display: none;">
+                            <div class="alert alert-info">
+                                <small><i class="fas fa-info-circle"></i> Wholesale minimum order: $100</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coupon Code Section -->
+                    <div class="mb-4">
+                        <div class="input-group">
+                            <input type="text" id="couponCode" class="form-control" placeholder="Enter coupon code">
+                            <button class="btn btn-outline-primary" onclick="applyCoupon()">Apply</button>
+                        </div>
+                        <div class="under-construction mt-2">
+                            <i class="fas fa-wrench"></i> Stripe coupon integration under construction
+                        </div>
+                    </div>
+
+                    <!-- Checkout Section -->
+                    <div class="checkout-section">
+                        <h5 class="fw-bold mb-3 text-center">Secure Checkout</h5>
+                        
+                        <!-- Payment Methods -->
+                        <div class="payment-methods">
+                            <div class="payment-method">
+                                <i class="fab fa-cc-visa fa-2x"></i>
+                            </div>
+                            <div class="payment-method">
+                                <i class="fab fa-cc-mastercard fa-2x"></i>
+                            </div>
+                            <div class="payment-method">
+                                <i class="fab fa-cc-amex fa-2x"></i>
+                            </div>
+                            <div class="payment-method">
+                                <i class="fab fa-paypal fa-2x"></i>
+                            </div>
+                            <div class="payment-method">
+                                <i class="fab fa-apple-pay fa-2x"></i>
+                            </div>
+                        </div>
+
+                        <!-- Checkout Buttons -->
+                        <div class="d-grid gap-2">
+                            <button id="checkoutBtn" class="btn btn-primary btn-lg" onclick="proceedToCheckout()">
+                                <i class="fas fa-lock"></i> Secure Checkout
+                                <div class="loading-spinner ms-2" id="checkoutSpinner"></div>
+                            </button>
+                            
+                            <button class="btn btn-outline-primary" onclick="requestQuote()">
+                                <i class="fas fa-file-invoice"></i> Request Custom Quote
+                            </button>
+                            
+                            <div class="row g-2 mt-1">
+                                <div class="col-6">
+                                    <button class="btn btn-outline-secondary w-100" onclick="callForOrder()">
+                                        <i class="fas fa-phone"></i> Call to Order
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button class="btn btn-outline-info w-100" onclick="emailCart()">
+                                        <i class="fas fa-envelope"></i> Email Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="under-construction text-center mt-3">
+                            <i class="fas fa-wrench"></i> Stripe payment processing under construction
+                        </div>
+
+                        <!-- Security Badges -->
+                        <div class="security-badges">
+                            <div class="security-badge">
+                                <i class="fas fa-shield-alt text-success"></i>
+                                <span>SSL Secured</span>
+                            </div>
+                            <div class="security-badge">
+                                <i class="fas fa-lock text-primary"></i>
+                                <span>PCI Compliant</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Options -->
+                    <div class="mt-4 text-center">
+                        <h6 class="fw-bold">Account Options</h6>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary btn-sm" onclick="guestCheckout()">
+                                <i class="fas fa-user"></i> Continue as Guest
+                            </button>
+                            <button class="btn btn-outline-success btn-sm" onclick="createAccount()">
+                                <i class="fas fa-user-plus"></i> Create Account
+                            </button>
+                            <button class="btn btn-outline-info btn-sm" onclick="loginAccount()">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </button>
+                        </div>
+                        <div class="under-construction mt-2">
+                            <i class="fas fa-wrench"></i> User authentication under construction
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Social Sharing -->
+            <div class="social-sharing mt-4">
+                <h6 class="fw-bold mb-3">Share Your Cart</h6>
+                <p class="text-muted mb-3">Let others know about these great products!</p>
+                <div>
+                    <button class="share-btn" onclick="shareCart('facebook')">
+                        <i class="fab fa-facebook-f"></i>
+                    </button>
+                    <button class="share-btn" onclick="shareCart('twitter')">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="share-btn" onclick="shareCart('linkedin')">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="share-btn" onclick="shareCart('email')">
+                        <i class="fas fa-envelope"></i>
+                    </button>
+                    <button class="share-btn" onclick="shareCart('copy')">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                <div class="under-construction mt-2">
+                    <i class="fas fa-wrench"></i> Social sharing functionality under construction
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Organic Hypo Solutions</h5>
+                    <p>Utah's premier provider of USDA Certified Organic hypochlorous acid products and services.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <h6>Secure Shopping</h6>
+                    <p>Your payment information is protected with bank-level security.</p>
+                    <div class="d-flex justify-content-md-end gap-2">
+                        <span class="badge bg-success">SSL Secured</span>
+                        <span class="badge bg-primary">PCI Compliant</span>
+                        <span class="badge bg-info">Stripe Protected</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEKE217WEY"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-HEKE217WEY');
+    </script>
+
+    <!-- Cart JavaScript -->
+    <script>
+        // Product Database with Current Pricing
+        const productDatabase = {
+            '3oz-multi-use': {
+                id: '3oz-multi-use',
+                name: '3oz Multi-Use Disinfectant',
+                category: 'Health & Beauty',
+                price: 13.99,
+                wholesalePrice: 8.99,
+                image: 'https://via.placeholder.com/80x80?text=3oz',
+                description: 'Perfect for wound care, skincare, travel sanitization',
+                isPremium: false,
+                margin: 35.2
+            },
+            '8oz-hc-pure': {
+                id: '8oz-hc-pure',
+                name: '8oz HC-Pure Skin Health Mist',
+                category: 'Health & Beauty',
+                price: 19.99,
+                wholesalePrice: 12.99,
+                image: 'https://via.placeholder.com/80x80?text=8oz',
+                description: 'Professional skincare and beauty applications',
+                isPremium: true,
+                margin: 42.1
+            },
+            '32oz-ready-to-use': {
+                id: '32oz-ready-to-use',
+                name: '32oz Multi-Use Cleaner Ready to Use',
+                category: 'Home & Garden',
+                price: 32.99,
+                wholesalePrice: 22.99,
+                image: 'https://via.placeholder.com/80x80?text=32oz',
+                description: 'Perfect for household cleaning and disinfection',
+                isPremium: false,
+                margin: 38.5
+            },
+            '32oz-pet-cleaner': {
+                id: '32oz-pet-cleaner',
+                name: '32oz Pet Cleaner and Deodorizer',
+                category: 'Pet Care',
+                price: 32.99,
+                wholesalePrice: 22.99,
+                image: 'https://via.placeholder.com/80x80?text=Pet',
+                description: 'Safe for pets, eliminates odors naturally',
+                isPremium: false,
+                margin: 38.5
+            },
+            '1gal-ready-to-use': {
+                id: '1gal-ready-to-use',
+                name: '1 Gallon Ready to Use',
+                category: 'Home & Garden',
+                price: 69.99,
+                wholesalePrice: 52.99,
+                image: 'https://via.placeholder.com/80x80?text=1GAL',
+                description: 'Bulk solution for large applications',
+                isPremium: true,
+                margin: 45.89
+            },
+            '1gal-500ppm': {
+                id: '1gal-500ppm',
+                name: '1 Gallon 500ppm Organic',
+                category: 'Industrial',
+                price: 89.99,
+                wholesalePrice: 69.99,
+                image: 'https://via.placeholder.com/80x80?text=500ppm',
+                description: 'High-concentration for professional use',
+                isPremium: true,
+                margin: 45.89
+            },
+            'healing-serum': {
+                id: 'healing-serum',
+                name: 'HC-Pure Healing Skin Serum',
+                category: 'Health & Beauty',
+                price: 39.99,
+                wholesalePrice: 24.99,
+                image: 'https://via.placeholder.com/80x80?text=Serum',
+                description: 'Advanced healing formula for skin repair',
+                isPremium: true,
+                margin: 44.2
+            },
+            'diaper-rash-gel': {
+                id: 'diaper-rash-gel',
+                name: '100ml Diaper Rash Gel',
+                category: 'Baby Care',
+                price: 39.99,
+                wholesalePrice: 24.99,
+                image: 'https://via.placeholder.com/80x80?text=Baby',
+                description: 'Gentle, effective relief for babies',
+                isPremium: true,
+                margin: 44.2
+            },
+            'laundry-booster': {
+                id: 'laundry-booster',
+                name: 'Laundry Booster & Sanitizer',
+                category: 'Industrial',
+                price: 24.99,
+                wholesalePrice: 16.99,
+                image: 'https://via.placeholder.com/80x80?text=Laundry',
+                description: 'Boost cleaning power in your wash',
+                isPremium: true,
+                margin: 45.89
+            }
+        };
+
+        // Volume Discount Tiers
+        const volumeDiscounts = {
+            5: 0.05,   // 5% discount for 5+ units
+            10: 0.10,  // 10% discount for 10+ units
+            25: 0.15,  // 15% discount for 25+ units
+            50: 0.20   // 20% discount for 50+ units
+        };
+
+        // Cart state management
+        let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+        let isWholesaleCustomer = localStorage.getItem('ohsWholesaleCustomer') === 'true';
+        let customerType = localStorage.getItem('ohsCustomerType') || 'retail';
+
+        // Tax rates
+        const TAX_RATE = 0.0775; // Utah sales tax 7.75%
+        const FREE_SHIPPING_THRESHOLD = 50;
+        const WHOLESALE_MINIMUM = 100;
+
+        // Initialize cart on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCart();
+            updateCartDisplay();
+            loadRecommendations();
+            
+            // Start with empty cart in production
+            // Demo data commented out - uncomment for testing
+            /*
+            if (cart.length === 0) {
+                addDemoItems();
+            }
+            */
+        });
+
+        function addDemoItems() {
+            // Add some demo items for testing
+            cart = [
+                { productId: '3oz-multi-use', quantity: 2 },
+                { productId: '8oz-hc-pure', quantity: 1 },
+                { productId: '32oz-pet-cleaner', quantity: 3 },
+                { productId: '1gal-500ppm', quantity: 1 }
+            ];
+            saveCart();
+            updateCartDisplay();
+        }
+
+        function loadCart() {
+            const cartItems = document.getElementById('cartItems');
+            const emptyCart = document.getElementById('emptyCart');
+            
+            if (cart.length === 0) {
+                cartItems.style.display = 'none';
+                emptyCart.style.display = 'block';
+                return;
+            }
+            
+            cartItems.style.display = 'block';
+            emptyCart.style.display = 'none';
+            
+            cartItems.innerHTML = '';
+            
+            cart.forEach((item, index) => {
+                const product = productDatabase[item.productId];
+                if (!product) return;
+                
+                const cartItemHTML = createCartItemHTML(product, item, index);
+                cartItems.innerHTML += cartItemHTML;
+            });
+        }
+
+        function createCartItemHTML(product, item, index) {
+            const currentPrice = isWholesaleCustomer ? product.wholesalePrice : product.price;
+            const totalPrice = currentPrice * item.quantity;
+            const volumeDiscount = calculateVolumeDiscount(item.quantity);
+            const discountedPrice = currentPrice * (1 - volumeDiscount);
+            const finalPrice = discountedPrice * item.quantity;
+            
+            return `
+                <div class="cart-item ${product.isPremium ? 'premium-product' : ''}" data-product-id="${product.id}">
+                    ${product.isPremium ? '<div class="premium-badge">Premium</div>' : ''}
+                    
+                    <div class="row align-items-center">
+                        <div class="col-md-2">
+                            <img src="${product.image}" alt="${product.name}" class="product-image">
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <h6 class="fw-bold mb-1">${product.name}</h6>
+                            <p class="text-muted small mb-1">${product.description}</p>
+                            <div class="d-flex gap-1 flex-wrap">
+                                <span class="badge bg-secondary">${product.category}</span>
+                                ${isWholesaleCustomer ? '<span class="wholesale-badge">Wholesale</span>' : ''}
+                                ${volumeDiscount > 0 ? `<span class="volume-discount">${Math.round(volumeDiscount * 100)}% Off</span>` : ''}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-2">
+                            <div class="pricing-tier">
+                                ${volumeDiscount > 0 ? `<div class="text-decoration-line-through text-muted">${currentPrice.toFixed(2)}</div>` : ''}
+                                <div class="fw-bold text-primary">${discountedPrice.toFixed(2)}</div>
+                                ${isWholesaleCustomer ? '<small class="text-info">Wholesale Price</small>' : ''}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-2">
+                            <div class="quantity-controls">
+                                <button class="quantity-btn" onclick="updateQuantity(${index}, ${item.quantity - 1})">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="number" class="quantity-input" value="${item.quantity}" 
+                                       onchange="updateQuantity(${index}, this.value)" min="0">
+                                <button class="quantity-btn" onclick="updateQuantity(${index}, ${item.quantity + 1})">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-1">
+                            <div class="fw-bold text-success">${finalPrice.toFixed(2)}</div>
+                            ${volumeDiscount > 0 ? `<small class="text-success">Saved ${(totalPrice - finalPrice).toFixed(2)}</small>` : ''}
+                        </div>
+                        
+                        <div class="col-md-1 text-end">
+                            <button class="btn btn-outline-danger btn-sm" onclick="removeItem(${index})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm mt-1" onclick="saveForLater(${index})">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateQuantity(index, newQuantity) {
+            newQuantity = parseInt(newQuantity);
+            if (newQuantity <= 0) {
+                removeItem(index);
+                return;
+            }
+            
+            cart[index].quantity = newQuantity;
+            saveCart();
+            updateCartDisplay();
+            
+            // Analytics tracking
+            gtag('event', 'change_quantity', {
+                'event_category': 'ecommerce',
+                'event_label': productDatabase[cart[index].productId].name,
+                'value': newQuantity
+            });
+        }
+
+        function removeItem(index) {
+            const product = productDatabase[cart[index].productId];
+            
+            // Analytics tracking
+            gtag('event', 'remove_from_cart', {
+                'event_category': 'ecommerce',
+                'event_label': product.name,
+                'value': product.price
+            });
+            
+            cart.splice(index, 1);
+            saveCart();
+            updateCartDisplay();
+        }
+
+        function clearCart() {
+            if (confirm('Are you sure you want to clear your cart?')) {
+                cart = [];
+                saveCart();
+                updateCartDisplay();
+                
+                // Analytics tracking
+                gtag('event', 'clear_cart', {
+                    'event_category': 'ecommerce'
+                });
+            }
+        }
+
+        function saveForLater(index) {
+            alert('Save for later functionality coming soon! This requires user authentication.');
+            // TODO: Implement save for later with user accounts
+        }
+
+        function calculateVolumeDiscount(quantity) {
+            for (const [minQty, discount] of Object.entries(volumeDiscounts).reverse()) {
+                if (quantity >= parseInt(minQty)) {
+                    return discount;
+                }
+            }
+            return 0;
+        }
+
+        function calculateCartTotals() {
+            let subtotal = 0;
+            let totalVolumeDiscount = 0;
+            let totalWholesaleDiscount = 0;
+            
+            cart.forEach(item => {
+                const product = productDatabase[item.productId];
+                if (!product) return;
+                
+                const retailPrice = product.price;
+                const currentPrice = isWholesaleCustomer ? product.wholesalePrice : retailPrice;
+                const volumeDiscount = calculateVolumeDiscount(item.quantity);
+                const discountedPrice = currentPrice * (1 - volumeDiscount);
+                const itemTotal = discountedPrice * item.quantity;
+                
+                subtotal += itemTotal;
+                
+                if (volumeDiscount > 0) {
+                    totalVolumeDiscount += (currentPrice - discountedPrice) * item.quantity;
+                }
+                
+                if (isWholesaleCustomer) {
+                    totalWholesaleDiscount += (retailPrice - product.wholesalePrice) * item.quantity;
+                }
+            });
+            
+            const tax = subtotal * TAX_RATE;
+            const total = subtotal + tax;
+            
+            return {
+                subtotal,
+                totalVolumeDiscount,
+                totalWholesaleDiscount,
+                tax,
+                total,
+                itemCount: cart.reduce((sum, item) => sum + item.quantity, 0)
+            };
+        }
+
+        function updateCartDisplay() {
+            const totals = calculateCartTotals();
+            
+            // Update item count
+            document.getElementById('itemCount').textContent = `${totals.itemCount} item${totals.itemCount !== 1 ? 's' : ''}`;
+            document.getElementById('cartBadge').textContent = totals.itemCount;
+            document.getElementById('cartBadge').style.display = totals.itemCount > 0 ? 'block' : 'none';
+            
+            // Update price displays
+            document.getElementById('subtotal').textContent = `${totals.subtotal.toFixed(2)}`;
+            document.getElementById('tax').textContent = `${totals.tax.toFixed(2)}`;
+            document.getElementById('total').textContent = `${totals.total.toFixed(2)}`;
+            
+            // Volume discount display
+            const volumeDiscountRow = document.getElementById('volumeDiscountRow');
+            if (totals.totalVolumeDiscount > 0) {
+                volumeDiscountRow.style.display = 'flex';
+                document.getElementById('volumeDiscount').textContent = `-${totals.totalVolumeDiscount.toFixed(2)}`;
+            } else {
+                volumeDiscountRow.style.display = 'none';
+            }
+            
+            // Wholesale discount display
+            const wholesaleDiscountRow = document.getElementById('wholesaleDiscountRow');
+            if (totals.totalWholesaleDiscount > 0) {
+                wholesaleDiscountRow.style.display = 'flex';
+                document.getElementById('wholesaleDiscount').textContent = `-${totals.totalWholesaleDiscount.toFixed(2)}`;
+            } else {
+                wholesaleDiscountRow.style.display = 'none';
+            }
+            
+            // Free shipping progress
+            const freeShippingProgress = document.getElementById('freeShippingProgress');
+            if (totals.subtotal < FREE_SHIPPING_THRESHOLD && totals.subtotal > 0) {
+                const remaining = FREE_SHIPPING_THRESHOLD - totals.subtotal;
+                const progress = (totals.subtotal / FREE_SHIPPING_THRESHOLD) * 100;
+                
+                freeShippingProgress.style.display = 'block';
+                document.getElementById('freeShippingAmount').textContent = `${remaining.toFixed(2)}`;
+                document.getElementById('freeShippingBar').style.width = `${progress}%`;
+            } else {
+                freeShippingProgress.style.display = 'none';
+            }
+            
+            // Wholesale minimum warning
+            const wholesaleMinimum = document.getElementById('wholesaleMinimum');
+            if (isWholesaleCustomer && totals.subtotal < WHOLESALE_MINIMUM && totals.subtotal > 0) {
+                wholesaleMinimum.style.display = 'block';
+            } else {
+                wholesaleMinimum.style.display = 'none';
+            }
+            
+            // Reload cart items display
+            loadCart();
+        }
+
+        function loadRecommendations() {
+            const recommendationsContainer = document.getElementById('recommendations');
+            const cartProductIds = cart.map(item => item.productId);
+            
+            // Filter out products already in cart
+            const availableProducts = Object.values(productDatabase)
+                .filter(product => !cartProductIds.includes(product.id))
+                .slice(0, 3);
+            
+            const recommendationsHTML = availableProducts.map(product => `
+                <div class="col-md-4">
+                    <div class="recommendation-item" onclick="addToCart('${product.id}')">
+                        <img src="${product.image}" alt="${product.name}" class="product-image mb-2">
+                        <h6 class="fw-bold">${product.name}</h6>
+                        <p class="small text-muted">${product.description}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold text-primary">${(isWholesaleCustomer ? product.wholesalePrice : product.price).toFixed(2)}</span>
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            recommendationsContainer.innerHTML = recommendationsHTML;
+        }
+
+        function addToCart(productId, quantity = 1) {
+            const existingItemIndex = cart.findIndex(item => item.productId === productId);
+            
+            if (existingItemIndex >= 0) {
+                cart[existingItemIndex].quantity += quantity;
+            } else {
+                cart.push({ productId, quantity });
+            }
+            
+            saveCart();
+            updateCartDisplay();
+            
+            // Analytics tracking
+            const product = productDatabase[productId];
+            gtag('event', 'add_to_cart', {
+                'event_category': 'ecommerce',
+                'event_label': product.name,
+                'value': product.price,
+                'items': [{
+                    'item_id': productId,
+                    'item_name': product.name,
+                    'item_category': product.category,
+                    'quantity': quantity,
+                    'price': product.price
+                }]
+            });
+            
+            // Show success message
+            showNotification(`${product.name} added to cart!`, 'success');
+        }
+
+        function saveCart() {
+            localStorage.setItem('ohsCart', JSON.stringify(cart));
+        }
+
+        function proceedToCheckout() {
+            const totals = calculateCartTotals();
+            
+            if (cart.length === 0) {
+                alert('Your cart is empty. Please add some products before checkout.');
+                return;
+            }
+            
+            if (isWholesaleCustomer && totals.subtotal < WHOLESALE_MINIMUM) {
+                alert(`Wholesale orders require a minimum of ${WHOLESALE_MINIMUM}. Please add more items.`);
+                return;
+            }
+            
+            // Show loading spinner
+            document.getElementById('checkoutSpinner').style.display = 'inline-block';
+            document.getElementById('checkoutBtn').disabled = true;
+            
+            // Analytics tracking
+            gtag('event', 'begin_checkout', {
+                'event_category': 'ecommerce',
+                'value': totals.total,
+                'currency': 'USD',
+                'items': cart.map(item => {
+                    const product = productDatabase[item.productId];
+                    return {
+                        'item_id': item.productId,
+                        'item_name': product.name,
+                        'item_category': product.category,
+                        'quantity': item.quantity,
+                        'price': isWholesaleCustomer ? product.wholesalePrice : product.price
+                    };
+                })
+            });
+            
+            // Simulate checkout process
+            setTimeout(() => {
+                alert('Stripe checkout integration is under construction. Your cart has been saved and you can call (801) 712-5663 to complete your order.');
+                document.getElementById('checkoutSpinner').style.display = 'none';
+                document.getElementById('checkoutBtn').disabled = false;
+            }, 2000);
+            
+            // TODO: Implement actual Stripe checkout
+            // createStripeCheckoutSession(cart);
+        }
+
+        function applyCoupon() {
+            const couponCode = document.getElementById('couponCode').value.trim();
+            
+            if (!couponCode) {
+                alert('Please enter a coupon code.');
+                return;
+            }
+            
+            // TODO: Implement Stripe coupon validation
+            alert('Coupon functionality is under construction. Please call (801) 712-5663 for discount codes.');
+        }
+
+        function requestQuote() {
+            const totals = calculateCartTotals();
+            const cartSummary = cart.map(item => {
+                const product = productDatabase[item.productId];
+                return `${item.quantity}x ${product.name}`;
+            }).join('\n');
+            
+            const quoteMessage = `Custom Quote Request\n\nItems:\n${cartSummary}\n\nSubtotal: ${totals.subtotal.toFixed(2)}\nEstimated Total: ${totals.total.toFixed(2)}`;
+            
+            window.open(`https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform?entry.1234567890=${encodeURIComponent(quoteMessage)}`, '_blank');
+        }
+
+        function callForOrder() {
+            const phoneNumber = '(801) 712-5663';
+            if (confirm(`Call ${phoneNumber} to complete your order?`)) {
+                window.open(`tel:+18017125663`);
+            }
+        }
+
+        function emailCart() {
+            const totals = calculateCartTotals();
+            const cartSummary = cart.map(item => {
+                const product = productDatabase[item.productId];
+                const currentPrice = isWholesaleCustomer ? product.wholesalePrice : product.price;
+                return `${item.quantity}x ${product.name} - ${(currentPrice * item.quantity).toFixed(2)}`;
+            }).join('\n');
+            
+            const emailBody = `My Organic Hypo Solutions Cart\n\n${cartSummary}\n\nSubtotal: ${totals.subtotal.toFixed(2)}\nTax: ${totals.tax.toFixed(2)}\nTotal: ${totals.total.toFixed(2)}\n\nPlease contact me to complete this order.\n\nThank you!`;
+            
+            window.open(`mailto:info@organichyposolutions.com?subject=Cart Order Request&body=${encodeURIComponent(emailBody)}`);
+        }
+
+        function guestCheckout() {
+            alert('Guest checkout is under construction. Please call (801) 712-5663 to complete your order.');
+        }
+
+        function createAccount() {
+            alert('Account creation is under construction. Please call (801) 712-5663 for wholesale accounts.');
+        }
+
+        function loginAccount() {
+            alert('User login is under construction. Please call (801) 712-5663 for account access.');
+        }
+
+        function shareCart(platform) {
+            const totals = calculateCartTotals();
+            const cartUrl = window.location.href;
+            const shareText = `Check out these amazing USDA Certified Organic HOCl products from Organic Hypo Solutions! Cart total: ${totals.total.toFixed(2)}`;
+            
+            switch(platform) {
+                case 'facebook':
+                    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(cartUrl)}&quote=${encodeURIComponent(shareText)}`);
+                    break;
+                case 'twitter':
+                    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(cartUrl)}`);
+                    break;
+                case 'linkedin':
+                    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(cartUrl)}`);
+                    break;
+                case 'email':
+                    window.open(`mailto:?subject=Check out my cart&body=${encodeURIComponent(shareText + '\n\n' + cartUrl)}`);
+                    break;
+                case 'copy':
+                    navigator.clipboard.writeText(cartUrl).then(() => {
+                        showNotification('Cart link copied to clipboard!', 'success');
+                    });
+                    break;
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            // Create a simple notification
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} position-fixed`;
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            notification.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>${message}</span>
+                    <button type="button" class="btn-close" onclick="this.parentElement.parentElement.remove()"></button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+
+        // Toggle wholesale customer (for testing)
+        function toggleWholesaleCustomer() {
+            isWholesaleCustomer = !isWholesaleCustomer;
+            localStorage.setItem('ohsWholesaleCustomer', isWholesaleCustomer.toString());
+            updateCartDisplay();
+            showNotification(`Switched to ${isWholesaleCustomer ? 'Wholesale' : 'Retail'} pricing`, 'info');
+        }
+
+        // Add keyboard shortcut for wholesale toggle (for testing)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.altKey && e.key === 'w') {
+                toggleWholesaleCustomer();
+            }
+        });
+    </script>
+</body>
+</html>
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <!-- OHS Logo -->
+                <svg width="40" height="40" viewBox="0 0 400 250" class="me-2">
+                    <rect width="400" height="250" fill="#2E5EAA"/>
+                    <text x="200" y="180" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="100" font-weight="bold">OHS</text>
+                    <text x="200" y="210" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="20">Organic HypoSolutions</text>
+                    <!-- Green leaf accent -->
+                    <path d="M 320 80 Q 340 60 360 80 Q 340 100 320 80" fill="#4ADE80"/>
+                    <path d="M 330 70 Q 350 50 370 70 Q 350 90 330 70" fill="#22C55E"/>
+                </svg>
+                    <h5>Organic Hyposolutions</h5>
+                    <p>Utah's premier USDA Certified Organic HOCl sanitization services</p>
+                    <p><small>Utah Business License #14565171-0160 | EPA Registration #97801-1</small></p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="mb-3">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGhElEQVR4nO2dTYgcRRTH/6+6Z2YTIyaQBBONHwRBQRFBEBEPKh5E8KQnD4KCBy8ePHjw4MGDB714EBHEk4KCB08ePAiCBw8ePHjw4MGDB0/iQRDEg4KCBxHBg+BBEBHfq+6Z7p7Z2Z3Z3Z3u6e7/D4qZ6uruql/Xq3r1Xr2qARFJgQAgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiCE="
+                             alt="QR Code for Organic Hypo Solutions"
+                             class="footer-qr-code"
+                             title="Scan to visit organichyposolutions.com">
+                    </div>
+                    <p><small>📱 Scan QR Code<br>organichyposolutions.com</small></p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <p>📞 (801) 712-5663 | ✉️ ohshocl@gmail.com</p>
+                    <div class="mb-2">
+                        <a href="legal-information.html" class="text-white text-decoration-none me-3">Legal Information</a>
+                        <a href="science-certifications.html" class="text-white text-decoration-none">Certifications</a>
+                    </div>
+                    <p><small>&copy; 2025 Organic Hyposolutions. All rights reserved.</small></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+ <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
