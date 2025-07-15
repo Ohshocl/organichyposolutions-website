@@ -58,6 +58,42 @@
             color: var(--primary-color) !important;
         }
 
+        /* Fix hover effects for navigation */
+        .nav-link {
+            color: #333 !important;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-color) !important;
+        }
+
+        /* Dropdown menu styling */
+        .dropdown-menu {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 8px;
+        }
+
+        .dropdown-item {
+            padding: 0.75rem 1.25rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--light-bg);
+            color: var(--primary-color);
+        }
+
+        .dropdown-item i {
+            width: 20px;
+            margin-right: 8px;
+        }
+
+        .badge {
+            font-size: 0.7rem;
+        }
+
         .hero-section {
             background: linear-gradient(135deg, var(--primary-color), #20c997);
             color: white;
@@ -365,7 +401,7 @@
             </svg>
             Organic HypoSolutions
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
@@ -381,7 +417,7 @@
                 
                 <!-- Customer Shopping & Account -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-shopping-bag"></i> Shop
                     </a>
                     <ul class="dropdown-menu">
@@ -403,7 +439,7 @@
                 </li>
                 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-user"></i> Account
                     </a>
                     <ul class="dropdown-menu">
@@ -720,7 +756,7 @@
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
+    <!-- Bootstrap JS - MAKE SURE THIS IS LOADED BEFORE CUSTOM JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Google Analytics -->
@@ -934,8 +970,8 @@
                         
                         <div class="col-md-2">
                             <div class="pricing-tier">
-                                ${volumeDiscount > 0 ? `<div class="text-decoration-line-through text-muted">${currentPrice.toFixed(2)}</div>` : ''}
-                                <div class="fw-bold text-primary">${discountedPrice.toFixed(2)}</div>
+                                ${volumeDiscount > 0 ? `<div class="text-decoration-line-through text-muted">$${currentPrice.toFixed(2)}</div>` : ''}
+                                <div class="fw-bold text-primary">$${discountedPrice.toFixed(2)}</div>
                                 ${isWholesaleCustomer ? '<small class="text-info">Wholesale Price</small>' : ''}
                             </div>
                         </div>
@@ -954,8 +990,8 @@
                         </div>
                         
                         <div class="col-md-1">
-                            <div class="fw-bold text-success">${finalPrice.toFixed(2)}</div>
-                            ${volumeDiscount > 0 ? `<small class="text-success">Saved ${(totalPrice - finalPrice).toFixed(2)}</small>` : ''}
+                            <div class="fw-bold text-success">$${finalPrice.toFixed(2)}</div>
+                            ${volumeDiscount > 0 ? `<small class="text-success">Saved $${(totalPrice - finalPrice).toFixed(2)}</small>` : ''}
                         </div>
                         
                         <div class="col-md-1 text-end">
@@ -1076,19 +1112,23 @@
             
             // Update item count
             document.getElementById('itemCount').textContent = `${totals.itemCount} item${totals.itemCount !== 1 ? 's' : ''}`;
-            document.getElementById('cartBadge').textContent = totals.itemCount;
-            document.getElementById('cartBadge').style.display = totals.itemCount > 0 ? 'block' : 'none';
+            
+            const cartBadge = document.getElementById('cartBadge');
+            if (cartBadge) {
+                cartBadge.textContent = totals.itemCount;
+                cartBadge.style.display = totals.itemCount > 0 ? 'inline-block' : 'none';
+            }
             
             // Update price displays
-            document.getElementById('subtotal').textContent = `${totals.subtotal.toFixed(2)}`;
-            document.getElementById('tax').textContent = `${totals.tax.toFixed(2)}`;
-            document.getElementById('total').textContent = `${totals.total.toFixed(2)}`;
+            document.getElementById('subtotal').textContent = `$${totals.subtotal.toFixed(2)}`;
+            document.getElementById('tax').textContent = `$${totals.tax.toFixed(2)}`;
+            document.getElementById('total').textContent = `$${totals.total.toFixed(2)}`;
             
             // Volume discount display
             const volumeDiscountRow = document.getElementById('volumeDiscountRow');
             if (totals.totalVolumeDiscount > 0) {
                 volumeDiscountRow.style.display = 'flex';
-                document.getElementById('volumeDiscount').textContent = `-${totals.totalVolumeDiscount.toFixed(2)}`;
+                document.getElementById('volumeDiscount').textContent = `-$${totals.totalVolumeDiscount.toFixed(2)}`;
             } else {
                 volumeDiscountRow.style.display = 'none';
             }
@@ -1097,7 +1137,7 @@
             const wholesaleDiscountRow = document.getElementById('wholesaleDiscountRow');
             if (totals.totalWholesaleDiscount > 0) {
                 wholesaleDiscountRow.style.display = 'flex';
-                document.getElementById('wholesaleDiscount').textContent = `-${totals.totalWholesaleDiscount.toFixed(2)}`;
+                document.getElementById('wholesaleDiscount').textContent = `-$${totals.totalWholesaleDiscount.toFixed(2)}`;
             } else {
                 wholesaleDiscountRow.style.display = 'none';
             }
@@ -1109,7 +1149,7 @@
                 const progress = (totals.subtotal / FREE_SHIPPING_THRESHOLD) * 100;
                 
                 freeShippingProgress.style.display = 'block';
-                document.getElementById('freeShippingAmount').textContent = `${remaining.toFixed(2)}`;
+                document.getElementById('freeShippingAmount').textContent = `$${remaining.toFixed(2)}`;
                 document.getElementById('freeShippingBar').style.width = `${progress}%`;
             } else {
                 freeShippingProgress.style.display = 'none';
@@ -1143,7 +1183,7 @@
                         <h6 class="fw-bold">${product.name}</h6>
                         <p class="small text-muted">${product.description}</p>
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-bold text-primary">${(isWholesaleCustomer ? product.wholesalePrice : product.price).toFixed(2)}</span>
+                            <span class="fw-bold text-primary">$${(isWholesaleCustomer ? product.wholesalePrice : product.price).toFixed(2)}</span>
                             <button class="btn btn-primary btn-sm">
                                 <i class="fas fa-plus"></i>
                             </button>
@@ -1199,7 +1239,7 @@
             }
             
             if (isWholesaleCustomer && totals.subtotal < WHOLESALE_MINIMUM) {
-                alert(`Wholesale orders require a minimum of ${WHOLESALE_MINIMUM}. Please add more items.`);
+                alert(`Wholesale orders require a minimum of $${WHOLESALE_MINIMUM}. Please add more items.`);
                 return;
             }
             
@@ -1254,7 +1294,7 @@
                 return `${item.quantity}x ${product.name}`;
             }).join('\n');
             
-            const quoteMessage = `Custom Quote Request\n\nItems:\n${cartSummary}\n\nSubtotal: ${totals.subtotal.toFixed(2)}\nEstimated Total: ${totals.total.toFixed(2)}`;
+            const quoteMessage = `Custom Quote Request\n\nItems:\n${cartSummary}\n\nSubtotal: $${totals.subtotal.toFixed(2)}\nEstimated Total: $${totals.total.toFixed(2)}`;
             
             window.open(`https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform?entry.1234567890=${encodeURIComponent(quoteMessage)}`, '_blank');
         }
@@ -1271,10 +1311,10 @@
             const cartSummary = cart.map(item => {
                 const product = productDatabase[item.productId];
                 const currentPrice = isWholesaleCustomer ? product.wholesalePrice : product.price;
-                return `${item.quantity}x ${product.name} - ${(currentPrice * item.quantity).toFixed(2)}`;
+                return `${item.quantity}x ${product.name} - $${(currentPrice * item.quantity).toFixed(2)}`;
             }).join('\n');
             
-            const emailBody = `My Organic Hypo Solutions Cart\n\n${cartSummary}\n\nSubtotal: ${totals.subtotal.toFixed(2)}\nTax: ${totals.tax.toFixed(2)}\nTotal: ${totals.total.toFixed(2)}\n\nPlease contact me to complete this order.\n\nThank you!`;
+            const emailBody = `My Organic Hypo Solutions Cart\n\n${cartSummary}\n\nSubtotal: $${totals.subtotal.toFixed(2)}\nTax: $${totals.tax.toFixed(2)}\nTotal: $${totals.total.toFixed(2)}\n\nPlease contact me to complete this order.\n\nThank you!`;
             
             window.open(`mailto:info@organichyposolutions.com?subject=Cart Order Request&body=${encodeURIComponent(emailBody)}`);
         }
@@ -1294,7 +1334,7 @@
         function shareCart(platform) {
             const totals = calculateCartTotals();
             const cartUrl = window.location.href;
-            const shareText = `Check out these amazing USDA Certified Organic HOCl products from Organic Hypo Solutions! Cart total: ${totals.total.toFixed(2)}`;
+            const shareText = `Check out these amazing USDA Certified Organic HOCl products from Organic Hypo Solutions! Cart total: $${totals.total.toFixed(2)}`;
             
             switch(platform) {
                 case 'facebook':
@@ -1356,44 +1396,3 @@
     </script>
 </body>
 </html>
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-4">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-4">
-                    <!-- OHS Logo -->
-                <svg width="40" height="40" viewBox="0 0 400 250" class="me-2">
-                    <rect width="400" height="250" fill="#2E5EAA"/>
-                    <text x="200" y="180" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="100" font-weight="bold">OHS</text>
-                    <text x="200" y="210" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="20">Organic HypoSolutions</text>
-                    <!-- Green leaf accent -->
-                    <path d="M 320 80 Q 340 60 360 80 Q 340 100 320 80" fill="#4ADE80"/>
-                    <path d="M 330 70 Q 350 50 370 70 Q 350 90 330 70" fill="#22C55E"/>
-                </svg>
-                    <h5>Organic Hyposolutions</h5>
-                    <p>Utah's premier USDA Certified Organic HOCl sanitization services</p>
-                    <p><small>Utah Business License #14565171-0160 | EPA Registration #97801-1</small></p>
-                </div>
-                <div class="col-md-4 text-center">
-                    <div class="mb-3">
-                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGhElEQVR4nO2dTYgcRRTH/6+6Z2YTIyaQBBONHwRBQRFBEBEPKh5E8KQnD4KCBy8ePHjw4MGDB714EBHEk4KCB08ePAiCBw8ePHjw4MGDB0/iQRDEg4KCBxHBg+BBEBHfq+6Z7p7Z2Z3Z3Z3u6e7/D4qZ6uruql/Xq3r1Xr2qARFJgQAgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiCE="
-                             alt="QR Code for Organic Hypo Solutions"
-                             class="footer-qr-code"
-                             title="Scan to visit organichyposolutions.com">
-                    </div>
-                    <p><small>📱 Scan QR Code<br>organichyposolutions.com</small></p>
-                </div>
-                <div class="col-md-4 text-md-end">
-                    <p>📞 (801) 712-5663 | ✉️ ohshocl@gmail.com</p>
-                    <div class="mb-2">
-                        <a href="legal-information.html" class="text-white text-decoration-none me-3">Legal Information</a>
-                        <a href="science-certifications.html" class="text-white text-decoration-none">Certifications</a>
-                    </div>
-                    <p><small>&copy; 2025 Organic Hyposolutions. All rights reserved.</small></p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
- <!-- Bootstrap JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
