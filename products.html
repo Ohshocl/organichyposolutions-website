@@ -516,7 +516,7 @@
                                 <li><i class="fas fa-check"></i>12-18 month shelf life</li>
                             </ul>
                             
-                            <button class="add-to-cart-btn mt-3" onclick="addToCart('3oz-multi-use-disinfectant-and-cleaner', '3oz Multi-Use Disinfectant and Cleaner', 9.00, '🧴')">
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('3oz-multi-use-disinfectant-and-cleaner', '3oz Multi-Use Disinfectant and Cleaner', 9.00, '🧴', 6.50, 50)">
                                 <i class="fas fa-cart-plus me-2"></i>Add to Cart
                             </button>
                         </div>
@@ -535,6 +535,15 @@
                                 <div class="retail-price">Price: $9.00</div>
                             </div>
                             
+                            <div class="volume-pricing">
+                                <h6 class="fw-bold mb-2"><i class="fas fa-calculator me-2"></i>Volume Discounts</h6>
+                                <div class="small">
+                                    <div>1-49 units: $9.00 each</div>
+                                    <div class="text-success fw-bold">50+ units: $6.50 each (Save 28%)</div>
+                                    <div class="text-primary">🏢 Business accounts qualify at lower quantities</div>
+                                </div>
+                            </div>
+                            
                             <div class="certification-badges">
                                 <span class="cert-badge">Travel Size</span>
                                 <span class="cert-badge">Portable</span>
@@ -550,7 +559,7 @@
                                 <li><i class="fas fa-check"></i>Professional strength</li>
                             </ul>
                             
-                            <button class="add-to-cart-btn mt-3" onclick="addToCart('on-the-go-3oz', 'On The Go 3oz', 9.00, '✈️')">
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('on-the-go-3oz', 'On The Go 3oz', 9.00, '✈️', 6.50, 50)">
                                 <i class="fas fa-cart-plus me-2"></i>Add to Cart
                             </button>
                         </div>
@@ -570,6 +579,15 @@
                                 <div class="small text-muted">SKU: 01S.07</div>
                             </div>
                             
+                            <div class="volume-pricing">
+                                <h6 class="fw-bold mb-2"><i class="fas fa-calculator me-2"></i>Volume Discounts</h6>
+                                <div class="small">
+                                    <div>1-24 units: $21.99 each</div>
+                                    <div class="text-success fw-bold">25+ units: $13.50 each (Save 39%)</div>
+                                    <div class="text-primary">🏢 Business accounts qualify at lower quantities</div>
+                                </div>
+                            </div>
+                            
                             <div class="certification-badges">
                                 <span class="cert-badge">EPA Registered</span>
                                 <span class="cert-badge">Ready to Use</span>
@@ -585,7 +603,7 @@
                                 <li><i class="fas fa-check"></i>Professional strength</li>
                             </ul>
                             
-                            <button class="add-to-cart-btn mt-3" onclick="addToCart('1-gallon-ready-to-use', 'EPA Registered 32oz Ready to Use', 21.99, '🏛️')">
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('1-gallon-ready-to-use', 'EPA Registered 32oz Ready to Use', 21.99, '🏛️', 13.50, 25)">
                                 <i class="fas fa-cart-plus me-2"></i>Add to Cart
                             </button>
                         </div>
@@ -620,7 +638,7 @@
                                 <li><i class="fas fa-check"></i>Cost-effective</li>
                             </ul>
                             
-                            <button class="add-to-cart-btn mt-3" onclick="addToCart('1-gallon-ready-to-use-1', 'EPA Registered 1 Gallon Ready to Use', 35.00, '🏢')">
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('1-gallon-ready-to-use-1', 'EPA Registered 1 Gallon Ready to Use', 35.00, '🏢', 20.00, 10)">
                                 <i class="fas fa-cart-plus me-2"></i>Add to Cart
                             </button>
                         </div>
@@ -723,7 +741,7 @@
                                 <li><i class="fas fa-check"></i>Multi-surface safe</li>
                             </ul>
                             
-                            <button class="add-to-cart-btn mt-3" onclick="addToCart('all-in-one-wipes', 'All-In-One Wipes', 12.00, '🧽')">
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('all-in-one-wipes', 'All-In-One Wipes', 12.00, '🧽', 8.00, 20)">
                                 <i class="fas fa-cart-plus me-2"></i>Add to Cart
                             </button>
                         </div>
@@ -1341,30 +1359,59 @@
             updateCartDisplay();
         }
 
-        // Add item to cart
-        function addToCart(id, name, price, emoji) {
+        // Add item to cart with manual quantity input
+        function addToCart(id, name, retailPrice, emoji, wholesalePrice = null, wholesaleThreshold = 25) {
+            // Ask user for quantity
+            const quantityInput = prompt(`How many "${name}" would you like to add to your cart?`, "1");
+            
+            if (quantityInput === null || quantityInput.trim() === "") {
+                return; // User cancelled or entered nothing
+            }
+            
+            const quantity = parseInt(quantityInput);
+            if (isNaN(quantity) || quantity <= 0) {
+                alert("Please enter a valid quantity.");
+                return;
+            }
+            
             const existingItem = cart.find(item => item.productId === id);
             
             if (existingItem) {
-                existingItem.quantity += 1;
+                existingItem.quantity += quantity;
             } else {
                 cart.push({
-                    productId: id,    // ✅ Matches shared cart system
-                    name: name,       // ✅ Store name for display
-                    price: price,     // ✅ Store price for calculations
-                    emoji: emoji,     // ✅ Store emoji for display
-                    quantity: 1       // ✅ Only store essential data
+                    productId: id,
+                    name: name,
+                    retailPrice: retailPrice,
+                    wholesalePrice: wholesalePrice,
+                    wholesaleThreshold: wholesaleThreshold,
+                    emoji: emoji,
+                    quantity: quantity,
+                    price: retailPrice // Default to retail price initially
                 });
             }
             
-            saveCart(); // Save to localStorage
+            // Update pricing for all items
+            updateCartPricing();
+            saveCart();
             updateCartDisplay();
-            showCartNotification(name);
+            showCartNotification(name, quantity);
             
             // Auto-show cart preview
             if (!cartVisible) {
                 toggleCart();
             }
+        }
+
+        // Update pricing based on quantities
+        function updateCartPricing() {
+            cart.forEach(item => {
+                if (item.wholesalePrice && item.quantity >= item.wholesaleThreshold) {
+                    item.price = item.wholesalePrice;
+                } else {
+                    item.price = item.retailPrice;
+                }
+            });
         }
 
         // Update cart badge function
@@ -1435,6 +1482,7 @@
                 if (item.quantity <= 0) {
                     removeFromCart(id);
                 } else {
+                    updateCartPricing(); // Update pricing when quantity changes
                     saveCart();
                     updateCartDisplay();
                 }
@@ -1444,6 +1492,7 @@
         // Remove from cart
         function removeFromCart(id) {
             cart = cart.filter(item => item.productId !== id);
+            updateCartPricing(); // Update pricing after removal
             saveCart();
             updateCartDisplay();
         }
@@ -1460,13 +1509,23 @@
             }
         }
 
-        // Category filtering
+        // Category filtering with unclick functionality
         function filterCategory(category) {
-            // Update active button
+            const clickedBtn = event.target;
+            const isCurrentlyActive = clickedBtn.classList.contains('active');
+            
+            // Update active button - if clicking active button, show all
             document.querySelectorAll('.category-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            event.target.classList.add('active');
+            
+            // If clicking the currently active button, deselect it and show all
+            if (isCurrentlyActive && category !== 'all') {
+                category = 'all';
+                document.querySelector('[data-category="all"]').classList.add('active');
+            } else {
+                clickedBtn.classList.add('active');
+            }
             
             // Show/hide products
             const products = document.querySelectorAll('[data-category]');
