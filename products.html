@@ -298,6 +298,43 @@
             display: inline-block;
         }
         
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .quantity-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .quantity-btn:hover {
+            background: #0056b3;
+            transform: scale(1.1);
+        }
+        
+        .quantity-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
         /* Hide generator products temporarily */
         [data-category="generators"] {
             display: none !important;
@@ -559,7 +596,18 @@
                                 <li><i class="fas fa-check"></i>12-18 month shelf life</li>
                             </ul>
                             
-                            <button class="add-to-cart-btn mt-3" onclick="addToCart('3oz-multi-use-disinfectant-and-cleaner', '3oz Multi-Use Disinfectant and Cleaner', 9.00, '🧴', 6.50, 50)">
+                            <!-- Quantity Selector -->
+                            <div class="quantity-selector">
+                                <button class="quantity-btn" onclick="updateProductQuantity('3oz-multi-use', -1)" id="minus-3oz-multi-use">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <div class="quantity-display" id="qty-3oz-multi-use">1</div>
+                                <button class="quantity-btn" onclick="updateProductQuantity('3oz-multi-use', 1)" id="plus-3oz-multi-use">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            
+                            <button class="add-to-cart-btn mt-3" onclick="addToCartWithQuantity('3oz-multi-use-disinfectant-and-cleaner', '3oz Multi-Use Disinfectant and Cleaner', 9.00, '🧴', 6.50, 50)">
                                 <i class="fas fa-cart-plus me-2"></i>Add to Cart
                             </button>
                         </div>
@@ -602,7 +650,18 @@
                                 <li><i class="fas fa-check"></i>Professional strength</li>
                             </ul>
                             
-                            <button class="add-to-cart-btn mt-3" onclick="addToCart('on-the-go-3oz', 'On The Go 3oz', 9.00, '✈️', 6.50, 50)">
+                            <!-- Quantity Selector -->
+                            <div class="quantity-selector">
+                                <button class="quantity-btn" onclick="updateProductQuantity('on-the-go', -1)" id="minus-on-the-go">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <div class="quantity-display" id="qty-on-the-go">1</div>
+                                <button class="quantity-btn" onclick="updateProductQuantity('on-the-go', 1)" id="plus-on-the-go">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            
+                            <button class="add-to-cart-btn mt-3" onclick="addToCartWithQuantity('on-the-go-3oz', 'On The Go 3oz', 9.00, '✈️', 6.50, 50)">
                                 <i class="fas fa-cart-plus me-2"></i>Add to Cart
                             </button>
                         </div>
@@ -646,7 +705,18 @@
                                 <li><i class="fas fa-check"></i>Professional strength</li>
                             </ul>
                             
-                            <button class="add-to-cart-btn mt-3" onclick="addToCart('1-gallon-ready-to-use', 'EPA Registered 32oz Ready to Use', 21.99, '🏛️', 13.50, 25)">
+                            <!-- Quantity Selector -->
+                            <div class="quantity-selector">
+                                <button class="quantity-btn" onclick="updateProductQuantity('epa-32oz', -1)" id="minus-epa-32oz">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <div class="quantity-display" id="qty-epa-32oz">1</div>
+                                <button class="quantity-btn" onclick="updateProductQuantity('epa-32oz', 1)" id="plus-epa-32oz">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            
+                            <button class="add-to-cart-btn mt-3" onclick="addToCartWithQuantity('1-gallon-ready-to-use', 'EPA Registered 32oz Ready to Use', 21.99, '🏛️', 13.50, 25)">
                                 <i class="fas fa-cart-plus me-2"></i>Add to Cart
                             </button>
                         </div>
@@ -681,7 +751,18 @@
                                 <li><i class="fas fa-check"></i>Cost-effective</li>
                             </ul>
                             
-                            <button class="add-to-cart-btn mt-3" onclick="addToCart('1-gallon-ready-to-use-1', 'EPA Registered 1 Gallon Ready to Use', 35.00, '🏢', 20.00, 10)">
+                            <!-- Quantity Selector -->
+                            <div class="quantity-selector">
+                                <button class="quantity-btn" onclick="updateProductQuantity('gallon-epa', -1)" id="minus-gallon-epa">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <div class="quantity-display" id="qty-gallon-epa">1</div>
+                                <button class="quantity-btn" onclick="updateProductQuantity('gallon-epa', 1)" id="plus-gallon-epa">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            
+                            <button class="add-to-cart-btn mt-3" onclick="addToCartWithQuantity('1-gallon-ready-to-use-1', 'EPA Registered 1 Gallon Ready to Use', 35.00, '🏢', 20.00, 10)">
                                 <i class="fas fa-cart-plus me-2"></i>Add to Cart
                             </button>
                         </div>
@@ -784,7 +865,18 @@
                                 <li><i class="fas fa-check"></i>Multi-surface safe</li>
                             </ul>
                             
-                            <button class="add-to-cart-btn mt-3" onclick="addToCart('all-in-one-wipes', 'All-In-One Wipes', 12.00, '🧽', 8.00, 20)">
+                            <!-- Quantity Selector -->
+                            <div class="quantity-selector">
+                                <button class="quantity-btn" onclick="updateProductQuantity('wipes-pack', -1)" id="minus-wipes-pack">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <div class="quantity-display" id="qty-wipes-pack">1</div>
+                                <button class="quantity-btn" onclick="updateProductQuantity('wipes-pack', 1)" id="plus-wipes-pack">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            
+                            <button class="add-to-cart-btn mt-3" onclick="addToCartWithQuantity('all-in-one-wipes', 'All-In-One Wipes', 12.00, '🧽', 8.00, 20)">
                                 <i class="fas fa-cart-plus me-2"></i>Add to Cart
                             </button>
                         </div>
@@ -1402,20 +1494,40 @@
             updateCartDisplay();
         }
 
-        // Add item to cart with manual quantity input
-        function addToCart(id, name, retailPrice, emoji, wholesalePrice = null, wholesaleThreshold = 25) {
-            // Ask user for quantity
-            const quantityInput = prompt(`How many "${name}" would you like to add to your cart?`, "1");
-            
-            if (quantityInput === null || quantityInput.trim() === "") {
-                return; // User cancelled or entered nothing
+        // Product quantity management
+        let productQuantities = {};
+
+        // Update product quantity on product cards
+        function updateProductQuantity(productKey, change) {
+            if (!productQuantities[productKey]) {
+                productQuantities[productKey] = 1;
             }
             
-            const quantity = parseInt(quantityInput);
-            if (isNaN(quantity) || quantity <= 0) {
-                alert("Please enter a valid quantity.");
-                return;
+            productQuantities[productKey] += change;
+            
+            if (productQuantities[productKey] < 1) {
+                productQuantities[productKey] = 1;
             }
+            
+            // Update display
+            const qtyDisplay = document.getElementById(`qty-${productKey}`);
+            const minusBtn = document.getElementById(`minus-${productKey}`);
+            
+            if (qtyDisplay) {
+                qtyDisplay.textContent = productQuantities[productKey];
+            }
+            
+            // Disable minus button if quantity is 1
+            if (minusBtn) {
+                minusBtn.disabled = productQuantities[productKey] <= 1;
+            }
+        }
+
+        // Add item to cart with preset quantity
+        function addToCartWithQuantity(id, name, retailPrice, emoji, wholesalePrice = null, wholesaleThreshold = 25) {
+            // Get quantity from product card
+            const productKey = id.replace(/[^a-zA-Z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+            const quantity = productQuantities[productKey] || 1;
             
             const existingItem = cart.find(item => item.productId === id);
             
@@ -1434,6 +1546,10 @@
                 });
             }
             
+            // Reset product quantity selector to 1
+            productQuantities[productKey] = 1;
+            updateProductQuantity(productKey, 0); // This will update display and button states
+            
             // Update pricing for all items
             updateCartPricing();
             saveCart();
@@ -1444,6 +1560,11 @@
             if (!cartVisible) {
                 toggleCart();
             }
+        }
+
+        // Legacy function for products that haven't been updated yet
+        function addToCart(id, name, retailPrice, emoji, wholesalePrice = null, wholesaleThreshold = 25) {
+            addToCartWithQuantity(id, name, retailPrice, emoji, wholesalePrice, wholesaleThreshold);
         }
 
         // Update pricing based on quantities
@@ -1660,6 +1781,18 @@
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             initializeCart();
+            
+            // Initialize all quantity selectors
+            const quantitySelectors = document.querySelectorAll('.quantity-selector');
+            quantitySelectors.forEach(selector => {
+                const minusBtn = selector.querySelector('.quantity-btn');
+                if (minusBtn && minusBtn.id) {
+                    const productKey = minusBtn.id.replace('minus-', '');
+                    productQuantities[productKey] = 1;
+                    // Disable minus button initially
+                    minusBtn.disabled = true;
+                }
+            });
         });
     </script>
 </body>
