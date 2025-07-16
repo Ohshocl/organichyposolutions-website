@@ -772,108 +772,207 @@
 
     <!-- Cart JavaScript -->
     <script>
-        // Product Database with Current Pricing
-        const productDatabase = {
-            '3oz-multi-use': {
-                id: '3oz-multi-use',
-                name: '3oz Multi-Use Disinfectant',
-                category: 'Health & Beauty',
-                price: 13.99,
-                wholesalePrice: 8.99,
-                image: 'https://via.placeholder.com/80x80?text=3oz',
-                description: 'Perfect for wound care, skincare, travel sanitization',
-                isPremium: false,
-                margin: 35.2
-            },
-            '8oz-hc-pure': {
-                id: '8oz-hc-pure',
-                name: '8oz HC-Pure Skin Health Mist',
-                category: 'Health & Beauty',
-                price: 19.99,
-                wholesalePrice: 12.99,
-                image: 'https://via.placeholder.com/80x80?text=8oz',
-                description: 'Professional skincare and beauty applications',
-                isPremium: true,
-                margin: 42.1
-            },
-            '32oz-ready-to-use': {
-                id: '32oz-ready-to-use',
-                name: '32oz Multi-Use Cleaner Ready to Use',
-                category: 'Home & Garden',
-                price: 32.99,
-                wholesalePrice: 22.99,
-                image: 'https://via.placeholder.com/80x80?text=32oz',
-                description: 'Perfect for household cleaning and disinfection',
-                isPremium: false,
-                margin: 38.5
-            },
-            '32oz-pet-cleaner': {
-                id: '32oz-pet-cleaner',
-                name: '32oz Pet Cleaner and Deodorizer',
-                category: 'Pet Care',
-                price: 32.99,
-                wholesalePrice: 22.99,
-                image: 'https://via.placeholder.com/80x80?text=Pet',
-                description: 'Safe for pets, eliminates odors naturally',
-                isPremium: false,
-                margin: 38.5
-            },
-            '1gal-ready-to-use': {
-                id: '1gal-ready-to-use',
-                name: '1 Gallon Ready to Use',
-                category: 'Home & Garden',
-                price: 69.99,
-                wholesalePrice: 52.99,
-                image: 'https://via.placeholder.com/80x80?text=1GAL',
-                description: 'Bulk solution for large applications',
-                isPremium: true,
-                margin: 45.89
-            },
-            '1gal-500ppm': {
-                id: '1gal-500ppm',
-                name: '1 Gallon 500ppm Organic',
-                category: 'Industrial',
-                price: 89.99,
-                wholesalePrice: 69.99,
-                image: 'https://via.placeholder.com/80x80?text=500ppm',
-                description: 'High-concentration for professional use',
-                isPremium: true,
-                margin: 45.89
-            },
-            'healing-serum': {
-                id: 'healing-serum',
-                name: 'HC-Pure Healing Skin Serum',
-                category: 'Health & Beauty',
-                price: 39.99,
-                wholesalePrice: 24.99,
-                image: 'https://via.placeholder.com/80x80?text=Serum',
-                description: 'Advanced healing formula for skin repair',
-                isPremium: true,
-                margin: 44.2
-            },
-            'diaper-rash-gel': {
-                id: 'diaper-rash-gel',
-                name: '100ml Diaper Rash Gel',
-                category: 'Baby Care',
-                price: 39.99,
-                wholesalePrice: 24.99,
-                image: 'https://via.placeholder.com/80x80?text=Baby',
-                description: 'Gentle, effective relief for babies',
-                isPremium: true,
-                margin: 44.2
-            },
-            'laundry-booster': {
-                id: 'laundry-booster',
-                name: 'Laundry Booster & Sanitizer',
-                category: 'Industrial',
-                price: 24.99,
-                wholesalePrice: 16.99,
-                image: 'https://via.placeholder.com/80x80?text=Laundry',
-                description: 'Boost cleaning power in your wash',
-                isPremium: true,
-                margin: 45.89
-            }
-        };
+// Complete Product Database with Current Pricing
+const productDatabase = {
+    // 3oz Products
+    '3oz-multi-use': {
+        id: '3oz-multi-use',
+        name: '3oz Multi-Use Disinfectant',
+        category: 'Health & Beauty',
+        price: 13.99,
+        wholesalePrice: 9.94,
+        image: 'https://via.placeholder.com/80x80?text=3oz',
+        description: 'Perfect for wound care, skincare, travel sanitization',
+        isPremium: false,
+        margin: 28.95
+    },
+    '3oz-hc-pure': {
+        id: '3oz-hc-pure',
+        name: '3oz HC-Pure Skin Health Mist',
+        category: 'Health & Beauty',
+        price: 13.99,
+        wholesalePrice: 9.94,
+        image: 'https://via.placeholder.com/80x80?text=3oz-HC',
+        description: 'Professional skincare and beauty applications',
+        isPremium: true,
+        margin: 28.95
+    },
+
+    // 8oz Products
+    '8oz-hc-pure': {
+        id: '8oz-hc-pure',
+        name: '8oz HC-Pure Skin Health Mist',
+        category: 'Health & Beauty',
+        price: 19.99,
+        wholesalePrice: 12.94,
+        image: 'https://via.placeholder.com/80x80?text=8oz',
+        description: 'Professional skincare and beauty applications',
+        isPremium: true,
+        margin: 35.27
+    },
+
+    // 32oz Products
+    '32oz-ready-to-use': {
+        id: '32oz-ready-to-use',
+        name: '32oz Multi-Use Cleaner Ready to Use',
+        category: 'Home & Garden',
+        price: 32.99,
+        wholesalePrice: 19.47,
+        image: 'https://via.placeholder.com/80x80?text=32oz',
+        description: 'Perfect for household cleaning and disinfection',
+        isPremium: false,
+        margin: 40.98
+    },
+    '32oz-epa': {
+        id: '32oz-epa',
+        name: '32oz Multi-Use Cleaner EPA',
+        category: 'Home & Garden',
+        price: 32.99,
+        wholesalePrice: 19.47,
+        image: 'https://via.placeholder.com/80x80?text=32oz-EPA',
+        description: 'EPA registered for commercial use',
+        isPremium: false,
+        margin: 40.98
+    },
+    '32oz-pet-cleaner': {
+        id: '32oz-pet-cleaner',
+        name: '32oz Pet Cleaner and Deodorizer',
+        category: 'Pet Care',
+        price: 32.99,
+        wholesalePrice: 19.47,
+        image: 'https://via.placeholder.com/80x80?text=Pet',
+        description: 'Safe for pets, effective odor elimination',
+        isPremium: false,
+        margin: 40.98
+    },
+    '32oz-500ppm': {
+        id: '32oz-500ppm',
+        name: '32oz 500ppm Pet+/Teat/Equine',
+        category: 'Pet Care',
+        price: 32.99,
+        wholesalePrice: 19.47,
+        image: 'https://via.placeholder.com/80x80?text=500ppm',
+        description: 'High-strength formula for professional use',
+        isPremium: true,
+        margin: 40.98
+    },
+    '32oz-laundry-booster': {
+        id: '32oz-laundry-booster',
+        name: '32oz Laundry Booster',
+        category: 'Home & Garden',
+        price: 32.99,
+        wholesalePrice: 19.47,
+        image: 'https://via.placeholder.com/80x80?text=Laundry',
+        description: 'Boost cleaning power in your wash',
+        isPremium: false,
+        margin: 40.98
+    },
+
+    // 1 Gallon Products
+    '1gal-ready-to-use': {
+        id: '1gal-ready-to-use',
+        name: '1 Gallon Ready to Use',
+        category: 'Commercial',
+        price: 69.99,
+        wholesalePrice: 38.69,
+        image: 'https://via.placeholder.com/80x80?text=1Gal',
+        description: 'Bulk solution for large-scale applications',
+        isPremium: false,
+        margin: 44.72
+    },
+    '1gal-epa': {
+        id: '1gal-epa',
+        name: '1 Gallon Ready to Use EPA',
+        category: 'Commercial',
+        price: 69.99,
+        wholesalePrice: 38.69,
+        image: 'https://via.placeholder.com/80x80?text=1Gal-EPA',
+        description: 'EPA registered bulk solution',
+        isPremium: false,
+        margin: 44.72
+    },
+    '1gal-500ppm': {
+        id: '1gal-500ppm',
+        name: '1 Gallon 500ppm Organic',
+        category: 'Commercial',
+        price: 89.99,
+        wholesalePrice: 48.69,
+        image: 'https://via.placeholder.com/80x80?text=1Gal-500',
+        description: 'Premium concentration for commercial use',
+        isPremium: true,
+        margin: 45.89
+    },
+    '1gal-laundry-booster': {
+        id: '1gal-laundry-booster',
+        name: '1 Gallon Laundry Booster',
+        category: 'Commercial',
+        price: 89.99,
+        wholesalePrice: 48.69,
+        image: 'https://via.placeholder.com/80x80?text=1Gal-Laundry',
+        description: 'Commercial-grade laundry enhancement',
+        isPremium: true,
+        margin: 45.89
+    },
+
+    // Specialized Products
+    'all-in-one-wipes': {
+        id: 'all-in-one-wipes',
+        name: 'All-in-One Wipes',
+        category: 'Convenience',
+        price: 25.99,
+        wholesalePrice: 16.29,
+        image: 'https://via.placeholder.com/80x80?text=Wipes',
+        description: 'Convenient pre-moistened wipes',
+        isPremium: false,
+        margin: 37.32
+    },
+    '16oz-equine-gel': {
+        id: '16oz-equine-gel',
+        name: '16oz Equine Healing/Udder Gel',
+        category: 'Pet Care',
+        price: 39.99,
+        wholesalePrice: 23.47,
+        image: 'https://via.placeholder.com/80x80?text=Equine',
+        description: 'Specialized veterinary care gel',
+        isPremium: true,
+        margin: 41.31
+    },
+    'hc-pure-serum': {
+        id: 'hc-pure-serum',
+        name: 'HC-Pure Healing Skin Serum',
+        category: 'Health & Beauty',
+        price: 39.99,
+        wholesalePrice: 22.99,
+        image: 'https://via.placeholder.com/80x80?text=Serum',
+        description: 'Advanced skin healing formula',
+        isPremium: true,
+        margin: 42.51
+    },
+    '100ml-diaper-gel': {
+        id: '100ml-diaper-gel',
+        name: '100ml Diaper Rash Gel',
+        category: 'Baby Care',
+        price: 39.99,
+        wholesalePrice: 22.94,
+        image: 'https://via.placeholder.com/80x80?text=Baby',
+        description: 'Gentle care for sensitive skin',
+        isPremium: true,
+        margin: 42.64
+    },
+
+    // Bundle Products (from products.html)
+    'complete-bundle': {
+        id: 'complete-bundle',
+        name: 'Complete Cleaning Bundle',
+        category: 'Bundle',
+        price: 129.00,
+        wholesalePrice: 89.99,
+        image: 'https://via.placeholder.com/80x80?text=Bundle',
+        description: 'Complete home protection package',
+        isPremium: true,
+        margin: 30.23
+    }
+};
 
         // Volume Discount Tiers
         const volumeDiscounts = {
