@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USDA Certified Organic HOCl Products - Organic Hyposolutions</title>
-    <meta name="description" content="Shop USDA Certified Organic hypochlorous acid products. Safe for food contact, babies, and pets. Professional-grade disinfection for home and business use.">
+    <title>Professional HOCl Products - Organic HypoSolutions</title>
+    <meta name="description" content="Shop USDA Certified Organic hypochlorous acid products. Professional-grade disinfection for health, beauty, pet care, commercial, and personal use.">
     
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEKE217WEY"></script>
@@ -16,441 +16,425 @@
     </script>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
         .hero-section {
             background: linear-gradient(135deg, #4CAF50 0%, #2196F3 100%);
             color: white;
-            padding: 60px 0;
+            padding: 80px 0;
         }
-        .product-card {
-            transition: transform 0.3s ease;
-            height: 100%;
-        }
-        .product-card:hover {
-            transform: translateY(-5px);
-        }
-        .benefits-section {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 30px;
-            margin: 30px 0;
-        }
-        .order-cta {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
-            padding: 40px 0;
-            border-radius: 15px;
-            margin: 40px 0;
-        }
-        .navbar-brand {
-            font-size: 1.5rem;
-        }
-        .certification-badge {
-            background: #fff;
-            color: #333;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: bold;
-            margin: 3px;
-            display: inline-block;
-            font-size: 0.9em;
-        }
-        .dilution-section {
-            background: #e3f2fd;
-            border-radius: 15px;
-            padding: 30px;
-            margin: 30px 0;
-        }
-        .allergen-section {
-            background: #e8f5e8;
-            border-radius: 15px;
-            padding: 30px;
-            margin: 30px 0;
-            border-left: 5px solid #28a745;
-        }
-        .price-badge {
-            background: linear-gradient(45deg, #ffd700, #ffed4e);
-            color: #2d5016;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-weight: bold;
-            display: inline-block;
-            font-size: 1.2rem;
-        }
-        .specialty-badge {
-            background: linear-gradient(45deg, #6f42c1, #e83e8c);
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            display: inline-block;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Cart Styles */
-        .cart-container {
-            position: relative;
-            display: inline-block;
-        }
-        .cart-button {
-            position: relative;
-            background: rgba(255,255,255,0.15);
-            border: 2px solid rgba(255,255,255,0.3);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-        .cart-button:hover {
-            background: rgba(255,255,255,0.25);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-        }
-        .cart-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #ff4757;
-            color: white;
-            border-radius: 50%;
-            padding: 4px 8px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            min-width: 24px;
-            text-align: center;
-        }
-        .cart-preview {
-            position: absolute;
-            top: 120%;
-            right: 0;
+        
+        .category-nav {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-            padding: 20px;
-            width: 350px;
-            max-height: 400px;
-            overflow-y: auto;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px 0;
+            position: sticky;
+            top: 76px;
+            z-index: 100;
+        }
+        
+        .category-btn {
+            background: transparent;
+            border: 2px solid #007bff;
+            color: #007bff;
+            padding: 12px 24px;
+            border-radius: 25px;
+            margin: 5px;
             transition: all 0.3s ease;
+            font-weight: 600;
         }
-        .cart-container:hover .cart-preview {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .cart-item:last-child {
-            border-bottom: none;
-        }
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .quantity-btn {
+        
+        .category-btn:hover, .category-btn.active {
             background: #007bff;
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+        }
+        
+        .product-card {
+            transition: all 0.3s ease;
+            height: 100%;
             border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            overflow: hidden;
         }
-        .quantity-btn:hover {
-            background: #0056b3;
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
         }
-        .add-to-cart-btn {
+        
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 10;
+        }
+        
+        .badge-premium { background: linear-gradient(45deg, #ffd700, #ffed4e); color: #2d5016; }
+        .badge-bestseller { background: linear-gradient(45deg, #ff6b6b, #ee5a52); color: white; }
+        .badge-new { background: linear-gradient(45deg, #4ecdc4, #44a08d); color: white; }
+        .badge-value { background: linear-gradient(45deg, #667eea, #764ba2); color: white; }
+        
+        .price-display {
             background: linear-gradient(45deg, #28a745, #20c997);
-            border: none;
             color: white;
             padding: 8px 16px;
             border-radius: 25px;
             font-weight: bold;
-            transition: all 0.3s ease;
+            display: inline-block;
+            margin-bottom: 15px;
         }
+        
+        .price-comparison {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+        
+        .wholesale-price {
+            color: #007bff;
+            font-weight: bold;
+        }
+        
+        .retail-price {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .you-save {
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+        
+        .add-to-cart-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
         .add-to-cart-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            background: linear-gradient(45deg, #218838, #1e7e34);
         }
-
-        /* Cart Modal */
-        .cart-modal {
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
+        
+        .features-list {
+            list-style: none;
+            padding: 0;
         }
-        .cart-modal-content {
+        
+        .features-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .features-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .features-list i {
+            color: #28a745;
+            margin-right: 8px;
+            width: 20px;
+        }
+        
+        .certification-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 15px 0;
+        }
+        
+        .cert-badge {
+            background: #fff;
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            border: 1px solid #ddd;
+        }
+        
+        .volume-pricing {
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .cart-preview {
+            position: fixed;
+            top: 20px;
+            right: 20px;
             background: white;
-            border-radius: 20px;
-            max-width: 600px;
-            margin: 2rem auto;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        .empty-cart {
-            text-align: center;
-            padding: 40px;
-            color: #6c757d;
-        }
-        .checkout-section {
-            background: #f8f9fa;
-            padding: 20px;
             border-radius: 15px;
-            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 20px;
+            width: 320px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1050;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        
+        .cart-preview.show {
+            transform: translateX(0);
+        }
+        
+        .category-section {
+            padding: 60px 0;
+        }
+        
+        .category-section:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-header h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .section-header p {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .category-btn {
+                display: block;
+                width: 100%;
+                margin: 5px 0;
+            }
+            
+            .cart-preview {
+                width: 280px;
+                right: 10px;
+            }
         }
     </style>
 </head>
 <body>
-<!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
-    <div class="container">
-        <a class="navbar-brand fw-bold text-primary d-flex align-items-center" href="index.html">
-            <!-- OHS Logo -->
-            <svg width="40" height="40" viewBox="0 0 400 250" class="me-2">
-                <rect width="400" height="250" fill="#2E5EAA"/>
-                <text x="200" y="180" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="100" font-weight="bold">OHS</text>
-                <text x="200" y="210" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="20">Organic HypoSolutions</text>
-                <!-- Green leaf accent -->
-                <path d="M 320 80 Q 340 60 360 80 Q 340 100 320 80" fill="#4ADE80"/>
-                <path d="M 330 70 Q 350 50 370 70 Q 350 90 330 70" fill="#22C55E"/>
-            </svg>
-            Organic HypoSolutions
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
-                <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
-                <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
-                <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
-                <li class="nav-item"><a class="nav-link" href="science-certifications.html">Science & Certifications</a></li>
-                <li class="nav-item"><a class="nav-link" href="legal-information.html">Legal Information</a></li>
-                <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-                
-                <!-- Customer Shopping & Account -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-shopping-bag"></i> Shop
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="products.html"><i class="fas fa-boxes"></i> All Products</a></li>
-                        <li><a class="dropdown-item" href="shop/cart.html">
-                            <i class="fas fa-shopping-cart"></i> Cart 
-                            <span id="cartBadge" class="badge bg-danger ms-1" style="display: none;">0</span>
-                        </a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="shop/checkout.html">
-                            <i class="fas fa-credit-card"></i> Checkout
-                            <span class="badge bg-warning ms-1">Under Construction</span>
-                        </a></li>
-                        <li><a class="dropdown-item" href="shop/order-success.html">
-                            <i class="fas fa-check-circle"></i> Order Confirmation
-                            <span class="badge bg-warning ms-1">Under Construction</span>
-                        </a></li>
-                    </ul>
-                </li>
-                
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user"></i> Account
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="account/profile.html">
-                            <i class="fas fa-user-circle"></i> My Profile
-                            <span class="badge bg-warning ms-1">Under Construction</span>
-                        </a></li>
-                        <li><a class="dropdown-item" href="account/orders.html">
-                            <i class="fas fa-receipt"></i> Order History
-                            <span class="badge bg-warning ms-1">Under Construction</span>
-                        </a></li>
-                        <li><a class="dropdown-item" href="account/dashboard.html">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
-                            <span class="badge bg-warning ms-1">Under Construction</span>
-                        </a></li>
-                        <li><a class="dropdown-item" href="account/business-dashboard.html">
-                            <i class="fas fa-building"></i> Business Account
-                            <span class="badge bg-info ms-1">Wholesale</span>
-                        </a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="auth/login.html">
-                            <i class="fas fa-sign-in-alt"></i> Login
-                            <span class="badge bg-warning ms-1">Under Construction</span>
-                        </a></li>
-                        <li><a class="dropdown-item" href="auth/register.html">
-                            <i class="fas fa-user-plus"></i> Register
-                            <span class="badge bg-warning ms-1">Under Construction</span>
-                        </a></li>
-                    </ul>
-                </li>
-            </ul>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary d-flex align-items-center" href="index.html">
+                <!-- OHS Logo -->
+                <svg width="40" height="40" viewBox="0 0 400 250" class="me-2">
+                    <rect width="400" height="250" fill="#2E5EAA"/>
+                    <text x="200" y="180" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="100" font-weight="bold">OHS</text>
+                    <text x="200" y="210" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="20">Organic HypoSolutions</text>
+                    <path d="M 320 80 Q 340 60 360 80 Q 340 100 320 80" fill="#4ADE80"/>
+                    <path d="M 330 70 Q 350 50 370 70 Q 350 90 330 70" fill="#22C55E"/>
+                </svg>
+                Organic HypoSolutions
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="products.html">Products</a></li>
+                    <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                    <li class="nav-item">
+                        <button class="btn btn-outline-primary position-relative" onclick="toggleCart()">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span id="cartBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">0</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
+
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
             <div class="text-center">
-                <h1 class="display-4 fw-bold mb-4">Pure USDA Certified Organic HOCl Products</h1>
-                <p class="lead mb-4">Professional-grade hypochlorous acid products for every application</p>
+                <h1 class="display-4 fw-bold mb-4">Professional HOCl Product Catalog</h1>
+                <p class="lead mb-4">USDA Certified Organic hypochlorous acid solutions for every application</p>
                 
                 <!-- Certification Badges -->
                 <div class="mb-4">
-                    <span class="certification-badge">🇺🇸 USDA Certified Organic #8150019050</span>
-                    <span class="certification-badge">✅ EPA Registered #97801-1</span>
-                    <span class="certification-badge">🏥 FDA Food Contact FCN 1811</span>
-                    <span class="certification-badge">💧 100% Pure HOCl</span>
+                    <span class="cert-badge">🇺🇸 USDA Organic #8150019050</span>
+                    <span class="cert-badge">✅ EPA Registered #97801-1</span>
+                    <span class="cert-badge">🏥 FDA Food Contact FCN 1811</span>
+                    <span class="cert-badge">💧 100% Pure HOCl</span>
                 </div>
                 
-                <p class="small mb-3"><a href="legal-information.html" class="text-white text-decoration-underline">(See Legal Information for disclaimers)</a></p>
-                
                 <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    <!-- Shopping Cart Button with Preview -->
-                    <div class="cart-container">
-                        <button class="cart-button" onclick="openCart()">
-                            🛒 Shopping Cart
-                            <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
-                        </button>
-                        
-                        <!-- Cart Preview (shows on hover) -->
-                        <div class="cart-preview">
-                            <div id="cartPreviewContent">
-                                <div class="empty-cart">
-                                    <div class="display-6 mb-2">🛒</div>
-                                    <p class="mb-0">Your cart is empty</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <a href="https://docs.google.com/forms/d/1GsJjlVXGAIEJkxBYiAlnlBX8LIV50E0giuNFqIvZ6vI/viewform" target="_blank" class="btn btn-light btn-lg">📋 Custom Order</a>
-                    <a href="tel:+18017125663" class="btn btn-outline-light btn-lg">📞 (801) 712-5663</a>
+                    <button class="btn btn-light btn-lg" onclick="scrollToCategory('all')">
+                        <i class="fas fa-th-large me-2"></i>View All Products
+                    </button>
+                    <a href="shop/book-service.html" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-calendar-check me-2"></i>Book Service
+                    </a>
+                    <a href="tel:+18017125663" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-phone me-2"></i>(801) 712-5663
+                    </a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Core Product Line -->
-    <section class="py-5">
+    <!-- Category Navigation -->
+    <section class="category-nav">
         <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="display-5 fw-bold">Our Core Product Line</h2>
-                <p class="lead">Professional-grade HOCl products for every application</p>
-                <p class="text-muted small">*<a href="legal-information.html">See Legal Information for terms and conditions</a></p>
+            <div class="text-center">
+                <button class="category-btn active" onclick="filterCategory('all')" data-category="all">
+                    <i class="fas fa-th-large me-2"></i>All Products
+                </button>
+                <button class="category-btn" onclick="filterCategory('personal')" data-category="personal">
+                    <i class="fas fa-user me-2"></i>Personal & Travel
+                </button>
+                <button class="category-btn" onclick="filterCategory('health')" data-category="health">
+                    <i class="fas fa-heart me-2"></i>Health & Beauty
+                </button>
+                <button class="category-btn" onclick="filterCategory('pet')" data-category="pet">
+                    <i class="fas fa-paw me-2"></i>Pet Care
+                </button>
+                <button class="category-btn" onclick="filterCategory('baby')" data-category="baby">
+                    <i class="fas fa-baby me-2"></i>Baby Care
+                </button>
+                <button class="category-btn" onclick="filterCategory('commercial')" data-category="commercial">
+                    <i class="fas fa-building me-2"></i>Commercial
+                </button>
+                <button class="category-btn" onclick="filterCategory('bundles')" data-category="bundles">
+                    <i class="fas fa-box me-2"></i>Value Bundles
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Personal & Travel Products -->
+    <section id="personal" class="category-section">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-user text-primary me-3"></i>Personal & Travel Products</h2>
+                <p>Convenient sizes for everyday personal use and travel sanitization</p>
             </div>
             
             <div class="row">
                 <!-- 3oz Multi-Use Disinfectant -->
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="card product-card shadow border-0">
+                <div class="col-lg-4 col-md-6 mb-4" data-category="personal">
+                    <div class="card product-card position-relative">
+                        <div class="product-badge badge-bestseller">Best Seller</div>
                         <div class="card-body text-center p-4">
                             <div class="display-4 mb-3">🧴</div>
                             <h5 class="card-title fw-bold">3oz Multi-Use Disinfectant</h5>
-                            <div class="price-badge mb-3">$13.99</div>
+                            
+                            <div class="price-comparison">
+                                <div class="retail-price">Retail: $9.00</div>
+                                <div class="wholesale-price">Business: $6.00 <span class="you-save">(Save 33%)</span></div>
+                            </div>
+                            
+                            <div class="certification-badges">
+                                <span class="cert-badge">EPA Registered</span>
+                                <span class="cert-badge">USDA Organic</span>
+                                <span class="cert-badge">Travel Size</span>
+                            </div>
+                            
                             <p class="card-text">Perfect for travel, purse, or pocket. Professional-grade HOCl in a convenient size.</p>
                             
-                            <h6 class="fw-bold">Ideal For:</h6>
-                            <ul class="list-unstyled text-start">
-                                <li>✅ Travel sanitization</li>
-                                <li>✅ Purse or backpack</li>
-                                <li>✅ Personal use</li>
-                                <li>✅ Gift giving</li>
+                            <ul class="features-list text-start">
+                                <li><i class="fas fa-check"></i>TSA Travel Approved</li>
+                                <li><i class="fas fa-check"></i>Personal sanitization</li>
+                                <li><i class="fas fa-check"></i>Surface disinfection</li>
+                                <li><i class="fas fa-check"></i>12-18 month shelf life</li>
                             </ul>
                             
-                            <button class="add-to-cart-btn" onclick="addToCart('3oz-multi-use', '3oz Multi-Use Disinfectant', 13.99, '🧴')">
-                                Add to Cart
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('3oz-multi-use', '3oz Multi-Use Disinfectant', 9.00, '🧴')">
+                                <i class="fas fa-cart-plus me-2"></i>Add to Cart
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- 8oz HC-Pure Skin Health Mist -->
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="card product-card shadow border-0">
+                <!-- On The Go 3oz -->
+                <div class="col-lg-4 col-md-6 mb-4" data-category="personal">
+                    <div class="card product-card position-relative">
+                        <div class="product-badge badge-value">Great Value</div>
                         <div class="card-body text-center p-4">
-                            <div class="display-4 mb-3">🌿</div>
-                            <span class="specialty-badge">Skin Health</span>
-                            <h5 class="card-title fw-bold">8oz HC-Pure Skin Health Mist</h5>
-                            <div class="price-badge mb-3">$19.99</div>
-                            <p class="card-text">Gentle HOCl formula designed for skin applications and sensitive areas.</p>
+                            <div class="display-4 mb-3">✈️</div>
+                            <h5 class="card-title fw-bold">On The Go 3oz</h5>
                             
-                            <h6 class="fw-bold">Ideal For:</h6>
-                            <ul class="list-unstyled text-start">
-                                <li>✅ Skin care applications</li>
-                                <li>✅ Gentle sanitization</li>
-                                <li>✅ Wound care</li>
-                                <li>✅ Sensitive surfaces</li>
+                            <div class="price-comparison">
+                                <div class="retail-price">Retail: $9.00</div>
+                            </div>
+                            
+                            <div class="certification-badges">
+                                <span class="cert-badge">Travel Ready</span>
+                                <span class="cert-badge">Compact Design</span>
+                            </div>
+                            
+                            <p class="card-text">Compact travel companion for on-the-go sanitization needs.</p>
+                            
+                            <ul class="features-list text-start">
+                                <li><i class="fas fa-check"></i>Ultra-portable design</li>
+                                <li><i class="fas fa-check"></i>Leak-proof bottle</li>
+                                <li><i class="fas fa-check"></i>Quick sanitization</li>
+                                <li><i class="fas fa-check"></i>No residue formula</li>
                             </ul>
                             
-                            <button class="add-to-cart-btn" onclick="addToCart('8oz-skin-health', '8oz HC-Pure Skin Health Mist', 19.99, '🌿')">
-                                Add to Cart
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('on-the-go-3oz', 'On The Go 3oz', 9.00, '✈️')">
+                                <i class="fas fa-cart-plus me-2"></i>Add to Cart
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- 32oz Multi Use Cleaner Ready to Use -->
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="card product-card shadow border-0">
+                <!-- All-In-One Wipes -->
+                <div class="col-lg-4 col-md-6 mb-4" data-category="personal">
+                    <div class="card product-card position-relative">
+                        <div class="product-badge badge-new">Convenient</div>
                         <div class="card-body text-center p-4">
-                            <div class="display-4 mb-3">🏡</div>
-                            <h5 class="card-title fw-bold">32oz Multi Use Cleaner</h5>
-                            <div class="price-badge mb-3">$32.99</div>
-                            <p class="card-text">Ready-to-use multi-surface cleaner. Perfect for kitchens, bathrooms, and general cleaning.</p>
+                            <div class="display-4 mb-3">🧽</div>
+                            <h5 class="card-title fw-bold">All-In-One Wipes</h5>
                             
-                            <h6 class="fw-bold">Ideal For:</h6>
-                            <ul class="list-unstyled text-start">
-                                <li>✅ Kitchen surfaces</li>
-                                <li>✅ Bathroom cleaning</li>
-                                <li>✅ Food prep areas</li>
-                                <li>✅ General home use</li>
+                            <div class="price-comparison">
+                                <div class="retail-price">Retail: $12.00</div>
+                            </div>
+                            
+                            <div class="certification-badges">
+                                <span class="cert-badge">100ct Wipes</span>
+                                <span class="cert-badge">HOCl Infused</span>
+                            </div>
+                            
+                            <p class="card-text">Pre-moistened wipes with HOCl. Perfect for quick cleanups and sanitization.</p>
+                            
+                            <ul class="features-list text-start">
+                                <li><i class="fas fa-check"></i>100 wipes per pack</li>
+                                <li><i class="fas fa-check"></i>Biodegradable material</li>
+                                <li><i class="fas fa-check"></i>No rinse required</li>
+                                <li><i class="fas fa-check"></i>Multi-surface safe</li>
                             </ul>
                             
-                            <button class="add-to-cart-btn" onclick="addToCart('32oz-multi-use', '32oz Multi Use Cleaner', 32.99, '🏡')">
-                                Add to Cart
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 1 Gallon Ready to Use -->
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="card product-card shadow border-0">
-                        <div class="card-body text-center p-4">
-                            <div class="display-4 mb-3">🏢</div>
-                            <h5 class="card-title fw-bold">1 Gallon Ready to Use</h5>
-                            <div class="price-badge mb-3">$69.99</div>
-                            <p class="card-text">Large volume for commercial use and refills. Professional-grade HOCl for serious applications.</p>
-                            
-                            <h6 class="fw-bold">Ideal For:</h6>
-                            <ul class="list-unstyled text-start">
-                                <li>✅ Commercial use</li>
-                                <li>✅ Refilling bottles</li>
-                                <li>✅ Large homes</li>
-                                <li>✅ Bulk sanitization</li>
-                            </ul>
-                            
-                            <button class="add-to-cart-btn" onclick="addToCart('1gal-ready-use', '1 Gallon Ready to Use', 69.99, '🏢')">
-                                Add to Cart
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('all-in-one-wipes', 'All-In-One Wipes', 12.00, '🧽')">
+                                <i class="fas fa-cart-plus me-2"></i>Add to Cart
                             </button>
                         </div>
                     </div>
@@ -459,61 +443,427 @@
         </div>
     </section>
 
-    <!-- Specialty Products -->
-    <section class="py-5 bg-light">
+    <!-- Health & Beauty Products -->
+    <section id="health" class="category-section">
         <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="display-5 fw-bold">Specialty & Professional Products</h2>
-                <p class="lead">Advanced formulations for specific applications</p>
+            <div class="section-header">
+                <h2><i class="fas fa-heart text-danger me-3"></i>Health & Beauty Products</h2>
+                <p>Gentle formulations for skin care, wound care, and health applications</p>
             </div>
             
             <div class="row">
-                <!-- Pet Cleaner -->
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card product-card shadow border-0">
+                <!-- Pet+ Wound Care -->
+                <div class="col-lg-6 col-md-6 mb-4" data-category="health">
+                    <div class="card product-card position-relative">
+                        <div class="product-badge badge-premium">Premium</div>
+                        <div class="card-body text-center p-4">
+                            <div class="display-4 mb-3">🩹</div>
+                            <h5 class="card-title fw-bold">Pet+ Wound Care</h5>
+                            
+                            <div class="price-comparison">
+                                <div class="retail-price">Retail: $28.00</div>
+                                <div class="wholesale-price">Business: Contact for pricing</div>
+                            </div>
+                            
+                            <div class="certification-badges">
+                                <span class="cert-badge">Veterinary Grade</span>
+                                <span class="cert-badge">Safe for Pets</span>
+                                <span class="cert-badge">Wound Care</span>
+                            </div>
+                            
+                            <p class="card-text">Professional-grade wound care solution safe for both pets and humans.</p>
+                            
+                            <ul class="features-list text-start">
+                                <li><i class="fas fa-check"></i>Accelerates healing</li>
+                                <li><i class="fas fa-check"></i>Reduces infection risk</li>
+                                <li><i class="fas fa-check"></i>Non-toxic formula</li>
+                                <li><i class="fas fa-check"></i>Veterinarian recommended</li>
+                                <li><i class="fas fa-check"></i>Human use approved</li>
+                            </ul>
+                            
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('pet-wound-care', 'Pet+ Wound Care', 28.00, '🩹')">
+                                <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 32oz Ready to Use -->
+                <div class="col-lg-6 col-md-6 mb-4" data-category="health">
+                    <div class="card product-card position-relative">
+                        <div class="product-badge badge-bestseller">Multi-Use</div>
+                        <div class="card-body text-center p-4">
+                            <div class="display-4 mb-3">🏡</div>
+                            <h5 class="card-title fw-bold">32oz Multi-Use Cleaner</h5>
+                            
+                            <div class="price-comparison">
+                                <div class="retail-price">Retail: $21.99</div>
+                                <div class="wholesale-price">Business: $15.00 <span class="you-save">(Save 32%)</span></div>
+                            </div>
+                            
+                            <div class="certification-badges">
+                                <span class="cert-badge">EPA Registered</span>
+                                <span class="cert-badge">Ready to Use</span>
+                                <span class="cert-badge">Food Safe</span>
+                            </div>
+                            
+                            <p class="card-text">Perfect for kitchens, bathrooms, and general cleaning applications.</p>
+                            
+                            <ul class="features-list text-start">
+                                <li><i class="fas fa-check"></i>Multi-surface safe</li>
+                                <li><i class="fas fa-check"></i>Food contact approved</li>
+                                <li><i class="fas fa-check"></i>No rinse required</li>
+                                <li><i class="fas fa-check"></i>Odor elimination</li>
+                            </ul>
+                            
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('32oz-multi-use', '32oz Multi-Use Cleaner', 21.99, '🏡')">
+                                <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Baby Care Products -->
+    <section id="baby" class="category-section">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-baby text-info me-3"></i>Baby Care Products</h2>
+                <p>Ultra-gentle formulations specifically designed for babies and sensitive skin</p>
+            </div>
+            
+            <div class="row">
+                <!-- Diaper Rash Serum -->
+                <div class="col-lg-8 col-md-8 mb-4 mx-auto" data-category="baby">
+                    <div class="card product-card position-relative">
+                        <div class="product-badge badge-premium">Baby Safe</div>
+                        <div class="card-body text-center p-4">
+                            <div class="display-4 mb-3">👶</div>
+                            <h5 class="card-title fw-bold">Diaper Rash Serum</h5>
+                            
+                            <div class="price-comparison">
+                                <div class="retail-price">Retail: $25.00</div>
+                                <div class="wholesale-price">Pediatric Offices: Contact for pricing</div>
+                            </div>
+                            
+                            <div class="certification-badges">
+                                <span class="cert-badge">Pediatrician Tested</span>
+                                <span class="cert-badge">Hypoallergenic</span>
+                                <span class="cert-badge">Gentle Formula</span>
+                                <span class="cert-badge">Fast Acting</span>
+                            </div>
+                            
+                            <p class="card-text">Gentle, effective treatment for diaper rash and sensitive skin irritation. Safe for newborns and infants.</p>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul class="features-list text-start">
+                                        <li><i class="fas fa-check"></i>Safe for newborns</li>
+                                        <li><i class="fas fa-check"></i>Soothes irritation</li>
+                                        <li><i class="fas fa-check"></i>Prevents infection</li>
+                                        <li><i class="fas fa-check"></i>Non-staining formula</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul class="features-list text-start">
+                                        <li><i class="fas fa-check"></i>Pediatrician approved</li>
+                                        <li><i class="fas fa-check"></i>Fast-acting relief</li>
+                                        <li><i class="fas fa-check"></i>Natural healing</li>
+                                        <li><i class="fas fa-check"></i>Gentle on skin</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('diaper-rash-serum', 'Diaper Rash Serum', 25.00, '👶')">
+                                <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pet Care Products -->
+    <section id="pet" class="category-section">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-paw text-warning me-3"></i>Pet Care Products</h2>
+                <p>Safe and effective solutions for all your pet care needs</p>
+            </div>
+            
+            <div class="row">
+                <!-- Pet Cleaner and Wound Care Bundle -->
+                <div class="col-lg-6 col-md-6 mb-4" data-category="pet">
+                    <div class="card product-card position-relative">
+                        <div class="product-badge badge-value">Bundle Deal</div>
                         <div class="card-body text-center p-4">
                             <div class="display-4 mb-3">🐾</div>
-                            <span class="specialty-badge">Pet Safe</span>
-                            <h5 class="card-title fw-bold">32oz Pet Cleaner & Deodorizer</h5>
-                            <div class="price-badge mb-3">$32.99</div>
-                            <p class="card-text">Specially formulated for pet areas, toys, and odor elimination. Completely safe for all pets.</p>
+                            <h5 class="card-title fw-bold">Pet Cleaner & Wound Care Bundle</h5>
                             
-                            <button class="add-to-cart-btn" onclick="addToCart('32oz-pet-cleaner', '32oz Pet Cleaner & Deodorizer', 32.99, '🐾')">
-                                Add to Cart
+                            <div class="price-comparison">
+                                <div class="retail-price">Bundle: $53.00</div>
+                                <div class="text-muted small">Individual items: $59.00</div>
+                                <div class="you-save">You Save: $6.00!</div>
+                            </div>
+                            
+                            <div class="certification-badges">
+                                <span class="cert-badge">Veterinary Safe</span>
+                                <span class="cert-badge">Complete Care</span>
+                                <span class="cert-badge">Value Bundle</span>
+                            </div>
+                            
+                            <p class="card-text">Complete pet care solution including wound care and general cleaning products.</p>
+                            
+                            <ul class="features-list text-start">
+                                <li><i class="fas fa-check"></i>Pet+ Wound Care included</li>
+                                <li><i class="fas fa-check"></i>Multi-surface cleaner</li>
+                                <li><i class="fas fa-check"></i>Odor elimination</li>
+                                <li><i class="fas fa-check"></i>Safe around all pets</li>
+                                <li><i class="fas fa-check"></i>Professional grade</li>
+                            </ul>
+                            
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('pet-bundle', 'Pet Cleaner & Wound Care Bundle', 53.00, '🐾')">
+                                <i class="fas fa-cart-plus me-2"></i>Add Bundle to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Individual Pet+ Wound Care (cross-reference) -->
+                <div class="col-lg-6 col-md-6 mb-4" data-category="pet">
+                    <div class="card product-card position-relative">
+                        <div class="product-badge badge-premium">Also in Health & Beauty</div>
+                        <div class="card-body text-center p-4">
+                            <div class="display-4 mb-3">🩹</div>
+                            <h5 class="card-title fw-bold">Pet+ Wound Care (Individual)</h5>
+                            
+                            <div class="price-comparison">
+                                <div class="retail-price">Retail: $28.00</div>
+                                <div class="wholesale-price">Veterinary Clinics: Contact for pricing</div>
+                            </div>
+                            
+                            <div class="certification-badges">
+                                <span class="cert-badge">Veterinary Grade</span>
+                                <span class="cert-badge">Safe for All Pets</span>
+                            </div>
+                            
+                            <p class="card-text">Professional wound care solution recommended by veterinarians nationwide.</p>
+                            
+                            <ul class="features-list text-start">
+                                <li><i class="fas fa-check"></i>Accelerates healing</li>
+                                <li><i class="fas fa-check"></i>Reduces infection risk</li>
+                                <li><i class="fas fa-check"></i>Works on all animals</li>
+                                <li><i class="fas fa-check"></i>No prescription needed</li>
+                            </ul>
+                            
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('pet-wound-care', 'Pet+ Wound Care', 28.00, '🩹')">
+                                <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Commercial Products -->
+    <section id="commercial" class="category-section">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-building text-success me-3"></i>Commercial & Industrial Products</h2>
+                <p>Professional-grade solutions for businesses, healthcare facilities, and large-scale applications</p>
+            </div>
+            
+            <div class="row">
+                <!-- 1 Gallon Ready to Use -->
+                <div class="col-lg-4 col-md-6 mb-4" data-category="commercial">
+                    <div class="card product-card position-relative">
+                        <div class="product-badge badge-premium">Professional</div>
+                        <div class="card-body text-center p-4">
+                            <div class="display-4 mb-3">🏢</div>
+                            <h5 class="card-title fw-bold">1 Gallon Ready to Use</h5>
+                            
+                            <div class="price-comparison">
+                                <div class="retail-price">Retail: $35.00</div>
+                                <div class="wholesale-price">Business: $25.00 <span class="you-save">(Save 29%)</span></div>
+                            </div>
+                            
+                            <div class="volume-pricing">
+                                <h6 class="fw-bold mb-2"><i class="fas fa-calculator me-2"></i>Volume Pricing</h6>
+                                <div class="small">
+                                    <div>4+ Gallons: $25.00 each</div>
+                                    <div>Case of 4: $120.00 total</div>
+                                    <div class="text-success fw-bold">Best value for commercial use!</div>
+                                </div>
+                            </div>
+                            
+                            <div class="certification-badges">
+                                <span class="cert-badge">EPA Registered</span>
+                                <span class="cert-badge">Hospital Grade</span>
+                                <span class="cert-badge">Commercial Use</span>
+                            </div>
+                            
+                            <p class="card-text">Large volume for commercial facilities, refilling, and bulk applications.</p>
+                            
+                            <ul class="features-list text-start">
+                                <li><i class="fas fa-check"></i>99.9% pathogen elimination</li>
+                                <li><i class="fas fa-check"></i>No dilution required</li>
+                                <li><i class="fas fa-check"></i>Refill smaller bottles</li>
+                                <li><i class="fas fa-check"></i>Cost-effective</li>
+                                <li><i class="fas fa-check"></i>Professional grade</li>
+                            </ul>
+                            
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('1gal-ready-use', '1 Gallon Ready to Use', 35.00, '🏢')">
+                                <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 32oz Bulk Case -->
+                <div class="col-lg-4 col-md-6 mb-4" data-category="commercial">
+                    <div class="card product-card position-relative">
+                        <div class="product-badge badge-value">Bulk Savings</div>
+                        <div class="card-body text-center p-4">
+                            <div class="display-4 mb-3">📦</div>
+                            <h5 class="card-title fw-bold">32oz Bulk Case</h5>
+                            
+                            <div class="price-comparison">
+                                <div class="retail-price">Case Price: $57.80</div>
+                                <div class="text-muted small">Individual 32oz: $21.99 each</div>
+                                <div class="you-save">Bulk Savings: 34% off!</div>
+                            </div>
+                            
+                            <div class="certification-badges">
+                                <span class="cert-badge">4-Pack Case</span>
+                                <span class="cert-badge">Bulk Pricing</span>
+                                <span class="cert-badge">Ready to Use</span>
+                            </div>
+                            
+                            <p class="card-text">Case of four 32oz bottles. Perfect for offices, clinics, and medium businesses.</p>
+                            
+                            <ul class="features-list text-start">
+                                <li><i class="fas fa-check"></i>4 bottles included</li>
+                                <li><i class="fas fa-check"></i>Significant bulk savings</li>
+                                <li><i class="fas fa-check"></i>Extended supply</li>
+                                <li><i class="fas fa-check"></i>Convenient distribution</li>
+                                <li><i class="fas fa-check"></i>Business accounts welcome</li>
+                            </ul>
+                            
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('32oz-bulk-case', '32oz Bulk Case', 57.80, '📦')">
+                                <i class="fas fa-cart-plus me-2"></i>Add Case to Cart
                             </button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Laundry Booster -->
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card product-card shadow border-0">
+                <div class="col-lg-4 col-md-6 mb-4" data-category="commercial">
+                    <div class="card product-card position-relative">
+                        <div class="product-badge badge-new">Specialty</div>
                         <div class="card-body text-center p-4">
                             <div class="display-4 mb-3">👕</div>
-                            <span class="specialty-badge">Laundry</span>
-                            <h5 class="card-title fw-bold">32oz Laundry Booster</h5>
-                            <div class="price-badge mb-3">$32.99</div>
-                            <p class="card-text">Add to your wash cycle for enhanced sanitization and odor elimination. Safe for all fabrics.</p>
+                            <h5 class="card-title fw-bold">Laundry Booster</h5>
                             
-                            <button class="add-to-cart-btn" onclick="addToCart('32oz-laundry-booster', '32oz Laundry Booster', 32.99, '👕')">
-                                Add to Cart
+                            <div class="price-comparison">
+                                <div class="retail-price">Retail: $18.00</div>
+                                <div class="wholesale-price">Commercial Laundries: $15.00</div>
+                            </div>
+                            
+                            <div class="certification-badges">
+                                <span class="cert-badge">Fabric Safe</span>
+                                <span class="cert-badge">Odor Eliminator</span>
+                                <span class="cert-badge">Commercial Grade</span>
+                            </div>
+                            
+                            <p class="card-text">Add to wash cycles for enhanced sanitization and odor elimination. Safe for all fabrics.</p>
+                            
+                            <ul class="features-list text-start">
+                                <li><i class="fas fa-check"></i>Enhances regular detergent</li>
+                                <li><i class="fas fa-check"></i>Eliminates tough odors</li>
+                                <li><i class="fas fa-check"></i>Fabric-safe formula</li>
+                                <li><i class="fas fa-check"></i>Commercial laundry approved</li>
+                                <li><i class="fas fa-check"></i>Hotel & healthcare use</li>
+                            </ul>
+                            
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('laundry-booster', 'Laundry Booster', 18.00, '👕')">
+                                <i class="fas fa-cart-plus me-2"></i>Add to Cart
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- All-in-one Wipes -->
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card product-card shadow border-0">
+                <!-- One Gallon Case -->
+                <div class="col-lg-6 col-md-6 mb-4" data-category="commercial">
+                    <div class="card product-card position-relative">
+                        <div class="product-badge badge-premium">Maximum Value</div>
                         <div class="card-body text-center p-4">
-                            <div class="display-4 mb-3">🧽</div>
-                            <span class="specialty-badge">Convenient</span>
-                            <h5 class="card-title fw-bold">All-in-One Wipes</h5>
-                            <div class="price-badge mb-3">$25.99</div>
-                            <p class="card-text">Pre-moistened wipes with HOCl. Perfect for quick cleanups and on-the-go sanitization.</p>
+                            <div class="display-4 mb-3">🏭</div>
+                            <h5 class="card-title fw-bold">One Gallon Case (4-Pack)</h5>
                             
-                            <button class="add-to-cart-btn" onclick="addToCart('wipes', 'All-in-One Wipes', 25.99, '🧽')">
-                                Add to Cart
+                            <div class="price-comparison">
+                                <div class="retail-price">Case Price: $120.00</div>
+                                <div class="text-muted small">Individual Gallon: $35.00 each</div>
+                                <div class="you-save">Case Savings: $20.00!</div>
+                            </div>
+                            
+                            <div class="certification-badges">
+                                <span class="cert-badge">4 Gallons Total</span>
+                                <span class="cert-badge">Best Value</span>
+                                <span class="cert-badge">Industrial Grade</span>
+                            </div>
+                            
+                            <p class="card-text">Ultimate value for large facilities, hospitals, schools, and industrial applications.</p>
+                            
+                            <ul class="features-list text-start">
+                                <li><i class="fas fa-check"></i>4 gallons total volume</li>
+                                <li><i class="fas fa-check"></i>Maximum cost savings</li>
+                                <li><i class="fas fa-check"></i>Industrial applications</li>
+                                <li><i class="fas fa-check"></i>Extended supply chain</li>
+                                <li><i class="fas fa-check"></i>Bulk delivery available</li>
+                            </ul>
+                            
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('one-gallon-case', 'One Gallon Case', 120.00, '🏭')">
+                                <i class="fas fa-cart-plus me-2"></i>Add Case to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hypochlorous Generator -->
+                <div class="col-lg-6 col-md-6 mb-4" data-category="commercial">
+                    <div class="card product-card position-relative">
+                        <div class="product-badge badge-premium">Advanced Tech</div>
+                        <div class="card-body text-center p-4">
+                            <div class="display-4 mb-3">⚡</div>
+                            <h5 class="card-title fw-bold">HOCl Generator for Pools</h5>
+                            
+                            <div class="price-comparison">
+                                <div class="retail-price">System Price: $899.00</div>
+                                <div class="wholesale-price">Commercial Pools: Contact for pricing</div>
+                            </div>
+                            
+                            <div class="certification-badges">
+                                <span class="cert-badge">Pool Safe</span>
+                                <span class="cert-badge">On-Site Generation</span>
+                                <span class="cert-badge">Professional Install</span>
+                            </div>
+                            
+                            <p class="card-text">Advanced inline pool sanitization system. Generate HOCl on-demand for superior water quality.</p>
+                            
+                            <ul class="features-list text-start">
+                                <li><i class="fas fa-check"></i>Inline pool integration</li>
+                                <li><i class="fas fa-check"></i>On-demand generation</li>
+                                <li><i class="fas fa-check"></i>Superior water quality</li>
+                                <li><i class="fas fa-check"></i>Reduced chemical costs</li>
+                                <li><i class="fas fa-check"></i>Professional installation</li>
+                            </ul>
+                            
+                            <button class="add-to-cart-btn mt-3" onclick="requestQuote('pool-generator')">
+                                <i class="fas fa-clipboard-list me-2"></i>Request Quote
                             </button>
                         </div>
                     </div>
@@ -522,47 +872,281 @@
         </div>
     </section>
 
-    <!-- Shopping Cart Modal -->
-    <div class="modal fade cart-modal" id="cartModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content cart-modal-content">
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold">🛒 Your Shopping Cart</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <!-- Value Bundles -->
+    <section id="bundles" class="category-section">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-box text-primary me-3"></i>Value Bundles & Starter Kits</h2>
+                <p>Complete solutions with maximum savings for every need</p>
+            </div>
+            
+            <div class="row">
+                <!-- Starter Cleaning Bundle -->
+                <div class="col-lg-4 col-md-6 mb-4" data-category="bundles">
+                    <div class="card product-card position-relative">
+                        <div class="product-badge badge-value">Starter Kit</div>
+                        <div class="card-body text-center p-4">
+                            <div class="display-4 mb-3">🎯</div>
+                            <h5 class="card-title fw-bold">Starter Cleaning Bundle</h5>
+                            
+                            <div class="price-comparison">
+                                <div class="retail-price">Bundle: $55.00</div>
+                                <div class="text-muted small">Individual items: $63.00</div>
+                                <div class="you-save">You Save: $8.00!</div>
+                            </div>
+                            
+                            <div class="certification-badges">
+                                <span class="cert-badge">Perfect Starter</span>
+                                <span class="cert-badge">Multi-Size</span>
+                                <span class="cert-badge">Great Value</span>
+                            </div>
+                            
+                            <p class="card-text">Perfect introduction to HOCl cleaning. Includes travel, home, and specialty sizes.</p>
+                            
+                            <ul class="features-list text-start">
+                                <li><i class="fas fa-check"></i>3oz travel size</li>
+                                <li><i class="fas fa-check"></i>32oz home cleaner</li>
+                                <li><i class="fas fa-check"></i>Wipes pack included</li>
+                                <li><i class="fas fa-check"></i>Comprehensive starter kit</li>
+                                <li><i class="fas fa-check"></i>Excellent savings</li>
+                            </ul>
+                            
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('starter-bundle', 'Starter Cleaning Bundle', 55.00, '🎯')">
+                                <i class="fas fa-cart-plus me-2"></i>Add Bundle
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <div id="cartItems"></div>
+
+                <!-- Essential Cleaning Bundle -->
+                <div class="col-lg-4 col-md-6 mb-4" data-category="bundles">
+                    <div class="card product-card position-relative">
+                        <div class="product-badge badge-bestseller">Popular</div>
+                        <div class="card-body text-center p-4">
+                            <div class="display-4 mb-3">⭐</div>
+                            <h5 class="card-title fw-bold">Essential Cleaning Bundle</h5>
+                            
+                            <div class="price-comparison">
+                                <div class="retail-price">Bundle: $105.00</div>
+                                <div class="text-muted small">Individual items: $125.00</div>
+                                <div class="you-save">You Save: $20.00!</div>
+                            </div>
+                            
+                            <div class="certification-badges">
+                                <span class="cert-badge">Most Popular</span>
+                                <span class="cert-badge">Complete Solution</span>
+                                <span class="cert-badge">Best Value</span>
+                            </div>
+                            
+                            <p class="card-text">Complete household cleaning solution. Everything you need for comprehensive sanitization.</p>
+                            
+                            <ul class="features-list text-start">
+                                <li><i class="fas fa-check"></i>Multiple size bottles</li>
+                                <li><i class="fas fa-check"></i>Specialty products included</li>
+                                <li><i class="fas fa-check"></i>Laundry booster</li>
+                                <li><i class="fas fa-check"></i>Comprehensive coverage</li>
+                                <li><i class="fas fa-check"></i>Maximum savings</li>
+                            </ul>
+                            
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('essential-bundle', 'Essential Cleaning Bundle', 105.00, '⭐')">
+                                <i class="fas fa-cart-plus me-2"></i>Add Bundle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Complete Cleaning Bundle -->
+                <div class="col-lg-4 col-md-6 mb-4" data-category="bundles">
+                    <div class="card product-card position-relative">
+                        <div class="product-badge badge-premium">Ultimate</div>
+                        <div class="card-body text-center p-4">
+                            <div class="display-4 mb-3">💎</div>
+                            <h5 class="card-title fw-bold">Complete Cleaning Bundle</h5>
+                            
+                            <div class="price-comparison">
+                                <div class="retail-price">Bundle: $129.00</div>
+                                <div class="text-muted small">Individual items: $159.00</div>
+                                <div class="you-save">You Save: $30.00!</div>
+                            </div>
+                            
+                            <div class="certification-badges">
+                                <span class="cert-badge">Ultimate Package</span>
+                                <span class="cert-badge">Premium Value</span>
+                                <span class="cert-badge">Everything Included</span>
+                            </div>
+                            
+                            <p class="card-text">Ultimate cleaning package. Includes every product category for total home protection.</p>
+                            
+                            <ul class="features-list text-start">
+                                <li><i class="fas fa-check"></i>All product categories</li>
+                                <li><i class="fas fa-check"></i>Pet care included</li>
+                                <li><i class="fas fa-check"></i>Health & beauty products</li>
+                                <li><i class="fas fa-check"></i>Commercial-grade supplies</li>
+                                <li><i class="fas fa-check"></i>Maximum value package</li>
+                            </ul>
+                            
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('complete-bundle', 'Complete Cleaning Bundle', 129.00, '💎')">
+                                <i class="fas fa-cart-plus me-2"></i>Add Bundle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ready to Use Value Bundle -->
+                <div class="col-lg-6 col-md-6 mb-4" data-category="bundles">
+                    <div class="card product-card position-relative">
+                        <div class="product-badge badge-value">Ready to Use</div>
+                        <div class="card-body text-center p-4">
+                            <div class="display-4 mb-3">✅</div>
+                            <h5 class="card-title fw-bold">Ready to Use Value Bundle</h5>
+                            
+                            <div class="price-comparison">
+                                <div class="retail-price">Bundle: $57.00</div>
+                                <div class="text-muted small">Individual items: $66.00</div>
+                                <div class="you-save">You Save: $9.00!</div>
+                            </div>
+                            
+                            <div class="certification-badges">
+                                <span class="cert-badge">No Mixing</span>
+                                <span class="cert-badge">Ready to Use</span>
+                                <span class="cert-badge">Convenient</span>
+                            </div>
+                            
+                            <p class="card-text">All ready-to-use products. No mixing, no dilution - just open and clean!</p>
+                            
+                            <ul class="features-list text-start">
+                                <li><i class="fas fa-check"></i>No dilution required</li>
+                                <li><i class="fas fa-check"></i>Immediate use</li>
+                                <li><i class="fas fa-check"></i>Multiple sizes included</li>
+                                <li><i class="fas fa-check"></i>Convenient solution</li>
+                                <li><i class="fas fa-check"></i>Bundle savings</li>
+                            </ul>
+                            
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('rtu-value-bundle', 'Ready to Use Value Bundle', 57.00, '✅')">
+                                <i class="fas fa-cart-plus me-2"></i>Add Bundle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Value 2 Pack -->
+                <div class="col-lg-6 col-md-6 mb-4" data-category="bundles">
+                    <div class="card product-card position-relative">
+                        <div class="product-badge badge-value">2-Pack Deal</div>
+                        <div class="card-body text-center p-4">
+                            <div class="display-4 mb-3">🔄</div>
+                            <h5 class="card-title fw-bold">Value 2-Pack</h5>
+                            
+                            <div class="price-comparison">
+                                <div class="retail-price">2-Pack: $34.00</div>
+                                <div class="text-muted small">Individual: $21.99 each</div>
+                                <div class="you-save">You Save: $9.98!</div>
+                            </div>
+                            
+                            <div class="certification-badges">
+                                <span class="cert-badge">Twin Pack</span>
+                                <span class="cert-badge">Bulk Savings</span>
+                                <span class="cert-badge">Stock Up</span>
+                            </div>
+                            
+                            <p class="card-text">Two 32oz bottles at a discounted price. Perfect for stocking up or sharing.</p>
+                            
+                            <ul class="features-list text-start">
+                                <li><i class="fas fa-check"></i>2 x 32oz bottles</li>
+                                <li><i class="fas fa-check"></i>Significant savings</li>
+                                <li><i class="fas fa-check"></i>Extended supply</li>
+                                <li><i class="fas fa-check"></i>Share with family/friends</li>
+                                <li><i class="fas fa-check"></i>Stock up discount</li>
+                            </ul>
+                            
+                            <button class="add-to-cart-btn mt-3" onclick="addToCart('value-2-pack', 'Value 2-Pack', 34.00, '🔄')">
+                                <i class="fas fa-cart-plus me-2"></i>Add 2-Pack
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Our Products Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="text-center mb-5">
+                        <h2 class="display-5 fw-bold">Why Choose Organic HypoSolutions?</h2>
+                        <p class="lead">The most advanced HOCl products with unmatched purity and effectiveness</p>
+                    </div>
                     
-                    <div class="checkout-section" id="checkoutSection" style="display: none;">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h6 class="fw-bold mb-3">Order Summary</h6>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Subtotal:</span>
-                                    <strong id="cartSubtotal">$0.00</strong>
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                        <i class="fas fa-certificate"></i>
+                                    </div>
                                 </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Shipping:</span>
-                                    <span id="cartShipping">FREE over $50</span>
-                                </div>
-                                <hr>
-                                <div class="d-flex justify-content-between mb-3">
-                                    <span class="fw-bold">Total:</span>
-                                    <strong class="text-primary fs-5" id="cartTotal">$0.00</strong>
+                                <div class="flex-grow-1 ms-3">
+                                    <h5 class="fw-bold">Triple Certified</h5>
+                                    <p class="mb-0">USDA Organic, EPA Registered, and FDA Food Contact approved for maximum safety and effectiveness.</p>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <h6 class="fw-bold mb-3">Checkout Options</h6>
-                                <div class="d-grid gap-2">
-                                    <button class="btn btn-primary btn-lg" onclick="proceedToCheckout()">
-                                        🛒 Proceed to Checkout
-                                    </button>
-                                    <button class="btn btn-outline-primary" onclick="requestQuote()">
-                                        📋 Request Custom Quote
-                                    </button>
-                                    <button class="btn btn-outline-secondary" onclick="callForOrder()">
-                                        📞 Call to Order
-                                    </button>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                        <i class="fas fa-droplet"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h5 class="fw-bold">100% Pure HOCl</h5>
+                                    <p class="mb-0">No additives, chemicals, or fillers. The purest hypochlorous acid available commercially.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <div class="bg-info text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h5 class="fw-bold">Safe for All Ages</h5>
+                                    <p class="mb-0">Safe around babies, children, pets, and food. No harmful residue or toxic fumes.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <div class="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                        <i class="fas fa-virus-slash"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h5 class="fw-bold">99.9% Effective</h5>
+                                    <p class="mb-0">Hospital-grade pathogen elimination including bacteria, viruses, and fungal spores.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                        <i class="fas fa-leaf"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h5 class="fw-bold">Environmentally Safe</h5>
+                                    <p class="mb-0">Biodegrades to harmless salt water. No environmental impact or toxic runoff.</p>
                                 </div>
                             </div>
                         </div>
@@ -570,72 +1154,138 @@
                 </div>
             </div>
         </div>
+    </section>
+
+    <!-- Shopping Cart Preview (Fixed Position) -->
+    <div id="cartPreview" class="cart-preview">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold mb-0"><i class="fas fa-shopping-cart me-2"></i>Shopping Cart</h6>
+            <button class="btn-close" onclick="toggleCart()"></button>
+        </div>
+        
+        <div id="cartItems">
+            <div class="text-center text-muted py-4">
+                <i class="fas fa-shopping-cart fa-2x mb-2"></i>
+                <p>Your cart is empty</p>
+            </div>
+        </div>
+        
+        <div id="cartSummary" style="display: none;">
+            <hr>
+            <div class="d-flex justify-content-between fw-bold">
+                <span>Total:</span>
+                <span id="cartTotal">$0.00</span>
+            </div>
+            <div class="d-grid gap-2 mt-3">
+                <button class="btn btn-primary" onclick="proceedToCheckout()">
+                    <i class="fas fa-credit-card me-2"></i>Checkout
+                </button>
+                <button class="btn btn-outline-primary" onclick="requestCustomQuote()">
+                    <i class="fas fa-clipboard-list me-2"></i>Custom Quote
+                </button>
+            </div>
+        </div>
     </div>
 
-    <!-- Rest of existing content continues unchanged... -->
-    <!-- I'll include key sections but truncate for space -->
-
-    <!-- Product Benefits -->
-    <section class="py-5 bg-light">
+    <!-- Business Account CTA -->
+    <section class="py-5 bg-primary text-white">
         <div class="container">
-            <div class="benefits-section">
-                <h2 class="text-center fw-bold mb-4">Why Choose Our Pure HOCl Products?</h2>
-                <div class="row">
-                    <div class="col-md-6">
-                        <ul class="list-unstyled">
-                            <li class="mb-3">✅ <strong>100% Pure HOCl</strong> - No additives, chemicals, or fillers</li>
-                            <li class="mb-3">✅ <strong>FDA Food Contact Approved</strong> - FCN 1811 for all food categories</li>
-                            <li class="mb-3">✅ <strong>EPA Registered #97801-1</strong> - Hospital-grade disinfection power</li>
-                            <li class="mb-3">✅ <strong>USDA Certified Organic #8150019050</strong> - Environmental responsibility guaranteed</li>
-                            <li class="mb-3">✅ <strong>Safe for All Ages</strong> - Babies, children, and pets can be present</li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6">
-                        <ul class="list-unstyled">
-                            <li class="mb-3">✅ <strong>99.9% Effective</strong> - Eliminates bacteria, viruses, and odors</li>
-                            <li class="mb-3">✅ <strong>No Harmful Residue</strong> - Biodegrades to harmless salt water</li>
-                            <li class="mb-3">✅ <strong>Extended Shelf Life</strong> - 12-18 months when stored properly</li>
-                            <li class="mb-3">✅ <strong>Multi-Purpose</strong> - Surfaces, air purification, odor control</li>
-                            <li class="mb-3">✅ <strong>Versatile Dilution</strong> - Use full strength or dilute as needed</li>
-                        </ul>
-                    </div>
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h3 class="fw-bold mb-3">Need Business or Wholesale Pricing?</h3>
+                    <p class="lead mb-0">Join our business program for volume discounts, Net 30 terms, and dedicated account management.</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a href="account/business-dashboard.html" class="btn btn-light btn-lg me-3">
+                        <i class="fas fa-building me-2"></i>Business Account
+                    </a>
+                    <a href="tel:+18017125663" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-phone me-2"></i>Call Now
+                    </a>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white py-4">
+    <footer class="bg-dark text-white py-5">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-4">
-                    <svg width="40" height="40" viewBox="0 0 400 250" class="me-2">
-                        <rect width="400" height="250" fill="#2E5EAA"/>
-                        <text x="200" y="180" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="100" font-weight="bold">OHS</text>
-                        <text x="200" y="210" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="20">Organic HypoSolutions</text>
-                        <path d="M 320 80 Q 340 60 360 80 Q 340 100 320 80" fill="#4ADE80"/>
-                        <path d="M 330 70 Q 350 50 370 70 Q 350 90 330 70" fill="#22C55E"/>
-                    </svg>
-                    <h5>Organic Hyposolutions</h5>
-                    <p>Utah's premier USDA Certified Organic HOCl sanitization services</p>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <svg width="40" height="40" viewBox="0 0 400 250" class="me-2">
+                            <rect width="400" height="250" fill="#2E5EAA"/>
+                            <text x="200" y="180" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="100" font-weight="bold">OHS</text>
+                            <text x="200" y="210" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="20">Organic HypoSolutions</text>
+                            <path d="M 320 80 Q 340 60 360 80 Q 340 100 320 80" fill="#4ADE80"/>
+                            <path d="M 330 70 Q 350 50 370 70 Q 350 90 330 70" fill="#22C55E"/>
+                        </svg>
+                        <h5 class="mb-0">Organic Hyposolutions</h5>
+                    </div>
+                    <p>Utah's premier USDA Certified Organic HOCl product manufacturer and service provider.</p>
                     <p><small>Utah Business License #14565171-0160 | EPA Registration #97801-1</small></p>
                 </div>
-                <div class="col-md-8 text-md-end">
-                    <p>📞 (801) 712-5663 | ✉️ ohshocl@gmail.com</p>
-                    <div class="mb-2">
-                        <a href="legal-information.html" class="text-white text-decoration-none me-3">Legal Information</a>
-                        <a href="science-certifications.html" class="text-white text-decoration-none">Certifications</a>
-                    </div>
-                    <p><small>&copy; 2025 Organic Hyposolutions. All rights reserved.</small></p>
+                
+                <div class="col-md-2 mb-4">
+                    <h6 class="fw-bold mb-3">Products</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#personal" class="text-white text-decoration-none">Personal Care</a></li>
+                        <li><a href="#health" class="text-white text-decoration-none">Health & Beauty</a></li>
+                        <li><a href="#pet" class="text-white text-decoration-none">Pet Care</a></li>
+                        <li><a href="#commercial" class="text-white text-decoration-none">Commercial</a></li>
+                        <li><a href="#bundles" class="text-white text-decoration-none">Value Bundles</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-md-2 mb-4">
+                    <h6 class="fw-bold mb-3">Services</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="services.html" class="text-white text-decoration-none">Professional Cleaning</a></li>
+                        <li><a href="shop/book-service.html" class="text-white text-decoration-none">Book Service</a></li>
+                        <li><a href="calculator.html" class="text-white text-decoration-none">Cost Calculator</a></li>
+                        <li><a href="about.html" class="text-white text-decoration-none">About Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-md-2 mb-4">
+                    <h6 class="fw-bold mb-3">Support</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="science-certifications.html" class="text-white text-decoration-none">Certifications</a></li>
+                        <li><a href="legal-information.html" class="text-white text-decoration-none">Legal Info</a></li>
+                        <li><a href="contact.html" class="text-white text-decoration-none">Contact Us</a></li>
+                        <li><a href="account/business-dashboard.html" class="text-white text-decoration-none">Business Portal</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-md-2 mb-4">
+                    <h6 class="fw-bold mb-3">Contact</h6>
+                    <p class="mb-2"><i class="fas fa-phone me-2"></i>(801) 712-5663</p>
+                    <p class="mb-2"><i class="fas fa-envelope me-2"></i>ohshocl@gmail.com</p>
+                    <p class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>Utah, USA</p>
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2025 Organic Hyposolutions. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="cert-badge me-2">USDA Organic #8150019050</div>
+                    <div class="cert-badge">EPA #97801-1</div>
                 </div>
             </div>
         </div>
     </footer>
 
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Shopping Cart JavaScript -->
     <script>
-        // Shopping Cart Functionality
         let cart = [];
+        let cartVisible = false;
 
         // Add item to cart
         function addToCart(id, name, price, emoji) {
@@ -655,32 +1305,19 @@
             
             updateCartDisplay();
             showCartNotification(name);
-        }
-
-        // Remove item from cart
-        function removeFromCart(id) {
-            cart = cart.filter(item => item.id !== id);
-            updateCartDisplay();
-        }
-
-        // Update item quantity
-        function updateQuantity(id, change) {
-            const item = cart.find(item => item.id === id);
-            if (item) {
-                item.quantity += change;
-                if (item.quantity <= 0) {
-                    removeFromCart(id);
-                } else {
-                    updateCartDisplay();
-                }
+            
+            // Auto-show cart preview
+            if (!cartVisible) {
+                toggleCart();
             }
         }
 
         // Update cart display
         function updateCartDisplay() {
             const cartBadge = document.getElementById('cartBadge');
-            const cartPreviewContent = document.getElementById('cartPreviewContent');
             const cartItems = document.getElementById('cartItems');
+            const cartSummary = document.getElementById('cartSummary');
+            const cartTotal = document.getElementById('cartTotal');
             
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
             const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -693,118 +1330,116 @@
                 cartBadge.style.display = 'none';
             }
             
-            // Update preview
+            // Update cart items
             if (cart.length === 0) {
-                cartPreviewContent.innerHTML = `
-                    <div class="empty-cart">
-                        <div class="display-6 mb-2">🛒</div>
-                        <p class="mb-0">Your cart is empty</p>
+                cartItems.innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-shopping-cart fa-2x mb-2"></i>
+                        <p>Your cart is empty</p>
                     </div>
                 `;
+                cartSummary.style.display = 'none';
             } else {
-                cartPreviewContent.innerHTML = `
-                    <h6 class="fw-bold mb-3 text-primary">Cart Preview</h6>
-                    ${cart.slice(0, 3).map(item => `
-                        <div class="cart-item">
-                            <div>
-                                <div class="fw-bold">${item.emoji} ${item.name}</div>
-                                <small class="text-muted">$${item.price} x ${item.quantity}</small>
-                            </div>
-                            <div class="fw-bold">$${(item.price * item.quantity).toFixed(2)}</div>
+                cartItems.innerHTML = cart.map(item => `
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <div class="flex-grow-1">
+                            <div class="fw-bold">${item.emoji} ${item.name}</div>
+                            <div class="small text-muted">${item.price.toFixed(2)} x ${item.quantity}</div>
                         </div>
-                    `).join('')}
-                    ${cart.length > 3 ? `<div class="text-center text-muted mt-2">+${cart.length - 3} more items</div>` : ''}
-                    <hr>
-                    <div class="d-flex justify-content-between fw-bold">
-                        <span>Total:</span>
-                        <span class="text-primary">$${totalPrice.toFixed(2)}</span>
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-sm btn-outline-secondary me-2" onclick="updateQuantity('${item.id}', -1)">-</button>
+                            <span class="fw-bold">${item.quantity}</span>
+                            <button class="btn btn-sm btn-outline-secondary ms-2" onclick="updateQuantity('${item.id}', 1)">+</button>
+                            <button class="btn btn-sm btn-outline-danger ms-2" onclick="removeFromCart('${item.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
                     </div>
-                    <button class="btn btn-primary w-100 mt-3" onclick="openCart()">View Full Cart</button>
-                `;
+                `).join('');
+                
+                cartTotal.textContent = `${totalPrice.toFixed(2)}`;
+                cartSummary.style.display = 'block';
             }
-            
-            // Update modal
-            updateCartModal();
         }
 
-        // Update cart modal
-        function updateCartModal() {
-            const cartItems = document.getElementById('cartItems');
-            const checkoutSection = document.getElementById('checkoutSection');
+        // Update quantity
+        function updateQuantity(id, change) {
+            const item = cart.find(item => item.id === id);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeFromCart(id);
+                } else {
+                    updateCartDisplay();
+                }
+            }
+        }
+
+        // Remove from cart
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCartDisplay();
+        }
+
+        // Toggle cart visibility
+        function toggleCart() {
+            const cartPreview = document.getElementById('cartPreview');
+            cartVisible = !cartVisible;
             
-            if (cart.length === 0) {
-                cartItems.innerHTML = `
-                    <div class="empty-cart">
-                        <div class="display-1 mb-3">🛒</div>
-                        <h5>Your cart is empty</h5>
-                        <p class="text-muted">Add some products to get started!</p>
-                    </div>
-                `;
-                checkoutSection.style.display = 'none';
+            if (cartVisible) {
+                cartPreview.classList.add('show');
             } else {
-                const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                const shipping = totalPrice >= 50 ? 0 : 9.99;
-                const finalTotal = totalPrice + shipping;
-                
-                cartItems.innerHTML = `
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Price</th>
-                                    <th>Quantity</th>
-                                    <th>Total</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${cart.map(item => `
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <span class="fs-4 me-2">${item.emoji}</span>
-                                                <div>
-                                                    <div class="fw-bold">${item.name}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="fw-bold">$${item.price}</td>
-                                        <td>
-                                            <div class="quantity-controls">
-                                                <button class="quantity-btn" onclick="updateQuantity('${item.id}', -1)">-</button>
-                                                <span class="fw-bold">${item.quantity}</span>
-                                                <button class="quantity-btn" onclick="updateQuantity('${item.id}', 1)">+</button>
-                                            </div>
-                                        </td>
-                                        <td class="fw-bold">$${(item.price * item.quantity).toFixed(2)}</td>
-                                        <td>
-                                            <button class="btn btn-outline-danger btn-sm" onclick="removeFromCart('${item.id}')">Remove</button>
-                                        </td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                `;
-                
-                document.getElementById('cartSubtotal').textContent = `$${totalPrice.toFixed(2)}`;
-                document.getElementById('cartShipping').textContent = shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`;
-                document.getElementById('cartTotal').textContent = `$${finalTotal.toFixed(2)}`;
-                
-                checkoutSection.style.display = 'block';
+                cartPreview.classList.remove('show');
+            }
+        }
+
+        // Category filtering
+        function filterCategory(category) {
+            // Update active button
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show/hide products
+            const products = document.querySelectorAll('[data-category]');
+            products.forEach(product => {
+                if (category === 'all' || product.dataset.category === category) {
+                    product.style.display = 'block';
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+            
+            // Scroll to section if not 'all'
+            if (category !== 'all') {
+                const section = document.getElementById(category);
+                if (section) {
+                    section.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        }
+
+        // Scroll to category
+        function scrollToCategory(category) {
+            if (category === 'all') {
+                document.querySelector('.category-nav').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                const section = document.getElementById(category);
+                if (section) {
+                    section.scrollIntoView({ behavior: 'smooth' });
+                }
             }
         }
 
         // Show cart notification
         function showCartNotification(productName) {
-            // Create a simple notification (you could enhance this with a proper toast library)
             const notification = document.createElement('div');
             notification.className = 'alert alert-success position-fixed';
-            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            notification.style.cssText = 'top: 20px; left: 20px; z-index: 9999; min-width: 300px;';
             notification.innerHTML = `
                 <div class="d-flex align-items-center">
-                    <div class="me-2">✅</div>
+                    <i class="fas fa-check-circle me-2"></i>
                     <div>
                         <strong>Added to cart!</strong><br>
                         <small>${productName}</small>
@@ -819,35 +1454,49 @@
             }, 3000);
         }
 
-        // Open cart modal
-        function openCart() {
-            updateCartModal();
-            const cartModal = new bootstrap.Modal(document.getElementById('cartModal'));
-            cartModal.show();
-        }
-
         // Checkout functions
         function proceedToCheckout() {
-            // In a real implementation, this would integrate with a payment processor
-            const orderSummary = cart.map(item => `${item.quantity}x ${item.name} - $${(item.price * item.quantity).toFixed(2)}`).join('\n');
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            
+            // In a real implementation, this would redirect to Stripe checkout
+            const orderSummary = cart.map(item => 
+                `${item.quantity}x ${item.name} - ${(item.price * item.quantity).toFixed(2)}`
+            ).join('\n');
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             
-            const orderDetails = `Order Summary:\n${orderSummary}\n\nTotal: $${total.toFixed(2)}\n\nPlease contact us to complete your order.`;
+            alert(`Order Summary:\n${orderSummary}\n\nTotal: ${total.toFixed(2)}\n\nRedirecting to checkout...`);
             
-            // For now, open the contact form with order details
-            window.open(`https://docs.google.com/forms/d/1GsJjlVXGAIEJkxBYiAlnlBX8LIV50E0giuNFqIvZ6vI/viewform?entry.123456789=${encodeURIComponent(orderDetails)}`, '_blank');
-        }
-
-        function requestQuote() {
+            // For now, redirect to contact form
             window.open('https://docs.google.com/forms/d/1GsJjlVXGAIEJkxBYiAlnlBX8LIV50E0giuNFqIvZ6vI/viewform', '_blank');
         }
 
-        function callForOrder() {
-            window.open('tel:+18017125663');
+        function requestCustomQuote() {
+            window.open('https://docs.google.com/forms/d/1GsJjlVXGAIEJkxBYiAlnlBX8LIV50E0giuNFqIvZ6vI/viewform', '_blank');
         }
 
-        // Initialize cart display
+        function requestQuote(productType) {
+            window.open(`https://docs.google.com/forms/d/1GsJjlVXGAIEJkxBYiAlnlBX8LIV50E0giuNFqIvZ6vI/viewform?entry.product=${productType}`, '_blank');
+        }
+
+        // Initialize
         updateCartDisplay();
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
     </script>
 </body>
 </html>
