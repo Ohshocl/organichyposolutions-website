@@ -1,4 +1,797 @@
-    <!-- Category Navigation -->
+  <!-- Business Account CTA -->
+    <section class="py-5 bg-primary text-white">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h3 class="fw-bold mb-3">Need Business or Wholesale Pricing?</h3>
+                    <p class="lead mb-0">Join our business program for volume discounts, Net 30 terms, and dedicated account management.</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a href="account/business-dashboard.html" class="btn btn-light btn-lg me-3">
+                        <i class="fas fa-building me-2"></i>Business Account
+                    </a>
+                    <a href="tel:+18017125663" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-phone me-2"></i>Call Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Shared Cart JavaScript -->
+    <script src="shop/js/cart.js"></script>
+    
+    <!-- Shopping Cart JavaScript -->
+    <script>
+        // Define loadCart and saveCart functions first
+        function loadCart() {
+            return JSON.parse(localStorage.getItem('ohsCart') || '[]');
+        }
+
+        function saveCart() {
+            localStorage.setItem('ohsCart', JSON.stringify(cart));
+        }
+
+        let cart = loadCart(); // Now this will work
+        let cartVisible = false;
+
+        // Initialize cart from localStorage and update display
+        function initializeCart() {
+            cart = loadCart();
+            updateCartDisplay();
+        }
+
+        // Add item to cart
+        function addToCart(id, name, price, emoji) {
+            const existingItem = cart.find(item => item.id === id);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: id,
+                    name: name,
+                    price: price,
+                    emoji: emoji,
+                    quantity: 1
+                });
+            }
+            
+            saveCart(); // Save to localStorage
+            updateCartDisplay();
+            showCartNotification(name);
+            
+            // Auto-show cart preview
+            if (!cartVisible) {
+                toggleCart();
+            }
+        }
+
+        // Update cart badge function
+        function updateCartBadge() {
+            const cartItems = loadCart();
+            const cartBadge = document.getElementById('cartBadge');
+            const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+            
+            if (totalItems > 0) {
+                if (cartBadge) {
+                    cartBadge.textContent = totalItems;
+                    cartBadge.style.display = 'inline-block';
+                } 
+            } else {
+                if (cartBadge) cartBadge.style.display = 'none';
+            }
+        }
+
+        // Update cart display
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cartItems');
+            const cartSummary = document.getElementById('cartSummary');
+            const cartTotal = document.getElementById('cartTotal');
+            
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            // Update badges using shared function
+            updateCartBadge();
+            
+            // Update cart items
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-shopping-cart fa-2x mb-2"></i>
+                        <p>Your cart is empty</p>
+                    </div>
+                `;
+                cartSummary.style.display = 'none';
+            } else {
+                cartItems.innerHTML = cart.map(item => `
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <div class="flex-grow-1">
+                            <div class="fw-bold">${item.emoji} ${item.name}</div>
+                            <div class="small text-muted">${item.price.toFixed(2)} x ${item.quantity}</div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-sm btn-outline-secondary me-2" onclick="updateQuantity('${item.id}', -1)">-</button>
+                            <span class="fw-bold">${item.quantity}</span>
+                            <button class="btn btn-sm btn-outline-secondary ms-2" onclick="updateQuantity('${item.id}', 1)">+</button>
+                            <button class="btn btn-sm btn-outline-danger ms-2" onclick="removeFromCart('${item.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                cartTotal.textContent = `${totalPrice.toFixed(2)}`;
+                cartSummary.style.display = 'block';
+            }
+        }
+
+        // Update quantity
+        function updateQuantity(id, change) {
+            const item = cart.find(item => item.id === id);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeFromCart(id);
+                } else {
+                    saveCart();
+                    updateCartDisplay();
+                }
+            }
+        }
+
+        // Remove from cart
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            saveCart();
+            updateCartDisplay();
+        }
+
+        // Toggle cart visibility
+        function toggleCart() {
+            const cartPreview = document.getElementById('cartPreview');
+            cartVisible = !cartVisible;
+            
+            if (cartVisible) {
+                cartPreview.classList.add('show');
+            } else {
+                cartPreview.classList.remove('show');
+            }
+        }
+
+        // Category filtering
+        function filterCategory(category) {
+            // Update active button
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show/hide products
+            const products = document.querySelectorAll('[data-category]');
+            products.forEach(product => {
+                if (category === 'all' || product.dataset.category === category) {
+                    product.style.display = 'block';
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+            
+            // Scroll to section if not 'all'
+            if (category !== 'all') {
+                const section = document.getElementById(category);
+                if (section) {
+                    section.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        }
+
+        // Scroll to category
+        function scrollToCategory(category) {
+            if (category === 'all') {
+                document.querySelector('.category-nav').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                const section = document.getElementById(category);
+                if (section) {
+                    section.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        }
+
+        // Show cart notification
+        function showCartNotification(productName) {
+            const notification = document.createElement('div');
+            notification.className = 'alert alert-success position-fixed';
+            notification.style.cssText = 'top: 20px; left: 20px; z-index: 9999; min-width: 300px;';
+            notification.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <div>
+                        <strong>Added to cart!</strong><br>
+                        <small>${productName}</small>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Checkout functions
+        function proceedToCheckout() {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            
+            // Redirect to cart page
+            window.location.href = 'shop/cart.html';
+        }
+
+        function requestCustomQuote() {
+            window.open('https://docs.google.com/forms/d/1GsJjlVXGAIEJkxBYiAlnlBX8LIV50E0giuNFqIvZ6vI/viewform', '_blank');
+        }
+
+        function requestQuote(productType) {
+            window.open(`https://docs.google.com/forms/d/1GsJjlVXGAIEJkxBYiAlnlBX8LIV50E0giuNFqIvZ6vI/viewform?entry.product=${productType}`, '_blank');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCart();
+        });
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional HOCl Products - Organic HypoSolutions</title>
+    <meta name="description" content="Shop USDA Certified Organic hypochlorous acid products. Professional-grade disinfection for health, beauty, pet care, commercial, and personal use.">
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEKE217WEY"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-HEKE217WEY');
+    </script>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #4CAF50 0%, #2196F3 100%);
+            color: white;
+            padding: 80px 0;
+        }
+        
+        .category-nav {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px 0;
+            position: sticky;
+            top: 76px;
+            z-index: 100;
+        }
+        
+        .category-btn {
+            background: transparent;
+            border: 2px solid #007bff;
+            color: #007bff;
+            padding: 12px 24px;
+            border-radius: 25px;
+            margin: 5px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .category-btn:hover, .category-btn.active {
+            background: #007bff;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+        }
+        
+        .product-card {
+            transition: all 0.3s ease;
+            height: 100%;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 10;
+        }
+        
+        .badge-premium { background: linear-gradient(45deg, #ffd700, #ffed4e); color: #2d5016; }
+        .badge-bestseller { background: linear-gradient(45deg, #ff6b6b, #ee5a52); color: white; }
+        .badge-new { background: linear-gradient(45deg, #4ecdc4, #44a08d); color: white; }
+        .badge-value { background: linear-gradient(45deg, #667eea, #764ba2); color: white; }
+        
+        .price-comparison {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+        
+        .wholesale-price {
+            color: #007bff;
+            font-weight: bold;
+        }
+        
+        .retail-price {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .you-save {
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+        
+        .add-to-cart-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .add-to-cart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            background: linear-gradient(45deg, #218838, #1e7e34);
+        }
+        
+        .features-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .features-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .features-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .features-list i {
+            color: #28a745;
+            margin-right: 8px;
+            width: 20px;
+        }
+        
+        .certification-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 15px 0;
+        }
+        
+        .cert-badge {
+            background: #fff;
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            border: 1px solid #ddd;
+        }
+        
+        .volume-pricing {
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .cart-preview {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 20px;
+            width: 320px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1050;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        
+        .cart-preview.show {
+            transform: translateX(0);
+        }
+        
+        .category-section {
+            padding: 60px 0;
+        }
+        
+        .category-section:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-header h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .section-header p {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        /* Volume Pricing Section */
+        .volume-pricing-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 0;
+        }
+
+        .pricing-tier-card {
+            background: white;
+            color: #333;
+            border-radius: 20px;
+            padding: 30px;
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+
+        .pricing-tier-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .pricing-tier-card.highlighted {
+            border: 3px solid #28a745;
+            position: relative;
+        }
+
+        .pricing-tier-card.highlighted::before {
+            content: "MOST POPULAR";
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #28a745;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Trust signals */
+        .trust-signals {
+            background: #f8f9fa;
+            padding: 40px 0;
+        }
+
+        .trust-signal {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .trust-signal i {
+            font-size: 2.5rem;
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+
+        /* Urgency elements */
+        .urgency-banner {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+
+        /* Footer certification badges - smaller */
+        .footer-cert-badge {
+            background: #fff;
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin: 2px;
+            display: inline-block;
+        }
+        
+        @media (max-width: 768px) {
+            .category-btn {
+                display: block;
+                width: 100%;
+                margin: 5px 0;
+            }
+            
+            .cart-preview {
+                width: 280px;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Urgency Banner -->
+    <div class="urgency-banner">
+        <div class="container">
+            <i class="fas fa-fire me-2"></i>Limited Time: Volume Discounts up to 46% OFF | FREE SHIPPING on ALL Orders | <i class="fas fa-phone me-1"></i>(801) 712-5663
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary d-flex align-items-center" href="index.html">
+                <!-- OHS Logo -->
+                <svg width="40" height="40" viewBox="0 0 400 250" class="me-2">
+                    <rect width="400" height="250" fill="#2E5EAA"/>
+                    <text x="200" y="180" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="100" font-weight="bold">OHS</text>
+                    <text x="200" y="210" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="20">Organic HypoSolutions</text>
+                    <path d="M 320 80 Q 340 60 360 80 Q 340 100 320 80" fill="#4ADE80"/>
+                    <path d="M 330 70 Q 350 50 370 70 Q 350 90 330 70" fill="#22C55E"/>
+                </svg>
+                Organic HypoSolutions
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="products.html">Products</a></li>
+                    <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="science-certifications.html">Science & Certifications</a></li>
+                    <li class="nav-item"><a class="nav-link" href="legal-information.html">Legal Information</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                    
+                    <!-- Customer Shopping & Account -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-shopping-bag"></i> Shop
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="products.html"><i class="fas fa-boxes"></i> All Products</a></li>
+                            <li><a class="dropdown-item" href="shop/cart.html">
+                                <i class="fas fa-shopping-cart"></i> Cart 
+                                <span id="cartBadge" class="badge bg-danger ms-1" style="display: none;">0</span>
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="shop/checkout.html">
+                                <i class="fas fa-credit-card"></i> Checkout
+                                <span class="badge bg-warning ms-1">Under Construction</span>
+                            </a></li>
+                            <li><a class="dropdown-item" href="shop/order-success.html">
+                                <i class="fas fa-check-circle"></i> Order Confirmation
+                                <span class="badge bg-warning ms-1">Under Construction</span>
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> Account
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="account/profile.html">
+                                <i class="fas fa-user-circle"></i> My Profile
+                                <span class="badge bg-warning ms-1">Under Construction</span>
+                            </a></li>
+                            <li><a class="dropdown-item" href="account/orders.html">
+                                <i class="fas fa-receipt"></i> Order History
+                                <span class="badge bg-warning ms-1">Under Construction</span>
+                            </a></li>
+                            <li><a class="dropdown-item" href="account/dashboard.html">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                                <span class="badge bg-warning ms-1">Under Construction</span>
+                            </a></li>
+                            <li><a class="dropdown-item" href="account/business-dashboard.html">
+                                <i class="fas fa-building"></i> Business Account
+                                <span class="badge bg-info ms-1">Wholesale</span>
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="auth/login.html">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                                <span class="badge bg-warning ms-1">Under Construction</span>
+                            </a></li>
+                            <li><a class="dropdown-item" href="auth/register.html">
+                                <i class="fas fa-user-plus"></i> Register
+                                <span class="badge bg-warning ms-1">Under Construction</span>
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="text-center">
+                <h1 class="display-4 fw-bold mb-4">Professional HOCl Product Catalog</h1>
+                <p class="lead mb-4">USDA Certified Organic hypochlorous acid solutions for every application</p>
+                
+                <!-- Certification Badges -->
+                <div class="mb-4">
+                    <span class="cert-badge">🇺🇸 USDA Organic #8150019050</span>
+                    <span class="cert-badge">✅ EPA Registered #97801-1</span>
+                    <span class="cert-badge">🏥 FDA Food Contact FCN 1811</span>
+                    <span class="cert-badge">💧 100% Pure HOCl</span>
+                </div>
+                
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <button class="btn btn-light btn-lg" onclick="scrollToCategory('all')">
+                        <i class="fas fa-th-large me-2"></i>View All Products
+                    </button>
+                    <a href="shop/book-service.html" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-calendar-check me-2"></i>Book Service
+                    </a>
+                    <a href="tel:+18017125663" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-phone me-2"></i>(801) 712-5663
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Volume Pricing Explainer -->
+    <section class="volume-pricing-section">
+        <div class="container">
+            <div class="text-center text-white">
+                <h2 class="display-5 fw-bold mb-4">💰 Smart Volume Pricing Tiers</h2>
+                <p class="lead mb-4">Save up to 46% with our strategic volume thresholds</p>
+                
+                <div class="row">
+                    <div class="col-lg-3 mb-4">
+                        <div class="pricing-tier-card h-100">
+                            <h4 class="text-primary mb-3">🛒 Retail Pricing</h4>
+                            <h5 class="mb-3">Small Quantities</h5>
+                            <p>Perfect for personal use, small businesses, and product trials.</p>
+                            <div class="fw-bold text-success">Individual unit pricing</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 mb-4">
+                        <div class="pricing-tier-card highlighted h-100">
+                            <h4 class="text-success mb-3">📦 Low Volume</h4>
+                            <h5 class="mb-3">10-20+ Units</h5>
+                            <p>Premium gallon products and specialty items qualify at just 10-20 units.</p>
+                            <div class="fw-bold text-success">45-46% savings!</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 mb-4">
+                        <div class="pricing-tier-card h-100">
+                            <h4 class="text-warning mb-3">📦 Medium Volume</h4>
+                            <h5 class="mb-3">25+ Units</h5>
+                            <p>Most 32oz and 8oz products qualify for wholesale pricing at 25 units.</p>
+                            <div class="fw-bold text-success">35-41% savings!</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 mb-4">
+                        <div class="pricing-tier-card h-100">
+                            <h4 class="text-info mb-3">🏢 Business Accounts</h4>
+                            <h5 class="mb-3">Even Lower Thresholds</h5>
+                            <p>Registered businesses qualify for volume pricing at reduced quantities.</p>
+                            <div class="fw-bold text-success">Net 30 terms available</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <h6 class="text-warning">⚡ QUICK VOLUME</h6>
+                            <p class="small">Gallons: Just 10+ units<br>Specialty items: 20+ units</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="text-success">📊 STANDARD VOLUME</h6>
+                            <p class="small">32oz products: 25+ units<br>8oz products: 25+ units</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="text-info">🎯 FOCUSED VOLUME</h6>
+                            <p class="small">3oz products: 50+ units<br>Travel sizes: 50+ units</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <a href="account/business-dashboard.html" class="btn btn-light btn-lg me-3">
+                        <i class="fas fa-building me-2"></i>Business Account
+                    </a>
+                    <a href="tel:+18017125663" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-phone me-2"></i>Call for Custom Pricing
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Signals -->
+    <section class="trust-signals">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-6">
+                    <div class="trust-signal">
+                        <i class="fas fa-shipping-fast"></i>
+                        <h6 class="fw-bold">FREE Shipping</h6>
+                        <p class="small mb-0">On ALL orders</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="trust-signal">
+                        <i class="fas fa-shield-alt"></i>
+                        <h6 class="fw-bold">100% Safe</h6>
+                        <p class="small mb-0">FDA approved</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="trust-signal">
+                        <i class="fas fa-award"></i>
+                        <h6 class="fw-bold">Triple Certified</h6>
+                        <p class="small mb-0">USDA, EPA, FDA</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="trust-signal">
+                        <i class="fas fa-phone-alt"></i>
+                        <h6 class="fw-bold">Expert Support</h6>
+                        <p class="small mb-0">(801) 712-5663</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+<!-- Category Navigation -->
     <section class="category-nav">
         <div class="container">
             <div class="text-center">
@@ -872,799 +1665,6 @@
         </div>
     </div>
 
-    <!-- Business Account CTA -->
-    <section class="py-5 bg-primary text-white">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-8">
-                    <h3 class="fw-bold mb-3">Need Business or Wholesale Pricing?</h3>
-                    <p class="lead mb-0">Join our business program for volume discounts, Net 30 terms, and dedicated account management.</p>
-                </div>
-                <div class="col-lg-4 text-lg-end">
-                    <a href="account/business-dashboard.html" class="btn btn-light btn-lg me-3">
-                        <i class="fas fa-building me-2"></i>Business Account
-                    </a>
-                    <a href="tel:+18017125663" class="btn btn-outline-light btn-lg">
-                        <i class="fas fa-phone me-2"></i>Call Now
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Shared Cart JavaScript -->
-    <script src="shop/js/cart.js"></script>
-    
-    <!-- Shopping Cart JavaScript -->
-    <script>
-        // Define loadCart and saveCart functions first
-        function loadCart() {
-            return JSON.parse(localStorage.getItem('ohsCart') || '[]');
-        }
-
-        function saveCart() {
-            localStorage.setItem('ohsCart', JSON.stringify(cart));
-        }
-
-        let cart = loadCart(); // Now this will work
-        let cartVisible = false;
-
-        // Initialize cart from localStorage and update display
-        function initializeCart() {
-            cart = loadCart();
-            updateCartDisplay();
-        }
-
-        // Add item to cart
-        function addToCart(id, name, price, emoji) {
-            const existingItem = cart.find(item => item.id === id);
-            
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({
-                    id: id,
-                    name: name,
-                    price: price,
-                    emoji: emoji,
-                    quantity: 1
-                });
-            }
-            
-            saveCart(); // Save to localStorage
-            updateCartDisplay();
-            showCartNotification(name);
-            
-            // Auto-show cart preview
-            if (!cartVisible) {
-                toggleCart();
-            }
-        }
-
-        // Update cart badge function
-        function updateCartBadge() {
-            const cartItems = loadCart();
-            const cartBadge = document.getElementById('cartBadge');
-            const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-            
-            if (totalItems > 0) {
-                if (cartBadge) {
-                    cartBadge.textContent = totalItems;
-                    cartBadge.style.display = 'inline-block';
-                } 
-            } else {
-                if (cartBadge) cartBadge.style.display = 'none';
-            }
-        }
-
-        // Update cart display
-        function updateCartDisplay() {
-            const cartItems = document.getElementById('cartItems');
-            const cartSummary = document.getElementById('cartSummary');
-            const cartTotal = document.getElementById('cartTotal');
-            
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            
-            // Update badges using shared function
-            updateCartBadge();
-            
-            // Update cart items
-            if (cart.length === 0) {
-                cartItems.innerHTML = `
-                    <div class="text-center text-muted py-4">
-                        <i class="fas fa-shopping-cart fa-2x mb-2"></i>
-                        <p>Your cart is empty</p>
-                    </div>
-                `;
-                cartSummary.style.display = 'none';
-            } else {
-                cartItems.innerHTML = cart.map(item => `
-                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                        <div class="flex-grow-1">
-                            <div class="fw-bold">${item.emoji} ${item.name}</div>
-                            <div class="small text-muted">${item.price.toFixed(2)} x ${item.quantity}</div>
-                        </div>
-                        <div class="d-flex align-items-center">
-                            <button class="btn btn-sm btn-outline-secondary me-2" onclick="updateQuantity('${item.id}', -1)">-</button>
-                            <span class="fw-bold">${item.quantity}</span>
-                            <button class="btn btn-sm btn-outline-secondary ms-2" onclick="updateQuantity('${item.id}', 1)">+</button>
-                            <button class="btn btn-sm btn-outline-danger ms-2" onclick="removeFromCart('${item.id}')">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
-                
-                cartTotal.textContent = `${totalPrice.toFixed(2)}`;
-                cartSummary.style.display = 'block';
-            }
-        }
-
-        // Update quantity
-        function updateQuantity(id, change) {
-            const item = cart.find(item => item.id === id);
-            if (item) {
-                item.quantity += change;
-                if (item.quantity <= 0) {
-                    removeFromCart(id);
-                } else {
-                    saveCart();
-                    updateCartDisplay();
-                }
-            }
-        }
-
-        // Remove from cart
-        function removeFromCart(id) {
-            cart = cart.filter(item => item.id !== id);
-            saveCart();
-            updateCartDisplay();
-        }
-
-        // Toggle cart visibility
-        function toggleCart() {
-            const cartPreview = document.getElementById('cartPreview');
-            cartVisible = !cartVisible;
-            
-            if (cartVisible) {
-                cartPreview.classList.add('show');
-            } else {
-                cartPreview.classList.remove('show');
-            }
-        }
-
-        // Category filtering
-        function filterCategory(category) {
-            // Update active button
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            // Show/hide products
-            const products = document.querySelectorAll('[data-category]');
-            products.forEach(product => {
-                if (category === 'all' || product.dataset.category === category) {
-                    product.style.display = 'block';
-                } else {
-                    product.style.display = 'none';
-                }
-            });
-            
-            // Scroll to section if not 'all'
-            if (category !== 'all') {
-                const section = document.getElementById(category);
-                if (section) {
-                    section.scrollIntoView({ behavior: 'smooth' });
-                }
-            }
-        }
-
-        // Scroll to category
-        function scrollToCategory(category) {
-            if (category === 'all') {
-                document.querySelector('.category-nav').scrollIntoView({ behavior: 'smooth' });
-            } else {
-                const section = document.getElementById(category);
-                if (section) {
-                    section.scrollIntoView({ behavior: 'smooth' });
-                }
-            }
-        }
-
-        // Show cart notification
-        function showCartNotification(productName) {
-            const notification = document.createElement('div');
-            notification.className = 'alert alert-success position-fixed';
-            notification.style.cssText = 'top: 20px; left: 20px; z-index: 9999; min-width: 300px;';
-            notification.innerHTML = `
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-check-circle me-2"></i>
-                    <div>
-                        <strong>Added to cart!</strong><br>
-                        <small>${productName}</small>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
-        }
-
-        // Checkout functions
-        function proceedToCheckout() {
-            if (cart.length === 0) {
-                alert('Your cart is empty!');
-                return;
-            }
-            
-            // Redirect to cart page
-            window.location.href = 'shop/cart.html';
-        }
-
-        function requestCustomQuote() {
-            window.open('https://docs.google.com/forms/d/1GsJjlVXGAIEJkxBYiAlnlBX8LIV50E0giuNFqIvZ6vI/viewform', '_blank');
-        }
-
-        function requestQuote(productType) {
-            window.open(`https://docs.google.com/forms/d/1GsJjlVXGAIEJkxBYiAlnlBX8LIV50E0giuNFqIvZ6vI/viewform?entry.product=${productType}`, '_blank');
-        }
-
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeCart();
-        });
-    </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional HOCl Products - Organic HypoSolutions</title>
-    <meta name="description" content="Shop USDA Certified Organic hypochlorous acid products. Professional-grade disinfection for health, beauty, pet care, commercial, and personal use.">
-    
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEKE217WEY"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-HEKE217WEY');
-    </script>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <style>
-        .hero-section {
-            background: linear-gradient(135deg, #4CAF50 0%, #2196F3 100%);
-            color: white;
-            padding: 80px 0;
-        }
-        
-        .category-nav {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 20px 0;
-            position: sticky;
-            top: 76px;
-            z-index: 100;
-        }
-        
-        .category-btn {
-            background: transparent;
-            border: 2px solid #007bff;
-            color: #007bff;
-            padding: 12px 24px;
-            border-radius: 25px;
-            margin: 5px;
-            transition: all 0.3s ease;
-            font-weight: 600;
-        }
-        
-        .category-btn:hover, .category-btn.active {
-            background: #007bff;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,123,255,0.3);
-        }
-        
-        .product-card {
-            transition: all 0.3s ease;
-            height: 100%;
-            border: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border-radius: 15px;
-            overflow: hidden;
-        }
-        
-        .product-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-        }
-        
-        .product-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            z-index: 10;
-        }
-        
-        .badge-premium { background: linear-gradient(45deg, #ffd700, #ffed4e); color: #2d5016; }
-        .badge-bestseller { background: linear-gradient(45deg, #ff6b6b, #ee5a52); color: white; }
-        .badge-new { background: linear-gradient(45deg, #4ecdc4, #44a08d); color: white; }
-        .badge-value { background: linear-gradient(45deg, #667eea, #764ba2); color: white; }
-        
-        .price-comparison {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 10px;
-            margin: 10px 0;
-            font-size: 0.9rem;
-        }
-        
-        .wholesale-price {
-            color: #007bff;
-            font-weight: bold;
-        }
-        
-        .retail-price {
-            color: #28a745;
-            font-weight: bold;
-        }
-        
-        .you-save {
-            color: #dc3545;
-            font-weight: bold;
-            font-size: 0.85rem;
-        }
-        
-        .add-to-cart-btn {
-            background: linear-gradient(45deg, #28a745, #20c997);
-            border: none;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            width: 100%;
-        }
-        
-        .add-to-cart-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
-            background: linear-gradient(45deg, #218838, #1e7e34);
-        }
-        
-        .features-list {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .features-list li {
-            padding: 5px 0;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .features-list li:last-child {
-            border-bottom: none;
-        }
-        
-        .features-list i {
-            color: #28a745;
-            margin-right: 8px;
-            width: 20px;
-        }
-        
-        .certification-badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin: 15px 0;
-        }
-        
-        .cert-badge {
-            background: #fff;
-            color: #333;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            border: 1px solid #ddd;
-        }
-        
-        .volume-pricing {
-            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
-            border-radius: 10px;
-            padding: 15px;
-            margin: 15px 0;
-        }
-        
-        .cart-preview {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            padding: 20px;
-            width: 320px;
-            max-height: 400px;
-            overflow-y: auto;
-            z-index: 1050;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-        }
-        
-        .cart-preview.show {
-            transform: translateX(0);
-        }
-        
-        .category-section {
-            padding: 60px 0;
-        }
-        
-        .category-section:nth-child(even) {
-            background: #f8f9fa;
-        }
-        
-        .section-header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-        
-        .section-header h2 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
-        
-        .section-header p {
-            color: #6c757d;
-            font-size: 1.1rem;
-        }
-
-        /* Volume Pricing Section */
-        .volume-pricing-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 60px 0;
-        }
-
-        .pricing-tier-card {
-            background: white;
-            color: #333;
-            border-radius: 20px;
-            padding: 30px;
-            height: 100%;
-            transition: transform 0.3s ease;
-        }
-
-        .pricing-tier-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .pricing-tier-card.highlighted {
-            border: 3px solid #28a745;
-            position: relative;
-        }
-
-        .pricing-tier-card.highlighted::before {
-            content: "MOST POPULAR";
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #28a745;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        /* Trust signals */
-        .trust-signals {
-            background: #f8f9fa;
-            padding: 40px 0;
-        }
-
-        .trust-signal {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .trust-signal i {
-            font-size: 2.5rem;
-            color: #28a745;
-            margin-bottom: 15px;
-        }
-
-        /* Urgency elements */
-        .urgency-banner {
-            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
-            color: white;
-            padding: 10px 0;
-            text-align: center;
-            font-weight: bold;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.8; }
-            100% { opacity: 1; }
-        }
-
-        /* Footer certification badges - smaller */
-        .footer-cert-badge {
-            background: #fff;
-            color: #333;
-            padding: 4px 8px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            margin: 2px;
-            display: inline-block;
-        }
-        
-        @media (max-width: 768px) {
-            .category-btn {
-                display: block;
-                width: 100%;
-                margin: 5px 0;
-            }
-            
-            .cart-preview {
-                width: 280px;
-                right: 10px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Urgency Banner -->
-    <div class="urgency-banner">
-        <div class="container">
-            <i class="fas fa-fire me-2"></i>Limited Time: Volume Discounts up to 46% OFF | FREE SHIPPING on ALL Orders | <i class="fas fa-phone me-1"></i>(801) 712-5663
-        </div>
-    </div>
-
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold text-primary d-flex align-items-center" href="index.html">
-                <!-- OHS Logo -->
-                <svg width="40" height="40" viewBox="0 0 400 250" class="me-2">
-                    <rect width="400" height="250" fill="#2E5EAA"/>
-                    <text x="200" y="180" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="100" font-weight="bold">OHS</text>
-                    <text x="200" y="210" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="20">Organic HypoSolutions</text>
-                    <path d="M 320 80 Q 340 60 360 80 Q 340 100 320 80" fill="#4ADE80"/>
-                    <path d="M 330 70 Q 350 50 370 70 Q 350 90 330 70" fill="#22C55E"/>
-                </svg>
-                Organic HypoSolutions
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="products.html">Products</a></li>
-                    <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
-                    <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="science-certifications.html">Science & Certifications</a></li>
-                    <li class="nav-item"><a class="nav-link" href="legal-information.html">Legal Information</a></li>
-                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-                    
-                    <!-- Customer Shopping & Account -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-shopping-bag"></i> Shop
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="products.html"><i class="fas fa-boxes"></i> All Products</a></li>
-                            <li><a class="dropdown-item" href="shop/cart.html">
-                                <i class="fas fa-shopping-cart"></i> Cart 
-                                <span id="cartBadge" class="badge bg-danger ms-1" style="display: none;">0</span>
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="shop/checkout.html">
-                                <i class="fas fa-credit-card"></i> Checkout
-                                <span class="badge bg-warning ms-1">Under Construction</span>
-                            </a></li>
-                            <li><a class="dropdown-item" href="shop/order-success.html">
-                                <i class="fas fa-check-circle"></i> Order Confirmation
-                                <span class="badge bg-warning ms-1">Under Construction</span>
-                            </a></li>
-                        </ul>
-                    </li>
-                    
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user"></i> Account
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="account/profile.html">
-                                <i class="fas fa-user-circle"></i> My Profile
-                                <span class="badge bg-warning ms-1">Under Construction</span>
-                            </a></li>
-                            <li><a class="dropdown-item" href="account/orders.html">
-                                <i class="fas fa-receipt"></i> Order History
-                                <span class="badge bg-warning ms-1">Under Construction</span>
-                            </a></li>
-                            <li><a class="dropdown-item" href="account/dashboard.html">
-                                <i class="fas fa-tachometer-alt"></i> Dashboard
-                                <span class="badge bg-warning ms-1">Under Construction</span>
-                            </a></li>
-                            <li><a class="dropdown-item" href="account/business-dashboard.html">
-                                <i class="fas fa-building"></i> Business Account
-                                <span class="badge bg-info ms-1">Wholesale</span>
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="auth/login.html">
-                                <i class="fas fa-sign-in-alt"></i> Login
-                                <span class="badge bg-warning ms-1">Under Construction</span>
-                            </a></li>
-                            <li><a class="dropdown-item" href="auth/register.html">
-                                <i class="fas fa-user-plus"></i> Register
-                                <span class="badge bg-warning ms-1">Under Construction</span>
-                            </a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="container">
-            <div class="text-center">
-                <h1 class="display-4 fw-bold mb-4">Professional HOCl Product Catalog</h1>
-                <p class="lead mb-4">USDA Certified Organic hypochlorous acid solutions for every application</p>
-                
-                <!-- Certification Badges -->
-                <div class="mb-4">
-                    <span class="cert-badge">🇺🇸 USDA Organic #8150019050</span>
-                    <span class="cert-badge">✅ EPA Registered #97801-1</span>
-                    <span class="cert-badge">🏥 FDA Food Contact FCN 1811</span>
-                    <span class="cert-badge">💧 100% Pure HOCl</span>
-                </div>
-                
-                <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    <button class="btn btn-light btn-lg" onclick="scrollToCategory('all')">
-                        <i class="fas fa-th-large me-2"></i>View All Products
-                    </button>
-                    <a href="shop/book-service.html" class="btn btn-outline-light btn-lg">
-                        <i class="fas fa-calendar-check me-2"></i>Book Service
-                    </a>
-                    <a href="tel:+18017125663" class="btn btn-outline-light btn-lg">
-                        <i class="fas fa-phone me-2"></i>(801) 712-5663
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Volume Pricing Explainer -->
-    <section class="volume-pricing-section">
-        <div class="container">
-            <div class="text-center text-white">
-                <h2 class="display-5 fw-bold mb-4">💰 Smart Volume Pricing Tiers</h2>
-                <p class="lead mb-4">Save up to 46% with our strategic volume thresholds</p>
-                
-                <div class="row">
-                    <div class="col-lg-3 mb-4">
-                        <div class="pricing-tier-card h-100">
-                            <h4 class="text-primary mb-3">🛒 Retail Pricing</h4>
-                            <h5 class="mb-3">Small Quantities</h5>
-                            <p>Perfect for personal use, small businesses, and product trials.</p>
-                            <div class="fw-bold text-success">Individual unit pricing</div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-lg-3 mb-4">
-                        <div class="pricing-tier-card highlighted h-100">
-                            <h4 class="text-success mb-3">📦 Low Volume</h4>
-                            <h5 class="mb-3">10-20+ Units</h5>
-                            <p>Premium gallon products and specialty items qualify at just 10-20 units.</p>
-                            <div class="fw-bold text-success">45-46% savings!</div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-lg-3 mb-4">
-                        <div class="pricing-tier-card h-100">
-                            <h4 class="text-warning mb-3">📦 Medium Volume</h4>
-                            <h5 class="mb-3">25+ Units</h5>
-                            <p>Most 32oz and 8oz products qualify for wholesale pricing at 25 units.</p>
-                            <div class="fw-bold text-success">35-41% savings!</div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-lg-3 mb-4">
-                        <div class="pricing-tier-card h-100">
-                            <h4 class="text-info mb-3">🏢 Business Accounts</h4>
-                            <h5 class="mb-3">Even Lower Thresholds</h5>
-                            <p>Registered businesses qualify for volume pricing at reduced quantities.</p>
-                            <div class="fw-bold text-success">Net 30 terms available</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mt-4">
-                    <div class="row text-center">
-                        <div class="col-md-4">
-                            <h6 class="text-warning">⚡ QUICK VOLUME</h6>
-                            <p class="small">Gallons: Just 10+ units<br>Specialty items: 20+ units</p>
-                        </div>
-                        <div class="col-md-4">
-                            <h6 class="text-success">📊 STANDARD VOLUME</h6>
-                            <p class="small">32oz products: 25+ units<br>8oz products: 25+ units</p>
-                        </div>
-                        <div class="col-md-4">
-                            <h6 class="text-info">🎯 FOCUSED VOLUME</h6>
-                            <p class="small">3oz products: 50+ units<br>Travel sizes: 50+ units</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mt-4">
-                    <a href="account/business-dashboard.html" class="btn btn-light btn-lg me-3">
-                        <i class="fas fa-building me-2"></i>Business Account
-                    </a>
-                    <a href="tel:+18017125663" class="btn btn-outline-light btn-lg">
-                        <i class="fas fa-phone me-2"></i>Call for Custom Pricing
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Trust Signals -->
-    <section class="trust-signals">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-3 col-6">
-                    <div class="trust-signal">
-                        <i class="fas fa-shipping-fast"></i>
-                        <h6 class="fw-bold">FREE Shipping</h6>
-                        <p class="small mb-0">On ALL orders</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="trust-signal">
-                        <i class="fas fa-shield-alt"></i>
-                        <h6 class="fw-bold">100% Safe</h6>
-                        <p class="small mb-0">FDA approved</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="trust-signal">
-                        <i class="fas fa-award"></i>
-                        <h6 class="fw-bold">Triple Certified</h6>
-                        <p class="small mb-0">USDA, EPA, FDA</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="trust-signal">
-                        <i class="fas fa-phone-alt"></i>
-                        <h6 class="fw-bold">Expert Support</h6>
-                        <p class="small mb-0">(801) 712-5663</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
  <!-- All-In-One Wipes -->
                 <div class="col-lg-4 col-md-6 mb-4" data-category="personal">
