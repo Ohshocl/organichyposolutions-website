@@ -13,6 +13,16 @@
     
     <style>
         /* Fixed header styles */
+        .disclaimer-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1050;
+            height: auto;
+            padding: 8px 0;
+        }
+        
         .fixed-header {
             position: fixed;
             top: 60px; /* Account for disclaimer bar height */
@@ -27,19 +37,6 @@
         body {
             padding-top: 140px; /* Disclaimer (60px) + Navbar (80px) */
         }
-        
-        /* Ensure disclaimer bar is also fixed */
-        .disclaimer-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1050;
-            height: auto;
-            padding: 8px 0;
-        }
-        
-        /* Remove the duplicate navbar positioning - only use .fixed-header */
         
         .hero-section {
             background: linear-gradient(135deg, #2c5530 0%, #5a9367 100%);
@@ -136,94 +133,86 @@
         </div>
     </div>
 
- <!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
-    <div class="container">
-        <a class="navbar-brand fw-bold text-primary d-flex align-items-center" href="index.html">
-            <!-- OHS Logo -->
-            <svg width="40" height="40" viewBox="0 0 400 250" class="me-2">
-                <rect width="400" height="250" fill="#2E5EAA"/>
-                <text x="200" y="180" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="100" font-weight="bold">OHS</text>
-                <text x="200" y="210" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="20">Organic HypoSolutions</text>
-                <!-- Green leaf accent -->
-                <path d="M 320 80 Q 340 60 360 80 Q 340 100 320 80" fill="#4ADE80"/>
-                <path d="M 330 70 Q 350 50 370 70 Q 350 90 330 70" fill="#22C55E"/>
-            </svg>
-            Organic HypoSolutions
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
-                <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
-                <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
-                <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
-                <li class="nav-item"><a class="nav-link" href="science-certifications.html">Science & Certifications</a></li>
-                <li class="nav-item"><a class="nav-link" href="legal-information.html">Legal Information</a></li>
-                <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-                
-                <!-- Customer Shopping & Account -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-shopping-bag"></i> Shop
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="products.html"><i class="fas fa-boxes"></i> All Products</a></li>
-                        <li><a class="dropdown-item" href="shop/cart.html">
-                            <i class="fas fa-shopping-cart"></i> Cart 
-                            <span id="cartBadge" class="badge bg-danger ms-1" style="display: none;">0</span>
-                        </a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="shop/checkout.html">
-                            <i class="fas fa-credit-card"></i> Checkout
-                            <span class="badge bg-warning ms-1">Under Construction</span>
-                        </a></li>
-                        <li><a class="dropdown-item" href="shop/order-success.html">
-                            <i class="fas fa-check-circle"></i> Order Confirmation
-                            <span class="badge bg-warning ms-1">Under Construction</span>
-                        </a></li>
-                    </ul>
-                </li>
-                
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user"></i> Account
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="account/profile.html">
-                            <i class="fas fa-user-circle"></i> My Profile
-                            <span class="badge bg-warning ms-1">Under Construction</span>
-                        </a></li>
-                        <li><a class="dropdown-item" href="account/orders.html">
-                            <i class="fas fa-receipt"></i> Order History
-                            <span class="badge bg-warning ms-1">Under Construction</span>
-                        </a></li>
-                        <li><a class="dropdown-item" href="account/dashboard.html">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
-                            <span class="badge bg-warning ms-1">Under Construction</span>
-                        </a></li>
-                        <li><a class="dropdown-item" href="account/business-dashboard.html">
-                            <i class="fas fa-building"></i> Business Account
-                            <span class="badge bg-info ms-1">Wholesale</span>
-                        </a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="auth/login.html">
-                            <i class="fas fa-sign-in-alt"></i> Login
-                            <span class="badge bg-warning ms-1">Under Construction</span>
-                        </a></li>
-                        <li><a class="dropdown-item" href="auth/register.html">
-                            <i class="fas fa-user-plus"></i> Register
-                            <span class="badge bg-warning ms-1">Under Construction</span>
-                        </a></li>
-                    </ul>
-                </li>
-            </ul>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-header">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary d-flex align-items-center" href="index.html">
+                <!-- OHS Logo -->
+                <svg width="40" height="40" viewBox="0 0 400 250" class="me-2">
+                    <rect width="400" height="250" fill="#2E5EAA"/>
+                    <text x="200" y="180" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="100" font-weight="bold">OHS</text>
+                    <text x="200" y="210" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="20">Organic HypoSolutions</text>
+                    <!-- Green leaf accent -->
+                    <path d="M 320 80 Q 340 60 360 80 Q 340 100 320 80" fill="#4ADE80"/>
+                    <path d="M 330 70 Q 350 50 370 70 Q 350 90 330 70" fill="#22C55E"/>
+                </svg>
+                Organic HypoSolutions
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
+                    <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="science-certifications.html">Science & Certifications</a></li>
+                    <li class="nav-item"><a class="nav-link" href="legal-information.html">Legal Information</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                    
+                    <!-- Customer Shopping & Account -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle disabled" href="#" id="shopDropdown" role="button" style="color: #6c757d; cursor: not-allowed;" title="Shop functionality coming soon">
+                            <i class="fas fa-shopping-bag"></i> Shop
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item disabled" href="#" style="color: #6c757d;"><i class="fas fa-boxes"></i> All Products <span class="badge bg-warning ms-1">Coming Soon</span></a></li>
+                            <li><a class="dropdown-item disabled" href="#" style="color: #6c757d;">
+                                <i class="fas fa-shopping-cart"></i> Cart 
+                                <span class="badge bg-warning ms-1">Coming Soon</span>
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item disabled" href="#" style="color: #6c757d;">
+                                <i class="fas fa-credit-card"></i> Checkout
+                                <span class="badge bg-warning ms-1">Under Construction</span>
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle disabled" href="#" id="accountDropdown" role="button" style="color: #6c757d; cursor: not-allowed;" title="Account functionality coming soon">
+                            <i class="fas fa-user"></i> Account
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item disabled" href="#" style="color: #6c757d;">
+                                <i class="fas fa-user-circle"></i> My Profile
+                                <span class="badge bg-warning ms-1">Coming Soon</span>
+                            </a></li>
+                            <li><a class="dropdown-item disabled" href="#" style="color: #6c757d;">
+                                <i class="fas fa-receipt"></i> Order History
+                                <span class="badge bg-warning ms-1">Coming Soon</span>
+                            </a></li>
+                            <li><a class="dropdown-item disabled" href="#" style="color: #6c757d;">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                                <span class="badge bg-warning ms-1">Coming Soon</span>
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item disabled" href="#" style="color: #6c757d;">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                                <span class="badge bg-warning ms-1">Coming Soon</span>
+                            </a></li>
+                            <li><a class="dropdown-item disabled" href="#" style="color: #6c757d;">
+                                <i class="fas fa-user-plus"></i> Register
+                                <span class="badge bg-warning ms-1">Coming Soon</span>
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
     <!-- Hero Section -->
     <section class="hero-section">
@@ -518,98 +507,4 @@
                             <td>Hydrogen Peroxide</td>
                             <td>1-5 minutes</td>
                             <td><span class="text-warning"><i class="fas fa-exclamation"></i> Limited</span></td>
-                            <td><span class="text-warning"><i class="fas fa-exclamation"></i> Limited</span></td>
-                            <td><span class="text-success">Biodegradable</span></td>
-                            <td>99.9%</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <p class="text-center mt-3 legal-disclaimer">
-                <small><em>*Results based on laboratory testing under controlled conditions. <a href="legal-information.html">See Legal Information for complete disclaimers.</a></em></small>
-            </p>
-        </div>
-    </section>
-
-    <!-- Safety Data -->
-    <section class="py-5">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold">Safety Data & Documentation</h2>
-                <div class="section-divider"></div>
-                <p class="text-muted">Complete safety documentation and data sheets</p>
-            </div>
-
-            <div class="row g-4">
-                <div class="col-lg-4 col-md-6">
-                    <div class="card certification-card h-100">
-                        <div class="card-body text-center">
-                            <i class="fas fa-file-medical fa-3x text-success mb-3"></i>
-                            <h5 class="fw-bold">Safety Data Sheet</h5>
-                            <p class="text-muted">Complete SDS documentation including handling, storage, and emergency procedures.</p>
-                            <a href="#" class="btn btn-outline-success">Download SDS</a>
-                            <p class="mt-2"><small class="text-muted">*Download subject to terms in <a href="legal-information.html">Legal Information</a></small></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6">
-                    <div class="card certification-card h-100">
-                        <div class="card-body text-center">
-                            <i class="fas fa-microscope fa-3x text-success mb-3"></i>
-                            <h5 class="fw-bold">Third-Party Testing</h5>
-                            <p class="text-muted">Independent laboratory verification of efficacy claims and safety profiles.</p>
-                            <a href="#" class="btn btn-outline-success">View Reports</a>
-                            <p class="mt-2"><small class="text-muted">*Download subject to terms in <a href="legal-information.html">Legal Information</a></small></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6">
-                    <div class="card certification-card h-100">
-                        <div class="card-body text-center">
-                            <i class="fas fa-certificate fa-3x text-success mb-3"></i>
-                            <h5 class="fw-bold">Certificate Downloads</h5>
-                            <p class="text-muted">Official certification documents from EPA, USDA, FDA, and WHO for your records.</p>
-                            <a href="#" class="btn btn-outline-success">Download All</a>
-                            <p class="mt-2"><small class="text-muted">*Download subject to terms in <a href="legal-information.html">Legal Information</a></small></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Call to Action -->
-    <section class="py-5 bg-success text-white">
-        <div class="container text-center">
-            <h2 class="fw-bold mb-4">Ready to Experience the Science?</h2>
-            <p class="lead mb-4">Join hundreds of satisfied customers who trust the proven safety and efficacy of hypochlorous acid</p>
-            <div class="d-flex gap-3 justify-content-center flex-wrap">
-                <a href="index.html#contact" class="btn btn-light btn-lg">Schedule Service</a>
-                <a href="index.html#products" class="btn btn-outline-light btn-lg">Shop Products</a>
-            </div>
-        </div>
-    </section>
-
-<!-- Footer -->
-    <footer class="bg-dark text-white py-4">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-4">
-                    <!-- OHS Logo -->
-                <svg width="40" height="40" viewBox="0 0 400 250" class="me-2">
-                    <rect width="400" height="250" fill="#2E5EAA"/>
-                    <text x="200" y="180" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="100" font-weight="bold">OHS</text>
-                    <text x="200" y="210" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="20">Organic HypoSolutions</text>
-                    <!-- Green leaf accent -->
-                    <path d="M 320 80 Q 340 60 360 80 Q 340 100 320 80" fill="#4ADE80"/>
-                    <path d="M 330 70 Q 350 50 370 70 Q 350 90 330 70" fill="#22C55E"/>
-                </svg>
-                    <h5>Organic Hyposolutions</h5>
-                    <p>Utah's premier USDA Certified Organic HOCl sanitization services</p>
-                    <p><small>Utah Business License #14565171-0160 | EPA Registration #97801-1</small></p>
-                </div>
-                <div class="col-md-4 text-center">
-                    <div class="mb-3">
-                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGhElEQVR4nO2dTYgcRRTH/6+6Z2YTIyaQBBONHwRBQRFBEBEPKh5E8KQnD4KCBy8ePHjw4MGDB714EBHEk4KCB08ePAiCBw8ePHjw4MGDB0/iQRDEg4KCBxHBg+BBEBHfq+6Z7p7Z2Z3Z3Z3u6e7/D4qZ6uruql/Xq3r1Xr2qARFJgQAgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICX+gAEEkIiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASI...*lines truncated*
+                            <td><span class="text-warning"><i
