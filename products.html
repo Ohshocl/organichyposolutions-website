@@ -34,18 +34,37 @@
             z-index: 100;
         }
         
+        .category-buttons-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
         .category-btn {
             background: transparent;
             border: 2px solid #007bff;
             color: #007bff;
-            padding: 12px 24px;
+            padding: 12px 20px;
             border-radius: 25px;
-            margin: 5px;
             transition: all 0.3s ease;
             font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            flex-shrink: 0;
         }
         
-        .category-btn:hover, .category-btn.active {
+        .category-btn:hover {
+            background: rgba(0, 123, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,123,255,0.2);
+        }
+        
+        .category-btn.active {
             background: #007bff;
             color: white;
             transform: translateY(-2px);
@@ -279,16 +298,37 @@
             display: inline-block;
         }
         
+        /* Hide generator products temporarily */
+        [data-category="generators"] {
+            display: none !important;
+        }
+        
         @media (max-width: 768px) {
+            .category-buttons-container {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
             .category-btn {
-                display: block;
                 width: 100%;
-                margin: 5px 0;
+                max-width: 280px;
+                margin: 0;
             }
             
             .cart-preview {
                 width: 280px;
                 right: 10px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .category-buttons-container {
+                padding: 0 15px;
+            }
+            
+            .category-btn {
+                padding: 10px 16px;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -458,7 +498,7 @@
     <!-- Category Navigation -->
     <section class="category-nav">
         <div class="container">
-            <div class="text-center">
+            <div class="category-buttons-container">
                 <button class="category-btn active" onclick="filterCategory('all')" data-category="all">
                     <i class="fas fa-th-large me-2"></i>All Products
                 </button>
@@ -477,9 +517,12 @@
                 <button class="category-btn" onclick="filterCategory('bundles')" data-category="bundles">
                     <i class="fas fa-box me-2"></i>Value Bundles
                 </button>
+                <!-- Generators category hidden temporarily -->
+                <!-- 
                 <button class="category-btn" onclick="filterCategory('generators')" data-category="generators">
                     <i class="fas fa-cogs me-2"></i>Generators
                 </button>
+                -->
             </div>
         </div>
     </section>
@@ -1509,41 +1552,56 @@
             }
         }
 
-        // Category filtering with unclick functionality
+        // Category filtering with improved button management
         function filterCategory(category) {
-            const clickedBtn = event.target;
+            const clickedBtn = event.target.closest('.category-btn');
+            
+            // Handle multiple selections - toggle functionality
             const isCurrentlyActive = clickedBtn.classList.contains('active');
             
-            // Update active button - if clicking active button, show all
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // If clicking the currently active button, deselect it and show all
             if (isCurrentlyActive && category !== 'all') {
-                category = 'all';
-                document.querySelector('[data-category="all"]').classList.add('active');
+                // If clicking active button (not "All"), deactivate it
+                clickedBtn.classList.remove('active');
+                
+                // Check if any other buttons are still active
+                const activeButtons = document.querySelectorAll('.category-btn.active:not([data-category="all"])');
+                if (activeButtons.length === 0) {
+                    // If no categories selected, activate "All Products"
+                    document.querySelector('[data-category="all"]').classList.add('active');
+                    category = 'all';
+                }
             } else {
-                clickedBtn.classList.add('active');
+                // If clicking inactive button or "All Products"
+                if (category === 'all') {
+                    // Clear all selections and activate only "All Products"
+                    document.querySelectorAll('.category-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    clickedBtn.classList.add('active');
+                } else {
+                    // Remove "All Products" if selecting specific category
+                    document.querySelector('[data-category="all"]').classList.remove('active');
+                    clickedBtn.classList.add('active');
+                }
             }
             
-            // Show/hide products
-            const products = document.querySelectorAll('[data-category]');
+            // Get all currently active categories (except "all")
+            const activeCategories = Array.from(document.querySelectorAll('.category-btn.active:not([data-category="all"])'))
+                .map(btn => btn.getAttribute('data-category'));
+            
+            // Determine which products to show
+            const showAll = document.querySelector('[data-category="all"]').classList.contains('active') || activeCategories.length === 0;
+            
+            // Show/hide products based on active filters
+            const products = document.querySelectorAll('[data-category]:not(.category-btn)');
             products.forEach(product => {
-                if (category === 'all' || product.dataset.category === category) {
+                const productCategory = product.getAttribute('data-category');
+                if (showAll || activeCategories.includes(productCategory)) {
                     product.style.display = 'block';
                 } else {
                     product.style.display = 'none';
                 }
             });
-            
-            // Scroll to section if not 'all'
-            if (category !== 'all') {
-                const section = document.getElementById(category);
-                if (section) {
-                    section.scrollIntoView({ behavior: 'smooth' });
-                }
-            }
         }
 
         // Scroll to category
