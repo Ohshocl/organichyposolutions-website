@@ -1413,33 +1413,215 @@
             }
         }
 
-        function loadRecommendations() {
-            const recommendationsContainer = document.getElementById('recommendations');
-            const cartProductIds = cart.map(item => item.productId);
-            
-            // Filter out products already in cart
-            const availableProducts = Object.values(productDatabase)
-                .filter(product => !cartProductIds.includes(product.id))
-                .slice(0, 3);
-            
-            const recommendationsHTML = availableProducts.map(product => `
-                <div class="col-md-4">
-                    <div class="recommendation-item" onclick="addToCart('${product.id}')">
-                        <img src="${product.image}" alt="${product.name}" class="product-image mb-2">
-                        <h6 class="fw-bold">${product.name}</h6>
-                        <p class="small text-muted">${product.description}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-bold text-primary">${(isWholesaleCustomer ? product.wholesalePrice : product.price).toFixed(2)}</span>
-                            <button class="btn btn-primary btn-sm">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
+// Smart Dynamic Product Recommendations System
+function loadRecommendations() {
+    const recommendationsContainer = document.getElementById('recommendations');
+    const cartProductIds = cart.map(item => item.productId);
+    
+    // Get smart recommendations based on cart contents
+    const smartRecommendations = getSmartRecommendations(cartProductIds);
+    
+    const recommendationsHTML = smartRecommendations.map(product => `
+        <div class="col-md-4">
+            <div class="recommendation-item" onclick="addToCart('${product.id}')">
+                <div class="d-flex align-items-center justify-content-center mb-2" 
+                     style="width: 80px; height: 80px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 2.5rem; background: #f8f9fa; margin: 0 auto;">
+                    ${product.image}
                 </div>
-            `).join('');
+                <h6 class="fw-bold">${product.name}</h6>
+                <p class="small text-muted">${product.description}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fw-bold text-primary">$${(isWholesaleCustomer ? product.wholesalePrice : product.price).toFixed(2)}</span>
+                    <button class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <div class="mt-2">
+                    <span class="badge bg-success">Smart Pick</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+    
+    recommendationsContainer.innerHTML = recommendationsHTML;
+}
+
+function getSmartRecommendations(cartProductIds) {
+    // Product relationship mapping for cross-selling
+    const productRelationships = {
+        // Pet Care Cross-sells
+        "pet-wound-care": ["pet-cleaner-and-wound-care-bundle", "all-in-one-wipes", "3oz-multi-use-disinfectant-and-cleaner"],
+        "pet-cleaner-and-wound-care-bundle": ["pet-wound-care", "laundry-booster", "all-in-one-wipes"],
+        
+        // Baby Care Cross-sells
+        "diaper-rash-serum": ["3oz-multi-use-disinfectant-and-cleaner", "all-in-one-wipes", "on-the-go-3oz"],
+        
+        // Cleaning Bundle Upsells
+        "starter-cleaning-bundle-1": ["complete-cleaning-bundle-1", "essential-cleaning-bundle-1", "all-in-one-wipes"],
+        "essential-cleaning-bundle-1": ["complete-cleaning-bundle-1", "laundry-booster", "32oz-bulk-case"],
+        "complete-cleaning-bundle-1": ["laundry-booster", "all-in-one-wipes", "32oz-bulk-case"],
+        
+        // Small to Large Size Upsells
+        "3oz-multi-use-disinfectant-and-cleaner": ["1-gallon-ready-to-use", "rtu-value-bundle", "starter-cleaning-bundle-1"],
+        "on-the-go-3oz": ["3oz-multi-use-disinfectant-and-cleaner", "1-gallon-ready-to-use", "rtu-value-bundle"],
+        
+        // Value Bundle Cross-sells
+        "rtu-value-bundle": ["laundry-booster", "all-in-one-wipes", "complete-cleaning-bundle-1"],
+        "ready-to-use-value-bundle": ["starter-cleaning-bundle-1", "laundry-booster", "all-in-one-wipes"],
+        "value-2-pack-1": ["starter-cleaning-bundle-1", "all-in-one-wipes", "laundry-booster"],
+        
+        // Individual Product to Bundle Upsells
+        "all-in-one-wipes": ["starter-cleaning-bundle-1", "laundry-booster", "complete-cleaning-bundle-1"],
+        "laundry-booster": ["complete-cleaning-bundle-1", "all-in-one-wipes", "32oz-bulk-case"],
+        
+        // Large Container Cross-sells
+        "1-gallon-ready-to-use": ["laundry-booster", "all-in-one-wipes", "32oz-bulk-case"],
+        "1-gallon-ready-to-use-1": ["complete-cleaning-bundle-1", "laundry-booster", "all-in-one-wipes"],
+        
+        // Bulk/Case Cross-sells
+        "32oz-bulk-case": ["one-gallon-case", "complete-cleaning-bundle-1", "laundry-booster"],
+        "one-gallon-case": ["32oz-bulk-case", "complete-cleaning-bundle-1", "hypochlorous-refill-pouch"],
+        
+        // Refill Cross-sells
+        "hypochlorous-refill-pouch": ["hypochlorous-refill-pouches", "hypochlorous-station1-starter-kit-1", "one-gallon-case"],
+        "hypochlorous-refill-pouches": ["hypochlorous-station1-starter-kit-1", "one-gallon-case", "32oz-bulk-case"],
+        "hypochlorous-refill-pouches-1": ["hypochlorous-station1-starter-kit-1", "32oz-bulk-case", "complete-cleaning-bundle-1"],
+        
+        // Equipment Cross-sells
+        "hypochlorous-station1-starter-kit-1": ["hypochlorous-refill-pouch", "hypochlorous-refill-pouches", "32oz-bulk-case"]
+    };
+    
+    // Category-based recommendations for broader appeal
+    const categoryRecommendations = {
+        "Pet Care": ["all-in-one-wipes", "laundry-booster", "3oz-multi-use-disinfectant-and-cleaner"],
+        "Baby Care": ["3oz-multi-use-disinfectant-and-cleaner", "all-in-one-wipes", "on-the-go-3oz"],
+        "Health & Safety": ["all-in-one-wipes", "starter-cleaning-bundle-1", "laundry-booster"],
+        "Cleaning Supplies": ["laundry-booster", "32oz-bulk-case", "1-gallon-ready-to-use"],
+        "Health & Beauty": ["3oz-multi-use-disinfectant-and-cleaner", "starter-cleaning-bundle-1", "all-in-one-wipes"],
+        "Laundry Care": ["all-in-one-wipes", "complete-cleaning-bundle-1", "32oz-bulk-case"],
+        "Equipment": ["hypochlorous-refill-pouch", "32oz-bulk-case", "one-gallon-case"],
+        "Refills": ["hypochlorous-station1-starter-kit-1", "32oz-bulk-case", "complete-cleaning-bundle-1"]
+    };
+    
+    // Products to exclude (not available yet)
+    const excludedProducts = [
+        "hypochlorous-generator-for-inline-pool" // Pool generator not available yet
+    ];
+    
+    let recommendations = new Set();
+    
+    // If cart is empty, show popular starter items
+    if (cartProductIds.length === 0) {
+        recommendations.add("3oz-multi-use-disinfectant-and-cleaner");
+        recommendations.add("all-in-one-wipes");
+        recommendations.add("starter-cleaning-bundle-1");
+        recommendations.add("pet-wound-care");
+        recommendations.add("laundry-booster");
+    } else {
+        // Get specific product recommendations
+        cartProductIds.forEach(productId => {
+            if (productRelationships[productId]) {
+                productRelationships[productId].forEach(rec => {
+                    if (!cartProductIds.includes(rec) && !excludedProducts.includes(rec)) {
+                        recommendations.add(rec);
+                    }
+                });
+            }
+        });
+        
+        // Get category-based recommendations
+        const cartCategories = cartProductIds.map(id => {
+            const product = productDatabase[id];
+            return product ? product.category : null;
+        }).filter(cat => cat !== null);
+        
+        const uniqueCategories = [...new Set(cartCategories)];
+        uniqueCategories.forEach(category => {
+            if (categoryRecommendations[category]) {
+                categoryRecommendations[category].forEach(rec => {
+                    if (!cartProductIds.includes(rec) && !excludedProducts.includes(rec)) {
+                        recommendations.add(rec);
+                    }
+                });
+            }
+        });
+        
+        // If we don't have enough recommendations, add popular items
+        if (recommendations.size < 3) {
+            const popularItems = [
+                "all-in-one-wipes",
+                "laundry-booster", 
+                "3oz-multi-use-disinfectant-and-cleaner",
+                "starter-cleaning-bundle-1",
+                "pet-wound-care",
+                "diaper-rash-serum"
+            ];
             
-            recommendationsContainer.innerHTML = recommendationsHTML;
+            popularItems.forEach(item => {
+                if (!cartProductIds.includes(item) && !excludedProducts.includes(item)) {
+                    recommendations.add(item);
+                }
+            });
         }
+    }
+    
+    // Convert to array and get product objects
+    const recommendationArray = Array.from(recommendations)
+        .map(id => productDatabase[id])
+        .filter(product => product !== undefined)
+        .slice(0, 3); // Limit to 3 recommendations
+    
+    // If we still don't have 3, pad with remaining available products
+    if (recommendationArray.length < 3) {
+        const allAvailable = Object.values(productDatabase)
+            .filter(product => 
+                !cartProductIds.includes(product.id) && 
+                !excludedProducts.includes(product.id) &&
+                !recommendations.has(product.id)
+            )
+            .slice(0, 3 - recommendationArray.length);
+        
+        recommendationArray.push(...allAvailable);
+    }
+    
+    return recommendationArray;
+}
+
+// Enhanced recommendation logic for different scenarios
+function getRecommendationReason(cartProductIds, recommendedProduct) {
+    // Determine why this product was recommended
+    const cartCategories = cartProductIds.map(id => {
+        const product = productDatabase[id];
+        return product ? product.category : null;
+    }).filter(cat => cat !== null);
+    
+    // Check if it's a category match
+    if (cartCategories.includes(recommendedProduct.category)) {
+        return "Perfect Match";
+    }
+    
+    // Check if it's a size upgrade
+    const hasSmallItems = cartProductIds.some(id => {
+        const product = productDatabase[id];
+        return product && product.name.includes("3oz");
+    });
+    
+    if (hasSmallItems && (recommendedProduct.name.includes("Gallon") || recommendedProduct.name.includes("Bundle"))) {
+        return "Size Upgrade";
+    }
+    
+    // Check if it's a bundle upgrade
+    const hasSingleItems = cartProductIds.some(id => {
+        const product = productDatabase[id];
+        return product && !product.name.includes("Bundle") && !product.name.includes("Case");
+    });
+    
+    if (hasSingleItems && (recommendedProduct.name.includes("Bundle") || recommendedProduct.name.includes("Case"))) {
+        return "Save More";
+    }
+    
+    return "Popular Choice";
+}
 
         function addToCart(productId, quantity = 1) {
             const existingItemIndex = cart.findIndex(item => item.productId === productId);
