@@ -759,8 +759,6 @@
     <!-- Bootstrap JS - MAKE SURE THIS IS LOADED BEFORE CUSTOM JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="js/cart.js"></script>
-    
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEKE217WEY"></script>
     <script>
@@ -772,207 +770,317 @@
 
     <!-- Cart JavaScript -->
     <script>
-// Complete Product Database with Current Pricing
-const productDatabase = {
-    // 3oz Products
-    '3oz-multi-use': {
-        id: '3oz-multi-use',
-        name: '3oz Multi-Use Disinfectant',
-        category: 'Health & Beauty',
-        price: 13.99,
-        wholesalePrice: 9.94,
-        image: 'https://via.placeholder.com/80x80?text=3oz',
-        description: 'Perfect for wound care, skincare, travel sanitization',
-        isPremium: false,
-        margin: 28.95
-    },
-    '3oz-hc-pure': {
-        id: '3oz-hc-pure',
-        name: '3oz HC-Pure Skin Health Mist',
-        category: 'Health & Beauty',
-        price: 13.99,
-        wholesalePrice: 9.94,
-        image: 'https://via.placeholder.com/80x80?text=3oz-HC',
-        description: 'Professional skincare and beauty applications',
-        isPremium: true,
-        margin: 28.95
-    },
-
-    // 8oz Products
-    '8oz-hc-pure': {
-        id: '8oz-hc-pure',
-        name: '8oz HC-Pure Skin Health Mist',
-        category: 'Health & Beauty',
-        price: 19.99,
-        wholesalePrice: 12.94,
-        image: 'https://via.placeholder.com/80x80?text=8oz',
-        description: 'Professional skincare and beauty applications',
-        isPremium: true,
-        margin: 35.27
-    },
-
-    // 32oz Products
-    '32oz-ready-to-use': {
-        id: '32oz-ready-to-use',
-        name: '32oz Multi-Use Cleaner Ready to Use',
-        category: 'Home & Garden',
-        price: 32.99,
-        wholesalePrice: 19.47,
-        image: 'https://via.placeholder.com/80x80?text=32oz',
-        description: 'Perfect for household cleaning and disinfection',
-        isPremium: false,
-        margin: 40.98
-    },
-    '32oz-epa': {
-        id: '32oz-epa',
-        name: '32oz Multi-Use Cleaner EPA',
-        category: 'Home & Garden',
-        price: 32.99,
-        wholesalePrice: 19.47,
-        image: 'https://via.placeholder.com/80x80?text=32oz-EPA',
-        description: 'EPA registered for commercial use',
-        isPremium: false,
-        margin: 40.98
-    },
-    '32oz-pet-cleaner': {
-        id: '32oz-pet-cleaner',
-        name: '32oz Pet Cleaner and Deodorizer',
-        category: 'Pet Care',
-        price: 32.99,
-        wholesalePrice: 19.47,
-        image: 'https://via.placeholder.com/80x80?text=Pet',
-        description: 'Safe for pets, effective odor elimination',
-        isPremium: false,
-        margin: 40.98
-    },
-    '32oz-500ppm': {
-        id: '32oz-500ppm',
-        name: '32oz 500ppm Pet+/Teat/Equine',
-        category: 'Pet Care',
-        price: 32.99,
-        wholesalePrice: 19.47,
-        image: 'https://via.placeholder.com/80x80?text=500ppm',
-        description: 'High-strength formula for professional use',
-        isPremium: true,
-        margin: 40.98
-    },
-    '32oz-laundry-booster': {
-        id: '32oz-laundry-booster',
-        name: '32oz Laundry Booster',
-        category: 'Home & Garden',
-        price: 32.99,
-        wholesalePrice: 19.47,
-        image: 'https://via.placeholder.com/80x80?text=Laundry',
-        description: 'Boost cleaning power in your wash',
-        isPremium: false,
-        margin: 40.98
-    },
-
-    // 1 Gallon Products
-    '1gal-ready-to-use': {
-        id: '1gal-ready-to-use',
-        name: '1 Gallon Ready to Use',
-        category: 'Commercial',
-        price: 69.99,
-        wholesalePrice: 38.69,
-        image: 'https://via.placeholder.com/80x80?text=1Gal',
-        description: 'Bulk solution for large-scale applications',
-        isPremium: false,
-        margin: 44.72
-    },
-    '1gal-epa': {
-        id: '1gal-epa',
-        name: '1 Gallon Ready to Use EPA',
-        category: 'Commercial',
-        price: 69.99,
-        wholesalePrice: 38.69,
-        image: 'https://via.placeholder.com/80x80?text=1Gal-EPA',
-        description: 'EPA registered bulk solution',
-        isPremium: false,
-        margin: 44.72
-    },
-    '1gal-500ppm': {
-        id: '1gal-500ppm',
-        name: '1 Gallon 500ppm Organic',
-        category: 'Commercial',
-        price: 89.99,
-        wholesalePrice: 48.69,
-        image: 'https://via.placeholder.com/80x80?text=1Gal-500',
-        description: 'Premium concentration for commercial use',
-        isPremium: true,
-        margin: 45.89
-    },
-    '1gal-laundry-booster': {
-        id: '1gal-laundry-booster',
-        name: '1 Gallon Laundry Booster',
-        category: 'Commercial',
-        price: 89.99,
-        wholesalePrice: 48.69,
-        image: 'https://via.placeholder.com/80x80?text=1Gal-Laundry',
-        description: 'Commercial-grade laundry enhancement',
-        isPremium: true,
-        margin: 45.89
-    },
-
-    // Specialized Products
-    'all-in-one-wipes': {
-        id: 'all-in-one-wipes',
-        name: 'All-in-One Wipes',
-        category: 'Convenience',
-        price: 25.99,
-        wholesalePrice: 16.29,
-        image: 'https://via.placeholder.com/80x80?text=Wipes',
-        description: 'Convenient pre-moistened wipes',
-        isPremium: false,
-        margin: 37.32
-    },
-    '16oz-equine-gel': {
-        id: '16oz-equine-gel',
-        name: '16oz Equine Healing/Udder Gel',
-        category: 'Pet Care',
-        price: 39.99,
-        wholesalePrice: 23.47,
-        image: 'https://via.placeholder.com/80x80?text=Equine',
-        description: 'Specialized veterinary care gel',
-        isPremium: true,
-        margin: 41.31
-    },
-    'hc-pure-serum': {
-        id: 'hc-pure-serum',
-        name: 'HC-Pure Healing Skin Serum',
-        category: 'Health & Beauty',
-        price: 39.99,
-        wholesalePrice: 22.99,
-        image: 'https://via.placeholder.com/80x80?text=Serum',
-        description: 'Advanced skin healing formula',
-        isPremium: true,
-        margin: 42.51
-    },
-    '100ml-diaper-gel': {
-        id: '100ml-diaper-gel',
-        name: '100ml Diaper Rash Gel',
-        category: 'Baby Care',
-        price: 39.99,
-        wholesalePrice: 22.94,
-        image: 'https://via.placeholder.com/80x80?text=Baby',
-        description: 'Gentle care for sensitive skin',
-        isPremium: true,
-        margin: 42.64
-    },
-
-    // Bundle Products (from products.html)
-    'complete-bundle': {
-        id: 'complete-bundle',
-        name: 'Complete Cleaning Bundle',
-        category: 'Bundle',
-        price: 129.00,
-        wholesalePrice: 89.99,
-        image: 'https://via.placeholder.com/80x80?text=Bundle',
-        description: 'Complete home protection package',
-        isPremium: true,
-        margin: 30.23
-    }
-};
+        // UPDATED COMPLETE PRODUCT DATABASE FROM CSV
+        const productDatabase = {
+            "1-gallon-ready-to-use": {
+                id: "1-gallon-ready-to-use",
+                name: "EPA Registered 32oz Ready to Use Hypochlorous",
+                category: "Health & Safety",
+                price: 21.99,
+                wholesalePrice: 15.39,
+                image: "https://via.placeholder.com/80x80?text=EPA+32oz",
+                description: "Professional grade EPA registered 32oz ready to use hypochlorous",
+                sku: "01S.07",
+                vendor: "TryHypo",
+                barcode: null,
+                isPremium: false,
+                margin: 30.01
+            },
+            "1-gallon-ready-to-use-1": {
+                id: "1-gallon-ready-to-use-1", 
+                name: "EPA Registered 1 Gallon Ready to Use Hypochlorous",
+                category: "Health & Safety",
+                price: 35.00,
+                wholesalePrice: 24.50,
+                image: "https://via.placeholder.com/80x80?text=EPA+1Gal",
+                description: "Professional grade EPA registered 1 gallon ready to use hypochlorous",
+                sku: "01S.09E",
+                vendor: "TryHypo",
+                barcode: "860008987525",
+                isPremium: true,
+                margin: 30.00
+            },
+            "rtu-value-bundle": {
+                id: "rtu-value-bundle",
+                name: "Ready to Use Value Bundle",
+                category: "Health & Safety", 
+                price: 55.00,
+                wholesalePrice: 38.50,
+                image: "https://via.placeholder.com/80x80?text=RTU+Bundle",
+                description: "Professional grade ready to use value bundle",
+                sku: "00S.04",
+                vendor: "TryHypo",
+                barcode: null,
+                isPremium: true,
+                margin: 30.00
+            },
+            "3oz-multi-use-disinfectant-and-cleaner": {
+                id: "3oz-multi-use-disinfectant-and-cleaner",
+                name: "3oz Multi-Use Disinfectant and Cleaner",
+                category: "Health & Safety",
+                price: 9.00,
+                wholesalePrice: 6.30,
+                image: "https://via.placeholder.com/80x80?text=3oz+Multi",
+                description: "Professional grade 3oz multi-use disinfectant and cleaner",
+                sku: "01S.02",
+                vendor: "TryHypo",
+                barcode: null,
+                isPremium: false,
+                margin: 30.00
+            },
+            "hypochlorous-generator-for-inline-pool": {
+                id: "hypochlorous-generator-for-inline-pool",
+                name: "Hypochlorous Generator for Inline Pool",
+                category: "Pool & Spa",
+                price: 899.00,
+                wholesalePrice: 629.30,
+                image: "https://via.placeholder.com/80x80?text=Pool+Gen",
+                description: "Professional grade hypochlorous generator for inline pool systems",
+                sku: "09S.04",
+                vendor: "TryHypo",
+                barcode: null,
+                isPremium: true,
+                margin: 30.00
+            },
+            "pet-wound-care": {
+                id: "pet-wound-care",
+                name: "Pet+ Wound Care",
+                category: "Pet Care",
+                price: 28.00,
+                wholesalePrice: 19.60,
+                image: "https://via.placeholder.com/80x80?text=Pet+Care",
+                description: "Professional grade pet wound care solution",
+                sku: "02S.07P",
+                vendor: "TryHypo",
+                barcode: "00850045631406",
+                isPremium: false,
+                margin: 30.00
+            },
+            "all-in-one-wipes": {
+                id: "all-in-one-wipes",
+                name: "All-In-One Wipes",
+                category: "Cleaning Supplies",
+                price: 12.00,
+                wholesalePrice: 8.40,
+                image: "https://via.placeholder.com/80x80?text=AIO+Wipes",
+                description: "Professional grade all-in-one cleaning wipes",
+                sku: "04S.08",
+                vendor: "TryHypo",
+                barcode: null,
+                isPremium: false,
+                margin: 30.00
+            },
+            "laundry-booster": {
+                id: "laundry-booster",
+                name: "Laundry Booster",
+                category: "Laundry Care",
+                price: 18.00,
+                wholesalePrice: 12.60,
+                image: "https://via.placeholder.com/80x80?text=Laundry",
+                description: "Professional grade laundry booster and sanitizer",
+                sku: "02S.07L",
+                vendor: "TryHypo",
+                barcode: "850045631376",
+                isPremium: false,
+                margin: 30.00
+            },
+            "diaper-rash-serum": {
+                id: "diaper-rash-serum",
+                name: "Diaper Rash Serum",
+                category: "Baby Care",
+                price: 25.00,
+                wholesalePrice: 17.50,
+                image: "https://via.placeholder.com/80x80?text=Baby+Care",
+                description: "Professional grade diaper rash serum",
+                sku: "05S.15B",
+                vendor: "TryHypo",
+                barcode: null,
+                isPremium: false,
+                margin: 30.00
+            },
+            "pet-cleaner-and-wound-care-bundle": {
+                id: "pet-cleaner-and-wound-care-bundle",
+                name: "Pet Cleaner and Wound Care Bundle",
+                category: "Pet Care",
+                price: 53.00,
+                wholesalePrice: 37.10,
+                image: "https://via.placeholder.com/80x80?text=Pet+Bundle",
+                description: "Professional grade pet cleaner and wound care bundle",
+                sku: "00S.07",
+                vendor: "TryHypo",
+                barcode: null,
+                isPremium: true,
+                margin: 30.00
+            },
+            "ready-to-use-value-bundle": {
+                id: "ready-to-use-value-bundle",
+                name: "Ready to Use Value Bundle",
+                category: "Health & Safety",
+                price: 57.00,
+                wholesalePrice: 39.90,
+                image: "https://via.placeholder.com/80x80?text=Value+Pack",
+                description: "Professional grade ready to use value bundle",
+                sku: "00S.04",
+                vendor: "TryHypo",
+                barcode: null,
+                isPremium: true,
+                margin: 30.00
+            },
+            "value-2-pack-1": {
+                id: "value-2-pack-1",
+                name: "Value 2 Pack",
+                category: "Health & Safety",
+                price: 34.00,
+                wholesalePrice: 23.80,
+                image: "https://via.placeholder.com/80x80?text=2+Pack",
+                description: "Professional grade value 2 pack",
+                sku: "01S.07-02",
+                vendor: "TryHypo",
+                barcode: null,
+                isPremium: true,
+                margin: 30.00
+            },
+            "starter-cleaning-bundle-1": {
+                id: "starter-cleaning-bundle-1",
+                name: "Starter Cleaning Bundle",
+                category: "Cleaning Supplies",
+                price: 55.00,
+                wholesalePrice: 38.50,
+                image: "https://via.placeholder.com/80x80?text=Starter",
+                description: "Professional grade starter cleaning bundle",
+                sku: "00S.01",
+                vendor: "TryHypo",
+                barcode: null,
+                isPremium: true,
+                margin: 30.00
+            },
+            "complete-cleaning-bundle-1": {
+                id: "complete-cleaning-bundle-1",
+                name: "Complete Cleaning Bundle",
+                category: "Cleaning Supplies",
+                price: 129.00,
+                wholesalePrice: 90.30,
+                image: "https://via.placeholder.com/80x80?text=Complete",
+                description: "Professional grade complete cleaning bundle",
+                sku: "00S.05",
+                vendor: "TryHypo",
+                barcode: null,
+                isPremium: true,
+                margin: 30.00
+            },
+            "essential-cleaning-bundle-1": {
+                id: "essential-cleaning-bundle-1",
+                name: "Essential Cleaning Bundle", 
+                category: "Cleaning Supplies",
+                price: 105.00,
+                wholesalePrice: 73.50,
+                image: "https://via.placeholder.com/80x80?text=Essential",
+                description: "Professional grade essential cleaning bundle",
+                sku: "00S.03",
+                vendor: "TryHypo",
+                barcode: null,
+                isPremium: true,
+                margin: 30.00
+            },
+            "32oz-bulk-case": {
+                id: "32oz-bulk-case",
+                name: "32oz Bulk Case",
+                category: "Health & Safety",
+                price: 57.80,
+                wholesalePrice: 40.46,
+                image: "https://via.placeholder.com/80x80?text=Bulk+Case",
+                description: "Professional grade 32oz bulk case",
+                sku: "BULK32",
+                vendor: "TryHypo",
+                barcode: null,
+                isPremium: true,
+                margin: 30.00
+            },
+            "on-the-go-3oz": {
+                id: "on-the-go-3oz",
+                name: "On The Go 3oz",
+                category: "Health & Beauty",
+                price: 9.00,
+                wholesalePrice: 6.30,
+                image: "https://via.placeholder.com/80x80?text=Travel",
+                description: "Professional grade on the go 3oz travel size",
+                sku: "TRAVEL3",
+                vendor: "TryHypo",
+                barcode: null,
+                isPremium: false,
+                margin: 30.00
+            },
+            "one-gallon-case": {
+                id: "one-gallon-case",
+                name: "One Gallon Case",
+                category: "Health & Safety", 
+                price: 120.00,
+                wholesalePrice: 84.00,
+                image: "https://via.placeholder.com/80x80?text=Gal+Case",
+                description: "Professional grade one gallon case",
+                sku: "CASE1GAL",
+                vendor: "TryHypo",
+                barcode: null,
+                isPremium: true,
+                margin: 30.00
+            },
+            "hypochlorous-station1-starter-kit-1": {
+                id: "hypochlorous-station1-starter-kit-1",
+                name: "Hypochlorous Station1 Starter Kit",
+                category: "Equipment",
+                price: 449.00,
+                wholesalePrice: 314.30,
+                image: "https://via.placeholder.com/80x80?text=Station1",
+                description: "Professional grade hypochlorous station1 starter kit",
+                sku: "STATION1",
+                vendor: "TryHypo",
+                barcode: null,
+                isPremium: true,
+                margin: 30.00
+            },
+            "hypochlorous-refill-pouch": {
+                id: "hypochlorous-refill-pouch",
+                name: "Hypochlorous Refill Pouch",
+                category: "Refills",
+                price: 12.00,
+                wholesalePrice: 8.40,
+                image: "https://via.placeholder.com/80x80?text=Refill",
+                description: "Professional grade hypochlorous refill pouch",
+                sku: "REFILL1",
+                vendor: "TryHypo",
+                barcode: null,
+                isPremium: false,
+                margin: 30.00
+            },
+            "hypochlorous-refill-pouches": {
+                id: "hypochlorous-refill-pouches",
+                name: "Hypochlorous Refill Pouches",
+                category: "Refills",
+                price: 12.00,
+                wholesalePrice: 8.40,
+                image: "https://via.placeholder.com/80x80?text=Refills",
+                description: "Professional grade hypochlorous refill pouches",
+                sku: "REFILLMULTI",
+                vendor: "TryHypo",
+                barcode: null,
+                isPremium: false,
+                margin: 30.00
+            },
+            "hypochlorous-refill-pouches-1": {
+                id: "hypochlorous-refill-pouches-1",
+                name: "Hypochlorous Refill Pouches",
+                category: "Refills",
+                price: 12.00,
+                wholesalePrice: 8.40,
+                image: "https://via.placeholder.com/80x80?text=Refills",
+                description: "Professional grade hypochlorous refill pouches",
+                sku: "REFILLMULTI2",
+                vendor: "TryHypo",
+                barcode: null,
+                isPremium: false,
+                margin: 30.00
+            }
+        };
 
         // Volume Discount Tiers
         const volumeDiscounts = {
@@ -992,30 +1100,50 @@ const productDatabase = {
         const FREE_SHIPPING_THRESHOLD = 50;
         const WHOLESALE_MINIMUM = 100;
 
+        // FIXED: Normalize cart items for compatibility
+        function normalizeCartItems() {
+            cart = cart.map(item => {
+                // If item already has full product info (from products.html), keep it
+                if (item.name && item.price) {
+                    return {
+                        productId: item.productId || item.id,
+                        quantity: item.quantity || 1
+                    };
+                }
+                
+                // If item only has productId, keep it simple
+                return {
+                    productId: item.productId || item.id,
+                    quantity: item.quantity || 1
+                };
+            });
+            
+            saveCart();
+        }
+
         // Initialize cart on page load
         document.addEventListener('DOMContentLoaded', function() {
+            normalizeCartItems(); // FIX: Normalize cart items first
             loadCart();
             updateCartDisplay();
             loadRecommendations();
             
-            // Start with empty cart in production
-            // Demo data commented out - uncomment for testing
-            /*
+            // Add some demo items for testing if cart is empty
             if (cart.length === 0) {
                 addDemoItems();
             }
-            */
         });
 
         function addDemoItems() {
             // Add some demo items for testing
             cart = [
-                { productId: '3oz-multi-use', quantity: 2 },
-                { productId: '8oz-hc-pure', quantity: 1 },
-                { productId: '32oz-pet-cleaner', quantity: 3 },
-                { productId: '1gal-500ppm', quantity: 1 }
+                { productId: '3oz-multi-use-disinfectant-and-cleaner', quantity: 2 },
+                { productId: 'pet-wound-care', quantity: 1 },
+                { productId: 'all-in-one-wipes', quantity: 3 },
+                { productId: 'starter-cleaning-bundle-1', quantity: 1 }
             ];
             saveCart();
+            loadCart();
             updateCartDisplay();
         }
 
@@ -1036,19 +1164,23 @@ const productDatabase = {
             
             cart.forEach((item, index) => {
                 const product = productDatabase[item.productId];
-                if (!product) return;
+                if (!product) {
+                    console.warn(`Product not found: ${item.productId}`);
+                    return;
+                }
                 
                 const cartItemHTML = createCartItemHTML(product, item, index);
                 cartItems.innerHTML += cartItemHTML;
             });
         }
 
+        // FIXED: Updated createCartItemHTML function
         function createCartItemHTML(product, item, index) {
             const currentPrice = isWholesaleCustomer ? product.wholesalePrice : product.price;
-            const totalPrice = currentPrice * item.quantity;
             const volumeDiscount = calculateVolumeDiscount(item.quantity);
             const discountedPrice = currentPrice * (1 - volumeDiscount);
-            const finalPrice = discountedPrice * item.quantity;
+            const lineTotal = discountedPrice * item.quantity;
+            const originalLineTotal = currentPrice * item.quantity;
             
             return `
                 <div class="cart-item ${product.isPremium ? 'premium-product' : ''}" data-product-id="${product.id}">
@@ -1064,42 +1196,43 @@ const productDatabase = {
                             <p class="text-muted small mb-1">${product.description}</p>
                             <div class="d-flex gap-1 flex-wrap">
                                 <span class="badge bg-secondary">${product.category}</span>
+                                ${product.sku ? `<span class="badge bg-light text-dark">SKU: ${product.sku}</span>` : ''}
                                 ${isWholesaleCustomer ? '<span class="wholesale-badge">Wholesale</span>' : ''}
                                 ${volumeDiscount > 0 ? `<span class="volume-discount">${Math.round(volumeDiscount * 100)}% Off</span>` : ''}
                             </div>
                         </div>
                         
-                        <div class="col-md-2">
+                        <div class="col-md-2 text-center">
                             <div class="pricing-tier">
-                                ${volumeDiscount > 0 ? `<div class="text-decoration-line-through text-muted">$${currentPrice.toFixed(2)}</div>` : ''}
-                                <div class="fw-bold text-primary">$${discountedPrice.toFixed(2)}</div>
-                                ${isWholesaleCustomer ? '<small class="text-info">Wholesale Price</small>' : ''}
+                                ${volumeDiscount > 0 ? `<div class="text-decoration-line-through text-muted small">${currentPrice.toFixed(2)}</div>` : ''}
+                                <div class="fw-bold text-primary">${discountedPrice.toFixed(2)}</div>
+                                ${isWholesaleCustomer ? '<small class="text-info">Wholesale</small>' : ''}
                             </div>
                         </div>
                         
-                        <div class="col-md-2">
+                        <div class="col-md-2 text-center">
                             <div class="quantity-controls">
                                 <button class="quantity-btn" onclick="updateQuantity(${index}, ${item.quantity - 1})">
                                     <i class="fas fa-minus"></i>
                                 </button>
                                 <input type="number" class="quantity-input" value="${item.quantity}" 
-                                       onchange="updateQuantity(${index}, this.value)" min="0">
+                                       onchange="updateQuantity(${index}, parseInt(this.value))" min="0">
                                 <button class="quantity-btn" onclick="updateQuantity(${index}, ${item.quantity + 1})">
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>
                         </div>
                         
-                        <div class="col-md-1">
-                            <div class="fw-bold text-success">$${finalPrice.toFixed(2)}</div>
-                            ${volumeDiscount > 0 ? `<small class="text-success">Saved $${(totalPrice - finalPrice).toFixed(2)}</small>` : ''}
+                        <div class="col-md-1 text-center">
+                            <div class="fw-bold text-success">${lineTotal.toFixed(2)}</div>
+                            ${volumeDiscount > 0 ? `<small class="text-success">Saved ${(originalLineTotal - lineTotal).toFixed(2)}</small>` : ''}
                         </div>
                         
                         <div class="col-md-1 text-end">
-                            <button class="btn btn-outline-danger btn-sm" onclick="removeItem(${index})">
+                            <button class="btn btn-outline-danger btn-sm" onclick="removeItem(${index})" title="Remove item">
                                 <i class="fas fa-trash"></i>
                             </button>
-                            <button class="btn btn-outline-secondary btn-sm mt-1" onclick="saveForLater(${index})">
+                            <button class="btn btn-outline-secondary btn-sm mt-1" onclick="saveForLater(${index})" title="Save for later">
                                 <i class="fas fa-heart"></i>
                             </button>
                         </div>
@@ -1115,37 +1248,49 @@ const productDatabase = {
                 return;
             }
             
-            cart[index].quantity = newQuantity;
-            saveCart();
-            updateCartDisplay();
-            
-            // Analytics tracking
-            gtag('event', 'change_quantity', {
-                'event_category': 'ecommerce',
-                'event_label': productDatabase[cart[index].productId].name,
-                'value': newQuantity
-            });
+            if (cart[index]) {
+                cart[index].quantity = newQuantity;
+                saveCart();
+                loadCart(); // Reload to show updated display
+                updateCartDisplay();
+                
+                // Analytics tracking
+                const product = productDatabase[cart[index].productId];
+                if (product) {
+                    gtag('event', 'change_quantity', {
+                        'event_category': 'ecommerce',
+                        'event_label': product.name,
+                        'value': newQuantity
+                    });
+                }
+            }
         }
 
         function removeItem(index) {
-            const product = productDatabase[cart[index].productId];
-            
-            // Analytics tracking
-            gtag('event', 'remove_from_cart', {
-                'event_category': 'ecommerce',
-                'event_label': product.name,
-                'value': product.price
-            });
-            
-            cart.splice(index, 1);
-            saveCart();
-            updateCartDisplay();
+            if (cart[index]) {
+                const product = productDatabase[cart[index].productId];
+                
+                // Analytics tracking
+                if (product) {
+                    gtag('event', 'remove_from_cart', {
+                        'event_category': 'ecommerce',
+                        'event_label': product.name,
+                        'value': product.price
+                    });
+                }
+                
+                cart.splice(index, 1);
+                saveCart();
+                loadCart(); // Reload to show updated display
+                updateCartDisplay();
+            }
         }
 
         function clearCart() {
             if (confirm('Are you sure you want to clear your cart?')) {
                 cart = [];
                 saveCart();
+                loadCart();
                 updateCartDisplay();
                 
                 // Analytics tracking
@@ -1221,15 +1366,15 @@ const productDatabase = {
             }
             
             // Update price displays
-            document.getElementById('subtotal').textContent = `$${totals.subtotal.toFixed(2)}`;
-            document.getElementById('tax').textContent = `$${totals.tax.toFixed(2)}`;
-            document.getElementById('total').textContent = `$${totals.total.toFixed(2)}`;
+            document.getElementById('subtotal').textContent = `${totals.subtotal.toFixed(2)}`;
+            document.getElementById('tax').textContent = `${totals.tax.toFixed(2)}`;
+            document.getElementById('total').textContent = `${totals.total.toFixed(2)}`;
             
             // Volume discount display
             const volumeDiscountRow = document.getElementById('volumeDiscountRow');
             if (totals.totalVolumeDiscount > 0) {
                 volumeDiscountRow.style.display = 'flex';
-                document.getElementById('volumeDiscount').textContent = `-$${totals.totalVolumeDiscount.toFixed(2)}`;
+                document.getElementById('volumeDiscount').textContent = `-${totals.totalVolumeDiscount.toFixed(2)}`;
             } else {
                 volumeDiscountRow.style.display = 'none';
             }
@@ -1238,7 +1383,7 @@ const productDatabase = {
             const wholesaleDiscountRow = document.getElementById('wholesaleDiscountRow');
             if (totals.totalWholesaleDiscount > 0) {
                 wholesaleDiscountRow.style.display = 'flex';
-                document.getElementById('wholesaleDiscount').textContent = `-$${totals.totalWholesaleDiscount.toFixed(2)}`;
+                document.getElementById('wholesaleDiscount').textContent = `-${totals.totalWholesaleDiscount.toFixed(2)}`;
             } else {
                 wholesaleDiscountRow.style.display = 'none';
             }
@@ -1250,7 +1395,7 @@ const productDatabase = {
                 const progress = (totals.subtotal / FREE_SHIPPING_THRESHOLD) * 100;
                 
                 freeShippingProgress.style.display = 'block';
-                document.getElementById('freeShippingAmount').textContent = `$${remaining.toFixed(2)}`;
+                document.getElementById('freeShippingAmount').textContent = `${remaining.toFixed(2)}`;
                 document.getElementById('freeShippingBar').style.width = `${progress}%`;
             } else {
                 freeShippingProgress.style.display = 'none';
@@ -1263,9 +1408,6 @@ const productDatabase = {
             } else {
                 wholesaleMinimum.style.display = 'none';
             }
-            
-            // Reload cart items display
-            loadCart();
         }
 
         function loadRecommendations() {
@@ -1284,7 +1426,7 @@ const productDatabase = {
                         <h6 class="fw-bold">${product.name}</h6>
                         <p class="small text-muted">${product.description}</p>
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-bold text-primary">$${(isWholesaleCustomer ? product.wholesalePrice : product.price).toFixed(2)}</span>
+                            <span class="fw-bold text-primary">${(isWholesaleCustomer ? product.wholesalePrice : product.price).toFixed(2)}</span>
                             <button class="btn btn-primary btn-sm">
                                 <i class="fas fa-plus"></i>
                             </button>
@@ -1306,25 +1448,28 @@ const productDatabase = {
             }
             
             saveCart();
+            loadCart(); // Reload to show new item
             updateCartDisplay();
             
             // Analytics tracking
             const product = productDatabase[productId];
-            gtag('event', 'add_to_cart', {
-                'event_category': 'ecommerce',
-                'event_label': product.name,
-                'value': product.price,
-                'items': [{
-                    'item_id': productId,
-                    'item_name': product.name,
-                    'item_category': product.category,
-                    'quantity': quantity,
-                    'price': product.price
-                }]
-            });
-            
-            // Show success message
-            showNotification(`${product.name} added to cart!`, 'success');
+            if (product) {
+                gtag('event', 'add_to_cart', {
+                    'event_category': 'ecommerce',
+                    'event_label': product.name,
+                    'value': product.price,
+                    'items': [{
+                        'item_id': productId,
+                        'item_name': product.name,
+                        'item_category': product.category,
+                        'quantity': quantity,
+                        'price': product.price
+                    }]
+                });
+                
+                // Show success message
+                showNotification(`${product.name} added to cart!`, 'success');
+            }
         }
 
         function saveCart() {
@@ -1340,7 +1485,7 @@ const productDatabase = {
             }
             
             if (isWholesaleCustomer && totals.subtotal < WHOLESALE_MINIMUM) {
-                alert(`Wholesale orders require a minimum of $${WHOLESALE_MINIMUM}. Please add more items.`);
+                alert(`Wholesale orders require a minimum of ${WHOLESALE_MINIMUM}. Please add more items.`);
                 return;
             }
             
@@ -1395,7 +1540,7 @@ const productDatabase = {
                 return `${item.quantity}x ${product.name}`;
             }).join('\n');
             
-            const quoteMessage = `Custom Quote Request\n\nItems:\n${cartSummary}\n\nSubtotal: $${totals.subtotal.toFixed(2)}\nEstimated Total: $${totals.total.toFixed(2)}`;
+            const quoteMessage = `Custom Quote Request\n\nItems:\n${cartSummary}\n\nSubtotal: ${totals.subtotal.toFixed(2)}\nEstimated Total: ${totals.total.toFixed(2)}`;
             
             window.open(`https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform?entry.1234567890=${encodeURIComponent(quoteMessage)}`, '_blank');
         }
@@ -1412,10 +1557,10 @@ const productDatabase = {
             const cartSummary = cart.map(item => {
                 const product = productDatabase[item.productId];
                 const currentPrice = isWholesaleCustomer ? product.wholesalePrice : product.price;
-                return `${item.quantity}x ${product.name} - $${(currentPrice * item.quantity).toFixed(2)}`;
+                return `${item.quantity}x ${product.name} - ${(currentPrice * item.quantity).toFixed(2)}`;
             }).join('\n');
             
-            const emailBody = `My Organic Hypo Solutions Cart\n\n${cartSummary}\n\nSubtotal: $${totals.subtotal.toFixed(2)}\nTax: $${totals.tax.toFixed(2)}\nTotal: $${totals.total.toFixed(2)}\n\nPlease contact me to complete this order.\n\nThank you!`;
+            const emailBody = `My Organic Hypo Solutions Cart\n\n${cartSummary}\n\nSubtotal: ${totals.subtotal.toFixed(2)}\nTax: ${totals.tax.toFixed(2)}\nTotal: ${totals.total.toFixed(2)}\n\nPlease contact me to complete this order.\n\nThank you!`;
             
             window.open(`mailto:info@organichyposolutions.com?subject=Cart Order Request&body=${encodeURIComponent(emailBody)}`);
         }
@@ -1435,7 +1580,7 @@ const productDatabase = {
         function shareCart(platform) {
             const totals = calculateCartTotals();
             const cartUrl = window.location.href;
-            const shareText = `Check out these amazing USDA Certified Organic HOCl products from Organic Hypo Solutions! Cart total: $${totals.total.toFixed(2)}`;
+            const shareText = `Check out these amazing USDA Certified Organic HOCl products from Organic Hypo Solutions! Cart total: ${totals.total.toFixed(2)}`;
             
             switch(platform) {
                 case 'facebook':
@@ -1484,6 +1629,7 @@ const productDatabase = {
         function toggleWholesaleCustomer() {
             isWholesaleCustomer = !isWholesaleCustomer;
             localStorage.setItem('ohsWholesaleCustomer', isWholesaleCustomer.toString());
+            loadCart(); // Reload to show updated pricing
             updateCartDisplay();
             showNotification(`Switched to ${isWholesaleCustomer ? 'Wholesale' : 'Retail'} pricing`, 'info');
         }
@@ -1494,6 +1640,27 @@ const productDatabase = {
                 toggleWholesaleCustomer();
             }
         });
+
+        // Debug function to check cart contents
+        function debugCart() {
+            console.log('Cart contents:', cart);
+            console.log('Product database keys:', Object.keys(productDatabase));
+            cart.forEach((item, index) => {
+                const product = productDatabase[item.productId];
+                console.log(`Item ${index}:`, item, 'Product found:', !!product);
+            });
+        }
+
+        // Test function to add demo item
+        function testAddItem(productId = '3oz-multi-use-disinfectant-and-cleaner') {
+            addToCart(productId, 1);
+            console.log('Added test item:', productId);
+        }
+
+        // Console helpers for debugging (remove in production)
+        window.debugCart = debugCart;
+        window.testAddItem = testAddItem;
+        window.toggleWholesale = toggleWholesaleCustomer;
     </script>
 </body>
 </html>
