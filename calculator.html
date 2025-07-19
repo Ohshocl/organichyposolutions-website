@@ -1022,24 +1022,26 @@
                     // Commercial and other facilities
                     const sqft = parseInt(document.getElementById('squareFootage').value);
                     
-                    // Update square footage display
-                    const sqftDisplay = document.getElementById('sqftDisplay');
-                    if (sqftDisplay) {
-                        sqftDisplay.textContent = sqft.toLocaleString() + ' sq ft';
-                    }
-                    
                     let rate = PRICING.facilityRates[serviceType] || PRICING.commercialRates.base;
                     
                     // Apply volume discount for large facilities
                     if (sqft > 20000) {
                         rate = PRICING.commercialRates.volumeRate;
-                        document.getElementById('dualMachineNotice').style.display = 'block';
-                        document.getElementById('volumeDiscountRow').style.display = 'flex';
-                        document.getElementById('volumeDiscountBanner').style.display = 'block';
+                        const dualMachineNotice = document.getElementById('dualMachineNotice');
+                        const volumeDiscountRow = document.getElementById('volumeDiscountRow');
+                        const volumeDiscountBanner = document.getElementById('volumeDiscountBanner');
+                        
+                        if (dualMachineNotice) dualMachineNotice.style.display = 'block';
+                        if (volumeDiscountRow) volumeDiscountRow.style.display = 'flex';
+                        if (volumeDiscountBanner) volumeDiscountBanner.style.display = 'block';
                     } else {
-                        document.getElementById('dualMachineNotice').style.display = 'none';
-                        document.getElementById('volumeDiscountRow').style.display = 'none';
-                        document.getElementById('volumeDiscountBanner').style.display = 'none';
+                        const dualMachineNotice = document.getElementById('dualMachineNotice');
+                        const volumeDiscountRow = document.getElementById('volumeDiscountRow');
+                        const volumeDiscountBanner = document.getElementById('volumeDiscountBanner');
+                        
+                        if (dualMachineNotice) dualMachineNotice.style.display = 'none';
+                        if (volumeDiscountRow) volumeDiscountRow.style.display = 'none';
+                        if (volumeDiscountBanner) volumeDiscountBanner.style.display = 'none';
                     }
                     
                     basePrice = Math.max(sqft * rate, PRICING.commercialRates.minimum);
@@ -1066,12 +1068,1470 @@
                 const urgencySurcharge = basePrice * complexityMultiplier * productMultiplier * (urgencyMultiplier - 1);
                 
                 // Update price displays
-                updateElement('basePrice', '$' + Math.round(basePrice).toLocaleString());
-                updateElement('complexityPrice', '$' + Math.round(complexityAdjustment).toLocaleString());
-                updateElement('urgencyPrice', '$' + Math.round(urgencySurcharge).toLocaleString());
-                updateElement('travelPrice', '$' + travelCost.toLocaleString());
-                updateElement('totalPrice', '$' + Math.round(totalPrice).toLocaleString());
-                updateElement('breakdownTotal', '$' + Math.round(totalPrice).toLocaleString());
+                updateElement('basePrice', '
+
+        // Helper function to safely update elements
+        function updateElement(id, value) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = value;
+            }
+        }
+
+        // Handle subscription pricing display
+        function updateSubscriptionPricing(baseServicePrice) {
+            const subscriptionResults = document.getElementById('subscriptionResults');
+            const annualBonusRow = document.getElementById('annualBonusRow');
+
+            if (currentSubscription !== 'payPerService') {
+                if (subscriptionResults) {
+                    subscriptionResults.style.display = 'block';
+                }
+                
+                let subscriptionPrice;
+                
+                // Calculate subscription pricing based on service price and ranges
+                if (currentSubscription === 'monthlyContract') {
+                    // Monthly subscriptions: $399-$1,299 range based on service complexity
+                    const priceRatio = Math.min(baseServicePrice / 800, 1); // Normalize to 0-1
+                    subscriptionPrice = PRICING.subscriptionRanges.min + 
+                                       (priceRatio * (PRICING.subscriptionRanges.max - PRICING.subscriptionRanges.min));
+                    subscriptionPrice = Math.round(subscriptionPrice);
+                } else {
+                    // For quarterly/annual, apply discount to service price
+                    const discount = PRICING.subscriptionDiscounts[currentSubscription];
+                    subscriptionPrice = Math.round(baseServicePrice * (1 - discount));
+                }
+                
+                const savings = Math.round(baseServicePrice - subscriptionPrice);
+
+                // Update contract displays
+                updateElement('contractPrice', '$' + subscriptionPrice.toLocaleString());
+                updateElement('contractServicePrice', '$' + Math.round(baseServicePrice).toLocaleString());
+                updateElement('contractDiscountAmount', '-$' + savings.toLocaleString());
+                updateElement('contractTotalPrice', '$' + subscriptionPrice.toLocaleString());
+                updateElement('contractSavings', 'Save $' + savings.toLocaleString());
+
+                // Handle contract frequency text
+                let contractFrequencyText = 'per service';
+                if (currentSubscription === 'monthlyContract') {
+                    contractFrequencyText = 'per month';
+                } else if (currentSubscription === 'quarterlyContract') {
+                    contractFrequencyText = 'per service (quarterly rate)';
+                } else if (currentSubscription === 'annualContract') {
+                    contractFrequencyText = 'per service (annual rate)';
+                    if (annualBonusRow) {
+                        annualBonusRow.style.display = 'flex';
+                        updateElement('annualBonusValue', '$' + Math.round(baseServicePrice * 2).toLocaleString() + ' value');
+                    }
+                } 
+
+                if (currentSubscription !== 'annualContract' && annualBonusRow) {
+                    annualBonusRow.style.display = 'none';
+                }
+
+                updateElement('contractFrequency', contractFrequencyText);
+            } else {
+                if (subscriptionResults) {
+                    subscriptionResults.style.display = 'none';
+                }
+                if (annualBonusRow) annualBonusRow.style.display = 'none';
+            }
+        }
+
+        // Handle service type change
+        function handleServiceTypeChange() {
+            const serviceType = document.getElementById('serviceType').value;
+            const sqftInput = document.getElementById('sqftInput');
+            const homeSize = document.getElementById('homeSize');
+            
+            if (serviceType === 'residential') {
+                if (sqftInput) sqftInput.style.display = 'none';
+                if (homeSize) homeSize.style.display = 'block';
+            } else {
+                if (sqftInput) sqftInput.style.display = 'block';
+                if (homeSize) homeSize.style.display = 'none';
+            }
+            
+            updateCalculator();
+        }
+
+        // Handle subscription selection
+        function selectSubscription(subscriptionType) {
+            try {
+                currentSubscription = subscriptionType;
+
+                // Update visual selection
+                document.querySelectorAll('.subscription-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+
+                const selectedElement = document.getElementById(subscriptionType);
+                if (selectedElement) {
+                    selectedElement.classList.add('selected');
+                }
+
+                // Update calculator
+                updateCalculator();
+            } catch (error) {
+                console.error('Subscription selection error:', error);
+            }
+        }
+
+        // Handle product line selection
+        function selectProductLine(productLine) {
+            try {
+                currentProductLine = productLine;
+
+                // Update visual selection
+                document.querySelectorAll('.product-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+
+                const selectedElement = document.getElementById(productLine);
+                if (selectedElement) {
+                    selectedElement.classList.add('selected');
+                }
+
+                // Update calculator
+                updateCalculator();
+            } catch (error) {
+                console.error('Product line selection error:', error);
+            }
+        }
+
+        // Event handlers
+        function setupEventListeners() {
+            // Service type change handler
+            const serviceTypeSelect = document.getElementById('serviceType');
+            if (serviceTypeSelect) {
+                serviceTypeSelect.addEventListener('change', handleServiceTypeChange);
+            }
+
+            // Slider events - Multiple event types to ensure it works
+            const slider = document.getElementById('squareFootage');
+            if (slider) {
+                // Update display and calculate on input (real-time)
+                slider.addEventListener('input', function() {
+                    const sqftDisplay = document.getElementById('sqftDisplay');
+                    if (sqftDisplay) {
+                        sqftDisplay.textContent = parseInt(this.value).toLocaleString() + ' sq ft';
+                    }
+                    updateCalculator();
+                });
+                
+                // Also update on change (when user releases)
+                slider.addEventListener('change', function() {
+                    const sqftDisplay = document.getElementById('sqftDisplay');
+                    if (sqftDisplay) {
+                        sqftDisplay.textContent = parseInt(this.value).toLocaleString() + ' sq ft';
+                    }
+                    updateCalculator();
+                });
+                
+                // Also handle mouseup and touchend for mobile
+                slider.addEventListener('mouseup', updateCalculator);
+                slider.addEventListener('touchend', updateCalculator);
+            }
+
+            // Dropdown events
+            const selects = ['residentialSize', 'frequency', 'urgency', 'complexity', 'distance'];
+            selects.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('change', updateCalculator);
+                }
+            });
+
+            // Subscription option events
+            const subscriptionOptions = ['payPerService', 'monthlyContract', 'quarterlyContract', 'annualContract'];
+            subscriptionOptions.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('click', () => selectSubscription(id));
+                }
+            });
+
+            // Product line option events
+            const productOptions = ['organicLine', 'premiumLine'];
+            productOptions.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('click', () => selectProductLine(id));
+                }
+            });
+        }
+
+        // Utility functions
+        function requestQuote() {
+            try {
+                window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
+            } catch (error) {
+                console.error('Quote request error:', error);
+            }
+        }
+
+        function requestContractQuote() {
+            try {
+                window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
+            } catch (error) {
+                console.error('Contract quote request error:', error);
+            }
+        }
+
+        function callNow() {
+            try {
+                window.open('tel:+18017125663');
+            } catch (error) {
+                console.error('Call initiation error:', error);
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Calculator initializing...');
+            
+            // Set up all event listeners
+            setupEventListeners();
+            
+            // Initialize service type display
+            handleServiceTypeChange();
+            
+            // Run initial calculation
+            setTimeout(() => {
+                updateCalculator();
+                console.log('Calculator initialized successfully');
+            }, 100);
+        });
+
+        // Backup initialization
+        window.addEventListener('load', function() {
+            updateCalculator();
+        });
+    </script>
+</body>
+</html>
+             + Math.round(basePrice).toLocaleString());
+                updateElement('complexityPrice', '
+
+        // Helper function to safely update elements
+        function updateElement(id, value) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = value;
+            }
+        }
+
+        // Handle subscription pricing display
+        function updateSubscriptionPricing(baseServicePrice) {
+            const subscriptionResults = document.getElementById('subscriptionResults');
+            const annualBonusRow = document.getElementById('annualBonusRow');
+
+            if (currentSubscription !== 'payPerService') {
+                if (subscriptionResults) {
+                    subscriptionResults.style.display = 'block';
+                }
+                
+                let subscriptionPrice;
+                
+                // Calculate subscription pricing based on service price and ranges
+                if (currentSubscription === 'monthlyContract') {
+                    // Monthly subscriptions: $399-$1,299 range based on service complexity
+                    const priceRatio = Math.min(baseServicePrice / 800, 1); // Normalize to 0-1
+                    subscriptionPrice = PRICING.subscriptionRanges.min + 
+                                       (priceRatio * (PRICING.subscriptionRanges.max - PRICING.subscriptionRanges.min));
+                    subscriptionPrice = Math.round(subscriptionPrice);
+                } else {
+                    // For quarterly/annual, apply discount to service price
+                    const discount = PRICING.subscriptionDiscounts[currentSubscription];
+                    subscriptionPrice = Math.round(baseServicePrice * (1 - discount));
+                }
+                
+                const savings = Math.round(baseServicePrice - subscriptionPrice);
+
+                // Update contract displays
+                updateElement('contractPrice', '$' + subscriptionPrice.toLocaleString());
+                updateElement('contractServicePrice', '$' + Math.round(baseServicePrice).toLocaleString());
+                updateElement('contractDiscountAmount', '-$' + savings.toLocaleString());
+                updateElement('contractTotalPrice', '$' + subscriptionPrice.toLocaleString());
+                updateElement('contractSavings', 'Save $' + savings.toLocaleString());
+
+                // Handle contract frequency text
+                let contractFrequencyText = 'per service';
+                if (currentSubscription === 'monthlyContract') {
+                    contractFrequencyText = 'per month';
+                } else if (currentSubscription === 'quarterlyContract') {
+                    contractFrequencyText = 'per service (quarterly rate)';
+                } else if (currentSubscription === 'annualContract') {
+                    contractFrequencyText = 'per service (annual rate)';
+                    if (annualBonusRow) {
+                        annualBonusRow.style.display = 'flex';
+                        updateElement('annualBonusValue', '$' + Math.round(baseServicePrice * 2).toLocaleString() + ' value');
+                    }
+                } 
+
+                if (currentSubscription !== 'annualContract' && annualBonusRow) {
+                    annualBonusRow.style.display = 'none';
+                }
+
+                updateElement('contractFrequency', contractFrequencyText);
+            } else {
+                if (subscriptionResults) {
+                    subscriptionResults.style.display = 'none';
+                }
+                if (annualBonusRow) annualBonusRow.style.display = 'none';
+            }
+        }
+
+        // Handle service type change
+        function handleServiceTypeChange() {
+            const serviceType = document.getElementById('serviceType').value;
+            const sqftInput = document.getElementById('sqftInput');
+            const homeSize = document.getElementById('homeSize');
+            
+            if (serviceType === 'residential') {
+                if (sqftInput) sqftInput.style.display = 'none';
+                if (homeSize) homeSize.style.display = 'block';
+            } else {
+                if (sqftInput) sqftInput.style.display = 'block';
+                if (homeSize) homeSize.style.display = 'none';
+            }
+            
+            updateCalculator();
+        }
+
+        // Handle subscription selection
+        function selectSubscription(subscriptionType) {
+            try {
+                currentSubscription = subscriptionType;
+
+                // Update visual selection
+                document.querySelectorAll('.subscription-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+
+                const selectedElement = document.getElementById(subscriptionType);
+                if (selectedElement) {
+                    selectedElement.classList.add('selected');
+                }
+
+                // Update calculator
+                updateCalculator();
+            } catch (error) {
+                console.error('Subscription selection error:', error);
+            }
+        }
+
+        // Handle product line selection
+        function selectProductLine(productLine) {
+            try {
+                currentProductLine = productLine;
+
+                // Update visual selection
+                document.querySelectorAll('.product-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+
+                const selectedElement = document.getElementById(productLine);
+                if (selectedElement) {
+                    selectedElement.classList.add('selected');
+                }
+
+                // Update calculator
+                updateCalculator();
+            } catch (error) {
+                console.error('Product line selection error:', error);
+            }
+        }
+
+        // Event handlers
+        function setupEventListeners() {
+            // Service type change handler
+            const serviceTypeSelect = document.getElementById('serviceType');
+            if (serviceTypeSelect) {
+                serviceTypeSelect.addEventListener('change', handleServiceTypeChange);
+            }
+
+            // Slider events - Multiple event types to ensure it works
+            const slider = document.getElementById('squareFootage');
+            if (slider) {
+                // Update display and calculate on input (real-time)
+                slider.addEventListener('input', function() {
+                    const sqftDisplay = document.getElementById('sqftDisplay');
+                    if (sqftDisplay) {
+                        sqftDisplay.textContent = parseInt(this.value).toLocaleString() + ' sq ft';
+                    }
+                    updateCalculator();
+                });
+                
+                // Also update on change (when user releases)
+                slider.addEventListener('change', function() {
+                    const sqftDisplay = document.getElementById('sqftDisplay');
+                    if (sqftDisplay) {
+                        sqftDisplay.textContent = parseInt(this.value).toLocaleString() + ' sq ft';
+                    }
+                    updateCalculator();
+                });
+                
+                // Also handle mouseup and touchend for mobile
+                slider.addEventListener('mouseup', updateCalculator);
+                slider.addEventListener('touchend', updateCalculator);
+            }
+
+            // Dropdown events
+            const selects = ['residentialSize', 'frequency', 'urgency', 'complexity', 'distance'];
+            selects.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('change', updateCalculator);
+                }
+            });
+
+            // Subscription option events
+            const subscriptionOptions = ['payPerService', 'monthlyContract', 'quarterlyContract', 'annualContract'];
+            subscriptionOptions.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('click', () => selectSubscription(id));
+                }
+            });
+
+            // Product line option events
+            const productOptions = ['organicLine', 'premiumLine'];
+            productOptions.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('click', () => selectProductLine(id));
+                }
+            });
+        }
+
+        // Utility functions
+        function requestQuote() {
+            try {
+                window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
+            } catch (error) {
+                console.error('Quote request error:', error);
+            }
+        }
+
+        function requestContractQuote() {
+            try {
+                window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
+            } catch (error) {
+                console.error('Contract quote request error:', error);
+            }
+        }
+
+        function callNow() {
+            try {
+                window.open('tel:+18017125663');
+            } catch (error) {
+                console.error('Call initiation error:', error);
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Calculator initializing...');
+            
+            // Set up all event listeners
+            setupEventListeners();
+            
+            // Initialize service type display
+            handleServiceTypeChange();
+            
+            // Run initial calculation
+            setTimeout(() => {
+                updateCalculator();
+                console.log('Calculator initialized successfully');
+            }, 100);
+        });
+
+        // Backup initialization
+        window.addEventListener('load', function() {
+            updateCalculator();
+        });
+    </script>
+</body>
+</html>
+             + Math.round(complexityAdjustment).toLocaleString());
+                updateElement('urgencyPrice', '
+
+        // Helper function to safely update elements
+        function updateElement(id, value) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = value;
+            }
+        }
+
+        // Handle subscription pricing display
+        function updateSubscriptionPricing(baseServicePrice) {
+            const subscriptionResults = document.getElementById('subscriptionResults');
+            const annualBonusRow = document.getElementById('annualBonusRow');
+
+            if (currentSubscription !== 'payPerService') {
+                if (subscriptionResults) {
+                    subscriptionResults.style.display = 'block';
+                }
+                
+                let subscriptionPrice;
+                
+                // Calculate subscription pricing based on service price and ranges
+                if (currentSubscription === 'monthlyContract') {
+                    // Monthly subscriptions: $399-$1,299 range based on service complexity
+                    const priceRatio = Math.min(baseServicePrice / 800, 1); // Normalize to 0-1
+                    subscriptionPrice = PRICING.subscriptionRanges.min + 
+                                       (priceRatio * (PRICING.subscriptionRanges.max - PRICING.subscriptionRanges.min));
+                    subscriptionPrice = Math.round(subscriptionPrice);
+                } else {
+                    // For quarterly/annual, apply discount to service price
+                    const discount = PRICING.subscriptionDiscounts[currentSubscription];
+                    subscriptionPrice = Math.round(baseServicePrice * (1 - discount));
+                }
+                
+                const savings = Math.round(baseServicePrice - subscriptionPrice);
+
+                // Update contract displays
+                updateElement('contractPrice', '$' + subscriptionPrice.toLocaleString());
+                updateElement('contractServicePrice', '$' + Math.round(baseServicePrice).toLocaleString());
+                updateElement('contractDiscountAmount', '-$' + savings.toLocaleString());
+                updateElement('contractTotalPrice', '$' + subscriptionPrice.toLocaleString());
+                updateElement('contractSavings', 'Save $' + savings.toLocaleString());
+
+                // Handle contract frequency text
+                let contractFrequencyText = 'per service';
+                if (currentSubscription === 'monthlyContract') {
+                    contractFrequencyText = 'per month';
+                } else if (currentSubscription === 'quarterlyContract') {
+                    contractFrequencyText = 'per service (quarterly rate)';
+                } else if (currentSubscription === 'annualContract') {
+                    contractFrequencyText = 'per service (annual rate)';
+                    if (annualBonusRow) {
+                        annualBonusRow.style.display = 'flex';
+                        updateElement('annualBonusValue', '$' + Math.round(baseServicePrice * 2).toLocaleString() + ' value');
+                    }
+                } 
+
+                if (currentSubscription !== 'annualContract' && annualBonusRow) {
+                    annualBonusRow.style.display = 'none';
+                }
+
+                updateElement('contractFrequency', contractFrequencyText);
+            } else {
+                if (subscriptionResults) {
+                    subscriptionResults.style.display = 'none';
+                }
+                if (annualBonusRow) annualBonusRow.style.display = 'none';
+            }
+        }
+
+        // Handle service type change
+        function handleServiceTypeChange() {
+            const serviceType = document.getElementById('serviceType').value;
+            const sqftInput = document.getElementById('sqftInput');
+            const homeSize = document.getElementById('homeSize');
+            
+            if (serviceType === 'residential') {
+                if (sqftInput) sqftInput.style.display = 'none';
+                if (homeSize) homeSize.style.display = 'block';
+            } else {
+                if (sqftInput) sqftInput.style.display = 'block';
+                if (homeSize) homeSize.style.display = 'none';
+            }
+            
+            updateCalculator();
+        }
+
+        // Handle subscription selection
+        function selectSubscription(subscriptionType) {
+            try {
+                currentSubscription = subscriptionType;
+
+                // Update visual selection
+                document.querySelectorAll('.subscription-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+
+                const selectedElement = document.getElementById(subscriptionType);
+                if (selectedElement) {
+                    selectedElement.classList.add('selected');
+                }
+
+                // Update calculator
+                updateCalculator();
+            } catch (error) {
+                console.error('Subscription selection error:', error);
+            }
+        }
+
+        // Handle product line selection
+        function selectProductLine(productLine) {
+            try {
+                currentProductLine = productLine;
+
+                // Update visual selection
+                document.querySelectorAll('.product-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+
+                const selectedElement = document.getElementById(productLine);
+                if (selectedElement) {
+                    selectedElement.classList.add('selected');
+                }
+
+                // Update calculator
+                updateCalculator();
+            } catch (error) {
+                console.error('Product line selection error:', error);
+            }
+        }
+
+        // Event handlers
+        function setupEventListeners() {
+            // Service type change handler
+            const serviceTypeSelect = document.getElementById('serviceType');
+            if (serviceTypeSelect) {
+                serviceTypeSelect.addEventListener('change', handleServiceTypeChange);
+            }
+
+            // Slider events - Multiple event types to ensure it works
+            const slider = document.getElementById('squareFootage');
+            if (slider) {
+                // Update display and calculate on input (real-time)
+                slider.addEventListener('input', function() {
+                    const sqftDisplay = document.getElementById('sqftDisplay');
+                    if (sqftDisplay) {
+                        sqftDisplay.textContent = parseInt(this.value).toLocaleString() + ' sq ft';
+                    }
+                    updateCalculator();
+                });
+                
+                // Also update on change (when user releases)
+                slider.addEventListener('change', function() {
+                    const sqftDisplay = document.getElementById('sqftDisplay');
+                    if (sqftDisplay) {
+                        sqftDisplay.textContent = parseInt(this.value).toLocaleString() + ' sq ft';
+                    }
+                    updateCalculator();
+                });
+                
+                // Also handle mouseup and touchend for mobile
+                slider.addEventListener('mouseup', updateCalculator);
+                slider.addEventListener('touchend', updateCalculator);
+            }
+
+            // Dropdown events
+            const selects = ['residentialSize', 'frequency', 'urgency', 'complexity', 'distance'];
+            selects.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('change', updateCalculator);
+                }
+            });
+
+            // Subscription option events
+            const subscriptionOptions = ['payPerService', 'monthlyContract', 'quarterlyContract', 'annualContract'];
+            subscriptionOptions.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('click', () => selectSubscription(id));
+                }
+            });
+
+            // Product line option events
+            const productOptions = ['organicLine', 'premiumLine'];
+            productOptions.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('click', () => selectProductLine(id));
+                }
+            });
+        }
+
+        // Utility functions
+        function requestQuote() {
+            try {
+                window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
+            } catch (error) {
+                console.error('Quote request error:', error);
+            }
+        }
+
+        function requestContractQuote() {
+            try {
+                window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
+            } catch (error) {
+                console.error('Contract quote request error:', error);
+            }
+        }
+
+        function callNow() {
+            try {
+                window.open('tel:+18017125663');
+            } catch (error) {
+                console.error('Call initiation error:', error);
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Calculator initializing...');
+            
+            // Set up all event listeners
+            setupEventListeners();
+            
+            // Initialize service type display
+            handleServiceTypeChange();
+            
+            // Run initial calculation
+            setTimeout(() => {
+                updateCalculator();
+                console.log('Calculator initialized successfully');
+            }, 100);
+        });
+
+        // Backup initialization
+        window.addEventListener('load', function() {
+            updateCalculator();
+        });
+    </script>
+</body>
+</html>
+             + Math.round(urgencySurcharge).toLocaleString());
+                updateElement('travelPrice', '
+
+        // Helper function to safely update elements
+        function updateElement(id, value) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = value;
+            }
+        }
+
+        // Handle subscription pricing display
+        function updateSubscriptionPricing(baseServicePrice) {
+            const subscriptionResults = document.getElementById('subscriptionResults');
+            const annualBonusRow = document.getElementById('annualBonusRow');
+
+            if (currentSubscription !== 'payPerService') {
+                if (subscriptionResults) {
+                    subscriptionResults.style.display = 'block';
+                }
+                
+                let subscriptionPrice;
+                
+                // Calculate subscription pricing based on service price and ranges
+                if (currentSubscription === 'monthlyContract') {
+                    // Monthly subscriptions: $399-$1,299 range based on service complexity
+                    const priceRatio = Math.min(baseServicePrice / 800, 1); // Normalize to 0-1
+                    subscriptionPrice = PRICING.subscriptionRanges.min + 
+                                       (priceRatio * (PRICING.subscriptionRanges.max - PRICING.subscriptionRanges.min));
+                    subscriptionPrice = Math.round(subscriptionPrice);
+                } else {
+                    // For quarterly/annual, apply discount to service price
+                    const discount = PRICING.subscriptionDiscounts[currentSubscription];
+                    subscriptionPrice = Math.round(baseServicePrice * (1 - discount));
+                }
+                
+                const savings = Math.round(baseServicePrice - subscriptionPrice);
+
+                // Update contract displays
+                updateElement('contractPrice', '$' + subscriptionPrice.toLocaleString());
+                updateElement('contractServicePrice', '$' + Math.round(baseServicePrice).toLocaleString());
+                updateElement('contractDiscountAmount', '-$' + savings.toLocaleString());
+                updateElement('contractTotalPrice', '$' + subscriptionPrice.toLocaleString());
+                updateElement('contractSavings', 'Save $' + savings.toLocaleString());
+
+                // Handle contract frequency text
+                let contractFrequencyText = 'per service';
+                if (currentSubscription === 'monthlyContract') {
+                    contractFrequencyText = 'per month';
+                } else if (currentSubscription === 'quarterlyContract') {
+                    contractFrequencyText = 'per service (quarterly rate)';
+                } else if (currentSubscription === 'annualContract') {
+                    contractFrequencyText = 'per service (annual rate)';
+                    if (annualBonusRow) {
+                        annualBonusRow.style.display = 'flex';
+                        updateElement('annualBonusValue', '$' + Math.round(baseServicePrice * 2).toLocaleString() + ' value');
+                    }
+                } 
+
+                if (currentSubscription !== 'annualContract' && annualBonusRow) {
+                    annualBonusRow.style.display = 'none';
+                }
+
+                updateElement('contractFrequency', contractFrequencyText);
+            } else {
+                if (subscriptionResults) {
+                    subscriptionResults.style.display = 'none';
+                }
+                if (annualBonusRow) annualBonusRow.style.display = 'none';
+            }
+        }
+
+        // Handle service type change
+        function handleServiceTypeChange() {
+            const serviceType = document.getElementById('serviceType').value;
+            const sqftInput = document.getElementById('sqftInput');
+            const homeSize = document.getElementById('homeSize');
+            
+            if (serviceType === 'residential') {
+                if (sqftInput) sqftInput.style.display = 'none';
+                if (homeSize) homeSize.style.display = 'block';
+            } else {
+                if (sqftInput) sqftInput.style.display = 'block';
+                if (homeSize) homeSize.style.display = 'none';
+            }
+            
+            updateCalculator();
+        }
+
+        // Handle subscription selection
+        function selectSubscription(subscriptionType) {
+            try {
+                currentSubscription = subscriptionType;
+
+                // Update visual selection
+                document.querySelectorAll('.subscription-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+
+                const selectedElement = document.getElementById(subscriptionType);
+                if (selectedElement) {
+                    selectedElement.classList.add('selected');
+                }
+
+                // Update calculator
+                updateCalculator();
+            } catch (error) {
+                console.error('Subscription selection error:', error);
+            }
+        }
+
+        // Handle product line selection
+        function selectProductLine(productLine) {
+            try {
+                currentProductLine = productLine;
+
+                // Update visual selection
+                document.querySelectorAll('.product-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+
+                const selectedElement = document.getElementById(productLine);
+                if (selectedElement) {
+                    selectedElement.classList.add('selected');
+                }
+
+                // Update calculator
+                updateCalculator();
+            } catch (error) {
+                console.error('Product line selection error:', error);
+            }
+        }
+
+        // Event handlers
+        function setupEventListeners() {
+            // Service type change handler
+            const serviceTypeSelect = document.getElementById('serviceType');
+            if (serviceTypeSelect) {
+                serviceTypeSelect.addEventListener('change', handleServiceTypeChange);
+            }
+
+            // Slider events - Multiple event types to ensure it works
+            const slider = document.getElementById('squareFootage');
+            if (slider) {
+                // Update display and calculate on input (real-time)
+                slider.addEventListener('input', function() {
+                    const sqftDisplay = document.getElementById('sqftDisplay');
+                    if (sqftDisplay) {
+                        sqftDisplay.textContent = parseInt(this.value).toLocaleString() + ' sq ft';
+                    }
+                    updateCalculator();
+                });
+                
+                // Also update on change (when user releases)
+                slider.addEventListener('change', function() {
+                    const sqftDisplay = document.getElementById('sqftDisplay');
+                    if (sqftDisplay) {
+                        sqftDisplay.textContent = parseInt(this.value).toLocaleString() + ' sq ft';
+                    }
+                    updateCalculator();
+                });
+                
+                // Also handle mouseup and touchend for mobile
+                slider.addEventListener('mouseup', updateCalculator);
+                slider.addEventListener('touchend', updateCalculator);
+            }
+
+            // Dropdown events
+            const selects = ['residentialSize', 'frequency', 'urgency', 'complexity', 'distance'];
+            selects.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('change', updateCalculator);
+                }
+            });
+
+            // Subscription option events
+            const subscriptionOptions = ['payPerService', 'monthlyContract', 'quarterlyContract', 'annualContract'];
+            subscriptionOptions.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('click', () => selectSubscription(id));
+                }
+            });
+
+            // Product line option events
+            const productOptions = ['organicLine', 'premiumLine'];
+            productOptions.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('click', () => selectProductLine(id));
+                }
+            });
+        }
+
+        // Utility functions
+        function requestQuote() {
+            try {
+                window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
+            } catch (error) {
+                console.error('Quote request error:', error);
+            }
+        }
+
+        function requestContractQuote() {
+            try {
+                window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
+            } catch (error) {
+                console.error('Contract quote request error:', error);
+            }
+        }
+
+        function callNow() {
+            try {
+                window.open('tel:+18017125663');
+            } catch (error) {
+                console.error('Call initiation error:', error);
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Calculator initializing...');
+            
+            // Set up all event listeners
+            setupEventListeners();
+            
+            // Initialize service type display
+            handleServiceTypeChange();
+            
+            // Run initial calculation
+            setTimeout(() => {
+                updateCalculator();
+                console.log('Calculator initialized successfully');
+            }, 100);
+        });
+
+        // Backup initialization
+        window.addEventListener('load', function() {
+            updateCalculator();
+        });
+    </script>
+</body>
+</html>
+             + travelCost.toLocaleString());
+                updateElement('totalPrice', '
+
+        // Helper function to safely update elements
+        function updateElement(id, value) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = value;
+            }
+        }
+
+        // Handle subscription pricing display
+        function updateSubscriptionPricing(baseServicePrice) {
+            const subscriptionResults = document.getElementById('subscriptionResults');
+            const annualBonusRow = document.getElementById('annualBonusRow');
+
+            if (currentSubscription !== 'payPerService') {
+                if (subscriptionResults) {
+                    subscriptionResults.style.display = 'block';
+                }
+                
+                let subscriptionPrice;
+                
+                // Calculate subscription pricing based on service price and ranges
+                if (currentSubscription === 'monthlyContract') {
+                    // Monthly subscriptions: $399-$1,299 range based on service complexity
+                    const priceRatio = Math.min(baseServicePrice / 800, 1); // Normalize to 0-1
+                    subscriptionPrice = PRICING.subscriptionRanges.min + 
+                                       (priceRatio * (PRICING.subscriptionRanges.max - PRICING.subscriptionRanges.min));
+                    subscriptionPrice = Math.round(subscriptionPrice);
+                } else {
+                    // For quarterly/annual, apply discount to service price
+                    const discount = PRICING.subscriptionDiscounts[currentSubscription];
+                    subscriptionPrice = Math.round(baseServicePrice * (1 - discount));
+                }
+                
+                const savings = Math.round(baseServicePrice - subscriptionPrice);
+
+                // Update contract displays
+                updateElement('contractPrice', '$' + subscriptionPrice.toLocaleString());
+                updateElement('contractServicePrice', '$' + Math.round(baseServicePrice).toLocaleString());
+                updateElement('contractDiscountAmount', '-$' + savings.toLocaleString());
+                updateElement('contractTotalPrice', '$' + subscriptionPrice.toLocaleString());
+                updateElement('contractSavings', 'Save $' + savings.toLocaleString());
+
+                // Handle contract frequency text
+                let contractFrequencyText = 'per service';
+                if (currentSubscription === 'monthlyContract') {
+                    contractFrequencyText = 'per month';
+                } else if (currentSubscription === 'quarterlyContract') {
+                    contractFrequencyText = 'per service (quarterly rate)';
+                } else if (currentSubscription === 'annualContract') {
+                    contractFrequencyText = 'per service (annual rate)';
+                    if (annualBonusRow) {
+                        annualBonusRow.style.display = 'flex';
+                        updateElement('annualBonusValue', '$' + Math.round(baseServicePrice * 2).toLocaleString() + ' value');
+                    }
+                } 
+
+                if (currentSubscription !== 'annualContract' && annualBonusRow) {
+                    annualBonusRow.style.display = 'none';
+                }
+
+                updateElement('contractFrequency', contractFrequencyText);
+            } else {
+                if (subscriptionResults) {
+                    subscriptionResults.style.display = 'none';
+                }
+                if (annualBonusRow) annualBonusRow.style.display = 'none';
+            }
+        }
+
+        // Handle service type change
+        function handleServiceTypeChange() {
+            const serviceType = document.getElementById('serviceType').value;
+            const sqftInput = document.getElementById('sqftInput');
+            const homeSize = document.getElementById('homeSize');
+            
+            if (serviceType === 'residential') {
+                if (sqftInput) sqftInput.style.display = 'none';
+                if (homeSize) homeSize.style.display = 'block';
+            } else {
+                if (sqftInput) sqftInput.style.display = 'block';
+                if (homeSize) homeSize.style.display = 'none';
+            }
+            
+            updateCalculator();
+        }
+
+        // Handle subscription selection
+        function selectSubscription(subscriptionType) {
+            try {
+                currentSubscription = subscriptionType;
+
+                // Update visual selection
+                document.querySelectorAll('.subscription-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+
+                const selectedElement = document.getElementById(subscriptionType);
+                if (selectedElement) {
+                    selectedElement.classList.add('selected');
+                }
+
+                // Update calculator
+                updateCalculator();
+            } catch (error) {
+                console.error('Subscription selection error:', error);
+            }
+        }
+
+        // Handle product line selection
+        function selectProductLine(productLine) {
+            try {
+                currentProductLine = productLine;
+
+                // Update visual selection
+                document.querySelectorAll('.product-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+
+                const selectedElement = document.getElementById(productLine);
+                if (selectedElement) {
+                    selectedElement.classList.add('selected');
+                }
+
+                // Update calculator
+                updateCalculator();
+            } catch (error) {
+                console.error('Product line selection error:', error);
+            }
+        }
+
+        // Event handlers
+        function setupEventListeners() {
+            // Service type change handler
+            const serviceTypeSelect = document.getElementById('serviceType');
+            if (serviceTypeSelect) {
+                serviceTypeSelect.addEventListener('change', handleServiceTypeChange);
+            }
+
+            // Slider events - Multiple event types to ensure it works
+            const slider = document.getElementById('squareFootage');
+            if (slider) {
+                // Update display and calculate on input (real-time)
+                slider.addEventListener('input', function() {
+                    const sqftDisplay = document.getElementById('sqftDisplay');
+                    if (sqftDisplay) {
+                        sqftDisplay.textContent = parseInt(this.value).toLocaleString() + ' sq ft';
+                    }
+                    updateCalculator();
+                });
+                
+                // Also update on change (when user releases)
+                slider.addEventListener('change', function() {
+                    const sqftDisplay = document.getElementById('sqftDisplay');
+                    if (sqftDisplay) {
+                        sqftDisplay.textContent = parseInt(this.value).toLocaleString() + ' sq ft';
+                    }
+                    updateCalculator();
+                });
+                
+                // Also handle mouseup and touchend for mobile
+                slider.addEventListener('mouseup', updateCalculator);
+                slider.addEventListener('touchend', updateCalculator);
+            }
+
+            // Dropdown events
+            const selects = ['residentialSize', 'frequency', 'urgency', 'complexity', 'distance'];
+            selects.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('change', updateCalculator);
+                }
+            });
+
+            // Subscription option events
+            const subscriptionOptions = ['payPerService', 'monthlyContract', 'quarterlyContract', 'annualContract'];
+            subscriptionOptions.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('click', () => selectSubscription(id));
+                }
+            });
+
+            // Product line option events
+            const productOptions = ['organicLine', 'premiumLine'];
+            productOptions.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('click', () => selectProductLine(id));
+                }
+            });
+        }
+
+        // Utility functions
+        function requestQuote() {
+            try {
+                window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
+            } catch (error) {
+                console.error('Quote request error:', error);
+            }
+        }
+
+        function requestContractQuote() {
+            try {
+                window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
+            } catch (error) {
+                console.error('Contract quote request error:', error);
+            }
+        }
+
+        function callNow() {
+            try {
+                window.open('tel:+18017125663');
+            } catch (error) {
+                console.error('Call initiation error:', error);
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Calculator initializing...');
+            
+            // Set up all event listeners
+            setupEventListeners();
+            
+            // Initialize service type display
+            handleServiceTypeChange();
+            
+            // Run initial calculation
+            setTimeout(() => {
+                updateCalculator();
+                console.log('Calculator initialized successfully');
+            }, 100);
+        });
+
+        // Backup initialization
+        window.addEventListener('load', function() {
+            updateCalculator();
+        });
+    </script>
+</body>
+</html>
+             + Math.round(totalPrice).toLocaleString());
+                updateElement('breakdownTotal', '
+
+        // Helper function to safely update elements
+        function updateElement(id, value) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = value;
+            }
+        }
+
+        // Handle subscription pricing display
+        function updateSubscriptionPricing(baseServicePrice) {
+            const subscriptionResults = document.getElementById('subscriptionResults');
+            const annualBonusRow = document.getElementById('annualBonusRow');
+
+            if (currentSubscription !== 'payPerService') {
+                if (subscriptionResults) {
+                    subscriptionResults.style.display = 'block';
+                }
+                
+                let subscriptionPrice;
+                
+                // Calculate subscription pricing based on service price and ranges
+                if (currentSubscription === 'monthlyContract') {
+                    // Monthly subscriptions: $399-$1,299 range based on service complexity
+                    const priceRatio = Math.min(baseServicePrice / 800, 1); // Normalize to 0-1
+                    subscriptionPrice = PRICING.subscriptionRanges.min + 
+                                       (priceRatio * (PRICING.subscriptionRanges.max - PRICING.subscriptionRanges.min));
+                    subscriptionPrice = Math.round(subscriptionPrice);
+                } else {
+                    // For quarterly/annual, apply discount to service price
+                    const discount = PRICING.subscriptionDiscounts[currentSubscription];
+                    subscriptionPrice = Math.round(baseServicePrice * (1 - discount));
+                }
+                
+                const savings = Math.round(baseServicePrice - subscriptionPrice);
+
+                // Update contract displays
+                updateElement('contractPrice', '$' + subscriptionPrice.toLocaleString());
+                updateElement('contractServicePrice', '$' + Math.round(baseServicePrice).toLocaleString());
+                updateElement('contractDiscountAmount', '-$' + savings.toLocaleString());
+                updateElement('contractTotalPrice', '$' + subscriptionPrice.toLocaleString());
+                updateElement('contractSavings', 'Save $' + savings.toLocaleString());
+
+                // Handle contract frequency text
+                let contractFrequencyText = 'per service';
+                if (currentSubscription === 'monthlyContract') {
+                    contractFrequencyText = 'per month';
+                } else if (currentSubscription === 'quarterlyContract') {
+                    contractFrequencyText = 'per service (quarterly rate)';
+                } else if (currentSubscription === 'annualContract') {
+                    contractFrequencyText = 'per service (annual rate)';
+                    if (annualBonusRow) {
+                        annualBonusRow.style.display = 'flex';
+                        updateElement('annualBonusValue', '$' + Math.round(baseServicePrice * 2).toLocaleString() + ' value');
+                    }
+                } 
+
+                if (currentSubscription !== 'annualContract' && annualBonusRow) {
+                    annualBonusRow.style.display = 'none';
+                }
+
+                updateElement('contractFrequency', contractFrequencyText);
+            } else {
+                if (subscriptionResults) {
+                    subscriptionResults.style.display = 'none';
+                }
+                if (annualBonusRow) annualBonusRow.style.display = 'none';
+            }
+        }
+
+        // Handle service type change
+        function handleServiceTypeChange() {
+            const serviceType = document.getElementById('serviceType').value;
+            const sqftInput = document.getElementById('sqftInput');
+            const homeSize = document.getElementById('homeSize');
+            
+            if (serviceType === 'residential') {
+                if (sqftInput) sqftInput.style.display = 'none';
+                if (homeSize) homeSize.style.display = 'block';
+            } else {
+                if (sqftInput) sqftInput.style.display = 'block';
+                if (homeSize) homeSize.style.display = 'none';
+            }
+            
+            updateCalculator();
+        }
+
+        // Handle subscription selection
+        function selectSubscription(subscriptionType) {
+            try {
+                currentSubscription = subscriptionType;
+
+                // Update visual selection
+                document.querySelectorAll('.subscription-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+
+                const selectedElement = document.getElementById(subscriptionType);
+                if (selectedElement) {
+                    selectedElement.classList.add('selected');
+                }
+
+                // Update calculator
+                updateCalculator();
+            } catch (error) {
+                console.error('Subscription selection error:', error);
+            }
+        }
+
+        // Handle product line selection
+        function selectProductLine(productLine) {
+            try {
+                currentProductLine = productLine;
+
+                // Update visual selection
+                document.querySelectorAll('.product-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+
+                const selectedElement = document.getElementById(productLine);
+                if (selectedElement) {
+                    selectedElement.classList.add('selected');
+                }
+
+                // Update calculator
+                updateCalculator();
+            } catch (error) {
+                console.error('Product line selection error:', error);
+            }
+        }
+
+        // Event handlers
+        function setupEventListeners() {
+            // Service type change handler
+            const serviceTypeSelect = document.getElementById('serviceType');
+            if (serviceTypeSelect) {
+                serviceTypeSelect.addEventListener('change', handleServiceTypeChange);
+            }
+
+            // Slider events - Multiple event types to ensure it works
+            const slider = document.getElementById('squareFootage');
+            if (slider) {
+                // Update display and calculate on input (real-time)
+                slider.addEventListener('input', function() {
+                    const sqftDisplay = document.getElementById('sqftDisplay');
+                    if (sqftDisplay) {
+                        sqftDisplay.textContent = parseInt(this.value).toLocaleString() + ' sq ft';
+                    }
+                    updateCalculator();
+                });
+                
+                // Also update on change (when user releases)
+                slider.addEventListener('change', function() {
+                    const sqftDisplay = document.getElementById('sqftDisplay');
+                    if (sqftDisplay) {
+                        sqftDisplay.textContent = parseInt(this.value).toLocaleString() + ' sq ft';
+                    }
+                    updateCalculator();
+                });
+                
+                // Also handle mouseup and touchend for mobile
+                slider.addEventListener('mouseup', updateCalculator);
+                slider.addEventListener('touchend', updateCalculator);
+            }
+
+            // Dropdown events
+            const selects = ['residentialSize', 'frequency', 'urgency', 'complexity', 'distance'];
+            selects.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('change', updateCalculator);
+                }
+            });
+
+            // Subscription option events
+            const subscriptionOptions = ['payPerService', 'monthlyContract', 'quarterlyContract', 'annualContract'];
+            subscriptionOptions.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('click', () => selectSubscription(id));
+                }
+            });
+
+            // Product line option events
+            const productOptions = ['organicLine', 'premiumLine'];
+            productOptions.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('click', () => selectProductLine(id));
+                }
+            });
+        }
+
+        // Utility functions
+        function requestQuote() {
+            try {
+                window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
+            } catch (error) {
+                console.error('Quote request error:', error);
+            }
+        }
+
+        function requestContractQuote() {
+            try {
+                window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
+            } catch (error) {
+                console.error('Contract quote request error:', error);
+            }
+        }
+
+        function callNow() {
+            try {
+                window.open('tel:+18017125663');
+            } catch (error) {
+                console.error('Call initiation error:', error);
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Calculator initializing...');
+            
+            // Set up all event listeners
+            setupEventListeners();
+            
+            // Initialize service type display
+            handleServiceTypeChange();
+            
+            // Run initial calculation
+            setTimeout(() => {
+                updateCalculator();
+                console.log('Calculator initialized successfully');
+            }, 100);
+        });
+
+        // Backup initialization
+        window.addEventListener('load', function() {
+            updateCalculator();
+        });
+    </script>
+</body>
+</html>
+             + Math.round(totalPrice).toLocaleString());
                 
                 // Handle scheduling notice display
                 const schedulingNotice = document.querySelector('.scheduling-info');
@@ -1092,6 +2552,7 @@
                 
             } catch (error) {
                 console.error('Calculator error:', error);
+                console.log('Error details:', error.message);
             }
         }
 
@@ -1233,11 +2694,30 @@
                 serviceTypeSelect.addEventListener('change', handleServiceTypeChange);
             }
 
-            // Slider events
+            // Slider events - Multiple event types to ensure it works
             const slider = document.getElementById('squareFootage');
             if (slider) {
-                slider.addEventListener('input', updateCalculator);
-                slider.addEventListener('change', updateCalculator);
+                // Update display and calculate on input (real-time)
+                slider.addEventListener('input', function() {
+                    const sqftDisplay = document.getElementById('sqftDisplay');
+                    if (sqftDisplay) {
+                        sqftDisplay.textContent = parseInt(this.value).toLocaleString() + ' sq ft';
+                    }
+                    updateCalculator();
+                });
+                
+                // Also update on change (when user releases)
+                slider.addEventListener('change', function() {
+                    const sqftDisplay = document.getElementById('sqftDisplay');
+                    if (sqftDisplay) {
+                        sqftDisplay.textContent = parseInt(this.value).toLocaleString() + ' sq ft';
+                    }
+                    updateCalculator();
+                });
+                
+                // Also handle mouseup and touchend for mobile
+                slider.addEventListener('mouseup', updateCalculator);
+                slider.addEventListener('touchend', updateCalculator);
             }
 
             // Dropdown events
@@ -1296,3 +2776,24 @@
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Calculator initializing...');
+            
+            // Set up all event listeners
+            setupEventListeners();
+            
+            // Initialize service type display
+            handleServiceTypeChange();
+            
+            // Run initial calculation
+            setTimeout(() => {
+                updateCalculator();
+                console.log('Calculator initialized successfully');
+            }, 100);
+        });
+
+        // Backup initialization
+        window.addEventListener('load', function() {
+            updateCalculator();
+        });
+    </script>
+</body>
+</html>
