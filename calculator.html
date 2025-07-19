@@ -16,6 +16,9 @@
     </script>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .calculator-section {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -92,11 +95,44 @@
             padding: 15px;
             margin-top: 15px;
         }
-        .subscription-options {
+        .product-line-selection {
             background: #f8f9fa;
             border-radius: 8px;
             padding: 15px;
             margin-top: 15px;
+        }
+        .product-option {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .product-option:hover {
+            border-color: #4CAF50;
+            transform: translateY(-2px);
+        }
+        .product-option.selected {
+            border-color: #4CAF50;
+            background: #f8fff8;
+        }
+        .organic-badge {
+            background: #4ADE80;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+        .premium-badge {
+            background: #f59e0b;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 10px;
         }
         .subscription-option {
             background: white;
@@ -131,89 +167,150 @@
             font-size: 0.9rem;
             margin-left: 10px;
         }
+        .emergency-section {
+            background: #ffe6e6;
+            border: 1px solid #ffcccc;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
 <!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2E5EAA;">
     <div class="container">
-        <a class="navbar-brand fw-bold text-primary d-flex align-items-center" href="index.html">
-            <!-- OHS Logo -->
-            <svg width="40" height="40" viewBox="0 0 400 250" class="me-2">
-                <rect width="400" height="250" fill="#2E5EAA"/>
-                <text x="200" y="180" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="100" font-weight="bold">OHS</text>
-                <text x="200" y="210" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="20">Organic HypoSolutions</text>
-                <!-- Green leaf accent -->
-                <path d="M 320 80 Q 340 60 360 80 Q 340 100 320 80" fill="#4ADE80"/>
-                <path d="M 330 70 Q 350 50 370 70 Q 350 90 330 70" fill="#22C55E"/>
+        <!-- Brand Logo -->
+        <a class="navbar-brand d-flex align-items-center" href="index.html">
+            <svg width="40" height="16" viewBox="0 0 200 80" class="me-2">
+                <rect width="200" height="80" fill="#2E5EAA" rx="4"/>
+                <text x="100" y="45" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="28" font-weight="bold">OHS</text>
+                <text x="100" y="62" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="8" opacity="0.9">Organic HypoSolutions</text>
+                <path d="M 160 20 Q 170 10 180 20 Q 170 30 160 20" fill="#4ADE80"/>
+                <path d="M 165 15 Q 175 5 185 15 Q 175 25 165 15" fill="#22C55E"/>
+                <path d="M 25 25 Q 20 30 20 35 Q 20 40 25 40 Q 30 40 30 35 Q 30 30 25 25" fill="#7DD3FC" opacity="0.8"/>
             </svg>
-            Organic HypoSolutions
+            <span class="fw-bold text-white">Organic HypoSolutions</span>
         </a>
+        
+        <!-- Mobile Toggle -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
+        
+        <!-- Navigation Links -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
-                <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
-                <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
-                <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
-                <li class="nav-item"><a class="nav-link" href="science-certifications.html">Science & Certifications</a></li>
-                <li class="nav-item"><a class="nav-link" href="legal-information.html">Legal Information</a></li>
-                <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">
+                        <i class="fas fa-home me-1"></i>Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="services.html">
+                        <i class="fas fa-spray-can me-1"></i>Services
+                    </a>
+                </li>
                 
-                <!-- Customer Shopping & Account -->
+                <!-- Products Dropdown -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-shopping-bag"></i> Shop
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-shopping-bag me-1"></i>Products
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="products.html"><i class="fas fa-boxes"></i> All Products</a></li>
-                        <li><a class="dropdown-item" href="shop/cart.html">
-                            <i class="fas fa-shopping-cart"></i> Cart 
-                            <span id="cartBadge" class="badge bg-danger ms-1" style="display: none;">0</span>
+                        <li><a class="dropdown-item" href="products.html">
+                            <i class="fas fa-leaf me-2"></i>USDA Organic Line
+                        </a></li>
+                        <li><a class="dropdown-item" href="products.html">
+                            <i class="fas fa-shield-alt me-2"></i>EPA Premium Line
+                            <span class="badge bg-warning ms-1">Coming Soon</span>
                         </a></li>
                         <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="products.html#bulk-products">
+                            <i class="fas fa-boxes me-2"></i>32oz Bulk Case
+                        </a></li>
+                        <li><a class="dropdown-item" href="products.html#bulk-products">
+                            <i class="fas fa-industry me-2"></i>Commercial Bulk
+                        </a></li>
+                    </ul>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link active" href="calculator.html">
+                        <i class="fas fa-calculator me-1"></i>Calculator
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="about.html">
+                        <i class="fas fa-info-circle me-1"></i>About
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="science-certifications.html">
+                        <i class="fas fa-certificate me-1"></i>Certifications
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="legal-information.html">
+                        <i class="fas fa-gavel me-1"></i>Legal
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="contact.html">
+                        <i class="fas fa-envelope me-1"></i>Contact
+                    </a>
+                </li>
+                
+                <!-- Shop Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-shopping-cart me-1"></i>Shop
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="shop/cart.html">
+                            <i class="fas fa-shopping-cart me-2"></i>Cart
+                            <span class="badge bg-warning ms-1">Under Construction</span>
+                        </a></li>
                         <li><a class="dropdown-item" href="shop/checkout.html">
-                            <i class="fas fa-credit-card"></i> Checkout
+                            <i class="fas fa-credit-card me-2"></i>Checkout
                             <span class="badge bg-warning ms-1">Under Construction</span>
                         </a></li>
                         <li><a class="dropdown-item" href="shop/order-success.html">
-                            <i class="fas fa-check-circle"></i> Order Confirmation
+                            <i class="fas fa-check-circle me-2"></i>Order Status
                             <span class="badge bg-warning ms-1">Under Construction</span>
                         </a></li>
                     </ul>
                 </li>
                 
+                <!-- Account Dropdown -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user"></i> Account
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user me-1"></i>Account
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="account/profile.html">
-                            <i class="fas fa-user-circle"></i> My Profile
+                            <i class="fas fa-user-circle me-2"></i>My Profile
                             <span class="badge bg-warning ms-1">Under Construction</span>
                         </a></li>
                         <li><a class="dropdown-item" href="account/orders.html">
-                            <i class="fas fa-receipt"></i> Order History
+                            <i class="fas fa-receipt me-2"></i>Order History
                             <span class="badge bg-warning ms-1">Under Construction</span>
                         </a></li>
                         <li><a class="dropdown-item" href="account/dashboard.html">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                             <span class="badge bg-warning ms-1">Under Construction</span>
                         </a></li>
                         <li><a class="dropdown-item" href="account/business-dashboard.html">
-                            <i class="fas fa-building"></i> Business Account
+                            <i class="fas fa-building me-2"></i>Business Account
                             <span class="badge bg-info ms-1">Wholesale</span>
                         </a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="auth/login.html">
-                            <i class="fas fa-sign-in-alt"></i> Login
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
                             <span class="badge bg-warning ms-1">Under Construction</span>
                         </a></li>
                         <li><a class="dropdown-item" href="auth/register.html">
-                            <i class="fas fa-user-plus"></i> Register
+                            <i class="fas fa-user-plus me-2"></i>Register
                             <span class="badge bg-warning ms-1">Under Construction</span>
                         </a></li>
                     </ul>
@@ -233,18 +330,6 @@
 
             <div class="row">
                 <div class="col-lg-6">
-                    <!-- Square Footage Input -->
-                    <div class="calc-input">
-                        <label class="form-label fw-bold">🏢 Facility Size (Square Feet)</label>
-                        <input type="range" class="form-range" id="squareFootage" 
-                               min="500" max="50000" value="3500" step="250">
-                        <div class="d-flex justify-content-between">
-                            <small>500 sq ft</small>
-                            <strong id="sqftDisplay">3,500 sq ft</strong>
-                            <small>50,000+ sq ft</small>
-                        </div>
-                    </div>
-
                     <!-- Service Type -->
                     <div class="calc-input">
                         <label class="form-label fw-bold">🏗️ Service Type</label>
@@ -255,8 +340,58 @@
                             <option value="education">🎓 Educational Facility</option>
                             <option value="food">🍽️ Food Service</option>
                             <option value="fitness">💪 Fitness Center</option>
-                            <option value="emergency">🚨 Emergency Service</option>
                         </select>
+                    </div>
+
+                    <!-- Square Footage Input (for non-residential) -->
+                    <div class="calc-input" id="sqftInput">
+                        <label class="form-label fw-bold">🏢 Facility Size (Square Feet)</label>
+                        <input type="range" class="form-range" id="squareFootage" 
+                               min="500" max="50000" value="3500" step="250">
+                        <div class="d-flex justify-content-between">
+                            <small>500 sq ft</small>
+                            <strong id="sqftDisplay">3,500 sq ft</strong>
+                            <small>50,000+ sq ft</small>
+                        </div>
+                    </div>
+
+                    <!-- Residential Size Selection -->
+                    <div class="calc-input" id="homeSize" style="display: none;">
+                        <label class="form-label fw-bold">🏠 Home Size</label>
+                        <select class="form-select" id="residentialSize">
+                            <option value="small">Small Home (Under 1,500 sq ft)</option>
+                            <option value="medium">Medium Home (1,500 - 3,000 sq ft)</option>
+                            <option value="large">Large Home (3,000 - 5,000 sq ft)</option>
+                            <option value="estate">Estate Home (Over 5,000 sq ft)</option>
+                        </select>
+                    </div>
+
+                    <!-- Product Line Selection -->
+                    <div class="calc-input">
+                        <label class="form-label fw-bold">🧪 Product Line Preference</label>
+                        <div class="product-line-selection">
+                            <div class="product-option selected" id="organicLine">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>USDA Certified Organic</strong>
+                                        <span class="organic-badge">USDA Organic</span>
+                                        <br><small class="text-muted">Perfect for residential, food service, childcare</small>
+                                    </div>
+                                    <div>Family Safe</div>
+                                </div>
+                            </div>
+                            
+                            <div class="product-option" id="premiumLine">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>EPA Premium Certified</strong>
+                                        <span class="premium-badge">EPA Premium</span>
+                                        <br><small class="text-muted">Engineered for healthcare, commercial, industrial</small>
+                                    </div>
+                                    <div class="text-primary fw-bold">Professional Grade</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Service Frequency -->
@@ -271,6 +406,17 @@
                         </select>
                     </div>
 
+                    <!-- Emergency Service Options -->
+                    <div class="calc-input">
+                        <label class="form-label fw-bold">🚨 Service Urgency</label>
+                        <select class="form-select" id="urgency">
+                            <option value="standard">Standard Service (5-7 days)</option>
+                            <option value="sameday">Same-Day Service (+25%)</option>
+                            <option value="weekend">Weekend/Holiday Service (+30%)</option>
+                            <option value="emergency">24/7 Emergency Service (+50%)</option>
+                        </select>
+                    </div>
+
                     <!-- Complexity Level -->
                     <div class="calc-input">
                         <label class="form-label fw-bold">⚙️ Facility Complexity</label>
@@ -278,6 +424,16 @@
                             <option value="standard">Standard Layout</option>
                             <option value="moderate">Moderate Complexity</option>
                             <option value="complex">High Complexity</option>
+                        </select>
+                    </div>
+
+                    <!-- Service Area -->
+                    <div class="calc-input">
+                        <label class="form-label fw-bold">📍 Distance from Salt Lake City</label>
+                        <select class="form-select" id="distance">
+                            <option value="0-25">Within 25 miles (No travel charge)</option>
+                            <option value="25-40">25-40 miles from SLC</option>
+                            <option value="40-60">40-60 miles from SLC</option>
                         </select>
                     </div>
 
@@ -298,20 +454,20 @@
                             <div class="subscription-option" id="monthlyContract">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <strong>Monthly Contract</strong>
-                                        <span class="subscription-badge">15% OFF</span>
-                                        <br><small class="text-muted">30-day cancellation notice</small>
+                                        <strong>Monthly Subscription</strong>
+                                        <span class="subscription-badge">$399-$1299/month</span>
+                                        <br><small class="text-muted">15% savings, 30-day cancellation</small>
                                     </div>
                                     <div class="text-success fw-bold">Save 15%</div>
                                 </div>
                             </div>
                             
-                            <div class="subscription-option" id="bimonthlyContract">
+                            <div class="subscription-option" id="quarterlyContract">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <strong>Bi-Monthly Contract</strong>
+                                        <strong>Quarterly Contract</strong>
                                         <span class="subscription-badge">10% OFF</span>
-                                        <br><small class="text-muted">Service every 2 months</small>
+                                        <br><small class="text-muted">Service every 3 months</small>
                                     </div>
                                     <div class="text-success fw-bold">Save 10%</div>
                                 </div>
@@ -330,22 +486,18 @@
                         </div>
                     </div>
 
-                    <!-- Additional Services -->
-                    <div class="calc-input">
-                        <label class="form-label fw-bold">➕ Additional Services</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="adhocFogging">
-                            <label class="form-check-label" for="adhocFogging">
-                                Additional adhoc backpack fogging requests - additional sqft can be calculated on site
-                            </label>
-                        </div>
-                    </div>
-
                     <!-- Service Radius Notice -->
                     <div class="service-radius-notice">
                         <h6 class="fw-bold mb-2">📍 Service Area Notice</h6>
-                        <p class="mb-1">This service quote is valid for up to a 60 mile radius of Salt Lake City, Utah.</p>
+                        <p class="mb-1">We serve up to a 60 mile radius from Salt Lake City, Utah.</p>
                         <small class="text-muted">Travel charges at $0.70 per mile apply beyond 25-mile radius.</small>
+                    </div>
+
+                    <!-- Emergency Service Notice -->
+                    <div class="emergency-section" id="emergencyNotice" style="display: none;">
+                        <h6 class="fw-bold mb-2">🚨 Emergency Service Available</h6>
+                        <p class="mb-1">We provide 24/7 emergency sanitization services for urgent situations.</p>
+                        <small class="text-muted">Call (801) 712-5663 for immediate emergency response.</small>
                     </div>
 
                     <!-- Dual Machine Notice -->
@@ -358,23 +510,27 @@
                 <div class="col-lg-6">
                     <!-- One-Time Service Results Section -->
                     <div class="calc-result">
-                        <h3 class="fw-bold mb-3">💰 One-Time Service Quote</h3>
-                        <div class="display-4 fw-bold mb-2" id="totalPrice">$620</div>
+                        <h3 class="fw-bold mb-3">💰 Service Quote</h3>
+                        <div class="display-4 fw-bold mb-2" id="totalPrice">$275</div>
                         <p class="fs-5 mb-3" id="priceFrequency">per service</p>
                         
                         <div class="price-breakdown">
                             <h5 class="fw-bold mb-3">📋 Breakdown</h5>
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Base Service:</span>
-                                <span id="basePrice">$570</span>
+                                <span id="basePrice">$250</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Complexity Adjustment:</span>
                                 <span id="complexityPrice">$0</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
+                                <span>Urgency Surcharge:</span>
+                                <span id="urgencyPrice">$0</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
                                 <span>Travel Costs:</span>
-                                <span id="travelPrice">$0</span>
+                                <span id="travelPrice">$25</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2" id="volumeDiscountRow" style="display: none;">
                                 <span>Volume Discount (20k+ sq ft):</span>
@@ -383,7 +539,7 @@
                             <hr class="border-light">
                             <div class="d-flex justify-content-between fw-bold fs-5">
                                 <span>Total Per Service:</span>
-                                <span id="breakdownTotal">$620</span>
+                                <span id="breakdownTotal">$275</span>
                             </div>
                         </div>
 
@@ -399,35 +555,35 @@
 
                     <!-- Subscription/Contract Results Section -->
                     <div class="subscription-section" id="subscriptionResults" style="display: none;">
-                        <h3 class="fw-bold mb-3">📅 Contract Pricing</h3>
-                        <div class="display-4 fw-bold mb-2" id="contractPrice">$527</div>
+                        <h3 class="fw-bold mb-3">📅 Subscription Pricing</h3>
+                        <div class="display-4 fw-bold mb-2" id="contractPrice">$399</div>
                         <p class="fs-5 mb-1" id="contractFrequency">per month</p>
-                        <p class="mb-3"><span class="savings-highlight" id="contractSavings">Save $93/month</span></p>
+                        <p class="mb-3"><span class="savings-highlight" id="contractSavings">Save $76/month</span></p>
                         
                         <div class="subscription-breakdown">
-                            <h5 class="fw-bold mb-3">📋 Contract Benefits</h5>
+                            <h5 class="fw-bold mb-3">📋 Subscription Benefits</h5>
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Service Price:</span>
-                                <span id="contractServicePrice">$620</span>
+                                <span id="contractServicePrice">$275</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
-                                <span>Contract Discount:</span>
-                                <span id="contractDiscountAmount">-$93</span>
+                                <span>Subscription Discount:</span>
+                                <span id="contractDiscountAmount">-$41</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2" id="annualBonusRow" style="display: none;">
                                 <span>Annual Bonus (2 free services):</span>
-                                <span id="annualBonusValue">$1,240 value</span>
+                                <span id="annualBonusValue">$550 value</span>
                             </div>
                             <hr class="border-light">
                             <div class="d-flex justify-content-between fw-bold fs-5">
-                                <span>Contract Price:</span>
-                                <span id="contractTotalPrice">$527</span>
+                                <span>Subscription Price:</span>
+                                <span id="contractTotalPrice">$399</span>
                             </div>
                         </div>
 
                         <div class="mt-4">
                             <button class="btn btn-light btn-lg me-2" onclick="requestContractQuote()">
-                                📋 Request Contract Quote
+                                📋 Request Subscription Quote
                             </button>
                             <button class="btn btn-outline-light btn-lg" onclick="callNow()">
                                 📞 Call (801) 712-5663
@@ -479,18 +635,19 @@
                     </div>
                 </div>
 
-                <!-- Contract Benefits - Full Width -->
+                <!-- Subscription Benefits - Full Width -->
                 <div class="allergen-info mt-4">
                     <div class="row">
                         <div class="col-lg-8">
-                            <h6 class="fw-bold mb-2">📝 Contract Benefits</h6>
-                            <p class="mb-2">Our service contracts provide significant value and peace of mind:</p>
+                            <h6 class="fw-bold mb-2">📝 Subscription Benefits</h6>
+                            <p class="mb-2">Our service subscriptions provide significant value and convenience:</p>
                             <ul class="mb-2">
-                                <li><strong>Monthly Contracts:</strong> 15% discount, 30-day cancellation notice, Net 30 payment terms</li>
-                                <li><strong>Bi-Monthly Contracts:</strong> 10% discount for service every 2 months</li>
-                                <li><strong>Annual Prepaid Contracts:</strong> 20% discount + 2 complimentary treatments (up to $1,240 value)</li>
+                                <li><strong>Monthly Subscriptions:</strong> $399-$1,299/month with 15% savings, automatic scheduling</li>
+                                <li><strong>Quarterly Contracts:</strong> 10% discount for service every 3 months</li>
+                                <li><strong>Annual Prepaid Contracts:</strong> 20% discount + 2 complimentary treatments</li>
                                 <li>Priority scheduling and dedicated account management</li>
-                                <li>Protection from price increases during contract term</li>
+                                <li>Protection from price increases during subscription term</li>
+                                <li>24/7 emergency service access for subscribers</li>
                             </ul>
                         </div>
                         <div class="col-lg-4 d-flex align-items-center">
@@ -501,21 +658,22 @@
                     </div>
                 </div>
 
-                <!-- Allergen Information - Full Width -->
+                <!-- Product Information -->
                 <div class="allergen-info mt-4">
                     <div class="row">
                         <div class="col-lg-8">
-                            <h6 class="fw-bold mb-2">🤧 Allergy & Pet Benefits</h6>
-                            <p class="mb-2">Our USDA Certified Organic HOCl service can help reduce allergens and create a healthier environment for:</p>
+                            <h6 class="fw-bold mb-2">🧪 Product Line Benefits</h6>
+                            <p class="mb-2">Choose the right product line for your specific needs:</p>
                             <ul class="mb-2">
-                                <li>Children with allergies and sensitivities</li>
-                                <li>Pet owners dealing with dander and odors</li>
-                                <li>Families seeking chemical-free sanitization</li>
+                                <li><strong>USDA Organic Line:</strong> Perfect for families, residential, food service, childcare facilities</li>
+                                <li><strong>EPA Premium Line:</strong> Engineered for healthcare, commercial, and industrial applications</li>
+                                <li>Both lines eliminate 99.9% of pathogens while remaining safe</li>
+                                <li>All products are EPA registered and food contact approved</li>
                             </ul>
                         </div>
                         <div class="col-lg-4 d-flex align-items-center">
-                            <a href="science-certifications.html" class="btn btn-outline-primary btn-sm text-decoration-none">
-                                📚 View Scientific Studies
+                            <a href="science-certifications.html" class="btn btn-outline-success btn-sm text-decoration-none">
+                                📚 View Certifications
                             </a>
                         </div>
                     </div>
@@ -538,31 +696,31 @@
                                 </h2>
                                 <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#calculatorFAQ">
                                     <div class="accordion-body">
-                                        Our calculator provides estimates based on industry standards and our actual service rates. Final pricing may vary based on site assessment, accessibility, and specific requirements. We guarantee all official quotes will be within 10% of calculator estimates.
+                                        Our calculator provides estimates based on industry standards and our current service rates. Final pricing may vary based on site assessment, accessibility, and specific requirements. We guarantee all official quotes will be within 10% of calculator estimates.
                                     </div>
                                 </div>
                             </div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                                        What are the benefits of service contracts?
+                                        What are subscription benefits?
                                     </button>
                                 </h2>
                                 <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#calculatorFAQ">
                                     <div class="accordion-body">
-                                        Service contracts provide significant savings (10-20% discount), priority scheduling, protection from price increases, Net 30 payment terms for commercial accounts, and dedicated account management. Annual contracts include 2 complimentary treatments worth up to $1,240.
+                                        Subscriptions range from $399-$1,299/month and provide 10-20% savings, priority scheduling, protection from price increases, automatic service scheduling, and 24/7 emergency service access. Annual prepaid subscriptions include 2 complimentary treatments.
                                     </div>
                                 </div>
                             </div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                                        Do you offer volume discounts?
+                                        Do you offer emergency services?
                                     </button>
                                 </h2>
                                 <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#calculatorFAQ">
                                     <div class="accordion-body">
-                                        Yes! We offer significant discounts for longer service commitments and larger facilities. Annual contracts receive up to 20% discount, and facilities over 20,000 sq ft qualify for volume pricing at $0.08 per sq ft.
+                                        Yes! We provide 24/7 emergency sanitization services (+50% surcharge), same-day service (+25%), and weekend/holiday service (+30%). Call (801) 712-5663 for immediate emergency response.
                                     </div>
                                 </div>
                             </div>
@@ -574,7 +732,7 @@
                                 </h2>
                                 <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#calculatorFAQ">
                                     <div class="accordion-body">
-                                        We serve a 60-mile radius from Salt Lake City. Travel charges of $0.70 per mile apply beyond our 25-mile base service area to cover fuel and transportation costs. This ensures fair pricing while maintaining service quality throughout Utah.
+                                        We serve a 60-mile radius from Salt Lake City. Travel charges of $0.70 per mile apply beyond our 25-mile base service area. This covers fuel and transportation costs while maintaining service quality throughout Utah.
                                     </div>
                                 </div>
                             </div>
@@ -637,7 +795,7 @@
                 </div>
                 <div class="col-md-4 text-center">
                     <div class="mb-3">
-                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGhElEQVR4nO2dTYgcRRTH/6+6Z2YTIyaQBBONHwRBQRFBEBEPKh5E8KQnD4KCBy8ePHjw4MGDB714EBHEk4KCB08ePAiCBw8ePHjw4MGDB0/iQRDEg4KCBxHBg+BBEBHfq+6Z7p7Z2Z3Z3Z3u6e7/D4qZ6uruql/Xq3r1Xr2qARFJgQAgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiCE="
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAACXBIWXMAAAsTAAALEwEAmpwYAAAGhElEQVR4nO2dTYgcRRTH/6+6Z2YTIyaQBBONHwRBQRFBEBEPKh5E8KQnD4KCBy8ePHjw4MGDB714EBHEk4KCB08ePAiCBw8ePHjw4MGDB0/iQRDEg4KCBxHBg+BBEBHfq+6Z7p7Z2Z3Z3Z3u6e7/D4qZ6uruql/Xq3r1Xr2qARFJgQAgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiIBIgIiASICIgEiAiCE="
                              alt="QR Code for Organic Hypo Solutions"
                              class="footer-qr-code"
                              title="Scan to visit organichyposolutions.com">
@@ -660,138 +818,154 @@
     <script>
         // Global state tracking
         let currentSubscription = 'payPerService';
+        let currentProductLine = 'organicLine';
         
-        // Pricing configuration - using the successful pattern from debug test
+        // Updated pricing configuration based on project requirements
         const PRICING = {
-            baseRates: {
-                commercial: 0.125,
-                residential: 0.15,
+            // Commercial rates: $0.08-0.13/sq ft
+            commercialRates: {
+                base: 0.10, // Mid-range base rate
+                volumeRate: 0.08, // 20k+ sq ft discount rate
+                minimum: 400
+            },
+            
+            // Residential rates: $150-$400
+            residentialRates: {
+                small: 175,    // Under 1,500 sq ft
+                medium: 275,   // 1,500-3,000 sq ft  
+                large: 350,    // 3,000-5,000 sq ft
+                estate: 400    // Over 5,000 sq ft
+            },
+            
+            // Other facility rates
+            facilityRates: {
                 healthcare: 0.14,
                 education: 0.12,
                 food: 0.135,
                 fitness: 0.13,
-                emergency: 0.25
+                commercial: 0.10
             },
-            volumeRate: 0.08,
-            frequencyMultipliers: {
-                monthly: 1.0,
-                biweekly: 1.8,
-                weekly: 3.5,
-                quarterly: 0.35,
-                onetime: 1.4
+            
+            // Emergency surcharges
+            urgencyMultipliers: {
+                standard: 1.0,
+                sameday: 1.25,    // +25%
+                weekend: 1.30,    // +30%
+                emergency: 1.50   // +50%
             },
-            complexityAdjustments: {
+            
+            // Complexity adjustments
+            complexityMultipliers: {
                 standard: 1.0,
                 moderate: 1.15,
                 complex: 1.3
             },
-            minimums: {
-                commercial: 450,
-                residential: 200,
-                healthcare: 500,
-                education: 400,
-                food: 400,
-                fitness: 350,
-                emergency: 600
+            
+            // Travel costs
+            travelRates: {
+                '0-25': 0,
+                '25-40': 35,  // Avg 32.5 miles * $0.70 * 2 ways = ~$45, simplified to $35
+                '40-60': 70   // Avg 50 miles * $0.70 * 2 ways = ~$70
             },
+            
+            // Subscription discounts and pricing
             subscriptionDiscounts: {
                 payPerService: 0,
-                monthlyContract: 0.15,
-                bimonthlyContract: 0.10,
-                annualContract: 0.20
+                monthlyContract: 0.15,    // 15% discount
+                quarterlyContract: 0.10,  // 10% discount  
+                annualContract: 0.20      // 20% discount
             },
-            travelRate: 0.70,
-            baseTravelRadius: 25
+            
+            // Subscription monthly ranges: $399-$1,299/month
+            subscriptionRanges: {
+                min: 399,
+                max: 1299
+            },
+            
+            // Product line multipliers
+            productMultipliers: {
+                organicLine: 1.0,
+                premiumLine: 1.1  // 10% premium for EPA line
+            }
         };
 
-        // Main calculator function - using the working pattern
+        // Main calculator function
         function updateCalculator() {
             try {
-                // Get input values
-                const sqft = parseInt(document.getElementById('squareFootage').value);
                 const serviceType = document.getElementById('serviceType').value;
-                const frequency = document.getElementById('frequency').value;
+                const frequency = document.getElementById('frequency') ? document.getElementById('frequency').value : 'onetime';
                 const complexity = document.getElementById('complexity').value;
+                const urgency = document.getElementById('urgency').value;
+                const distance = document.getElementById('distance').value;
                 
-                // Update square footage display
-                const sqftDisplay = document.getElementById('sqftDisplay');
-                if (sqftDisplay) {
-                    sqftDisplay.textContent = sqft.toLocaleString() + ' sq ft';
-                }
+                let basePrice = 0;
                 
-                // Handle dual machine notice for large facilities
-                const dualMachineNotice = document.getElementById('dualMachineNotice');
-                const volumeDiscountRow = document.getElementById('volumeDiscountRow');
-                
-                if (sqft > 20000) {
-                    if (dualMachineNotice) dualMachineNotice.style.display = 'block';
-                    if (volumeDiscountRow) volumeDiscountRow.style.display = 'flex';
+                // Calculate base price based on service type
+                if (serviceType === 'residential') {
+                    const homeSize = document.getElementById('residentialSize').value;
+                    basePrice = PRICING.residentialRates[homeSize];
                 } else {
-                    if (dualMachineNotice) dualMachineNotice.style.display = 'none';
-                    if (volumeDiscountRow) volumeDiscountRow.style.display = 'none';
+                    // Commercial and other facilities
+                    const sqft = parseInt(document.getElementById('squareFootage').value);
+                    
+                    // Update square footage display
+                    const sqftDisplay = document.getElementById('sqftDisplay');
+                    if (sqftDisplay) {
+                        sqftDisplay.textContent = sqft.toLocaleString() + ' sq ft';
+                    }
+                    
+                    let rate = PRICING.facilityRates[serviceType] || PRICING.commercialRates.base;
+                    
+                    // Apply volume discount for large facilities
+                    if (sqft > 20000) {
+                        rate = PRICING.commercialRates.volumeRate;
+                        document.getElementById('dualMachineNotice').style.display = 'block';
+                        document.getElementById('volumeDiscountRow').style.display = 'flex';
+                    } else {
+                        document.getElementById('dualMachineNotice').style.display = 'none';
+                        document.getElementById('volumeDiscountRow').style.display = 'none';
+                    }
+                    
+                    basePrice = Math.max(sqft * rate, PRICING.commercialRates.minimum);
                 }
                 
-                // Calculate base price
-                let baseRate;
-                if (sqft > 20000) {
-                    baseRate = PRICING.volumeRate;
-                } else {
-                    baseRate = PRICING.baseRates[serviceType];
-                }
+                // Apply complexity multiplier
+                const complexityMultiplier = PRICING.complexityMultipliers[complexity];
+                let adjustedPrice = basePrice * complexityMultiplier;
                 
-                let basePrice = sqft * baseRate;
-                const minimum = PRICING.minimums[serviceType];
-                basePrice = Math.max(basePrice, minimum);
+                // Apply product line multiplier
+                const productMultiplier = PRICING.productMultipliers[currentProductLine];
+                adjustedPrice *= productMultiplier;
                 
-                // Apply complexity adjustment
-                const complexityMultiplier = PRICING.complexityAdjustments[complexity];
-                basePrice *= complexityMultiplier;
+                // Apply urgency surcharge
+                const urgencyMultiplier = PRICING.urgencyMultipliers[urgency];
+                adjustedPrice *= urgencyMultiplier;
                 
-                // Apply dual machine cost for large facilities
-                if (sqft > 20000) {
-                    basePrice *= 2;
-                }
+                // Add travel costs
+                const travelCost = PRICING.travelRates[distance];
+                const totalPrice = adjustedPrice + travelCost;
                 
-                // Apply frequency multiplier
-                const frequencyMultiplier = PRICING.frequencyMultipliers[frequency];
-                let totalPrice = basePrice * frequencyMultiplier;
+                // Calculate individual components for display
+                const complexityAdjustment = basePrice * (complexityMultiplier - 1);
+                const urgencySurcharge = basePrice * complexityMultiplier * productMultiplier * (urgencyMultiplier - 1);
                 
-                // Calculate complexity adjustment for display
-                const complexityAdjustment = basePrice * (complexityMultiplier - 1) / complexityMultiplier;
-                
-                // Calculate travel costs (estimated)
-                const estimatedDistance = 30;
-                let travelCosts = 0;
-                if (estimatedDistance > PRICING.baseTravelRadius) {
-                    const extraMiles = estimatedDistance - PRICING.baseTravelRadius;
-                    travelCosts = extraMiles * PRICING.travelRate * frequencyMultiplier;
-                }
-                
-                totalPrice += travelCosts;
-                
-                // Calculate volume discount display
-                let volumeDiscountAmount = 0;
-                if (sqft > 20000) {
-                    const standardRate = PRICING.baseRates[serviceType];
-                    const savings = (standardRate - PRICING.volumeRate) * sqft * frequencyMultiplier;
-                    volumeDiscountAmount = savings;
-                }
-                
-                // Update all price displays
-                updateElement('basePrice', '$' + Math.round(basePrice * frequencyMultiplier).toLocaleString());
-                updateElement('complexityPrice', '$' + Math.round(complexityAdjustment * frequencyMultiplier).toLocaleString());
-                updateElement('travelPrice', '$' + Math.round(travelCosts).toLocaleString());
-                updateElement('volumeDiscount', '-$' + Math.round(volumeDiscountAmount).toLocaleString());
+                // Update price displays
+                updateElement('basePrice', '$' + Math.round(basePrice).toLocaleString());
+                updateElement('complexityPrice', '$' + Math.round(complexityAdjustment).toLocaleString());
+                updateElement('urgencyPrice', '$' + Math.round(urgencySurcharge).toLocaleString());
+                updateElement('travelPrice', '$' + travelCost.toLocaleString());
                 updateElement('totalPrice', '$' + Math.round(totalPrice).toLocaleString());
                 updateElement('breakdownTotal', '$' + Math.round(totalPrice).toLocaleString());
                 
-                // Update frequency text
-                const priceFrequencyElement = document.getElementById('priceFrequency');
-                if (priceFrequencyElement) {
-                    priceFrequencyElement.textContent = frequency === 'onetime' ? 'one-time service' : 'per ' + frequency.replace('ly', '').replace('time', '-time');
+                // Handle emergency service notice
+                const emergencyNotice = document.getElementById('emergencyNotice');
+                if (urgency === 'emergency' || urgency === 'sameday' || urgency === 'weekend') {
+                    if (emergencyNotice) emergencyNotice.style.display = 'block';
+                } else {
+                    if (emergencyNotice) emergencyNotice.style.display = 'none';
                 }
                 
-                // Handle subscription pricing
+                // Update subscription pricing
                 updateSubscriptionPricing(totalPrice);
                 
             } catch (error) {
@@ -808,7 +982,7 @@
         }
 
         // Handle subscription pricing display
-        function updateSubscriptionPricing(totalPrice) {
+        function updateSubscriptionPricing(baseServicePrice) {
             const subscriptionResults = document.getElementById('subscriptionResults');
             const annualBonusRow = document.getElementById('annualBonusRow');
 
@@ -817,32 +991,46 @@
                     subscriptionResults.style.display = 'block';
                 }
                 
-                // Calculate contract pricing
-                const discount = PRICING.subscriptionDiscounts[currentSubscription];
-                const contractPrice = totalPrice * (1 - discount);
-                const savings = totalPrice - contractPrice;
+                let subscriptionPrice;
+                
+                // Calculate subscription pricing based on service price and ranges
+                if (currentSubscription === 'monthlyContract') {
+                    // Monthly subscriptions: $399-$1,299 range based on service complexity
+                    const priceRatio = Math.min(baseServicePrice / 800, 1); // Normalize to 0-1
+                    subscriptionPrice = PRICING.subscriptionRanges.min + 
+                                       (priceRatio * (PRICING.subscriptionRanges.max - PRICING.subscriptionRanges.min));
+                    subscriptionPrice = Math.round(subscriptionPrice);
+                } else {
+                    // For quarterly/annual, apply discount to service price
+                    const discount = PRICING.subscriptionDiscounts[currentSubscription];
+                    subscriptionPrice = Math.round(baseServicePrice * (1 - discount));
+                }
+                
+                const savings = Math.round(baseServicePrice - subscriptionPrice);
 
                 // Update contract displays
-                updateElement('contractPrice', '$' + Math.round(contractPrice).toLocaleString());
-                updateElement('contractServicePrice', '$' + Math.round(totalPrice).toLocaleString());
-                updateElement('contractDiscountAmount', '-$' + Math.round(savings).toLocaleString());
-                updateElement('contractTotalPrice', '$' + Math.round(contractPrice).toLocaleString());
-                updateElement('contractSavings', 'Save $' + Math.round(savings).toLocaleString());
+                updateElement('contractPrice', '$' + subscriptionPrice.toLocaleString());
+                updateElement('contractServicePrice', '$' + Math.round(baseServicePrice).toLocaleString());
+                updateElement('contractDiscountAmount', '-$' + savings.toLocaleString());
+                updateElement('contractTotalPrice', '$' + subscriptionPrice.toLocaleString());
+                updateElement('contractSavings', 'Save $' + savings.toLocaleString());
 
                 // Handle contract frequency text
                 let contractFrequencyText = 'per service';
                 if (currentSubscription === 'monthlyContract') {
                     contractFrequencyText = 'per month';
-                } else if (currentSubscription === 'bimonthlyContract') {
-                    contractFrequencyText = 'per service (bi-monthly)';
+                } else if (currentSubscription === 'quarterlyContract') {
+                    contractFrequencyText = 'per service (quarterly rate)';
                 } else if (currentSubscription === 'annualContract') {
                     contractFrequencyText = 'per service (annual rate)';
                     if (annualBonusRow) {
                         annualBonusRow.style.display = 'flex';
-                        updateElement('annualBonusValue', '$' + Math.round(totalPrice * 2).toLocaleString() + ' value');
+                        updateElement('annualBonusValue', '$' + Math.round(baseServicePrice * 2).toLocaleString() + ' value');
                     }
-                } else {
-                    if (annualBonusRow) annualBonusRow.style.display = 'none';
+                } 
+
+                if (currentSubscription !== 'annualContract' && annualBonusRow) {
+                    annualBonusRow.style.display = 'none';
                 }
 
                 updateElement('contractFrequency', contractFrequencyText);
@@ -852,6 +1040,23 @@
                 }
                 if (annualBonusRow) annualBonusRow.style.display = 'none';
             }
+        }
+
+        // Handle service type change
+        function handleServiceTypeChange() {
+            const serviceType = document.getElementById('serviceType').value;
+            const sqftInput = document.getElementById('sqftInput');
+            const homeSize = document.getElementById('homeSize');
+            
+            if (serviceType === 'residential') {
+                if (sqftInput) sqftInput.style.display = 'none';
+                if (homeSize) homeSize.style.display = 'block';
+            } else {
+                if (sqftInput) sqftInput.style.display = 'block';
+                if (homeSize) homeSize.style.display = 'none';
+            }
+            
+            updateCalculator();
         }
 
         // Handle subscription selection
@@ -876,8 +1081,36 @@
             }
         }
 
+        // Handle product line selection
+        function selectProductLine(productLine) {
+            try {
+                currentProductLine = productLine;
+
+                // Update visual selection
+                document.querySelectorAll('.product-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+
+                const selectedElement = document.getElementById(productLine);
+                if (selectedElement) {
+                    selectedElement.classList.add('selected');
+                }
+
+                // Update calculator
+                updateCalculator();
+            } catch (error) {
+                console.error('Product line selection error:', error);
+            }
+        }
+
         // Event handlers
         function setupEventListeners() {
+            // Service type change handler
+            const serviceTypeSelect = document.getElementById('serviceType');
+            if (serviceTypeSelect) {
+                serviceTypeSelect.addEventListener('change', handleServiceTypeChange);
+            }
+
             // Slider events
             const slider = document.getElementById('squareFootage');
             if (slider) {
@@ -886,7 +1119,7 @@
             }
 
             // Dropdown events
-            const selects = ['serviceType', 'frequency', 'complexity'];
+            const selects = ['residentialSize', 'frequency', 'urgency', 'complexity', 'distance'];
             selects.forEach(id => {
                 const element = document.getElementById(id);
                 if (element) {
@@ -895,11 +1128,20 @@
             });
 
             // Subscription option events
-            const subscriptionOptions = ['payPerService', 'monthlyContract', 'bimonthlyContract', 'annualContract'];
+            const subscriptionOptions = ['payPerService', 'monthlyContract', 'quarterlyContract', 'annualContract'];
             subscriptionOptions.forEach(id => {
                 const element = document.getElementById(id);
                 if (element) {
                     element.addEventListener('click', () => selectSubscription(id));
+                }
+            });
+
+            // Product line option events
+            const productOptions = ['organicLine', 'premiumLine'];
+            productOptions.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('click', () => selectProductLine(id));
                 }
             });
         }
@@ -935,6 +1177,9 @@
             
             // Set up all event listeners
             setupEventListeners();
+            
+            // Initialize service type display
+            handleServiceTypeChange();
             
             // Run initial calculation
             setTimeout(() => {
