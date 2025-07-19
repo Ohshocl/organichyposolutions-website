@@ -1,1 +1,181 @@
-
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- USDA Green Gradient -->
+    <linearGradient id="usdaGreenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a5f2f;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#2d5016;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a5f2f;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Natural Beige Gradient -->
+    <linearGradient id="beigeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f7f3d0;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#f5f0a8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ede4a3;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Clean White -->
+    <linearGradient id="cleanWhite" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f8fafc;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Organic Pattern -->
+    <pattern id="organicPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="10" cy="10" r="1" fill="rgba(26,95,47,0.05)"/>
+    </pattern>
+    
+    <!-- Drop Shadow -->
+    <filter id="dropShadow">
+      <feDropShadow dx="3" dy="6" stdDeviation="4" flood-color="rgba(0,0,0,0.2)"/>
+    </filter>
+    
+    <!-- Inner Shadow -->
+    <filter id="innerShadow">
+      <feOffset dx="0" dy="2"/>
+      <feGaussianBlur stdDeviation="2" result="offset-blur"/>
+      <feFlood flood-color="rgba(0,0,0,0.1)"/>
+      <feComposite in2="offset-blur" operator="in"/>
+    </filter>
+  </defs>
+  
+  <!-- Outer Circle - Dark Green Border -->
+  <circle cx="200" cy="200" r="190" fill="url(#usdaGreenGradient)" filter="url(#dropShadow)"/>
+  
+  <!-- Inner Circle - Light Background -->
+  <circle cx="200" cy="200" r="170" fill="url(#beigeGradient)"/>
+  
+  <!-- Pattern Overlay -->
+  <circle cx="200" cy="200" r="170" fill="url(#organicPattern)"/>
+  
+  <!-- Arc Text Paths -->
+  <defs>
+    <path id="topArcLeft" d="M 80 160 A 120 120 0 0 1 180 100"/>
+    <path id="topArcRight" d="M 220 100 A 120 120 0 0 1 320 160"/>
+  </defs>
+  
+  <!-- USDA Text on Left Top Arc -->
+  <text font-family="Arial Black, sans-serif" font-size="26" font-weight="900" fill="url(#usdaGreenGradient)">
+    <textPath href="#topArcLeft" startOffset="50%" text-anchor="middle">
+      USDA
+    </textPath>
+  </text>
+  
+  <!-- ORGANIC Text on Right Top Arc -->
+  <text font-family="Arial Black, sans-serif" font-size="24" font-weight="900" fill="url(#usdaGreenGradient)">
+    <textPath href="#topArcRight" startOffset="50%" text-anchor="middle">
+      ORGANIC
+    </textPath>
+  </text>
+  
+  <!-- Central Star/Burst Pattern -->
+  <g transform="translate(200,200)">
+    <!-- Star Rays -->
+    <g stroke="url(#usdaGreenGradient)" stroke-width="3" fill="none">
+      <line x1="0" y1="-80" x2="0" y2="-60"/>
+      <line x1="24" y1="-76" x2="18" y2="-57"/>
+      <line x1="46" y1="-64" x2="35" y2="-48"/>
+      <line x1="64" y1="-46" x2="48" y2="-35"/>
+      <line x1="76" y1="-24" x2="57" y2="-18"/>
+      <line x1="80" y1="0" x2="60" y2="0"/>
+      <line x1="76" y1="24" x2="57" y2="18"/>
+      <line x1="64" y1="46" x2="48" y2="35"/>
+      <line x1="46" y1="64" x2="35" y2="48"/>
+      <line x1="24" y1="76" x2="18" y2="57"/>
+      <line x1="0" y1="80" x2="0" y2="60"/>
+      <line x1="-24" y1="76" x2="-18" y2="57"/>
+      <line x1="-46" y1="64" x2="-35" y2="48"/>
+      <line x1="-64" y1="46" x2="-48" y2="35"/>
+      <line x1="-76" y1="24" x2="-57" y2="18"/>
+      <line x1="-80" y1="0" x2="-60" y2="0"/>
+      <line x1="-76" y1="-24" x2="-57" y2="-18"/>
+      <line x1="-64" y1="-46" x2="-48" y2="-35"/>
+      <line x1="-46" y1="-64" x2="-35" y2="-48"/>
+      <line x1="-24" y1="-76" x2="-18" y2="-57"/>
+    </g>
+    
+    <!-- Central White Circle -->
+    <circle cx="0" cy="0" r="50" fill="url(#cleanWhite)" stroke="url(#usdaGreenGradient)" stroke-width="3"/>
+    
+    <!-- Organic Plant Symbol -->
+    <g transform="scale(0.9)">
+      <!-- Main Leaves -->
+      <path d="M-12,-15 Q-8,-25 0,-20 Q8,-15 5,-5 Q2,5 -5,2 Q-12,-8 -12,-15 Z" 
+            fill="#4ADE80"/>
+      <path d="M12,-15 Q16,-25 24,-20 Q32,-15 29,-5 Q26,5 19,2 Q12,-8 12,-15 Z" 
+            fill="#22C55E"/>
+      
+      <!-- Stem -->
+      <rect x="-1" y="-5" width="2" height="15" fill="url(#usdaGreenGradient)"/>
+      
+      <!-- Small accent leaves -->
+      <circle cx="-8" cy="-10" r="2" fill="#16a34a" opacity="0.8"/>
+      <circle cx="16" cy="-10" r="2" fill="#15803d" opacity="0.8"/>
+    </g>
+  </g>
+  
+  <!-- Certification Information - Better Spaced -->
+  <g transform="translate(200,280)">
+    <!-- Certificate Number Background -->
+    <rect x="-65" y="-10" width="130" height="20" fill="url(#usdaGreenGradient)" rx="10" ry="10"/>
+    <text x="0" y="2" text-anchor="middle" font-family="Arial, sans-serif" 
+          font-size="10" font-weight="bold" fill="#ffffff">
+      CERTIFICATE #8150019050
+    </text>
+  </g>
+  
+  <!-- Certifying Body -->
+  <text x="200" y="305" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="11" font-weight="600" fill="url(#usdaGreenGradient)">
+    Oregon Tilth Certified Organic
+  </text>
+  
+  <!-- NOP Compliance -->
+  <text x="200" y="320" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="9" font-weight="500" fill="#4b5563">
+    National Organic Program • 7 CFR Part 205
+  </text>
+  
+  <!-- Effective Date -->
+  <text x="200" y="335" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="8" font-weight="400" fill="#6b7280">
+    Effective: 4/26/2022 | Anniversary: 01/01/2026
+  </text>
+  
+  <!-- Verification -->
+  <text x="200" y="350" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="7" font-weight="400" fill="#9ca3af">
+    Verify at organic.ams.usda.gov
+  </text>
+  
+  <!-- Border Ring -->
+  <circle cx="200" cy="200" r="185" fill="none" stroke="url(#usdaGreenGradient)" 
+          stroke-width="2" stroke-dasharray="10,5" opacity="0.6"/>
+  
+  <!-- Corner Organic Indicators - Better Positioned -->
+  <g transform="translate(90,140)">
+    <circle cx="0" cy="0" r="6" fill="#4ADE80"/>
+    <path d="M-2,0 L0,2 L2,-1" stroke="#ffffff" stroke-width="1" fill="none" stroke-linecap="round"/>
+  </g>
+  
+  <g transform="translate(310,140)">
+    <circle cx="0" cy="0" r="6" fill="#22C55E"/>
+    <path d="M-2,0 L0,2 L2,-1" stroke="#ffffff" stroke-width="1" fill="none" stroke-linecap="round"/>
+  </g>
+  
+  <g transform="translate(90,260)">
+    <circle cx="0" cy="0" r="6" fill="#16a34a"/>
+    <path d="M-2,0 L0,2 L2,-1" stroke="#ffffff" stroke-width="1" fill="none" stroke-linecap="round"/>
+  </g>
+  
+  <g transform="translate(310,260)">
+    <circle cx="0" cy="0" r="6" fill="#15803d"/>
+    <path d="M-2,0 L0,2 L2,-1" stroke="#ffffff" stroke-width="1" fill="none" stroke-linecap="round"/>
+  </g>
+  
+  <!-- OHS Branding (Very Subtle) -->
+  <text x="395" y="395" text-anchor="end" font-family="Arial, sans-serif" 
+        font-size="6" fill="rgba(26,95,47,0.2)">
+    organichyposolutions.com
+  </text>
+</svg>
