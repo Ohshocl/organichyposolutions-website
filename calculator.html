@@ -141,6 +141,43 @@
             font-weight: normal;
         }
 
+        /* Contract toggle container */
+        .contract-toggle-container {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            border: 2px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+        }
+
+        .contract-toggle-container .btn-outline-light {
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            transition: all 0.3s ease;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .contract-toggle-container .btn-outline-light:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255,255,255,0.2);
+        }
+
+        .contract-toggle-container .btn-check:checked + .btn-outline-light {
+            background: rgba(255,255,255,0.2);
+            border-color: white;
+            box-shadow: 0 6px 20px rgba(255,255,255,0.3);
+            transform: translateY(-3px);
+        }
+
+        .contract-toggle-container .badge {
+            font-size: 0.75rem;
+            margin: 3px 0;
+        }
+
         /* Calculator specific styles */
         .calculator-section {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
@@ -455,12 +492,6 @@
                     <div class="calc-input">
                         <label class="form-label fw-bold">➕ Additional Services</label>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="sameDay" onchange="updateCalculator()">
-                            <label class="form-check-label" for="sameDay">
-                                Same-Day Service (+25% surcharge)
-                            </label>
-                        </div>
-                        <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="weekend" onchange="updateCalculator()">
                             <label class="form-check-label" for="weekend">
                                 Weekend Service (+30% surcharge)
@@ -471,6 +502,64 @@
                             <label class="form-check-label" for="offHours">
                                 After-Hours Service (+15-20% surcharge)
                             </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="holiday" onchange="updateCalculator()">
+                            <label class="form-check-label" for="holiday">
+                                Holiday Service (+30% surcharge)
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Contract Options -->
+                    <div class="calc-input">
+                        <label class="form-label fw-bold">📋 Contract Options (Save up to 20%!)</label>
+                        <div class="contract-toggle-container p-4 rounded-3">
+                            <h6 class="text-center mb-3 text-white">💜 Choose Your Service Plan</h6>
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <input type="radio" class="btn-check" name="contractOption" id="payPerService" value="payPerService" checked onchange="updateCalculator()">
+                                    <label class="btn btn-outline-light btn-lg w-100" for="payPerService">
+                                        <strong>Pay Per Service</strong><br>
+                                        <small>Standard pricing - no commitment</small>
+                                    </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="radio" class="btn-check" name="contractOption" id="monthlyContract" value="monthly" onchange="updateCalculator()">
+                                    <label class="btn btn-outline-light btn-lg w-100" for="monthlyContract">
+                                        <strong>Monthly Contract</strong><br>
+                                        <span class="badge bg-success">15% OFF</span><br>
+                                        <small>6-month minimum</small>
+                                    </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="radio" class="btn-check" name="contractOption" id="bimonthlyContract" value="bimonthly" onchange="updateCalculator()">
+                                    <label class="btn btn-outline-light btn-lg w-100" for="bimonthlyContract">
+                                        <strong>Bi-Monthly Contract</strong><br>
+                                        <span class="badge bg-info">10% OFF</span><br>
+                                        <small>12-month minimum</small>
+                                    </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="radio" class="btn-check" name="contractOption" id="quarterlyContract" value="quarterly" onchange="updateCalculator()">
+                                    <label class="btn btn-outline-light btn-lg w-100" for="quarterlyContract">
+                                        <strong>Quarterly Contract</strong><br>
+                                        <span class="badge bg-warning">5% OFF</span><br>
+                                        <small>Seasonal service</small>
+                                    </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="radio" class="btn-check" name="contractOption" id="annualContract" value="annual" onchange="updateCalculator()">
+                                    <label class="btn btn-outline-light btn-lg w-100" for="annualContract">
+                                        <strong>Annual Prepaid</strong><br>
+                                        <span class="badge bg-danger">20% OFF</span><br>
+                                        <small>+ Bonus services</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="text-center mt-3">
+                                <small class="text-light">✨ Contract benefits: Priority scheduling, price protection, Net 30 payment terms, dedicated support</small>
+                            </div>
                         </div>
                     </div>
 
@@ -493,7 +582,7 @@
                     <div class="calc-result">
                         <h3 class="fw-bold mb-3">💰 Your Service Quote</h3>
                         <div class="display-4 fw-bold mb-2" id="totalPrice">$620</div>
-                        <p class="fs-5 mb-3" id="priceFrequency">per month</p>
+                        <p class="fs-5 mb-3" id="priceFrequency">per service</p>
                         
                         <div class="price-breakdown">
                             <h5 class="fw-bold mb-3">📋 Breakdown</h5>
@@ -513,14 +602,37 @@
                                 <span>Travel Costs:</span>
                                 <span id="travelPrice">$0</span>
                             </div>
-                            <div class="d-flex justify-content-between mb-2" id="discountRow" style="display: none;">
+                            <div class="d-flex justify-content-between mb-2" id="contractDiscountRow" style="display: none;">
                                 <span>Contract Discount:</span>
-                                <span id="discountAmount">-$0</span>
+                                <span id="contractDiscountAmount">-$0</span>
                             </div>
                             <hr class="border-light">
                             <div class="d-flex justify-content-between fw-bold fs-5">
-                                <span>Total <span id="breakdownFrequency">Monthly</span>:</span>
+                                <span>Total:</span>
                                 <span id="breakdownTotal">$620</span>
+                            </div>
+                        </div>
+
+                        <!-- Contract Comparison Section -->
+                        <div id="contractComparison" style="display: none;" class="mt-4 p-3 bg-light rounded">
+                            <h6 class="fw-bold text-dark mb-3">📊 Contract vs Pay-Per-Service Comparison</h6>
+                            <div class="row text-dark small">
+                                <div class="col-6">
+                                    <strong>Pay-Per-Service:</strong><br>
+                                    <span id="regularPrice">$620</span> per service
+                                </div>
+                                <div class="col-6">
+                                    <strong id="contractType">Monthly Contract:</strong><br>
+                                    <span id="contractPrice">$527</span> per service<br>
+                                    <small class="text-success">💰 Save <span id="contractSavings">$93</span> per service!</small>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-dark">
+                                <strong>Annual Savings:</strong> <span class="text-success" id="annualSavings">$1,116</span>
+                            </div>
+                            <div id="annualBonusRow" style="display: none;" class="mt-2 text-dark">
+                                <strong>🎁 Annual Contract Bonus:</strong> 2 complimentary treatments 
+                                <small class="text-info">(up to <span id="annualBonusValue">$1,240</span> value)</small>
                             </div>
                         </div>
 
@@ -531,6 +643,63 @@
                             <button class="btn btn-outline-light btn-lg" onclick="callNow()">
                                 📞 Call (801) 712-5663
                             </button>
+                        </div>
+                    </div>
+                <!-- Benefits of Regular Fogging Section -->
+                <div class="mt-5">
+                    <h5 class="fw-bold mb-4 text-center">🌟 Benefits of Regular Professional Fogging</h5>
+                    <div class="row">
+                        <div class="col-lg-6 mb-4">
+                            <div class="bg-light p-4 rounded-3 h-100">
+                                <h6 class="fw-bold text-primary mb-3">💼 Business Benefits</h6>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i><strong>Reduced Employee Sick Days</strong> - Up to 40% fewer illness-related absences</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i><strong>Lower Insurance Costs</strong> - Many insurers offer discounts for regular sanitization</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i><strong>Customer Confidence</strong> - Visible commitment to health and safety</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i><strong>Compliance Documentation</strong> - Meet health department requirements</li>
+                                    <li class="mb-0"><i class="fas fa-check-circle text-success me-2"></i><strong>Enhanced Reputation</strong> - Stand out as a responsible business</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mb-4">
+                            <div class="bg-light p-4 rounded-3 h-100">
+                                <h6 class="fw-bold text-primary mb-3">🏠 Health Benefits</h6>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fas fa-shield-alt text-info me-2"></i><strong>Continuous Protection</strong> - 24/7 pathogen control between services</li>
+                                    <li class="mb-2"><i class="fas fa-shield-alt text-info me-2"></i><strong>Allergen Reduction</strong> - Regular removal of dust mites, pollen, and pet dander</li>
+                                    <li class="mb-2"><i class="fas fa-shield-alt text-info me-2"></i><strong>Odor Elimination</strong> - Neutralizes bacteria that cause unpleasant smells</li>
+                                    <li class="mb-2"><i class="fas fa-shield-alt text-info me-2"></i><strong>Mold Prevention</strong> - Stops mold and mildew before they spread</li>
+                                    <li class="mb-0"><i class="fas fa-shield-alt text-info me-2"></i><strong>Healthier Air Quality</strong> - Cleaner breathing environment for everyone</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Facts Section -->
+                    <div class="mt-4">
+                        <div class="bg-primary text-white p-4 rounded-3">
+                            <h6 class="fw-bold mb-3 text-center">⚡ Quick Facts About Professional Fogging</h6>
+                            <div class="row text-center">
+                                <div class="col-md-3 mb-3">
+                                    <div class="display-6 fw-bold">30sec</div>
+                                    <small>Kill time for most pathogens</small>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="display-6 fw-bold">99.9%</div>
+                                    <small>Elimination rate for bacteria & viruses</small>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="display-6 fw-bold">80x</div>
+                                    <small>More effective than bleach</small>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="display-6 fw-bold">0min</div>
+                                    <small>Downtime required after treatment</small>
+                                </div>
+                            </div>
+                            <div class="text-center mt-3">
+                                <small class="opacity-75">Professional hypochlorous acid fogging delivers hospital-grade results with family-safe ingredients</small>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -604,34 +773,46 @@
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                                        What contract discounts are available?
+                                        What are the benefits of service contracts?
                                     </button>
                                 </h2>
                                 <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#calculatorFAQ">
                                     <div class="accordion-body">
-                                        We offer Monthly Contracts (15% discount, 6-month minimum), Bi-Monthly Contracts (10% discount, 12-month minimum), and Annual Prepaid Programs (20% discount). Volume pricing of $0.08/sq ft applies to facilities over 20,000 sq ft.
+                                        Service contracts provide significant savings (5-20% discount), priority scheduling, protection from price increases, Net 30 payment terms for commercial accounts, and dedicated account management. Annual prepaid contracts include 2 complimentary treatments worth up to $1,240 value.
                                     </div>
                                 </div>
                             </div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                                        What additional charges apply?
+                                        What contract options are available?
                                     </button>
                                 </h2>
                                 <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#calculatorFAQ">
                                     <div class="accordion-body">
-                                        Same-day service: +25%, Weekend service: +30%, After-hours service: +15-20%, Travel beyond 25-mile radius: $0.70/mile. Emergency healthcare services may have additional priority scheduling fees.
+                                        Monthly Contracts (15% discount, 6-month minimum), Bi-Monthly Contracts (10% discount, 12-month minimum), Quarterly Contracts (5% discount), and Annual Prepaid Programs (20% discount with bonus services). All contracts include priority scheduling and dedicated support.
                                     </div>
                                 </div>
                             </div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
-                                        What's included in the service?
+                                        What additional charges apply?
                                     </button>
                                 </h2>
                                 <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#calculatorFAQ">
+                                    <div class="accordion-body">
+                                        Weekend service: +30%, After-hours service: +15-20%, Holiday service: +30%, Travel beyond 25-mile radius: $0.70/mile. Emergency healthcare services may have additional priority scheduling fees. We do not offer same-day service.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                        What's included in the service?
+                                    </button>
+                                </h2>
+                                <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#calculatorFAQ">
                                     <div class="accordion-body">
                                         All services include professional fogging with 250+ PPM concentration, 10-minute contact time, service documentation within 24 hours, and follow-up customer satisfaction confirmation within 48 hours. Compliance documentation included for healthcare and food service facilities.
                                     </div>
@@ -796,7 +977,7 @@
         // Updated pricing algorithm based on 2025 service price catalog
         const pricingRules = {
             baseRates: {
-                commercial: 0.10, // Updated: $0.10-$0.13 range, using $0.10 as base
+                commercial: 0.10, // $0.10-$0.13 range, using $0.10 as base
                 residential: 0.15, // Calculated from residential tier pricing
                 healthcare: 0.12, // Healthcare facilities get standard commercial rate
                 education: 0.11, // Educational facilities slight discount
@@ -813,22 +994,22 @@
             },
             frequencyMultipliers: {
                 monthly: 1.0,
-                bimonthly: 2.0, // Every 60 days
-                weekly: 4.0, // Weekly service
-                quarterly: 0.25, // Every 3 months
+                bimonthly: 1.0, // Individual service rate (every 60 days)
+                weekly: 1.0, // Individual service rate
+                quarterly: 1.0, // Individual service rate (every 3 months)
                 onetime: 1.4 // One-time premium
             },
             contractDiscounts: {
-                monthly: 0.15,    // 15% off monthly contracts
-                bimonthly: 0.10,  // 10% off bi-monthly contracts
-                weekly: 0,        // No discount for weekly
-                quarterly: 0,     // No discount for quarterly
-                onetime: 0        // No discount for one-time
+                payPerService: 0,   // No discount for pay-per-service
+                monthly: 0.15,      // 15% off monthly contracts
+                bimonthly: 0.10,    // 10% off bi-monthly contracts
+                quarterly: 0.05,    // 5% off quarterly contracts
+                annual: 0.20        // 20% off annual prepaid contracts
             },
             surcharges: {
-                sameDay: 0.25,    // +25% same-day service
-                weekend: 0.30,    // +30% weekend service
-                offHours: 0.175   // +17.5% average of 15-20% range
+                weekend: 0.30,      // +30% weekend service
+                offHours: 0.175,    // +17.5% average of 15-20% range
+                holiday: 0.30       // +30% holiday service
             },
             complexityAdjustments: {
                 standard: 1.0,
@@ -853,15 +1034,18 @@
             const serviceType = document.getElementById('serviceType').value;
             const frequency = document.getElementById('frequency').value;
             const complexity = document.getElementById('complexity').value;
-            const sameDay = document.getElementById('sameDay').checked;
             const weekend = document.getElementById('weekend').checked;
             const offHours = document.getElementById('offHours').checked;
+            const holiday = document.getElementById('holiday').checked;
+            
+            // Get contract option
+            const contractOption = document.querySelector('input[name="contractOption"]:checked').value;
             
             document.getElementById('sqftDisplay').textContent = sqft.toLocaleString() + ' sq ft';
             
             // Check for dual machine requirement and volume pricing
             const dualMachineNotice = document.getElementById('dualMachineNotice');
-            const discountRow = document.getElementById('discountRow');
+            const contractComparison = document.getElementById('contractComparison');
             
             if (sqft > 20000) {
                 dualMachineNotice.style.display = 'block';
@@ -898,60 +1082,114 @@
             
             // Calculate additional services surcharge
             let additionalMultiplier = 1.0;
-            if (sameDay) additionalMultiplier += pricingRules.surcharges.sameDay;
             if (weekend) additionalMultiplier += pricingRules.surcharges.weekend;
             if (offHours) additionalMultiplier += pricingRules.surcharges.offHours;
+            if (holiday) additionalMultiplier += pricingRules.surcharges.holiday;
             
             basePrice *= additionalMultiplier;
             
-            // Apply frequency multiplier
+            // Apply frequency multiplier (for display purposes)
             const frequencyMultiplier = pricingRules.frequencyMultipliers[frequency];
-            let totalPrice = basePrice * frequencyMultiplier;
-            
-            // Apply contract discount
-            const contractDiscount = pricingRules.contractDiscounts[frequency];
-            let discountAmount = 0;
-            if (contractDiscount > 0) {
-                discountAmount = totalPrice * contractDiscount;
-                totalPrice -= discountAmount;
-                discountRow.style.display = 'flex';
-            } else {
-                discountRow.style.display = 'none';
-            }
-            
-            // Calculate breakdown amounts for display
-            const complexityAdjustment = basePrice * (complexityMultiplier - 1) / (complexityMultiplier * additionalMultiplier);
-            const additionalServicesAdjustment = basePrice * (additionalMultiplier - 1) / additionalMultiplier;
+            let regularServicePrice = basePrice * frequencyMultiplier;
             
             // Travel costs (estimated)
             const estimatedDistance = 30;
             let travelCosts = 0;
             if (estimatedDistance > pricingRules.baseTravelRadius) {
                 const extraMiles = estimatedDistance - pricingRules.baseTravelRadius;
-                travelCosts = extraMiles * pricingRules.travelRate * frequencyMultiplier;
+                travelCosts = extraMiles * pricingRules.travelRate;
             }
             
-            totalPrice += travelCosts;
+            regularServicePrice += travelCosts;
+            
+            // Apply contract discount
+            const contractDiscount = pricingRules.contractDiscounts[contractOption];
+            let finalPrice = regularServicePrice;
+            let discountAmount = 0;
+            
+            if (contractDiscount > 0) {
+                discountAmount = regularServicePrice * contractDiscount;
+                finalPrice = regularServicePrice - discountAmount;
+                document.getElementById('contractDiscountRow').style.display = 'flex';
+                contractComparison.style.display = 'block';
+            } else {
+                document.getElementById('contractDiscountRow').style.display = 'none';
+                contractComparison.style.display = 'none';
+            }
+            
+            // Calculate breakdown amounts for display
+            const complexityAdjustment = basePrice * (complexityMultiplier - 1) / (complexityMultiplier * additionalMultiplier * frequencyMultiplier) * frequencyMultiplier;
+            const additionalServicesAdjustment = basePrice * (additionalMultiplier - 1) / additionalMultiplier;
             
             // Update display elements
-            const baseForDisplay = (basePrice / (complexityMultiplier * additionalMultiplier)) * frequencyMultiplier;
-            document.getElementById('basePrice').textContent = '$' + Math.round(baseForDisplay).toLocaleString();
-            document.getElementById('complexityPrice').textContent = '$' + Math.round(complexityAdjustment * frequencyMultiplier).toLocaleString();
-            document.getElementById('additionalPrice').textContent = '$' + Math.round(additionalServicesAdjustment * frequencyMultiplier).toLocaleString();
-            document.getElementById('travelPrice').textContent = '$' + Math.round(travelCosts).toLocaleString();
-            document.getElementById('discountAmount').textContent = '-$' + Math.round(discountAmount).toLocaleString();
+            const baseForDisplay = (basePrice / (complexityMultiplier * additionalMultiplier));
+            document.getElementById('basePrice').textContent = '
+</body>
+</html> + Math.round(baseForDisplay).toLocaleString();
+            document.getElementById('complexityPrice').textContent = '
+</body>
+</html> + Math.round(complexityAdjustment).toLocaleString();
+            document.getElementById('additionalPrice').textContent = '
+</body>
+</html> + Math.round(additionalServicesAdjustment).toLocaleString();
+            document.getElementById('travelPrice').textContent = '
+</body>
+</html> + Math.round(travelCosts).toLocaleString();
+            document.getElementById('contractDiscountAmount').textContent = '-
+</body>
+</html> + Math.round(discountAmount).toLocaleString();
             
-            let frequencyText = frequency.charAt(0).toUpperCase() + frequency.slice(1);
-            if (frequencyText === 'Onetime') frequencyText = 'One-Time';
-            if (frequencyText === 'Bimonthly') frequencyText = 'Bi-Monthly';
+            document.getElementById('totalPrice').textContent = '
+</body>
+</html> + Math.round(finalPrice).toLocaleString();
+            document.getElementById('priceFrequency').textContent = 'per service';
+            document.getElementById('breakdownTotal').textContent = '
+</body>
+</html> + Math.round(finalPrice).toLocaleString();
             
-            let frequencyDisplay = frequency === 'onetime' ? 'one-time service' : 'per ' + frequency.replace('ly', '').replace('time', '-time');
-            if (frequency === 'bimonthly') frequencyDisplay = 'per bi-monthly service';
-            
-            document.getElementById('totalPrice').textContent = '$' + Math.round(totalPrice).toLocaleString();
-            document.getElementById('priceFrequency').textContent = frequencyDisplay;
-            document.getElementById('breakdownFrequency').textContent = frequencyText;
-            document.getElementById('breakdownTotal').textContent = '$' + Math.round(totalPrice).toLocaleString();
+            // Update contract comparison section
+            if (contractDiscount > 0) {
+                const contractTypes = {
+                    monthly: 'Monthly Contract',
+                    bimonthly: 'Bi-Monthly Contract',
+                    quarterly: 'Quarterly Contract',
+                    annual: 'Annual Prepaid Contract'
+                };
+                
+                document.getElementById('regularPrice').textContent = '
+</body>
+</html> + Math.round(regularServicePrice).toLocaleString();
+                document.getElementById('contractType').textContent = contractTypes[contractOption] + ':';
+                document.getElementById('contractPrice').textContent = '
+</body>
+</html> + Math.round(finalPrice).toLocaleString();
+                document.getElementById('contractSavings').textContent = '
+</body>
+</html> + Math.round(discountAmount).toLocaleString();
+                
+                // Calculate annual savings based on frequency
+                let servicesPerYear = 1;
+                if (contractOption === 'monthly') servicesPerYear = 12;
+                else if (contractOption === 'bimonthly') servicesPerYear = 6;
+                else if (contractOption === 'quarterly') servicesPerYear = 4;
+                else if (contractOption === 'annual') servicesPerYear = 12; // Assuming monthly frequency for annual
+                
+                const annualSavings = discountAmount * servicesPerYear;
+                document.getElementById('annualSavings').textContent = '
+</body>
+</html> + Math.round(annualSavings).toLocaleString();
+                
+                // Show annual bonus for annual contracts
+                const annualBonusRow = document.getElementById('annualBonusRow');
+                if (contractOption === 'annual') {
+                    annualBonusRow.style.display = 'block';
+                    document.getElementById('annualBonusValue').textContent = '
+</body>
+</html> + Math.round(regularServicePrice * 2).toLocaleString();
+                } else {
+                    annualBonusRow.style.display = 'none';
+                }
+            }
         }
 
         function requestQuote() {
