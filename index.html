@@ -72,6 +72,8 @@
             --ohs-premium-gold: #f59e0b;
             --ohs-light-gray: #f8f9fa;
             --ohs-dark-gray: #6c757d;
+        }
+
         .navbar-brand {
             color: var(--ohs-primary-blue) !important;
             font-size: 1.5rem;
@@ -82,11 +84,19 @@
         .promo-banner {
             background: linear-gradient(90deg, #dc2626 0%, #ef4444 50%, #dc2626 100%);
             color: white;
-            padding: 8px 0;
+            padding: 8px 16px;
             font-weight: 600;
             font-size: 0.9rem;
             position: relative;
             overflow: hidden;
+            transition: transform 0.3s ease;
+            border-radius: 8px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .promo-banner.hidden {
+            transform: translateY(-100%);
         }
 
         .promo-banner::before {
@@ -168,12 +178,6 @@
 
         .btn-buy-now:hover::before {
             left: 100%;
-        }
-
-        .navbar-brand {
-            color: var(--ohs-primary-blue) !important;
-            font-size: 1.5rem;
-            font-weight: bold;
         }
 
         .hero-section {
@@ -497,15 +501,15 @@
 </head>
 <body>
     <!-- Promotional Banner -->
-    <div class="promo-banner text-center" id="promoBanner">
+    <div class="text-center py-2" id="promoBanner">
         <div class="container">
-            <div class="d-flex justify-content-center align-items-center">
+            <div class="promo-banner d-flex justify-content-center align-items-center position-relative">
                 <div class="text-center">
                     <span class="promo-text">
                         🚚 <strong>FREE SHIPPING</strong> | 💰 <strong>BULK DISCOUNTS</strong> available
                     </span>
                 </div>
-                <button class="promo-close ms-3" onclick="closeBanner()" aria-label="Close banner">
+                <button class="promo-close position-absolute end-0 me-2" onclick="closeBanner()" aria-label="Close banner">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -651,7 +655,7 @@
                             <li><a class="dropdown-item" href="auth/register.html">
                                 <i class="fas fa-user-plus"></i> Register
                                 <span class="badge bg-warning ms-1">Under Construction</span>
-                            </a></li>
+                            </li>
                         </ul>
                     </li>
                     
@@ -1226,16 +1230,17 @@
             });
         });
 
-        // Banner close functionality
+        // Banner close functionality - Fixed to work properly
         function closeBanner() {
             const banner = document.getElementById('promoBanner');
-            banner.style.transform = 'translateY(-100%)';
+            banner.classList.add('hidden');
+            
             setTimeout(() => {
                 banner.style.display = 'none';
             }, 300);
             
-            // Store in localStorage so it stays closed for the session
-            localStorage.setItem('promoBannerClosed', 'true');
+            // Store in localStorage for this session only (will be cleared when page reloads or browser session ends)
+            sessionStorage.setItem('promoBannerClosed', 'true');
             
             // Track banner close
             if (typeof gtag !== 'undefined') {
@@ -1246,14 +1251,16 @@
             }
         }
 
-        // Check if banner should be shown
+        // Check if banner should be shown - Modified to use sessionStorage instead of localStorage
         document.addEventListener('DOMContentLoaded', function() {
             const banner = document.getElementById('promoBanner');
-            if (localStorage.getItem('promoBannerClosed') === 'true') {
+            
+            // Check if banner was closed in this session
+            if (sessionStorage.getItem('promoBannerClosed') === 'true') {
                 banner.style.display = 'none';
             } else {
-                // Add transition for smooth appearance
-                banner.style.transition = 'transform 0.3s ease';
+                // Banner is visible by default, just ensure it has proper transition
+                banner.style.display = 'block';
             }
         });
 
