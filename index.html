@@ -201,31 +201,46 @@
             background: rgba(255,255,255,0.2);
         }
 
-        /* SMALL ONE-LINE Buy Now Button */
-        .btn-buy-now {
-            background: linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green));
-            border: none;
-            color: white;
-            font-weight: 600;
-            padding: 0.25rem 0.75rem; /* Much smaller padding */
-            border-radius: 15px; /* Less rounded */
+        /* FLOATING Buy Now Button */
+        .floating-buy-now {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            z-index: 1000;
             transition: all 0.3s ease;
-            box-shadow: 0 1px 4px rgba(74, 222, 128, 0.3);
+        }
+
+        .floating-buy-now.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-50%) translateX(100px);
+        }
+
+        .btn-floating-buy {
+            background: linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green));
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3);
+            transition: all 0.3s ease;
+            display: inline-block;
+            white-space: nowrap;
             position: relative;
             overflow: hidden;
-            font-size: 0.8rem; /* Smaller font */
-            text-decoration: none;
-            white-space: nowrap; /* Keep on one line */
         }
 
-        .btn-buy-now:hover {
+        .btn-floating-buy:hover {
             background: linear-gradient(135deg, var(--ohs-dark-green), var(--ohs-organic-green));
             color: white;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(74, 222, 128, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 222, 128, 0.4);
         }
 
-        .btn-buy-now::before {
+        .btn-floating-buy::before {
             content: '';
             position: absolute;
             top: 0;
@@ -236,21 +251,26 @@
             transition: left 0.5s ease;
         }
 
-        .btn-buy-now:hover::before {
+        .btn-floating-buy:hover::before {
             left: 100%;
+        }
+
+        /* Mobile adjustments for floating button */
+        @media (max-width: 768px) {
+            .floating-buy-now {
+                right: 15px;
+            }
+            
+            .btn-floating-buy {
+                padding: 10px 16px;
+                font-size: 0.85rem;
+            }
         }
 
         /* MOBILE RESPONSIVENESS */
         @media (max-width: 991.98px) {
             .navbar-nav .nav-link {
                 padding: 0.5rem 0.75rem !important;
-            }
-            
-            .btn-buy-now {
-                margin-top: 0.5rem;
-                display: inline-block;
-                width: 100%;
-                text-align: center;
             }
         }
 
@@ -1373,13 +1393,35 @@
             });
         });
 
-        // Buy Now button tracking
-        document.querySelectorAll('.btn-buy-now').forEach(btn => {
+        // Floating Buy Now Button - Hide when scrolled halfway
+        function handleFloatingButton() {
+            const floatingButton = document.getElementById('floatingBuyNow');
+            const scrollPosition = window.scrollY;
+            const pageHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const halfwayPoint = pageHeight / 2;
+
+            if (scrollPosition > halfwayPoint) {
+                floatingButton.classList.add('hidden');
+            } else {
+                floatingButton.classList.remove('hidden');
+            }
+        }
+
+        // Add scroll listener for floating button
+        window.addEventListener('scroll', handleFloatingButton);
+
+        // Initial check for floating button
+        document.addEventListener('DOMContentLoaded', function() {
+            handleFloatingButton();
+        });
+
+        // Buy Now button tracking (updated for floating button)
+        document.querySelectorAll('.btn-floating-buy').forEach(btn => {
             btn.addEventListener('click', function() {
                 if (typeof gtag !== 'undefined') {
                     gtag('event', 'click', {
                         'event_category': 'E-commerce',
-                        'event_label': 'Buy Now Button'
+                        'event_label': 'Floating Buy Now Button'
                     });
                 }
             });
