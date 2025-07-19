@@ -74,24 +74,24 @@
             --ohs-dark-gray: #6c757d;
         }
 
-        /* SLIM NAVBAR STYLING - Updated */
+        /* BLUE NAVBAR STYLING - Back to Original */
         .navbar {
-            background-color: var(--ohs-primary-blue) !important;
-            padding: 0.5rem 0; /* Reduced padding for slimmer look */
+            background-color: var(--ohs-primary-blue) !important; /* Back to blue */
+            padding: 0.5rem 0;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .navbar-brand {
             color: white !important;
-            font-size: 1.25rem; /* Slightly smaller */
+            font-size: 1.25rem;
             font-weight: bold;
-            padding: 0.25rem 0; /* Reduced padding */
+            padding: 0.25rem 0;
         }
 
         .navbar-nav .nav-link {
             color: white !important;
             font-weight: 500;
-            padding: 0.375rem 0.75rem !important; /* Reduced vertical padding */
+            padding: 0.375rem 0.75rem !important;
             margin: 0 0.25rem;
             border-radius: 4px;
             transition: all 0.2s ease;
@@ -200,20 +200,21 @@
             background: rgba(255,255,255,0.2);
         }
 
-        /* SLIM Buy Now Button */
+        /* SMALL ONE-LINE Buy Now Button */
         .btn-buy-now {
             background: linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green));
             border: none;
             color: white;
             font-weight: 600;
-            padding: 0.375rem 1rem; /* Much slimmer padding */
-            border-radius: 20px; /* Less rounded */
+            padding: 0.25rem 0.75rem; /* Much smaller padding */
+            border-radius: 15px; /* Less rounded */
             transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(74, 222, 128, 0.3);
+            box-shadow: 0 1px 4px rgba(74, 222, 128, 0.3);
             position: relative;
             overflow: hidden;
-            font-size: 0.9rem; /* Slightly smaller font */
+            font-size: 0.8rem; /* Smaller font */
             text-decoration: none;
+            white-space: nowrap; /* Keep on one line */
         }
 
         .btn-buy-now:hover {
@@ -260,7 +261,7 @@
             align-items: center;
         }
 
-        /* UNIQUE CERTIFICATION BADGES */
+        /* UNIQUE CERTIFICATION BADGES - CONSISTENT ALIGNMENT */
         .cert-badge {
             padding: 8px 16px;
             border-radius: 20px;
@@ -270,6 +271,10 @@
             font-size: 0.9em;
             transition: all 0.3s ease;
             border: 2px solid transparent;
+            vertical-align: middle; /* Ensures consistent alignment */
+            height: 40px; /* Fixed height for all badges */
+            line-height: 24px; /* Centers text vertically */
+            text-align: center;
         }
 
         .cert-badge:hover {
@@ -503,7 +508,7 @@
 
         .tooltip-content {
             position: absolute;
-            bottom: 120%;
+            top: 120%; /* Changed from bottom to top - shows below instead of above */
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0,0,0,0.95);
@@ -512,7 +517,7 @@
             border-radius: 12px;
             min-width: 320px;
             max-width: 400px;
-            z-index: 9999; /* Higher than navbar (which is typically 1030) */
+            z-index: 9999;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
@@ -525,17 +530,17 @@
         .tooltip-content::after {
             content: '';
             position: absolute;
-            top: 100%;
+            bottom: 100%; /* Arrow pointing up now */
             left: 50%;
             transform: translateX(-50%);
             border: 10px solid transparent;
-            border-top-color: rgba(0,0,0,0.95);
+            border-bottom-color: rgba(0,0,0,0.95); /* Arrow color changed */
         }
 
         .stat-item:hover .tooltip-content {
             opacity: 1;
             visibility: visible;
-            bottom: 110%;
+            top: 110%; /* Adjusted position */
         }
 
         .tooltip-title {
@@ -820,8 +825,8 @@
                         Salt Lake City and Utah.
                     </p>
                     
-                    <!-- Certification Badges - UNIQUE STYLING -->
-                    <div class="mb-4">
+                    <!-- Certification Badges - UNIQUE STYLING & ALIGNED -->
+                    <div class="mb-4 d-flex flex-wrap justify-content-center align-items-center gap-2">
                         <span class="cert-badge usda-organic">
                             <i class="fas fa-leaf me-1"></i>USDA Certified Organic
                         </span>
@@ -1205,7 +1210,7 @@
     <footer class="footer-section">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <!-- OHS Logo -->
                     <div class="d-flex align-items-center mb-3">
                         <svg width="60" height="60" viewBox="0 0 400 250" class="me-3">
@@ -1223,7 +1228,7 @@
                     <p class="text-light">Professional hypochlorous acid fogging services throughout Utah. USDA Certified Organic and EPA registered disinfectant solutions for commercial and residential properties.</p>
                     <p><small class="text-muted">Utah Business License #14565171-0160</small></p>
                 </div>
-                <div class="col-md-4 text-center">
+                <div class="col-md-3 text-center">
                     <h6 class="fw-bold mb-3">Quick Links</h6>
                     <div class="row">
                         <div class="col-6">
@@ -1244,18 +1249,23 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 text-md-end">
-                    <h6 class="fw-bold mb-3">Contact Information</h6>
-                    <p class="mb-1"><i class="fas fa-phone me-2"></i>(801) 712-5663</p>
-                    <p class="mb-1"><i class="fas fa-envelope me-2"></i>ohshocl@gmail.com</p>
-                    <p class="mb-3"><i class="fas fa-map-marker-alt me-2"></i>Serving All of Utah</p>
-                    
+                <div class="col-md-3 text-center">
+                    <!-- USDA Certification Image in Circle -->
                     <div class="mb-3">
-                        <span class="cert-badge usda-organic me-2">
-                            <i class="fas fa-leaf me-1"></i>USDA Certified
-                        </span>
+                        <img src="assets/images/certification/usda-organic-seal.png" 
+                             alt="USDA Certified Organic" 
+                             class="img-fluid rounded-circle"
+                             style="width: 80px; height: 80px; object-fit: contain; background: white; padding: 5px;"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <!-- Fallback if image doesn't load -->
+                        <div style="display: none;">
+                            <span class="cert-badge usda-organic" style="font-size: 0.8rem;">
+                                <i class="fas fa-leaf me-1"></i>USDA Certified Organic
+                            </span>
+                        </div>
                     </div>
                     
+                    <!-- Social Media Icons Below -->
                     <div class="social-links">
                         <a href="https://www.facebook.com/organichyposolutions" class="text-light me-3" target="_blank" aria-label="Facebook">
                             <i class="fab fa-facebook-f fa-lg"></i>
@@ -1270,6 +1280,12 @@
                             <i class="fas fa-envelope fa-lg"></i>
                         </a>
                     </div>
+                </div>
+                <div class="col-md-3 text-md-end">
+                    <h6 class="fw-bold mb-3">Contact Information</h6>
+                    <p class="mb-1"><i class="fas fa-phone me-2"></i>(801) 712-5663</p>
+                    <p class="mb-1"><i class="fas fa-envelope me-2"></i>ohshocl@gmail.com</p>
+                    <p class="mb-3"><i class="fas fa-map-marker-alt me-2"></i>Serving All of Utah</p>
                 </div>
             </div>
             
