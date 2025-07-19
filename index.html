@@ -401,40 +401,34 @@
         }
 
         .tooltip-content {
-            position: absolute;
-            top: 120%;
+            position: fixed;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            background: #000000; /* Solid black - no rgba */
+            transform: translate(-50%, -50%);
+            background: #000000;
             color: white;
-            padding: 20px;
-            border-radius: 12px;
-            min-width: 320px;
-            max-width: 400px;
-            z-index: 9999;
+            padding: 30px;
+            border-radius: 15px;
+            width: 450px;
+            max-width: 90vw;
+            z-index: 10000;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
-            font-size: 0.9em;
+            font-size: 0.95em;
             text-align: left;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-            border: 2px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            border: 3px solid rgba(255,255,255,0.2);
         }
 
+        /* Remove the arrow since it's centered */
         .tooltip-content::after {
-            content: '';
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 10px solid transparent;
-            border-bottom-color: #000000; /* Solid black arrow */
+            display: none;
         }
 
         .stat-item:hover .tooltip-content {
             opacity: 1;
             visibility: visible;
-            top: 110%; /* Adjusted position */
         }
 
         .tooltip-title {
