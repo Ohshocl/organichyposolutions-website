@@ -1,1 +1,85 @@
-
+<svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Main Gradient -->
+    <linearGradient id="heroGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2E5EAA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e3a8a;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Overlay Pattern Gradient -->
+    <linearGradient id="patternGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:rgba(255,255,255,0);stop-opacity:1" />
+      <stop offset="50%" style="stop-color:rgba(255,255,255,0.05);stop-opacity:1" />
+      <stop offset="100%" style="stop-color:rgba(255,255,255,0);stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Subtle Light Blue Accent -->
+    <radialGradient id="accentGradient" cx="80%" cy="20%" r="40%">
+      <stop offset="0%" style="stop-color:#7DD3FC;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#7DD3FC;stop-opacity:0" />
+    </radialGradient>
+    
+    <!-- Organic Glow -->
+    <radialGradient id="organicGlow" cx="20%" cy="80%" r="30%">
+      <stop offset="0%" style="stop-color:#4ADE80;stop-opacity:0.08" />
+      <stop offset="100%" style="stop-color:#4ADE80;stop-opacity:0" />
+    </radialGradient>
+    
+    <!-- Geometric Pattern -->
+    <pattern id="geometricPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+      <polygon points="50,0 100,50 50,100 0,50" fill="rgba(255,255,255,0.02)" opacity="0.5"/>
+      <circle cx="50" cy="50" r="2" fill="rgba(125,211,252,0.1)"/>
+    </pattern>
+    
+    <!-- Subtle Noise Texture -->
+    <filter id="noise">
+      <feTurbulence baseFrequency="0.9" numOctaves="1" result="noise"/>
+      <feColorMatrix in="noise" type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncA type="discrete" tableValues="0 0.02 0 0.04 0 0.02 0"/>
+      </feComponentTransfer>
+      <feComposite in2="SourceGraphic" operator="over"/>
+    </filter>
+  </defs>
+  
+  <!-- Base Gradient -->
+  <rect x="0" y="0" width="1920" height="1080" fill="url(#heroGradient)"/>
+  
+  <!-- Organic Glow Bottom Left -->
+  <rect x="0" y="0" width="1920" height="1080" fill="url(#organicGlow)"/>
+  
+  <!-- Light Blue Accent Top Right -->
+  <rect x="0" y="0" width="1920" height="1080" fill="url(#accentGradient)"/>
+  
+  <!-- Geometric Pattern Overlay -->
+  <rect x="0" y="0" width="1920" height="1080" fill="url(#geometricPattern)" opacity="0.3"/>
+  
+  <!-- Diagonal Light Streaks -->
+  <path d="M 0,200 L 400,0 L 450,0 L 50,200 Z" fill="url(#patternGradient)" opacity="0.8"/>
+  <path d="M 200,400 L 600,0 L 650,0 L 250,400 Z" fill="url(#patternGradient)" opacity="0.6"/>
+  <path d="M 800,300 L 1200,0 L 1250,0 L 850,300 Z" fill="url(#patternGradient)" opacity="0.4"/>
+  <path d="M 1400,500 L 1800,100 L 1850,100 L 1450,500 Z" fill="url(#patternGradient)" opacity="0.5"/>
+  
+  <!-- Bottom Right Organic Shape -->
+  <path d="M 1500,800 Q 1700,750 1850,850 Q 1900,950 1800,1080 L 1920,1080 L 1920,750 Q 1750,700 1500,800 Z" 
+        fill="rgba(77,222,128,0.05)" opacity="0.7"/>
+  
+  <!-- Top Left Accent Shape -->
+  <path d="M 0,0 Q 200,100 300,0 L 0,0 Z" fill="rgba(125,211,252,0.08)" opacity="0.9"/>
+  
+  <!-- Professional Grid Lines (Very Subtle) -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#grid)" opacity="0.3"/>
+  
+  <!-- Subtle Texture -->
+  <rect x="0" y="0" width="1920" height="1080" filter="url(#noise)" opacity="0.15"/>
+  
+  <!-- Final Overlay for Depth -->
+  <rect x="0" y="0" width="1920" height="1080" 
+        fill="linear-gradient(135deg, rgba(46,94,170,0.1) 0%, rgba(30,58,138,0.2) 100%)" 
+        opacity="0.6"/>
+</svg>
