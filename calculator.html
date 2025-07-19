@@ -379,7 +379,7 @@
                     <!-- Service Type -->
                     <div class="calc-input">
                         <label class="form-label fw-bold">🏗️ Service Type</label>
-                        <select class="form-select" id="serviceType">
+                        <select class="form-select" id="serviceType" onchange="handleServiceTypeChange();">
                             <option value="commercial">🏢 Commercial Facility</option>
                             <option value="residential">🏠 Residential Property</option>
                             <option value="healthcare">🏥 Healthcare Facility</option>
@@ -393,7 +393,9 @@
                     <div class="calc-input" id="sqftInput">
                         <label class="form-label fw-bold">🏢 Facility Size (Square Feet)</label>
                         <input type="range" class="form-range" id="squareFootage" 
-                               min="500" max="50000" value="3500" step="250">
+                               min="500" max="50000" value="3500" step="250"
+                               oninput="updateCalculator();"
+                               onchange="updateCalculator();">
                         <div class="d-flex justify-content-between">
                             <small>500 sq ft</small>
                             <strong id="sqftDisplay">3,500 sq ft</strong>
@@ -404,7 +406,7 @@
                     <!-- Residential Size Selection -->
                     <div class="calc-input" id="homeSize" style="display: none;">
                         <label class="form-label fw-bold">🏠 Home Size</label>
-                        <select class="form-select" id="residentialSize">
+                        <select class="form-select" id="residentialSize" onchange="updateCalculator();">
                             <option value="small">Small Home (Under 1,500 sq ft)</option>
                             <option value="medium">Medium Home (1,500 - 3,000 sq ft)</option>
                             <option value="large">Large Home (3,000 - 5,000 sq ft)</option>
@@ -443,7 +445,7 @@
                     <!-- Service Frequency -->
                     <div class="calc-input">
                         <label class="form-label fw-bold">📅 Service Frequency</label>
-                        <select class="form-select" id="frequency">
+                        <select class="form-select" id="frequency" onchange="updateCalculator();">
                             <option value="monthly">Monthly Service</option>
                             <option value="biweekly">Bi-Weekly Service</option>
                             <option value="weekly">Weekly Service</option>
@@ -455,7 +457,7 @@
                     <!-- Service Scheduling -->
                     <div class="calc-input">
                         <label class="form-label fw-bold">📅 Service Scheduling</label>
-                        <select class="form-select" id="urgency">
+                        <select class="form-select" id="urgency" onchange="updateCalculator();">
                             <option value="standard">Standard Scheduling (5-7 business days)</option>
                             <option value="priority">Priority Scheduling (2-4 business days, +15%)</option>
                             <option value="expedited">Expedited Service (1-2 business days, +25%)</option>
@@ -466,7 +468,7 @@
                     <!-- Complexity Level -->
                     <div class="calc-input">
                         <label class="form-label fw-bold">⚙️ Facility Complexity</label>
-                        <select class="form-select" id="complexity">
+                        <select class="form-select" id="complexity" onchange="updateCalculator();">
                             <option value="standard">Standard Layout</option>
                             <option value="moderate">Moderate Complexity</option>
                             <option value="complex">High Complexity</option>
@@ -476,7 +478,7 @@
                     <!-- Service Area -->
                     <div class="calc-input">
                         <label class="form-label fw-bold">📍 Distance from Salt Lake City</label>
-                        <select class="form-select" id="distance">
+                        <select class="form-select" id="distance" onchange="updateCalculator();">
                             <option value="0-25">Within 25 miles (No travel charge)</option>
                             <option value="25-40">25-40 miles from SLC</option>
                             <option value="40-60">40-60 miles from SLC</option>
@@ -1200,49 +1202,11 @@
             }
         }
 
-        // Event handlers
+        // Event handlers - Simplified approach
         function setupEventListeners() {
-            // Service type change handler
-            const serviceTypeSelect = document.getElementById('serviceType');
-            if (serviceTypeSelect) {
-                serviceTypeSelect.addEventListener('change', handleServiceTypeChange);
-            }
-
-            // Slider events - Multiple event types to ensure it works
-            const slider = document.getElementById('squareFootage');
-            if (slider) {
-                // Update display and calculate on input (real-time)
-                slider.addEventListener('input', function() {
-                    const sqftDisplay = document.getElementById('sqftDisplay');
-                    if (sqftDisplay) {
-                        sqftDisplay.textContent = parseInt(this.value).toLocaleString() + ' sq ft';
-                    }
-                    updateCalculator();
-                });
-                
-                // Also update on change (when user releases)
-                slider.addEventListener('change', function() {
-                    const sqftDisplay = document.getElementById('sqftDisplay');
-                    if (sqftDisplay) {
-                        sqftDisplay.textContent = parseInt(this.value).toLocaleString() + ' sq ft';
-                    }
-                    updateCalculator();
-                });
-                
-                // Also handle mouseup and touchend for mobile
-                slider.addEventListener('mouseup', updateCalculator);
-                slider.addEventListener('touchend', updateCalculator);
-            }
-
-            // Dropdown events
-            const selects = ['residentialSize', 'frequency', 'urgency', 'complexity', 'distance'];
-            selects.forEach(id => {
-                const element = document.getElementById(id);
-                if (element) {
-                    element.addEventListener('change', updateCalculator);
-                }
-            });
-
+            // Note: Most events are now handled with inline onchange/oninput handlers
+            // This function handles only the clickable elements that need JavaScript
+            
             // Subscription option events
             const subscriptionOptions = ['payPerService', 'monthlyContract', 'quarterlyContract', 'annualContract'];
             subscriptionOptions.forEach(id => {
