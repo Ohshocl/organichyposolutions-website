@@ -406,15 +406,15 @@
                         </select>
                     </div>
 
-                    <!-- Emergency Service Options -->
+                    <!-- Service Scheduling -->
                     <div class="calc-input">
-                        <label class="form-label fw-bold">🚨 Service Urgency</label>
+                        <label class="form-label fw-bold">📅 Service Scheduling</label>
                         <select class="form-select" id="urgency">
-                            <option value="standard">Standard Service (5-7 days)</option>
-                            <option value="sameday">Same-Day Service (+25%)</option>
-                            <option value="weekend">Weekend/Holiday Service (+30%)</option>
-                            <option value="emergency">24/7 Emergency Service (+50%)</option>
+                            <option value="standard">Standard Scheduling (5-7 business days)</option>
+                            <option value="priority">Priority Scheduling (2-4 business days, +15%)</option>
+                            <option value="expedited">Expedited Service (1-2 business days, +25%)</option>
                         </select>
+                        <small class="text-muted">Minimum 1 business day required for scheduling assessment</small>
                     </div>
 
                     <!-- Complexity Level -->
@@ -486,6 +486,13 @@
                         </div>
                     </div>
 
+                    <!-- Large Facility Discount Banner -->
+                    <div class="alert alert-success" id="volumeDiscountBanner" style="display: none;">
+                        <h6 class="fw-bold mb-2">🎉 Volume Discount Applied!</h6>
+                        <p class="mb-1">Your facility qualifies for our large facility discount!</p>
+                        <small>Facilities over 20,000 sq ft receive special volume pricing at $0.08/sq ft</small>
+                    </div>
+
                     <!-- Service Radius Notice -->
                     <div class="service-radius-notice">
                         <h6 class="fw-bold mb-2">📍 Service Area Notice</h6>
@@ -493,11 +500,11 @@
                         <small class="text-muted">Travel charges at $0.70 per mile apply beyond 25-mile radius.</small>
                     </div>
 
-                    <!-- Emergency Service Notice -->
-                    <div class="emergency-section" id="emergencyNotice" style="display: none;">
-                        <h6 class="fw-bold mb-2">🚨 Emergency Service Available</h6>
-                        <p class="mb-1">We provide 24/7 emergency sanitization services for urgent situations.</p>
-                        <small class="text-muted">Call (801) 712-5663 for immediate emergency response.</small>
+                    <!-- Service Scheduling Notice -->
+                    <div class="scheduling-info mt-3" style="background: #e8f4fd; border: 1px solid #b6e3ff; border-radius: 8px; padding: 15px;">
+                        <h6 class="fw-bold mb-2">📋 Scheduling Requirements</h6>
+                        <p class="mb-1">All services require minimum 1 business day advance notice for proper scheduling and site assessment coordination.</p>
+                        <small class="text-muted">Call (801) 712-5663 to discuss your specific scheduling needs.</small>
                     </div>
 
                     <!-- Dual Machine Notice -->
@@ -647,7 +654,7 @@
                                 <li><strong>Annual Prepaid Contracts:</strong> 20% discount + 2 complimentary treatments</li>
                                 <li>Priority scheduling and dedicated account management</li>
                                 <li>Protection from price increases during subscription term</li>
-                                <li>24/7 emergency service access for subscribers</li>
+                                <li>Advanced scheduling with 1 business day minimum notice</li>
                             </ul>
                         </div>
                         <div class="col-lg-4 d-flex align-items-center">
@@ -715,12 +722,12 @@
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                                        Do you offer emergency services?
+                                        What are your scheduling requirements?
                                     </button>
                                 </h2>
                                 <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#calculatorFAQ">
                                     <div class="accordion-body">
-                                        Yes! We provide 24/7 emergency sanitization services (+50% surcharge), same-day service (+25%), and weekend/holiday service (+30%). Call (801) 712-5663 for immediate emergency response.
+                                        All services require minimum 1 business day advance notice for proper scheduling and site assessment. We offer Standard (5-7 business days), Priority (2-4 business days, +15%), and Expedited (1-2 business days, +25%) scheduling options.
                                     </div>
                                 </div>
                             </div>
@@ -921,9 +928,11 @@
                         rate = PRICING.commercialRates.volumeRate;
                         document.getElementById('dualMachineNotice').style.display = 'block';
                         document.getElementById('volumeDiscountRow').style.display = 'flex';
+                        document.getElementById('volumeDiscountBanner').style.display = 'block';
                     } else {
                         document.getElementById('dualMachineNotice').style.display = 'none';
                         document.getElementById('volumeDiscountRow').style.display = 'none';
+                        document.getElementById('volumeDiscountBanner').style.display = 'none';
                     }
                     
                     basePrice = Math.max(sqft * rate, PRICING.commercialRates.minimum);
@@ -957,12 +966,18 @@
                 updateElement('totalPrice', '$' + Math.round(totalPrice).toLocaleString());
                 updateElement('breakdownTotal', '$' + Math.round(totalPrice).toLocaleString());
                 
-                // Handle emergency service notice
-                const emergencyNotice = document.getElementById('emergencyNotice');
-                if (urgency === 'emergency' || urgency === 'sameday' || urgency === 'weekend') {
-                    if (emergencyNotice) emergencyNotice.style.display = 'block';
+                // Handle scheduling notice display
+                const schedulingNotice = document.querySelector('.scheduling-info');
+                if (urgency === 'priority' || urgency === 'expedited') {
+                    if (schedulingNotice) {
+                        schedulingNotice.style.background = '#fff3cd';
+                        schedulingNotice.style.borderColor = '#ffeaa7';
+                    }
                 } else {
-                    if (emergencyNotice) emergencyNotice.style.display = 'none';
+                    if (schedulingNotice) {
+                        schedulingNotice.style.background = '#e8f4fd';
+                        schedulingNotice.style.borderColor = '#b6e3ff';
+                    }
                 }
                 
                 // Update subscription pricing
