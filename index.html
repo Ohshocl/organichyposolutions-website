@@ -140,67 +140,6 @@
             font-weight: normal;
         }
 
-        /* Promotional Banner - SLIM VERSION */
-        .promo-banner {
-            background: linear-gradient(90deg, #dc2626 0%, #ef4444 50%, #dc2626 100%);
-            color: white;
-            padding: 6px 0; /* Reduced from 8px */
-            font-weight: 600;
-            font-size: 0.85rem; /* Slightly smaller */
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease;
-        }
-
-        .promo-banner.hidden {
-            transform: translateY(-100%);
-        }
-
-        .promo-banner::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
-        .promo-text {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-        }
-
-        .promo-close {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1rem; /* Reduced size */
-            cursor: pointer;
-            padding: 0;
-            width: 20px; /* Reduced size */
-            height: 20px; /* Reduced size */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: background 0.3s ease;
-        }
-
-        .promo-close:hover {
-            background: rgba(255,255,255,0.2);
-        }
-
         /* MOBILE RESPONSIVENESS */
         @media (max-width: 991.98px) {
             .navbar-nav .nav-link {
@@ -1327,42 +1266,8 @@
             });
         });
 
-        // Banner close functionality - Fixed to work properly
-        function closeBanner() {
-            const banner = document.getElementById('promoBanner');
-            banner.classList.add('hidden');
-            
-            setTimeout(() => {
-                banner.style.display = 'none';
-            }, 300);
-            
-            // Store in sessionStorage for this session only
-            sessionStorage.setItem('promoBannerClosed', 'true');
-            
-            // Track banner close
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'banner_close', {
-                    'event_category': 'User Interaction',
-                    'event_label': 'Promotional Banner'
-                });
-            }
-        }
-
-        // Check if banner should be shown - Modified to use sessionStorage instead of localStorage
-        document.addEventListener('DOMContentLoaded', function() {
-            const banner = document.getElementById('promoBanner');
-            
-            // Check if banner was closed in this session
-            if (sessionStorage.getItem('promoBannerClosed') === 'true') {
-                banner.style.display = 'none';
-            } else {
-                // Banner is visible by default, just ensure it has proper transition
-                banner.style.display = 'block';
-            }
-        });
-
-        // Make closeBanner function globally available
-        window.closeBanner = closeBanner;
+        // Make closeBanner function globally available (no longer used but kept for compatibility)
+        window.closeBanner = function() {};
     </script>
 </body>
 </html>
