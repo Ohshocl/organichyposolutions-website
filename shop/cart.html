@@ -606,6 +606,9 @@
                                     <li><a class="dropdown-item" href="#" onclick="shareCart()">
                                         <i class="fas fa-share"></i> Share Cart
                                     </a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="addDemoProducts()">
+                                        <i class="fas fa-flask"></i> Add Demo Products
+                                    </a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item text-danger" href="#" onclick="clearCart()">
                                         <i class="fas fa-trash"></i> Clear Cart
@@ -615,105 +618,13 @@
                         </div>
                     </div>
 
-                    <!-- Cart Items Container -->
-                    <div id="cartItems">
-                        <!-- SHOPIFY-READY CART ITEMS WITH REAL PRODUCT DATA -->
-                        
-                        <!-- ORGANIC PRODUCT EXAMPLE -->
-                        <div class="cart-item" id="item-ohs-32oz-cleaner" data-shopify-handle="32oz-organic-ready-to-use-cleaner">
-                            <div class="row align-items-center">
-                                <div class="col-md-2">
-                                    <div class="product-image organic">
-                                        <i class="fas fa-spray-can"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 product-details">
-                                    <h6 class="mb-2 fw-bold">32oz Organic Ready-to-Use Cleaner</h6>
-                                    <p class="text-muted small mb-2">USDA Certified Organic hypochlorous acid (HOCl) cleaner for immediate use</p>
-                                    <div class="mb-2">
-                                        <span class="certification-badge usda-organic">USDA Organic</span>
-                                        <span class="certification-badge health-safety ms-1">Health & Safety</span>
-                                    </div>
-                                    <div class="small text-muted">
-                                        SKU: OHS-32OZ-CLEANER | Weight: 2.2 lbs<br>
-                                        <span class="badge shopify-ready">Shopify Product ID Ready</span>
-                                    </div>
-                                </div>
-                                <div class="col-md-2 text-center">
-                                    <div class="quantity-controls">
-                                        <button class="quantity-btn" onclick="updateQuantity('ohs-32oz-cleaner', 1)">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                        <input type="number" class="quantity-input" value="2" min="1" max="50"
-                                               onchange="updateQuantity('ohs-32oz-cleaner', this.value)">
-                                        <button class="quantity-btn" onclick="updateQuantity('ohs-32oz-cleaner', 3)">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="col-md-2 text-center">
-                                    <div class="price-display">$21.80</div>
-                                    <div class="subscription-price">Sub: $20.10</div>
-                                    <div class="wholesale-price">Wholesale: $16.13</div>
-                                </div>
-                                <div class="col-md-2 text-center">
-                                    <div class="price-display">$43.60</div>
-                                    <button class="btn btn-outline-danger btn-sm mt-2" onclick="removeItem('ohs-32oz-cleaner')">
-                                        <i class="fas fa-trash"></i> Remove
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- EPA PREMIUM PRODUCT EXAMPLE -->
-                        <div class="cart-item" id="item-premium-wipes" data-shopify-handle="professional-disinfecting-wipes">
-                            <div class="row align-items-center">
-                                <div class="col-md-2">
-                                    <div class="product-image premium">
-                                        <i class="fas fa-hand-paper"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 product-details">
-                                    <h6 class="mb-2 fw-bold">Professional Disinfecting Wipes</h6>
-                                    <p class="text-muted small mb-2">EPA registered professional-grade cleaning wipes for commercial use</p>
-                                    <div class="mb-2">
-                                        <span class="certification-badge epa-registered">EPA Registered</span>
-                                        <span class="certification-badge health-safety ms-1">Commercial Grade</span>
-                                    </div>
-                                    <div class="small text-muted">
-                                        SKU: HC-WIPES-PRO | Weight: 1.8 lbs<br>
-                                        <span class="badge shopify-ready">Premium Line Ready</span>
-                                    </div>
-                                </div>
-                                <div class="col-md-2 text-center">
-                                    <div class="quantity-controls">
-                                        <button class="quantity-btn" onclick="updateQuantity('premium-wipes', 0)" disabled>
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                        <input type="number" class="quantity-input" value="1" min="1" max="100"
-                                               onchange="updateQuantity('premium-wipes', this.value)">
-                                        <button class="quantity-btn" onclick="updateQuantity('premium-wipes', 2)">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="col-md-2 text-center">
-                                    <div class="price-display">$28.45</div>
-                                    <div class="subscription-price">Sub: $26.18</div>
-                                    <div class="wholesale-price">Bulk: $24.29</div>
-                                </div>
-                                <div class="col-md-2 text-center">
-                                    <div class="price-display">$28.45</div>
-                                    <button class="btn btn-outline-danger btn-sm mt-2" onclick="removeItem('premium-wipes')">
-                                        <i class="fas fa-trash"></i> Remove
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- Cart Items Container - EMPTY BY DEFAULT -->
+                    <div id="cartItems" style="display: none;">
+                        <!-- Dynamic cart items will be inserted here -->
                     </div>
 
-                    <!-- Empty Cart Message -->
-                    <div id="emptyCart" class="text-center py-5" style="display: none;">
+                    <!-- Empty Cart Message - SHOW BY DEFAULT -->
+                    <div id="emptyCart" class="text-center py-5">
                         <i class="fas fa-shopping-cart text-muted" style="font-size: 4rem;"></i>
                         <h4 class="text-muted mt-3">Your cart is empty</h4>
                         <p class="text-muted">Browse our USDA Certified Organic and EPA registered products!</p>
@@ -1120,19 +1031,31 @@
             }
         };
 
-        // SHOPIFY-READY CART OBJECT
-        let cart = [
-            {
-                productId: 'ohs-32oz-cleaner',
-                quantity: 2,
-                priceType: 'retail'
-            },
-            {
-                productId: 'premium-wipes',
-                quantity: 1,
-                priceType: 'retail'
-            }
-        ];
+        // SHOPIFY-READY CART OBJECT - EMPTY BY DEFAULT
+        let cart = [];
+
+        // TEST FUNCTIONS FOR ADDING DEMO PRODUCTS
+        function addDemoProducts() {
+            cart = [
+                {
+                    productId: 'ohs-32oz-cleaner',
+                    quantity: 2,
+                    priceType: 'retail'
+                },
+                {
+                    productId: 'premium-wipes',
+                    quantity: 1,
+                    priceType: 'retail'
+                }
+            ];
+            saveCart();
+            updateCartDisplay();
+            updatePricingSummary();
+            showNotification('Demo products added to cart!', 'success');
+        }
+
+        // Add demo button to Options dropdown for testing
+        window.addDemoProducts = addDemoProducts;
 
         // UPDATE CART BADGE WITH SHOPIFY INTEGRATION
         function updateCartBadge() {
@@ -1531,23 +1454,33 @@
 
         // INITIALIZE ON PAGE LOAD
         document.addEventListener('DOMContentLoaded', function() {
-            // Load cart from localStorage
+            // Load cart from localStorage only
             const storedCart = localStorage.getItem(CART_STORAGE_KEY);
             if (storedCart) {
-                cart = JSON.parse(storedCart);
+                try {
+                    const parsedCart = JSON.parse(storedCart);
+                    cart = parsedCart || [];
+                } catch (error) {
+                    console.log('Error parsing stored cart, starting with empty cart');
+                    cart = [];
+                }
+            } else {
+                // Start with completely empty cart
+                cart = [];
             }
             
+            // Update displays immediately
             updateCartDisplay();
             updatePricingSummary();
             updateCartBadge();
             
             // SHOPIFY INTEGRATION: Initialize Shopify Buy SDK
             if (typeof ShopifyBuy !== 'undefined') {
-                // Shopify Buy SDK initialization will go here
                 console.log('Initializing Shopify integration...');
             }
             
-            console.log('🛒 Shopify-ready cart initialized with product catalog:', PRODUCT_CATALOG);
+            console.log('🛒 Cart initialized - Starting empty as requested');
+            console.log('📦 Current cart items:', cart.length);
         });
 
         // PAGE FOCUS HANDLER
