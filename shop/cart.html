@@ -1034,8 +1034,116 @@
         // SHOPIFY-READY CART OBJECT - EMPTY BY DEFAULT
         let cart = [];
 
-        // TEST FUNCTIONS FOR ADDING DEMO PRODUCTS
-        function addDemoProducts() {
+        // FORCE TEST CART DATA - TEMPORARY DEBUG
+        function forceTestCart() {
+            console.log('🧪 Forcing test cart data...');
+            
+            // Clear any existing issues
+            cart = [];
+            
+            // Add test data in legacy format (like from products.html)
+            cart.push({
+                productId: 'test-product-1',
+                name: '32oz Organic Test Cleaner',
+                price: 21.80,
+                quantity: 2,
+                emoji: '🧴'
+            });
+            
+            cart.push({
+                productId: 'test-product-2', 
+                name: 'Professional Test Wipes',
+                price: 24.29,
+                quantity: 1,
+                emoji: '🧽'
+            });
+            
+            console.log('🧪 Test cart created:', cart);
+            
+            // Force save and update
+            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+            
+            // Force display update
+            setTimeout(() => {
+                console.log('🧪 Forcing display updates...');
+                updateCartDisplay();
+                updatePricingSummary(); 
+                updateCartBadge();
+                debugCart();
+            }, 100);
+        }
+        
+        // Expose for testing
+        window.forceTestCart = forceTestCart;
+        function debugCart() {
+            console.log('=== CART DEBUG START ===');
+            console.log('1. Cart array:', cart);
+            console.log('2. Cart length:', cart.length);
+            console.log('3. LocalStorage raw:', localStorage.getItem(CART_STORAGE_KEY));
+            console.log('4. LocalStorage parsed:', JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]'));
+            
+            // Check DOM elements
+            const cartContainer = document.getElementById('cartItems');
+            const emptyCart = document.getElementById('emptyCart');
+            console.log('5. Cart container exists:', !!cartContainer);
+            console.log('6. Empty cart element exists:', !!emptyCart);
+            console.log('7. Cart container display:', cartContainer?.style.display);
+            console.log('8. Empty cart display:', emptyCart?.style.display);
+            
+            // Check product catalog
+            console.log('9. Product catalog keys:', Object.keys(PRODUCT_CATALOG));
+            console.log('10. First cart item normalized:', cart.length > 0 ? normalizeCartItem(cart[0]) : 'No items');
+            
+            console.log('=== CART DEBUG END ===');
+        }
+
+        // Expose debug function
+        window.debugCart = debugCart;
+        function normalizeCartItem(item) {
+            // If it's already in the new format, return as-is
+            if (item.priceType && !item.name && !item.price) {
+                return item;
+            }
+            
+            // Convert legacy format from products.html to new format
+            if (item.name && item.price) {
+                // Try to map legacy items to catalog
+                const catalogKey = findCatalogKeyByName(item.name, item.price);
+                if (catalogKey) {
+                    return {
+                        productId: catalogKey,
+                        quantity: item.quantity || 1,
+                        priceType: 'retail'
+                    };
+                }
+                
+                // If not found in catalog, create temporary product entry
+                return {
+                    productId: item.productId || item.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase(),
+                    quantity: item.quantity || 1,
+                    priceType: 'retail',
+                    // Legacy data for display
+                    legacyData: {
+                        name: item.name,
+                        price: item.price,
+                        emoji: item.emoji
+                    }
+                };
+            }
+            
+            return item;
+        }
+
+        // FIND CATALOG KEY BY NAME AND PRICE
+        function findCatalogKeyByName(name, price) {
+            for (const [key, product] of Object.entries(PRODUCT_CATALOG)) {
+                if (product.name.includes(name.replace(/[^a-zA-Z0-9\s]/g, '')) || 
+                    Math.abs(product.pricing.retail - price) < 0.01) {
+                    return key;
+                }
+            }
+            return null;
+        }
             cart = [
                 {
                     productId: 'ohs-32oz-cleaner',
@@ -1057,15 +1165,11 @@
         // Add demo button to Options dropdown for testing
         window.addDemoProducts = addDemoProducts;
 
-        // UPDATE CART BADGE WITH SHOPIFY INTEGRATION - FIXED
+        // UPDATE CART BADGE - PRODUCTION VERSION
         function updateCartBadge() {
-            console.log('🏷️ Updating cart badge for cart:', cart);
-            
             try {
                 const cartData = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || JSON.stringify(cart));
                 const totalItems = cartData.reduce((sum, item) => sum + (item.quantity || 0), 0);
-                
-                console.log('🏷️ Total items in cart:', totalItems);
                 
                 // Update all badge locations
                 const badges = ['cartBadge', 'cartBadgeDropdown'];
@@ -1090,10 +1194,8 @@
                 // SHOPIFY INTEGRATION: Sync with Shopify cart
                 syncWithShopifyCart(cartData);
                 
-                console.log('🏷️ Cart badge updated successfully');
-                
             } catch (error) {
-                console.error('❌ Error updating cart badge:', error);
+                // Silent error handling for production
             }
         }
 
@@ -1216,24 +1318,19 @@
             updatePricingSummary();
         }
 
-        // ADD TO CART WITH SHOPIFY INTEGRATION - ENHANCED DEBUG
+        // ADD TO CART - PRODUCTION VERSION
         function addToCart(productId, quantity = 1) {
-            console.log(`🛒 Adding to cart: ${productId}, quantity: ${quantity}`);
-            
             const product = PRODUCT_CATALOG[productId];
             if (!product) {
-                console.error(`❌ Product ${productId} not found in catalog`);
-                showNotification(`Product ${productId} not found!`, 'warning');
+                showNotification(`Product not found!`, 'warning');
                 return;
             }
             
             const existingItem = cart.find(item => item.productId === productId);
             
             if (existingItem) {
-                console.log('🔄 Updating existing item quantity');
                 existingItem.quantity += quantity;
             } else {
-                console.log('➕ Adding new item to cart');
                 cart.push({
                     productId: productId,
                     quantity: quantity,
@@ -1241,15 +1338,35 @@
                 });
             }
             
-            console.log('🛒 Updated cart:', cart);
-            
             saveCart();
             updateCartDisplay();
             updatePricingSummary();
             
-            // Show success message
             showNotification(`Added ${product.name} to cart!`, 'success');
         }
+
+        // INTERNAL TEST FUNCTION - NOT VISIBLE TO CLIENTS
+        function addDemoProducts() {
+            cart = [
+                {
+                    productId: 'ohs-32oz-cleaner',
+                    quantity: 2,
+                    priceType: 'retail'
+                },
+                {
+                    productId: 'premium-wipes',
+                    quantity: 1,
+                    priceType: 'retail'
+                }
+            ];
+            saveCart();
+            updateCartDisplay();
+            updatePricingSummary();
+            showNotification('Demo products added!', 'success');
+        }
+
+        // Expose for internal testing only
+        window.addDemoProducts = addDemoProducts;
 
         // SAVE CART WITH SHOPIFY SYNC
         function saveCart() {
@@ -1484,48 +1601,34 @@
             }
         });
 
-        // INITIALIZE ON PAGE LOAD - ENHANCED DEBUG
+        // INITIALIZE ON PAGE LOAD - HANDLES BOTH FORMATS
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Cart page initializing...');
-            
-            // Load cart from localStorage only
+            // Load cart from localStorage
             const storedCart = localStorage.getItem(CART_STORAGE_KEY);
             if (storedCart) {
                 try {
                     const parsedCart = JSON.parse(storedCart);
                     cart = parsedCart || [];
-                    console.log('📦 Loaded cart from storage:', cart);
+                    
+                    // Normalize all cart items on load
+                    cart = cart.map(item => normalizeCartItem(item));
+                    
                 } catch (error) {
-                    console.log('❌ Error parsing stored cart, starting with empty cart');
                     cart = [];
                 }
             } else {
-                // Start with completely empty cart
                 cart = [];
-                console.log('📭 Starting with empty cart');
             }
             
-            console.log('🔍 Product catalog loaded:', Object.keys(PRODUCT_CATALOG));
-            console.log('📊 Initial cart state:', cart);
+            // Update displays
+            updateCartDisplay();
+            updatePricingSummary();
+            updateCartBadge();
             
-            // Update displays immediately
-            setTimeout(() => {
-                console.log('⚡ Updating displays...');
-                updateCartDisplay();
-                updatePricingSummary();
-                updateCartBadge();
-                console.log('✅ All displays updated');
-            }, 100);
-            
-            // SHOPIFY INTEGRATION: Initialize Shopify Buy SDK
+            // SHOPIFY INTEGRATION: Initialize when ready
             if (typeof ShopifyBuy !== 'undefined') {
-                console.log('🛍️ Initializing Shopify integration...');
-            } else {
-                console.log('⚠️ ShopifyBuy SDK not loaded - running in development mode');
+                // Shopify Buy SDK initialization
             }
-            
-            console.log('🎉 Cart initialized successfully!');
-            console.log('📋 Available functions:', Object.keys(window.OHSCart || {}));
         });
 
         // PAGE FOCUS HANDLER
