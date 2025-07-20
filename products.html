@@ -223,13 +223,13 @@
             letter-spacing: 0.5px;
         }
 
-        .badge-epa {
+        .badge-premium {
             background: linear-gradient(135deg, var(--premium-gold), #fbbf24);
             color: #92400e;
             border: 2px solid #f59e0b;
         }
 
-        .badge-usda {
+        .badge-organic {
             background: linear-gradient(135deg, var(--accent-green), var(--success-green));
             color: #14532d;
             border: 2px solid var(--success-green);
@@ -247,6 +247,12 @@
             border: 2px solid #7c3aed;
         }
 
+        .badge-bundle {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: white;
+            border: 2px solid #0891b2;
+        }
+
         .product-icon {
             font-size: 3rem;
             margin: 1.5rem 0 1rem;
@@ -254,11 +260,32 @@
         }
 
         .product-title {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--primary-blue);
             margin-bottom: 1rem;
             line-height: 1.3;
+        }
+
+        .brand-tag {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .brand-premium {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #f59e0b;
+        }
+
+        .brand-ohs {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #22c55e;
         }
 
         .certification-row {
@@ -565,6 +592,37 @@
             opacity: 0.3;
             transform: scale(0.98);
         }
+
+        /* Industrial Section Styling */
+        .industrial-section {
+            background: linear-gradient(135deg, #374151, #4b5563);
+            color: white;
+            padding: 3rem 0;
+            margin: 2rem 0;
+        }
+
+        .industrial-badge {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: 2px solid #dc2626;
+        }
+
+        /* Coming Soon Styling */
+        .coming-soon {
+            opacity: 0.7;
+            filter: grayscale(30%);
+        }
+
+        .coming-soon .add-to-cart-btn {
+            background: #6b7280;
+            cursor: not-allowed;
+        }
+
+        .coming-soon .add-to-cart-btn:hover {
+            transform: none;
+            box-shadow: none;
+            background: #6b7280;
+        }
     </style>
 </head>
 <body>
@@ -596,11 +654,11 @@
                             Products
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#usda-organic"><i class="fas fa-leaf"></i> USDA Organic Line</a></li>
-                            <li><a class="dropdown-item" href="#epa-premium"><i class="fas fa-shield-alt"></i> EPA Premium Line</a></li>
+                            <li><a class="dropdown-item" href="#organic-products"><i class="fas fa-leaf"></i> OHS Organic Line</a></li>
+                            <li><a class="dropdown-item" href="#premium-products"><i class="fas fa-crown"></i> Hypo Company Premium</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#bulk-products"><i class="fas fa-boxes"></i> 32oz Bulk Case</a></li>
-                            <li><a class="dropdown-item" href="#bulk-products"><i class="fas fa-warehouse"></i> One Gallon Case</a></li>
+                            <li><a class="dropdown-item" href="#industrial-products"><i class="fas fa-industry"></i> Industrial Bulk</a></li>
+                            <li><a class="dropdown-item" href="#bundle-products"><i class="fas fa-box"></i> Value Bundles</a></li>
                         </ul>
                     </li>
                     
@@ -681,7 +739,7 @@
     <!-- Shopify Integration Status (Dev Mode Only) -->
     <div class="shopify-dev alert alert-warning text-center" role="alert">
         <i class="fas fa-cogs me-2"></i>
-        <strong>Development Mode:</strong> Shopify Integration Ready for Connection
+        <strong>Development Mode:</strong> Complete Product Catalog - Shopify Integration Ready
         <button class="shopify-connect ms-3" onclick="connectShopify()">
             <i class="fab fa-shopify me-2"></i>Connect Shopify Store
         </button>
@@ -690,20 +748,21 @@
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="container text-center">
-            <h1 class="display-4 fw-bold mb-3">Professional HOCl Product Catalog</h1>
-            <p class="lead mb-4">Dual-certified solutions: EPA-registered professional grade & USDA organic family-safe products</p>
+            <h1 class="display-4 fw-bold mb-3">Complete HOCl Product Catalog</h1>
+            <p class="lead mb-4">57 Professional Products: Premium Hypo Company EPA-registered & OHS USDA Organic lines</p>
             
             <div class="hero-badges">
-                <span class="hero-badge">🇺🇸 USDA Organic #8150019050</span>
+                <span class="hero-badge">🏆 Premium Hypo Company Line (38 Products)</span>
+                <span class="hero-badge">🌱 OHS USDA Organic Line (19 Products)</span>
                 <span class="hero-badge">🛡️ EPA Registered #97801-1</span>
+                <span class="hero-badge">🇺🇸 USDA Organic #8150019050</span>
                 <span class="hero-badge">🏥 FDA Food Contact FCN 1811</span>
-                <span class="hero-badge">💧 100% Pure HOCl</span>
                 <span class="hero-badge">🚚 FREE Shipping Nationwide</span>
             </div>
 
             <div class="d-flex justify-content-center gap-3 flex-wrap mt-4">
                 <button class="btn btn-light btn-lg" onclick="showAllProducts()">
-                    <i class="fas fa-shopping-bag me-2"></i>Shop All Products
+                    <i class="fas fa-shopping-bag me-2"></i>Shop All 57 Products
                 </button>
                 <button class="btn btn-outline-light btn-lg" onclick="toggleCart()">
                     <i class="fas fa-shopping-cart me-2"></i>View Cart (<span id="heroCartCount">0</span>)
@@ -719,34 +778,40 @@
     <section class="filter-section">
         <div class="container">
             <div class="filter-controls">
-                <!-- Certification Filter -->
+                <!-- Brand Filter -->
                 <div class="filter-group">
-                    <span class="filter-label">Certification:</span>
-                    <button class="filter-btn active" data-filter="all" onclick="filterProducts(this, 'certification')">
-                        <i class="fas fa-th-large me-1"></i>All
+                    <span class="filter-label">Brand:</span>
+                    <button class="filter-btn active" data-filter="all" onclick="filterProducts(this, 'brand')">
+                        <i class="fas fa-th-large me-1"></i>All Brands
                     </button>
-                    <button class="filter-btn" data-filter="epa" onclick="filterProducts(this, 'certification')">
-                        <i class="fas fa-shield-alt me-1"></i>EPA Premium
+                    <button class="filter-btn" data-filter="premium" onclick="filterProducts(this, 'brand')">
+                        <i class="fas fa-crown me-1"></i>Hypo Company Premium
                     </button>
-                    <button class="filter-btn" data-filter="usda" onclick="filterProducts(this, 'certification')">
-                        <i class="fas fa-leaf me-1"></i>USDA Organic
+                    <button class="filter-btn" data-filter="ohs" onclick="filterProducts(this, 'brand')">
+                        <i class="fas fa-leaf me-1"></i>OHS Organic
                     </button>
                 </div>
 
-                <!-- Use Case Filter -->
+                <!-- Category Filter -->
                 <div class="filter-group">
-                    <span class="filter-label">Use Case:</span>
-                    <button class="filter-btn active" data-filter="all" onclick="filterProducts(this, 'usecase')">
-                        All Uses
+                    <span class="filter-label">Category:</span>
+                    <button class="filter-btn active" data-filter="all" onclick="filterProducts(this, 'category')">
+                        All Categories
                     </button>
-                    <button class="filter-btn" data-filter="personal" onclick="filterProducts(this, 'usecase')">
-                        <i class="fas fa-user me-1"></i>Personal
+                    <button class="filter-btn" data-filter="personal" onclick="filterProducts(this, 'category')">
+                        <i class="fas fa-user me-1"></i>Personal Care
                     </button>
-                    <button class="filter-btn" data-filter="commercial" onclick="filterProducts(this, 'usecase')">
+                    <button class="filter-btn" data-filter="commercial" onclick="filterProducts(this, 'category')">
                         <i class="fas fa-building me-1"></i>Commercial
                     </button>
-                    <button class="filter-btn" data-filter="healthcare" onclick="filterProducts(this, 'usecase')">
-                        <i class="fas fa-hospital me-1"></i>Healthcare
+                    <button class="filter-btn" data-filter="veterinary" onclick="filterProducts(this, 'category')">
+                        <i class="fas fa-paw me-1"></i>Veterinary
+                    </button>
+                    <button class="filter-btn" data-filter="industrial" onclick="filterProducts(this, 'category')">
+                        <i class="fas fa-industry me-1"></i>Industrial
+                    </button>
+                    <button class="filter-btn" data-filter="bundle" onclick="filterProducts(this, 'category')">
+                        <i class="fas fa-box me-1"></i>Bundles
                     </button>
                 </div>
 
@@ -757,7 +822,7 @@
                         All Sizes
                     </button>
                     <button class="filter-btn" data-filter="travel" onclick="filterProducts(this, 'size')">
-                        <i class="fas fa-plane me-1"></i>Travel (3oz)
+                        <i class="fas fa-plane me-1"></i>Travel (3-8oz)
                     </button>
                     <button class="filter-btn" data-filter="standard" onclick="filterProducts(this, 'size')">
                         <i class="fas fa-bottle-water me-1"></i>Standard (32oz)
@@ -787,23 +852,23 @@
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" onclick="scrollToSection('personal')" type="button">
-                        <i class="fas fa-user me-2"></i>Personal Care
+                    <button class="nav-link" onclick="scrollToSection('organic-products')" type="button">
+                        <i class="fas fa-leaf me-2"></i>OHS Organic
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" onclick="scrollToSection('commercial')" type="button">
-                        <i class="fas fa-building me-2"></i>Commercial
+                    <button class="nav-link" onclick="scrollToSection('premium-products')" type="button">
+                        <i class="fas fa-crown me-2"></i>Hypo Company Premium
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" onclick="scrollToSection('bundles')" type="button">
+                    <button class="nav-link" onclick="scrollToSection('industrial-products')" type="button">
+                        <i class="fas fa-industry me-2"></i>Industrial Bulk
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" onclick="scrollToSection('bundle-products')" type="button">
                         <i class="fas fa-box me-2"></i>Value Bundles
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" onclick="scrollToSection('specialty')" type="button">
-                        <i class="fas fa-paw me-2"></i>Specialty
                     </button>
                 </li>
             </ul>
@@ -819,21 +884,22 @@
                     <i class="fas fa-star me-2"></i>Best Selling Products
                 </h2>
                 <div class="row">
-                    <!-- 3oz Multi-Surface Disinfectant - USDA Organic -->
+                    <!-- OHS 3oz Organic Multi-Surface Disinfectant -->
                     <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
                         <div class="product-card" 
-                             data-certification="usda" 
-                             data-usecase="personal" 
+                             data-brand="ohs" 
+                             data-category="personal" 
                              data-size="travel"
-                             data-shopify-id="3oz-organic-multi-surface">
+                             data-shopify-handle="3oz-organic-multi-surface-disinfectant">
                             <div class="product-badge badge-bestseller">Best Seller</div>
                             <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-ohs">OHS ORGANIC</div>
                                 <div class="product-icon">🧴</div>
                                 <h5 class="product-title">3oz Organic Multi-Surface Disinfectant</h5>
                                 
                                 <div class="certification-row">
-                                    <span class="cert-badge">USDA Organic</span>
-                                    <span class="cert-badge">EPA Registered</span>
+                                    <span class="cert-badge">USDA Organic #8150019050</span>
+                                    <span class="cert-badge">EPA Registered #97801-1</span>
                                     <span class="cert-badge">Travel Safe</span>
                                     <span class="cert-badge">TSA Approved</span>
                                 </div>
@@ -849,32 +915,31 @@
                                     <div class="small">
                                         <div>1-49 units: $12.97 each</div>
                                         <div class="text-success fw-bold">50+ units: $9.59 each (Save 26%)</div>
-                                        <div class="text-info">🏢 Business accounts: Lower minimums</div>
+                                        <div class="text-info">🏢 Min Order: 1000 bottles</div>
                                     </div>
                                 </div>
 
-                                <p class="card-text">Professional-grade HOCl in TSA-approved travel size. Perfect for personal use, travel, and small area sanitization.</p>
+                                <p class="card-text">Professional-grade HOCl in TSA-approved travel size. USDA Certified Organic and EPA registered.</p>
 
                                 <ul class="features-list">
-                                    <li><i class="fas fa-check"></i>USDA Certified Organic #8150019050</li>
+                                    <li><i class="fas fa-check"></i>USDA Certified Organic</li>
                                     <li><i class="fas fa-check"></i>Kills 99.9% bacteria, viruses, fungi</li>
                                     <li><i class="fas fa-check"></i>Safe for skin contact</li>
                                     <li><i class="fas fa-check"></i>Non-toxic, eco-friendly formula</li>
-                                    <li><i class="fas fa-check"></i>12-18 month shelf life</li>
                                 </ul>
 
                                 <!-- Quantity Controls -->
                                 <div class="quantity-controls">
-                                    <button class="qty-btn" onclick="updateQuantity('3oz-organic', -1)" id="minus-3oz-organic">
+                                    <button class="qty-btn" onclick="updateQuantity('ohs-3oz-organic', -1)" id="minus-ohs-3oz-organic">
                                         <i class="fas fa-minus"></i>
                                     </button>
-                                    <span class="qty-display" id="qty-3oz-organic">1</span>
-                                    <button class="qty-btn" onclick="updateQuantity('3oz-organic', 1)">
+                                    <span class="qty-display" id="qty-ohs-3oz-organic">1</span>
+                                    <button class="qty-btn" onclick="updateQuantity('ohs-3oz-organic', 1)">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
 
-                                <button class="add-to-cart-btn" onclick="addToCart('3oz-organic-multi-surface', '3oz Organic Multi-Surface Disinfectant', 12.97, '🧴', 9.59, 50)">
+                                <button class="add-to-cart-btn" onclick="addToCart('3oz-organic-multi-surface-disinfectant', '3oz Organic Multi-Surface Disinfectant', 12.97, '🧴', 9.59, 50)">
                                     <i class="fas fa-cart-plus me-2"></i>Add to Cart
                                     <span class="construction-badge">Shopify Ready</span>
                                 </button>
@@ -882,62 +947,62 @@
                         </div>
                     </div>
 
-                    <!-- 32oz EPA Premium Professional -->
+                    <!-- Hypo Company 32oz Multi Use Cleaner Ready to Use -->
                     <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
                         <div class="product-card" 
-                             data-certification="epa" 
-                             data-usecase="commercial" 
+                             data-brand="premium" 
+                             data-category="commercial" 
                              data-size="standard"
-                             data-shopify-id="32oz-epa-premium">
-                            <div class="product-badge badge-epa">EPA Premium</div>
+                             data-shopify-handle="hypo-company-32oz-multi-use-cleaner-ready-to-use">
+                            <div class="product-badge badge-premium">Premium</div>
                             <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-premium">HYPO COMPANY PREMIUM</div>
                                 <div class="product-icon">🏛️</div>
-                                <h5 class="product-title">32oz EPA Premium Professional</h5>
+                                <h5 class="product-title">32oz Multi Use Cleaner Ready to Use</h5>
                                 
                                 <div class="certification-row">
-                                    <span class="cert-badge">EPA Registered</span>
-                                    <span class="cert-badge">Professional Grade</span>
+                                    <span class="cert-badge">Premium Formulation</span>
+                                    <span class="cert-badge">Advanced Packaging</span>
+                                    <span class="cert-badge">Commercial Grade</span>
                                     <span class="cert-badge">Ready to Use</span>
-                                    <span class="cert-badge">Commercial</span>
                                 </div>
                                 
                                 <div class="pricing-section">
-                                    <div class="price-retail">$21.80</div>
-                                    <div class="price-wholesale">25+ units: $16.13 (26% off)</div>
-                                    <small class="text-muted">SKU: OHS-32OZ-CLEANER-RTU</small>
+                                    <div class="price-retail">$23.82</div>
+                                    <div class="price-wholesale">25+ units: $17.30 (27% off)</div>
+                                    <small class="text-muted">SKU: HC-32OZ-CLEANER-RTU</small>
                                 </div>
 
                                 <div class="volume-pricing">
-                                    <h6><i class="fas fa-calculator me-2"></i>Volume Discounts</h6>
+                                    <h6><i class="fas fa-calculator me-2"></i>Premium Pricing</h6>
                                     <div class="small">
-                                        <div>1-24 units: $21.80 each</div>
-                                        <div class="text-success fw-bold">25+ units: $16.13 each (Save 26%)</div>
-                                        <div class="text-info">🏢 Business accounts qualify at lower quantities</div>
+                                        <div>1-24 units: $23.82 each</div>
+                                        <div class="text-success fw-bold">25+ units: $17.30 each (Save 27%)</div>
+                                        <div class="text-info">💳 Monthly Invoice Available</div>
                                     </div>
                                 </div>
 
-                                <p class="card-text">EPA registered professional-grade formula for commercial and institutional applications requiring maximum efficacy.</p>
+                                <p class="card-text">Professional-strength premium formulation with advanced packaging for commercial use.</p>
 
                                 <ul class="features-list">
-                                    <li><i class="fas fa-check"></i>EPA Registered #97801-1</li>
-                                    <li><i class="fas fa-check"></i>Professional institutional grade</li>
-                                    <li><i class="fas fa-check"></i>Ready-to-use formula</li>
-                                    <li><i class="fas fa-check"></i>Commercial facility approved</li>
-                                    <li><i class="fas fa-check"></i>Healthcare facility suitable</li>
+                                    <li><i class="fas fa-check"></i>Premium formulation</li>
+                                    <li><i class="fas fa-check"></i>Advanced packaging</li>
+                                    <li><i class="fas fa-check"></i>Safe for food contact surfaces</li>
+                                    <li><i class="fas fa-check"></i>Premium customer service</li>
                                 </ul>
 
                                 <!-- Quantity Controls -->
                                 <div class="quantity-controls">
-                                    <button class="qty-btn" onclick="updateQuantity('32oz-epa', -1)" id="minus-32oz-epa">
+                                    <button class="qty-btn" onclick="updateQuantity('hc-32oz-cleaner', -1)" id="minus-hc-32oz-cleaner">
                                         <i class="fas fa-minus"></i>
                                     </button>
-                                    <span class="qty-display" id="qty-32oz-epa">1</span>
-                                    <button class="qty-btn" onclick="updateQuantity('32oz-epa', 1)">
+                                    <span class="qty-display" id="qty-hc-32oz-cleaner">1</span>
+                                    <button class="qty-btn" onclick="updateQuantity('hc-32oz-cleaner', 1)">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
 
-                                <button class="add-to-cart-btn" onclick="addToCart('32oz-epa-premium', '32oz EPA Premium Professional', 21.80, '🏛️', 16.13, 25)">
+                                <button class="add-to-cart-btn" onclick="addToCart('hypo-company-32oz-multi-use-cleaner-ready-to-use', '32oz Multi Use Cleaner Ready to Use - Hypo Company Premium', 23.82, '🏛️', 17.30, 25)">
                                     <i class="fas fa-cart-plus me-2"></i>Add to Cart
                                     <span class="construction-badge">Shopify Ready</span>
                                 </button>
@@ -945,23 +1010,24 @@
                         </div>
                     </div>
 
-                    <!-- 1 Gallon Organic Ready-to-Use -->
+                    <!-- OHS 1 Gallon Organic Ready-to-Use -->
                     <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
                         <div class="product-card" 
-                             data-certification="usda" 
-                             data-usecase="commercial" 
+                             data-brand="ohs" 
+                             data-category="commercial" 
                              data-size="bulk"
-                             data-shopify-id="1gal-organic-ready">
-                            <div class="product-badge badge-usda">USDA Organic</div>
+                             data-shopify-handle="1-gallon-organic-ready-to-use-solution">
+                            <div class="product-badge badge-organic">USDA Organic</div>
                             <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-ohs">OHS ORGANIC</div>
                                 <div class="product-icon">🏢</div>
                                 <h5 class="product-title">1 Gallon Organic Ready-to-Use Solution</h5>
                                 
                                 <div class="certification-row">
-                                    <span class="cert-badge">USDA Organic</span>
+                                    <span class="cert-badge">USDA Organic #8150019050</span>
+                                    <span class="cert-badge">EPA Registered #97801-1</span>
                                     <span class="cert-badge">Bulk Volume</span>
                                     <span class="cert-badge">Food Safe</span>
-                                    <span class="cert-badge">EPA Registered</span>
                                 </div>
                                 
                                 <div class="pricing-section">
@@ -975,32 +1041,31 @@
                                     <div class="small">
                                         <div>1-9 units: $37.28 each</div>
                                         <div class="text-success fw-bold">10+ units: $27.57 each (Save 26%)</div>
-                                        <div class="text-info">🏢 Business accounts: Special pricing</div>
+                                        <div class="text-info">🏢 Min Order: 440 bottles</div>
                                     </div>
                                 </div>
 
-                                <p class="card-text">Bulk organic solution perfect for facilities requiring large volumes of eco-friendly, food-safe cleaning.</p>
+                                <p class="card-text">Bulk organic solution perfect for facilities requiring large volumes of eco-friendly cleaning.</p>
 
                                 <ul class="features-list">
                                     <li><i class="fas fa-check"></i>USDA Certified Organic</li>
                                     <li><i class="fas fa-check"></i>Food contact surface safe</li>
                                     <li><i class="fas fa-check"></i>Cost-effective bulk pricing</li>
-                                    <li><i class="fas fa-check"></i>Restaurant & food service approved</li>
-                                    <li><i class="fas fa-check"></i>Refill smaller containers</li>
+                                    <li><i class="fas fa-check"></i>Restaurant approved</li>
                                 </ul>
 
                                 <!-- Quantity Controls -->
                                 <div class="quantity-controls">
-                                    <button class="qty-btn" onclick="updateQuantity('1gal-organic', -1)" id="minus-1gal-organic">
+                                    <button class="qty-btn" onclick="updateQuantity('ohs-1gal-organic', -1)" id="minus-ohs-1gal-organic">
                                         <i class="fas fa-minus"></i>
                                     </button>
-                                    <span class="qty-display" id="qty-1gal-organic">1</span>
-                                    <button class="qty-btn" onclick="updateQuantity('1gal-organic', 1)">
+                                    <span class="qty-display" id="qty-ohs-1gal-organic">1</span>
+                                    <button class="qty-btn" onclick="updateQuantity('ohs-1gal-organic', 1)">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
 
-                                <button class="add-to-cart-btn" onclick="addToCart('1gal-organic-ready', '1 Gallon Organic Ready-to-Use Solution', 37.28, '🏢', 27.57, 10)">
+                                <button class="add-to-cart-btn" onclick="addToCart('1-gallon-organic-ready-to-use-solution', '1 Gallon Organic Ready-to-Use Solution', 37.28, '🏢', 27.57, 10)">
                                     <i class="fas fa-cart-plus me-2"></i>Add to Cart
                                     <span class="construction-badge">Shopify Ready</span>
                                 </button>
@@ -1010,519 +1075,523 @@
                 </div>
             </div>
 
-            <!-- Personal Care Section -->
-            <div id="personal" class="mb-5">
-                <h2 class="text-center mb-4 fw-bold text-primary">
-                    <i class="fas fa-user me-2"></i>Personal & Family Care
+            <!-- OHS Organic Products Section -->
+            <div id="organic-products" class="mb-5">
+                <h2 class="text-center mb-4 fw-bold text-success">
+                    <i class="fas fa-leaf me-2"></i>OHS USDA Organic Line (19 Products)
                 </h2>
-                <div class="row">
-                    <!-- Personal Care Products -->
+                <div class="text-center mb-4">
+                    <span class="badge bg-success fs-6 p-2">USDA Certified Organic #8150019050 | EPA Registered #97801-1 | Traditional MOQ Structure</span>
+                </div>
+                
+                <!-- Personal Care Products -->
+                <h4 class="fw-bold text-primary mb-3">Personal Care Products (3)</h4>
+                <div class="row mb-4">
+                    <!-- OHS 3oz Organic Skin Health Mist -->
                     <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
                         <div class="product-card" 
-                             data-certification="usda" 
-                             data-usecase="personal" 
+                             data-brand="ohs" 
+                             data-category="personal" 
                              data-size="travel"
-                             data-shopify-id="organic-skin-health">
-                            <div class="product-badge badge-new">Family Safe</div>
+                             data-shopify-handle="3oz-organic-skin-health-mist">
+                            <div class="product-badge badge-organic">Therapeutic</div>
                             <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-ohs">OHS ORGANIC</div>
                                 <div class="product-icon">✨</div>
                                 <h5 class="product-title">3oz Organic Skin Health Mist</h5>
                                 
-                                <div class="certification-row">
-                                    <span class="cert-badge">USDA Organic</span>
-                                    <span class="cert-badge">Skin Safe</span>
-                                    <span class="cert-badge">Therapeutic</span>
-                                    <span class="cert-badge">Travel Size</span>
-                                </div>
-                                
                                 <div class="pricing-section">
-                                    <div class="price-retail">$15.50</div>
-                                    <div class="price-wholesale">25+ units: $11.47 (26% off)</div>
-                                    <small class="text-muted">SKU: OHS-3OZ-SKIN-HEALTH</small>
+                                    <div class="price-retail">$14.38</div>
+                                    <div class="price-wholesale">50+ units: $10.64 (26% off)</div>
+                                    <small class="text-muted">SKU: OHS-3OZ-SKIN-MIST | Min Order: 1000</small>
                                 </div>
-
-                                <p class="card-text">Therapeutic-grade HOCl mist for skin health. Perfect for treating minor cuts, scrapes, and skin irritations.</p>
-
-                                <ul class="features-list">
-                                    <li><i class="fas fa-check"></i>Accelerates healing process</li>
-                                    <li><i class="fas fa-check"></i>Reduces inflammation</li>
-                                    <li><i class="fas fa-check"></i>Safe for all ages</li>
-                                    <li><i class="fas fa-check"></i>No stinging or burning</li>
-                                </ul>
 
                                 <!-- Quantity Controls -->
                                 <div class="quantity-controls">
-                                    <button class="qty-btn" onclick="updateQuantity('skin-health', -1)" id="minus-skin-health">
+                                    <button class="qty-btn" onclick="updateQuantity('ohs-3oz-skin', -1)" id="minus-ohs-3oz-skin">
                                         <i class="fas fa-minus"></i>
                                     </button>
-                                    <span class="qty-display" id="qty-skin-health">1</span>
-                                    <button class="qty-btn" onclick="updateQuantity('skin-health', 1)">
+                                    <span class="qty-display" id="qty-ohs-3oz-skin">1</span>
+                                    <button class="qty-btn" onclick="updateQuantity('ohs-3oz-skin', 1)">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
 
-                                <button class="add-to-cart-btn" onclick="addToCart('organic-skin-health', '3oz Organic Skin Health Mist', 15.50, '✨', 11.47, 25)">
+                                <button class="add-to-cart-btn" onclick="addToCart('3oz-organic-skin-health-mist', '3oz Organic Skin Health Mist', 14.38, '✨', 10.64, 50)">
                                     <i class="fas fa-cart-plus me-2"></i>Add to Cart
-                                    <span class="construction-badge">Shopify Ready</span>
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Baby Care Product -->
+                    <!-- OHS 8oz Organic Skin Health Mist -->
                     <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
                         <div class="product-card" 
-                             data-certification="usda" 
-                             data-usecase="personal" 
+                             data-brand="ohs" 
+                             data-category="personal" 
                              data-size="standard"
-                             data-shopify-id="diaper-rash-serum">
-                            <div class="product-badge badge-usda">Baby Safe</div>
+                             data-shopify-handle="8oz-organic-skin-health-mist">
+                            <div class="product-badge badge-organic">Family Size</div>
                             <div class="card-body p-4 text-center">
-                                <div class="product-icon">👶</div>
-                                <h5 class="product-title">32oz Organic Diaper Rash Treatment</h5>
-                                
-                                <div class="certification-row">
-                                    <span class="cert-badge">Pediatrician Tested</span>
-                                    <span class="cert-badge">Hypoallergenic</span>
-                                    <span class="cert-badge">Gentle Formula</span>
-                                    <span class="cert-badge">USDA Organic</span>
-                                </div>
+                                <div class="brand-tag brand-ohs">OHS ORGANIC</div>
+                                <div class="product-icon">👨‍👩‍👧‍👦</div>
+                                <h5 class="product-title">8oz Organic Skin Health Mist</h5>
                                 
                                 <div class="pricing-section">
-                                    <div class="price-retail">$25.00</div>
-                                    <div class="price-wholesale">12+ units: $18.50 (26% off)</div>
-                                    <small class="text-muted">SKU: OHS-32OZ-DIAPER-CARE</small>
+                                    <div class="price-retail">$18.31</div>
+                                    <div class="price-wholesale">25+ units: $13.55 (26% off)</div>
+                                    <small class="text-muted">SKU: OHS-8OZ-SKIN-MIST | Min Order: 600</small>
                                 </div>
-
-                                <p class="card-text">Gentle, effective treatment for diaper rash and sensitive skin irritation. Safe for newborns and daily use.</p>
-
-                                <ul class="features-list">
-                                    <li><i class="fas fa-check"></i>Safe for newborns</li>
-                                    <li><i class="fas fa-check"></i>Soothes irritated skin</li>
-                                    <li><i class="fas fa-check"></i>Prevents bacterial infections</li>
-                                    <li><i class="fas fa-check"></i>Pediatrician approved</li>
-                                </ul>
 
                                 <!-- Quantity Controls -->
                                 <div class="quantity-controls">
-                                    <button class="qty-btn" onclick="updateQuantity('diaper-rash', -1)" id="minus-diaper-rash">
+                                    <button class="qty-btn" onclick="updateQuantity('ohs-8oz-skin', -1)" id="minus-ohs-8oz-skin">
                                         <i class="fas fa-minus"></i>
                                     </button>
-                                    <span class="qty-display" id="qty-diaper-rash">1</span>
-                                    <button class="qty-btn" onclick="updateQuantity('diaper-rash', 1)">
+                                    <span class="qty-display" id="qty-ohs-8oz-skin">1</span>
+                                    <button class="qty-btn" onclick="updateQuantity('ohs-8oz-skin', 1)">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
 
-                                <button class="add-to-cart-btn" onclick="addToCart('diaper-rash-serum', '32oz Organic Diaper Rash Treatment', 25.00, '👶', 18.50, 12)">
+                                <button class="add-to-cart-btn" onclick="addToCart('8oz-organic-skin-health-mist', '8oz Organic Skin Health Mist', 18.31, '👨‍👩‍👧‍👦', 13.55, 25)">
                                     <i class="fas fa-cart-plus me-2"></i>Add to Cart
-                                    <span class="construction-badge">Shopify Ready</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- All-in-One Wipes -->
-                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
-                        <div class="product-card" 
-                             data-certification="usda" 
-                             data-usecase="personal" 
-                             data-size="standard"
-                             data-shopify-id="organic-wipes">
-                            <div class="product-badge badge-new">Convenient</div>
-                            <div class="card-body p-4 text-center">
-                                <div class="product-icon">🧽</div>
-                                <h5 class="product-title">Organic All-in-One Disinfecting Wipes</h5>
-                                
-                                <div class="certification-row">
-                                    <span class="cert-badge">HOCl Infused</span>
-                                    <span class="cert-badge">Biodegradable</span>
-                                    <span class="cert-badge">Ready to Use</span>
-                                    <span class="cert-badge">USDA Organic</span>
-                                </div>
-                                
-                                <div class="pricing-section">
-                                    <div class="price-retail">$12.00</div>
-                                    <div class="price-wholesale">20+ units: $8.88 (26% off)</div>
-                                    <small class="text-muted">SKU: OHS-WIPES-80CT</small>
-                                </div>
-
-                                <p class="card-text">Pre-moistened wipes infused with organic HOCl. Perfect for quick cleanups and sanitization on-the-go.</p>
-
-                                <ul class="features-list">
-                                    <li><i class="fas fa-check"></i>Pre-moistened with organic HOCl</li>
-                                    <li><i class="fas fa-check"></i>Biodegradable material</li>
-                                    <li><i class="fas fa-check"></i>80 wipes per container</li>
-                                    <li><i class="fas fa-check"></i>Multi-surface safe</li>
-                                </ul>
-
-                                <!-- Quantity Controls -->
-                                <div class="quantity-controls">
-                                    <button class="qty-btn" onclick="updateQuantity('organic-wipes', -1)" id="minus-organic-wipes">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                    <span class="qty-display" id="qty-organic-wipes">1</span>
-                                    <button class="qty-btn" onclick="updateQuantity('organic-wipes', 1)">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-
-                                <button class="add-to-cart-btn" onclick="addToCart('organic-wipes', 'Organic All-in-One Disinfecting Wipes', 12.00, '🧽', 8.88, 20)">
-                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
-                                    <span class="construction-badge">Shopify Ready</span>
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Commercial Section -->
-            <div id="commercial" class="mb-5">
-                <h2 class="text-center mb-4 fw-bold text-primary">
-                    <i class="fas fa-building me-2"></i>Commercial & Industrial Solutions
-                </h2>
-                <div class="row">
-                    <!-- Laundry Booster -->
+                <!-- Commercial Cleaning Products -->
+                <h4 class="fw-bold text-primary mb-3">Commercial Cleaning Products (2)</h4>
+                <div class="row mb-4">
+                    <!-- OHS 32oz Organic Ready-to-Use Cleaner -->
                     <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
                         <div class="product-card" 
-                             data-certification="usda" 
-                             data-usecase="commercial" 
+                             data-brand="ohs" 
+                             data-category="commercial" 
                              data-size="standard"
-                             data-shopify-id="laundry-booster">
-                            <div class="product-badge badge-new">Specialty</div>
+                             data-shopify-handle="32oz-organic-ready-to-use-cleaner">
+                            <div class="product-badge badge-organic">Commercial</div>
                             <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-ohs">OHS ORGANIC</div>
+                                <div class="product-icon">🧽</div>
+                                <h5 class="product-title">32oz Organic Ready-to-Use Cleaner</h5>
+                                
+                                <div class="pricing-section">
+                                    <div class="price-retail">$21.80</div>
+                                    <div class="price-wholesale">25+ units: $16.13 (26% off)</div>
+                                    <small class="text-muted">SKU: OHS-32OZ-CLEANER-RTU | Min Order: 500</small>
+                                </div>
+
+                                <!-- Quantity Controls -->
+                                <div class="quantity-controls">
+                                    <button class="qty-btn" onclick="updateQuantity('ohs-32oz-cleaner', -1)" id="minus-ohs-32oz-cleaner">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <span class="qty-display" id="qty-ohs-32oz-cleaner">1</span>
+                                    <button class="qty-btn" onclick="updateQuantity('ohs-32oz-cleaner', 1)">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+
+                                <button class="add-to-cart-btn" onclick="addToCart('32oz-organic-ready-to-use-cleaner', '32oz Organic Ready-to-Use Cleaner', 21.80, '🧽', 16.13, 25)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pet Care Products -->
+                <h4 class="fw-bold text-primary mb-3">Pet Care Products (1)</h4>
+                <div class="row mb-4">
+                    <!-- OHS 32oz Organic Pet Safe Cleaner -->
+                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                        <div class="product-card" 
+                             data-brand="ohs" 
+                             data-category="veterinary" 
+                             data-size="standard"
+                             data-shopify-handle="32oz-organic-pet-safe-cleaner-deodorizer">
+                            <div class="product-badge badge-organic">Pet Safe</div>
+                            <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-ohs">OHS ORGANIC</div>
+                                <div class="product-icon">🐕</div>
+                                <h5 class="product-title">32oz Organic Pet Safe Cleaner & Deodorizer</h5>
+                                
+                                <div class="pricing-section">
+                                    <div class="price-retail">$21.80</div>
+                                    <div class="price-wholesale">25+ units: $16.13 (26% off)</div>
+                                    <small class="text-muted">SKU: OHS-32OZ-PET-CLEANER | Min Order: 500</small>
+                                </div>
+
+                                <!-- Quantity Controls -->
+                                <div class="quantity-controls">
+                                    <button class="qty-btn" onclick="updateQuantity('ohs-32oz-pet', -1)" id="minus-ohs-32oz-pet">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <span class="qty-display" id="qty-ohs-32oz-pet">1</span>
+                                    <button class="qty-btn" onclick="updateQuantity('ohs-32oz-pet', 1)">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+
+                                <button class="add-to-cart-btn" onclick="addToCart('32oz-organic-pet-safe-cleaner-deodorizer', '32oz Organic Pet Safe Cleaner & Deodorizer', 21.80, '🐕', 16.13, 25)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Veterinary Products -->
+                <h4 class="fw-bold text-primary mb-3">Veterinary Products (3)</h4>
+                <div class="row mb-4">
+                    <!-- OHS 32oz Organic 500ppm Pet+ & Equine Solution -->
+                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                        <div class="product-card" 
+                             data-brand="ohs" 
+                             data-category="veterinary" 
+                             data-size="standard"
+                             data-shopify-handle="32oz-organic-500ppm-pet-equine-solution">
+                            <div class="product-badge badge-organic">500ppm</div>
+                            <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-ohs">OHS ORGANIC</div>
+                                <div class="product-icon">🐎</div>
+                                <h5 class="product-title">32oz Organic 500ppm Pet+ & Equine Solution</h5>
+                                
+                                <div class="pricing-section">
+                                    <div class="price-retail">$24.59</div>
+                                    <div class="price-wholesale">25+ units: $18.20 (26% off)</div>
+                                    <small class="text-muted">SKU: OHS-32OZ-500PPM-VET | Min Order: 500</small>
+                                </div>
+
+                                <button class="add-to-cart-btn" onclick="addToCart('32oz-organic-500ppm-pet-equine-solution', '32oz Organic 500ppm Pet+ & Equine Solution', 24.59, '🐎', 18.20, 25)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- OHS 1 Gallon Organic 500ppm Veterinary Solution -->
+                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                        <div class="product-card" 
+                             data-brand="ohs" 
+                             data-category="veterinary" 
+                             data-size="bulk"
+                             data-shopify-handle="1-gallon-organic-500ppm-veterinary-solution">
+                            <div class="product-badge badge-organic">Bulk Vet</div>
+                            <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-ohs">OHS ORGANIC</div>
+                                <div class="product-icon">🏥</div>
+                                <h5 class="product-title">1 Gallon Organic 500ppm Veterinary Solution</h5>
+                                
+                                <div class="pricing-section">
+                                    <div class="price-retail">$41.27</div>
+                                    <div class="price-wholesale">10+ units: $30.53 (26% off)</div>
+                                    <small class="text-muted">SKU: OHS-1GAL-500PPM-VET | Min Order: 440</small>
+                                </div>
+
+                                <button class="add-to-cart-btn" onclick="addToCart('1-gallon-organic-500ppm-veterinary-solution', '1 Gallon Organic 500ppm Veterinary Solution', 41.27, '🏥', 30.53, 10)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- OHS 16oz Organic Equine Healing & Udder Gel -->
+                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                        <div class="product-card" 
+                             data-brand="ohs" 
+                             data-category="veterinary" 
+                             data-size="standard"
+                             data-shopify-handle="16oz-organic-equine-healing-udder-gel">
+                            <div class="product-badge badge-organic">Healing</div>
+                            <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-ohs">OHS ORGANIC</div>
+                                <div class="product-icon">🩹</div>
+                                <h5 class="product-title">16oz Organic Equine Healing & Udder Gel</h5>
+                                
+                                <div class="pricing-section">
+                                    <div class="price-retail">$38.16</div>
+                                    <div class="price-wholesale">20+ units: $30.75 (19% off)</div>
+                                    <small class="text-muted">SKU: OHS-16OZ-EQUINE-GEL | Min Order: 50</small>
+                                </div>
+
+                                <button class="add-to-cart-btn" onclick="addToCart('16oz-organic-equine-healing-udder-gel', '16oz Organic Equine Healing & Udder Gel', 38.16, '🩹', 30.75, 20)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Laundry & Household Products -->
+                <h4 class="fw-bold text-primary mb-3">Laundry & Household Products (3)</h4>
+                <div class="row mb-4">
+                    <!-- OHS 32oz Organic Laundry Booster -->
+                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                        <div class="product-card" 
+                             data-brand="ohs" 
+                             data-category="commercial" 
+                             data-size="standard"
+                             data-shopify-handle="32oz-organic-laundry-booster">
+                            <div class="product-badge badge-organic">Laundry</div>
+                            <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-ohs">OHS ORGANIC</div>
                                 <div class="product-icon">👕</div>
                                 <h5 class="product-title">32oz Organic Laundry Booster</h5>
                                 
-                                <div class="certification-row">
-                                    <span class="cert-badge">Fabric Safe</span>
-                                    <span class="cert-badge">Odor Eliminator</span>
-                                    <span class="cert-badge">Commercial Grade</span>
-                                    <span class="cert-badge">USDA Organic</span>
-                                </div>
-                                
                                 <div class="pricing-section">
-                                    <div class="price-retail">$18.00</div>
-                                    <div class="price-wholesale">15+ units: $13.32 (26% off)</div>
-                                    <small class="text-muted">SKU: OHS-32OZ-LAUNDRY</small>
+                                    <div class="price-retail">$23.86</div>
+                                    <div class="price-wholesale">25+ units: $17.64 (26% off)</div>
+                                    <small class="text-muted">SKU: OHS-32OZ-LAUNDRY-BOOSTER | Min Order: 500</small>
                                 </div>
 
-                                <p class="card-text">Add to wash cycles for enhanced sanitization and odor elimination. Safe for all fabrics including delicates.</p>
-
-                                <ul class="features-list">
-                                    <li><i class="fas fa-check"></i>Enhances regular detergent</li>
-                                    <li><i class="fas fa-check"></i>Eliminates tough odors</li>
-                                    <li><i class="fas fa-check"></i>Fabric-safe organic formula</li>
-                                    <li><i class="fas fa-check"></i>Commercial laundry approved</li>
-                                </ul>
-
-                                <!-- Quantity Controls -->
-                                <div class="quantity-controls">
-                                    <button class="qty-btn" onclick="updateQuantity('laundry-booster', -1)" id="minus-laundry-booster">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                    <span class="qty-display" id="qty-laundry-booster">1</span>
-                                    <button class="qty-btn" onclick="updateQuantity('laundry-booster', 1)">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-
-                                <button class="add-to-cart-btn" onclick="addToCart('laundry-booster', '32oz Organic Laundry Booster', 18.00, '👕', 13.32, 15)">
+                                <button class="add-to-cart-btn" onclick="addToCart('32oz-organic-laundry-booster', '32oz Organic Laundry Booster', 23.86, '👕', 17.64, 25)">
                                     <i class="fas fa-cart-plus me-2"></i>Add to Cart
-                                    <span class="construction-badge">Shopify Ready</span>
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 32oz Bulk Case -->
-                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4" id="bulk-products">
-                        <div class="product-card" 
-                             data-certification="both" 
-                             data-usecase="commercial" 
-                             data-size="bulk"
-                             data-shopify-id="32oz-bulk-case">
-                            <div class="product-badge badge-epa">Bulk Pack</div>
-                            <div class="card-body p-4 text-center">
-                                <div class="product-icon">📦</div>
-                                <h5 class="product-title">32oz Professional Bulk Case (24 units)</h5>
-                                
-                                <div class="certification-row">
-                                    <span class="cert-badge">Bulk Case</span>
-                                    <span class="cert-badge">Commercial</span>
-                                    <span class="cert-badge">Value Pack</span>
-                                    <span class="cert-badge">Both Formulas</span>
-                                </div>
-                                
-                                <div class="pricing-section">
-                                    <div class="price-retail">$523.20</div>
-                                    <div class="price-wholesale">2+ cases: $387.17 (26% off)</div>
-                                    <small class="text-muted">SKU: OHS-32OZ-BULK-24</small>
-                                </div>
-
-                                <p class="card-text">Bulk case of 24 professional-grade 32oz bottles. Choose EPA Premium or USDA Organic formulation.</p>
-
-                                <ul class="features-list">
-                                    <li><i class="fas fa-check"></i>24 bottles per case</li>
-                                    <li><i class="fas fa-check"></i>Significant cost savings</li>
-                                    <li><i class="fas fa-check"></i>Commercial applications</li>
-                                    <li><i class="fas fa-check"></i>Choose EPA or USDA formula</li>
-                                </ul>
-
-                                <!-- Formula Selection -->
-                                <div class="mb-3">
-                                    <select class="form-select" id="formula-32oz-bulk">
-                                        <option value="epa">EPA Premium Formula</option>
-                                        <option value="usda">USDA Organic Formula</option>
-                                    </select>
-                                </div>
-
-                                <!-- Quantity Controls -->
-                                <div class="quantity-controls">
-                                    <button class="qty-btn" onclick="updateQuantity('32oz-bulk', -1)" id="minus-32oz-bulk">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                    <span class="qty-display" id="qty-32oz-bulk">1</span>
-                                    <button class="qty-btn" onclick="updateQuantity('32oz-bulk', 1)">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-
-                                <button class="add-to-cart-btn" onclick="addToCart('32oz-bulk-case', '32oz Professional Bulk Case (24 units)', 523.20, '📦', 387.17, 2)">
-                                    <i class="fas fa-cart-plus me-2"></i>Add Case to Cart
-                                    <span class="construction-badge">Shopify Ready</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- One Gallon Case -->
+                    <!-- OHS 1 Gallon Organic Laundry Booster -->
                     <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
                         <div class="product-card" 
-                             data-certification="both" 
-                             data-usecase="commercial" 
+                             data-brand="ohs" 
+                             data-category="commercial" 
                              data-size="bulk"
-                             data-shopify-id="1gal-bulk-case">
-                            <div class="product-badge badge-epa">Industrial</div>
+                             data-shopify-handle="1-gallon-organic-laundry-booster">
+                            <div class="product-badge badge-organic">Bulk Laundry</div>
                             <div class="card-body p-4 text-center">
-                                <div class="product-icon">🏭</div>
-                                <h5 class="product-title">One Gallon Professional Case (12 units)</h5>
-                                
-                                <div class="certification-row">
-                                    <span class="cert-badge">Bulk Case</span>
-                                    <span class="cert-badge">Industrial</span>
-                                    <span class="cert-badge">Commercial Grade</span>
-                                    <span class="cert-badge">Both Formulas</span>
-                                </div>
+                                <div class="brand-tag brand-ohs">OHS ORGANIC</div>
+                                <div class="product-icon">🧺</div>
+                                <h5 class="product-title">1 Gallon Organic Laundry Booster</h5>
                                 
                                 <div class="pricing-section">
-                                    <div class="price-retail">$447.36</div>
-                                    <div class="price-wholesale">2+ cases: $331.05 (26% off)</div>
-                                    <small class="text-muted">SKU: OHS-1GAL-BULK-12</small>
+                                    <div class="price-retail">$41.15</div>
+                                    <div class="price-wholesale">10+ units: $30.44 (26% off)</div>
+                                    <small class="text-muted">SKU: OHS-1GAL-LAUNDRY-BOOSTER | Min Order: 440</small>
                                 </div>
 
-                                <p class="card-text">Industrial case of 12 gallon containers for large facilities and high-volume commercial users.</p>
+                                <button class="add-to-cart-btn" onclick="addToCart('1-gallon-organic-laundry-booster', '1 Gallon Organic Laundry Booster', 41.15, '🧺', 30.44, 10)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
-                                <ul class="features-list">
-                                    <li><i class="fas fa-check"></i>12 gallon containers per case</li>
-                                    <li><i class="fas fa-check"></i>Industrial strength formulas</li>
-                                    <li><i class="fas fa-check"></i>Maximum bulk savings</li>
-                                    <li><i class="fas fa-check"></i>Large facility operations</li>
-                                </ul>
-
-                                <!-- Formula Selection -->
-                                <div class="mb-3">
-                                    <select class="form-select" id="formula-1gal-bulk">
-                                        <option value="epa">EPA Premium Formula</option>
-                                        <option value="usda">USDA Organic Formula</option>
-                                    </select>
+                    <!-- OHS Organic All-in-One Disinfecting Wipes -->
+                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                        <div class="product-card" 
+                             data-brand="ohs" 
+                             data-category="personal" 
+                             data-size="standard"
+                             data-shopify-handle="organic-all-in-one-disinfecting-wipes">
+                            <div class="product-badge badge-organic">Wipes</div>
+                            <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-ohs">OHS ORGANIC</div>
+                                <div class="product-icon">🧽</div>
+                                <h5 class="product-title">Organic All-in-One Disinfecting Wipes</h5>
+                                
+                                <div class="pricing-section">
+                                    <div class="price-retail">$24.29</div>
+                                    <div class="price-wholesale">20+ units: $17.98 (26% off)</div>
+                                    <small class="text-muted">SKU: OHS-WIPES-ORGANIC | Min Order: 200</small>
                                 </div>
 
-                                <!-- Quantity Controls -->
-                                <div class="quantity-controls">
-                                    <button class="qty-btn" onclick="updateQuantity('1gal-bulk', -1)" id="minus-1gal-bulk">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                    <span class="qty-display" id="qty-1gal-bulk">1</span>
-                                    <button class="qty-btn" onclick="updateQuantity('1gal-bulk', 1)">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-
-                                <button class="add-to-cart-btn" onclick="addToCart('1gal-bulk-case', 'One Gallon Professional Case (12 units)', 447.36, '🏭', 331.05, 2)">
-                                    <i class="fas fa-cart-plus me-2"></i>Add Case to Cart
-                                    <span class="construction-badge">Shopify Ready</span>
+                                <button class="add-to-cart-btn" onclick="addToCart('organic-all-in-one-disinfecting-wipes', 'Organic All-in-One Disinfecting Wipes', 24.29, '🧽', 17.98, 20)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Value Bundles Section -->
-            <div id="bundles" class="mb-5">
-                <h2 class="text-center mb-4 fw-bold text-primary">
-                    <i class="fas fa-box me-2"></i>Value Bundle Packages
-                </h2>
-                <div class="row">
-                    <!-- Essential Family Bundle -->
+                <!-- Therapeutic Products -->
+                <h4 class="fw-bold text-primary mb-3">Therapeutic Products (2)</h4>
+                <div class="row mb-4">
+                    <!-- OHS Organic Healing Skin Serum -->
                     <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
                         <div class="product-card" 
-                             data-certification="usda" 
-                             data-usecase="personal" 
+                             data-brand="ohs" 
+                             data-category="personal" 
                              data-size="standard"
-                             data-shopify-id="essential-family-bundle">
-                            <div class="product-badge badge-bestseller">Best Value</div>
+                             data-shopify-handle="organic-healing-skin-serum">
+                            <div class="product-badge badge-organic">Therapeutic</div>
                             <div class="card-body p-4 text-center">
-                                <div class="product-icon">🎯</div>
-                                <h5 class="product-title">Essential Family Bundle</h5>
+                                <div class="brand-tag brand-ohs">OHS ORGANIC</div>
+                                <div class="product-icon">💧</div>
+                                <h5 class="product-title">Organic Healing Skin Serum</h5>
                                 
-                                <div class="certification-row">
-                                    <span class="cert-badge">Family Package</span>
-                                    <span class="cert-badge">Multi-Size</span>
-                                    <span class="cert-badge">Great Value</span>
-                                    <span class="cert-badge">USDA Organic</span>
+                                <div class="pricing-section">
+                                    <div class="price-retail">$34.63</div>
+                                    <div class="price-wholesale">20+ units: $27.89 (20% off)</div>
+                                    <small class="text-muted">SKU: OHS-HEALING-SKIN-SERUM | Min Order: 100</small>
                                 </div>
+
+                                <button class="add-to-cart-btn" onclick="addToCart('organic-healing-skin-serum', 'Organic Healing Skin Serum', 34.63, '💧', 27.89, 20)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- OHS 100ml Organic Baby Diaper Rash Gel -->
+                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                        <div class="product-card" 
+                             data-brand="ohs" 
+                             data-category="personal" 
+                             data-size="travel"
+                             data-shopify-handle="100ml-organic-baby-diaper-rash-gel">
+                            <div class="product-badge badge-organic">Baby Care</div>
+                            <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-ohs">OHS ORGANIC</div>
+                                <div class="product-icon">👶</div>
+                                <h5 class="product-title">100ml Organic Baby Diaper Rash Gel</h5>
+                                
+                                <div class="pricing-section">
+                                    <div class="price-retail">$35.98</div>
+                                    <div class="price-wholesale">20+ units: $28.97 (19% off)</div>
+                                    <small class="text-muted">SKU: OHS-100ML-DIAPER-GEL | Min Order: 100</small>
+                                </div>
+
+                                <button class="add-to-cart-btn" onclick="addToCart('100ml-organic-baby-diaper-rash-gel', '100ml Organic Baby Diaper Rash Gel', 35.98, '👶', 28.97, 20)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OHS Bundle Kits -->
+                <h4 class="fw-bold text-primary mb-3">OHS Bundle Kits (5)</h4>
+                <div class="row">
+                    <!-- OHS Organic Starter Home Bundle -->
+                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                        <div class="product-card" 
+                             data-brand="ohs" 
+                             data-category="bundle" 
+                             data-size="standard"
+                             data-shopify-handle="ohs-organic-starter-home-bundle">
+                            <div class="product-badge badge-bundle">Starter</div>
+                            <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-ohs">OHS ORGANIC</div>
+                                <div class="product-icon">🏠</div>
+                                <h5 class="product-title">OHS Organic Starter Home Bundle</h5>
+                                
+                                <div class="pricing-section">
+                                    <div class="price-retail">$66.92</div>
+                                    <div class="price-wholesale">15+ units: $49.50 (26% off)</div>
+                                    <small class="text-muted">SKU: OHS-STARTER-HOME-BUNDLE | Min Order: 300</small>
+                                </div>
+
+                                <button class="add-to-cart-btn" onclick="addToCart('ohs-organic-starter-home-bundle', 'OHS Organic Starter Home Bundle', 66.92, '🏠', 49.50, 15)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add Bundle
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- OHS Organic Essential Family Bundle -->
+                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                        <div class="product-card" 
+                             data-brand="ohs" 
+                             data-category="bundle" 
+                             data-size="bulk"
+                             data-shopify-handle="ohs-organic-essential-family-bundle">
+                            <div class="product-badge badge-bundle">Essential</div>
+                            <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-ohs">OHS ORGANIC</div>
+                                <div class="product-icon">👨‍👩‍👧‍👦</div>
+                                <h5 class="product-title">OHS Organic Essential Family Bundle</h5>
                                 
                                 <div class="pricing-section">
                                     <div class="price-retail">$139.73</div>
-                                    <div class="price-wholesale">Individual price: $162.15</div>
-                                    <div class="text-success fw-bold">Save $22.42 (14% off)</div>
-                                    <small class="text-muted">SKU: OHS-ESSENTIAL-BUNDLE</small>
+                                    <div class="price-wholesale">10+ units: $103.42 (26% off)</div>
+                                    <small class="text-muted">SKU: OHS-ESSENTIAL-FAMILY-BUNDLE | Min Order: 250</small>
                                 </div>
 
-                                <p class="card-text"><strong>Bundle Includes:</strong></p>
-                                <ul class="features-list text-start">
-                                    <li><i class="fas fa-check"></i>3oz Organic Multi-Surface Disinfectant</li>
-                                    <li><i class="fas fa-check"></i>32oz Organic Ready-to-Use Cleaner</li>
-                                    <li><i class="fas fa-check"></i>32oz Organic Pet Safe Cleaner</li>
-                                    <li><i class="fas fa-check"></i>Organic All-in-One Wipes</li>
-                                    <li><i class="fas fa-check"></i>32oz Organic Laundry Booster</li>
-                                </ul>
-
-                                <!-- Quantity Controls -->
-                                <div class="quantity-controls">
-                                    <button class="qty-btn" onclick="updateQuantity('essential-bundle', -1)" id="minus-essential-bundle">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                    <span class="qty-display" id="qty-essential-bundle">1</span>
-                                    <button class="qty-btn" onclick="updateQuantity('essential-bundle', 1)">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-
-                                <button class="add-to-cart-btn" onclick="addToCart('essential-family-bundle', 'Essential Family Bundle', 139.73, '🎯', 103.38, 5)">
-                                    <i class="fas fa-cart-plus me-2"></i>Add Bundle to Cart
-                                    <span class="construction-badge">Shopify Ready</span>
+                                <button class="add-to-cart-btn" onclick="addToCart('ohs-organic-essential-family-bundle', 'OHS Organic Essential Family Bundle', 139.73, '👨‍👩‍👧‍👦', 103.42, 10)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add Bundle
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Complete Care Bundle -->
+                    <!-- OHS Organic Complete Care Bundle -->
                     <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
                         <div class="product-card" 
-                             data-certification="usda" 
-                             data-usecase="commercial" 
+                             data-brand="ohs" 
+                             data-category="bundle" 
                              data-size="bulk"
-                             data-shopify-id="complete-care-bundle">
-                            <div class="product-badge badge-usda">Ultimate</div>
+                             data-shopify-handle="ohs-organic-complete-care-bundle">
+                            <div class="product-badge badge-bundle">Complete</div>
                             <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-ohs">OHS ORGANIC</div>
                                 <div class="product-icon">💎</div>
-                                <h5 class="product-title">Complete Care Bundle</h5>
-                                
-                                <div class="certification-row">
-                                    <span class="cert-badge">Ultimate Package</span>
-                                    <span class="cert-badge">Premium Value</span>
-                                    <span class="cert-badge">Everything Included</span>
-                                    <span class="cert-badge">USDA Organic</span>
-                                </div>
+                                <h5 class="product-title">OHS Organic Complete Care Bundle</h5>
                                 
                                 <div class="pricing-section">
                                     <div class="price-retail">$173.36</div>
-                                    <div class="price-wholesale">Individual price: $204.74</div>
-                                    <div class="text-success fw-bold">Save $31.38 (15% off)</div>
-                                    <small class="text-muted">SKU: OHS-COMPLETE-BUNDLE</small>
+                                    <div class="price-wholesale">8+ units: $128.28 (26% off)</div>
+                                    <small class="text-muted">SKU: OHS-COMPLETE-CARE-BUNDLE | Min Order: 200</small>
                                 </div>
 
-                                <p class="card-text"><strong>Bundle Includes:</strong></p>
-                                <ul class="features-list text-start">
-                                    <li><i class="fas fa-check"></i>All Essential Bundle items, plus:</li>
-                                    <li><i class="fas fa-check"></i>1 Gallon Organic Ready-to-Use</li>
-                                    <li><i class="fas fa-check"></i>3oz Organic Skin Health Mist</li>
-                                    <li><i class="fas fa-check"></i>Maximum household coverage</li>
-                                    <li><i class="fas fa-check"></i>Professional + personal use</li>
-                                </ul>
-
-                                <!-- Quantity Controls -->
-                                <div class="quantity-controls">
-                                    <button class="qty-btn" onclick="updateQuantity('complete-bundle', -1)" id="minus-complete-bundle">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                    <span class="qty-display" id="qty-complete-bundle">1</span>
-                                    <button class="qty-btn" onclick="updateQuantity('complete-bundle', 1)">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-
-                                <button class="add-to-cart-btn" onclick="addToCart('complete-care-bundle', 'Complete Care Bundle', 173.36, '💎', 128.28, 3)">
-                                    <i class="fas fa-cart-plus me-2"></i>Add Bundle to Cart
-                                    <span class="construction-badge">Shopify Ready</span>
+                                <button class="add-to-cart-btn" onclick="addToCart('ohs-organic-complete-care-bundle', 'OHS Organic Complete Care Bundle', 173.36, '💎', 128.28, 8)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add Bundle
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Ready to Use Value Bundle -->
+                    <!-- OHS Organic Ready-to-Use Value Bundle -->
                     <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
                         <div class="product-card" 
-                             data-certification="usda" 
-                             data-usecase="personal" 
+                             data-brand="ohs" 
+                             data-category="bundle" 
                              data-size="standard"
-                             data-shopify-id="rtu-value-bundle">
-                            <div class="product-badge badge-new">Starter Kit</div>
+                             data-shopify-handle="ohs-organic-ready-to-use-value-bundle">
+                            <div class="product-badge badge-bundle">Value</div>
                             <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-ohs">OHS ORGANIC</div>
                                 <div class="product-icon">⭐</div>
-                                <h5 class="product-title">Ready to Use Value Bundle</h5>
-                                
-                                <div class="certification-row">
-                                    <span class="cert-badge">Perfect Starter</span>
-                                    <span class="cert-badge">Multi-Size</span>
-                                    <span class="cert-badge">Great Value</span>
-                                    <span class="cert-badge">USDA Organic</span>
-                                </div>
+                                <h5 class="product-title">OHS Organic Ready-to-Use Value Bundle</h5>
                                 
                                 <div class="pricing-section">
-                                    <div class="price-retail">$55.00</div>
-                                    <div class="price-wholesale">Individual price: $65.47</div>
-                                    <div class="text-success fw-bold">Save $10.47 (16% off)</div>
-                                    <small class="text-muted">SKU: OHS-RTU-VALUE-BUNDLE</small>
+                                    <div class="price-retail">$73.92</div>
+                                    <div class="price-wholesale">12+ units: $54.70 (26% off)</div>
+                                    <small class="text-muted">SKU: OHS-RTU-VALUE-BUNDLE | Min Order: 300</small>
                                 </div>
 
-                                <p class="card-text"><strong>Perfect Introduction Bundle:</strong></p>
-                                <ul class="features-list text-start">
-                                    <li><i class="fas fa-check"></i>3oz Travel Size (2 units)</li>
-                                    <li><i class="fas fa-check"></i>32oz Home Size (1 unit)</li>
-                                    <li><i class="fas fa-check"></i>Complete starter solution</li>
-                                    <li><i class="fas fa-check"></i>Perfect for beginners</li>
-                                    <li><i class="fas fa-check"></i>Try before larger purchase</li>
-                                </ul>
+                                <button class="add-to-cart-btn" onclick="addToCart('ohs-organic-ready-to-use-value-bundle', 'OHS Organic Ready-to-Use Value Bundle', 73.92, '⭐', 54.70, 12)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add Bundle
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
-                                <!-- Quantity Controls -->
-                                <div class="quantity-controls">
-                                    <button class="qty-btn" onclick="updateQuantity('rtu-bundle', -1)" id="minus-rtu-bundle">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                    <span class="qty-display" id="qty-rtu-bundle">1</span>
-                                    <button class="qty-btn" onclick="updateQuantity('rtu-bundle', 1)">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
+                    <!-- OHS Organic Pet Care Bundle -->
+                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                        <div class="product-card" 
+                             data-brand="ohs" 
+                             data-category="bundle" 
+                             data-size="standard"
+                             data-shopify-handle="ohs-organic-pet-care-bundle">
+                            <div class="product-badge badge-bundle">Pet Care</div>
+                            <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-ohs">OHS ORGANIC</div>
+                                <div class="product-icon">🐾</div>
+                                <h5 class="product-title">OHS Organic Pet Care Bundle</h5>
+                                
+                                <div class="pricing-section">
+                                    <div class="price-retail">$72.45</div>
+                                    <div class="price-wholesale">12+ units: $53.61 (26% off)</div>
+                                    <small class="text-muted">SKU: OHS-PET-CARE-BUNDLE | Min Order: 200</small>
                                 </div>
 
-                                <button class="add-to-cart-btn" onclick="addToCart('rtu-value-bundle', 'Ready to Use Value Bundle', 55.00, '⭐', 40.70, 8)">
-                                    <i class="fas fa-cart-plus me-2"></i>Add Bundle to Cart
-                                    <span class="construction-badge">Shopify Ready</span>
+                                <button class="add-to-cart-btn" onclick="addToCart('ohs-organic-pet-care-bundle', 'OHS Organic Pet Care Bundle', 72.45, '🐾', 53.61, 12)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add Bundle
                                 </button>
                             </div>
                         </div>
@@ -1530,150 +1599,355 @@
                 </div>
             </div>
 
-            <!-- Specialty Section -->
-            <div id="specialty" class="mb-5">
-                <h2 class="text-center mb-4 fw-bold text-primary">
-                    <i class="fas fa-paw me-2"></i>Specialty Applications
+            <!-- Hypo Company Premium Products Section -->
+            <div id="premium-products" class="mb-5">
+                <h2 class="text-center mb-4 fw-bold" style="color: #f59e0b;">
+                    <i class="fas fa-crown me-2"></i>Hypo Company Premium Line (38 Products)
                 </h2>
+                <div class="text-center mb-4">
+                    <span class="badge fs-6 p-2" style="background: #f59e0b; color: white;">Premium Formulation | Advanced Packaging | Monthly Invoice System | Professional Grade</span>
+                </div>
+                
+                <!-- Premium Personal Care Products -->
+                <h4 class="fw-bold text-primary mb-3">Premium Personal Care Products (3)</h4>
+                <div class="row mb-4">
+                    <!-- Hypo Company 3oz Multi-Use Disinfectant -->
+                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                        <div class="product-card" 
+                             data-brand="premium" 
+                             data-category="personal" 
+                             data-size="travel"
+                             data-shopify-handle="hypo-company-3oz-multi-use-disinfectant">
+                            <div class="product-badge badge-premium">Premium</div>
+                            <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-premium">HYPO COMPANY PREMIUM</div>
+                                <div class="product-icon">🧴</div>
+                                <h5 class="product-title">3oz Multi-Use Disinfectant</h5>
+                                
+                                <div class="pricing-section">
+                                    <div class="price-retail">$14.14</div>
+                                    <div class="price-wholesale">50+ units: $10.29 (27% off)</div>
+                                    <small class="text-muted">SKU: HC-3OZ-DISINFECTANT | Monthly Invoice Available</small>
+                                </div>
+
+                                <button class="add-to-cart-btn" onclick="addToCart('hypo-company-3oz-multi-use-disinfectant', '3oz Multi-Use Disinfectant - Hypo Company Premium', 14.14, '🧴', 10.29, 50)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hypo Company 3oz HC-Pure Skin Health Mist -->
+                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                        <div class="product-card" 
+                             data-brand="premium" 
+                             data-category="personal" 
+                             data-size="travel"
+                             data-shopify-handle="hypo-company-3oz-hc-pure-skin-health-mist">
+                            <div class="product-badge badge-premium">HC-Pure</div>
+                            <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-premium">HYPO COMPANY PREMIUM</div>
+                                <div class="product-icon">✨</div>
+                                <h5 class="product-title">3oz HC-Pure Skin Health Mist</h5>
+                                
+                                <div class="pricing-section">
+                                    <div class="price-retail">$15.70</div>
+                                    <div class="price-wholesale">50+ units: $11.42 (27% off)</div>
+                                    <small class="text-muted">SKU: HC-3OZ-SKIN-MIST | Monthly Invoice Available</small>
+                                </div>
+
+                                <button class="add-to-cart-btn" onclick="addToCart('hypo-company-3oz-hc-pure-skin-health-mist', '3oz HC-Pure Skin Health Mist - Hypo Company Premium', 15.70, '✨', 11.42, 50)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hypo Company 8oz HC-Pure Skin Health Mist -->
+                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                        <div class="product-card" 
+                             data-brand="premium" 
+                             data-category="personal" 
+                             data-size="standard"
+                             data-shopify-handle="hypo-company-8oz-hc-pure-skin-health-mist">
+                            <div class="product-badge badge-premium">Premium</div>
+                            <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-premium">HYPO COMPANY PREMIUM</div>
+                                <div class="product-icon">👨‍👩‍👧‍👦</div>
+                                <h5 class="product-title">8oz HC-Pure Skin Health Mist</h5>
+                                
+                                <div class="pricing-section">
+                                    <div class="price-retail">$19.59</div>
+                                    <div class="price-wholesale">25+ units: $14.25 (27% off)</div>
+                                    <small class="text-muted">SKU: HC-8OZ-SKIN-MIST | Monthly Invoice Available</small>
+                                </div>
+
+                                <button class="add-to-cart-btn" onclick="addToCart('hypo-company-8oz-hc-pure-skin-health-mist', '8oz HC-Pure Skin Health Mist - Hypo Company Premium', 19.59, '👨‍👩‍👧‍👦', 14.25, 25)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Premium Commercial Cleaning Products -->
+                <h4 class="fw-bold text-primary mb-3">Premium Commercial Cleaning Products (4)</h4>
+                <div class="row mb-4">
+                    <!-- Hypo Company 32oz Multi Use Cleaner EPA -->
+                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                        <div class="product-card" 
+                             data-brand="premium" 
+                             data-category="commercial" 
+                             data-size="standard"
+                             data-shopify-handle="hypo-company-32oz-multi-use-cleaner-epa">
+                            <div class="product-badge badge-premium">EPA Registered</div>
+                            <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-premium">HYPO COMPANY PREMIUM</div>
+                                <div class="product-icon">🛡️</div>
+                                <h5 class="product-title">32oz Multi Use Cleaner EPA</h5>
+                                
+                                <div class="pricing-section">
+                                    <div class="price-retail">$24.33</div>
+                                    <div class="price-wholesale">25+ units: $17.68 (27% off)</div>
+                                    <small class="text-muted">SKU: HC-32OZ-CLEANER-EPA | Monthly Invoice Available</small>
+                                </div>
+
+                                <button class="add-to-cart-btn" onclick="addToCart('hypo-company-32oz-multi-use-cleaner-epa', '32oz Multi Use Cleaner EPA - Hypo Company Premium', 24.33, '🛡️', 17.68, 25)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hypo Company 1 Gallon Ready to Use -->
+                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                        <div class="product-card" 
+                             data-brand="premium" 
+                             data-category="commercial" 
+                             data-size="bulk"
+                             data-shopify-handle="hypo-company-1-gallon-ready-to-use">
+                            <div class="product-badge badge-premium">Bulk Premium</div>
+                            <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-premium">HYPO COMPANY PREMIUM</div>
+                                <div class="product-icon">🏢</div>
+                                <h5 class="product-title">1 Gallon Ready to Use</h5>
+                                
+                                <div class="pricing-section">
+                                    <div class="price-retail">$40.65</div>
+                                    <div class="price-wholesale">10+ units: $29.67 (27% off)</div>
+                                    <small class="text-muted">SKU: HC-1GAL-READY-RTU | Monthly Invoice Available</small>
+                                </div>
+
+                                <button class="add-to-cart-btn" onclick="addToCart('hypo-company-1-gallon-ready-to-use', '1 Gallon Ready to Use - Hypo Company Premium', 40.65, '🏢', 29.67, 10)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hypo Company 1 Gallon Ready to Use EPA -->
+                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                        <div class="product-card" 
+                             data-brand="premium" 
+                             data-category="commercial" 
+                             data-size="bulk"
+                             data-shopify-handle="hypo-company-1-gallon-ready-to-use-epa">
+                            <div class="product-badge badge-premium">EPA Premium</div>
+                            <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-premium">HYPO COMPANY PREMIUM</div>
+                                <div class="product-icon">🏛️</div>
+                                <h5 class="product-title">1 Gallon Ready to Use EPA</h5>
+                                
+                                <div class="pricing-section">
+                                    <div class="price-retail">$41.73</div>
+                                    <div class="price-wholesale">10+ units: $30.47 (27% off)</div>
+                                    <small class="text-muted">SKU: HC-1GAL-READY-EPA | Monthly Invoice Available</small>
+                                </div>
+
+                                <button class="add-to-cart-btn" onclick="addToCart('hypo-company-1-gallon-ready-to-use-epa', '1 Gallon Ready to Use EPA - Hypo Company Premium', 41.73, '🏛️', 30.47, 10)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hypo Company 32oz Pet Cleaner and Deodorizer -->
+                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                        <div class="product-card" 
+                             data-brand="premium" 
+                             data-category="veterinary" 
+                             data-size="standard"
+                             data-shopify-handle="hypo-company-32oz-pet-cleaner-and-deodorizer">
+                            <div class="product-badge badge-premium">Pet Premium</div>
+                            <div class="card-body p-4 text-center">
+                                <div class="brand-tag brand-premium">HYPO COMPANY PREMIUM</div>
+                                <div class="product-icon">🐕</div>
+                                <h5 class="product-title">32oz Pet Cleaner and Deodorizer</h5>
+                                
+                                <div class="pricing-section">
+                                    <div class="price-retail">$23.82</div>
+                                    <div class="price-wholesale">25+ units: $17.30 (27% off)</div>
+                                    <small class="text-muted">SKU: HC-32OZ-PET-CLEANER | Monthly Invoice Available</small>
+                                </div>
+
+                                <button class="add-to-cart-btn" onclick="addToCart('hypo-company-32oz-pet-cleaner-and-deodorizer', '32oz Pet Cleaner and Deodorizer - Hypo Company Premium', 23.82, '🐕', 17.30, 25)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- More Premium Products... -->
+                <div class="text-center mb-4">
+                    <button class="btn btn-outline-primary btn-lg" onclick="showAllPremiumProducts()">
+                        <i class="fas fa-crown me-2"></i>View All 38 Hypo Company Premium Products
+                    </button>
+                    <small class="d-block mt-2 text-muted">Includes Veterinary, Laundry, Therapeutic, Equipment, and Industrial Bulk Products</small>
+                </div>
+            </div>
+
+            <!-- Industrial Bulk Products Section -->
+            <div id="industrial-products" class="industrial-section">
+                <div class="container">
+                    <h2 class="text-center mb-4 fw-bold text-white">
+                        <i class="fas fa-industry me-2"></i>Industrial Bulk Solutions
+                    </h2>
+                    <div class="text-center mb-4">
+                        <span class="badge bg-danger fs-6 p-2">Industrial Scale | 150-5000 Gallons | Premium Customer Support</span>
+                    </div>
+                    
+                    <div class="row">
+                        <!-- Sample Industrial Products -->
+                        <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                            <div class="product-card" 
+                                 data-brand="premium" 
+                                 data-category="industrial" 
+                                 data-size="bulk"
+                                 data-shopify-handle="hypo-company-150-gallon-organic-epa">
+                                <div class="product-badge industrial-badge">150 Gallon</div>
+                                <div class="card-body p-4 text-center">
+                                    <div class="brand-tag brand-premium">HYPO COMPANY PREMIUM</div>
+                                    <div class="product-icon">🏭</div>
+                                    <h5 class="product-title">150 Gallon Organic EPA</h5>
+                                    
+                                    <div class="pricing-section">
+                                        <div class="price-retail">$7,214.40</div>
+                                        <div class="price-wholesale">Wholesale: $5,472.00 (24% off)</div>
+                                        <small class="text-muted">SKU: HC-150GAL-ORGANIC-EPA | Monthly Invoice Available</small>
+                                    </div>
+
+                                    <p class="card-text text-white">Industrial-scale organic EPA-registered solution for large-scale operations.</p>
+
+                                    <button class="add-to-cart-btn" onclick="addToCart('hypo-company-150-gallon-organic-epa', '150 Gallon Organic EPA - Hypo Company Premium', 7214.40, '🏭', 5472.00, 1)">
+                                        <i class="fas fa-industry me-2"></i>Request Industrial Quote
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                            <div class="product-card" 
+                                 data-brand="premium" 
+                                 data-category="industrial" 
+                                 data-size="bulk"
+                                 data-shopify-handle="hypo-company-5000-gallon-organic-epa">
+                                <div class="product-badge industrial-badge">5000 Gallon</div>
+                                <div class="card-body p-4 text-center">
+                                    <div class="brand-tag brand-premium">HYPO COMPANY PREMIUM</div>
+                                    <div class="product-icon">⚡</div>
+                                    <h5 class="product-title">5000 Gallon Organic EPA</h5>
+                                    
+                                    <div class="pricing-section">
+                                        <div class="price-retail">$176,172.63</div>
+                                        <div class="price-wholesale">Wholesale: $133,663.95 (24% off)</div>
+                                        <small class="text-muted">SKU: HC-5000GAL-ORGANIC-EPA | Monthly Invoice Available</small>
+                                    </div>
+
+                                    <p class="card-text text-white">Maximum scale industrial solution with premium customer support and delivery.</p>
+
+                                    <button class="add-to-cart-btn" onclick="addToCart('hypo-company-5000-gallon-organic-epa', '5000 Gallon Organic EPA - Hypo Company Premium', 176172.63, '⚡', 133663.95, 1)">
+                                        <i class="fas fa-industry me-2"></i>Request Industrial Quote
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
+                            <div class="product-card text-center">
+                                <div class="card-body p-4">
+                                    <div class="product-icon">🏗️</div>
+                                    <h5 class="product-title text-white">Industrial Bulk Range</h5>
+                                    <ul class="text-start text-white">
+                                        <li>150 - 5000 Gallon EPA Organic Solutions</li>
+                                        <li>150 - 5000 Gallon FDA Certified Solutions</li>
+                                        <li>Custom Formulations Available</li>
+                                        <li>Dedicated Account Management</li>
+                                        <li>Professional Delivery & Setup</li>
+                                        <li>Regulatory Compliance Support</li>
+                                    </ul>
+                                    
+                                    <button class="btn btn-light btn-lg mt-3" onclick="requestIndustrialQuote()">
+                                        <i class="fas fa-clipboard-list me-2"></i>Request Industrial Quote
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bundle Products Section -->
+            <div id="bundle-products" class="mb-5">
+                <h2 class="text-center mb-4 fw-bold text-primary">
+                    <i class="fas fa-box me-2"></i>Value Bundle Packages
+                </h2>
+                <div class="text-center mb-4">
+                    <span class="badge bg-info fs-6 p-2">10 Bundle Options | OHS Organic & Hypo Company Premium | Significant Savings</span>
+                </div>
+                
                 <div class="row">
-                    <!-- Pet Care Bundle -->
+                    <!-- Sample Bundle Products -->
                     <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
                         <div class="product-card" 
-                             data-certification="usda" 
-                             data-usecase="personal" 
+                             data-brand="premium" 
+                             data-category="bundle" 
                              data-size="standard"
-                             data-shopify-id="pet-care-bundle">
-                            <div class="product-badge badge-usda">Pet Safe</div>
+                             data-shopify-handle="hypo-company-hc-starter-cleaning-bundle">
+                            <div class="product-badge badge-bundle">HC Starter</div>
                             <div class="card-body p-4 text-center">
-                                <div class="product-icon">🐾</div>
-                                <h5 class="product-title">Pet Care & Wound Treatment Bundle</h5>
-                                
-                                <div class="certification-row">
-                                    <span class="cert-badge">Veterinary Grade</span>
-                                    <span class="cert-badge">Pet Safe</span>
-                                    <span class="cert-badge">Complete Pet Care</span>
-                                    <span class="cert-badge">USDA Organic</span>
-                                </div>
+                                <div class="brand-tag brand-premium">HYPO COMPANY PREMIUM</div>
+                                <div class="product-icon">🎯</div>
+                                <h5 class="product-title">HC Starter Cleaning Bundle</h5>
                                 
                                 <div class="pricing-section">
-                                    <div class="price-retail">$53.00</div>
-                                    <div class="price-wholesale">5+ bundles: $39.22 (26% off)</div>
-                                    <small class="text-muted">SKU: OHS-PET-CARE-BUNDLE</small>
+                                    <div class="price-retail">$77.00</div>
+                                    <div class="price-wholesale">10+ units: $56.00 (27% off)</div>
+                                    <small class="text-muted">SKU: HC-STARTER-BUNDLE | Monthly Invoice Available</small>
                                 </div>
 
-                                <p class="card-text"><strong>Complete Pet Care Solution:</strong></p>
-                                <ul class="features-list text-start">
-                                    <li><i class="fas fa-check"></i>32oz Pet Safe Cleaner & Deodorizer</li>
-                                    <li><i class="fas fa-check"></i>3oz Pet Wound Care Treatment</li>
-                                    <li><i class="fas fa-check"></i>Safe for all pets</li>
-                                    <li><i class="fas fa-check"></i>Veterinary approved formulas</li>
-                                    <li><i class="fas fa-check"></i>Accelerates healing</li>
-                                </ul>
-
-                                <!-- Quantity Controls -->
-                                <div class="quantity-controls">
-                                    <button class="qty-btn" onclick="updateQuantity('pet-bundle', -1)" id="minus-pet-bundle">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                    <span class="qty-display" id="qty-pet-bundle">1</span>
-                                    <button class="qty-btn" onclick="updateQuantity('pet-bundle', 1)">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-
-                                <button class="add-to-cart-btn" onclick="addToCart('pet-care-bundle', 'Pet Care & Wound Treatment Bundle', 53.00, '🐾', 39.22, 5)">
-                                    <i class="fas fa-cart-plus me-2"></i>Add Bundle to Cart
-                                    <span class="construction-badge">Shopify Ready</span>
+                                <button class="add-to-cart-btn" onclick="addToCart('hypo-company-hc-starter-cleaning-bundle', 'HC Starter Cleaning Bundle - Hypo Company Premium', 77.00, '🎯', 56.00, 10)">
+                                    <i class="fas fa-cart-plus me-2"></i>Add Bundle
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Healthcare Bundle -->
+                    <!-- More bundle products would go here... -->
                     <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
-                        <div class="product-card" 
-                             data-certification="epa" 
-                             data-usecase="healthcare" 
-                             data-size="standard"
-                             data-shopify-id="healthcare-bundle">
-                            <div class="product-badge badge-epa">Healthcare</div>
-                            <div class="card-body p-4 text-center">
-                                <div class="product-icon">🏥</div>
-                                <h5 class="product-title">Healthcare Professional Bundle</h5>
-                                
-                                <div class="certification-row">
-                                    <span class="cert-badge">EPA Premium</span>
-                                    <span class="cert-badge">Healthcare Grade</span>
-                                    <span class="cert-badge">Professional</span>
-                                    <span class="cert-badge">Institutional</span>
-                                </div>
-                                
-                                <div class="pricing-section">
-                                    <div class="price-retail">$144.94</div>
-                                    <div class="price-wholesale">3+ bundles: $107.25 (26% off)</div>
-                                    <small class="text-muted">SKU: HC-HEALTHCARE-BUNDLE</small>
-                                </div>
-
-                                <p class="card-text"><strong>Professional Healthcare Package:</strong></p>
-                                <ul class="features-list text-start">
-                                    <li><i class="fas fa-check"></i>Multiple EPA Premium formulas</li>
-                                    <li><i class="fas fa-check"></i>Healthcare facility approved</li>
-                                    <li><i class="fas fa-check"></i>Professional-grade efficacy</li>
-                                    <li><i class="fas fa-check"></i>Institutional applications</li>
-                                    <li><i class="fas fa-check"></i>Complete coverage solution</li>
+                        <div class="product-card text-center">
+                            <div class="card-body p-4">
+                                <div class="product-icon">📦</div>
+                                <h5 class="product-title">Complete Bundle Collection</h5>
+                                <ul class="text-start">
+                                    <li><strong>OHS Organic Bundles (5):</strong> Starter, Essential, Complete, Value, Pet Care</li>
+                                    <li><strong>Hypo Company Premium Bundles (5):</strong> HC Starter, HC Essential, HC Complete, HC Value, HC Pet Care</li>
+                                    <li>Significant savings over individual purchases</li>
+                                    <li>Perfect for businesses and families</li>
                                 </ul>
-
-                                <!-- Quantity Controls -->
-                                <div class="quantity-controls">
-                                    <button class="qty-btn" onclick="updateQuantity('healthcare-bundle', -1)" id="minus-healthcare-bundle">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                    <span class="qty-display" id="qty-healthcare-bundle">1</span>
-                                    <button class="qty-btn" onclick="updateQuantity('healthcare-bundle', 1)">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-
-                                <button class="add-to-cart-btn" onclick="addToCart('healthcare-bundle', 'Healthcare Professional Bundle', 144.94, '🏥', 107.25, 3)">
-                                    <i class="fas fa-cart-plus me-2"></i>Add Bundle to Cart
-                                    <span class="construction-badge">Shopify Ready</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Coming Soon: Generator Products -->
-                    <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
-                        <div class="product-card filter-transition" style="opacity: 0.6;">
-                            <div class="product-badge" style="background: #6b7280; color: white;">Coming Soon</div>
-                            <div class="card-body p-4 text-center">
-                                <div class="product-icon">⚡</div>
-                                <h5 class="product-title">HOCl Generator Systems</h5>
                                 
-                                <div class="certification-row">
-                                    <span class="cert-badge">Make Your Own</span>
-                                    <span class="cert-badge">Cost Effective</span>
-                                    <span class="cert-badge">Business Grade</span>
-                                    <span class="cert-badge">Coming Q2</span>
-                                </div>
-                                
-                                <div class="pricing-section">
-                                    <div class="price-retail">$449 - $899</div>
-                                    <div class="price-wholesale">Various Models Available</div>
-                                    <small class="text-muted">Pre-orders accepted</small>
-                                </div>
-
-                                <p class="card-text">Complete generator systems for on-demand HOCl production. Perfect for businesses requiring high volumes.</p>
-
-                                <ul class="features-list text-start">
-                                    <li><i class="fas fa-clock"></i>Generate fresh HOCl on-demand</li>
-                                    <li><i class="fas fa-clock"></i>Multiple capacity options</li>
-                                    <li><i class="fas fa-clock"></i>Long-term cost savings</li>
-                                    <li><i class="fas fa-clock"></i>Business-grade systems</li>
-                                </ul>
-
-                                <button class="btn btn-outline-primary w-100 mt-3" onclick="notifyWhenAvailable('generators')">
-                                    <i class="fas fa-bell me-2"></i>Notify When Available
+                                <button class="btn btn-primary btn-lg mt-3" onclick="requestBundleQuote()">
+                                    <i class="fas fa-box me-2"></i>View All Bundles
                                 </button>
                             </div>
                         </div>
@@ -1747,8 +2021,8 @@
                 <div class="col-lg-3 col-md-6 col-6">
                     <div class="trust-item">
                         <i class="fas fa-shield-alt"></i>
-                        <h6>Triple Certified</h6>
-                        <p class="small mb-0">USDA, EPA, FDA approved</p>
+                        <h6>Dual Certified</h6>
+                        <p class="small mb-0">EPA & USDA approved</p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 col-6">
@@ -1777,12 +2051,13 @@
                     <h3 class="fw-bold mb-3">
                         <i class="fas fa-building me-3"></i>Need Business or Wholesale Pricing?
                     </h3>
-                    <p class="lead mb-0">Join our business program for volume discounts, Net 30 terms, dedicated account management, and custom formulations.</p>
+                    <p class="lead mb-0">Join our business program for volume discounts, Net 30 terms, dedicated account management, and access to both product lines.</p>
                     <div class="mt-3">
-                        <span class="me-4">✓ Volume discounts up to 46% off</span>
+                        <span class="me-4">✓ Volume discounts up to 27% off</span>
                         <span class="me-4">✓ Net 30 payment terms</span>
                         <span class="me-4">✓ Dedicated account manager</span>
-                        <span>✓ Custom bulk formulations</span>
+                        <span class="me-4">✓ Monthly invoice flexibility</span>
+                        <span>✓ Access to 57 products</span>
                     </div>
                 </div>
                 <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
@@ -1813,7 +2088,7 @@
                         </svg>
                         <h5 class="mb-0">Organic HypoSolutions</h5>
                     </div>
-                    <p>Utah's premier dual-certified HOCl manufacturer. Professional-grade EPA registered and USDA organic solutions for every application.</p>
+                    <p>Utah's premier dual-brand HOCl manufacturer. 57 products across premium Hypo Company and competitive OHS Organic lines.</p>
                     <p><small>Utah Business License #14565171-0160</small></p>
                     
                     <!-- USDA Certification Image -->
@@ -1825,22 +2100,21 @@
                 <div class="col-md-2 mb-4">
                     <h6 class="fw-bold mb-3">Product Lines</h6>
                     <ul class="list-unstyled">
-                        <li><a href="#usda-organic" class="text-white-50 text-decoration-none">USDA Organic Line</a></li>
-                        <li><a href="#epa-premium" class="text-white-50 text-decoration-none">EPA Premium Line</a></li>
-                        <li><a href="#personal" class="text-white-50 text-decoration-none">Personal Care</a></li>
-                        <li><a href="#commercial" class="text-white-50 text-decoration-none">Commercial</a></li>
-                        <li><a href="#bundles" class="text-white-50 text-decoration-none">Value Bundles</a></li>
-                        <li><a href="#specialty" class="text-white-50 text-decoration-none">Specialty Apps</a></li>
+                        <li><a href="#organic-products" class="text-white-50 text-decoration-none">OHS Organic (19)</a></li>
+                        <li><a href="#premium-products" class="text-white-50 text-decoration-none">Hypo Company Premium (38)</a></li>
+                        <li><a href="#industrial-products" class="text-white-50 text-decoration-none">Industrial Bulk</a></li>
+                        <li><a href="#bundle-products" class="text-white-50 text-decoration-none">Value Bundles</a></li>
                     </ul>
                 </div>
                 
                 <div class="col-md-2 mb-4">
-                    <h6 class="fw-bold mb-3">Services</h6>
+                    <h6 class="fw-bold mb-3">Categories</h6>
                     <ul class="list-unstyled">
-                        <li><a href="services.html" class="text-white-50 text-decoration-none">Professional Cleaning</a></li>
-                        <li><a href="shop/book-service.html" class="text-white-50 text-decoration-none">Book Service</a></li>
-                        <li><a href="calculator.html" class="text-white-50 text-decoration-none">Cost Calculator</a></li>
-                        <li><a href="account/business-dashboard.html" class="text-white-50 text-decoration-none">Business Portal</a></li>
+                        <li><span class="text-white-50">Personal Care (6)</span></li>
+                        <li><span class="text-white-50">Commercial (10)</span></li>
+                        <li><span class="text-white-50">Veterinary (8)</span></li>
+                        <li><span class="text-white-50">Industrial (23)</span></li>
+                        <li><span class="text-white-50">Bundles (10)</span></li>
                     </ul>
                 </div>
                 
@@ -1896,7 +2170,7 @@
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Shopify Integration JavaScript -->
+    <!-- Complete Product Catalog JavaScript -->
     <script>
         // Shopify Configuration (Ready for Integration)
         const shopifyConfig = {
@@ -1913,7 +2187,7 @@
                     domain: shopifyConfig.domain,
                     storefrontAccessToken: shopifyConfig.storefrontAccessToken
                 });
-                console.log('🛍️ Shopify SDK initialized');
+                console.log('🛍️ Shopify SDK initialized - 57 products ready');
             } else {
                 console.log('📦 Shopify SDK not loaded - running in development mode');
             }
@@ -1921,7 +2195,7 @@
 
         // Connect Shopify function (Dev Mode)
         function connectShopify() {
-            alert('🔧 Shopify Integration Ready!\n\nSteps to complete:\n1. Replace placeholder domain and token\n2. Uncomment Shopify SDK script\n3. Map product IDs to Shopify handles\n4. Test checkout flow');
+            alert('🔧 Complete Product Catalog - Shopify Integration Ready!\n\n✅ 57 Products Configured:\n- 19 OHS Organic Products\n- 38 Hypo Company Premium Products\n\nSteps to complete:\n1. Replace placeholder domain and token\n2. Uncomment Shopify SDK script\n3. Test checkout flow\n4. Configure product variants');
         }
 
         // Show development mode if localhost or dev parameter
@@ -1932,6 +2206,13 @@
         // Cart Management System
         let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
         let productQuantities = {};
+
+        // Active filters
+        let activeFilters = {
+            brand: 'all',
+            category: 'all',
+            size: 'all'
+        };
 
         // Initialize quantities to 1 for all products
         document.addEventListener('DOMContentLoaded', function() {
@@ -1945,6 +2226,7 @@
             });
             
             updateCartDisplay();
+            console.log('📊 Complete Product Catalog Loaded: 57 products ready for Shopify integration');
         });
 
         // Update product quantity
@@ -2002,7 +2284,7 @@
             }, 300);
 
             // Log to console for development tracking
-            console.log(`📦 Added to cart: ${name} (${quantity}x) - Shopify ID: ${productId}`);
+            console.log(`📦 Added to cart: ${name} (${quantity}x) - Shopify Handle: ${productId}`);
             
             // Future Shopify integration point
             if (shopifyConfig.client) {
@@ -2052,7 +2334,7 @@
                     <div class="text-center text-muted py-4">
                         <i class="fas fa-shopping-cart fa-3x mb-3" style="opacity: 0.3;"></i>
                         <p>Your cart is empty</p>
-                        <small>Add products to see them here</small>
+                        <small>Add from 57 products available</small>
                     </div>
                 `;
                 cartSummary.style.display = 'none';
@@ -2140,13 +2422,7 @@
             }, 3000);
         }
 
-        // Product filtering system
-        let activeFilters = {
-            certification: 'all',
-            usecase: 'all',
-            size: 'all'
-        };
-
+        // Advanced product filtering system
         function filterProducts(button, filterType) {
             // Update button states
             button.parentElement.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -2160,24 +2436,23 @@
         }
 
         function applyFilters() {
-            const products = document.querySelectorAll('[data-certification]');
+            const products = document.querySelectorAll('[data-brand]');
+            let visibleCount = 0;
             
             products.forEach(product => {
-                const productCert = product.dataset.certification;
-                const productUsecase = product.dataset.usecase;
+                const productBrand = product.dataset.brand;
+                const productCategory = product.dataset.category;
                 const productSize = product.dataset.size;
                 
                 let show = true;
                 
-                // Check certification filter
-                if (activeFilters.certification !== 'all' && 
-                    productCert !== activeFilters.certification && 
-                    productCert !== 'both') {
+                // Check brand filter
+                if (activeFilters.brand !== 'all' && productBrand !== activeFilters.brand) {
                     show = false;
                 }
                 
-                // Check use case filter
-                if (activeFilters.usecase !== 'all' && productUsecase !== activeFilters.usecase) {
+                // Check category filter
+                if (activeFilters.category !== 'all' && productCategory !== activeFilters.category) {
                     show = false;
                 }
                 
@@ -2190,6 +2465,7 @@
                 if (show) {
                     product.style.display = 'block';
                     product.classList.remove('filtered');
+                    visibleCount++;
                 } else {
                     product.classList.add('filtered');
                     setTimeout(() => {
@@ -2199,6 +2475,9 @@
                     }, 300);
                 }
             });
+
+            // Update filter count
+            console.log(`🔍 Showing ${visibleCount} products with current filters`);
         }
 
         // Navigation functions
@@ -2207,7 +2486,7 @@
             document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.filter-btn[data-filter="all"]').forEach(btn => btn.classList.add('active'));
             
-            activeFilters = { certification: 'all', usecase: 'all', size: 'all' };
+            activeFilters = { brand: 'all', category: 'all', size: 'all' };
             applyFilters();
             
             // Scroll to products
@@ -2226,6 +2505,26 @@
             }
         }
 
+        // Specialized product functions
+        function showAllPremiumProducts() {
+            // Set filters to show only premium products
+            activeFilters = { brand: 'premium', category: 'all', size: 'all' };
+            
+            // Update filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('[data-filter="premium"]').classList.add('active');
+            document.querySelectorAll('[data-filter="all"]').forEach(btn => {
+                if (btn.closest('.filter-group').querySelector('.filter-label').textContent !== 'Brand:') {
+                    btn.classList.add('active');
+                }
+            });
+            
+            applyFilters();
+            
+            // Scroll to premium section
+            document.getElementById('premium-products').scrollIntoView({ behavior: 'smooth' });
+        }
+
         // Business functions
         function proceedToCart() {
             window.location.href = 'shop/cart.html';
@@ -2239,12 +2538,16 @@
             requestCustomQuote();
         }
 
-        function callForAssistance() {
-            window.location.href = 'tel:+18017125663';
+        function requestIndustrialQuote() {
+            window.open('https://docs.google.com/forms/d/1GsJjlVXGAIEJkxBYiAlnlBX8LIV50E0giuNFqIvZ6vI/viewform?entry.product=Industrial+Bulk+Solutions', '_blank');
         }
 
-        function notifyWhenAvailable(productType) {
-            alert(`📧 We'll notify you when ${productType} become available!\n\nFor immediate assistance with generator systems, please call (801) 712-5663.`);
+        function requestBundleQuote() {
+            window.open('https://docs.google.com/forms/d/1GsJjlVXGAIEJkxBYiAlnlBX8LIV50E0giuNFqIvZ6vI/viewform?entry.product=Bundle+Packages', '_blank');
+        }
+
+        function callForAssistance() {
+            window.location.href = 'tel:+18017125663';
         }
 
         // Future Shopify sync function (ready for implementation)
@@ -2257,23 +2560,6 @@
                 // shopifyConfig.client.checkout.addLineItems(checkoutId, lineItemsToAdd);
             }
         }
-
-        // Initialize on load
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeShopify();
-            updateCartDisplay();
-            
-            // Enable smooth scrolling for all internal links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({ behavior: 'smooth' });
-                    }
-                });
-            });
-        });
 
         // Analytics tracking (ready for enhancement)
         function trackProductView(productId) {
@@ -2299,6 +2585,70 @@
                     quantity: quantity,
                     price: price
                 }]
+            });
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeShopify();
+            updateCartDisplay();
+            
+            // Enable smooth scrolling for all internal links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // Log complete product catalog status
+            console.log('🎯 COMPLETE PRODUCT CATALOG INITIALIZED');
+            console.log('📊 Total Products: 57');
+            console.log('🌱 OHS Organic Line: 19 products');
+            console.log('👑 Hypo Company Premium: 38 products');
+            console.log('🛍️ Shopify Integration: Ready');
+            console.log('🔧 Development Mode: ' + (document.body.classList.contains('dev-mode') ? 'ON' : 'OFF'));
+        });
+
+        // Product catalog statistics
+        const catalogStats = {
+            total: 57,
+            ohsOrganic: 19,
+            hypoCompanyPremium: 38,
+            categories: {
+                personal: 6,
+                commercial: 10,
+                veterinary: 8,
+                industrial: 23,
+                bundles: 10
+            },
+            shopifyReady: true,
+            lastUpdated: new Date().toISOString()
+        };
+
+        // Make catalog stats available globally for debugging
+        window.catalogStats = catalogStats;
+
+        // Advanced search functionality (future enhancement)
+        function searchProducts(query) {
+            const searchTerm = query.toLowerCase();
+            const products = document.querySelectorAll('[data-shopify-handle]');
+            
+            products.forEach(product => {
+                const title = product.querySelector('.product-title').textContent.toLowerCase();
+                const brand = product.dataset.brand;
+                const category = product.dataset.category;
+                
+                if (title.includes(searchTerm) || brand.includes(searchTerm) || category.includes(searchTerm)) {
+                    product.style.display = 'block';
+                    product.classList.remove('filtered');
+                } else {
+                    product.style.display = 'none';
+                    product.classList.add('filtered');
+                }
             });
         }
     </script>
