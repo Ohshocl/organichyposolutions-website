@@ -39,85 +39,114 @@
             --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
         }
 
-        /* Navigation - Matches Index Page Exactly */
+        /* EXACT NAVBAR STYLING FROM INDEX PAGE */
         .navbar {
             background-color: #2E5EAA !important;
-            padding: 0.3rem 0;
-            box-shadow: none;
-            min-height: 80px;
+            padding: 0.3rem 0 !important;
+            box-shadow: none !important;
+            min-height: 80px !important;
         }
 
         .navbar-brand {
             color: white !important;
-            font-size: 1.5rem;
-            font-weight: bold;
-            padding: 0.2rem 0;
-            display: flex;
-            align-items: center;
+            font-size: 1.5rem !important;
+            font-weight: bold !important;
+            padding: 0.2rem 0 !important;
+            display: flex !important;
+            align-items: center !important;
         }
 
         .navbar-brand svg {
-            width: 32px;
-            height: 32px;
+            width: 32px !important;
+            height: 32px !important;
         }
 
         .navbar-nav .nav-link {
             color: white !important;
-            font-weight: 500;
+            font-weight: 500 !important;
             padding: 0.5rem 1rem !important;
-            margin: 0;
-            border-radius: 0;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
+            margin: 0 !important;
+            border-radius: 0 !important;
+            transition: all 0.2s ease !important;
+            display: flex !important;
+            align-items: center !important;
         }
 
         .navbar-nav .nav-link i {
-            margin-right: 0.5rem;
-            font-size: 0.9rem;
+            margin-right: 0.5rem !important;
+            font-size: 0.9rem !important;
         }
 
         .navbar-nav .nav-link:hover {
-            color: var(--secondary-blue) !important;
-            background-color: rgba(255, 255, 255, 0.1);
+            color: #7DD3FC !important;
+            background-color: rgba(255, 255, 255, 0.1) !important;
         }
 
         .navbar-nav .nav-link.active,
         .navbar-nav .nav-link.fw-semibold {
-            color: var(--secondary-blue) !important;
-            background-color: rgba(255, 255, 255, 0.15);
+            color: #7DD3FC !important;
+            background-color: rgba(255, 255, 255, 0.15) !important;
+        }
+
+        /* Override Bootstrap navbar defaults */
+        .navbar-light .navbar-nav .nav-link {
+            color: white !important;
+        }
+
+        .navbar-light .navbar-nav .nav-link:hover,
+        .navbar-light .navbar-nav .nav-link:focus {
+            color: #7DD3FC !important;
+        }
+
+        .navbar-light .navbar-brand {
+            color: white !important;
+        }
+
+        .navbar-light .navbar-brand:hover,
+        .navbar-light .navbar-brand:focus {
+            color: white !important;
         }
 
         /* Dropdown Styling */
         .dropdown-menu {
-            background-color: white;
-            border: none;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            padding: 0.5rem 0;
-            margin-top: 0.25rem;
+            background-color: white !important;
+            border: none !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+            padding: 0.5rem 0 !important;
+            margin-top: 0.25rem !important;
         }
 
         .dropdown-item {
-            color: var(--primary-blue);
-            padding: 0.5rem 1rem;
-            border-radius: 0;
-            transition: all 0.2s ease;
+            color: #2E5EAA !important;
+            padding: 0.5rem 1rem !important;
+            border-radius: 0 !important;
+            transition: all 0.2s ease !important;
         }
 
-        .dropdown-item:hover {
-            background-color: var(--gray-50);
-            color: var(--primary-blue);
+        .dropdown-item:hover,
+        .dropdown-item:focus {
+            background-color: #f8f9fa !important;
+            color: #2E5EAA !important;
         }
 
         .dropdown-item i {
-            width: 16px;
-            margin-right: 8px;
+            width: 16px !important;
+            margin-right: 8px !important;
         }
 
         .badge {
-            font-size: 0.7rem;
-            font-weight: normal;
+            font-size: 0.7rem !important;
+            font-weight: normal !important;
+        }
+
+        /* Navbar toggler for mobile */
+        .navbar-toggler {
+            border-color: rgba(255, 255, 255, 0.3) !important;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
         }
 
         /* Mobile responsiveness */
@@ -574,8 +603,8 @@
     </style>
 </head>
 <body>
-    <!-- Navigation - Matches Index Page Exactly -->
-    <nav class="navbar navbar-expand-lg sticky-top">
+    <!-- Navigation - Exact Match to Index Page -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="index.html">
                 <svg width="32" height="32" viewBox="0 0 400 250" class="me-2">
@@ -588,7 +617,7 @@
                 Organic HypoSolutions
             </a>
             
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             
@@ -605,7 +634,7 @@
                         </a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle fw-semibold" href="products.html" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-shopping-bag me-1"></i>Products
                         </a>
                         <ul class="dropdown-menu">
@@ -652,7 +681,7 @@
                     
                     <!-- Customer Shopping & Account -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-shopping-bag me-1"></i>Shop
                         </a>
                         <ul class="dropdown-menu">
@@ -679,7 +708,7 @@
                     </li>
                     
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user me-1"></i>Account
                         </a>
                         <ul class="dropdown-menu">
@@ -690,7 +719,7 @@
                             <li><a class="dropdown-item" href="account/orders.html">
                                 <i class="fas fa-receipt"></i> Order History
                                 <span class="badge bg-warning ms-1">Under Construction</span>
-                            </li>
+                            </a></li>
                             <li><a class="dropdown-item" href="account/dashboard.html">
                                 <i class="fas fa-tachometer-alt"></i> Dashboard
                                 <span class="badge bg-warning ms-1">Under Construction</span>
