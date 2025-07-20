@@ -37,17 +37,17 @@
             --light-gray: #f8fafc;
         }
 
-        /* ========== NAVBAR STYLING ========== */
+        /* ========== NAVBAR STYLING - FIXED HEIGHT ========== */
         .navbar {
             background-color: var(--primary-blue) !important;
-            padding: 0.5rem 0;
+            padding: 0.25rem 0; /* Reduced from 0.5rem to 0.25rem */
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            min-height: 70px;
+            min-height: 50px; /* Reduced from 70px to 50px */
         }
 
         .navbar-brand {
             color: white !important;
-            font-size: 1.5rem;
+            font-size: 1.3rem; /* Slightly reduced from 1.5rem */
             font-weight: bold;
             display: flex;
             align-items: center;
@@ -60,17 +60,18 @@
         .navbar-nav .nav-link {
             color: white !important;
             font-weight: 500;
-            padding: 0.5rem 1rem !important;
+            padding: 0.25rem 0.75rem !important; /* Reduced padding */
             margin: 0;
             border-radius: 0;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
+            font-size: 0.9rem; /* Slightly smaller font */
         }
 
         .navbar-nav .nav-link i {
-            margin-right: 0.5rem;
-            font-size: 0.9rem;
+            margin-right: 0.4rem; /* Reduced from 0.5rem */
+            font-size: 0.8rem; /* Reduced from 0.9rem */
         }
 
         .navbar-nav .nav-link:hover {
@@ -80,6 +81,7 @@
 
         .navbar-toggler {
             border-color: rgba(255,255,255,0.3);
+            padding: 0.2rem 0.5rem; /* Reduced padding */
         }
 
         .navbar-toggler-icon {
@@ -103,11 +105,55 @@
             color: var(--primary-blue) !important;
         }
 
-        /* ========== FOOTER STYLING ========== */
-       .footer-section {
+        /* ========== FOOTER STYLING - FULL WIDTH & BETTER TEXT ========== */
+        .footer-section {
             background: #1a1a1a;
-            color: #ffffff;
+            color: #e9ecef; /* Improved from #ffffff to #e9ecef for better readability */
             padding: 30px 0 15px 0;
+            width: 100%; /* Ensure full width */
+            margin: 0; /* Remove any margins */
+        }
+
+        /* Make footer text more readable */
+        .footer-section h5, 
+        .footer-section h6 {
+            color: #f8f9fa; /* Brighter for headings */
+            font-weight: 600;
+        }
+
+        .footer-section p {
+            color: #ced4da; /* Medium gray for better contrast */
+            line-height: 1.6;
+        }
+
+        .footer-section .text-light {
+            color: #dee2e6 !important; /* Override Bootstrap's text-light for better contrast */
+        }
+
+        .footer-section .text-muted {
+            color: #adb5bd !important; /* Lighter than default muted for better visibility */
+        }
+
+        .footer-section a {
+            color: #dee2e6;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--light-blue);
+            text-decoration: none;
+        }
+
+        /* Social media icons improved visibility */
+        .social-links a {
+            color: #dee2e6;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--light-blue);
+            transform: translateY(-2px);
         }
 
         /* ========== BADGE STYLING ========== */
@@ -320,6 +366,16 @@
             border-radius: 4px;
             font-size: 0.9rem;
             margin-left: 10px;
+        }
+
+        /* Ensure page content doesn't extend footer */
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .container-fluid {
+            padding: 0;
         }
     </style>
 </head>
@@ -826,8 +882,9 @@
     </div>
 </div>
 
-<!-- Footer -->
-    <footer class="footer-section">
+<!-- Footer - FULL WIDTH -->
+<footer class="footer-section">
+    <div class="container-fluid">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-3">
@@ -845,7 +902,7 @@
                             <small class="text-muted">Utah's Premier Sanitization Services</small>
                         </div>
                     </div>
-                    <p class="text-light">Professional hypochlorous acid fogging services throughout Utah. USDA Certified Organic and EPA registered disinfectant solutions for commercial and residential properties.</p>
+                    <p>Professional hypochlorous acid fogging services throughout Utah. USDA Certified Organic and EPA registered disinfectant solutions for commercial and residential properties.</p>
                     <p><small class="text-muted">Utah Business License #14565171-0160</small></p>
                 </div>
                 <div class="col-md-3 text-center">
@@ -853,18 +910,18 @@
                     <div class="row">
                         <div class="col-6">
                             <ul class="list-unstyled">
-                                <li><a href="services.html" class="text-light text-decoration-none">Services</a></li>
-                                <li><a href="products.html" class="text-light text-decoration-none">Products</a></li>
-                                <li><a href="calculator.html" class="text-light text-decoration-none">Calculator</a></li>
-                                <li><a href="about.html" class="text-light text-decoration-none">About</a></li>
+                                <li><a href="services.html" class="text-decoration-none">Services</a></li>
+                                <li><a href="products.html" class="text-decoration-none">Products</a></li>
+                                <li><a href="calculator.html" class="text-decoration-none">Calculator</a></li>
+                                <li><a href="about.html" class="text-decoration-none">About</a></li>
                             </ul>
                         </div>
                         <div class="col-6">
                             <ul class="list-unstyled">
-                                <li><a href="contact.html" class="text-light text-decoration-none">Contact</a></li>
-                                <li><a href="science-certifications.html" class="text-light text-decoration-none">Certifications</a></li>
-                                <li><a href="legal-information.html" class="text-light text-decoration-none">Legal Info</a></li>
-                                <li><a href="legal-information.html" class="text-light text-decoration-none">Terms & Conditions</a></li>
+                                <li><a href="contact.html" class="text-decoration-none">Contact</a></li>
+                                <li><a href="science-certifications.html" class="text-decoration-none">Certifications</a></li>
+                                <li><a href="legal-information.html" class="text-decoration-none">Legal Info</a></li>
+                                <li><a href="legal-information.html" class="text-decoration-none">Terms & Conditions</a></li>
                             </ul>
                         </div>
                     </div>
@@ -887,16 +944,16 @@
                     
                     <!-- Social Media Icons Below -->
                     <div class="social-links">
-                        <a href="https://www.facebook.com/organichyposolutions" class="text-light me-3" target="_blank" aria-label="Facebook">
+                        <a href="https://www.facebook.com/organichyposolutions" class="me-3" target="_blank" aria-label="Facebook">
                             <i class="fab fa-facebook-f fa-lg"></i>
                         </a>
-                        <a href="https://www.instagram.com/organichyposolutions" class="text-light me-3" target="_blank" aria-label="Instagram">
+                        <a href="https://www.instagram.com/organichyposolutions" class="me-3" target="_blank" aria-label="Instagram">
                             <i class="fab fa-instagram fa-lg"></i>
                         </a>
-                        <a href="https://www.linkedin.com/company/organic-hypo-solutions" class="text-light me-3" target="_blank" aria-label="LinkedIn">
+                        <a href="https://www.linkedin.com/company/organic-hypo-solutions" class="me-3" target="_blank" aria-label="LinkedIn">
                             <i class="fab fa-linkedin-in fa-lg"></i>
                         </a>
-                        <a href="mailto:ohshocl@gmail.com" class="text-light" target="_blank" aria-label="Email">
+                        <a href="mailto:ohshocl@gmail.com" target="_blank" aria-label="Email">
                             <i class="fas fa-envelope fa-lg"></i>
                         </a>
                     </div>
@@ -924,7 +981,8 @@
                 </div>
             </div>
         </div>
-    </footer>
+    </div>
+</footer>
 
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
