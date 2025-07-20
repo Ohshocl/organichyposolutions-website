@@ -22,42 +22,21 @@
             --white: #ffffff;
         }
 
-        /* Navigation Styling - Updated to match exact template */
+        /* NAVBAR STYLING - Exactly like Calculator with maximum logo */
         .navbar {
-            background-color: var(--primary-blue) !important;
-            box-shadow: 0 2px 4px rgba(0,0,0,.1);
-            padding: 0.5rem 0;
+            background-color: #2E5EAA !important;
+            padding: 0.3rem 0;
+            box-shadow: none;
+            min-height: 80px;
         }
 
         .navbar-brand {
-            color: var(--white) !important;
-            font-weight: 700;
-            font-size: 1.3rem;
-        }
-
-        .navbar-nav .nav-link {
-            color: var(--white) !important;
-            font-weight: 500;
-            padding: 0.5rem 1rem !important;
-            border-radius: 4px;
-            margin: 0 0.1rem;
-            transition: all 0.2s ease;
-            font-size: 0.9rem;
-        }
-
-        .navbar-nav .nav-link i {
-            margin-right: 0.4rem;
-            font-size: 0.8rem;
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: var(--light-blue) !important;
-            background-color: rgba(255,255,255,0.1);
-        }
-
-        .navbar-nav .nav-link.active {
-            color: var(--light-blue) !important;
-            background-color: rgba(255,255,255,0.15);
+            color: white !important;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 0.2rem 0;
+            display: flex;
+            align-items: center;
         }
 
         .navbar-toggler {
@@ -69,26 +48,70 @@
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
         }
 
+        .navbar-nav .nav-link {
+            color: white !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            margin: 0;
+            border-radius: 0;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-nav .nav-link i {
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--light-blue) !important;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar-nav .nav-link.active,
+        .navbar-nav .nav-link.fw-semibold {
+            color: var(--light-blue) !important;
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* DROPDOWN STYLING */
         .dropdown-menu {
             background-color: white;
             border: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 0.5rem 0;
+            margin-top: 0.25rem;
         }
 
         .dropdown-item {
-            color: var(--dark-navy) !important;
+            color: var(--primary-blue);
             padding: 0.5rem 1rem;
+            border-radius: 0;
             transition: all 0.2s ease;
         }
 
         .dropdown-item:hover {
             background-color: var(--light-gray);
-            color: var(--primary-blue) !important;
+            color: var(--primary-blue);
+        }
+
+        .dropdown-item i {
+            width: 16px;
+            margin-right: 8px;
         }
 
         .badge {
-            font-size: 0.65rem;
-            padding: 0.2rem 0.5rem;
+            font-size: 0.7rem;
+            font-weight: normal;
+        }
+
+        /* MOBILE RESPONSIVENESS */
+        @media (max-width: 991.98px) {
+            .navbar-nav .nav-link {
+                padding: 0.5rem 0.75rem !important;
+            }
         }
 
         /* Footer Styling - Updated to match exact template */
@@ -375,7 +398,7 @@
                         </a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-shopping-bag me-1"></i>Products
                         </a>
                         <ul class="dropdown-menu">
@@ -422,7 +445,7 @@
                     
                     <!-- Customer Shopping & Account -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-shopping-bag me-1"></i>Shop
                         </a>
                         <ul class="dropdown-menu">
@@ -449,7 +472,7 @@
                     </li>
                     
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user me-1"></i>Account
                         </a>
                         <ul class="dropdown-menu">
@@ -460,7 +483,7 @@
                             <li><a class="dropdown-item" href="account/orders.html">
                                 <i class="fas fa-receipt"></i> Order History
                                 <span class="badge bg-warning ms-1">Under Construction</span>
-                            </li>
+                            </a></li>
                             <li><a class="dropdown-item" href="account/dashboard.html">
                                 <i class="fas fa-tachometer-alt"></i> Dashboard
                                 <span class="badge bg-warning ms-1">Under Construction</span>
@@ -1114,7 +1137,7 @@
                 </div>
 
                 <!-- ADDITIONAL LEGAL PROTECTIONS -->
-                <section class="legal-section">
+                <section id="additional-protections" class="legal-section">
                     <h2 class="mb-4"><i class="fas fa-shield-alt text-warning"></i> Additional Legal Protections & Disclaimers</h2>
 
                     <h4>Force Majeure Clause</h4>
@@ -1325,8 +1348,45 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        // Initialize everything after DOM loads
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Cart badge functionality
+            function updateCartBadge() {
+                const cartBadge = document.getElementById('cartBadge');
+                if (cartBadge) {
+                    try {
+                        const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+                        if (cartItems.length > 0) {
+                            cartBadge.textContent = cartItems.length;
+                            cartBadge.style.display = 'inline-block';
+                        } else {
+                            cartBadge.style.display = 'none';
+                        }
+                    } catch (e) {
+                        cartBadge.style.display = 'none';
+                    }
+                }
+            }
+            
+            // Initialize cart badge
+            updateCartBadge();
+            
+            // Handle image loading errors for USDA certification
+            const usdaImg = document.querySelector('img[alt="USDA Certified Organic"]');
+            if (usdaImg) {
+                usdaImg.addEventListener('error', function() {
+                    this.style.display = 'none';
+                    const fallback = this.nextElementSibling;
+                    if (fallback) {
+                        fallback.style.display = 'block';
+                    }
+                });
+            }
+        });
+
+        // Smooth scrolling for legal section navigation only
+        document.querySelectorAll('.legal-nav a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
@@ -1339,7 +1399,7 @@
             });
         });
 
-        // Update active navigation item based on scroll position
+        // Update active legal navigation item based on scroll position
         window.addEventListener('scroll', function() {
             let current = '';
             const sections = document.querySelectorAll('section[id]');
@@ -1355,72 +1415,32 @@
 
             navLinks.forEach(link => {
                 link.style.color = '#6c757d';
+                link.style.fontWeight = '500';
                 if (link.getAttribute('href') === '#' + current) {
                     link.style.color = '#28a745';
                     link.style.fontWeight = '600';
-                } else {
-                    link.style.fontWeight = '500';
                 }
             });
         });
 
-        // Cart badge functionality
-        function updateCartBadge() {
-            const cartBadge = document.getElementById('cartBadge');
-            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-            if (cartItems.length > 0) {
-                cartBadge.textContent = cartItems.length;
-                cartBadge.style.display = 'inline-block';
-            } else {
-                cartBadge.style.display = 'none';
-            }
-        }
-
-        // Initialize cart badge on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            try {
-                updateCartBadge();
-            } catch (e) {
-                // Fallback if localStorage is not available
-                console.log('Cart functionality requires localStorage support');
-            }
-        });
-
-        // Handle image loading errors for USDA certification
-        document.addEventListener('DOMContentLoaded', function() {
-            const usdaImg = document.querySelector('img[alt="USDA Certified Organic"]');
-            if (usdaImg) {
-                usdaImg.addEventListener('error', function() {
-                    this.style.display = 'none';
-                    const fallback = this.nextElementSibling;
-                    if (fallback) {
-                        fallback.style.display = 'block';
+        // Listen for cart updates from other pages
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'cartItems') {
+                const cartBadge = document.getElementById('cartBadge');
+                if (cartBadge) {
+                    try {
+                        const cartItems = JSON.parse(e.newValue) || [];
+                        if (cartItems.length > 0) {
+                            cartBadge.textContent = cartItems.length;
+                            cartBadge.style.display = 'inline-block';
+                        } else {
+                            cartBadge.style.display = 'none';
+                        }
+                    } catch (err) {
+                        cartBadge.style.display = 'none';
                     }
-                });
-            }
-        });
-
-        // Enhanced dropdown functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const dropdowns = document.querySelectorAll('.dropdown-toggle');
-            dropdowns.forEach(dropdown => {
-                dropdown.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const menu = this.nextElementSibling;
-                    if (menu && menu.classList.contains('dropdown-menu')) {
-                        menu.classList.toggle('show');
-                    }
-                });
-            });
-
-            // Close dropdowns when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('.dropdown')) {
-                    document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
-                        menu.classList.remove('show');
-                    });
                 }
-            });
+            }
         });
     </script>
 </body>
