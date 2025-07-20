@@ -39,29 +39,92 @@
             --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
         }
 
-        /* Navigation */
+        /* Navigation - Matches Index Page Exactly */
         .navbar {
-            background: white !important;
-            box-shadow: var(--shadow-md);
-            padding: 1rem 0;
-            min-height: 90px;
+            background-color: #2E5EAA !important;
+            padding: 0.3rem 0;
+            box-shadow: none;
+            min-height: 80px;
         }
 
         .navbar-brand {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--primary-blue) !important;
+            color: white !important;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 0.2rem 0;
+            display: flex;
+            align-items: center;
         }
 
-        .nav-link {
-            color: var(--primary-blue) !important;
+        .navbar-brand svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .navbar-nav .nav-link {
+            color: white !important;
             font-weight: 500;
             padding: 0.5rem 1rem !important;
-            transition: all 0.3s ease;
+            margin: 0;
+            border-radius: 0;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
         }
 
-        .nav-link:hover {
+        .navbar-nav .nav-link i {
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .navbar-nav .nav-link:hover {
             color: var(--secondary-blue) !important;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar-nav .nav-link.active,
+        .navbar-nav .nav-link.fw-semibold {
+            color: var(--secondary-blue) !important;
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Dropdown Styling */
+        .dropdown-menu {
+            background-color: white;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 0.5rem 0;
+            margin-top: 0.25rem;
+        }
+
+        .dropdown-item {
+            color: var(--primary-blue);
+            padding: 0.5rem 1rem;
+            border-radius: 0;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--gray-50);
+            color: var(--primary-blue);
+        }
+
+        .dropdown-item i {
+            width: 16px;
+            margin-right: 8px;
+        }
+
+        .badge {
+            font-size: 0.7rem;
+            font-weight: normal;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 991.98px) {
+            .navbar-nav .nav-link {
+                padding: 0.5rem 0.75rem !important;
+            }
         }
 
         /* Hero Section */
@@ -511,11 +574,11 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
+    <!-- Navigation - Matches Index Page Exactly -->
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="index.html">
-                <svg width="64" height="64" viewBox="0 0 400 250" class="me-2">
+                <svg width="32" height="32" viewBox="0 0 400 250" class="me-2">
                     <rect width="400" height="250" fill="#2E5EAA"/>
                     <text x="200" y="180" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="100" font-weight="bold">OHS</text>
                     <text x="200" y="210" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="20">Organic HypoSolutions</text>
@@ -524,28 +587,131 @@
                 </svg>
                 Organic HypoSolutions
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="products.html">Products</a></li>
-                    <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
-                    <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="services.html">
+                            <i class="fas fa-spray-can me-1"></i>Services
+                        </a>
+                    </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-shopping-bag"></i> Shop
+                        <a class="nav-link dropdown-toggle fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-shopping-bag me-1"></i>Products
                         </a>
                         <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="products.html">
+                                <i class="fas fa-leaf me-2"></i>USDA Organic Line
+                            </a></li>
+                            <li><a class="dropdown-item" href="products.html">
+                                <i class="fas fa-shield-alt me-2"></i>EPA Premium Line
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="products.html#bulk-products">
+                                <i class="fas fa-boxes me-2"></i>32oz Bulk Case
+                            </a></li>
+                            <li><a class="dropdown-item" href="products.html#bulk-products">
+                                <i class="fas fa-industry me-2"></i>One Gallon Case
+                            </a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="calculator.html">
+                            <i class="fas fa-calculator me-1"></i>Calculator
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">
+                            <i class="fas fa-info-circle me-1"></i>About
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="science-certifications.html">
+                            <i class="fas fa-microscope me-1"></i>Science & Certifications
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="legal-information.html">
+                            <i class="fas fa-gavel me-1"></i>Legal Information
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">
+                            <i class="fas fa-phone me-1"></i>Contact
+                        </a>
+                    </li>
+                    
+                    <!-- Customer Shopping & Account -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-shopping-bag me-1"></i>Shop
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="products.html"><i class="fas fa-boxes"></i> All Products</a></li>
                             <li><a class="dropdown-item" href="shop/cart.html">
                                 <i class="fas fa-shopping-cart"></i> Cart 
                                 <span id="cartBadge" class="badge bg-danger ms-1" style="display: none;">0</span>
                             </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="shop/checkout.html">
+                                <i class="fas fa-credit-card"></i> Checkout
+                                <span class="badge bg-warning ms-1">Under Construction</span>
+                            </a></li>
+                            <li><a class="dropdown-item" href="shop/order-success.html">
+                                <i class="fas fa-check-circle"></i> Order Confirmation
+                                <span class="badge bg-warning ms-1">Under Construction</span>
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="shop/book-service.html">
-                                <i class="fas fa-calendar-check"></i> Book Service
+                                <i class="fas fa-calendar-plus"></i> Book Service
+                                <span class="badge bg-info ms-1">Available</span>
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i>Account
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="account/profile.html">
+                                <i class="fas fa-user-circle"></i> My Profile
+                                <span class="badge bg-warning ms-1">Under Construction</span>
+                            </a></li>
+                            <li><a class="dropdown-item" href="account/orders.html">
+                                <i class="fas fa-receipt"></i> Order History
+                                <span class="badge bg-warning ms-1">Under Construction</span>
+                            </li>
+                            <li><a class="dropdown-item" href="account/dashboard.html">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                                <span class="badge bg-warning ms-1">Under Construction</span>
+                            </a></li>
+                            <li><a class="dropdown-item" href="account/business-dashboard.html">
+                                <i class="fas fa-building"></i> Business Account
+                                <span class="badge bg-info ms-1">Wholesale</span>
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="admin/admin.html">
+                                <i class="fas fa-cogs"></i> Admin Panel
+                                <span class="badge bg-danger ms-1">Admin Access</span>
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="auth/login.html">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                                <span class="badge bg-warning ms-1">Under Construction</span>
+                            </a></li>
+                            <li><a class="dropdown-item" href="auth/register.html">
+                                <i class="fas fa-user-plus"></i> Register
+                                <span class="badge bg-warning ms-1">Under Construction</span>
                             </a></li>
                         </ul>
                     </li>
