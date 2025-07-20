@@ -1057,11 +1057,15 @@
         // Add demo button to Options dropdown for testing
         window.addDemoProducts = addDemoProducts;
 
-        // UPDATE CART BADGE WITH SHOPIFY INTEGRATION
+        // UPDATE CART BADGE WITH SHOPIFY INTEGRATION - FIXED
         function updateCartBadge() {
+            console.log('🏷️ Updating cart badge for cart:', cart);
+            
             try {
                 const cartData = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || JSON.stringify(cart));
                 const totalItems = cartData.reduce((sum, item) => sum + (item.quantity || 0), 0);
+                
+                console.log('🏷️ Total items in cart:', totalItems);
                 
                 // Update all badge locations
                 const badges = ['cartBadge', 'cartBadgeDropdown'];
@@ -1077,7 +1081,7 @@
                     }
                 });
                 
-                // Update item count
+                // Update item count text
                 const itemCount = document.getElementById('itemCount');
                 if (itemCount) {
                     itemCount.textContent = `${totalItems} items`;
@@ -1086,8 +1090,10 @@
                 // SHOPIFY INTEGRATION: Sync with Shopify cart
                 syncWithShopifyCart(cartData);
                 
+                console.log('🏷️ Cart badge updated successfully');
+                
             } catch (error) {
-                console.log('Error updating cart badge:', error);
+                console.error('❌ Error updating cart badge:', error);
             }
         }
 
@@ -1100,24 +1106,37 @@
             }
         }
 
-        // SHOPIFY-READY PRICING CALCULATION
+        // SHOPIFY-READY PRICING CALCULATION - FIXED
         function calculatePricing(productId, quantity, priceType = 'retail') {
-            const product = PRODUCT_CATALOG[productId];
-            if (!product) return { unitPrice: 0, totalPrice: 0 };
-
-            let unitPrice = product.pricing[priceType];
+            console.log(`🧮 Calculating pricing for ${productId}, qty: ${quantity}, type: ${priceType}`);
             
-            // Volume discount logic based on your pricing sheet
-            if (priceType === 'retail' && quantity >= product.wholesaleThreshold) {
-                unitPrice = product.pricing.wholesale;
+            const product = PRODUCT_CATALOG[productId];
+            if (!product) {
+                console.warn(`⚠️ Product ${productId} not found in catalog`);
+                return { unitPrice: 0, totalPrice: 0, savings: 0, discountPercent: 0 };
             }
 
-            return {
+            let unitPrice = product.pricing[priceType] || product.pricing.retail || 0;
+            
+            // Volume discount logic based on your pricing sheet
+            if (priceType === 'retail' && quantity >= (product.wholesaleThreshold || 50)) {
+                unitPrice = product.pricing.wholesale || unitPrice;
+                console.log(`🏢 Applied wholesale pricing: ${unitPrice}`);
+            }
+
+            const totalPrice = unitPrice * quantity;
+            const savings = (product.pricing.retail || 0) - unitPrice;
+            const discountPercent = savings > 0 ? ((savings / (product.pricing.retail || 1)) * 100) : 0;
+            
+            const result = {
                 unitPrice: unitPrice,
-                totalPrice: unitPrice * quantity,
-                savings: product.pricing.retail - unitPrice,
-                discountPercent: ((product.pricing.retail - unitPrice) / product.pricing.retail * 100).toFixed(1)
+                totalPrice: totalPrice,
+                savings: savings,
+                discountPercent: discountPercent.toFixed(1)
             };
+            
+            console.log(`🧮 Pricing result:`, result);
+            return result;
         }
 
         // SHOPIFY CHECKOUT INTEGRATION
@@ -1197,13 +1216,24 @@
             updatePricingSummary();
         }
 
-        // ADD TO CART WITH SHOPIFY INTEGRATION
+        // ADD TO CART WITH SHOPIFY INTEGRATION - ENHANCED DEBUG
         function addToCart(productId, quantity = 1) {
+            console.log(`🛒 Adding to cart: ${productId}, quantity: ${quantity}`);
+            
+            const product = PRODUCT_CATALOG[productId];
+            if (!product) {
+                console.error(`❌ Product ${productId} not found in catalog`);
+                showNotification(`Product ${productId} not found!`, 'warning');
+                return;
+            }
+            
             const existingItem = cart.find(item => item.productId === productId);
             
             if (existingItem) {
+                console.log('🔄 Updating existing item quantity');
                 existingItem.quantity += quantity;
             } else {
+                console.log('➕ Adding new item to cart');
                 cart.push({
                     productId: productId,
                     quantity: quantity,
@@ -1211,12 +1241,14 @@
                 });
             }
             
+            console.log('🛒 Updated cart:', cart);
+            
             saveCart();
             updateCartDisplay();
             updatePricingSummary();
             
             // Show success message
-            showNotification(`Added ${PRODUCT_CATALOG[productId]?.name || 'item'} to cart!`, 'success');
+            showNotification(`Added ${product.name} to cart!`, 'success');
         }
 
         // SAVE CART WITH SHOPIFY SYNC
@@ -1452,35 +1484,48 @@
             }
         });
 
-        // INITIALIZE ON PAGE LOAD
+        // INITIALIZE ON PAGE LOAD - ENHANCED DEBUG
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Cart page initializing...');
+            
             // Load cart from localStorage only
             const storedCart = localStorage.getItem(CART_STORAGE_KEY);
             if (storedCart) {
                 try {
                     const parsedCart = JSON.parse(storedCart);
                     cart = parsedCart || [];
+                    console.log('📦 Loaded cart from storage:', cart);
                 } catch (error) {
-                    console.log('Error parsing stored cart, starting with empty cart');
+                    console.log('❌ Error parsing stored cart, starting with empty cart');
                     cart = [];
                 }
             } else {
                 // Start with completely empty cart
                 cart = [];
+                console.log('📭 Starting with empty cart');
             }
             
+            console.log('🔍 Product catalog loaded:', Object.keys(PRODUCT_CATALOG));
+            console.log('📊 Initial cart state:', cart);
+            
             // Update displays immediately
-            updateCartDisplay();
-            updatePricingSummary();
-            updateCartBadge();
+            setTimeout(() => {
+                console.log('⚡ Updating displays...');
+                updateCartDisplay();
+                updatePricingSummary();
+                updateCartBadge();
+                console.log('✅ All displays updated');
+            }, 100);
             
             // SHOPIFY INTEGRATION: Initialize Shopify Buy SDK
             if (typeof ShopifyBuy !== 'undefined') {
-                console.log('Initializing Shopify integration...');
+                console.log('🛍️ Initializing Shopify integration...');
+            } else {
+                console.log('⚠️ ShopifyBuy SDK not loaded - running in development mode');
             }
             
-            console.log('🛒 Cart initialized - Starting empty as requested');
-            console.log('📦 Current cart items:', cart.length);
+            console.log('🎉 Cart initialized successfully!');
+            console.log('📋 Available functions:', Object.keys(window.OHSCart || {}));
         });
 
         // PAGE FOCUS HANDLER
