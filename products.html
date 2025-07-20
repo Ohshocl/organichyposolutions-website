@@ -456,13 +456,13 @@
             border-bottom: none;
         }
 
-        /* Cart quantity controls */
+        /* Cart quantity controls - FIXED CSS */
         .cart-qty-btn {
             background: var(--primary-blue);
             color: white;
             border: none;
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -471,6 +471,7 @@
             cursor: pointer;
             transition: all 0.2s ease;
             font-size: 0.8rem;
+            flex-shrink: 0; /* Prevent shrinking */
         }
 
         .cart-qty-btn:hover:not(:disabled) {
@@ -483,23 +484,40 @@
             cursor: not-allowed;
         }
 
-        /* Cart quantity input field */
+        /* Cart quantity input field - ENHANCED & VISIBLE */
         .cart-qty-input {
-            border: 1px solid var(--gray-300);
-            border-radius: 4px;
-            width: 50px;
-            height: 28px;
-            text-align: center;
-            font-weight: 600;
-            color: var(--primary-blue);
-            font-size: 0.9rem;
-            margin: 0 4px;
+            border: 2px solid var(--primary-blue) !important;
+            border-radius: 6px !important;
+            width: 65px !important;
+            height: 32px !important;
+            text-align: center !important;
+            font-weight: 700 !important;
+            color: var(--primary-blue) !important;
+            font-size: 0.95rem !important;
+            margin: 0 8px !important;
+            transition: all 0.2s ease !important;
+            display: block !important; /* Force display */
+            flex-shrink: 0 !important; /* Prevent shrinking */
+            background-color: white !important;
         }
 
         .cart-qty-input:focus {
-            outline: none;
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 2px rgba(46, 94, 170, 0.2);
+            outline: none !important;
+            border-color: var(--secondary-blue) !important;
+            box-shadow: 0 0 0 3px rgba(46, 94, 170, 0.2) !important;
+            background-color: #f8f9ff !important;
+        }
+
+        .cart-qty-input:hover {
+            border-color: var(--secondary-blue) !important;
+        }
+
+        /* Cart item controls container */
+        .cart-item-controls {
+            display: flex !important;
+            align-items: center !important;
+            gap: 4px !important;
+            flex-shrink: 0 !important;
         }
 
         /* Industrial Section */
@@ -1788,17 +1806,55 @@
             }
         }
 
-        // Set cart quantity directly from input
+        // Set cart quantity directly from input with enhanced feedback
         function setCartQuantity(productId, newQuantity) {
             const quantity = parseInt(newQuantity);
-            if (isNaN(quantity) || quantity < 1) return;
+            if (isNaN(quantity) || quantity < 1) {
+                // Reset to 1 if invalid input
+                const input = document.querySelector(`input[onchange*="${productId}"]`);
+                if (input) input.value = 1;
+                return;
+            }
             
             const item = cart.find(item => item.productId === productId);
             if (item) {
+                const oldQuantity = item.quantity;
                 item.quantity = Math.min(999, Math.max(1, quantity)); // Limit between 1-999
                 localStorage.setItem('ohsCart', JSON.stringify(cart));
                 updateCartDisplay();
+
+                // Show feedback for volume discounts
+                if (item.quantity >= 50 && oldQuantity < 50) {
+                    showVolumeDiscountNotification('50+ Volume Discount Applied! You\'re saving ~27%');
+                } else if (item.quantity >= 25 && oldQuantity < 25) {
+                    showVolumeDiscountNotification('25+ Volume Discount Applied! You\'re saving ~18%');
+                } else if (item.quantity >= 10 && oldQuantity < 10) {
+                    showVolumeDiscountNotification('10+ Volume Discount Applied! You\'re saving ~13%');
+                }
             }
+        }
+
+        // Show volume discount notification
+        function showVolumeDiscountNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'alert alert-success position-fixed';
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 10000; min-width: 300px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);';
+            notification.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-percentage me-2 text-success"></i>
+                    <div>
+                        <strong>Volume Discount!</strong><br>
+                        <small>${message}</small>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
         }
 
         // Handle enter key press in quantity input
