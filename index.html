@@ -591,10 +591,116 @@
             margin-top: 15px;
         }
 
+        /* SHOPIFY INTEGRATION STYLES */
+        .shopify-product-form {
+            display: inline-block;
+            margin: 10px 0;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+            background: rgba(255,255,255,0.1);
+            border-radius: 25px;
+            padding: 5px;
+        }
+
+        .quantity-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quantity-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+
+        .quantity-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .quantity-display {
+            color: white;
+            font-weight: bold;
+            margin: 0 15px;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .add-to-cart-btn {
+            background: linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green));
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 12px 24px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3);
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .add-to-cart-btn:hover {
+            background: linear-gradient(135deg, var(--ohs-dark-green), var(--ohs-organic-green));
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 222, 128, 0.4);
+        }
+
+        .product-quick-add {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .product-line-selector {
+            margin: 20px 0;
+        }
+
+        .line-toggle {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .line-toggle.active {
+            background: var(--ohs-organic-green);
+            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3);
+        }
+
+        .line-toggle:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .service-booking-widget {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+        }
+
         @media (max-width: 768px) {
             .hero-section {
-                padding: 60px 0;
-                min-height: 70vh;
+                padding: 30px 0;
             }
             
             .contact-btn {
@@ -606,6 +712,11 @@
             .process-step {
                 margin: 15px 0;
                 padding: 25px;
+            }
+            
+            .quantity-selector {
+                flex-direction: column;
+                gap: 10px;
             }
         }
     </style>
@@ -809,12 +920,93 @@
                     </div>
                     
                     <div class="d-grid gap-2 d-md-flex">
-                        <a href="products.html" class="btn btn-calculate-service btn-lg px-4 me-md-2">
+                        <a href="calculator.html" class="btn btn-calculate-service btn-lg px-4 me-md-2">
                             <i class="fas fa-calculator me-2"></i>Calculate Your Service
                         </a>
                         <a href="products.html" class="btn btn-outline-light btn-lg px-4">
                             <i class="fas fa-shopping-cart me-2"></i>Shop Products
                         </a>
+                    </div>
+                    
+                    <!-- Quick Product Selection Widget -->
+                    <div class="product-quick-add mt-4">
+                        <h6 class="fw-bold mb-3">Quick Add Popular Products</h6>
+                        <div class="product-line-selector">
+                            <button class="line-toggle active" onclick="showProductLine('organic')" id="organic-toggle">
+                                <i class="fas fa-leaf me-1"></i>USDA Organic
+                            </button>
+                            <button class="line-toggle" onclick="showProductLine('premium')" id="premium-toggle">
+                                <i class="fas fa-shield-alt me-1"></i>EPA Premium
+                            </button>
+                        </div>
+                        
+                        <!-- Organic Products Quick Add -->
+                        <div id="organic-products" class="product-line-products">
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <small class="fw-bold">32oz All-Purpose Cleaner</small>
+                                        <div class="quantity-selector" style="scale: 0.8;">
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('ohs-32oz-cleaner', -1)" id="minus-ohs-32oz-cleaner">-</button>
+                                            <span class="quantity-display" id="qty-ohs-32oz-cleaner">1</span>
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('ohs-32oz-cleaner', 1)">+</button>
+                                        </div>
+                                        <button class="add-to-cart-btn" style="padding: 6px 12px; font-size: 0.8rem;" 
+                                                onclick="addToCartFromHero('ohs-32oz-all-purpose-cleaner', 'OHS 32oz All-Purpose Cleaner', 24.99, '🧽')">
+                                            Add $24.99
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <small class="fw-bold">8oz Skin Care Mist</small>
+                                        <div class="quantity-selector" style="scale: 0.8;">
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('ohs-8oz-mist', -1)" id="minus-ohs-8oz-mist">-</button>
+                                            <span class="quantity-display" id="qty-ohs-8oz-mist">1</span>
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('ohs-8oz-mist', 1)">+</button>
+                                        </div>
+                                        <button class="add-to-cart-btn" style="padding: 6px 12px; font-size: 0.8rem;" 
+                                                onclick="addToCartFromHero('ohs-8oz-skin-care-mist', 'OHS 8oz Skin Care Mist', 18.99, '💧')">
+                                            Add $18.99
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Premium Products Quick Add -->
+                        <div id="premium-products" class="product-line-products" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <small class="fw-bold">32oz Professional Grade</small>
+                                        <div class="quantity-selector" style="scale: 0.8;">
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('hc-32oz-pro', -1)" id="minus-hc-32oz-pro">-</button>
+                                            <span class="quantity-display" id="qty-hc-32oz-pro">1</span>
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('hc-32oz-pro', 1)">+</button>
+                                        </div>
+                                        <button class="add-to-cart-btn" style="padding: 6px 12px; font-size: 0.8rem;" 
+                                                onclick="addToCartFromHero('hypo-company-32oz-professional-grade', 'HC 32oz Professional Grade', 34.99, '🏭')">
+                                            Add $34.99
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <small class="fw-bold">1 Gallon Commercial</small>
+                                        <div class="quantity-selector" style="scale: 0.8;">
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('hc-1gal-comm', -1)" id="minus-hc-1gal-comm">-</button>
+                                            <span class="quantity-display" id="qty-hc-1gal-comm">1</span>
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('hc-1gal-comm', 1)">+</button>
+                                        </div>
+                                        <button class="add-to-cart-btn" style="padding: 6px 12px; font-size: 0.8rem;" 
+                                                onclick="addToCartFromHero('hypo-company-1-gallon-commercial', 'HC 1 Gallon Commercial', 89.99, '🏢')">
+                                            Add $89.99
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-5">
@@ -1055,7 +1247,21 @@
                             <li><i class="fas fa-check text-success me-2"></i>No harmful residue or fumes</li>
                             <li><i class="fas fa-check text-success me-2"></i>Biodegradable formula</li>
                         </ul>
-                        <a href="products.html" class="btn btn-success btn-lg">Explore Organic Products</a>
+                        <a href="services.html" class="btn btn-success btn-lg">Explore Organic Products</a>
+                        
+                        <!-- Quick Service Booking -->
+                        <div class="service-booking-widget mt-3">
+                            <h6 class="fw-bold mb-2">Book Residential Service</h6>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <small>Starting at <strong>$150</strong></small><br>
+                                    <small class="text-muted">Based on home size</small>
+                                </div>
+                                <button class="btn btn-success btn-sm" onclick="bookResidentialService()">
+                                    <i class="fas fa-calendar-plus me-1"></i>Book Now
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -1072,7 +1278,21 @@
                             <li><i class="fas fa-check text-warning me-2"></i>Professional fogging services compatible</li>
                             <li><i class="fas fa-check text-warning me-2"></i>Maximum pathogen elimination</li>
                         </ul>
-                        <a href="products.html" class="btn btn-warning btn-lg">Explore Premium Products</a>
+                        <a href="services.html" class="btn btn-warning btn-lg">Explore Premium Products</a>
+                        
+                        <!-- Quick Service Booking -->
+                        <div class="service-booking-widget mt-3">
+                            <h6 class="fw-bold mb-2">Book Commercial Service</h6>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <small>From <strong>$0.08-$0.13/sq ft</strong></small><br>
+                                    <small class="text-muted">Volume discounts available</small>
+                                </div>
+                                <button class="btn btn-warning btn-sm" onclick="bookCommercialService()">
+                                    <i class="fas fa-building me-1"></i>Get Quote
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1248,6 +1468,66 @@
         </div>
     </footer>
 
+    <!-- SHOPIFY LIQUID TEMPLATE STRUCTURE (commented for future conversion) -->
+    <!--
+    {% comment %} 
+    SHOPIFY CONVERSION NOTES:
+    
+    1. Replace static product data with Shopify product objects:
+       {{ product.title }}, {{ product.price | money }}, {{ product.handle }}
+    
+    2. Add Shopify Buy Button SDK:
+       <script src="https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js"></script>
+    
+    3. Convert cart functionality to use Shopify Cart API:
+       fetch('/cart/add.js', { method: 'POST', ... })
+    
+    4. Add product loops for dynamic content:
+       {% for product in collections.organic-line.products %}
+       {% for product in collections.premium-line.products %}
+    
+    5. Implement service booking with Shopify Forms or apps
+    
+    6. Add subscription functionality with ReCharge or Bold Subscriptions
+    {% endcomment %}
+    -->
+    
+    <!-- Shopify Product Schema (for SEO) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Organic HypoSolutions",
+        "url": "https://organichyposolutions.com",
+        "logo": "https://organichyposolutions.com/assets/images/logos/ohs-logo-primary.svg",
+        "sameAs": [
+            "https://www.facebook.com/organichyposolutions",
+            "https://www.linkedin.com/company/organic-hyposolutions"
+        ],
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+1-801-712-5663",
+            "contactType": "customer service",
+            "availableLanguage": "English",
+            "areaServed": "Utah"
+        },
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Salt Lake City",
+            "addressRegion": "UT",
+            "addressCountry": "US"
+        },
+        "description": "Utah's premier organic sanitization services provider offering USDA certified cleaning solutions and EPA registered disinfectant products.",
+        "offers": {
+            "@type": "AggregateOffer",
+            "priceCurrency": "USD",
+            "lowPrice": "18.99",
+            "highPrice": "899.99",
+            "offerCount": "57"
+        }
+    }
+    </script>
+
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
@@ -1394,5 +1674,174 @@
             updateCartBadge();
         });
 
+        // SHOPIFY INTEGRATION JAVASCRIPT
+        
+        // Cart Management
+        let heroQuantities = {
+            'ohs-32oz-cleaner': 1,
+            'ohs-8oz-mist': 1,
+            'hc-32oz-pro': 1,
+            'hc-1gal-comm': 1
+        };
+
+        // Product line switching
+        function showProductLine(line) {
+            const organicProducts = document.getElementById('organic-products');
+            const premiumProducts = document.getElementById('premium-products');
+            const organicToggle = document.getElementById('organic-toggle');
+            const premiumToggle = document.getElementById('premium-toggle');
+            
+            if (line === 'organic') {
+                organicProducts.style.display = 'block';
+                premiumProducts.style.display = 'none';
+                organicToggle.classList.add('active');
+                premiumToggle.classList.remove('active');
+            } else {
+                organicProducts.style.display = 'none';
+                premiumProducts.style.display = 'block';
+                organicToggle.classList.remove('active');
+                premiumToggle.classList.add('active');
+            }
+        }
+
+        // Update quantity in hero section
+        function updateHeroQuantity(productKey, change) {
+            heroQuantities[productKey] = Math.max(1, heroQuantities[productKey] + change);
+            
+            const display = document.getElementById('qty-' + productKey);
+            const minusBtn = document.getElementById('minus-' + productKey);
+            
+            if (display) display.textContent = heroQuantities[productKey];
+            if (minusBtn) minusBtn.disabled = heroQuantities[productKey] <= 1;
+        }
+
+        // Add to cart from hero section
+        function addToCartFromHero(productId, productName, price, emoji) {
+            const productKey = productId.replace(/[^a-zA-Z0-9]/g, '-').replace(/-+/g, '-');
+            const quantity = heroQuantities[Object.keys(heroQuantities).find(k => productId.includes(k.replace(/-/g, '-')))] || 1;
+            
+            // Get existing cart
+            let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+            
+            // Check if product already exists
+            const existingIndex = cart.findIndex(item => item.id === productId);
+            
+            if (existingIndex >= 0) {
+                cart[existingIndex].quantity += quantity;
+            } else {
+                cart.push({
+                    id: productId,
+                    name: productName,
+                    price: price,
+                    quantity: quantity,
+                    emoji: emoji,
+                    shopifyHandle: productId,
+                    addedAt: Date.now()
+                });
+            }
+            
+            // Save cart
+            localStorage.setItem('ohsCart', JSON.stringify(cart));
+            updateCartBadge();
+            
+            // Show success feedback
+            showAddToCartFeedback(productName, quantity);
+            
+            // Track analytics
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'add_to_cart', {
+                    'currency': 'USD',
+                    'value': price * quantity,
+                    'items': [{
+                        'item_id': productId,
+                        'item_name': productName,
+                        'category': productId.includes('hypo-company') ? 'EPA Premium' : 'USDA Organic',
+                        'quantity': quantity,
+                        'price': price
+                    }]
+                });
+            }
+        }
+
+        // Service booking functions
+        function bookResidentialService() {
+            // Track booking intent
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'book_residential_service', {
+                    'event_category': 'Service Booking',
+                    'event_label': 'Hero Section'
+                });
+            }
+            
+            // Redirect to booking form
+            window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform?entry.service_type=Residential&entry.source=Homepage_Hero', '_blank');
+        }
+
+        function bookCommercialService() {
+            // Track booking intent
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'book_commercial_service', {
+                    'event_category': 'Service Booking',
+                    'event_label': 'Hero Section'
+                });
+            }
+            
+            // Redirect to commercial quote form
+            window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform?entry.service_type=Commercial&entry.source=Homepage_Hero', '_blank');
+        }
+
+        // Show add to cart feedback
+        function showAddToCartFeedback(productName, quantity) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'position-fixed';
+            notification.style.cssText = `
+                top: 100px; right: 20px; z-index: 9999;
+                background: linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green));
+                color: white; padding: 15px 20px; border-radius: 10px;
+                box-shadow: 0 8px 25px rgba(74, 222, 128, 0.4);
+                font-weight: bold; transform: translateX(400px);
+                transition: all 0.3s ease;
+            `;
+            notification.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <div>
+                        <div>Added to Cart!</div>
+                        <small>${quantity}x ${productName}</small>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Initialize hero quantities on load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial disabled states for minus buttons
+            Object.keys(heroQuantities).forEach(key => {
+                const minusBtn = document.getElementById('minus-' + key);
+                if (minusBtn && heroQuantities[key] <= 1) {
+                    minusBtn.disabled = true;
+                }
+            });
+        });
+
         // Make closeBanner function globally available
         window.closeBanner = closeBanner;
+    </script>
+</body>
+</html>
