@@ -198,7 +198,7 @@
             padding: 1.5rem 0;
             position: sticky;
             top: 89px;
-            z-index: 100;
+            z-index: 100; /* Lower than cart preview */
             box-shadow: var(--shadow-sm);
             border-bottom: 1px solid var(--gray-200);
         }
@@ -435,7 +435,7 @@
             border-radius: 1rem;
             box-shadow: var(--shadow-lg);
             padding: 1.5rem;
-            z-index: 1000;
+            z-index: 9999 !important; /* Increased z-index to override Bootstrap */
             transition: right 0.3s ease;
             overflow-y: auto;
             border: 2px solid var(--primary-blue);
@@ -1709,9 +1709,17 @@
             updateCartDisplay();
             showCartNotification(name, quantity);
             
-            // Auto-show cart preview
+            // Auto-show cart preview for testing
+            console.log('📦 Attempting to show cart preview...');
+            const cartPreview = document.getElementById('cartPreview');
+            console.log('Cart preview element:', cartPreview);
             setTimeout(() => {
-                document.getElementById('cartPreview').classList.add('show');
+                if (cartPreview) {
+                    cartPreview.classList.add('show');
+                    console.log('✅ Cart preview should now be visible');
+                } else {
+                    console.error('❌ Cart preview element not found');
+                }
             }, 300);
 
             // Analytics tracking
@@ -1823,7 +1831,16 @@
         // Toggle cart visibility
         function toggleCart() {
             const cartPreview = document.getElementById('cartPreview');
+            console.log('🔄 Toggling cart. Current classes:', cartPreview.className);
             cartPreview.classList.toggle('show');
+            console.log('🔄 After toggle. New classes:', cartPreview.className);
+            
+            // Debug positioning
+            if (cartPreview.classList.contains('show')) {
+                console.log('✅ Cart should be visible at right: 20px');
+            } else {
+                console.log('❌ Cart should be hidden at right: -400px');
+            }
         }
 
         // Show cart notification
