@@ -2875,7 +2875,7 @@ window.PRICING_RULES = PRICING_RULES;
 
 console.log('🎉 COMPLETE PRODUCT CATALOG LOADED - 57 PRODUCTS TOTAL');
 console.log('🏆 Premium Line: 38 products | 🌱 Organic Line: 19 products');
-console.log('✅ Shopify Ready | 💰 Pricing Configured | 🛍️ Cart Functional');
+console.log('✅ Shopify Ready | ⚙️ Pricing Configured | 🛒 Cart Functional');
 
 console.log('🛒 Cart Functional');
 // Empty line (line 2879)
