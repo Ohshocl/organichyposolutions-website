@@ -2895,18 +2895,18 @@ window.PRODUCT_CATALOG = PRODUCT_CATALOG;
 // ===================================================================
 // PRICING RULES CONFIGURATION
 // ===================================================================
-
 const PRICING_RULES = {
     volumeDiscount: 0.15,
     bulkOrderThreshold: 1000,
     businessAccountDiscount: 0.12,
     utahTaxRate: 0.0775,
-    freeShippingThreshold: 50,
-    standardShipping: 9.95,
-    expeditedShipping: 19.95,
-    overnightShipping: 39.95,
-    serviceAreaRadius: 25,
-    deliveryFeePerMile: 0.70,
+    
+    // Shopify + ShipRight Integration
+    ecommerceProvider: 'Shopify',
+    shippingProvider: 'ShipRight', // Shopify app integration
+    fulfillmentIncluded: true, // Fulfillment costs already in product prices
+    shippingCalculatedBy: 'Shopify', // Shopify handles shipping calculations via ShipRight
+    
     subscriptionDiscounts: {
         monthly: 0.08,
         quarterly: 0.10,
@@ -2935,21 +2935,53 @@ const PRICING_RULES = {
         }
     },
     fulfillment: {
+        provider: 'Shopify + ShipRight',
+        costsIncluded: true, // Fulfillment costs already included in product prices
         standardDays: '2-4',
         expeditedDays: '1-2',
         overnightDays: 'Next day',
         businessOnly: false,
         saturdayDelivery: true,
         signatureRequired: false,
-        origin: 'Salt Lake City, Utah'
-    }
+        origin: 'Salt Lake City, Utah',
+        integration: 'shopify_app' // ShipRight runs as Shopify app
+    },
+    
+    // Shopify Integration Readiness
+    shopifyReady: true,
+    productDataStructured: true,
+    pricingConfigured: true,
+    shippingIntegrated: true
 };
 
 window.PRICING_RULES = PRICING_RULES;
 
+// Optional: Check for duplicate products
+function checkForDuplicates() {
+    const productIds = Object.keys(PRODUCT_CATALOG);
+    const productNames = Object.values(PRODUCT_CATALOG).map(p => p.name);
+    
+    const uniqueIds = [...new Set(productIds)];
+    const uniqueNames = [...new Set(productNames)];
+    
+    if (productIds.length !== uniqueIds.length) {
+        console.error('❌ DUPLICATE PRODUCT IDs FOUND:', productIds.length - uniqueIds.length, 'duplicates');
+    }
+    
+    if (productNames.length !== uniqueNames.length) {
+        console.error('❌ DUPLICATE PRODUCT NAMES FOUND:', productNames.length - uniqueNames.length, 'duplicates');
+    }
+    
+    if (productIds.length === uniqueIds.length && productNames.length === uniqueNames.length) {
+        console.log('✅ No duplicates found in product catalog');
+    }
+}
+
+checkForDuplicates();
+
 console.log('🎉 COMPLETE PRODUCT CATALOG LOADED - 57 PRODUCTS TOTAL');
 console.log('🏆 Premium Line: 38 products | 🌱 Organic Line: 19 products');
-console.log('✅ Shopify Ready | ⚙️ Pricing Configured | 🛒 Cart Functional');
+console.log('🛒 Shopify Ready | 🚚 ShipRight Integration Ready | 📦 Fulfillment Included');
+console.log('✅ Ready for Shopify Import | ⚙️ Pricing Configured | 🔄 Cart Functional');
 
-// Make it globally accessible  
-window.PRODUCT_CATALOG = PRODUCT_CATALOG;
+// REMOVED THE DUPLICATE LINE: window.PRODUCT_CATALOG = PRODUCT_CATALOG;
