@@ -2409,40 +2409,21 @@
         }
     });
 
-    // Fallback for missing PRODUCT_CATALOG
-    if (typeof PRODUCT_CATALOG === 'undefined') {
-        console.warn('⚠️ PRODUCT_CATALOG not found, creating minimal fallback');
-        window.PRODUCT_CATALOG = {
-            'sample-organic': {
-                id: 'sample-organic',
-                name: 'Organic Household Cleaner',
-                price: 24.99,
-                type: 'organic',
-                productLine: 'organic',
-                description: 'USDA Certified Organic hypochlorous acid solution',
-                emoji: '🧴',
-                certifications: ['USDA Organic'],
-                category: 'residential',
-                sku: 'OHS-ORG-001'
-            },
-            'sample-premium': {
-                id: 'sample-premium',
-                name: 'Professional Disinfectant',
-                price: 34.99,
-                type: 'premium',
-                productLine: 'premium',
-                description: 'EPA registered commercial-grade disinfectant',
-                emoji: '🧴',
-                certifications: ['EPA Registered'],
-                category: 'commercial',
-                sku: 'OHS-PRE-001'
-            }
-        };
-        
-        // Initialize with fallback data
-        setTimeout(() => {
-            loadProductsFromCatalog();
-        }, 100);
+// Wait for cart.js to load the real PRODUCT_CATALOG
+function waitForCartJS() {
+    if (typeof PRODUCT_CATALOG !== 'undefined' && Object.keys(PRODUCT_CATALOG).length > 2) {
+        console.log('✅ PRODUCT_CATALOG loaded with', Object.keys(PRODUCT_CATALOG).length, 'products');
+        loadProductsFromCatalog();
+    } else {
+        console.log('⏳ Waiting for cart.js to load PRODUCT_CATALOG...');
+        setTimeout(waitForCartJS, 100);
+    }
+}
+
+// Start the wait process
+document.addEventListener('DOMContentLoaded', function() {
+    waitForCartJS();
+});
     }
 
     // ===================================================================
@@ -3760,34 +3741,15 @@
         }
     });
 
-    // Fallback for missing PRODUCT_CATALOG
-    if (typeof PRODUCT_CATALOG === 'undefined') {
-        console.warn('⚠️ PRODUCT_CATALOG not found, creating minimal fallback');
-        window.PRODUCT_CATALOG = {
-            'sample-organic': {
-                id: 'sample-organic',
-                name: 'Organic Household Cleaner',
-                price: 24.99,
-                type: 'organic',
-                productLine: 'organic',
-                description: 'USDA Certified Organic hypochlorous acid solution',
-                emoji: '🧴',
-                certifications: ['USDA Organic'],
-                category: 'residential',
-                sku: 'OHS-ORG-001'
-            },
-            'sample-premium': {
-                id: 'sample-premium',
-                name: 'Professional Disinfectant',
-                price: 34.99,
-                type: 'premium',
-                productLine: 'premium',
-                description: 'EPA registered commercial-grade disinfectant',
-                emoji: '🧴',
-                certifications: ['EPA Registered'],
-                category: 'commercial',
-                sku: 'OHS-PRE-001'
-            }
+// Fallback for missing PRODUCT_CATALOG
+if (typeof PRODUCT_CATALOG === 'undefined') {
+    console.warn('⚠️ PRODUCT_CATALOG not found, creating minimal fallback');
+    window.PRODUCT_CATALOG = {
+        'sample-organic': { ... },
+        'sample-premium': { ... }
+    };
+    // ...
+}
         };
         
         // Initialize with fallback data
