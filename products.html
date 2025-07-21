@@ -2408,21 +2408,6 @@
             ));
         }
     });
-
-// Wait for cart.js to load the real PRODUCT_CATALOG
-function waitForCartJS() {
-    if (typeof PRODUCT_CATALOG !== 'undefined' && Object.keys(PRODUCT_CATALOG).length > 2) {
-        console.log('✅ PRODUCT_CATALOG loaded with', Object.keys(PRODUCT_CATALOG).length, 'products');
-        loadProductsFromCatalog();
-    } else {
-        console.log('⏳ Waiting for cart.js to load PRODUCT_CATALOG...');
-        setTimeout(waitForCartJS, 100);
-    }
-}
-
-// Start the wait process
-document.addEventListener('DOMContentLoaded', function() {
-    waitForCartJS();
 });
     
 
