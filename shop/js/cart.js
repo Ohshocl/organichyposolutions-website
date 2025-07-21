@@ -1,4 +1,78 @@
 // ===================================================================
+// CART FUNCTIONS
+// ===================================================================
+
+// Consistent localStorage key across all pages
+const CART_STORAGE_KEY = 'ohsCart';
+
+// Load cart from localStorage
+function loadCart() {
+    return JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+}
+
+// Save cart to localStorage
+function saveCart(cart) {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+}
+
+// Update cart badge count
+function updateCartBadge() {
+    const cartItems = loadCart();
+    const cartBadge = document.getElementById('cartBadge');
+    const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+    
+    if (totalItems > 0) {
+        cartBadge.textContent = totalItems;
+        cartBadge.style.display = 'inline-block';
+    } else {
+        cartBadge.style.display = 'none';
+    }
+}
+
+// Add to cart function
+function addToCart(productId, quantity = 1) {
+    let cart = loadCart();
+    const existingItemIndex = cart.findIndex(item => item.productId === productId);
+    
+    if (existingItemIndex >= 0) {
+        cart[existingItemIndex].quantity += quantity;
+    } else {
+        cart.push({ productId, quantity });
+    }
+    
+    saveCart(cart);
+    updateCartBadge();
+}
+
+// Remove from cart function
+function removeFromCart(productId) {
+    let cart = loadCart();
+    cart = cart.filter(item => item.productId !== productId);
+    saveCart(cart);
+    updateCartBadge();
+}
+
+// Update cart quantity
+function updateCartQuantity(productId, change) {
+    let cart = loadCart();
+    const item = cart.find(item => item.productId === productId);
+    
+    if (item) {
+        item.quantity += change;
+        if (item.quantity <= 0) {
+            removeFromCart(productId);
+        } else {
+            saveCart(cart);
+            updateCartBadge();
+        }
+    }
+}
+
+// Initialize cart on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateCartBadge();
+});
+// ===================================================================
 // COMPLETE PRODUCT CATALOG - 57 Products Total
 // Properly formatted for JavaScript execution
 // ===================================================================
