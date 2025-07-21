@@ -2669,89 +2669,83 @@ document.addEventListener('DOMContentLoaded', function() {
 </style>
 
     
+<!-- COMPLETE WORKING SCRIPT SECTION FOR PRODUCTS.HTML -->
+<!-- Replace everything from line 2572 to end of file with this -->
+
 <!-- Bootstrap JS Bundle -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
 <!-- Load Cart System FIRST -->
 <script src="shop/js/cart.js"></script>
 
-<!-- Complete Products Page JavaScript Integration -->
+<!-- WORKING Products Page Integration -->
 <script>
-    // ===================================================================
-    // PRODUCTS PAGE INTEGRATION WITH ENHANCED CART.JS
-    // ===================================================================
-    
-    // Global variables for product management
-    let currentFilters = {
-        brand: 'all',
-        category: 'all'
-    };
-    let currentSort = 'name';
-    let productQuantities = {};
-    let isLoading = false;
-
-    // Initialize the products page
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('🚀 Products Page Initializing...');
-        
-        // Wait for cart system to load
-        if (typeof PRODUCT_CATALOG === 'undefined') {
-            console.log('⏳ Waiting for cart.js to load...');
-            setTimeout(initializeProductsPage, 500);
-            return;
-        }
-        
-        initializeProductsPage();
-    });
-
-    function initializeProductsPage() {
-        console.log('📦 Initializing Products Page with Cart Integration');
-        
-        try {
-            // Initialize cart system if not already done
-            if (typeof initializeCart === 'function') {
-                initializeCart();
-            }
+    // Simple but effective waiting system
+    function waitForCartSystem() {
+        return new Promise((resolve, reject) => {
+            let attempts = 0;
+            const maxAttempts = 50; // 5 seconds max wait
             
-            // Load and display products from cart.js PRODUCT_CATALOG
-            loadProductsFromCatalog();
+            const checkSystem = () => {
+                attempts++;
+                
+                if (typeof PRODUCT_CATALOG !== 'undefined' && 
+                    Object.keys(PRODUCT_CATALOG).length > 0 &&
+                    typeof addToCart === 'function') {
+                    
+                    console.log('✅ Cart system loaded successfully:', {
+                        products: Object.keys(PRODUCT_CATALOG).length,
+                        addToCart: typeof addToCart
+                    });
+                    resolve();
+                    
+                } else if (attempts >= maxAttempts) {
+                    console.error('❌ Cart system failed to load after 5 seconds');
+                    reject(new Error('Cart system timeout'));
+                    
+                } else {
+                    console.log(`⏳ Attempt ${attempts}: Still loading cart system...`);
+                    setTimeout(checkSystem, 100);
+                }
+            };
             
-            // Setup event listeners
-            setupEventListeners();
-            
-            // Initialize filters
-            initializeFilters();
-            
-            // Update cart displays
-            updateAllCartDisplays();
-            
-            console.log('✅ Products Page Initialized Successfully');
-            
-        } catch (error) {
-            console.error('❌ Error initializing products page:', error);
-            showErrorMessage('Failed to load product catalog');
-        }
+            checkSystem();
+        });
     }
 
-    // Load products from the enhanced cart.js PRODUCT_CATALOG
-    function loadProductsFromCatalog() {
-        console.log('📋 Loading products from PRODUCT_CATALOG...');
+    // Global variables
+    let currentFilters = { brand: 'all', category: 'all' };
+    let productQuantities = {};
 
-        if (typeof PRODUCT_CATALOG === 'undefined') {
-            console.log('⏳ PRODUCT_CATALOG not loaded yet, waiting...');
-            // Create empty catalog temporarily
-            window.PRODUCT_CATALOG = {};
-            // Try again later
-            setTimeout(loadProductsFromCatalog, 100);
-            return;
+    // Initialize everything when DOM loads
+    document.addEventListener('DOMContentLoaded', async function() {
+        console.log('🚀 Products Page Starting...');
+        
+        try {
+            // Wait for cart system
+            await waitForCartSystem();
+            
+            // Now load products
+            loadProducts();
+            
+            console.log('✅ Products Page Ready!');
+            
+        } catch (error) {
+            console.error('❌ Failed to load cart system:', error);
+            showFallbackProducts();
         }
+    });
+
+    function loadProducts() {
+        console.log('📦 Loading products from catalog...');
         
         const productsContainer = document.getElementById('productSections');
         const loadingDiv = document.getElementById('productsLoading');
         
+        // Hide loading
         if (loadingDiv) loadingDiv.style.display = 'none';
         
-        // Create product sections
+        // Separate products by type
         const organicProducts = [];
         const premiumProducts = [];
         
@@ -2761,81 +2755,62 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 premiumProducts.push(product);
             }
-            
-            // Initialize quantity for each product
+            // Initialize quantities
             productQuantities[product.id] = 1;
         });
         
-        // Generate HTML sections
-        let sectionsHTML = '';
+        // Generate sections
+        let html = '';
         
-        // Organic Section
         if (organicProducts.length > 0) {
-            sectionsHTML += generateProductSection('organic', 'USDA Organic Line', organicProducts, 
-                'Family-safe products with USDA Certified Organic formulations');
+            html += createProductSection('organic', 'USDA Organic Line', organicProducts);
         }
         
-        // Premium Section
         if (premiumProducts.length > 0) {
-            sectionsHTML += generateProductSection('premium', 'EPA Premium Line', premiumProducts, 
-                'Professional-grade products with EPA registration for commercial use');
+            html += createProductSection('premium', 'EPA Premium Line', premiumProducts);
         }
         
         if (productsContainer) {
-            productsContainer.innerHTML = sectionsHTML;
+            productsContainer.innerHTML = html;
         }
         
-        // Update counts
         updateProductCounts();
-        
-        console.log(`✅ Loaded ${organicProducts.length} organic and ${premiumProducts.length} premium products`);
+        console.log(`✅ Loaded ${organicProducts.length} organic + ${premiumProducts.length} premium products`);
     }
 
-    // Generate HTML for a product section
-    function generateProductSection(type, title, products, subtitle) {
+    function createProductSection(type, title, products) {
         const sectionClass = type === 'organic' ? 'organic' : 'premium';
+        const icon = type === 'organic' ? 'leaf' : 'crown';
         
         let html = `
             <section id="${type}-products" class="mb-5">
                 <div class="section-header ${sectionClass}">
                     <h2 class="section-title">
-                        <i class="fas fa-${type === 'organic' ? 'leaf' : 'crown'} me-2"></i>${title}
+                        <i class="fas fa-${icon} me-2"></i>${title}
                     </h2>
-                    <p class="section-subtitle">${subtitle}</p>
+                    <p class="section-subtitle">${type === 'organic' ? 'Family-safe USDA Certified Organic' : 'Professional EPA Registered'}</p>
                 </div>
                 <div class="container">
                     <div class="row">
         `;
         
         products.forEach(product => {
-            html += generateProductCard(product, type);
+            html += createProductCard(product, type);
         });
         
-        html += `
-                    </div>
-                </div>
-            </section>
-        `;
-        
+        html += '</div></div></section>';
         return html;
     }
 
-    // Enhanced Professional Product Card Generation
-    function generateProductCard(product, type) {
-        const pricing = product.pricing || {};
-        const retail = pricing.retail || product.price || 0;
-        const wholesale = pricing.wholesale || (retail * 0.7);
+    function createProductCard(product, type) {
         const accountType = getAccountType();
+        const retail = product.pricing?.retail || product.price || 0;
+        const wholesale = product.pricing?.wholesale || (retail * 0.7);
         const currentPrice = accountType === 'business' ? wholesale : retail;
         
-        const badge = type === 'organic' ? 'badge-organic' : 'badge-premium';
-        const brandTag = type === 'organic' ? 'brand-organic' : 'brand-premium';
-        const brandText = type === 'organic' ? 'USDA ORGANIC' : 'EPA PREMIUM';
-        
-        // Enhanced product description with technical specifications
-        const enhancedDescription = generateEnhancedDescription(product, type);
-        const technicalSpecs = generateTechnicalSpecs(product, type);
-        const applications = generateApplications(product, type);
+        const badgeColor = type === 'organic' ? '#4ADE80' : '#f59e0b';
+        const badgeText = type === 'organic' ? 'USDA ORGANIC' : 'EPA PREMIUM';
+        const certIcon = type === 'organic' ? 'leaf' : 'shield-alt';
         
         return `
             <div class="col-xl-4 col-lg-6 col-md-6 mb-4">
@@ -2845,150 +2820,56 @@ document.addEventListener('DOMContentLoaded', function() {
                      data-product-id="${product.id}"
                      data-visible="true">
                     
-                    <!-- Professional Product Badge -->
-                    <div class="product-badge ${badge}">
-                        <i class="fas fa-${type === 'organic' ? 'leaf' : 'shield-alt'} me-1"></i>
-                        ${brandText}
+                    <div class="product-badge" style="background: ${badgeColor}; color: white;">
+                        <i class="fas fa-${certIcon} me-1"></i>${badgeText}
                     </div>
                     
                     <div class="card-body p-4 text-center">
-                        <!-- Brand Certification Tag -->
-                        <div class="brand-tag ${brandTag}">
-                            <i class="fas fa-certificate me-1"></i>${brandText}
-                        </div>
+                        <div class="product-icon mb-3">${product.emoji || '🧴'}</div>
+                        <h5 class="product-title mb-3">${product.name}</h5>
                         
-                        <!-- Product Icon & Title -->
-                        <div class="product-icon">${product.emoji || '🧴'}</div>
-                        <h5 class="product-title">${product.name}</h5>
+                        <p class="text-muted small mb-3">${product.description || 'Professional hypochlorous acid solution'}</p>
                         
-                        <!-- Enhanced Product Description -->
-                        <div class="product-description mb-3">
-                            <p class="text-muted small">${enhancedDescription}</p>
-                            <div class="technical-specs-toggle">
-                                <button class="btn btn-sm btn-outline-info" onclick="toggleSpecs('${product.id}')">
-                                    <i class="fas fa-info-circle me-1"></i>Technical Specs
-                                </button>
-                            </div>
-                            <div id="specs-${product.id}" class="technical-specs mt-2" style="display: none;">
-                                <div class="specs-content p-3 bg-light rounded">
-                                    ${technicalSpecs}
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Professional Applications -->
-                        <div class="applications mb-3">
-                            <h6 class="small fw-bold text-primary mb-2">
-                                <i class="fas fa-tasks me-1"></i>Professional Applications:
-                            </h6>
-                            <div class="application-tags">
-                                ${applications}
-                            </div>
-                        </div>
-                        
-                        <!-- Enhanced Pricing Section -->
-                        <div class="pricing-section">
-                            ${product.volumeDiscounts ? '<div class="volume-discount-indicator"><i class="fas fa-percentage me-1"></i>Volume Discounts</div>' : ''}
-                            
-                            <div class="price-retail">$${currentPrice.toFixed(2)}</div>
-                            <small class="text-muted d-block">
-                                <i class="fas fa-tag me-1"></i>SKU: ${product.sku || product.id}
-                            </small>
+                        <!-- Pricing -->
+                        <div class="pricing-section mb-3">
+                            <div class="price-retail h4 text-primary">$${currentPrice.toFixed(2)}</div>
+                            <small class="text-muted">SKU: ${product.sku || product.id}</small>
                             
                             ${accountType === 'consumer' && wholesale !== retail ? 
-                                `<div class="price-wholesale mt-2">
-                                    <i class="fas fa-building me-1"></i>Business: $${wholesale.toFixed(2)}
-                                    <span class="badge bg-warning ms-1">Wholesale Access</span>
-                                </div>` : ''}
-                            
-                            ${pricing.retailSubscription ? 
-                                `<div class="price-subscription mt-1">
-                                    <i class="fas fa-sync-alt me-1"></i>Subscription: $${pricing.retailSubscription.toFixed(2)}
-                                    <span class="badge bg-info ms-1">Save 8-10%</span>
-                                </div>` : ''}
-                            
-                            <!-- Volume Discount Preview -->
-                            ${product.volumeDiscounts ? generateVolumeDiscountPreview(product.volumeDiscounts) : ''}
+                                `<div class="text-success small mt-1">Business: $${wholesale.toFixed(2)} <span class="badge bg-warning">Wholesale</span></div>` : ''}
                         </div>
-
-                        <!-- Enhanced Features List -->
-                        <ul class="features-list">
-                            ${generateFeaturesList(product, type)}
+                        
+                        <!-- Features -->
+                        <ul class="list-unstyled small mb-3">
+                            <li><i class="fas fa-check text-success me-2"></i>${type === 'organic' ? 'Family & Pet Safe' : 'Commercial Grade'}</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Utah Manufactured</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Free Shipping</li>
                         </ul>
-
-                        <!-- Sophisticated Product Controls -->
+                        
+                        <!-- Controls -->
                         <div class="product-controls">
-                            <!-- Professional Quantity Controls -->
-                            <div class="quantity-controls">
-                                <button class="quantity-btn" 
-                                        onclick="updateProductQuantity('${product.id}', -1)" 
-                                        id="minus-${product.id}"
-                                        title="Decrease quantity">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                                <input type="number" 
-                                       class="quantity-display" 
-                                       id="qty-${product.id}" 
-                                       value="1" 
-                                       min="1" 
-                                       max="999"
-                                       onchange="setProductQuantity('${product.id}', this.value)"
-                                       title="Enter quantity">
-                                <button class="quantity-btn" 
-                                        onclick="updateProductQuantity('${product.id}', 1)"
-                                        title="Increase quantity">
-                                    <i class="fas fa-plus"></i>
-                                </button>
+                            <div class="quantity-controls mb-3">
+                                <div class="input-group justify-content-center">
+                                    <button class="btn btn-outline-primary" onclick="changeQuantity('${product.id}', -1)" type="button">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="number" class="form-control text-center" style="max-width: 80px;" 
+                                           id="qty-${product.id}" value="1" min="1" max="999"
+                                           onchange="setQuantity('${product.id}', this.value)">
+                                    <button class="btn btn-outline-primary" onclick="changeQuantity('${product.id}', 1)" type="button">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
                             </div>
                             
-                            <!-- Professional Subscription Toggle -->
-                            <div class="subscription-toggle">
-                                <label class="subscription-switch">
-                                    <i class="fas fa-sync-alt me-2"></i>Monthly Subscription
-                                    <small class="text-muted d-block">Save 8-10% on recurring orders</small>
-                                    <label class="switch ms-2">
-                                        <input type="checkbox" onchange="toggleSubscription('${product.id}', this.checked)">
-                                        <span class="slider"></span>
-                                    </label>
-                                </label>
-                            </div>
-                            
-                            <!-- Professional Add to Cart Button -->
-                            <button class="add-to-cart-btn" 
-                                    onclick="addProductToCart('${product.id}')"
-                                    id="addBtn-${product.id}">
+                            <button class="btn btn-success w-100" onclick="addToCartFromProducts('${product.id}')">
                                 <i class="fas fa-cart-plus me-2"></i>Add to Cart
-                                <span class="badge bg-warning ms-1">Cart System Ready</span>
                             </button>
                             
-                            <!-- Professional Additional Actions -->
-                            <div class="additional-actions mt-3">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <button class="btn btn-sm btn-outline-primary w-100" 
-                                                onclick="requestQuote('${product.id}')">
-                                            <i class="fas fa-clipboard-list me-1"></i>
-                                            Request Quote
-                                            <span class="badge bg-warning ms-1">Under Construction</span>
-                                        </button>
-                                    </div>
-                                    <div class="col-6">
-                                        <button class="btn btn-sm btn-outline-info w-100" 
-                                                onclick="viewProductDetails('${product.id}')">
-                                            <i class="fas fa-eye me-1"></i>
-                                            View Details
-                                            <span class="badge bg-warning ms-1">Under Construction</span>
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <!-- Expert Consultation -->
-                                <div class="mt-2">
-                                    <a href="tel:+18017125663" class="btn btn-sm btn-outline-success w-100">
-                                        <i class="fas fa-phone me-1"></i>
-                                        Expert Consultation: (801) 712-5663
-                                    </a>
-                                </div>
+                            <div class="mt-2">
+                                <a href="tel:+18017125663" class="btn btn-sm btn-outline-info">
+                                    <i class="fas fa-phone me-1"></i>Expert Help
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -2997,190 +2878,25 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 
-    // Enhanced Description Generator with Professional Focus
-    function generateEnhancedDescription(product, type) {
-        const baseDescription = product.description || '';
-        const certType = type === 'organic' ? 'USDA Certified Organic' : 'EPA Registered';
-        const useCase = type === 'organic' ? 'family-safe applications' : 'professional commercial use';
-        
-        return `${baseDescription} This ${certType} hypochlorous acid solution is manufactured in Utah for ${useCase}. Professional-grade formulation with proven efficacy and safety standards.`;
+    // Product interaction functions
+    function changeQuantity(productId, change) {
+        const currentQty = productQuantities[productId] || 1;
+        const newQty = Math.max(1, Math.min(999, currentQty + change));
+        setQuantity(productId, newQty);
     }
 
-    // Technical Specifications Generator
-    function generateTechnicalSpecs(product, type) {
-        const certifications = product.certifications || [];
-        const weight = product.weight || 'Contact for details';
+    function setQuantity(productId, value) {
+        const qty = Math.max(1, Math.min(999, parseInt(value) || 1));
+        productQuantities[productId] = qty;
         
-        return `
-            <div class="row">
-                <div class="col-6">
-                    <strong>Weight:</strong><br>
-                    <small class="text-muted">${weight} lbs</small>
-                </div>
-                <div class="col-6">
-                    <strong>Category:</strong><br>
-                    <small class="text-muted">${product.category || 'Professional Grade'}</small>
-                </div>
-            </div>
-            <div class="row mt-2">
-                <div class="col-12">
-                    <strong>Certifications:</strong><br>
-                    <small class="text-muted">${certifications.join(', ') || 'Professional Grade Certified'}</small>
-                </div>
-            </div>
-            <div class="row mt-2">
-                <div class="col-12">
-                    <strong>Manufacturing:</strong><br>
-                    <small class="text-muted">Utah, USA • Professional Quality Standards</small>
-                </div>
-            </div>
-        `;
+        const input = document.getElementById(`qty-${productId}`);
+        if (input) input.value = qty;
     }
 
-    // Professional Applications Generator
-    function generateApplications(product, type) {
-        const useCase = product.useCase || [];
-        const applications = type === 'organic' ? 
-            ['Family Safe', 'Food Contact', 'Pet Safe', 'Eco-Conscious'] :
-            ['Healthcare', 'Commercial', 'Industrial', 'Professional'];
-        
-        const combinedApps = [...new Set([...useCase, ...applications])];
-        
-        return combinedApps.slice(0, 4).map(app => 
-            `<span class="badge bg-secondary me-1 mb-1">
-                <i class="fas fa-check me-1"></i>${app}
-            </span>`
-        ).join('');
-    }
-
-    // Volume Discount Preview Generator
-    function generateVolumeDiscountPreview(volumeDiscounts) {
-        const discounts = Object.entries(volumeDiscounts).slice(0, 2);
-        if (discounts.length === 0) return '';
-        
-        return `
-            <div class="volume-preview mt-2 p-2 bg-light rounded">
-                <small class="text-success fw-bold">
-                    <i class="fas fa-percentage me-1"></i>Volume Discounts Available:
-                </small>
-                <div class="volume-tiers mt-1">
-                    ${discounts.map(([tier, data]) => 
-                        `<small class="d-block text-muted">
-                            ${tier}: Save ${Math.round(data.discount * 100)}% 
-                            <span class="text-success">($${data.retailPrice?.toFixed(2) || 'Contact'})</span>
-                        </small>`
-                    ).join('')}
-                </div>
-            </div>
-        `;
-    }
-
-    // Enhanced Features List Generator
-    function generateFeaturesList(product, type) {
-        const certifications = product.certifications || [];
-        const baseFeatures = [
-            'Professional grade quality',
-            'Utah manufactured',
-            'Fast nationwide shipping',
-            'Technical support available'
-        ];
-        
-        const specificFeatures = type === 'organic' ? [
-            'USDA Certified Organic',
-            'Family and pet safe',
-            'Food contact approved'
-        ] : [
-            'EPA registered formula',
-            'Commercial grade strength', 
-            'Professional applications'
-        ];
-        
-        const allFeatures = [...specificFeatures, ...baseFeatures].slice(0, 5);
-        
-        return allFeatures.map(feature => 
-            `<li><i class="fas fa-check"></i>${feature}</li>`
-        ).join('');
-    }
-
-    // ===================================================================
-    // UTILITY FUNCTIONS FOR ENHANCED FUNCTIONALITY
-    // ===================================================================
-
-    function toggleSpecs(productId) {
-        const specsDiv = document.getElementById(`specs-${productId}`);
-        const isVisible = specsDiv.style.display !== 'none';
-        specsDiv.style.display = isVisible ? 'none' : 'block';
-        
-        // Update button text
-        const button = specsDiv.previousElementSibling.querySelector('button');
-        button.innerHTML = isVisible ? 
-            '<i class="fas fa-info-circle me-1"></i>Technical Specs' :
-            '<i class="fas fa-times me-1"></i>Hide Specs';
-    }
-
-    function setProductQuantity(productId, value) {
-        const quantity = Math.max(1, Math.min(999, parseInt(value) || 1));
-        productQuantities[productId] = quantity;
-        
-        // Update display
-        const display = document.getElementById(`qty-${productId}`);
-        const minusBtn = document.getElementById(`minus-${productId}`);
-        
-        if (display) display.value = quantity;
-        if (minusBtn) minusBtn.disabled = quantity <= 1;
-        
-        // Show volume discount notifications
-        checkVolumeDiscountThreshold(productId, quantity);
-    }
-
-    function updateProductQuantity(productId, change) {
-        if (!productQuantities[productId]) productQuantities[productId] = 1;
-        
-        productQuantities[productId] += change;
-        if (productQuantities[productId] < 1) productQuantities[productId] = 1;
-        if (productQuantities[productId] > 999) productQuantities[productId] = 999;
-        
-        // Update display
-        const display = document.getElementById(`qty-${productId}`);
-        const minusBtn = document.getElementById(`minus-${productId}`);
-        
-        if (display) display.value = productQuantities[productId];
-        if (minusBtn) minusBtn.disabled = productQuantities[productId] <= 1;
-        
-        // Show volume discount notifications
-        checkVolumeDiscountThreshold(productId, productQuantities[productId]);
-    }
-
-    function checkVolumeDiscountThreshold(productId, quantity) {
-        const product = PRODUCT_CATALOG[productId];
-        if (!product || !product.volumeDiscounts) return;
-        
-        const thresholds = [50, 25, 10];
-        for (let threshold of thresholds) {
-            if (quantity === threshold && product.volumeDiscounts[`${threshold}+`]) {
-                showVolumeDiscountNotification(
-                    `${threshold}+ Volume Discount Available! Save ${(product.volumeDiscounts[`${threshold}+`].discount * 100).toFixed(1)}%`
-                );
-                break;
-            }
-        }
-    }
-
-    function toggleSubscription(productId, enabled) {
-        console.log(`📅 Toggling subscription for ${productId}: ${enabled}`);
-        
-        // This would integrate with subscription pricing logic
-        if (typeof applySubscriptionPricing === 'function' && enabled) {
-            applySubscriptionPricing(productId);
-        } else if (typeof removeSubscriptionPricing === 'function' && !enabled) {
-            removeSubscriptionPricing(productId);
-        }
-    }
-
-    function addProductToCart(productId) {
+    function addToCartFromProducts(productId) {
         const product = PRODUCT_CATALOG[productId];
         if (!product) {
-            console.error('❌ Product not found:', productId);
+            console.error('Product not found:', productId);
             return;
         }
         
@@ -3190,199 +2906,55 @@ document.addEventListener('DOMContentLoaded', function() {
             (product.pricing?.wholesale || product.price * 0.7) : 
             (product.pricing?.retail || product.price);
         
-        console.log(`🛒 Adding ${quantity}x ${product.name} to cart at $${price}`);
+        console.log(`Adding to cart: ${quantity}x ${product.name} at $${price}`);
         
-        // Use the enhanced addToCart function from cart.js
-        if (typeof addToCart === 'function') {
-            addToCart(
-                product.id,
-                quantity,
-                {
-                    name: product.name,
-                    price: price,
-                    emoji: product.emoji || '🧴',
-                    type: product.type || product.productLine,
-                    sku: product.sku,
-                    shopifyHandle: product.shopifyHandle,
-                    certifications: product.certifications,
-                    fromCatalog: true
-                }
-            );
-            
-            // Update all displays
-            updateAllCartDisplays();
-            
-            // Show success feedback
-            showAddToCartSuccess(product.name, quantity);
-            
-            // Analytics tracking
-            if (typeof trackCartEvent === 'function') {
-                trackCartEvent('add_to_cart', {
-                    productId: product.id,
-                    name: product.name,
-                    price: price,
-                    quantity: quantity,
-                    type: product.type || product.productLine
-                });
-            }
-        } else {
-            console.error('❌ addToCart function not available from cart.js');
-        }
-    }
-
-    // ===================================================================
-    // FILTER & SEARCH FUNCTIONS
-    // ===================================================================
-
-    function setupEventListeners() {
-        // Filter buttons
-        document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const filter = this.getAttribute('data-filter');
-                const type = this.getAttribute('data-type');
-                applyFilter(filter, type);
-            });
-        });
-    }
-
-    function applyFilter(filter, type) {
-        console.log(`🔍 Applying filter: ${type} = ${filter}`);
-        
-        // Update active states
-        document.querySelectorAll(`.filter-btn[data-type="${type}"]`).forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`.filter-btn[data-filter="${filter}"][data-type="${type}"]`)?.classList.add('active');
-        
-        // Store current filter
-        currentFilters[type] = filter;
-        
-        // Apply filter logic
-        const products = document.querySelectorAll('.product-card[data-brand]');
-        let visibleCount = 0;
-        
-        products.forEach(product => {
-            const productBrand = product.getAttribute('data-brand');
-            const productCategory = product.getAttribute('data-category');
-            
-            let showProduct = true;
-            
-            // Brand filter
-            if (currentFilters.brand !== 'all' && productBrand !== currentFilters.brand) {
-                showProduct = false;
-            }
-            
-            // Category filter
-            if (currentFilters.category !== 'all' && !productCategory.includes(currentFilters.category)) {
-                showProduct = false;
-            }
-            
-            if (showProduct) {
-                product.style.display = 'block';
-                product.setAttribute('data-visible', 'true');
-                visibleCount++;
-            } else {
-                product.style.display = 'none';
-                product.setAttribute('data-visible', 'false');
-            }
-        });
-        
-        updateResultsDisplay(visibleCount);
-        toggleNoResultsMessage(visibleCount === 0);
-    }
-
-    // ===================================================================
-    // UI UPDATE FUNCTIONS
-    // ===================================================================
-
-    function updateAllCartDisplays() {
-        updateCartBadges();
-        updateHeroCartStats();
-        updateCartPreview();
-    }
-
-    function updateCartBadges() {
         try {
-            const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-            const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
-            const cartBadge = document.getElementById('cartBadge');
+            // Call the cart.js addToCart function
+            addToCart({
+                productId: product.id,
+                name: product.name,
+                price: price,
+                quantity: quantity,
+                emoji: product.emoji || '🧴',
+                type: product.type || product.productLine,
+                sku: product.sku || product.id
+            });
             
-            if (cartBadge) {
-                if (totalItems > 0) {
-                    cartBadge.textContent = totalItems;
-                    cartBadge.style.display = 'inline-block';
-                } else {
-                    cartBadge.style.display = 'none';
-                }
-            }
+            // Update displays
+            updateCartBadges();
+            
+            // Show success notification
+            showNotification(`Added ${quantity}x ${product.name} to cart!`, 'success');
+            
         } catch (error) {
-            const cartBadge = document.getElementById('cartBadge');
-            if (cartBadge) cartBadge.style.display = 'none';
+            console.error('Failed to add to cart:', error);
+            showNotification('Failed to add item to cart. Please try again.', 'error');
         }
     }
 
-    function updateHeroCartStats() {
-        if (typeof getCartSummary === 'function') {
-            const summary = getCartSummary();
-            
-            const heroCartCount = document.getElementById('heroCartCount');
-            const cartItemCount = document.getElementById('cartItemCount');
-            const cartSavingsAmount = document.getElementById('cartSavingsAmount');
-            const cartSubtotalAmount = document.getElementById('cartSubtotalAmount');
-            
-            if (heroCartCount) heroCartCount.textContent = summary.totals?.itemCount || 0;
-            if (cartItemCount) cartItemCount.textContent = summary.totals?.itemCount || 0;
-            if (cartSavingsAmount) cartSavingsAmount.textContent = `$${(summary.totals?.savings || 0).toFixed(2)}`;
-            if (cartSubtotalAmount) cartSubtotalAmount.textContent = `$${(summary.totals?.subtotal || 0).toFixed(2)}`;
-            
-            // Show/hide cart stats section
-            const statsSection = document.getElementById('cartStatsSection');
-            if (statsSection) {
-                statsSection.style.display = (summary.totals?.itemCount || 0) > 0 ? 'block' : 'none';
-            }
-        }
+    // Utility functions
+    function getAccountType() {
+        return localStorage.getItem('ohsAccountType') || 'consumer';
     }
 
-    function updateCartPreview() {
-        if (typeof updateCartDisplay === 'function') {
-            updateCartDisplay();
-        }
+    function toggleAccountMode(mode) {
+        localStorage.setItem('ohsAccountType', mode);
+        updateAccountDisplay(mode);
+        loadProducts(); // Reload with new pricing
+        
+        showNotification(
+            `Switched to ${mode === 'business' ? 'Business' : 'Consumer'} pricing`, 
+            'success'
+        );
     }
 
-    function initializeFilters() {
-        // Set initial account mode
-        const accountType = getAccountType();
-        updateAccountModeDisplay(accountType);
-    }
-
-    function updateAccountModeDisplay(mode) {
+    function updateAccountDisplay(mode) {
         const indicator = document.getElementById('accountModeIndicator');
-        const consumerBtn = document.getElementById('consumerModeBtn');
-        const businessBtn = document.getElementById('businessModeBtn');
-        const accountNote = document.getElementById('accountPricingNote');
-        
-        if (mode === 'business') {
-            if (indicator) indicator.innerHTML = '<i class="fas fa-building"></i> Business Account <span class="business-badge">Volume Pricing</span>';
-            if (consumerBtn) consumerBtn.classList.remove('active');
-            if (businessBtn) businessBtn.classList.add('active');
-            if (accountNote) accountNote.textContent = '(Business pricing)';
-            
-            // Show business discount row in cart
-            const businessRow = document.getElementById('businessDiscountRow');
-            if (businessRow) businessRow.style.setProperty('display', 'flex');
-        } else {
-            if (indicator) indicator.innerHTML = '<i class="fas fa-user"></i> Consumer Account';
-            if (consumerBtn) consumerBtn.classList.add('active');
-            if (businessBtn) businessBtn.classList.remove('active');
-            if (accountNote) accountNote.textContent = '(Consumer pricing)';
-            
-            // Hide business discount row in cart
-            const businessRow = document.getElementById('businessDiscountRow');
-            if (businessRow) businessRow.style.setProperty('display', 'none');
+        if (indicator) {
+            indicator.innerHTML = mode === 'business' ? 
+                '<i class="fas fa-building"></i> Business Account <span class="badge bg-success">Wholesale Pricing</span>' :
+                '<i class="fas fa-user"></i> Consumer Account';
         }
-        
-        // Reload products with new pricing
-        loadProductsFromCatalog();
     }
 
     function updateProductCounts() {
@@ -3390,166 +2962,75 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const organicCount = Object.values(PRODUCT_CATALOG).filter(p => 
             p.productLine === 'organic' || p.type === 'organic').length;
-        const premiumCount = Object.values(PRODUCT_CATALOG).filter(p => 
-            p.productLine !== 'organic' && p.type !== 'organic').length;
+        const premiumCount = Object.values(PRODUCT_CATALOG).length - organicCount;
         const totalCount = organicCount + premiumCount;
         
-        const updateElement = (id, value) => {
-            const element = document.getElementById(id);
-            if (element) element.textContent = value;
-        };
+        // Update all count displays
+        ['totalProductCount', 'allCount'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = totalCount;
+        });
         
-        updateElement('totalProductCount', totalCount);
-        updateElement('organicProductCount', organicCount);
-        updateElement('premiumProductCount', premiumCount);
-        updateElement('allCount', totalCount);
-        updateElement('organicCount', organicCount);
-        updateElement('premiumCount', premiumCount);
-    }
-
-    function updateResultsDisplay(count) {
-        const element = document.getElementById('visibleProductCount');
-        if (element) element.textContent = count;
-    }
-
-    function toggleNoResultsMessage(show) {
-        const noResults = document.getElementById('noResultsMessage');
-        const productSections = document.getElementById('productSections');
+        ['organicProductCount', 'organicCount'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = organicCount;
+        });
         
-        if (noResults) noResults.style.display = show ? 'block' : 'none';
-        if (productSections) productSections.style.display = show ? 'none' : 'block';
+        ['premiumProductCount', 'premiumCount'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = premiumCount;
+        });
     }
 
-    // ===================================================================
-    // NOTIFICATION FUNCTIONS
-    // ===================================================================
-
-    function showAddToCartSuccess(productName, quantity) {
-        const notification = createNotification(
-            `<i class="fas fa-check-circle me-2"></i>
-             <div>
-                 <div class="fw-bold">Added to Cart!</div>
-                 <div class="small">${quantity}x ${productName}</div>
-             </div>`,
-            'success'
-        );
-        showNotification(notification);
-    }
-
-    function showVolumeDiscountNotification(message) {
-        const notification = createNotification(
-            `<i class="fas fa-percentage me-2"></i>
-             <div>
-                 <div class="fw-bold">Volume Discount Available!</div>
-                 <div class="small">${message}</div>
-             </div>`,
-            'success'
-        );
-        showNotification(notification);
-    }
-
-    function createNotification(content, type = 'info') {
-        const notification = document.createElement('div');
-        notification.className = `volume-notification ${type}`;
-        notification.innerHTML = `<div class="d-flex align-items-center">${content}</div>`;
-        return notification;
-    }
-
-    function showNotification(notification) {
-        document.body.appendChild(notification);
-        
-        // Trigger animation
-        setTimeout(() => notification.classList.add('show'), 100);
-        
-        // Auto-hide after 4 seconds
-        setTimeout(() => {
-            notification.classList.remove('show');
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.parentNode.removeChild(notification);
+    function updateCartBadges() {
+        try {
+            const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+            const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+            
+            // Update all cart badges
+            ['cartBadge', 'heroCartCount'].forEach(id => {
+                const badge = document.getElementById(id);
+                if (badge) {
+                    if (totalItems > 0) {
+                        badge.textContent = totalItems;
+                        badge.style.display = 'inline-block';
+                    } else {
+                        badge.style.display = 'none';
+                    }
                 }
-            }, 300);
-        }, 4000);
-    }
-
-    function showErrorMessage(message) {
-        const productsContainer = document.getElementById('productSections');
-        const loadingDiv = document.getElementById('productsLoading');
-        
-        if (loadingDiv) loadingDiv.style.display = 'none';
-        
-        if (productsContainer) {
-            productsContainer.innerHTML = `
-                <div class="text-center py-5">
-                    <div class="row justify-content-center">
-                        <div class="col-md-6">
-                            <div class="alert alert-danger" role="alert">
-                                <h4 class="alert-heading">
-                                    <i class="fas fa-exclamation-triangle me-2"></i>
-                                    Product Loading Error
-                                </h4>
-                                <p>${message}</p>
-                                <hr>
-                                <p class="mb-0">
-                                    <button class="btn btn-outline-danger" onclick="location.reload()">
-                                        <i class="fas fa-refresh me-2"></i>Reload Page
-                                    </button>
-                                    <a href="tel:+18017125663" class="btn btn-outline-primary ms-2">
-                                        <i class="fas fa-phone me-2"></i>Contact Support
-                                    </a>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+            });
+        } catch (error) {
+            console.log('Cart badge update failed:', error);
         }
     }
 
-    // ===================================================================
-    // GLOBAL UTILITY FUNCTIONS
-    // ===================================================================
-
+    // Search and filter functions
     function searchProducts(query) {
-        if (typeof PRODUCT_CATALOG === 'undefined') return;
-        
         const searchTerm = query.toLowerCase();
         const products = document.querySelectorAll('.product-card');
         let visibleCount = 0;
         
         products.forEach(product => {
             const productText = product.textContent.toLowerCase();
-            const productId = product.getAttribute('data-product-id');
-            const productData = PRODUCT_CATALOG[productId];
-            
-            let matches = productText.includes(searchTerm);
-            
-            // Also search SKU and other metadata
-            if (productData) {
-                matches = matches || 
-                    (productData.sku && productData.sku.toLowerCase().includes(searchTerm)) ||
-                    (productData.certifications && productData.certifications.some(cert => 
-                        cert.toLowerCase().includes(searchTerm)));
-            }
+            const matches = productText.includes(searchTerm);
             
             if (matches) {
                 product.style.display = 'block';
-                product.setAttribute('data-visible', 'true');
                 visibleCount++;
             } else {
                 product.style.display = 'none';
-                product.setAttribute('data-visible', 'false');
             }
         });
         
-        updateResultsDisplay(visibleCount);
-        toggleNoResultsMessage(visibleCount === 0);
+        // Update results display
+        const resultsEl = document.getElementById('visibleProductCount');
+        if (resultsEl) resultsEl.textContent = visibleCount;
         
-        // Update search input
-        const searchInput = document.getElementById('productSearch');
-        if (searchInput && searchInput.value !== query) {
-            searchInput.value = query;
-        }
+        // Show/hide no results
+        const noResults = document.getElementById('noResultsMessage');
+        const sections = document.getElementById('productSections');
+        if (noResults) noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        if (sections) sections.style.display = visibleCount === 0 ? 'none' : 'block';
     }
 
     function clearSearch() {
@@ -3558,94 +3039,24 @@ document.addEventListener('DOMContentLoaded', function() {
         searchProducts('');
     }
 
-    function sortProducts(sortBy) {
-        if (typeof PRODUCT_CATALOG === 'undefined') return;
-        
-        console.log(`🔄 Sorting products by: ${sortBy}`);
-        currentSort = sortBy;
-        
-        const sections = document.querySelectorAll('#productSections > section');
-        sections.forEach(section => {
-            const productContainer = section.querySelector('.row');
-            if (!productContainer) return;
-            
-            const products = Array.from(productContainer.children);
-            
-            products.sort((a, b) => {
-                const aId = a.querySelector('[data-product-id]')?.getAttribute('data-product-id');
-                const bId = b.querySelector('[data-product-id]')?.getAttribute('data-product-id');
-                
-                const aProduct = PRODUCT_CATALOG[aId];
-                const bProduct = PRODUCT_CATALOG[bId];
-                
-                if (!aProduct || !bProduct) return 0;
-                
-                switch (sortBy) {
-                    case 'name':
-                        return aProduct.name.localeCompare(bProduct.name);
-                    case 'price-low':
-                        return (aProduct.price || 0) - (bProduct.price || 0);
-                    case 'price-high':
-                        return (bProduct.price || 0) - (aProduct.price || 0);
-                    case 'category':
-                        return (aProduct.category || '').localeCompare(bProduct.category || '');
-                    case 'certification':
-                        return (aProduct.type || '').localeCompare(bProduct.type || '');
-                    default:
-                        return 0;
-                }
-            });
-            
-            // Re-append sorted products
-            products.forEach(product => productContainer.appendChild(product));
-        });
-    }
-
-    function quickFilter(type) {
-        const searchTerms = {
-            'food-contact': 'food contact safe',
-            'pet-safe': 'pet safe',
-            'healthcare': 'healthcare grade',
-            'bulk': 'bulk solutions',
-            'bundles': 'bundle deals'
-        };
-        
-        const searchTerm = searchTerms[type] || type;
-        searchProducts(searchTerm);
-    }
-
-    function clearAllFilters() {
-        // Reset filters
-        currentFilters = { brand: 'all', category: 'all' };
-        
-        // Update filter buttons
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector('.filter-btn[data-filter="all"]')?.classList.add('active');
-        
-        // Clear search
-        clearSearch();
-        
-        // Show all products
+    function showAllProducts() {
         document.querySelectorAll('.product-card').forEach(product => {
             product.style.display = 'block';
-            product.setAttribute('data-visible', 'true');
         });
         
-        if (typeof PRODUCT_CATALOG !== 'undefined') {
-            updateResultsDisplay(Object.keys(PRODUCT_CATALOG).length);
+        const resultsEl = document.getElementById('visibleProductCount');
+        if (resultsEl && typeof PRODUCT_CATALOG !== 'undefined') {
+            resultsEl.textContent = Object.keys(PRODUCT_CATALOG).length;
         }
-        toggleNoResultsMessage(false);
+        
+        // Hide no results, show sections
+        const noResults = document.getElementById('noResultsMessage');
+        const sections = document.getElementById('productSections');
+        if (noResults) noResults.style.display = 'none';
+        if (sections) sections.style.display = 'block';
     }
 
-    function showAllProducts() {
-        clearAllFilters();
-        document.querySelector('#productSections')?.scrollIntoView({ 
-            behavior: 'smooth' 
-        });
-    }
-
+    // Cart functions
     function toggleCart() {
         const cartPreview = document.getElementById('cartPreview');
         if (cartPreview) {
@@ -3657,232 +3068,155 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'shop/cart.html';
     }
 
-    function requestCustomQuote() {
-        showNotification(createNotification(
-            `<i class="fas fa-clipboard-list me-2"></i>
-             <div>
-                 <div class="fw-bold">Custom Quote System</div>
-                 <div class="small">Feature coming soon with Shopify integration</div>
-             </div>`,
-            'info'
-        ));
-    }
-
-    function callForAssistance() {
-        window.open('tel:+18017125663');
-    }
-
-    function getAccountType() {
-        return localStorage.getItem('ohsAccountType') || 'consumer';
-    }
-
-    function toggleAccountMode(mode) {
-        console.log(`🔄 Switching to ${mode} account mode`);
+    // Notification system
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} position-fixed`;
+        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        notification.innerHTML = `
+            <div class="d-flex align-items-center">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+                <span>${message}</span>
+            </div>
+        `;
         
-        localStorage.setItem('ohsAccountType', mode);
-        updateAccountModeDisplay(mode);
+        document.body.appendChild(notification);
         
-        // Update pricing displays
-        if (typeof updateCartPricing === 'function') {
-            updateCartPricing();
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 3000);
+    }
+
+    // Fallback if cart system fails
+    function showFallbackProducts() {
+        console.log('📦 Loading fallback product display...');
+        
+        const productsContainer = document.getElementById('productSections');
+        const loadingDiv = document.getElementById('productsLoading');
+        
+        if (loadingDiv) loadingDiv.style.display = 'none';
+        
+        if (productsContainer) {
+            productsContainer.innerHTML = `
+                <div class="text-center py-5">
+                    <div class="alert alert-warning">
+                        <h4><i class="fas fa-tools me-2"></i>Cart System Loading</h4>
+                        <p>Our product catalog is currently loading. Please refresh the page or contact us:</p>
+                        <a href="tel:+18017125663" class="btn btn-primary">
+                            <i class="fas fa-phone me-2"></i>(801) 712-5663
+                        </a>
+                    </div>
+                </div>
+            `;
         }
-        
-        // Show notification
-        const modeText = mode === 'business' ? 'Business Account' : 'Consumer Account';
-        const benefits = mode === 'business' ? 
-            'Wholesale pricing and volume discounts activated' :
-            'Standard retail pricing active';
-            
-        showNotification(createNotification(
-            `<i class="fas fa-${mode === 'business' ? 'building' : 'user'} me-2"></i>
-             <div>
-                 <div class="fw-bold">Switched to ${modeText}</div>
-                 <div class="small">${benefits}</div>
-             </div>`,
-            'success'
-        ));
     }
 
-    function requestQuote(productId) {
-        showNotification(createNotification(
-            `<i class="fas fa-clipboard-list me-2"></i>
-             <div>
-                 <div class="fw-bold">Quote Request Feature</div>
-                 <div class="small">Coming soon with Shopify integration</div>
-             </div>`,
-            'info'
-        ));
-    }
-
-    function viewProductDetails(productId) {
-        showNotification(createNotification(
-            `<i class="fas fa-eye me-2"></i>
-             <div>
-                 <div class="fw-bold">Detailed Product Pages</div>
-                 <div class="small">Coming soon with Shopify integration</div>
-             </div>`,
-            'info'
-        ));
-    }
-
-    // ===================================================================
-    // ERROR HANDLING & FALLBACKS
-    // ===================================================================
-
-    // Handle missing cart.js functions
-    window.addEventListener('error', function(event) {
-        if (event.error && event.error.message.includes('cart.js')) {
-            console.warn('⚠️ Cart.js function missing, using fallback');
-            showNotification(createNotification(
-                `<i class="fas fa-exclamation-triangle me-2"></i>
-                 <div>
-                     <div class="fw-bold">Cart System Loading</div>
-                     <div class="small">Some features may be limited</div>
-                 </div>`,
-                'warning'
-            ));
-        }
+    // Initialize account mode on load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateAccountDisplay(getAccountType());
     });
 
-    // ===================================================================
-    // INITIALIZATION COMPLETE
-    // ===================================================================
-
-    console.log('✅ Products Page JavaScript Integration Complete');
-    console.log('🛒 Cart system ready for enhanced e-commerce functionality');
-    console.log('📦 Professional product catalog loaded and ready');
-    console.log('🔍 Advanced filtering and search capabilities active');
-    console.log('💼 Business and consumer pricing modes available');
-    console.log('📱 Mobile-responsive design implemented');
-    console.log('🎯 Professional-grade product display ready');
-
+    console.log('✅ Products Page Script Loaded');
 </script>
 
-<!-- Enhanced Notification & Interactive Styles -->
+<!-- Notification Styles -->
 <style>
-    /* Business Account Badge */
-    .business-badge {
-        background: linear-gradient(135deg, #4ade80, #22c55e);
-        color: #14532d;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.5rem;
-        font-size: 0.7rem;
-        font-weight: 600;
-        margin-left: 0.5rem;
-        border: 1px solid #22c55e;
+    .product-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
     }
 
-    /* Notification System Enhancements */
-    .volume-notification.success {
-        background: linear-gradient(135deg, var(--success-green), #16a34a) !important;
-        border-color: var(--accent-green) !important;
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        border-color: #2E5EAA;
     }
 
-    .volume-notification.info {
-        background: linear-gradient(135deg, #0ea5e9, #0284c7) !important;
-        color: white;
-        border: 2px solid #0ea5e9;
-    }
-
-    .volume-notification.warning {
-        background: linear-gradient(135deg, #f59e0b, #d97706) !important;
-        color: white;
-        border: 2px solid #f59e0b;
-    }
-
-    /* Enhanced Mobile Responsiveness */
-    @media (max-width: 768px) {
-        .volume-notification {
-            left: 10px;
-            right: 10px;
-            max-width: none;
-            transform: translateY(-100px);
-        }
-
-        .volume-notification.show {
-            transform: translateY(0);
-        }
-
-        .filter-section {
-            position: relative;
-            top: auto;
-        }
-
-        .filter-controls {
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .filter-group {
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-    }
-
-    /* Success States */
-    .product-card.added-to-cart {
-        border-color: var(--success-green);
-        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
-        animation: addedPulse 1s ease-out;
-    }
-
-    @keyframes addedPulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.02); }
-        100% { transform: scale(1); }
-    }
-
-    /* Loading States */
-    .product-card.loading {
-        opacity: 0.6;
-        pointer-events: none;
-    }
-
-    .product-card.loading::after {
-        content: '';
+    .product-badge {
         position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 30px;
-        height: 30px;
-        margin: -15px 0 0 -15px;
-        border: 3px solid var(--gray-300);
-        border-top: 3px solid var(--primary-blue);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        z-index: 10;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     }
 
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+    .product-icon {
+        font-size: 3rem;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
     }
 
-    /* Accessibility Enhancements */
-    @media (prefers-reduced-motion: reduce) {
-        .volume-notification,
-        .product-card,
-        .filter-btn,
-        .add-to-cart-btn {
-            transition: none !important;
-            animation: none !important;
+    .product-title {
+        color: #2E5EAA;
+        font-weight: 700;
+        line-height: 1.3;
+        min-height: 2.5rem;
+    }
+
+    .pricing-section {
+        background: linear-gradient(135deg, #f8f9fa, #ffffff);
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin: 1rem 0;
+        border: 1px solid #e5e7eb;
+    }
+
+    .quantity-controls .input-group {
+        max-width: 150px;
+        margin: 0 auto;
+    }
+
+    .section-header {
+        text-align: center;
+        padding: 3rem 0 2rem;
+        position: relative;
+        margin-bottom: 2rem;
+        border-radius: 1rem;
+        margin: 2rem 0;
+    }
+
+    .section-header.organic {
+        background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+        color: #166534;
+    }
+
+    .section-header.premium {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        color: #92400e;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .section-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.8;
+    }
+
+    @media (max-width: 768px) {
+        .product-card {
+            margin-bottom: 2rem;
         }
-    }
-
-    /* Focus Management */
-    .product-card:focus-within {
-        outline: 2px solid var(--primary-blue);
-        outline-offset: 2px;
-    }
-
-    .quantity-btn:focus,
-    .add-to-cart-btn:focus {
-        outline: 3px solid rgba(46, 94, 170, 0.5);
-        outline-offset: 2px;
-    }
-
-    .filter-btn:focus {
-        outline: 2px solid rgba(46, 94, 170, 0.7);
-        outline-offset: 1px;
+        
+        .section-title {
+            font-size: 1.5rem;
+        }
     }
 </style>
 
