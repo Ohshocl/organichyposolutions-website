@@ -2651,43 +2651,34 @@
     }
 </style>
 
-    
-<!-- COMPLETE WORKING SCRIPT SECTION FOR PRODUCTS.HTML -->
-<!-- Replace everything from line 2572 to end of file with this -->
-
 <!-- Bootstrap JS Bundle -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
-<!-- Load Cart System FIRST -->
+<!-- Load Cart System -->
 <script src="shop/js/cart.js"></script>
 
-<!-- WORKING Products Page Integration -->
+<!-- Products Page Integration -->
 <script>
-    // Simple but effective waiting system
+    // Global variables
+    let currentFilters = { brand: 'all', category: 'all' };
+    let productQuantities = {};
+
+    // Wait for cart system to load
     function waitForCartSystem() {
         return new Promise((resolve, reject) => {
             let attempts = 0;
-            const maxAttempts = 50; // 5 seconds max wait
+            const maxAttempts = 50;
             
             const checkSystem = () => {
                 attempts++;
                 
                 if (typeof PRODUCT_CATALOG !== 'undefined' && 
-                    Object.keys(PRODUCT_CATALOG).length > 0 &&
-                    typeof addToCart === 'function') {
-                    
-                    console.log('✅ Cart system loaded successfully:', {
-                        products: Object.keys(PRODUCT_CATALOG).length,
-                        addToCart: typeof addToCart
-                    });
+                    Object.keys(PRODUCT_CATALOG).length > 0) {
+                    console.log('✅ Cart system loaded');
                     resolve();
-                    
                 } else if (attempts >= maxAttempts) {
-                    console.error('❌ Cart system failed to load after 5 seconds');
                     reject(new Error('Cart system timeout'));
-                    
                 } else {
-                    console.log(`⏳ Attempt ${attempts}: Still loading cart system...`);
                     setTimeout(checkSystem, 100);
                 }
             };
@@ -2696,36 +2687,24 @@
         });
     }
 
-    // Global variables
-    let currentFilters = { brand: 'all', category: 'all' };
-    let productQuantities = {};
-
-    // Initialize everything when DOM loads
+    // Initialize on DOM load
     document.addEventListener('DOMContentLoaded', async function() {
-        console.log('🚀 Products Page Starting...');
-        
         try {
-            // Wait for cart system
             await waitForCartSystem();
-            
-            // Now load products
             loadProducts();
-            
-            console.log('✅ Products Page Ready!');
-            
+            updateAccountDisplay(getAccountType());
+            updateCartBadges();
         } catch (error) {
-            console.error('❌ Failed to load cart system:', error);
+            console.error('Failed to load cart system:', error);
             showFallbackProducts();
         }
     });
 
+    // Load products function
     function loadProducts() {
-        console.log('📦 Loading products from catalog...');
-        
         const productsContainer = document.getElementById('productSections');
         const loadingDiv = document.getElementById('productsLoading');
         
-        // Hide loading
         if (loadingDiv) loadingDiv.style.display = 'none';
         
         // Separate products by type
@@ -2738,17 +2717,14 @@
             } else {
                 premiumProducts.push(product);
             }
-            // Initialize quantities
             productQuantities[product.id] = 1;
         });
         
-        // Generate sections
+        // Generate HTML
         let html = '';
-        
         if (organicProducts.length > 0) {
             html += createProductSection('organic', 'USDA Organic Line', organicProducts);
         }
-        
         if (premiumProducts.length > 0) {
             html += createProductSection('premium', 'EPA Premium Line', premiumProducts);
         }
@@ -2758,7 +2734,6 @@
         }
         
         updateProductCounts();
-        console.log(`✅ Loaded ${organicProducts.length} organic + ${premiumProducts.length} premium products`);
     }
 
     function createProductSection(type, title, products) {
@@ -2813,7 +2788,6 @@
                         
                         <p class="text-muted small mb-3">${product.description || 'Professional hypochlorous acid solution'}</p>
                         
-                        <!-- Pricing -->
                         <div class="pricing-section mb-3">
                             <div class="price-retail h4 text-primary">$${currentPrice.toFixed(2)}</div>
                             <small class="text-muted">SKU: ${product.sku || product.id}</small>
@@ -2822,14 +2796,12 @@
                                 `<div class="text-success small mt-1">Business: $${wholesale.toFixed(2)} <span class="badge bg-warning">Wholesale</span></div>` : ''}
                         </div>
                         
-                        <!-- Features -->
                         <ul class="list-unstyled small mb-3">
                             <li><i class="fas fa-check text-success me-2"></i>${type === 'organic' ? 'Family & Pet Safe' : 'Commercial Grade'}</li>
                             <li><i class="fas fa-check text-success me-2"></i>Utah Manufactured</li>
                             <li><i class="fas fa-check text-success me-2"></i>Free Shipping</li>
                         </ul>
                         
-                        <!-- Controls -->
                         <div class="product-controls">
                             <div class="quantity-controls mb-3">
                                 <div class="input-group justify-content-center">
@@ -2861,7 +2833,7 @@
         `;
     }
 
-    // Product interaction functions
+    // Utility functions
     function changeQuantity(productId, change) {
         const currentQty = productQuantities[productId] || 1;
         const newQty = Math.max(1, Math.min(999, currentQty + change));
@@ -2878,10 +2850,7 @@
 
     function addToCartFromProducts(productId) {
         const product = PRODUCT_CATALOG[productId];
-        if (!product) {
-            console.error('Product not found:', productId);
-            return;
-        }
+        if (!product) return;
         
         const quantity = productQuantities[productId] || 1;
         const accountType = getAccountType();
@@ -2889,10 +2858,7 @@
             (product.pricing?.wholesale || product.price * 0.7) : 
             (product.pricing?.retail || product.price);
         
-        console.log(`Adding to cart: ${quantity}x ${product.name} at $${price}`);
-        
         try {
-            // Call the cart.js addToCart function
             addToCart({
                 productId: product.id,
                 name: product.name,
@@ -2903,19 +2869,14 @@
                 sku: product.sku || product.id
             });
             
-            // Update displays
             updateCartBadges();
-            
-            // Show success notification
             showNotification(`Added ${quantity}x ${product.name} to cart!`, 'success');
-            
         } catch (error) {
             console.error('Failed to add to cart:', error);
             showNotification('Failed to add item to cart. Please try again.', 'error');
         }
     }
 
-    // Utility functions
     function getAccountType() {
         return localStorage.getItem('ohsAccountType') || 'consumer';
     }
@@ -2923,12 +2884,8 @@
     function toggleAccountMode(mode) {
         localStorage.setItem('ohsAccountType', mode);
         updateAccountDisplay(mode);
-        loadProducts(); // Reload with new pricing
-        
-        showNotification(
-            `Switched to ${mode === 'business' ? 'Business' : 'Consumer'} pricing`, 
-            'success'
-        );
+        loadProducts();
+        showNotification(`Switched to ${mode === 'business' ? 'Business' : 'Consumer'} pricing`, 'success');
     }
 
     function updateAccountDisplay(mode) {
@@ -2948,7 +2905,6 @@
         const premiumCount = Object.values(PRODUCT_CATALOG).length - organicCount;
         const totalCount = organicCount + premiumCount;
         
-        // Update all count displays
         ['totalProductCount', 'allCount'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.textContent = totalCount;
@@ -2970,7 +2926,6 @@
             const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
             const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
             
-            // Update all cart badges
             ['cartBadge', 'heroCartCount'].forEach(id => {
                 const badge = document.getElementById(id);
                 if (badge) {
@@ -2987,7 +2942,6 @@
         }
     }
 
-    // Search and filter functions
     function searchProducts(query) {
         const searchTerm = query.toLowerCase();
         const products = document.querySelectorAll('.product-card');
@@ -3005,11 +2959,9 @@
             }
         });
         
-        // Update results display
         const resultsEl = document.getElementById('visibleProductCount');
         if (resultsEl) resultsEl.textContent = visibleCount;
         
-        // Show/hide no results
         const noResults = document.getElementById('noResultsMessage');
         const sections = document.getElementById('productSections');
         if (noResults) noResults.style.display = visibleCount === 0 ? 'block' : 'none';
@@ -3032,14 +2984,12 @@
             resultsEl.textContent = Object.keys(PRODUCT_CATALOG).length;
         }
         
-        // Hide no results, show sections
         const noResults = document.getElementById('noResultsMessage');
         const sections = document.getElementById('productSections');
         if (noResults) noResults.style.display = 'none';
         if (sections) sections.style.display = 'block';
     }
 
-    // Cart functions
     function toggleCart() {
         const cartPreview = document.getElementById('cartPreview');
         if (cartPreview) {
@@ -3051,7 +3001,6 @@
         window.location.href = 'shop/cart.html';
     }
 
-    // Notification system
     function showNotification(message, type = 'info') {
         const notification = document.createElement('div');
         notification.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} position-fixed`;
@@ -3072,10 +3021,7 @@
         }, 3000);
     }
 
-    // Fallback if cart system fails
     function showFallbackProducts() {
-        console.log('📦 Loading fallback product display...');
-        
         const productsContainer = document.getElementById('productSections');
         const loadingDiv = document.getElementById('productsLoading');
         
@@ -3096,112 +3042,8 @@
         }
     }
 
-    // Initialize account mode on load
-    document.addEventListener('DOMContentLoaded', function() {
-        updateAccountDisplay(getAccountType());
-    });
-
     console.log('✅ Products Page Script Loaded');
 </script>
 
-<!-- Notification Styles -->
-<style>
-    .product-card {
-        background: white;
-        border: 1px solid #e5e7eb;
-        border-radius: 1rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-        height: 100%;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .product-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        border-color: #2E5EAA;
-    }
-
-    .product-badge {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        padding: 0.5rem 1rem;
-        border-radius: 2rem;
-        font-size: 0.75rem;
-        font-weight: 700;
-        z-index: 10;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    .product-icon {
-        font-size: 3rem;
-        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-    }
-
-    .product-title {
-        color: #2E5EAA;
-        font-weight: 700;
-        line-height: 1.3;
-        min-height: 2.5rem;
-    }
-
-    .pricing-section {
-        background: linear-gradient(135deg, #f8f9fa, #ffffff);
-        padding: 1rem;
-        border-radius: 0.5rem;
-        margin: 1rem 0;
-        border: 1px solid #e5e7eb;
-    }
-
-    .quantity-controls .input-group {
-        max-width: 150px;
-        margin: 0 auto;
-    }
-
-    .section-header {
-        text-align: center;
-        padding: 3rem 0 2rem;
-        position: relative;
-        margin-bottom: 2rem;
-        border-radius: 1rem;
-        margin: 2rem 0;
-    }
-
-    .section-header.organic {
-        background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-        color: #166534;
-    }
-
-    .section-header.premium {
-        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-        color: #92400e;
-    }
-
-    .section-title {
-        font-size: 2rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-    }
-
-    .section-subtitle {
-        font-size: 1.1rem;
-        opacity: 0.8;
-    }
-
-    @media (max-width: 768px) {
-        .product-card {
-            margin-bottom: 2rem;
-        }
-        
-        .section-title {
-            font-size: 1.5rem;
-        }
-    }
-</style>
-
 </body>
-</html>
+</html>    
