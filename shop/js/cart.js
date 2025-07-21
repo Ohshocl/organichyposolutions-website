@@ -492,7 +492,7 @@ const PRODUCT_CATALOG = {
         minOrder: 500,
         type: 'organic',
         emoji: '🐾'
-    }
+    },
 
 // ===================================================================
     // PREMIUM PERSONAL CARE & SKIN HEALTH
