@@ -2675,8 +2675,35 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- Load Cart System FIRST -->
 <script src="shop/js/cart.js"></script>
 
-<!-- Complete Products Page JavaScript Integration -->
+<!-- Enhanced Cart System Integration with Proper Loading Order -->
 <script>
+    // Enhanced wait system for cart.js
+    function waitForCartSystem() {
+        return new Promise((resolve) => {
+            const checkCart = () => {
+                // Check for multiple cart system components
+                if (typeof PRODUCT_CATALOG !== 'undefined' && 
+                    typeof addToCart === 'function' &&
+                    Object.keys(PRODUCT_CATALOG).length > 0) {
+                    console.log('✅ Cart system fully loaded:', {
+                        catalogCount: Object.keys(PRODUCT_CATALOG).length,
+                        addToCartAvailable: typeof addToCart,
+                        functionsAvailable: typeof updateCartDisplay
+                    });
+                    resolve();
+                } else {
+                    console.log('⏳ Still waiting for cart system...', {
+                        catalog: typeof PRODUCT_CATALOG,
+                        catalogSize: typeof PRODUCT_CATALOG !== 'undefined' ? Object.keys(PRODUCT_CATALOG).length : 0,
+                        addToCart: typeof addToCart
+                    });
+                    setTimeout(checkCart, 100);
+                }
+            };
+            checkCart();
+        });
+    }
+
     // ===================================================================
     // PRODUCTS PAGE INTEGRATION WITH ENHANCED CART.JS
     // ===================================================================
@@ -2690,25 +2717,24 @@ document.addEventListener('DOMContentLoaded', function() {
     let productQuantities = {};
     let isLoading = false;
 
-    // Initialize the products page
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('🚀 Products Page Initializing...');
+    // Initialize products page only after cart system is ready
+    document.addEventListener('DOMContentLoaded', async function() {
+        console.log('🚀 Products Page DOM loaded, waiting for cart system...');
         
-        // Wait for cart system to load
-        if (typeof PRODUCT_CATALOG === 'undefined') {
-            console.log('⏳ Waiting for cart.js to load...');
-            setTimeout(initializeProductsPage, 500);
-            return;
+        try {
+            await waitForCartSystem();
+            initializeProductsPage();
+        } catch (error) {
+            console.error('❌ Failed to initialize cart system:', error);
+            showErrorMessage('Cart system failed to load. Please refresh the page.');
         }
-        
-        initializeProductsPage();
     });
 
     function initializeProductsPage() {
         console.log('📦 Initializing Products Page with Cart Integration');
         
         try {
-            // Initialize cart system if not already done
+            // Now we're guaranteed that cart system is loaded
             if (typeof initializeCart === 'function') {
                 initializeCart();
             }
@@ -2941,55 +2967,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </button>
                             </div>
                             
-                            <!-- Professional Subscription Toggle -->
-                            <div class="subscription-toggle">
-                                <label class="subscription-switch">
-                                    <i class="fas fa-sync-alt me-2"></i>Monthly Subscription
-                                    <small class="text-muted d-block">Save 8-10% on recurring orders</small>
-                                    <label class="switch ms-2">
-                                        <input type="checkbox" onchange="toggleSubscription('${product.id}', this.checked)">
-                                        <span class="slider"></span>
-                                    </label>
-                                </label>
-                            </div>
-                            
                             <!-- Professional Add to Cart Button -->
                             <button class="add-to-cart-btn" 
                                     onclick="addProductToCart('${product.id}')"
                                     id="addBtn-${product.id}">
                                 <i class="fas fa-cart-plus me-2"></i>Add to Cart
-                                <span class="badge bg-warning ms-1">Cart System Ready</span>
                             </button>
-                            
-                            <!-- Professional Additional Actions -->
-                            <div class="additional-actions mt-3">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <button class="btn btn-sm btn-outline-primary w-100" 
-                                                onclick="requestQuote('${product.id}')">
-                                            <i class="fas fa-clipboard-list me-1"></i>
-                                            Request Quote
-                                            <span class="badge bg-warning ms-1">Under Construction</span>
-                                        </button>
-                                    </div>
-                                    <div class="col-6">
-                                        <button class="btn btn-sm btn-outline-info w-100" 
-                                                onclick="viewProductDetails('${product.id}')">
-                                            <i class="fas fa-eye me-1"></i>
-                                            View Details
-                                            <span class="badge bg-warning ms-1">Under Construction</span>
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <!-- Expert Consultation -->
-                                <div class="mt-2">
-                                    <a href="tel:+18017125663" class="btn btn-sm btn-outline-success w-100">
-                                        <i class="fas fa-phone me-1"></i>
-                                        Expert Consultation: (801) 712-5663
-                                    </a>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -3026,12 +3009,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="col-12">
                     <strong>Certifications:</strong><br>
                     <small class="text-muted">${certifications.join(', ') || 'Professional Grade Certified'}</small>
-                </div>
-            </div>
-            <div class="row mt-2">
-                <div class="col-12">
-                    <strong>Manufacturing:</strong><br>
-                    <small class="text-muted">Utah, USA • Professional Quality Standards</small>
                 </div>
             </div>
         `;
@@ -3166,17 +3143,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function toggleSubscription(productId, enabled) {
-        console.log(`📅 Toggling subscription for ${productId}: ${enabled}`);
-        
-        // This would integrate with subscription pricing logic
-        if (typeof applySubscriptionPricing === 'function' && enabled) {
-            applySubscriptionPricing(productId);
-        } else if (typeof removeSubscriptionPricing === 'function' && !enabled) {
-            removeSubscriptionPricing(productId);
-        }
-    }
-
     function addProductToCart(productId) {
         const product = PRODUCT_CATALOG[productId];
         if (!product) {
@@ -3194,20 +3160,18 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Use the enhanced addToCart function from cart.js
         if (typeof addToCart === 'function') {
-            addToCart(
-                product.id,
-                quantity,
-                {
-                    name: product.name,
-                    price: price,
-                    emoji: product.emoji || '🧴',
-                    type: product.type || product.productLine,
-                    sku: product.sku,
-                    shopifyHandle: product.shopifyHandle,
-                    certifications: product.certifications,
-                    fromCatalog: true
-                }
-            );
+            addToCart({
+                productId: product.id,
+                name: product.name,
+                price: price,
+                quantity: quantity,
+                emoji: product.emoji || '🧴',
+                type: product.type || product.productLine,
+                sku: product.sku,
+                shopifyHandle: product.shopifyHandle,
+                certifications: product.certifications,
+                fromCatalog: true
+            });
             
             // Update all displays
             updateAllCartDisplays();
@@ -3215,84 +3179,21 @@ document.addEventListener('DOMContentLoaded', function() {
             // Show success feedback
             showAddToCartSuccess(product.name, quantity);
             
-            // Analytics tracking
-            if (typeof trackCartEvent === 'function') {
-                trackCartEvent('add_to_cart', {
-                    productId: product.id,
-                    name: product.name,
-                    price: price,
-                    quantity: quantity,
-                    type: product.type || product.productLine
-                });
-            }
         } else {
-            console.error('❌ addToCart function not available from cart.js');
+            console.error('❌ addToCart function not available from cart.js - this should not happen!');
+            showNotification(createNotification(
+                `<i class="fas fa-exclamation-triangle me-2"></i>
+                 <div>
+                     <div class="fw-bold">Cart System Error</div>
+                     <div class="small">Please refresh the page and try again</div>
+                 </div>`,
+                'warning'
+            ));
         }
     }
 
     // ===================================================================
-    // FILTER & SEARCH FUNCTIONS
-    // ===================================================================
-
-    function setupEventListeners() {
-        // Filter buttons
-        document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const filter = this.getAttribute('data-filter');
-                const type = this.getAttribute('data-type');
-                applyFilter(filter, type);
-            });
-        });
-    }
-
-    function applyFilter(filter, type) {
-        console.log(`🔍 Applying filter: ${type} = ${filter}`);
-        
-        // Update active states
-        document.querySelectorAll(`.filter-btn[data-type="${type}"]`).forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`.filter-btn[data-filter="${filter}"][data-type="${type}"]`)?.classList.add('active');
-        
-        // Store current filter
-        currentFilters[type] = filter;
-        
-        // Apply filter logic
-        const products = document.querySelectorAll('.product-card[data-brand]');
-        let visibleCount = 0;
-        
-        products.forEach(product => {
-            const productBrand = product.getAttribute('data-brand');
-            const productCategory = product.getAttribute('data-category');
-            
-            let showProduct = true;
-            
-            // Brand filter
-            if (currentFilters.brand !== 'all' && productBrand !== currentFilters.brand) {
-                showProduct = false;
-            }
-            
-            // Category filter
-            if (currentFilters.category !== 'all' && !productCategory.includes(currentFilters.category)) {
-                showProduct = false;
-            }
-            
-            if (showProduct) {
-                product.style.display = 'block';
-                product.setAttribute('data-visible', 'true');
-                visibleCount++;
-            } else {
-                product.style.display = 'none';
-                product.setAttribute('data-visible', 'false');
-            }
-        });
-        
-        updateResultsDisplay(visibleCount);
-        toggleNoResultsMessage(visibleCount === 0);
-    }
-
-    // ===================================================================
-    // UI UPDATE FUNCTIONS
+    // UI UPDATE & UTILITY FUNCTIONS
     // ===================================================================
 
     function updateAllCartDisplays() {
@@ -3347,6 +3248,17 @@ document.addEventListener('DOMContentLoaded', function() {
         if (typeof updateCartDisplay === 'function') {
             updateCartDisplay();
         }
+    }
+
+    function setupEventListeners() {
+        // Filter buttons
+        document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const filter = this.getAttribute('data-filter');
+                const type = this.getAttribute('data-type');
+                applyFilter(filter, type);
+            });
+        });
     }
 
     function initializeFilters() {
@@ -3421,8 +3333,34 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ===================================================================
-    // NOTIFICATION FUNCTIONS
+    // GLOBAL UTILITY FUNCTIONS
     // ===================================================================
+
+    function getAccountType() {
+        return localStorage.getItem('ohsAccountType') || 'consumer';
+    }
+
+    function toggleAccountMode(mode) {
+        console.log(`🔄 Switching to ${mode} account mode`);
+        
+        localStorage.setItem('ohsAccountType', mode);
+        updateAccountModeDisplay(mode);
+        
+        // Show notification
+        const modeText = mode === 'business' ? 'Business Account' : 'Consumer Account';
+        const benefits = mode === 'business' ? 
+            'Wholesale pricing and volume discounts activated' :
+            'Standard retail pricing active';
+            
+        showNotification(createNotification(
+            `<i class="fas fa-${mode === 'business' ? 'building' : 'user'} me-2"></i>
+             <div>
+                 <div class="fw-bold">Switched to ${modeText}</div>
+                 <div class="small">${benefits}</div>
+             </div>`,
+            'success'
+        ));
+    }
 
     function showAddToCartSuccess(productName, quantity) {
         const notification = createNotification(
@@ -3506,10 +3444,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // ===================================================================
-    // GLOBAL UTILITY FUNCTIONS
-    // ===================================================================
-
+    // Additional utility functions for filtering, searching, etc.
     function searchProducts(query) {
         if (typeof PRODUCT_CATALOG === 'undefined') return;
         
@@ -3558,94 +3493,6 @@ document.addEventListener('DOMContentLoaded', function() {
         searchProducts('');
     }
 
-    function sortProducts(sortBy) {
-        if (typeof PRODUCT_CATALOG === 'undefined') return;
-        
-        console.log(`🔄 Sorting products by: ${sortBy}`);
-        currentSort = sortBy;
-        
-        const sections = document.querySelectorAll('#productSections > section');
-        sections.forEach(section => {
-            const productContainer = section.querySelector('.row');
-            if (!productContainer) return;
-            
-            const products = Array.from(productContainer.children);
-            
-            products.sort((a, b) => {
-                const aId = a.querySelector('[data-product-id]')?.getAttribute('data-product-id');
-                const bId = b.querySelector('[data-product-id]')?.getAttribute('data-product-id');
-                
-                const aProduct = PRODUCT_CATALOG[aId];
-                const bProduct = PRODUCT_CATALOG[bId];
-                
-                if (!aProduct || !bProduct) return 0;
-                
-                switch (sortBy) {
-                    case 'name':
-                        return aProduct.name.localeCompare(bProduct.name);
-                    case 'price-low':
-                        return (aProduct.price || 0) - (bProduct.price || 0);
-                    case 'price-high':
-                        return (bProduct.price || 0) - (aProduct.price || 0);
-                    case 'category':
-                        return (aProduct.category || '').localeCompare(bProduct.category || '');
-                    case 'certification':
-                        return (aProduct.type || '').localeCompare(bProduct.type || '');
-                    default:
-                        return 0;
-                }
-            });
-            
-            // Re-append sorted products
-            products.forEach(product => productContainer.appendChild(product));
-        });
-    }
-
-    function quickFilter(type) {
-        const searchTerms = {
-            'food-contact': 'food contact safe',
-            'pet-safe': 'pet safe',
-            'healthcare': 'healthcare grade',
-            'bulk': 'bulk solutions',
-            'bundles': 'bundle deals'
-        };
-        
-        const searchTerm = searchTerms[type] || type;
-        searchProducts(searchTerm);
-    }
-
-    function clearAllFilters() {
-        // Reset filters
-        currentFilters = { brand: 'all', category: 'all' };
-        
-        // Update filter buttons
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector('.filter-btn[data-filter="all"]')?.classList.add('active');
-        
-        // Clear search
-        clearSearch();
-        
-        // Show all products
-        document.querySelectorAll('.product-card').forEach(product => {
-            product.style.display = 'block';
-            product.setAttribute('data-visible', 'true');
-        });
-        
-        if (typeof PRODUCT_CATALOG !== 'undefined') {
-            updateResultsDisplay(Object.keys(PRODUCT_CATALOG).length);
-        }
-        toggleNoResultsMessage(false);
-    }
-
-    function showAllProducts() {
-        clearAllFilters();
-        document.querySelector('#productSections')?.scrollIntoView({ 
-            behavior: 'smooth' 
-        });
-    }
-
     function toggleCart() {
         const cartPreview = document.getElementById('cartPreview');
         if (cartPreview) {
@@ -3657,104 +3504,24 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'shop/cart.html';
     }
 
-    function requestCustomQuote() {
-        showNotification(createNotification(
-            `<i class="fas fa-clipboard-list me-2"></i>
-             <div>
-                 <div class="fw-bold">Custom Quote System</div>
-                 <div class="small">Feature coming soon with Shopify integration</div>
-             </div>`,
-            'info'
-        ));
-    }
-
-    function callForAssistance() {
-        window.open('tel:+18017125663');
-    }
-
-    function getAccountType() {
-        return localStorage.getItem('ohsAccountType') || 'consumer';
-    }
-
-    function toggleAccountMode(mode) {
-        console.log(`🔄 Switching to ${mode} account mode`);
+    function showAllProducts() {
+        document.querySelectorAll('.product-card').forEach(product => {
+            product.style.display = 'block';
+            product.setAttribute('data-visible', 'true');
+        });
         
-        localStorage.setItem('ohsAccountType', mode);
-        updateAccountModeDisplay(mode);
-        
-        // Update pricing displays
-        if (typeof updateCartPricing === 'function') {
-            updateCartPricing();
+        if (typeof PRODUCT_CATALOG !== 'undefined') {
+            updateResultsDisplay(Object.keys(PRODUCT_CATALOG).length);
         }
+        toggleNoResultsMessage(false);
         
-        // Show notification
-        const modeText = mode === 'business' ? 'Business Account' : 'Consumer Account';
-        const benefits = mode === 'business' ? 
-            'Wholesale pricing and volume discounts activated' :
-            'Standard retail pricing active';
-            
-        showNotification(createNotification(
-            `<i class="fas fa-${mode === 'business' ? 'building' : 'user'} me-2"></i>
-             <div>
-                 <div class="fw-bold">Switched to ${modeText}</div>
-                 <div class="small">${benefits}</div>
-             </div>`,
-            'success'
-        ));
+        document.querySelector('#productSections')?.scrollIntoView({ 
+            behavior: 'smooth' 
+        });
     }
-
-    function requestQuote(productId) {
-        showNotification(createNotification(
-            `<i class="fas fa-clipboard-list me-2"></i>
-             <div>
-                 <div class="fw-bold">Quote Request Feature</div>
-                 <div class="small">Coming soon with Shopify integration</div>
-             </div>`,
-            'info'
-        ));
-    }
-
-    function viewProductDetails(productId) {
-        showNotification(createNotification(
-            `<i class="fas fa-eye me-2"></i>
-             <div>
-                 <div class="fw-bold">Detailed Product Pages</div>
-                 <div class="small">Coming soon with Shopify integration</div>
-             </div>`,
-            'info'
-        ));
-    }
-
-    // ===================================================================
-    // ERROR HANDLING & FALLBACKS
-    // ===================================================================
-
-    // Handle missing cart.js functions
-    window.addEventListener('error', function(event) {
-        if (event.error && event.error.message.includes('cart.js')) {
-            console.warn('⚠️ Cart.js function missing, using fallback');
-            showNotification(createNotification(
-                `<i class="fas fa-exclamation-triangle me-2"></i>
-                 <div>
-                     <div class="fw-bold">Cart System Loading</div>
-                     <div class="small">Some features may be limited</div>
-                 </div>`,
-                'warning'
-            ));
-        }
-    });
-
-    // ===================================================================
-    // INITIALIZATION COMPLETE
-    // ===================================================================
 
     console.log('✅ Products Page JavaScript Integration Complete');
     console.log('🛒 Cart system ready for enhanced e-commerce functionality');
-    console.log('📦 Professional product catalog loaded and ready');
-    console.log('🔍 Advanced filtering and search capabilities active');
-    console.log('💼 Business and consumer pricing modes available');
-    console.log('📱 Mobile-responsive design implemented');
-    console.log('🎯 Professional-grade product display ready');
 
 </script>
 
@@ -3773,24 +3540,42 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /* Notification System Enhancements */
+    .volume-notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, var(--success-green), #16a34a);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+        z-index: 9999;
+        transform: translateX(400px);
+        transition: all 0.3s ease;
+        max-width: 300px;
+        border: 2px solid var(--accent-green);
+    }
+
+    .volume-notification.show {
+        transform: translateX(0);
+    }
+
     .volume-notification.success {
-        background: linear-gradient(135deg, var(--success-green), #16a34a) !important;
-        border-color: var(--accent-green) !important;
+        background: linear-gradient(135deg, var(--success-green), #16a34a);
+        border-color: var(--accent-green);
     }
 
     .volume-notification.info {
-        background: linear-gradient(135deg, #0ea5e9, #0284c7) !important;
-        color: white;
+        background: linear-gradient(135deg, #0ea5e9, #0284c7);
         border: 2px solid #0ea5e9;
     }
 
     .volume-notification.warning {
-        background: linear-gradient(135deg, #f59e0b, #d97706) !important;
-        color: white;
+        background: linear-gradient(135deg, #f59e0b, #d97706);
         border: 2px solid #f59e0b;
     }
 
-    /* Enhanced Mobile Responsiveness */
+    /* Mobile responsiveness */
     @media (max-width: 768px) {
         .volume-notification {
             left: 10px;
@@ -3802,87 +3587,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .volume-notification.show {
             transform: translateY(0);
         }
-
-        .filter-section {
-            position: relative;
-            top: auto;
-        }
-
-        .filter-controls {
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .filter-group {
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-    }
-
-    /* Success States */
-    .product-card.added-to-cart {
-        border-color: var(--success-green);
-        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
-        animation: addedPulse 1s ease-out;
-    }
-
-    @keyframes addedPulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.02); }
-        100% { transform: scale(1); }
-    }
-
-    /* Loading States */
-    .product-card.loading {
-        opacity: 0.6;
-        pointer-events: none;
-    }
-
-    .product-card.loading::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 30px;
-        height: 30px;
-        margin: -15px 0 0 -15px;
-        border: 3px solid var(--gray-300);
-        border-top: 3px solid var(--primary-blue);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    /* Accessibility Enhancements */
-    @media (prefers-reduced-motion: reduce) {
-        .volume-notification,
-        .product-card,
-        .filter-btn,
-        .add-to-cart-btn {
-            transition: none !important;
-            animation: none !important;
-        }
-    }
-
-    /* Focus Management */
-    .product-card:focus-within {
-        outline: 2px solid var(--primary-blue);
-        outline-offset: 2px;
-    }
-
-    .quantity-btn:focus,
-    .add-to-cart-btn:focus {
-        outline: 3px solid rgba(46, 94, 170, 0.5);
-        outline-offset: 2px;
-    }
-
-    .filter-btn:focus {
-        outline: 2px solid rgba(46, 94, 170, 0.7);
-        outline-offset: 1px;
     }
 </style>
 
