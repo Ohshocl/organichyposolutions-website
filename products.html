@@ -559,35 +559,20 @@
             <span class="mx-2 text-muted">|</span>
 
             <!-- Professional Use Case Filters -->
-<div class="filter-group me-4">
-    <button class="filter-btn active" data-filter="all" data-type="brand" onclick="filterProducts('brand', 'all')">
-        <i class="fas fa-th-large me-1"></i>All Products (<span id="allCount">57</span>)
-    </button>
-    <button class="filter-btn" data-filter="premium" data-type="brand" onclick="filterProducts('brand', 'premium')">
-        <i class="fas fa-crown me-1"></i>EPA Premium (<span id="premiumCount">38</span>)
-    </button>
-    <button class="filter-btn" data-filter="organic" data-type="brand" onclick="filterProducts('brand', 'organic')">
-        <i class="fas fa-leaf me-1"></i>USDA Organic (<span id="organicCount">19</span>)
-    </button>
-</div>
-
-<span class="mx-2 text-muted">|</span>
-
-<!-- Professional Use Case Filters -->
-<div class="filter-group me-4">
-    <button class="filter-btn" data-filter="commercial" data-type="category" onclick="filterProducts('category', 'commercial')" title="Healthcare, Commercial, Industrial Applications">
-        <i class="fas fa-building me-1"></i>Commercial
-    </button>
-    <button class="filter-btn" data-filter="residential" data-type="category" onclick="filterProducts('category', 'residential')" title="Family, Home, Personal Care">
-        <i class="fas fa-home me-1"></i>Residential
-    </button>
-    <button class="filter-btn" data-filter="veterinary" data-type="category" onclick="filterProducts('category', 'veterinary')" title="Pet Care, Veterinary, Equine Applications">
-        <i class="fas fa-paw me-1"></i>Pet & Veterinary
-    </button>
-    <button class="filter-btn" data-filter="industrial" data-type="category" onclick="filterProducts('category', 'industrial')" title="Bulk Solutions, Large Format, Industrial Applications">
-        <i class="fas fa-industry me-1"></i>Industrial & Bulk
-    </button>
-</div>>
+            <div class="filter-group me-4">
+                <button class="filter-btn" data-filter="commercial" data-type="category" title="Healthcare, Commercial, Industrial Applications">
+                    <i class="fas fa-building me-1"></i>Commercial
+                </button>
+                <button class="filter-btn" data-filter="residential" data-type="category" title="Family, Home, Personal Care">
+                    <i class="fas fa-home me-1"></i>Residential
+                </button>
+                <button class="filter-btn" data-filter="veterinary" data-type="category" title="Pet Care, Veterinary, Equine Applications">
+                    <i class="fas fa-paw me-1"></i>Pet & Veterinary
+                </button>
+                <button class="filter-btn" data-filter="industrial" data-type="category" title="Bulk Solutions, Large Format, Industrial Applications">
+                    <i class="fas fa-industry me-1"></i>Industrial & Bulk
+                </button>
+            </div>
 
             <span class="mx-2 text-muted">|</span>
 
@@ -2342,182 +2327,6 @@
             checkSystem();
         });
     }
-    updateAccountDisplay(getAccountType());
-        updateCartBadges();
-        
-        // PHASE 1 FIX #2 - Initialize cart preview
-        updateCartPreview();
-        
-    } catch (error) {
-        console.error('Failed to load cart system:', error);
-        showFallbackProducts();
-    }
-});
-
-// PHASE 1 FIX #2 - Cart Preview Functions
-function toggleCart() {
-    const cartPreview = document.getElementById('cartPreview');
-    if (!cartPreview) {
-        console.error('Cart preview element not found');
-        return;
-    }
-    
-    const isVisible = cartPreview.classList.contains('show');
-    
-    if (isVisible) {
-        cartPreview.classList.remove('show');
-        console.log('Cart hidden');
-    } else {
-        updateCartPreview();
-        cartPreview.classList.add('show');
-        console.log('Cart shown');
-    }
-}
-
-function updateCartPreview() {
-    try {
-        const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-        const cartItemsContainer = document.getElementById('cartItems');
-        const cartSummary = document.getElementById('cartSummary');
-        
-        if (!cartItemsContainer) {
-            console.error('Cart items container not found');
-            return;
-        }
-        
-        if (cart.length === 0) {
-            cartItemsContainer.innerHTML = `
-                <div class="text-center text-muted py-4">
-                    <i class="fas fa-shopping-cart fa-3x mb-3" style="opacity: 0.3;"></i>
-                    <p>Your cart is empty</p>
-                    <small>Add products to get started</small>
-                </div>
-            `;
-            if (cartSummary) cartSummary.style.display = 'none';
-            return;
-        }
-        
-        let cartHTML = '';
-        let subtotal = 0;
-        let totalSavings = 0;
-        
-        cart.forEach((item, index) => {
-            const itemTotal = (item.price || 0) * (item.quantity || 1);
-            subtotal += itemTotal;
-            
-            if (item.quantity >= 5) {
-                const savings = itemTotal * 0.1;
-                totalSavings += savings;
-            }
-            
-            cartHTML += `
-                <div class="cart-item" data-cart-index="${index}">
-                    <div class="cart-item-info">
-                        <div class="cart-item-name">${item.emoji || '🧴'} ${item.name || 'Product'}</div>
-                        <div class="cart-item-details">
-                            SKU: ${item.sku || item.productId || 'N/A'} • $${(item.price || 0).toFixed(2)} each
-                            ${item.type ? `• ${item.type.toUpperCase()}` : ''}
-                        </div>
-                    </div>
-                    <div class="cart-item-controls">
-                        <button class="cart-qty-btn" onclick="updateCartItemQuantity(${index}, -1)" 
-                                ${item.quantity <= 1 ? 'disabled' : ''}>
-                            <i class="fas fa-minus"></i>
-                        </button>
-                        <span class="cart-qty-display">${item.quantity || 1}</span>
-                        <button class="cart-qty-btn" onclick="updateCartItemQuantity(${index}, 1)">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                        <button class="cart-qty-btn ms-2" onclick="removeFromCart(${index})" 
-                                style="background: #dc3545;">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
-        });
-        
-        cartItemsContainer.innerHTML = cartHTML;
-        
-        if (cartSummary) {
-            const accountType = getAccountType();
-            const businessDiscount = accountType === 'business' ? subtotal * 0.15 : 0;
-            const tax = (subtotal - totalSavings - businessDiscount) * 0.0775;
-            const total = subtotal - totalSavings - businessDiscount + tax;
-            
-            updateElementText('cartRetailTotal', `$${subtotal.toFixed(2)}`);
-            updateElementText('cartSavings', `-$${totalSavings.toFixed(2)}`);
-            updateElementText('cartBusinessDiscount', `-$${businessDiscount.toFixed(2)}`);
-            updateElementText('cartTax', `$${tax.toFixed(2)}`);
-            updateElementText('cartTotal', `$${total.toFixed(2)}`);
-            
-            const businessRow = document.getElementById('businessDiscountRow');
-            if (businessRow) {
-                businessRow.style.display = accountType === 'business' ? 'flex' : 'none';
-            }
-            
-            cartSummary.style.display = 'block';
-        }
-        
-    } catch (error) {
-        console.error('Error updating cart preview:', error);
-    }
-}
-
-function updateElementText(id, text) {
-    const element = document.getElementById(id);
-    if (element) element.textContent = text;
-}
-
-function updateCartItemQuantity(index, change) {
-    try {
-        const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-        if (cart[index]) {
-            cart[index].quantity = Math.max(1, (cart[index].quantity || 1) + change);
-            localStorage.setItem('ohsCart', JSON.stringify(cart));
-            updateCartPreview();
-            updateCartBadges();
-            showNotification(`Updated quantity to ${cart[index].quantity}`, 'success');
-        }
-    } catch (error) {
-        console.error('Error updating cart quantity:', error);
-    }
-}
-
-function removeFromCart(index) {
-    try {
-        const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-        if (cart[index]) {
-            const itemName = cart[index].name || 'Item';
-            cart.splice(index, 1);
-            localStorage.setItem('ohsCart', JSON.stringify(cart));
-            updateCartPreview();
-            updateCartBadges();
-            showNotification(`Removed ${itemName} from cart`, 'success');
-            
-            if (cart.length === 0) {
-                setTimeout(() => {
-                    const cartPreview = document.getElementById('cartPreview');
-                    if (cartPreview) cartPreview.classList.remove('show');
-                }, 1500);
-            }
-        }
-    } catch (error) {
-        console.error('Error removing from cart:', error);
-    }
-}
-
-function proceedToCart() {
-    window.location.href = 'shop/cart.html';
-}
-
-function requestCustomQuote() {
-    showNotification('Custom quote system coming soon!', 'info');
-}
-
-function callForAssistance() {
-    window.location.href = 'tel:+18017125663';
-}
 
     // Initialize on DOM load
     document.addEventListener('DOMContentLoaded', async function() {
@@ -2552,15 +2361,11 @@ function callForAssistance() {
             productQuantities[product.id] = 1;
         });
         
-// Generate HTML - ALWAYS show USDA Organic first
+        // Generate HTML
         let html = '';
-        
-        // PHASE 1 FIX #4 - USDA Organic products ALWAYS appear first
         if (organicProducts.length > 0) {
             html += createProductSection('organic', 'USDA Organic Line', organicProducts);
         }
-        
-        // EPA Premium products appear second
         if (premiumProducts.length > 0) {
             html += createProductSection('premium', 'EPA Premium Line', premiumProducts);
         }
@@ -2625,21 +2430,12 @@ function callForAssistance() {
                         <p class="text-muted small mb-3">${product.description || 'Professional hypochlorous acid solution'}</p>
                         
                         <div class="pricing-section mb-3">
-    <div class="price-consumer h4 text-primary">$${retail.toFixed(2)}</div>
-    <small class="text-muted d-block">SKU: ${product.sku || product.id}</small>
-    
-    ${wholesale !== retail ? 
-        `<a href="#" class="business-pricing-link d-block mt-1" onclick="showBusinessPricing('${product.id}', event)">
-            <i class="fas fa-building me-1"></i>Business Pricing Available
-        </a>` : ''}
-    
-    <div id="business-pricing-${product.id}" class="business-pricing-details mt-2" style="display: none;">
-        <div class="bg-light p-2 rounded">
-            <div class="text-success fw-bold">Business Price: $${wholesale.toFixed(2)}</div>
-            <small class="text-muted">Volume discounts available</small>
-        </div>
-    </div>
-</div>
+                            <div class="price-retail h4 text-primary">$${currentPrice.toFixed(2)}</div>
+                            <small class="text-muted">SKU: ${product.sku || product.id}</small>
+                            
+                            ${accountType === 'consumer' && wholesale !== retail ? 
+                                `<div class="text-success small mt-1">Business: $${wholesale.toFixed(2)} <span class="badge bg-warning">Wholesale</span></div>` : ''}
+                        </div>
                         
                         <ul class="list-unstyled small mb-3">
                             <li><i class="fas fa-check text-success me-2"></i>${type === 'organic' ? 'Family & Pet Safe' : 'Commercial Grade'}</li>
@@ -2685,39 +2481,6 @@ function callForAssistance() {
         setQuantity(productId, newQty);
     }
 
-    // PHASE 1 FIX #3 - Business Pricing Display Function
-    function showBusinessPricing(productId, event) {
-        if (event) event.preventDefault();
-        
-        const detailsDiv = document.getElementById(`business-pricing-${productId}`);
-        if (!detailsDiv) return;
-        
-        const isVisible = detailsDiv.style.display !== 'none';
-        
-        if (isVisible) {
-            detailsDiv.style.display = 'none';
-        } else {
-            // Hide all other business pricing details
-            document.querySelectorAll('.business-pricing-details').forEach(div => {
-                div.style.display = 'none';
-            });
-            
-            // Show this one
-            detailsDiv.style.display = 'block';
-            detailsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            
-            // Add some animation
-            detailsDiv.style.opacity = '0';
-            detailsDiv.style.transform = 'translateY(-10px)';
-            
-            setTimeout(() => {
-                detailsDiv.style.transition = 'all 0.3s ease';
-                detailsDiv.style.opacity = '1';
-                detailsDiv.style.transform = 'translateY(0)';
-            }, 10);
-        }
-    }
-    
     function setQuantity(productId, value) {
         const qty = Math.max(1, Math.min(999, parseInt(value) || 1));
         productQuantities[productId] = qty;
@@ -2762,67 +2525,19 @@ function callForAssistance() {
     function toggleAccountMode(mode) {
         localStorage.setItem('ohsAccountType', mode);
         updateAccountDisplay(mode);
-        updatePricingDisplay(mode);
+        loadProducts();
         showNotification(`Switched to ${mode === 'business' ? 'Business' : 'Consumer'} pricing`, 'success');
     }
 
-function updateAccountDisplay(mode) {
-    const indicator = document.getElementById('accountModeIndicator');
-    if (indicator) {
-        if (mode === 'business') {
-            indicator.innerHTML = `
-                <i class="fas fa-building"></i> Business Account
-                <span class="badge bg-success ms-2">Wholesale Pricing Active</span>
-                <small class="ms-2 text-muted">
-                    <a href="#" onclick="toggleAccountMode('consumer')" class="text-decoration-none">
-                        Switch to Consumer Pricing <i class="fas fa-arrow-right ms-1"></i>
-                    </a>
-                </small>
-            `;
-        } else {
-            indicator.innerHTML = `
-                <i class="fas fa-user"></i> Consumer Pricing Active
-                <small class="ms-2 text-muted">
-                    <a href="#" onclick="toggleAccountMode('business')" class="text-decoration-none">
-                        Switch to Business Pricing <i class="fas fa-arrow-right ms-1"></i>
-                    </a>
-                </small>
-            `;
+    function updateAccountDisplay(mode) {
+        const indicator = document.getElementById('accountModeIndicator');
+        if (indicator) {
+            indicator.innerHTML = mode === 'business' ? 
+                '<i class="fas fa-building"></i> Business Account <span class="badge bg-success">Wholesale Pricing</span>' :
+                '<i class="fas fa-user"></i> Consumer Account';
         }
     }
-}
-function updatePricingDisplay(accountType) {
-    // Update pricing on existing product cards without reloading
-    document.querySelectorAll('.product-card').forEach(card => {
-        const productId = card.getAttribute('data-product-id');
-        const product = PRODUCT_CATALOG[productId];
-        
-        if (product) {
-            const retail = product.pricing?.retail || product.price || 0;
-            const wholesale = product.pricing?.wholesale || (retail * 0.7);
-            
-            const priceDisplay = card.querySelector('.price-consumer');
-            if (priceDisplay) {
-                if (accountType === 'business') {
-                    priceDisplay.innerHTML = `$${wholesale.toFixed(2)} <small class="text-muted">(Business)</small>`;
-                    priceDisplay.className = 'price-consumer h4 text-success';
-                } else {
-                    priceDisplay.innerHTML = `$${retail.toFixed(2)}`;
-                    priceDisplay.className = 'price-consumer h4 text-primary';
-                }
-            }
-            
-            // Show/hide business pricing link
-            const businessLink = card.querySelector('.business-pricing-link');
-            if (businessLink) {
-                businessLink.style.display = accountType === 'consumer' && wholesale !== retail ? 'block' : 'none';
-            }
-        }
-    });
-    
-    // Update cart preview if open
-    updateCartPreview();
-}
+
     function updateProductCounts() {
         if (typeof PRODUCT_CATALOG === 'undefined') return;
         
@@ -2899,156 +2614,7 @@ function updatePricingDisplay(accountType) {
         if (searchInput) searchInput.value = '';
         searchProducts('');
     }
-// PHASE 1 CRITICAL FIX - Working Filter System
-    function filterProducts(filterType, filterValue) {
-        console.log(`Filtering by ${filterType}: ${filterValue}`);
-        
-        // Update current filters
-        currentFilters[filterType] = filterValue;
-        
-        // Update filter button states
-        updateFilterButtonStates(filterType, filterValue);
-        
-        // Filter the products
-        const products = document.querySelectorAll('.product-card');
-        let visibleCount = 0;
-        
-        products.forEach(product => {
-            const productBrand = product.getAttribute('data-brand');
-            const productCategory = product.getAttribute('data-category') || 'general';
-            
-            let showProduct = true;
-            
-            // Apply brand filter
-            if (currentFilters.brand !== 'all') {
-                if (productBrand !== currentFilters.brand) {
-                    showProduct = false;
-                }
-            }
-            
-            // Apply category filter  
-            if (currentFilters.category !== 'all') {
-                // Map category values to what's in your product data
-                const categoryMapping = {
-                    'commercial': ['commercial', 'healthcare', 'industrial'],
-                    'residential': ['residential', 'family', 'home'],
-                    'veterinary': ['veterinary', 'pet', 'animal'],
-                    'industrial': ['industrial', 'bulk', 'large-format']
-                };
-                
-                const allowedCategories = categoryMapping[currentFilters.category] || [currentFilters.category];
-                if (!allowedCategories.includes(productCategory.toLowerCase())) {
-                    showProduct = false;
-                }
-            }
-            
-            // Show/hide product
-            if (showProduct) {
-                product.style.display = 'block';
-                product.setAttribute('data-visible', 'true');
-                visibleCount++;
-            } else {
-                product.style.display = 'none';
-                product.setAttribute('data-visible', 'false');
-            }
-        });
-        
-        // Update results count
-        updateResultsDisplay(visibleCount);
-        
-        // Show/hide no results message
-        toggleNoResultsMessage(visibleCount === 0);
-        
-        console.log(`Filter applied: showing ${visibleCount} products`);
-    }
 
-    function updateFilterButtonStates(filterType, filterValue) {
-        // Remove active state from all buttons of this type
-        document.querySelectorAll(`[data-type="${filterType}"]`).forEach(btn => {
-            btn.classList.remove('active');
-        });
-        
-        // Add active state to selected button
-        const activeButton = document.querySelector(`[data-type="${filterType}"][data-filter="${filterValue}"]`);
-        if (activeButton) {
-            activeButton.classList.add('active');
-        }
-    }
-
-    function updateResultsDisplay(count) {
-        const resultsEl = document.getElementById('visibleProductCount');
-        if (resultsEl) {
-            resultsEl.textContent = count;
-        }
-    }
-
-    function toggleNoResultsMessage(show) {
-        const noResults = document.getElementById('noResultsMessage');
-        const sections = document.getElementById('productSections');
-        
-        if (noResults) noResults.style.display = show ? 'block' : 'none';
-        if (sections) sections.style.display = show ? 'none' : 'block';
-    }
-
-    function clearAllFilters() {
-        currentFilters = { brand: 'all', category: 'all' };
-        
-        // Reset all filter buttons
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        
-        // Set "All Products" as active
-        const allButton = document.querySelector('[data-filter="all"][data-type="brand"]');
-        if (allButton) {
-            allButton.classList.add('active');
-        }
-        
-        // Show all products
-        document.querySelectorAll('.product-card').forEach(product => {
-            product.style.display = 'block';
-            product.setAttribute('data-visible', 'true');
-        });
-        
-        // Update counts
-        if (typeof PRODUCT_CATALOG !== 'undefined') {
-            updateResultsDisplay(Object.keys(PRODUCT_CATALOG).length);
-        }
-        
-        // Clear search
-        const searchInput = document.getElementById('productSearch');
-        if (searchInput) searchInput.value = '';
-        
-        // Hide no results message
-        toggleNoResultsMessage(false);
-    }
-
-    function quickFilter(filterType) {
-        const searchInput = document.getElementById('productSearch');
-        
-        switch(filterType) {
-            case 'food-contact':
-                if (searchInput) searchInput.value = 'food contact';
-                searchProducts('food contact');
-                break;
-            case 'pet-safe':
-                if (searchInput) searchInput.value = 'pet safe';
-                searchProducts('pet safe');
-                break;
-            case 'healthcare':
-                if (searchInput) searchInput.value = 'healthcare';
-                searchProducts('healthcare');
-                break;
-            case 'bulk':
-                if (searchInput) searchInput.value = 'bulk';
-                searchProducts('bulk');
-                break;
-            case 'bundles':
-                if (searchInput) searchInput.value = 'bundle';
-                searchProducts('bundle');
-                break;
-        }
-    }    
     function showAllProducts() {
         document.querySelectorAll('.product-card').forEach(product => {
             product.style.display = 'block';
