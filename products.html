@@ -2736,10 +2736,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load products from the enhanced cart.js PRODUCT_CATALOG
     function loadProductsFromCatalog() {
         console.log('📋 Loading products from PRODUCT_CATALOG...');
-        
+
         if (typeof PRODUCT_CATALOG === 'undefined') {
-            console.error('❌ PRODUCT_CATALOG not found - cart.js not loaded properly');
-            showErrorMessage('Product catalog not available');
+            console.log('⏳ PRODUCT_CATALOG not loaded yet, waiting...');
+            // Create empty catalog temporarily
+            window.PRODUCT_CATALOG = {};
+            // Try again later
+            setTimeout(loadProductsFromCatalog, 100);
             return;
         }
         
