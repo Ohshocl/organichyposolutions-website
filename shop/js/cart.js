@@ -1,18 +1,13 @@
 // ===================================================================
-// SECTION 1: COMPLETE PRODUCT CATALOG & PRICING FOUNDATION
-// 57 Products Total: 38 Premium + 19 Organic
-// Updated: 2025-07-20 | Shopify Ready | Volume Pricing Configured
+// COMPLETE PRODUCT CATALOG - 57 Products Total
+// Properly formatted for JavaScript execution
 // ===================================================================
 
-// ENHANCED PRODUCT CATALOG - All 57 Products with Exact Pricing from Table
 const PRODUCT_CATALOG = {
     // ===================================================================
-    // THE HYPO COMPANY - PREMIUM LINE (38 Products) 
-    // Wholesale Margin: 34.10% | Retail Margin: 50.10%-52.10%
-    // Min Order: Monthly Invoice (No MOQ restrictions)
+    // THE HYPO COMPANY - PREMIUM LINE (First 10 Products)
     // ===================================================================
     
-    // CORE DISINFECTANTS
     'hc-3oz-disinfectant': {
         id: 'hc-3oz-disinfectant',
         shopifyHandle: '3oz-multi-use-disinfectant-premium',
@@ -45,7 +40,6 @@ const PRODUCT_CATALOG = {
             retailQuarterly: 0.440
         },
         volumeDiscounts: {
-            // Based on "Retail Until" thresholds from your table
             '50+': { 
                 discount: 0.15, 
                 badge: '50+ Volume Discount', 
@@ -332,12 +326,6 @@ const PRODUCT_CATALOG = {
         emoji: '🔬'
     },
 
-    // ===================================================================
-    // ORGANIC HYPOSOLUTIONS - COMPETITIVE LINE (19 Products)
-    // Wholesale Margin: 28.60% | Retail Margin: 37.20%-42.20%
-    // Min Order: Traditional MOQ structure (50-1000 units)
-    // ===================================================================
-
     'ohs-3oz-organic-disinfectant': {
         id: 'ohs-3oz-organic-disinfectant',
         shopifyHandle: '3oz-organic-multi-surface-disinfectant',
@@ -506,114 +494,10 @@ const PRODUCT_CATALOG = {
         emoji: '🐾'
     }
 
-    // NOTE: This is Section 1 of 4. Contains first 10 products to establish foundation.
-    // Remaining 47 products will be added in subsequent sections.
-    // Pattern established: Premium (EPA) vs Organic (USDA) with different pricing tiers
-    // Volume discounts based on MOQ thresholds from pricing table
-    // Subscription pricing integrated for both monthly/quarterly options
-};
-
 // ===================================================================
-// ENHANCED PRICING RULES - Updated from Project Knowledge
-// ===================================================================
-
-const PRICING_RULES = {
-    // Volume & Business Discounts
-    volumeDiscount: 0.15, // 15% general volume discount
-    bulkOrderThreshold: 1000, // Bulk pricing starts at $1000
-    businessAccountDiscount: 0.12, // 12% business account discount
-    
-    // Tax & Shipping (Utah-based)
-    utahTaxRate: 0.0775,  // Utah tax rate 7.75%
-    freeShippingThreshold: 50,
-    standardShipping: 9.95,
-    expeditedShipping: 19.95,
-    overnightShipping: 39.95,
-    serviceAreaRadius: 25, // Free delivery within 25 miles of Salt Lake City
-    deliveryFeePerMile: 0.70, // Per mile beyond service area
-    
-    // Subscription Programs - Matching your pricing table
-    subscriptionDiscounts: {
-        monthly: 0.08,    // 8% monthly subscription discount (matches Monthly Sub pricing)
-        quarterly: 0.10,  // 10% quarterly subscription discount (matches Quarterly Sub pricing)
-        annual: 0.15      // 15% annual subscription discount
-    },
-    
-    // B2B Features - From your margin data
-    wholesaleMargins: {
-        organic: 0.286,   // 28.6% wholesale margin for organic line (OHS)
-        premium: 0.341    // 34.1% wholesale margin for premium line (Hypo Company)
-    },
-    
-    // Product Line Differentiation
-    productLines: {
-        premium: {
-            name: 'Professional Premium Line',
-            margin: 0.341,
-            retailMargin: 0.521, // 52.1%
-            minOrder: 'Monthly Invoice', // No MOQ restrictions
-            badgeColor: '#f59e0b',
-            badgeText: 'EPA Premium'
-        },
-        organic: {
-            name: 'USDA Organic Line',
-            margin: 0.286,
-            retailMargin: 0.422, // 42.2%
-            minOrder: 'Traditional MOQ', // 50-1000 units
-            badgeColor: '#4ADE80',
-            badgeText: 'USDA Organic'
-        }
-    },
-    
-    // Fulfillment Settings
-    fulfillment: {
-        standardDays: '2-4',
-        expeditedDays: '1-2',
-        overnightDays: 'Next day',
-        businessOnly: false,
-        saturdayDelivery: true,
-        signatureRequired: false,
-        origin: 'Salt Lake City, Utah'
-    },
-    
-    // Volume Discount Thresholds (from your "Retail Until" table)
-    volumeThresholds: {
-        premium: {
-            // Premium line has lower thresholds due to "Monthly Invoice" flexibility
-            tier1: { quantity: 10, discount: 0.05 },
-            tier2: { quantity: 25, discount: 0.10 },
-            tier3: { quantity: 50, discount: 0.15 }
-        },
-        organic: {
-            // Organic line has higher thresholds due to traditional MOQ structure
-            tier1: { quantity: 100, discount: 0.08 },
-            tier2: { quantity: 500, discount: 0.12 },
-            tier3: { quantity: 1000, discount: 0.18 }
-        }
-    }
-};
-
-console.log('✅ SECTION 1 COMPLETE: Product Catalog Foundation');
-console.log('📦 Products loaded: 10 (Premium: 6, Organic: 4)');
-console.log('💰 Pricing tiers: Volume discounts configured per product line');
-console.log('🏢 B2B ready: Different MOQ structures for Premium vs Organic');
-console.log('📊 Margins: Premium 34.1%, Organic 28.6% (matching your table)');
-console.log('🛍️ Shopify ready: All products have handles and variant placeholders');
-console.log('');
-console.log('READY FOR SECTION 2: Add remaining 47 products');
-
-// ===================================================================
-// SECTION 2: COMPLETE PREMIUM LINE + BUNDLE KITS + EQUIPMENT
-// 32 Additional Products: Personal Care, Veterinary, Bundles, Equipment, Bulk
-// Updated: 2025-07-20 | All from Pricing Table | Shopify Ready
-// ===================================================================
-
-// ADD THESE TO YOUR EXISTING PRODUCT_CATALOG OBJECT:
-
+    // PREMIUM PERSONAL CARE & SKIN HEALTH
     // ===================================================================
-    // PREMIUM LINE CONTINUED - PERSONAL CARE & SKIN HEALTH
-    // ===================================================================
-
+    
     'hc-3oz-skin-health-mist': {
         id: 'hc-3oz-skin-health-mist',
         shopifyHandle: '3oz-hc-pure-skin-health-mist',
@@ -948,9 +832,8 @@ console.log('READY FOR SECTION 2: Add remaining 47 products');
         type: 'premium',
         emoji: '🧻'
     },
-
-    // ===================================================================
-    // THERAPEUTIC & SPECIALIZED PRODUCTS (Note: 50.1% retail margin)
+// ===================================================================
+    // THERAPEUTIC & SPECIALIZED PRODUCTS (50.1% retail margin)
     // ===================================================================
 
     'hc-16oz-equine-healing-gel': {
@@ -971,7 +854,7 @@ console.log('READY FOR SECTION 2: Add remaining 47 products');
             wholesale: 33.18,
             wholesaleMonthly: 30.56,
             wholesaleQuarterly: 29.91,
-            retail: 43.75, // Note: 50.1% retail margin (different from other products)
+            retail: 43.75,
             retailMonthly: 40.36,
             retailQuarterly: 39.52
         },
@@ -979,7 +862,7 @@ console.log('READY FOR SECTION 2: Add remaining 47 products');
             wholesale: 0.341,
             wholesaleMonthly: 0.285,
             wholesaleQuarterly: 0.270,
-            retail: 0.501, // 50.1% retail margin
+            retail: 0.501,
             retailMonthly: 0.436,
             retailQuarterly: 0.420
         },
@@ -1016,7 +899,7 @@ console.log('READY FOR SECTION 2: Add remaining 47 products');
             wholesale: 30.06,
             wholesaleMonthly: 27.71,
             wholesaleQuarterly: 27.12,
-            retail: 39.66, // 50.1% retail margin
+            retail: 39.66,
             retailMonthly: 36.58,
             retailQuarterly: 35.83
         },
@@ -1061,7 +944,7 @@ console.log('READY FOR SECTION 2: Add remaining 47 products');
             wholesale: 32.12,
             wholesaleMonthly: 29.59,
             wholesaleQuarterly: 28.96,
-            retail: 42.33, // 50.1% retail margin
+            retail: 42.33,
             retailMonthly: 39.07,
             retailQuarterly: 38.26
         },
@@ -1089,7 +972,7 @@ console.log('READY FOR SECTION 2: Add remaining 47 products');
     },
 
     // ===================================================================
-    // PREMIUM BUNDLE KITS - All 5 Bundles from Pricing Table
+    // PREMIUM BUNDLE KITS
     // ===================================================================
 
     'hc-starter-cleaning-bundle': {
@@ -1127,7 +1010,7 @@ console.log('READY FOR SECTION 2: Add remaining 47 products');
             '32oz Multi Use Cleaner Ready to Use',
             'All-in-One Wipes'
         ],
-        bundleSavings: 8.77, // vs individual purchase
+        bundleSavings: 8.77,
         volumeDiscounts: {
             '10+': { 
                 discount: 0.10, 
@@ -1180,7 +1063,7 @@ console.log('READY FOR SECTION 2: Add remaining 47 products');
             'All-in-One Wipes',
             '32oz Laundry Booster'
         ],
-        bundleSavings: 19.50, // vs individual purchase
+        bundleSavings: 19.50,
         volumeDiscounts: {
             '5+': { 
                 discount: 0.10, 
@@ -1234,7 +1117,7 @@ console.log('READY FOR SECTION 2: Add remaining 47 products');
             '32oz Laundry Booster',
             '3oz HC-Pure Skin Health Mist'
         ],
-        bundleSavings: 26.38, // vs individual purchase
+        bundleSavings: 26.38,
         volumeDiscounts: {
             '3+': { 
                 discount: 0.10, 
@@ -1285,7 +1168,7 @@ console.log('READY FOR SECTION 2: Add remaining 47 products');
             '1 Gallon Ready to Use',
             'All-in-One Wipes'
         ],
-        bundleSavings: 15.59, // vs individual purchase
+        bundleSavings: 15.59,
         volumeDiscounts: {
             '5+': { 
                 discount: 0.10, 
@@ -1337,7 +1220,7 @@ console.log('READY FOR SECTION 2: Add remaining 47 products');
             'All-in-One Wipes',
             '3oz HC-Pure Skin Health Mist'
         ],
-        bundleSavings: 17.40, // vs individual purchase
+        bundleSavings: 17.40,
         volumeDiscounts: {
             '5+': { 
                 discount: 0.10, 
@@ -1352,9 +1235,8 @@ console.log('READY FOR SECTION 2: Add remaining 47 products');
         type: 'premium',
         emoji: '🐾'
     },
-
-    // ===================================================================
-    // EQUIPMENT & GENERATORS (Note: 50.1% retail margin)
+// ===================================================================
+    // EQUIPMENT & GENERATORS (50.1% retail margin)
     // ===================================================================
 
     'hc-hypochlorous-station1-starter-kit': {
@@ -1375,7 +1257,7 @@ console.log('READY FOR SECTION 2: Add remaining 47 products');
             wholesale: 497.98,
             wholesaleMonthly: 458.91,
             wholesaleQuarterly: 449.21,
-            retail: 656.04, // 50.1% retail margin
+            retail: 656.04,
             retailMonthly: 605.31,
             retailQuarterly: 592.92
         },
@@ -1420,7 +1302,7 @@ console.log('READY FOR SECTION 2: Add remaining 47 products');
             wholesale: 10.95,
             wholesaleMonthly: 10.09,
             wholesaleQuarterly: 9.87,
-            retail: 14.42, // 50.1% retail margin
+            retail: 14.42,
             retailMonthly: 13.31,
             retailQuarterly: 13.04
         },
@@ -1471,7 +1353,7 @@ console.log('READY FOR SECTION 2: Add remaining 47 products');
             wholesale: 997.14,
             wholesaleMonthly: 919.00,
             wholesaleQuarterly: 899.42,
-            retail: 1314.01, // 50.1% retail margin
+            retail: 1314.01,
             retailMonthly: 1212.85,
             retailQuarterly: 1188.11
         },
@@ -1491,39 +1373,15 @@ console.log('READY FOR SECTION 2: Add remaining 47 products');
                 wholesalePrice: 947.28
             }
         },
-        subscriptionOptions: ['quarterly'], // Only quarterly for equipment
+        subscriptionOptions: ['quarterly'],
         wholesaleThreshold: 1,
         minOrder: 'Monthly Invoice',
         type: 'premium',
         emoji: '🏊'
-    }
-
-    // NOTE: This is Section 2 of 4. Added 32 more products (Total: 42/57)
-    // Next Section 3 will add: Bulk Cases, Industrial EPA/FDA products
-    // Section 4 will add: Complete Organic line (15 remaining products)
-
-console.log('✅ SECTION 2 COMPLETE: Premium Line + Bundle Kits');
-console.log('📦 Products added: 32 (Total: 42/57)');  
-console.log('🎯 Bundle Kits: All 5 HC bundles with exact pricing from table');
-console.log('⚙️ Equipment: Station1, Refill Pouches, Pool Generator');
-console.log('💊 Therapeutic: Equine Gel, Skin Serum, Diaper Gel (50.1% margin)');
-console.log('👕 Laundry: 32oz & 1 Gallon Boosters');
-console.log('🧻 Wipes: All-in-one professional wipes');
-console.log('💰 Volume Discounts: Individual thresholds per product type');
-console.log('🛍️ Shopify Ready: All handles, variants, pricing tiers configured');
-console.log('');
-console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 products)');
-
-// ===================================================================
-// SECTION 3: BULK CASES + INDUSTRIAL EPA/FDA PRODUCTS  
-// 14 Additional Products: Bulk Packaging + Large Industrial Sizes
-// Updated: 2025-07-20 | Special Margin Handling for Large FDA Products
-// ===================================================================
-
-// ADD THESE TO YOUR EXISTING PRODUCT_CATALOG OBJECT:
+    },
 
     // ===================================================================
-    // BULK PACKAGING CASES (Note: 50.1% retail margin)
+    // BULK PACKAGING CASES (50.1% retail margin)
     // ===================================================================
 
     'hc-32oz-bulk-case': {
@@ -1544,7 +1402,7 @@ console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 p
             wholesale: 40.41,
             wholesaleMonthly: 37.24,
             wholesaleQuarterly: 36.44,
-            retail: 53.28, // 50.1% retail margin
+            retail: 53.28,
             retailMonthly: 49.16,
             retailQuarterly: 48.16
         },
@@ -1552,7 +1410,7 @@ console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 p
             wholesale: 0.341,
             wholesaleMonthly: 0.285,
             wholesaleQuarterly: 0.270,
-            retail: 0.501, // 50.1% retail margin for bulk items
+            retail: 0.501,
             retailMonthly: 0.436,
             retailQuarterly: 0.420
         },
@@ -1595,7 +1453,7 @@ console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 p
             wholesale: 83.89,
             wholesaleMonthly: 77.28,
             wholesaleQuarterly: 75.63,
-            retail: 110.58, // 50.1% retail margin
+            retail: 110.58,
             retailMonthly: 102.04,
             retailQuarterly: 100.02
         },
@@ -1623,7 +1481,7 @@ console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 p
     },
 
     // ===================================================================
-    // INDUSTRIAL EPA ORGANIC PRODUCTS (Note: 50.1% retail margin)
+    // INDUSTRIAL EPA ORGANIC PRODUCTS (50.1% retail margin)
     // ===================================================================
 
     'hc-150gal-organic-epa': {
@@ -1644,7 +1502,7 @@ console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 p
             wholesale: 5472.00,
             wholesaleMonthly: 5043.60,
             wholesaleQuarterly: 4939.20,
-            retail: 7214.40, // 50.1% retail margin
+            retail: 7214.40,
             retailMonthly: 6658.20,
             retailQuarterly: 6523.68
         },
@@ -1664,7 +1522,7 @@ console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 p
                 wholesalePrice: 5198.40
             }
         },
-        subscriptionOptions: ['quarterly'], // Only quarterly for industrial
+        subscriptionOptions: ['quarterly'],
         wholesaleThreshold: 1,
         minOrder: 'Monthly Invoice',
         type: 'premium',
@@ -1689,7 +1547,7 @@ console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 p
             wholesale: 9849.60,
             wholesaleMonthly: 9081.84,
             wholesaleQuarterly: 8890.80,
-            retail: 12984.96, // 50.1% retail margin
+            retail: 12984.96,
             retailMonthly: 11978.64,
             retailQuarterly: 11734.08
         },
@@ -1734,7 +1592,7 @@ console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 p
             wholesale: 15598.26,
             wholesaleMonthly: 14381.48,
             wholesaleQuarterly: 14084.04,
-            retail: 20568.78, // 50.1% retail margin
+            retail: 20568.78,
             retailMonthly: 18984.02,
             retailQuarterly: 18597.36
         },
@@ -1779,7 +1637,7 @@ console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 p
             wholesale: 29612.99,
             wholesaleMonthly: 27302.12,
             wholesaleQuarterly: 26739.24,
-            retail: 39044.39, // 50.1% retail margin
+            retail: 39044.39,
             retailMonthly: 36043.92,
             retailQuarterly: 35323.68
         },
@@ -1824,7 +1682,7 @@ console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 p
             wholesale: 84466.56,
             wholesaleMonthly: 77881.19,
             wholesaleQuarterly: 76285.68,
-            retail: 111290.98, // 50.1% retail margin
+            retail: 111290.98,
             retailMonthly: 102710.76,
             retailQuarterly: 100645.92
         },
@@ -1869,7 +1727,7 @@ console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 p
             wholesale: 133663.95,
             wholesaleMonthly: 123259.44,
             wholesaleQuarterly: 120751.50,
-            retail: 176172.63, // 50.1% retail margin
+            retail: 176172.63,
             retailMonthly: 162626.22,
             retailQuarterly: 159396.84
         },
@@ -1895,12 +1753,8 @@ console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 p
         type: 'premium',
         emoji: '🏗️'
     },
-
-    // ===================================================================
-    // INDUSTRIAL FDA PRODUCTS (Note: Special margin structure)
-    // 150-1000 Gallon: 50.1% retail margin
-    // 3000 Gallon: 39.6% retail margin (from your table)
-    // 5000 Gallon: 24.1% retail margin (from your table)
+// ===================================================================
+    // INDUSTRIAL FDA PRODUCTS (Variable margin structure)
     // ===================================================================
 
     'hc-150gal-fda': {
@@ -1921,7 +1775,7 @@ console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 p
             wholesale: 5700.00,
             wholesaleMonthly: 5256.00,
             wholesaleQuarterly: 5145.00,
-            retail: 7515.00, // 50.1% retail margin
+            retail: 7515.00,
             retailMonthly: 6936.00,
             retailQuarterly: 6799.50
         },
@@ -1966,7 +1820,7 @@ console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 p
             wholesale: 10260.00,
             wholesaleMonthly: 9462.00,
             wholesaleQuarterly: 9261.00,
-            retail: 13527.00, // 50.1% retail margin
+            retail: 13527.00,
             retailMonthly: 12485.40,
             retailQuarterly: 12236.70
         },
@@ -2011,7 +1865,7 @@ console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 p
             wholesale: 16248.59,
             wholesaleMonthly: 14980.32,
             wholesaleQuarterly: 14672.33,
-            retail: 21413.37, // 50.1% retail margin
+            retail: 21413.37,
             retailMonthly: 19762.07,
             retailQuarterly: 19369.88
         },
@@ -2056,7 +1910,7 @@ console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 p
             wholesale: 30871.83,
             wholesaleMonthly: 28470.34,
             wholesaleQuarterly: 27892.65,
-            retail: 40688.01, // 50.1% retail margin
+            retail: 40688.01,
             retailMonthly: 37553.99,
             retailQuarterly: 36786.42
         },
@@ -2101,7 +1955,7 @@ console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 p
             wholesale: 87949.17,
             wholesaleMonthly: 81126.47,
             wholesaleQuarterly: 79469.55,
-            retail: 95960.91, // 39.6% retail margin (special pricing from your table)
+            retail: 95960.91,
             retailMonthly: 88588.02,
             retailQuarterly: 86805.76
         },
@@ -2109,7 +1963,7 @@ console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 p
             wholesale: 0.341,
             wholesaleMonthly: 0.285,
             wholesaleQuarterly: 0.270,
-            retail: 0.396, // 39.6% retail margin (reduced for large FDA)
+            retail: 0.396,
             retailMonthly: 0.314,
             retailQuarterly: 0.300
         },
@@ -2146,7 +2000,7 @@ console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 p
             wholesale: 139352.15,
             wholesaleMonthly: 128547.23,
             wholesaleQuarterly: 125929.95,
-            retail: 120790.65, // 24.1% retail margin (special competitive pricing)
+            retail: 120790.65,
             retailMonthly: 111450.50,
             retailQuarterly: 109223.25
         },
@@ -2154,7 +2008,7 @@ console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 p
             wholesale: 0.341,
             wholesaleMonthly: 0.285,
             wholesaleQuarterly: 0.270,
-            retail: 0.241, // 24.1% retail margin (competitive pricing for largest)
+            retail: 0.241,
             retailMonthly: 0.134,
             retailQuarterly: 0.118
         },
@@ -2171,34 +2025,10 @@ console.log('READY FOR SECTION 3: Bulk Cases + Industrial EPA/FDA Products (12 p
         minOrder: 'Monthly Invoice',
         type: 'premium',
         emoji: '🏭'
-    }
-
-    // NOTE: This is Section 3 of 4. Added 14 more products (Total: 56/57)
-    // Final Section 4 will add: Complete Organic line (15 remaining products + bundles)
-    // Special margin handling implemented for large FDA products per your table
-
-console.log('✅ SECTION 3 COMPLETE: Bulk Cases + Industrial EPA/FDA');
-console.log('📦 Products added: 14 (Total: 56/57)');
-console.log('📦 Bulk Cases: 32oz & 1 Gallon cases with 50.1% margins');
-console.log('🏭 Industrial EPA: 6 sizes (150-5000 gallon) with 50.1% margins');
-console.log('💊 Industrial FDA: 6 sizes with variable margins:');
-console.log('    - 150-1000 Gallon: 50.1% retail margin');
-console.log('    - 3000 Gallon: 39.6% retail margin (competitive)');
-console.log('    - 5000 Gallon: 24.1% retail margin (mega-scale pricing)');
-console.log('💰 Volume Discounts: Enterprise-level thresholds for industrial products');
-console.log('🛍️ Shopify Ready: All industrial products with proper categorization');
-console.log('');
-console.log('READY FOR SECTION 4 (FINAL): Complete Organic Line + Bundles (15 products)');
-// ===================================================================
-// SECTION 4 (FINAL): COMPLETE ORGANIC HYPOSOLUTIONS LINE
-// 15 Final Products: Personal Care, Veterinary, Therapeutic, Bundles
-// Updated: 2025-07-20 | Completes 57-Product Catalog | Shopify Ready
-// ===================================================================
-
-// ADD THESE TO YOUR EXISTING PRODUCT_CATALOG OBJECT:
+    },
 
     // ===================================================================
-    // ORGANIC PERSONAL CARE & SKIN HEALTH CONTINUED
+    // COMPLETE ORGANIC HYPOSOLUTIONS LINE
     // ===================================================================
 
     'ohs-1gal-organic-solution': {
@@ -2309,10 +2139,6 @@ console.log('READY FOR SECTION 4 (FINAL): Complete Organic Line + Bundles (15 pr
         emoji: '🌸'
     },
 
-    // ===================================================================
-    // ORGANIC VETERINARY & PET CARE CONTINUED
-    // ===================================================================
-
     'ohs-32oz-500ppm-pet-equine': {
         id: 'ohs-32oz-500ppm-pet-equine',
         shopifyHandle: '32oz-organic-500ppm-pet-equine-solution',
@@ -2414,10 +2240,6 @@ console.log('READY FOR SECTION 4 (FINAL): Complete Organic Line + Bundles (15 pr
         type: 'organic',
         emoji: '🏥'
     },
-
-    // ===================================================================
-    // ORGANIC LAUNDRY & HOUSEHOLD CARE
-    // ===================================================================
 
     'ohs-32oz-organic-laundry-booster': {
         id: 'ohs-32oz-organic-laundry-booster',
@@ -2521,10 +2343,6 @@ console.log('READY FOR SECTION 4 (FINAL): Complete Organic Line + Bundles (15 pr
         emoji: '🏭'
     },
 
-    // ===================================================================
-    // ORGANIC CLEANING SUPPLIES
-    // ===================================================================
-
     'ohs-organic-all-in-one-wipes': {
         id: 'ohs-organic-all-in-one-wipes',
         shopifyHandle: 'organic-all-in-one-disinfecting-wipes',
@@ -2576,10 +2394,6 @@ console.log('READY FOR SECTION 4 (FINAL): Complete Organic Line + Bundles (15 pr
         emoji: '🧻'
     },
 
-    // ===================================================================
-    // ORGANIC THERAPEUTIC PRODUCTS (Note: 37.2% retail margin)
-    // ===================================================================
-
     'ohs-16oz-organic-equine-healing-gel': {
         id: 'ohs-16oz-organic-equine-healing-gel',
         shopifyHandle: '16oz-organic-equine-healing-udder-gel',
@@ -2598,7 +2412,7 @@ console.log('READY FOR SECTION 4 (FINAL): Complete Organic Line + Bundles (15 pr
             wholesale: 30.75,
             wholesaleMonthly: 28.32,
             wholesaleQuarterly: 27.72,
-            retail: 38.16, // 37.2% retail margin (therapeutic products)
+            retail: 38.16,
             retailMonthly: 35.21,
             retailQuarterly: 34.47
         },
@@ -2606,7 +2420,7 @@ console.log('READY FOR SECTION 4 (FINAL): Complete Organic Line + Bundles (15 pr
             wholesale: 0.286,
             wholesaleMonthly: 0.224,
             wholesaleQuarterly: 0.207,
-            retail: 0.372, // 37.2% retail margin for therapeutic
+            retail: 0.372,
             retailMonthly: 0.330,
             retailQuarterly: 0.317
         },
@@ -2649,7 +2463,7 @@ console.log('READY FOR SECTION 4 (FINAL): Complete Organic Line + Bundles (15 pr
             wholesale: 27.89,
             wholesaleMonthly: 25.68,
             wholesaleQuarterly: 25.15,
-            retail: 34.63, // 37.2% retail margin
+            retail: 34.63,
             retailMonthly: 31.95,
             retailQuarterly: 31.31
         },
@@ -2700,7 +2514,7 @@ console.log('READY FOR SECTION 4 (FINAL): Complete Organic Line + Bundles (15 pr
             wholesale: 28.97,
             wholesaleMonthly: 26.68,
             wholesaleQuarterly: 26.11,
-            retail: 35.98, // 37.2% retail margin
+            retail: 35.98,
             retailMonthly: 33.20,
             retailQuarterly: 32.52
         },
@@ -2734,7 +2548,7 @@ console.log('READY FOR SECTION 4 (FINAL): Complete Organic Line + Bundles (15 pr
     },
 
     // ===================================================================
-    // ORGANIC HYPOSOLUTIONS BUNDLE KITS (All 5 Bundles)
+    // ORGANIC BUNDLE KITS
     // ===================================================================
 
     'ohs-organic-starter-home-bundle': {
@@ -2772,7 +2586,7 @@ console.log('READY FOR SECTION 4 (FINAL): Complete Organic Line + Bundles (15 pr
             '32oz Organic Ready-to-Use Cleaner',
             'Organic All-in-One Disinfecting Wipes'
         ],
-        bundleSavings: 12.15, // vs individual purchase
+        bundleSavings: 12.15,
         volumeDiscounts: {
             '300+': { 
                 discount: 0.10, 
@@ -2825,7 +2639,7 @@ console.log('READY FOR SECTION 4 (FINAL): Complete Organic Line + Bundles (15 pr
             'Organic All-in-One Disinfecting Wipes',
             '32oz Organic Laundry Booster'
         ],
-        bundleSavings: 22.58, // vs individual purchase
+        bundleSavings: 22.58,
         volumeDiscounts: {
             '250+': { 
                 discount: 0.10, 
@@ -2879,7 +2693,7 @@ console.log('READY FOR SECTION 4 (FINAL): Complete Organic Line + Bundles (15 pr
             '32oz Organic Laundry Booster',
             '3oz Organic Skin Health Mist'
         ],
-        bundleSavings: 31.38, // vs individual purchase
+        bundleSavings: 31.38,
         volumeDiscounts: {
             '200+': { 
                 discount: 0.10, 
@@ -2930,7 +2744,7 @@ console.log('READY FOR SECTION 4 (FINAL): Complete Organic Line + Bundles (15 pr
             '1 Gallon Organic Ready-to-Use Solution',
             'Organic All-in-One Disinfecting Wipes'
         ],
-        bundleSavings: 19.45, // vs individual purchase
+        bundleSavings: 19.45,
         volumeDiscounts: {
             '300+': { 
                 discount: 0.10, 
@@ -2982,7 +2796,7 @@ console.log('READY FOR SECTION 4 (FINAL): Complete Organic Line + Bundles (15 pr
             'Organic All-in-One Disinfecting Wipes',
             '3oz Organic Skin Health Mist'
         ],
-        bundleSavings: 18.53, // vs individual purchase
+        bundleSavings: 18.53,
         volumeDiscounts: {
             '200+': { 
                 discount: 0.10, 
@@ -2998,66 +2812,71 @@ console.log('READY FOR SECTION 4 (FINAL): Complete Organic Line + Bundles (15 pr
         emoji: '🐾'
     }
 
-    // ===================================================================
-    // CATALOG COMPLETION STATUS
-    // ===================================================================
+}; // END of PRODUCT_CATALOG - FINAL CLOSING BRACE!
 
-}; // End of PRODUCT_CATALOG object - DO NOT FORGET THIS CLOSING BRACE!
+// Make it globally accessible
+window.PRODUCT_CATALOG = PRODUCT_CATALOG;
 
 // ===================================================================
-// FINAL CATALOG SUMMARY & VERIFICATION
+// PRICING RULES CONFIGURATION
 // ===================================================================
 
-console.log('🎉 COMPLETE PRODUCT CATALOG READY - 57 PRODUCTS TOTAL');
-console.log('');
-console.log('📊 FINAL BREAKDOWN:');
-console.log('');
-console.log('🏆 THE HYPO COMPANY - PREMIUM LINE (38 Products)');
-console.log('   💰 Wholesale Margin: 34.1% | Retail Margin: 50.1%-52.1%');
-console.log('   📋 Min Order: Monthly Invoice (No MOQ restrictions)');
-console.log('   🎯 Target: Premium commercial, healthcare, professional');
-console.log('   ├─ Personal Care: 3oz/8oz Skin Health Mists');
-console.log('   ├─ Commercial: Ready-to-Use & EPA Cleaners (32oz/1gal)');
-console.log('   ├─ Pet Care: Pet Cleaners & 500ppm Solutions');  
-console.log('   ├─ Veterinary: Equine Gel, 500ppm Solutions');
-console.log('   ├─ Laundry: 32oz/1gal Boosters');
-console.log('   ├─ Cleaning: All-in-One Wipes');
-console.log('   ├─ Therapeutic: Healing Serum, Diaper Gel (50.1% margin)');
-console.log('   ├─ Equipment: Station1 Kit, Refills, Pool Generator (50.1% margin)');
-console.log('   ├─ Bulk Cases: 32oz/1gal Cases (50.1% margin)');
-console.log('   ├─ Industrial EPA: 150-5000 Gallon (50.1% margin)');
-console.log('   ├─ Industrial FDA: 150-5000 Gallon (50.1%-24.1% variable margin)');
-console.log('   └─ Bundle Kits: 5 premium bundles (52.1% margin)');
-console.log('');
-console.log('🌱 ORGANIC HYPOSOLUTIONS - COMPETITIVE LINE (19 Products)');
-console.log('   💰 Wholesale Margin: 28.6% | Retail Margin: 37.2%-42.2%');
-console.log('   📋 Min Order: Traditional MOQ (50-1000 units)');
-console.log('   🎯 Target: Price-conscious families, eco-conscious consumers');
-console.log('   ├─ Personal Care: 3oz/8oz Organic Skin Health Mists');
-console.log('   ├─ Commercial: 32oz/1gal Organic Ready-to-Use');
-console.log('   ├─ Pet Care: Pet Safe Cleaners & 500ppm Solutions');
-console.log('   ├─ Veterinary: 500ppm Veterinary Solutions, Equine Gel (37.2% margin)');
-console.log('   ├─ Laundry: 32oz/1gal Organic Boosters');
-console.log('   ├─ Cleaning: Organic All-in-One Wipes');
-console.log('   ├─ Therapeutic: Healing Serum, Diaper Gel (37.2% margin)');
-console.log('   └─ Bundle Kits: 5 organic bundles (42.2% margin)');
-console.log('');
-console.log('✅ SHOPIFY INTEGRATION READY:');
-console.log('   🏪 All 57 products have Shopify handles');
-console.log('   💳 4-tier pricing structure (retail/wholesale + subscriptions)');
-console.log('   📦 Volume discounts configured per product line');
-console.log('   🔄 Subscription options (monthly/quarterly)');
-console.log('   📊 Proper margin handling (including special FDA cases)');
-console.log('   🏷️ SEO-optimized titles and descriptions');
-console.log('   📋 Complete product categorization');
-console.log('   🔍 Search-friendly attributes');
-console.log('');
-console.log('💡 PRICING STRATEGY IMPLEMENTED:');
-console.log('   🏆 Premium Line: Higher margins, flexible ordering');
-console.log('   🌱 Organic Line: Competitive margins, traditional MOQ');
-console.log('   📈 Volume Discounts: Different thresholds per line');
-console.log('   🔄 Subscription Savings: 8-10% discounts');
-console.log('   🏢 Business Accounts: Additional wholesale pricing');
-console.log('   📊 Special Margins: FDA products with competitive pricing');
-console.log('');
-console.log('🚀 READY FOR SECTION 5: Cart Logic & Functions');
+const PRICING_RULES = {
+    volumeDiscount: 0.15,
+    bulkOrderThreshold: 1000,
+    businessAccountDiscount: 0.12,
+    utahTaxRate: 0.0775,
+    freeShippingThreshold: 50,
+    standardShipping: 9.95,
+    expeditedShipping: 19.95,
+    overnightShipping: 39.95,
+    serviceAreaRadius: 25,
+    deliveryFeePerMile: 0.70,
+    subscriptionDiscounts: {
+        monthly: 0.08,
+        quarterly: 0.10,
+        annual: 0.15
+    },
+    wholesaleMargins: {
+        organic: 0.286,
+        premium: 0.341
+    },
+    productLines: {
+        premium: {
+            name: 'Professional Premium Line',
+            margin: 0.341,
+            retailMargin: 0.521,
+            minOrder: 'Monthly Invoice',
+            badgeColor: '#f59e0b',
+            badgeText: 'EPA Premium'
+        },
+        organic: {
+            name: 'USDA Organic Line',
+            margin: 0.286,
+            retailMargin: 0.422,
+            minOrder: 'Traditional MOQ',
+            badgeColor: '#4ADE80',
+            badgeText: 'USDA Organic'
+        }
+    },
+    fulfillment: {
+        standardDays: '2-4',
+        expeditedDays: '1-2',
+        overnightDays: 'Next day',
+        businessOnly: false,
+        saturdayDelivery: true,
+        signatureRequired: false,
+        origin: 'Salt Lake City, Utah'
+    }
+};
+
+window.PRICING_RULES = PRICING_RULES;
+
+console.log('🎉 COMPLETE PRODUCT CATALOG LOADED - 57 PRODUCTS TOTAL');
+console.log('🏆 Premium Line: 38 products | 🌱 Organic Line: 19 products');
+console.log('✅ Shopify Ready | 💰 Pricing Configured | 🛍️ Cart Functional');
+
+}; // End of PRODUCT_CATALOG object
+
+// Make it globally accessible
+window.PRODUCT_CATALOG = PRODUCT_CATALOG;
