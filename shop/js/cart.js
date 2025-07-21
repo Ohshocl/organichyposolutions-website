@@ -497,6 +497,7 @@ const PRODUCT_CATALOG = {
 // ===================================================================
     // PREMIUM PERSONAL CARE & SKIN HEALTH
     // ===================================================================
+
     
     'hc-3oz-skin-health-mist': {
         id: 'hc-3oz-skin-health-mist',
@@ -2876,7 +2877,7 @@ console.log('🎉 COMPLETE PRODUCT CATALOG LOADED - 57 PRODUCTS TOTAL');
 console.log('🏆 Premium Line: 38 products | 🌱 Organic Line: 19 products');
 console.log('✅ Shopify Ready | 💰 Pricing Configured | 🛍️ Cart Functional');
 
-}; // End of PRODUCT_CATALOG object
-
-// Make it globally accessible
+console.log('🛒 Cart Functional');
+// Empty line (line 2879)
+// Make it globally accessible  
 window.PRODUCT_CATALOG = PRODUCT_CATALOG;
