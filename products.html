@@ -437,13 +437,13 @@
             </div>
             
             <div class="filter-group me-4">
-                <button class="filter-btn active" data-filter="all" data-type="brand">
+                <button class="filter-btn active" data-filter="all" data-type="certification" onclick="applyFilter('certification', 'all', this)">
                     <i class="fas fa-th-large me-1"></i>All (<span id="allCount">57</span>)
                 </button>
-                <button class="filter-btn" data-filter="premium" data-type="brand">
+                <button class="filter-btn" data-filter="premium" data-type="certification" onclick="applyFilter('certification', 'premium', this)">
                     <i class="fas fa-crown me-1"></i>EPA Premium (<span id="premiumCount">38</span>)
                 </button>
-                <button class="filter-btn" data-filter="organic" data-type="brand">
+                <button class="filter-btn" data-filter="organic" data-type="certification" onclick="applyFilter('certification', 'organic', this)">
                     <i class="fas fa-leaf me-1"></i>USDA Organic (<span id="organicCount">19</span>)
                 </button>
             </div>
@@ -457,10 +457,10 @@
         <!-- SECONDARY FILTERS (Hidden by default) -->
         <div class="secondary-filters" id="secondaryFilters">
             <div class="d-flex flex-wrap gap-2 justify-content-center">
-                <button class="btn btn-sm btn-outline-primary" data-filter="commercial">Commercial</button>
-                <button class="btn btn-sm btn-outline-primary" data-filter="residential">Residential</button>
-                <button class="btn btn-sm btn-outline-primary" data-filter="veterinary">Pet & Veterinary</button>
-                <button class="btn btn-sm btn-outline-primary" data-filter="bulk">Bulk Solutions</button>
+                <button class="btn btn-sm btn-outline-primary" data-filter="commercial" onclick="toggleUseCaseFilter('commercial', this)">Commercial</button>
+                <button class="btn btn-sm btn-outline-primary" data-filter="residential" onclick="toggleUseCaseFilter('residential', this)">Residential</button>
+                <button class="btn btn-sm btn-outline-primary" data-filter="veterinary" onclick="toggleUseCaseFilter('veterinary', this)">Pet & Veterinary</button>
+                <button class="btn btn-sm btn-outline-primary" data-filter="bulk" onclick="toggleUseCaseFilter('bulk', this)">Bulk Solutions</button>
             </div>
         </div>
 
@@ -471,7 +471,7 @@
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-search"></i></span>
                         <input type="text" class="form-control" id="productSearch" 
-                               placeholder="Search products..." onkeyup="searchProducts(this.value)">
+                               placeholder="Search products..." oninput="searchProducts(this.value)">
                         <button class="btn btn-outline-secondary" onclick="clearSearch()">Clear</button>
                     </div>
                 </div>
@@ -497,7 +497,7 @@
                 <div class="col-md-8">
                     <div id="resultsDisplay" class="fw-bold text-primary">
                         <i class="fas fa-flask me-2"></i>
-                        Showing <span id="visibleProductCount">57</span> professional products
+                        Showing <span id="visibleProductCount">0</span> professional products
                         <span id="accountPricingNote" class="text-muted ms-2">(Consumer pricing)</span>
                     </div>
                 </div>
@@ -518,7 +518,6 @@
         </div>
     </div>
 </section>
-<style>
     /* SIMPLIFIED Hero Section - 40% height reduction */
     .hero-section {
         background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
@@ -1635,7 +1634,13 @@
 <!-- OPTIMIZED Products Page Integration -->
 <script>
     // Global variables
-    let currentFilters = { brand: 'all', category: 'all' };
+    let currentFilters = { 
+        brand: 'all', 
+        category: 'all',
+        certification: 'all',
+        useCase: [],
+        searchTerm: ''
+    };
     let productQuantities = {};
 
     // Wait for cart system to load
@@ -1669,6 +1674,7 @@
             loadProducts();
             updateAccountDisplay(getAccountType());
             updateCartBadges();
+            console.log('Filter system initialized');
         } catch (error) {
             console.error('Failed to load cart system:', error);
             showFallbackProducts();
@@ -1746,12 +1752,31 @@
         const badgeText = type === 'organic' ? 'USDA ORGANIC' : 'EPA PREMIUM';
         const certIcon = type === 'organic' ? 'leaf' : 'shield-alt';
         
+        // Determine use cases for filtering
+        const useCases = [];
+        if (product.tags) {
+            if (product.tags.includes('commercial') || product.tags.includes('professional')) useCases.push('commercial');
+            if (product.tags.includes('residential') || product.tags.includes('family')) useCases.push('residential');
+            if (product.tags.includes('veterinary') || product.tags.includes('pet')) useCases.push('veterinary');
+            if (product.tags.includes('bulk') || product.tags.includes('industrial')) useCases.push('bulk');
+        }
+        // Default use cases if none specified
+        if (useCases.length === 0) {
+            if (type === 'organic') useCases.push('residential', 'veterinary');
+            if (type === 'premium') useCases.push('commercial', 'bulk');
+        }
+        
         return `
             <div class="col-xl-4 col-lg-6 col-md-6 mb-3"> <!-- Reduced margin -->
                 <div class="product-card" 
                      data-brand="${type}" 
                      data-category="${product.category || 'general'}"
                      data-product-id="${product.id}"
+                     data-product-type="${type}"
+                     data-certification="${type === 'organic' ? 'usda' : 'epa'}"
+                     data-use-cases="${useCases.join(',')}"
+                     data-sku="${product.sku || product.id}"
+                     data-price="${currentPrice}"
                      data-visible="true">
                     
                     <div class="product-badge" style="background: ${badgeColor}; color: white;">
@@ -1812,7 +1837,180 @@
         `;
     }
 
-    // Utility functions
+    // NEW FILTER FUNCTIONS
+
+    // Apply certification filter (All, EPA Premium, USDA Organic)
+    function applyFilter(type, value, buttonElement) {
+        if (type === 'certification') {
+            currentFilters.certification = value;
+            
+            // Update button states
+            document.querySelectorAll('.filter-btn[data-type="certification"]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            buttonElement.classList.add('active');
+        }
+        
+        filterProducts();
+    }
+
+    // Toggle use case filter (Commercial, Residential, etc.)
+    function toggleUseCaseFilter(useCase, buttonElement) {
+        const index = currentFilters.useCase.indexOf(useCase);
+        
+        if (index > -1) {
+            // Remove filter
+            currentFilters.useCase.splice(index, 1);
+            buttonElement.classList.remove('active');
+            buttonElement.classList.add('btn-outline-primary');
+            buttonElement.classList.remove('btn-primary');
+        } else {
+            // Add filter
+            currentFilters.useCase.push(useCase);
+            buttonElement.classList.add('active');
+            buttonElement.classList.remove('btn-outline-primary');
+            buttonElement.classList.add('btn-primary');
+        }
+        
+        filterProducts();
+    }
+
+    // Main filter function
+    function filterProducts() {
+        const products = document.querySelectorAll('.product-card');
+        let visibleCount = 0;
+        
+        products.forEach(product => {
+            let isVisible = true;
+            
+            // Get product data from attributes
+            const productType = product.getAttribute('data-product-type') || 
+                               product.getAttribute('data-certification') || '';
+            const productUseCases = product.getAttribute('data-use-cases') || '';
+            const productText = product.textContent.toLowerCase();
+            const productSku = product.getAttribute('data-sku') || '';
+            
+            // Apply certification filter
+            if (currentFilters.certification !== 'all') {
+                const matchesCertification = productType.includes(currentFilters.certification) ||
+                                           productText.includes(currentFilters.certification);
+                if (!matchesCertification) {
+                    isVisible = false;
+                }
+            }
+            
+            // Apply use case filters (OR logic - must match any selected use case)
+            if (currentFilters.useCase.length > 0) {
+                const hasMatchingUseCase = currentFilters.useCase.some(useCase => 
+                    productUseCases.includes(useCase) || productText.includes(useCase)
+                );
+                if (!hasMatchingUseCase) {
+                    isVisible = false;
+                }
+            }
+            
+            // Apply search filter
+            if (currentFilters.searchTerm) {
+                const searchMatch = productText.includes(currentFilters.searchTerm) ||
+                                  productSku.toLowerCase().includes(currentFilters.searchTerm);
+                if (!searchMatch) {
+                    isVisible = false;
+                }
+            }
+            
+            // Show/hide product
+            product.style.display = isVisible ? 'block' : 'none';
+            if (isVisible) visibleCount++;
+        });
+        
+        // Update visible count
+        updateVisibleProductCount(visibleCount);
+        
+        // Show/hide no results message
+        toggleNoResultsMessage(visibleCount === 0);
+    }
+
+    // Update visible product count
+    function updateVisibleProductCount(count) {
+        const countElement = document.getElementById('visibleProductCount');
+        if (countElement) {
+            if (count !== undefined) {
+                countElement.textContent = count;
+            } else {
+                // Count visible products
+                const visibleProducts = document.querySelectorAll('.product-card[style*="block"], .product-card:not([style*="none"])');
+                countElement.textContent = visibleProducts.length;
+            }
+        }
+    }
+
+    // Toggle no results message
+    function toggleNoResultsMessage(show) {
+        let noResultsEl = document.getElementById('noResultsMessage');
+        const productSections = document.getElementById('productSections');
+        
+        if (show && !noResultsEl) {
+            // Create no results message if it doesn't exist
+            noResultsEl = document.createElement('div');
+            noResultsEl.id = 'noResultsMessage';
+            noResultsEl.className = 'text-center py-5';
+            noResultsEl.innerHTML = `
+                <div class="text-muted">
+                    <i class="fas fa-search fa-3x mb-3"></i>
+                    <h4>No products found</h4>
+                    <p>Try adjusting your filters or search terms</p>
+                    <button class="btn btn-outline-primary" onclick="clearAllFilters()">Clear All Filters</button>
+                </div>
+            `;
+            
+            if (productSections) {
+                productSections.parentNode.insertBefore(noResultsEl, productSections.nextSibling);
+            }
+        }
+        
+        if (noResultsEl) {
+            noResultsEl.style.display = show ? 'block' : 'none';
+        }
+        
+        if (productSections) {
+            productSections.style.display = show ? 'none' : 'block';
+        }
+    }
+
+    // Clear all filters
+    function clearAllFilters() {
+        // Reset filter state
+        currentFilters = {
+            brand: 'all', 
+            category: 'all',
+            certification: 'all',
+            useCase: [],
+            searchTerm: ''
+        };
+        
+        // Reset UI
+        const searchInput = document.getElementById('productSearch');
+        if (searchInput) searchInput.value = '';
+        
+        // Reset primary filter buttons
+        document.querySelectorAll('.filter-btn[data-type="certification"]').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        const allButton = document.querySelector('.filter-btn[data-filter="all"]');
+        if (allButton) allButton.classList.add('active');
+        
+        // Reset secondary filter buttons
+        document.querySelectorAll('.secondary-filters .btn').forEach(btn => {
+            btn.classList.remove('active', 'btn-primary');
+            btn.classList.add('btn-outline-primary');
+        });
+        
+        // Show all products
+        filterProducts();
+    }
+
+    // EXISTING UTILITY FUNCTIONS (Updated)
+
     function changeQuantity(productId, change) {
         const currentQty = productQuantities[productId] || 1;
         const newQty = Math.max(1, Math.min(999, currentQty + change));
@@ -1898,6 +2096,9 @@
             const el = document.getElementById(id);
             if (el) el.textContent = premiumCount;
         });
+        
+        // Update visible product count
+        updateVisibleProductCount();
     }
 
     function updateCartBadges() {
@@ -1921,62 +2122,30 @@
         }
     }
 
+    // UPDATED SEARCH FUNCTION
     function searchProducts(query) {
-        const searchTerm = query.toLowerCase();
-        const products = document.querySelectorAll('.product-card');
-        let visibleCount = 0;
-        
-        products.forEach(product => {
-            const productText = product.textContent.toLowerCase();
-            const matches = productText.includes(searchTerm);
-            
-            if (matches) {
-                product.style.display = 'block';
-                visibleCount++;
-            } else {
-                product.style.display = 'none';
-            }
-        });
-        
-        const resultsEl = document.getElementById('visibleProductCount');
-        if (resultsEl) resultsEl.textContent = visibleCount;
-        
-        const noResults = document.getElementById('noResultsMessage');
-        const sections = document.getElementById('productSections');
-        if (noResults) noResults.style.display = visibleCount === 0 ? 'block' : 'none';
-        if (sections) sections.style.display = visibleCount === 0 ? 'none' : 'block';
+        currentFilters.searchTerm = query.toLowerCase();
+        filterProducts();
     }
 
     function clearSearch() {
         const searchInput = document.getElementById('productSearch');
         if (searchInput) searchInput.value = '';
-        searchProducts('');
-    }
-
-    function clearAllFilters() {
-        clearSearch();
-        showAllProducts();
-        // Reset filter buttons
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector('[data-filter="all"]')?.classList.add('active');
+        currentFilters.searchTerm = '';
+        filterProducts();
     }
 
     function showAllProducts() {
-        document.querySelectorAll('.product-card').forEach(product => {
-            product.style.display = 'block';
-        });
+        // Reset all filters
+        currentFilters = {
+            brand: 'all', 
+            category: 'all',
+            certification: 'all',
+            useCase: [],
+            searchTerm: ''
+        };
         
-        const resultsEl = document.getElementById('visibleProductCount');
-        if (resultsEl && typeof PRODUCT_CATALOG !== 'undefined') {
-            resultsEl.textContent = Object.keys(PRODUCT_CATALOG).length;
-        }
-        
-        const noResults = document.getElementById('noResultsMessage');
-        const sections = document.getElementById('productSections');
-        if (noResults) noResults.style.display = 'none';
-        if (sections) sections.style.display = 'block';
+        filterProducts();
     }
 
     function toggleCart() {
@@ -2013,7 +2182,7 @@
     function showNotification(message, type = 'info') {
         const notification = document.createElement('div');
         notification.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} position-fixed`;
-        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 280px; max-width: 320px;'; // Responsive width
+        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 280px; max-width: 320px;';
         notification.innerHTML = `
             <div class="d-flex align-items-center">
                 <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
@@ -2028,7 +2197,7 @@
             if (notification.parentNode) {
                 notification.parentNode.removeChild(notification);
             }
-        }, 4000); // Slightly longer display
+        }, 4000);
     }
 
     function showFallbackProducts() {
@@ -2052,6 +2221,40 @@
         }
     }
 
+    // UPDATED SORT FUNCTION
+    function sortProducts(sortBy) {
+        const productContainer = document.querySelector('#productSections') || document.querySelector('.products-container');
+        if (!productContainer) return;
+        
+        const products = Array.from(productContainer.querySelectorAll('.product-card'));
+        
+        products.sort((a, b) => {
+            switch (sortBy) {
+                case 'name':
+                    const nameA = a.querySelector('.product-title, .card-title, h5, h6')?.textContent || '';
+                    const nameB = b.querySelector('.product-title, .card-title, h5, h6')?.textContent || '';
+                    return nameA.localeCompare(nameB);
+                    
+                case 'price-low':
+                case 'price-high':
+                    const priceA = parseFloat(a.getAttribute('data-price') || a.querySelector('.price')?.textContent?.replace(/[^0-9.]/g, '') || 0);
+                    const priceB = parseFloat(b.getAttribute('data-price') || b.querySelector('.price')?.textContent?.replace(/[^0-9.]/g, '') || 0);
+                    return sortBy === 'price-low' ? priceA - priceB : priceB - priceA;
+                    
+                case 'certification':
+                    const certA = a.getAttribute('data-certification') || a.getAttribute('data-product-type') || '';
+                    const certB = b.getAttribute('data-certification') || b.getAttribute('data-product-type') || '';
+                    return certA.localeCompare(certB);
+                    
+                default:
+                    return 0;
+            }
+        });
+        
+        // Re-append sorted products
+        products.forEach(product => productContainer.appendChild(product));
+    }
+
     // Additional helper functions for future features
     function requestCustomQuote() {
         showNotification('Custom quote system coming soon! Call (801) 712-5663 for immediate quotes.', 'info');
@@ -2061,12 +2264,7 @@
         window.location.href = 'tel:+18017125663';
     }
 
-    function sortProducts(sortBy) {
-        // Placeholder for sorting functionality
-        showNotification('Product sorting feature coming soon!', 'info');
-    }
-
-    console.log('✅ Optimized Products Page Loaded');
+    console.log('✅ Optimized Products Page with Filters Loaded');
 </script>
 
 </body>
