@@ -1989,7 +1989,194 @@
     // PRESERVE: All your existing createProductSection and createProductCard functions
     // These will be loaded from your cart.js file
 
+  // MISSING FUNCTIONS - Add these since they're not loading from cart.js
+    function createProductSection(type, title, products) {
+function createProductSection(type, title, products) {
+    const sectionClass = type === 'organic' ? 'organic' : 'premium';
+    const icon = type === 'organic' ? 'leaf' : 'crown';
+    
+    let html = `
+        <section id="${type}-products" class="mb-4">
+            <div class="section-header ${sectionClass}">
+                <h2 class="section-title">
+                    <i class="fas fa-${icon} me-2"></i>${title}
+                </h2>
+                <p class="section-subtitle">${type === 'organic' ? 'Family-safe USDA Certified Organic' : 'Professional EPA Registered'}</p>
+            </div>
+            <div class="container">
+                <div class="row">
+    `;
+    
+    products.forEach(product => {
+        html += createProductCard(product, type);
+    });
+    
+    html += '</div></div></section>';
+    return html;
+}
+
+function createProductCard(product, type) {
+    const accountType = getAccountType();
+    const retail = product.pricing?.retail || product.price || 0;
+    const wholesale = product.pricing?.wholesale || (retail * 0.7);
+    const currentPrice = accountType === 'business' ? wholesale : retail;
+    
+    const badgeColor = type === 'organic' ? '#4ADE80' : '#f59e0b';
+    const badgeText = type === 'organic' ? 'USDA ORGANIC' : 'EPA PREMIUM';
+    const certIcon = type === 'organic' ? 'leaf' : 'shield-alt';
+    
+    // Determine use cases for filtering
+    const useCases = [];
+    if (product.tags) {
+        if (product.tags.includes('commercial') || product.tags.includes('professional')) useCases.push('commercial');
+        if (product.tags.includes('residential') || product.tags.includes('family')) useCases.push('residential');
+        if (product.tags.includes('veterinary') || product.tags.includes('pet')) useCases.push('veterinary');
+        if (product.tags.includes('bulk') || product.tags.includes('industrial')) useCases.push('bulk');
+    }
+    // Default use cases if none specified
+    if (useCases.length === 0) {
+        if (type === 'organic') useCases.push('residential', 'veterinary');
+        if (type === 'premium') useCases.push('commercial', 'bulk');
+    }
+    
+    return `
+        <div class="col-xl-4 col-lg-6 col-md-6 mb-3">
+            <div class="product-card" 
+                 data-product-id="${product.id}"
+                 data-product-type="${type}"
+                 data-certification="${type === 'organic' ? 'usda' : 'epa'}"
+                 data-use-cases="${useCases.join(',')}"
+                 data-sku="${product.sku || product.id}"
+                 data-price="${currentPrice}"
+                 data-visible="true">
+                
+                <div class="product-badge" style="background: ${badgeColor}; color: white;">
+                    <i class="fas fa-${certIcon} me-1"></i>${badgeText}
+                </div>
+                
+                <div class="card-body p-3 text-center">
+                    <div class="product-icon mb-2">${product.emoji || '🧴'}</div>
+                    <h5 class="product-title mb-2">${product.name}</h5>
+                    
+                    <p class="text-muted small mb-2">${product.description || 'Professional hypochlorous acid solution'}</p>
+                    
+                    <div class="pricing-section mb-2">
+                        <div class="price-retail h5 text-primary">$${currentPrice.toFixed(2)}</div>
+                        <small class="text-muted">SKU: ${product.sku || product.id}</small>
+                        
+                        ${accountType === 'consumer' && wholesale !== retail ? 
+                            `<div class="text-success small mt-1">Business: $${wholesale.toFixed(2)} <span class="badge bg-warning">Save ${Math.round((1 - wholesale/retail) * 100)}%</span></div>` : ''}
+                    </div>
+                    
+                    <ul class="list-unstyled small mb-2">
+                        <li><i class="fas fa-check text-success me-1"></i>${type === 'organic' ? 'Family & Pet Safe' : 'Commercial Grade'}</li>
+                        <li><i class="fas fa-check text-success me-1"></i>Utah Made</li>
+                        <li><i class="fas fa-check text-success me-1"></i>Free Shipping</li>
+                    </ul>
+                    
+                    <div class="product-controls">
+                        <div class="quantity-controls mb-2">
+                            <div class="input-group justify-content-center">
+                                <button class="btn btn-outline-primary btn-sm" onclick="changeQuantity('${product.id}', -1)" type="button">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="number" class="form-control form-control-sm text-center" style="max-width: 70px;" 
+                                       id="qty-${product.id}" value="1" min="1" max="999"
+                                       onchange="setQuantity('${product.id}', this.value)">
+                                <button class="btn btn-outline-primary btn-sm" onclick="changeQuantity('${product.id}', 1)" type="button">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-success w-100 mb-2" onclick="addToCartFromProducts('${product.id}')">
+                            <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                        </button>
+                        
+                        <div class="d-flex gap-1 justify-content-center">
+                            <a href="tel:+18017125663" class="btn btn-sm btn-outline-info">
+                                <i class="fas fa-phone me-1"></i>Help
+                            </a>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="showProductInfo('${product.id}')">
+                                <i class="fas fa-info me-1"></i>Info
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// ADD MISSING UTILITY FUNCTIONS
+function changeQuantity(productId, change) {
+    const currentQty = productQuantities[productId] || 1;
+    const newQty = Math.max(1, Math.min(999, currentQty + change));
+    setQuantity(productId, newQty);
+}
+
+function setQuantity(productId, value) {
+    const qty = Math.max(1, Math.min(999, parseInt(value) || 1));
+    productQuantities[productId] = qty;
+    
+    const input = document.getElementById(`qty-${productId}`);
+    if (input) input.value = qty;
+}
+
+function addToCartFromProducts(productId) {
+    const product = PRODUCT_CATALOG[productId];
+    if (!product) return;
+    
+    const quantity = productQuantities[productId] || 1;
+    const accountType = getAccountType();
+    const price = accountType === 'business' ? 
+        (product.pricing?.wholesale || product.price * 0.7) : 
+        (product.pricing?.retail || product.price);
+    
+    try {
+        // Use clean cart format
+        const cartItem = {
+            productId: product.id,
+            name: product.name,
+            price: price,
+            quantity: quantity,
+            emoji: product.emoji || '🧴',
+            type: product.type || product.productLine,
+            sku: product.sku || product.id,
+            addedAt: Date.now()
+        };
+        
+        // Clean add to cart
+        let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+        const existingIndex = cart.findIndex(item => item.productId === product.id || item.id === product.id);
+        
+        if (existingIndex >= 0) {
+            cart[existingIndex].quantity += quantity;
+        } else {
+            cart.push(cartItem);
+        }
+        
+        localStorage.setItem('ohsCart', JSON.stringify(cart));
+        updateCartBadges();
+        updateCartPreview();
+        
+        showNotification(`Added ${quantity}x ${product.name}!`, 'success');
+    } catch (error) {
+        console.error('Failed to add to cart:', error);
+        showNotification('Failed to add item. Please try again.', 'error');
+    }
+}
+
+function showProductInfo(productId) {
+    const product = PRODUCT_CATALOG[productId];
+    if (!product) return;
+    
+    alert(`${product.name}\n\nSKU: ${product.sku || product.id}\nType: ${product.type || product.productLine}\n\nFor detailed specifications, call (801) 712-5663`);
+}
+    // ... [all the other functions]
+    
     console.log('✅ Enhanced Products Page JavaScript Loaded');
+</script>
 </script>
 <!-- TRUST SIGNALS SECTION -->
 <section class="trust-signals-section">
