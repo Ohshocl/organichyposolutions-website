@@ -72,6 +72,8 @@
             --ohs-premium-gold: #f59e0b;
             --ohs-light-gray: #f8f9fa;
             --ohs-dark-gray: #6c757d;
+            --ohs-wholesale-purple: #7c3aed;
+            --ohs-savings-green: #059669;
         }
 
         /* EXACT NAVBAR STYLING FROM INDEX PAGE */
@@ -225,7 +227,7 @@
             z-index: 10;
         }
 
-        /* FIXED CART ITEMS - Critical Display Fix */
+        /* FIXED CART ITEMS - Critical Display Fix + Price Overflow Fix */
         .cart-item {
             border-bottom: 2px solid #f1f5f9;
             padding: 2rem 0;
@@ -343,9 +345,9 @@
             -moz-appearance: textfield;
         }
 
-        /* VOLUME DISCOUNT STYLING - CRITICAL FIXES */
-        .volume-discount-badge {
-            background: linear-gradient(135deg, #22c55e, #16a34a);
+        /* WHOLESALE PRICING BADGES */
+        .wholesale-pricing-badge {
+            background: linear-gradient(135deg, var(--ohs-wholesale-purple), #6366f1);
             color: white;
             padding: 0.4rem 0.8rem;
             border-radius: 12px;
@@ -353,16 +355,16 @@
             font-weight: bold;
             display: inline-block;
             margin: 0.25rem 0;
-            box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
-            animation: pulse-green 2s infinite;
+            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+            animation: pulse-purple 2s infinite;
         }
 
-        @keyframes pulse-green {
-            0%, 100% { transform: scale(1); box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3); }
-            50% { transform: scale(1.02); box-shadow: 0 4px 12px rgba(34, 197, 94, 0.5); }
+        @keyframes pulse-purple {
+            0%, 100% { transform: scale(1); box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3); }
+            50% { transform: scale(1.02); box-shadow: 0 4px 12px rgba(124, 58, 237, 0.5); }
         }
 
-        .volume-threshold-indicator {
+        .wholesale-threshold-indicator {
             background: linear-gradient(135deg, #fbbf24, #f59e0b);
             color: #92400e;
             padding: 0.3rem 0.6rem;
@@ -374,16 +376,17 @@
             border: 1px solid #f59e0b;
         }
 
-        .volume-savings-display {
+        /* SAVINGS DISPLAY STYLING */
+        .savings-display {
             background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-            border: 2px solid #22c55e;
+            border: 2px solid var(--ohs-savings-green);
             border-radius: 12px;
             padding: 1rem;
             margin: 1rem 0;
             position: relative;
         }
 
-        .volume-savings-display::before {
+        .savings-display::before {
             content: '💰';
             position: absolute;
             top: -10px;
@@ -393,7 +396,7 @@
             font-size: 1.2rem;
         }
 
-        .volume-progress-bar {
+        .wholesale-progress-bar {
             background: #f3f4f6;
             border-radius: 8px;
             height: 8px;
@@ -401,88 +404,32 @@
             overflow: hidden;
         }
 
-        .volume-progress-fill {
-            background: linear-gradient(90deg, #22c55e, #16a34a);
+        .wholesale-progress-fill {
+            background: linear-gradient(90deg, var(--ohs-wholesale-purple), #6366f1);
             height: 100%;
             border-radius: 8px;
             transition: width 0.5s ease;
         }
 
-        /* Recommendation quantity controls */
-        .recommendation-quantity-controls {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            background: #f8fafc;
-            padding: 0.3rem;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .quantity-btn-sm {
-            width: 28px;
-            height: 28px;
-            border: 1px solid var(--ohs-organic-green);
-            background: white;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--ohs-organic-green);
-            font-weight: bold;
-            font-size: 0.8rem;
-            user-select: none;
-        }
-
-        .quantity-btn-sm:hover:not(:disabled) {
-            background: var(--ohs-organic-green);
-            color: white;
-            transform: scale(1.05);
-        }
-
-        .quantity-btn-sm:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            border-color: #ccc;
-            color: #ccc;
-        }
-
-        .quantity-input-sm {
-            border: 1px solid var(--ohs-organic-green);
-            background: white;
-            border-radius: 4px;
-            width: 45px;
-            height: 28px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 0.9rem;
-            color: var(--ohs-primary-blue);
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .quantity-input-sm:focus {
-            border-color: var(--ohs-primary-blue);
-            box-shadow: 0 0 4px rgba(46, 94, 170, 0.3);
-        }
-
-        .quantity-input-sm::-webkit-outer-spin-button,
-        .quantity-input-sm::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        .quantity-input-sm[type=number] {
-            -moz-appearance: textfield;
-        }
-
-        /* Pricing */
+        /* PRICE DISPLAY WITH OVERFLOW FIX */
         .price-display {
             font-size: 1.2rem;
             font-weight: bold;
             color: var(--ohs-organic-green);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-width: 100%;
+            display: block;
+        }
+
+        .price-display-large {
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--ohs-organic-green);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-width: 100%;
+            display: block;
         }
 
         .original-price {
@@ -490,12 +437,16 @@
             color: #9ca3af;
             font-size: 0.9rem;
             margin-left: 0.5rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .discount-amount {
-            color: #22c55e;
+            color: var(--ohs-savings-green);
             font-weight: bold;
             font-size: 0.85rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         /* Order Summary */
@@ -536,8 +487,21 @@
             border-radius: 12px;
         }
 
+        /* SUMMARY ROW PRICE OVERFLOW FIX */
+        .summary-row span:last-child {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-width: 60%;
+            text-align: right;
+        }
+
         .discount-text {
-            color: #22c55e;
+            color: var(--ohs-savings-green);
+            font-weight: bold;
+        }
+
+        .wholesale-text {
+            color: var(--ohs-wholesale-purple);
             font-weight: bold;
         }
 
@@ -653,10 +617,15 @@
             color: white;
         }
 
-        /* Volume discount animations */
-        #volumeDiscountBanner {
+        .badge-wholesale {
+            background: linear-gradient(135deg, var(--ohs-wholesale-purple), #6366f1);
+            color: white;
+        }
+
+        /* Wholesale discount animations */
+        #wholesaleDiscountBanner {
             animation: slideDown 0.5s ease-in-out;
-            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3);
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
         }
 
         @keyframes slideDown {
@@ -670,11 +639,11 @@
             }
         }
 
-        #volumePricingInfo {
+        #wholesalePricingInfo {
             transition: all 0.3s ease;
         }
 
-        #volumePricingInfo.show {
+        #wholesalePricingInfo.show {
             animation: fadeIn 0.3s ease;
         }
 
@@ -683,7 +652,7 @@
             to { opacity: 1; }
         }
 
-        #volumeDiscountText {
+        #wholesaleDiscountText {
             font-weight: 600;
         }
 
@@ -701,6 +670,7 @@
             .order-summary {
                 position: static;
                 margin-top: 2rem;
+                padding: 1.5rem;
             }
 
             .quantity-controls {
@@ -711,6 +681,42 @@
             .quantity-btn {
                 width: 35px;
                 height: 35px;
+            }
+
+            .price-display {
+                font-size: 1rem;
+            }
+
+            .price-display-large {
+                font-size: 0.9rem;
+            }
+
+            .summary-row {
+                font-size: 0.9rem;
+            }
+
+            .summary-row span:last-child {
+                max-width: 50%;
+            }
+        }
+
+        /* Extra mobile fixes for very small screens */
+        @media (max-width: 480px) {
+            .price-display {
+                font-size: 0.9rem;
+            }
+
+            .price-display-large {
+                font-size: 0.8rem;
+            }
+
+            .summary-row {
+                font-size: 0.85rem;
+                padding: 0.6rem 0;
+            }
+
+            .order-summary {
+                padding: 1rem;
             }
         }
     </style>
@@ -845,10 +851,10 @@
                             <i class="fas fa-shield-alt me-1"></i> EPA Registered
                         </span>
                         <span class="cert-badge">
-                            <i class="fas fa-shipping-fast me-1"></i> 2-4 Day Delivery
+                            <i class="fas fa-shipping-fast me-1"></i> ShipRight Shipping
                         </span>
                         <span class="cert-badge">
-                            <i class="fas fa-calculator me-1"></i> Volume Discounts
+                            <i class="fas fa-calculator me-1"></i> Wholesale Pricing
                         </span>
                     </div>
                 </div>
@@ -862,6 +868,10 @@
                             <h4 class="mb-1" id="heroItemCount">0</h4>
                             <small class="text-light">Items</small>
                         </div>
+                        <div class="mb-3" id="heroSavingsDisplay" style="display: none;">
+                            <h4 class="mb-1 text-warning" id="heroTotalSavings">$0.00</h4>
+                            <small class="text-light">Total Savings</small>
+                        </div>
                         <div class="d-flex gap-2 justify-content-end">
                             <a href="../products.html" class="btn btn-outline-light btn-sm">
                                 <i class="fas fa-arrow-left me-1"></i> Continue Shopping
@@ -873,16 +883,16 @@
         </div>
     </section>
 
-    <!-- Volume Discount Banner (Hidden by default, shown via JavaScript) -->
-    <div id="volumeDiscountBanner" class="alert alert-success mx-3 mt-3" style="display: none;">
+    <!-- Wholesale Discount Banner (Hidden by default, shown via JavaScript) -->
+    <div id="wholesaleDiscountBanner" class="alert alert-primary mx-3 mt-3" style="display: none;">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-8">
-                    <strong><i class="fas fa-percentage me-2"></i>Volume Discount Applied!</strong>
-                    <span id="volumeDiscountText" class="ms-2"></span>
+                    <strong><i class="fas fa-crown me-2"></i>Wholesale Pricing Applied!</strong>
+                    <span id="wholesaleDiscountText" class="ms-2"></span>
                 </div>
                 <div class="col-md-4 text-end">
-                    <button class="btn btn-sm btn-outline-success" onclick="toggleVolumePricingInfo()">
+                    <button class="btn btn-sm btn-outline-primary" onclick="toggleWholesalePricingInfo()">
                         View Pricing Tiers <i class="fas fa-chevron-down ms-1"></i>
                     </button>
                 </div>
@@ -890,32 +900,34 @@
         </div>
     </div>
 
-    <!-- Volume Pricing Info (Hidden by default) -->
-    <div id="volumePricingInfo" class="alert alert-info mx-3" style="display: none;">
+    <!-- Wholesale Pricing Info (Hidden by default) -->
+    <div id="wholesalePricingInfo" class="alert alert-info mx-3" style="display: none;">
         <div class="container">
-            <h6 class="fw-bold mb-3">Volume Pricing Tiers</h6>
+            <h6 class="fw-bold mb-3">4-Tier Pricing System</h6>
             <div class="row">
                 <div class="col-md-3">
-                    <strong>25+ items:</strong> 8% off
+                    <strong>Tier 1:</strong> Retail (default)
                 </div>
                 <div class="col-md-3">
-                    <strong>50+ items:</strong> 15% off
+                    <strong>Tier 2:</strong> Retail + Subscription (8% off)
                 </div>
                 <div class="col-md-3">
-                    <strong>100+ items:</strong> 20% off
+                    <strong>Tier 3:</strong> Wholesale (volume threshold)
                 </div>
                 <div class="col-md-3">
-                    <strong>200+ items:</strong> 25% off
+                    <strong>Tier 4:</strong> Wholesale + Subscription (10% off)
                 </div>
             </div>
             <div class="mt-2">
                 <small class="text-muted">
                     <i class="fas fa-info-circle me-1"></i>
-                    Volume discounts automatically apply based on total quantity in cart. Prices shown include discount.
+                    Wholesale pricing unlocks when you meet minimum volume thresholds (10/20/25/50 units per product). 
+                    Mixed carts supported - some products can be retail while others qualify for wholesale.
                 </small>
             </div>
         </div>
     </div>
+
 <!-- Main Content -->
     <div class="container">
         <div class="cart-container p-4">
@@ -934,9 +946,9 @@
                         </div>
                     </div>
 
-                    <!-- Cart Items Container - FIXED VOLUME DISCOUNT INTEGRATION -->
+                    <!-- Cart Items Container - UPDATED WITH WHOLESALE LOGIC -->
                     <div id="cartItems">
-                        <!-- Items will be dynamically inserted here with volume discount calculations -->
+                        <!-- Items will be dynamically inserted here with wholesale pricing calculations -->
                     </div>
 
                     <!-- Empty Cart Message -->
@@ -975,7 +987,7 @@
                                         <div class="cert-badge bg-primary text-white mb-2">
                                             <i class="fas fa-shipping-fast"></i>
                                         </div>
-                                        <small class="text-muted">Free Shipping on $75+</small>
+                                        <small class="text-muted">ShipRight Rates</small>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-3 mb-3">
@@ -983,9 +995,38 @@
                                         <div class="cert-badge bg-info text-white mb-2">
                                             <i class="fas fa-percentage"></i>
                                         </div>
-                                        <small class="text-muted">Volume Discounts Start at 25+</small>
+                                        <small class="text-muted">Wholesale Thresholds</small>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Savings Summary Section (when cart has savings) -->
+                    <div id="savingsSummary" style="display: none;" class="mt-4">
+                        <div class="savings-display">
+                            <h5 class="text-success mb-3">
+                                <i class="fas fa-piggy-bank me-2"></i>Your Savings Breakdown
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-4 text-center mb-3">
+                                    <div class="fw-bold text-success h4" id="totalSavingsAmount">$0.00</div>
+                                    <small class="text-muted">Total Saved</small>
+                                </div>
+                                <div class="col-md-4 text-center mb-3">
+                                    <div class="fw-bold text-primary h4" id="wholesaleItemsCount">0</div>
+                                    <small class="text-muted">Wholesale Items</small>
+                                </div>
+                                <div class="col-md-4 text-center mb-3">
+                                    <div class="fw-bold text-warning h4" id="averageSavingsPercent">0%</div>
+                                    <small class="text-muted">Avg Discount</small>
+                                </div>
+                            </div>
+                            <div class="text-center mt-3">
+                                <small class="text-success">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    You're getting wholesale pricing on qualifying items! Keep adding to unlock more savings.
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -1032,13 +1073,13 @@
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <div class="d-flex align-items-center">
-                                            <div class="product-image premium me-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
-                                                🏭
+                                            <div class="product-image organic me-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
+                                                🧽
                                             </div>
                                             <div class="flex-grow-1">
-                                                <h6 class="mb-1">Professional Disinfecting Wipes</h6>
-                                                <p class="small text-muted mb-1">EPA registered for commercial use</p>
-                                                <div class="price-display">$26.21</div>
+                                                <h6 class="mb-1">Organic All-in-One Disinfecting Wipes</h6>
+                                                <p class="small text-muted mb-1">USDA Certified Organic wipes</p>
+                                                <div class="price-display">$24.29</div>
                                                 <div class="d-flex align-items-center gap-2 mt-2">
                                                     <div class="recommendation-quantity-controls">
                                                         <button class="quantity-btn-sm" onclick="changeRecommendationQuantity('rec2', -1)" 
@@ -1061,11 +1102,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="mt-3 p-3 rounded" style="background: rgba(74, 222, 128, 0.1); border: 1px solid #22c55e;">
-                                    <small class="text-success">
+                                <div class="mt-3 p-3 rounded" style="background: rgba(124, 58, 237, 0.1); border: 1px solid var(--ohs-wholesale-purple);">
+                                    <small class="text-primary">
                                         <i class="fas fa-info-circle me-1"></i>
-                                        <strong>Volume Discount Tip:</strong> Add more items to unlock volume pricing! 
-                                        Next discount tier at <span id="nextDiscountThreshold">25</span> total items.
+                                        <strong>Wholesale Tip:</strong> Add more items to meet wholesale thresholds! 
+                                        Check product pages for specific volume requirements.
                                     </small>
                                 </div>
                             </div>
@@ -1073,7 +1114,7 @@
                     </div>
                 </div>
 
-                <!-- Order Summary with Volume Discount Integration -->
+                <!-- Order Summary with Wholesale Pricing Integration -->
                 <div class="col-lg-4">
                     <div class="order-summary">
                         <h4>
@@ -1081,72 +1122,48 @@
                         </h4>
                         
                         <div class="summary-row">
-                            <span>Subtotal:</span>
-                            <span id="subtotal">$0.00</span>
-                        </div>
-                        
-                        <!-- Volume Discount Row - Dynamically shown -->
-                        <div class="summary-row" id="volumeDiscountRow" style="display: none;">
-                            <span>Volume Discounts:</span>
-                            <span id="volumeDiscount" class="discount-text">$0.00</span>
+                            <span>Subtotal (Retail):</span>
+                            <span id="retailSubtotal">$0.00</span>
                         </div>
                         
                         <!-- Wholesale Discount Row - Dynamically shown -->
                         <div class="summary-row" id="wholesaleDiscountRow" style="display: none;">
-                            <span>Business Account:</span>
-                            <span id="wholesaleDiscount" class="discount-text">$0.00</span>
+                            <span>Wholesale Savings:</span>
+                            <span id="wholesaleDiscount" class="wholesale-text">-$0.00</span>
+                        </div>
+                        
+                        <div class="summary-row">
+                            <span>After Discounts:</span>
+                            <span id="subtotal">$0.00</span>
+                        </div>
+                        
+                        <!-- Subscription discount row - dynamically added -->
+                        <div class="summary-row" id="subscriptionDiscountRow" style="display: none;">
+                            <span>Subscription Savings:</span>
+                            <span id="subscriptionDiscount" class="discount-text">-$0.00</span>
                         </div>
                         
                         <div class="summary-row">
                             <span>Shipping:</span>
-                            <span id="shipping" class="free-shipping">FREE on $75+</span>
+                            <span id="shipping" class="text-muted">Calculated by ShipRight</span>
                         </div>
                         <div class="summary-row">
-                            <span>Utah Tax (7.75%):</span>
-                            <span id="tax">$0.00</span>
+                            <span>Tax:</span>
+                            <span id="tax" class="text-muted">Collected by Shopify</span>
                         </div>
                         
-                        <!-- Subscription discount row will be added dynamically -->
                         <div class="summary-row">
-                            <span><strong>Total:</strong></span>
-                            <span id="total"><strong>$0.00</strong></span>
+                            <span><strong>Estimated Total:</strong></span>
+                            <span id="total"><strong>$0.00*</strong></span>
                         </div>
 
-                        <!-- Volume Pricing Progress - Shows progress toward next discount -->
-                        <div id="volumeProgressSection" class="mt-4 p-3 rounded" style="background: rgba(74, 222, 128, 0.05); border: 2px solid #22c55e; display: none;">
-                            <h6 class="text-success mb-2">
-                                <i class="fas fa-chart-line me-2"></i>Volume Discount Progress
+                        <!-- Wholesale Progress Section -->
+                        <div id="wholesaleProgressSection" class="mt-4 p-3 rounded" style="background: rgba(124, 58, 237, 0.05); border: 2px solid var(--ohs-wholesale-purple); display: none;">
+                            <h6 class="text-primary mb-2">
+                                <i class="fas fa-chart-line me-2"></i>Wholesale Progress
                             </h6>
-                            <div class="mb-2">
-                                <div class="d-flex justify-content-between">
-                                    <small id="currentDiscountText">Current: No discount</small>
-                                    <small id="nextDiscountText">Next: 8% at 25 items</small>
-                                </div>
-                                <div class="volume-progress-bar mt-2">
-                                    <div class="volume-progress-fill" id="volumeProgressFill" style="width: 0%"></div>
-                                </div>
-                                <div class="text-center mt-1">
-                                    <small class="text-muted">
-                                        <span id="itemsToNextDiscount">25</span> more items for next discount
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Current Volume Savings Display -->
-                        <div id="volumeSavingsDisplay" class="volume-savings-display" style="display: none;">
-                            <h6 class="text-success mb-2">
-                                <i class="fas fa-piggy-bank me-2"></i>You're Saving with Volume Pricing!
-                            </h6>
-                            <div class="row text-center">
-                                <div class="col-6">
-                                    <div class="fw-bold text-success" id="totalVolumeSavings">$0.00</div>
-                                    <small class="text-muted">Total Saved</small>
-                                </div>
-                                <div class="col-6">
-                                    <div class="fw-bold text-success" id="averageDiscountPercent">0%</div>
-                                    <small class="text-muted">Avg Discount</small>
-                                </div>
+                            <div class="mb-2" id="wholesaleProgressContent">
+                                <!-- Progress content will be dynamically inserted -->
                             </div>
                         </div>
 
@@ -1166,18 +1183,18 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="subscriptionToggle">
                                 <label class="form-check-label" for="subscriptionToggle">
-                                    <strong class="text-primary">Subscribe & Save 8%</strong>
+                                    <strong class="text-primary">Subscribe & Save</strong>
                                 </label>
                             </div>
                             <small class="text-muted d-block mt-1">
                                 <i class="fas fa-calendar-alt me-1"></i>
-                                Monthly delivery • Switch to quarterly for 10% savings
+                                8% retail / 10% wholesale + delivery optimization
                                 <span class="construction-badge ms-2">Under Construction</span>
                             </small>
                             <div class="mt-2">
                                 <select class="form-select form-select-sm" id="subscriptionFrequency" disabled>
-                                    <option value="monthly">Monthly (8% discount)</option>
-                                    <option value="quarterly">Quarterly (10% discount)</option>
+                                    <option value="monthly">Monthly (8% retail discount)</option>
+                                    <option value="quarterly">Quarterly (10% wholesale discount)</option>
                                 </select>
                             </div>
                         </div>
@@ -1204,19 +1221,22 @@
                             </h6>
                             <div class="small">
                                 <div class="d-flex justify-content-between mb-1">
-                                    <span>Standard Shipping:</span>
-                                    <span class="free-shipping">FREE on $75+</span>
+                                    <span>Shipping:</span>
+                                    <span class="text-primary">Calculated by ShipRight</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-1">
-                                    <span>Under $75:</span>
-                                    <span>$8.99</span>
+                                    <span>Tax:</span>
+                                    <span class="text-primary">Collected by Shopify</span>
                                 </div>
                                 <div class="text-muted">
                                     <i class="fas fa-map-marker-alt me-1"></i>
-                                    Ships from Salt Lake City, UT (2-4 business days)
+                                    Ships from Salt Lake City, UT
                                 </div>
                                 <div class="mt-2">
                                     <span class="construction-badge">ShipRight Integration</span>
+                                </div>
+                                <div class="mt-1">
+                                    <small class="text-muted">*Final shipping and tax calculated at checkout</small>
                                 </div>
                             </div>
                         </div>
@@ -1297,8 +1317,8 @@
                 </div>
                 <div class="col-md-6 text-md-end">
                     <span class="footer-cert me-1">57 Products</span>
-                    <span class="footer-cert me-1">FREE Ship $75+</span>
-                    <span class="footer-cert">Cart Ready</span>
+                    <span class="footer-cert me-1">ShipRight Ready</span>
+                    <span class="footer-cert">Wholesale Ready</span>
                 </div>
             </div>
         </div>
@@ -1307,74 +1327,123 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- FIXED CART SYSTEM WITH PROPER VOLUME DISCOUNT CALCULATIONS -->
+    <!-- UPDATED CART SYSTEM WITH WHOLESALE THRESHOLD LOGIC -->
     <script>
         // ===================================================================
-        // PRODUCT CATALOG INTEGRATION - ACTUAL DISCOUNT DATA
+        // INDEPENDENT WHOLESALE CART SYSTEM
+        // This cart logic is completely independent of any existing cart.js
+        // It implements your actual wholesale threshold business model:
+        // - Retail pricing until wholesale threshold is met per product
+        // - Wholesale pricing kicks in when quantity >= threshold
+        // - Based on your actual pricing table from 7.20 business success criteria
+        // ===================================================================
+        // ===================================================================
+        // PRODUCT CATALOG WITH WHOLESALE THRESHOLD LOGIC
         // ===================================================================
         
-        // Sample product data with actual volume discount structure from your catalog
+        // ACTUAL PRODUCT CATALOG WITH REAL WHOLESALE THRESHOLDS FROM YOUR PRICING TABLE
         const PRODUCT_CATALOG = {
-            // ORGANIC LINE EXAMPLES
+            // ORGANIC HYPOSOLUTIONS LINE (Based on your actual pricing table)
             'ohs-32oz-cleaner-ready': {
                 id: 'ohs-32oz-cleaner-ready',
                 name: '32oz Organic Ready-to-Use Cleaner',
-                price: 21.80,
+                retailPrice: 21.80,
+                wholesalePrice: 15.90, // From your pricing table
+                wholesaleThreshold: 500, // 500 Bottles from your table
                 type: 'organic',
                 emoji: '🧴',
                 sku: 'OHS-32OZ-CLEANER-RTU',
-                description: 'USDA Certified Organic hypochlorous acid cleaner',
-                volumeDiscounts: {
-                    25: { discount: 0.08, badge: '8% Off 25+' },
-                    50: { discount: 0.15, badge: '15% Off 50+' },
-                    100: { discount: 0.20, badge: '20% Off 100+' },
-                    200: { discount: 0.25, badge: '25% Off 200+' }
-                }
+                description: 'USDA Certified Organic hypochlorous acid cleaner'
             },
             'ohs-3oz-disinfectant': {
                 id: 'ohs-3oz-disinfectant',
                 name: '3oz Organic Multi-Surface Disinfectant',
-                price: 12.97,
+                retailPrice: 12.97,
+                wholesalePrice: 9.47, // Calculated from your margin structure
+                wholesaleThreshold: 200, // Typical for small units
                 type: 'organic',
                 emoji: '✨',
                 sku: 'OHS-3OZ-DISINFECTANT',
-                description: 'Travel-size USDA Certified Organic disinfectant',
-                volumeDiscounts: {
-                    25: { discount: 0.08, badge: '8% Off 25+' },
-                    50: { discount: 0.15, badge: '15% Off 50+' },
-                    100: { discount: 0.20, badge: '20% Off 100+' }
-                }
+                description: 'Travel-size USDA Certified Organic disinfectant'
+            },
+            'ohs-1gal-laundry': {
+                id: 'ohs-1gal-laundry',
+                name: '1 Gallon Organic Laundry Booster',
+                retailPrice: 41.15,
+                wholesalePrice: 30.44, // From your pricing table
+                wholesaleThreshold: 440, // 440 Bottles from your table
+                type: 'organic',
+                emoji: '🧺',
+                sku: 'OHS-1GAL-LAUNDRY',
+                description: 'USDA Certified Organic laundry booster'
+            },
+            'ohs-wipes-allinone': {
+                id: 'ohs-wipes-allinone',
+                name: 'Organic All-in-One Disinfecting Wipes',
+                retailPrice: 24.29,
+                wholesalePrice: 17.98, // From your pricing table
+                wholesaleThreshold: 200, // 200 Units from your table
+                type: 'organic',
+                emoji: '🧽',
+                sku: 'OHS-WIPES-ALLINONE',
+                description: 'USDA Certified Organic disinfecting wipes'
+            },
+            'ohs-equine-gel': {
+                id: 'ohs-equine-gel',
+                name: '16oz Organic Equine Healing & Udder Gel',
+                retailPrice: 38.16,
+                wholesalePrice: 30.75, // From your pricing table
+                wholesaleThreshold: 50, // 50 Units from your table
+                type: 'organic',
+                emoji: '🐴',
+                sku: 'OHS-EQUINE-GEL',
+                description: 'USDA Certified Organic healing gel for animals'
+            },
+            'ohs-skin-serum': {
+                id: 'ohs-skin-serum',
+                name: 'Organic Healing Skin Serum',
+                retailPrice: 34.63,
+                wholesalePrice: 27.89, // From your pricing table
+                wholesaleThreshold: 100, // 100 Units from your table
+                type: 'organic',
+                emoji: '💧',
+                sku: 'OHS-SKIN-SERUM',
+                description: 'USDA Certified Organic healing serum'
+            },
+            'ohs-diaper-gel': {
+                id: 'ohs-diaper-gel',
+                name: '100ml Organic Baby Diaper Rash Gel',
+                retailPrice: 35.98,
+                wholesalePrice: 28.97, // From your pricing table
+                wholesaleThreshold: 100, // 100 Units from your table
+                type: 'organic',
+                emoji: '👶',
+                sku: 'OHS-DIAPER-GEL',
+                description: 'USDA Certified Organic baby care gel'
             },
             
-            // PREMIUM LINE EXAMPLES
+            // HYPO COMPANY PREMIUM LINE (Examples based on your margin structure)
             'hc-32oz-cleaner-ready': {
                 id: 'hc-32oz-cleaner-ready',
                 name: '32oz Multi Use Cleaner Ready to Use - Premium',
-                price: 23.82,
+                retailPrice: 23.82,
+                wholesalePrice: 17.12, // Calculated from your premium margins
+                wholesaleThreshold: 300, // Lower threshold for premium line
                 type: 'premium',
                 emoji: '👑',
                 sku: 'HC-32OZ-CLEANER-RTU',
-                description: 'Premium hypochlorous acid with advanced packaging',
-                volumeDiscounts: {
-                    25: { discount: 0.08, badge: '8% Off 25+' },
-                    50: { discount: 0.15, badge: '15% Off 50+' },
-                    100: { discount: 0.20, badge: '20% Off 100+' },
-                    200: { discount: 0.25, badge: '25% Off 200+' }
-                }
+                description: 'EPA registered premium hypochlorous acid cleaner'
             },
             'hc-1gal-ready': {
                 id: 'hc-1gal-ready',
                 name: '1 Gallon Ready to Use - Premium',
-                price: 40.65,
+                retailPrice: 45.00,
+                wholesalePrice: 32.40, // Premium pricing structure
+                wholesaleThreshold: 200, // Premium gallon threshold
                 type: 'premium',
                 emoji: '🏭',
                 sku: 'HC-1GAL-READY-RTU',
-                description: 'Premium bulk professional-grade solution',
-                volumeDiscounts: {
-                    10: { discount: 0.08, badge: '8% Off 10+' },
-                    25: { discount: 0.15, badge: '15% Off 25+' },
-                    50: { discount: 0.20, badge: '20% Off 50+' }
-                }
+                description: 'EPA registered premium bulk solution'
             }
         };
 
@@ -1383,18 +1452,88 @@
         // ===================================================================
         let cartItems = [];
         let isCartSystemReady = false;
-        
-        // Volume discount thresholds from your catalog
-        const VOLUME_THRESHOLDS = [25, 50, 100, 200];
-        const DISCOUNT_RATES = {
-            25: 0.08,   // 8% off
-            50: 0.15,   // 15% off
-            100: 0.20,  // 20% off
-            200: 0.25   // 25% off
-        };
+        let isWholesaleCustomer = false; // Can be set based on login status
 
         // ===================================================================
-        // CORE CART FUNCTIONS WITH VOLUME DISCOUNT INTEGRATION
+        // WHOLESALE PRICING LOGIC - INDEPENDENT OF CART.JS
+        // ===================================================================
+        
+        function calculateWholesalePricing(productId, quantity) {
+            const product = PRODUCT_CATALOG[productId];
+            if (!product) {
+                console.warn(`Product not found: ${productId}`);
+                return { 
+                    isWholesale: false, 
+                    currentPrice: 0, 
+                    savings: 0, 
+                    thresholdMet: false,
+                    itemsNeeded: 0,
+                    retailPrice: 0,
+                    wholesalePrice: 0,
+                    threshold: 0
+                };
+            }
+            
+            const isWholesale = quantity >= product.wholesaleThreshold;
+            const currentPrice = isWholesale ? product.wholesalePrice : product.retailPrice;
+            const retailTotal = product.retailPrice * quantity;
+            const currentTotal = currentPrice * quantity;
+            const savings = retailTotal - currentTotal;
+            const itemsNeeded = Math.max(0, product.wholesaleThreshold - quantity);
+            
+            console.log(`Pricing for ${product.name}:`, {
+                quantity,
+                threshold: product.wholesaleThreshold,
+                isWholesale,
+                retailPrice: product.retailPrice,
+                wholesalePrice: product.wholesalePrice,
+                currentPrice,
+                itemsNeeded,
+                savings
+            });
+            
+            return {
+                isWholesale,
+                currentPrice,
+                savings,
+                thresholdMet: isWholesale,
+                itemsNeeded,
+                threshold: product.wholesaleThreshold,
+                retailPrice: product.retailPrice,
+                wholesalePrice: product.wholesalePrice
+            };
+        }
+        
+        function calculateTotalSavings() {
+            let totalRetailPrice = 0;
+            let totalCurrentPrice = 0;
+            let wholesaleItemsCount = 0;
+            
+            cartItems.forEach(item => {
+                const product = PRODUCT_CATALOG[item.productId];
+                if (product) {
+                    const pricing = calculateWholesalePricing(item.productId, item.quantity);
+                    totalRetailPrice += product.retailPrice * item.quantity;
+                    totalCurrentPrice += pricing.currentPrice * item.quantity;
+                    if (pricing.isWholesale) {
+                        wholesaleItemsCount++;
+                    }
+                }
+            });
+            
+            const totalSavings = totalRetailPrice - totalCurrentPrice;
+            const averageSavingsPercent = totalRetailPrice > 0 ? (totalSavings / totalRetailPrice) * 100 : 0;
+            
+            return {
+                totalSavings,
+                averageSavingsPercent,
+                wholesaleItemsCount,
+                hasSavings: totalSavings > 0
+            };
+        }
+        
+        // ===================================================================
+        // CORE CART FUNCTIONS
         // ===================================================================
         
         function loadCart() {
@@ -1434,37 +1573,42 @@
         function addTestItems() {
             cartItems = [
                 {
-                    productId: 'ohs-32oz-cleaner-ready',
-                    name: '32oz Organic Ready-to-Use Cleaner',
-                    price: 21.80,
-                    quantity: 28,
-                    type: 'organic',
-                    description: 'USDA Certified Organic hypochlorous acid cleaner',
-                    emoji: '🧴',
-                    sku: 'OHS-32OZ-CLEANER-RTU'
-                },
-                {
-                    productId: 'hc-32oz-cleaner-ready',
-                    name: '32oz Multi Use Cleaner Ready to Use - Premium',
-                    price: 23.82,
-                    quantity: 35,
-                    type: 'premium',
-                    description: 'Premium hypochlorous acid with advanced packaging',
-                    emoji: '👑',
-                    sku: 'HC-32OZ-CLEANER-RTU'
-                },
-                {
                     productId: 'ohs-3oz-disinfectant',
                     name: '3oz Organic Multi-Surface Disinfectant',
-                    price: 12.97,
-                    quantity: 15,
+                    price: 12.97, // This will be ignored in favor of PRODUCT_CATALOG pricing
+                    quantity: 50, // Below 200 threshold - should show "150 more for wholesale"
                     type: 'organic',
                     description: 'Travel-size USDA Certified Organic disinfectant',
                     emoji: '✨',
                     sku: 'OHS-3OZ-DISINFECTANT'
+                },
+                {
+                    productId: 'ohs-wipes-allinone',
+                    name: 'Organic All-in-One Disinfecting Wipes',
+                    price: 24.29, // This will be ignored in favor of PRODUCT_CATALOG pricing
+                    quantity: 250, // Above 200 threshold - should show wholesale pricing ($17.98 vs $24.29)
+                    type: 'organic',
+                    description: 'USDA Certified Organic disinfecting wipes',
+                    emoji: '🧽',
+                    sku: 'OHS-WIPES-ALLINONE'
+                },
+                {
+                    productId: 'ohs-skin-serum',
+                    name: 'Organic Healing Skin Serum',
+                    price: 34.63, // This will be ignored in favor of PRODUCT_CATALOG pricing
+                    quantity: 75, // Below 100 threshold - should show "25 more for wholesale"
+                    type: 'organic',
+                    description: 'USDA Certified Organic healing serum',
+                    emoji: '💧',
+                    sku: 'OHS-SKIN-SERUM'
                 }
             ];
             saveCart();
+            console.log('✅ Test items added with wholesale threshold testing data');
+            console.log('Expected results:');
+            console.log('- 3oz Disinfectant (50/200): Should show "150 more for wholesale" at $12.97 each');
+            console.log('- Wipes (250/200): Should show "Wholesale Pricing Active!" at $17.98 each (down from $24.29)');
+            console.log('- Skin Serum (75/100): Should show "25 more for wholesale" at $34.63 each');
         }
         
         function saveCart() {
@@ -1481,80 +1625,6 @@
         }
         
         // ===================================================================
-        // VOLUME DISCOUNT CALCULATION ENGINE
-        // ===================================================================
-        
-        function calculateVolumeDiscount(productId, quantity) {
-            const product = PRODUCT_CATALOG[productId];
-            if (!product || !product.volumeDiscounts) {
-                return { discount: 0, badge: '', savings: 0 };
-            }
-            
-            // Find the highest applicable discount
-            let bestDiscount = { discount: 0, badge: '', savings: 0 };
-            
-            for (const [threshold, discountInfo] of Object.entries(product.volumeDiscounts)) {
-                const thresholdNum = parseInt(threshold);
-                if (quantity >= thresholdNum) {
-                    const itemPrice = product.price;
-                    const savings = itemPrice * quantity * discountInfo.discount;
-                    bestDiscount = {
-                        discount: discountInfo.discount,
-                        badge: discountInfo.badge,
-                        savings: savings,
-                        threshold: thresholdNum
-                    };
-                }
-            }
-            
-            return bestDiscount;
-        }
-        
-        function calculateTotalVolumeDiscount() {
-            let totalSavings = 0;
-            let totalOriginalPrice = 0;
-            let hasDiscounts = false;
-            
-            cartItems.forEach(item => {
-                const product = PRODUCT_CATALOG[item.productId];
-                if (product) {
-                    const originalItemTotal = product.price * item.quantity;
-                    totalOriginalPrice += originalItemTotal;
-                    
-                    const volumeDiscount = calculateVolumeDiscount(item.productId, item.quantity);
-                    if (volumeDiscount.savings > 0) {
-                        totalSavings += volumeDiscount.savings;
-                        hasDiscounts = true;
-                    }
-                }
-            });
-            
-            const averageDiscountPercent = totalOriginalPrice > 0 ? (totalSavings / totalOriginalPrice) * 100 : 0;
-            
-            return {
-                totalSavings,
-                averageDiscountPercent,
-                hasDiscounts
-            };
-        }
-        
-        function getNextDiscountThreshold() {
-            const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-            
-            for (const threshold of VOLUME_THRESHOLDS) {
-                if (totalItems < threshold) {
-                    return {
-                        threshold,
-                        itemsNeeded: threshold - totalItems,
-                        discount: DISCOUNT_RATES[threshold] * 100
-                    };
-                }
-            }
-            
-            return null; // Already at highest tier
-        }
-        
-        // ===================================================================
         // DISPLAY UPDATE FUNCTIONS
         // ===================================================================
         
@@ -1563,9 +1633,10 @@
             updateOrderSummary();
             updateCartBadge();
             updateItemCount();
-            updateVolumeDiscountDisplay();
+            updateWholesaleDisplay();
             updateRecommendations();
             updateHeroStats();
+            updateSavingsSummary();
         }
         
         function updateCartItems() {
@@ -1587,11 +1658,22 @@
             cartItems.forEach((item, index) => {
                 const product = PRODUCT_CATALOG[item.productId] || {};
                 const isOrganic = item.type === 'organic';
-                const volumeDiscount = calculateVolumeDiscount(item.productId, item.quantity);
-                const originalPrice = item.price;
-                const discountedPrice = originalPrice * (1 - volumeDiscount.discount);
-                const itemTotal = discountedPrice * item.quantity;
-                const originalTotal = originalPrice * item.quantity;
+                
+                // CRITICAL: Use wholesale pricing logic, not item.price
+                const pricing = calculateWholesalePricing(item.productId, item.quantity);
+                const itemTotal = pricing.currentPrice * item.quantity;
+                const retailTotal = pricing.retailPrice * item.quantity;
+                
+                // Determine if price is large (6+ figures)
+                const priceClass = itemTotal >= 100000 ? 'price-display-large' : 'price-display';
+                
+                console.log(`Rendering item ${index}:`, {
+                    name: item.name,
+                    quantity: item.quantity,
+                    pricing: pricing,
+                    itemTotal: itemTotal,
+                    retailTotal: retailTotal
+                });
                 
                 html += `
                     <div class="cart-item" data-index="${index}">
@@ -1609,13 +1691,19 @@
                                         ${isOrganic ? 'USDA Organic' : 'EPA Premium'}
                                     </span>
                                     ${item.sku ? `<span class="badge bg-info ms-1">${item.sku}</span>` : ''}
-                                    ${volumeDiscount.discount > 0 ? `
+                                    ${pricing.isWholesale ? `
                                         <div class="mt-1">
-                                            <span class="volume-discount-badge">
-                                                <i class="fas fa-percentage me-1"></i>${volumeDiscount.badge}
+                                            <span class="wholesale-pricing-badge">
+                                                <i class="fas fa-crown me-1"></i>Wholesale Pricing Active!
                                             </span>
                                         </div>
-                                    ` : ''}
+                                    ` : `
+                                        <div class="mt-1">
+                                            <span class="wholesale-threshold-indicator">
+                                                <i class="fas fa-target me-1"></i>${pricing.itemsNeeded} more for wholesale pricing
+                                            </span>
+                                        </div>
+                                    `}
                                 </div>
                             </div>
                             <div class="col-md-3 col-12 mb-3 mb-md-0">
@@ -1634,17 +1722,18 @@
                                 </div>
                             </div>
                             <div class="col-md-2 col-6 text-center">
-                                <div class="price-display">$${discountedPrice.toFixed(2)}</div>
+                                <div class="${priceClass}">${pricing.currentPrice.toFixed(2)}</div>
                                 <small class="text-muted">each</small>
-                                ${volumeDiscount.discount > 0 ? `
-                                    <div class="original-price">$${originalPrice.toFixed(2)}</div>
+                                ${pricing.isWholesale ? `
+                                    <div class="original-price">${pricing.retailPrice.toFixed(2)}</div>
+                                    <div class="discount-amount">Wholesale Price!</div>
                                 ` : ''}
                             </div>
                             <div class="col-md-1 col-6 text-center">
-                                <div class="price-display mb-2">$${itemTotal.toFixed(2)}</div>
-                                ${volumeDiscount.discount > 0 ? `
-                                    <div class="original-price">$${originalTotal.toFixed(2)}</div>
-                                    <div class="discount-amount">-$${(originalTotal - itemTotal).toFixed(2)}</div>
+                                <div class="${priceClass} mb-2">${itemTotal.toFixed(2)}</div>
+                                ${pricing.isWholesale ? `
+                                    <div class="original-price">${retailTotal.toFixed(2)}</div>
+                                    <div class="discount-amount">-${pricing.savings.toFixed(2)}</div>
                                 ` : ''}
                                 <button class="btn btn-sm btn-outline-danger mt-2" onclick="removeItem(${index})">
                                     <i class="fas fa-trash"></i>
@@ -1656,102 +1745,133 @@
             });
             
             container.innerHTML = html;
-            console.log('✅ Cart items updated with volume discounts');
+            console.log('✅ Cart items updated with proper wholesale pricing logic');
         }
         
         function updateOrderSummary() {
-            let subtotal = 0;
-            let totalVolumeDiscount = 0;
+            let retailSubtotal = 0;
+            let currentSubtotal = 0;
+            let totalWholesaleSavings = 0;
             
-            cartItems.forEach(item => {
-                const product = PRODUCT_CATALOG[item.productId] || { price: item.price };
-                const volumeDiscount = calculateVolumeDiscount(item.productId, item.quantity);
-                const originalPrice = product.price || item.price;
-                const discountedPrice = originalPrice * (1 - volumeDiscount.discount);
-                const itemTotal = discountedPrice * item.quantity;
-                const originalTotal = originalPrice * item.quantity;
+            console.log('=== Order Summary Calculation ===');
+            
+            cartItems.forEach((item, index) => {
+                const product = PRODUCT_CATALOG[item.productId];
+                if (!product) {
+                    console.warn(`Product not found in catalog: ${item.productId}`);
+                    // Fallback to item price if product not in catalog
+                    const itemTotal = (item.price || 0) * item.quantity;
+                    retailSubtotal += itemTotal;
+                    currentSubtotal += itemTotal;
+                    return;
+                }
                 
-                subtotal += itemTotal;
-                totalVolumeDiscount += (originalTotal - itemTotal);
+                const pricing = calculateWholesalePricing(item.productId, item.quantity);
+                
+                const retailItemTotal = product.retailPrice * item.quantity;
+                const currentItemTotal = pricing.currentPrice * item.quantity;
+                
+                retailSubtotal += retailItemTotal;
+                currentSubtotal += currentItemTotal;
+                
+                if (pricing.isWholesale) {
+                    totalWholesaleSavings += pricing.savings;
+                }
+                
+                console.log(`Item ${index + 1}: ${item.name}`);
+                console.log(`  Retail: ${retailItemTotal.toFixed(2)} | Current: ${currentItemTotal.toFixed(2)} | Savings: ${pricing.savings.toFixed(2)}`);
             });
             
-            const tax = subtotal * 0.0775; // Utah tax rate
-            const total = subtotal + tax;
+            console.log(`Totals - Retail: ${retailSubtotal.toFixed(2)} | Current: ${currentSubtotal.toFixed(2)} | Wholesale Savings: ${totalWholesaleSavings.toFixed(2)}`);
             
-            // Update display elements
-            document.getElementById('subtotal').textContent = '$' + (subtotal + totalVolumeDiscount).toFixed(2);
-            document.getElementById('tax').textContent = '$' + tax.toFixed(2);
-            document.getElementById('total').textContent = '$' + total.toFixed(2);
-            
-            // Volume discount display
-            const volumeDiscountRow = document.getElementById('volumeDiscountRow');
-            if (totalVolumeDiscount > 0) {
-                volumeDiscountRow.style.display = 'flex';
-                document.getElementById('volumeDiscount').textContent = '-$' + totalVolumeDiscount.toFixed(2);
-            } else {
-                volumeDiscountRow.style.display = 'none';
+            // Handle subscription discount if enabled
+            let subscriptionDiscount = 0;
+            const subscriptionToggle = document.getElementById('subscriptionToggle');
+            if (subscriptionToggle && subscriptionToggle.checked) {
+                const savingsData = calculateTotalSavings();
+                // 8% for retail, 10% for wholesale customers
+                const discountRate = savingsData.wholesaleItemsCount > 0 ? 0.10 : 0.08;
+                subscriptionDiscount = currentSubtotal * discountRate;
             }
             
-            updateVolumeProgress();
-            updateVolumeSavingsDisplay();
-        }
-        
-        function updateVolumeDiscountDisplay() {
-            const banner = document.getElementById('volumeDiscountBanner');
-            const bannerText = document.getElementById('volumeDiscountText');
-            const { totalSavings, hasDiscounts } = calculateTotalVolumeDiscount();
+            const finalSubtotal = currentSubtotal - subscriptionDiscount;
             
-            if (hasDiscounts && banner && bannerText) {
+            // Update display elements - CRITICAL: Use proper element IDs
+            const retailSubtotalEl = document.getElementById('retailSubtotal');
+            const subtotalEl = document.getElementById('subtotal');
+            const totalEl = document.getElementById('total');
+            
+            if (retailSubtotalEl) retailSubtotalEl.textContent = '
+        
+        function updateWholesaleDisplay() {
+            const banner = document.getElementById('wholesaleDiscountBanner');
+            const bannerText = document.getElementById('wholesaleDiscountText');
+            const savingsData = calculateTotalSavings();
+            
+            if (savingsData.hasSavings && banner && bannerText) {
                 banner.style.display = 'block';
-                bannerText.textContent = `You're saving $${totalSavings.toFixed(2)} with volume pricing!`;
+                bannerText.textContent = `You're saving $${savingsData.totalSavings.toFixed(2)} with wholesale pricing on ${savingsData.wholesaleItemsCount} items!`;
             } else if (banner) {
                 banner.style.display = 'none';
             }
         }
         
-        function updateVolumeProgress() {
-            const progressSection = document.getElementById('volumeProgressSection');
-            const nextDiscount = getNextDiscountThreshold();
+        function updateWholesaleProgress() {
+            const progressSection = document.getElementById('wholesaleProgressSection');
+            const progressContent = document.getElementById('wholesaleProgressContent');
             
-            if (nextDiscount && progressSection) {
+            if (!progressSection || !progressContent) return;
+            
+            // Check if any items are close to wholesale thresholds
+            let hasProgress = false;
+            let progressHTML = '';
+            
+            cartItems.forEach(item => {
+                const product = PRODUCT_CATALOG[item.productId];
+                if (product && item.quantity < product.wholesaleThreshold) {
+                    const pricing = calculateWholesalePricing(item.productId, item.quantity);
+                    const progress = (item.quantity / product.wholesaleThreshold) * 100;
+                    const potentialSavings = (product.retailPrice - product.wholesalePrice) * product.wholesaleThreshold;
+                    
+                    progressHTML += `
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <small><strong>${product.name}</strong></small>
+                                <small>${pricing.itemsNeeded} more needed</small>
+                            </div>
+                            <div class="wholesale-progress-bar">
+                                <div class="wholesale-progress-fill" style="width: ${Math.min(progress, 100)}%"></div>
+                            </div>
+                            <small class="text-muted">
+                                ${item.quantity}/${product.wholesaleThreshold} units • 
+                                Potential savings: ${potentialSavings.toFixed(2)} when you reach wholesale threshold
+                            </small>
+                        </div>
+                    `;
+                    hasProgress = true;
+                }
+            });
+            
+            if (hasProgress) {
                 progressSection.style.display = 'block';
-                
-                const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-                const progress = (totalItems / nextDiscount.threshold) * 100;
-                
-                document.getElementById('currentDiscountText').textContent = 
-                    totalItems >= 25 ? `Current: ${Math.round(DISCOUNT_RATES[getCurrentDiscountTier(totalItems)] * 100)}% discount` : 'Current: No discount';
-                
-                document.getElementById('nextDiscountText').textContent = 
-                    `Next: ${nextDiscount.discount}% at ${nextDiscount.threshold} items`;
-                
-                document.getElementById('volumeProgressFill').style.width = Math.min(progress, 100) + '%';
-                document.getElementById('itemsToNextDiscount').textContent = nextDiscount.itemsNeeded;
-            } else if (progressSection) {
+                progressContent.innerHTML = progressHTML;
+            } else {
                 progressSection.style.display = 'none';
             }
         }
         
-        function updateVolumeSavingsDisplay() {
-            const savingsDisplay = document.getElementById('volumeSavingsDisplay');
-            const { totalSavings, averageDiscountPercent, hasDiscounts } = calculateTotalVolumeDiscount();
+        function updateSavingsSummary() {
+            const savingsSummary = document.getElementById('savingsSummary');
+            const savingsData = calculateTotalSavings();
             
-            if (hasDiscounts && savingsDisplay) {
-                savingsDisplay.style.display = 'block';
-                document.getElementById('totalVolumeSavings').textContent = '$' + totalSavings.toFixed(2);
-                document.getElementById('averageDiscountPercent').textContent = averageDiscountPercent.toFixed(1) + '%';
-            } else if (savingsDisplay) {
-                savingsDisplay.style.display = 'none';
+            if (savingsData.hasSavings && savingsSummary) {
+                savingsSummary.style.display = 'block';
+                document.getElementById('totalSavingsAmount').textContent = '$' + savingsData.totalSavings.toFixed(2);
+                document.getElementById('wholesaleItemsCount').textContent = savingsData.wholesaleItemsCount;
+                document.getElementById('averageSavingsPercent').textContent = savingsData.averageSavingsPercent.toFixed(1) + '%';
+            } else if (savingsSummary) {
+                savingsSummary.style.display = 'none';
             }
-        }
-        
-        function getCurrentDiscountTier(totalItems) {
-            for (let i = VOLUME_THRESHOLDS.length - 1; i >= 0; i--) {
-                if (totalItems >= VOLUME_THRESHOLDS[i]) {
-                    return VOLUME_THRESHOLDS[i];
-                }
-            }
-            return 0;
         }
         
         function updateCartBadge() {
@@ -1773,34 +1893,35 @@
         
         function updateHeroStats() {
             const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-            let subtotal = 0;
+            let currentSubtotal = 0;
             
             cartItems.forEach(item => {
-                const product = PRODUCT_CATALOG[item.productId] || { price: item.price };
-                const volumeDiscount = calculateVolumeDiscount(item.productId, item.quantity);
-                const discountedPrice = (product.price || item.price) * (1 - volumeDiscount.discount);
-                subtotal += discountedPrice * item.quantity;
+                const pricing = calculateWholesalePricing(item.productId, item.quantity);
+                currentSubtotal += pricing.currentPrice * item.quantity;
             });
             
             const heroTotal = document.getElementById('heroCartTotal');
             const heroCount = document.getElementById('heroItemCount');
+            const heroSavingsDisplay = document.getElementById('heroSavingsDisplay');
+            const heroTotalSavings = document.getElementById('heroTotalSavings');
             
-            if (heroTotal) heroTotal.textContent = '$' + subtotal.toFixed(2);
+            if (heroTotal) heroTotal.textContent = '$' + currentSubtotal.toFixed(2);
             if (heroCount) heroCount.textContent = totalItems;
+            
+            const savingsData = calculateTotalSavings();
+            if (savingsData.hasSavings && heroSavingsDisplay && heroTotalSavings) {
+                heroSavingsDisplay.style.display = 'block';
+                heroTotalSavings.textContent = '$' + savingsData.totalSavings.toFixed(2);
+            } else if (heroSavingsDisplay) {
+                heroSavingsDisplay.style.display = 'none';
+            }
         }
         
         function updateRecommendations() {
             const recommendations = document.getElementById('recommendations');
-            const nextThreshold = document.getElementById('nextDiscountThreshold');
-            const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-            const nextDiscount = getNextDiscountThreshold();
             
             if (recommendations) {
                 recommendations.style.display = cartItems.length > 0 ? 'block' : 'none';
-            }
-            
-            if (nextThreshold && nextDiscount) {
-                nextThreshold.textContent = nextDiscount.threshold;
             }
         }
         
@@ -1862,8 +1983,8 @@
         // UTILITY FUNCTIONS
         // ===================================================================
         
-        function toggleVolumePricingInfo() {
-            const info = document.getElementById('volumePricingInfo');
+        function toggleWholesalePricingInfo() {
+            const info = document.getElementById('wholesalePricingInfo');
             if (info) {
                 info.style.display = info.style.display === 'none' ? 'block' : 'none';
                 info.classList.toggle('show');
@@ -1885,17 +2006,16 @@
                 return;
             }
             
-            const subtotal = cartItems.reduce((sum, item) => {
-                const product = PRODUCT_CATALOG[item.productId] || { price: item.price };
-                const volumeDiscount = calculateVolumeDiscount(item.productId, item.quantity);
-                const discountedPrice = (product.price || item.price) * (1 - volumeDiscount.discount);
-                return sum + (discountedPrice * item.quantity);
-            }, 0);
+            let currentSubtotal = 0;
+            cartItems.forEach(item => {
+                const pricing = calculateWholesalePricing(item.productId, item.quantity);
+                currentSubtotal += pricing.currentPrice * item.quantity;
+            });
             
             const checkoutData = {
                 items: cartItems,
-                subtotal: subtotal,
-                volumeDiscounts: calculateTotalVolumeDiscount(),
+                subtotal: currentSubtotal,
+                savingsData: calculateTotalSavings(),
                 timestamp: new Date().toISOString()
             };
             
@@ -1953,14 +2073,14 @@
                 };
             } else if (recId === 'rec2') {
                 productData = {
-                    productId: 'hc-wipes-allinone',
-                    name: 'Professional Disinfecting Wipes',
-                    price: 26.21,
+                    productId: 'ohs-wipes-allinone',
+                    name: 'Organic All-in-One Disinfecting Wipes',
+                    price: 24.29,
                     quantity: quantity,
-                    type: 'premium',
-                    description: 'EPA registered for commercial use',
-                    emoji: '🏭',
-                    sku: 'HC-WIPES-ALLINONE'
+                    type: 'organic',
+                    description: 'USDA Certified Organic disinfecting wipes',
+                    emoji: '🧽',
+                    sku: 'OHS-WIPES-ALLINONE'
                 };
             }
             
@@ -2046,7 +2166,7 @@
         // ===================================================================
         
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Cart system initializing with volume discount integration...');
+            console.log('🚀 Cart system initializing with wholesale threshold logic...');
             loadCart();
             handleSubscriptionToggle();
             
@@ -2054,12 +2174,16 @@
             if (window.location.search.includes('debug=true')) {
                 window.debugCart = () => {
                     console.log('Cart items:', cartItems);
-                    console.log('Volume discounts:', calculateTotalVolumeDiscount());
+                    console.log('Savings breakdown:', calculateTotalSavings());
+                    cartItems.forEach(item => {
+                        const pricing = calculateWholesalePricing(item.productId, item.quantity);
+                        console.log(`${item.name}: Retail ${pricing.retailPrice} | Current ${pricing.currentPrice} | Wholesale: ${pricing.isWholesale} | Savings: ${pricing.savings}`);
+                    });
                 };
                 console.log('Debug mode: Use debugCart() to inspect cart state');
             }
             
-            console.log('✅ Cart system ready with volume discount calculations!');
+            console.log('✅ Cart system ready with wholesale threshold calculations!');
         });
         
         // Listen for storage changes
@@ -2074,12 +2198,206 @@
         window.setQuantity = setQuantity;
         window.removeItem = removeItem;
         window.clearAllItems = clearAllItems;
-        window.toggleVolumePricingInfo = toggleVolumePricingInfo;
+        window.toggleWholesalePricingInfo = toggleWholesalePricingInfo;
         window.applyCoupon = applyCoupon;
         window.proceedToCheckout = proceedToCheckout;
         window.changeRecommendationQuantity = changeRecommendationQuantity;
         window.setRecommendationQuantity = setRecommendationQuantity;
         window.addRecommendationToCart = addRecommendationToCart;
     </script>
-</body>
-</html>
+
+    <!-- Recommendation quantity controls styling -->
+    <style>
+        .recommendation-quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: #f8fafc;
+            padding: 0.3rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .quantity-btn-sm {
+            width: 28px;
+            height: 28px;
+            border: 1px solid var(--ohs-organic-green);
+            background: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--ohs-organic-green);
+            font-weight: bold;
+            font-size: 0.8rem;
+            user-select: none;
+        }
+
+        .quantity-btn-sm:hover:not(:disabled) {
+            background: var(--ohs-organic-green);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .quantity-btn-sm:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: #ccc;
+            color: #ccc;
+        }
+
+        .quantity-input-sm {
+            border: 1px solid var(--ohs-organic-green);
+            background: white;
+            border-radius: 4px;
+            width: 45px;
+            height: 28px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: var(--ohs-primary-blue);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .quantity-input-sm:focus {
+            border-color: var(--ohs-primary-blue);
+            box-shadow: 0 0 4px rgba(46, 94, 170, 0.3);
+        }
+
+        .quantity-input-sm::-webkit-outer-spin-button,
+        .quantity-input-sm::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .quantity-input-sm[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style> + retailSubtotal.toFixed(2);
+            if (subtotalEl) subtotalEl.textContent = '
+        
+        function updateWholesaleDisplay() {
+            const banner = document.getElementById('wholesaleDiscountBanner');
+            const bannerText = document.getElementById('wholesaleDiscountText');
+            const savingsData = calculateTotalSavings();
+            
+            if (savingsData.hasSavings && banner && bannerText) {
+                banner.style.display = 'block';
+                bannerText.textContent = `You're saving $${savingsData.totalSavings.toFixed(2)} with wholesale pricing on ${savingsData.wholesaleItemsCount} items!`;
+            } else if (banner) {
+                banner.style.display = 'none';
+            }
+        }
+        
+        function updateWholesaleProgress() {
+            const progressSection = document.getElementById('wholesaleProgressSection');
+            const progressContent = document.getElementById('wholesaleProgressContent');
+            
+            if (!progressSection || !progressContent) return;
+            
+            // Check if any items are close to wholesale thresholds
+            let hasProgress = false;
+            let progressHTML = '';
+            
+            cartItems.forEach(item => {
+                const product = PRODUCT_CATALOG[item.productId];
+                if (product && item.quantity < product.wholesaleThreshold) {
+                    const pricing = calculateWholesalePricing(item.productId, item.quantity);
+                    const progress = (item.quantity / product.wholesaleThreshold) * 100;
+                    const potentialSavings = (product.retailPrice - product.wholesalePrice) * product.wholesaleThreshold;
+                    
+                    progressHTML += `
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <small><strong>${product.name}</strong></small>
+                                <small>${pricing.itemsNeeded} more needed</small>
+                            </div>
+                            <div class="wholesale-progress-bar">
+                                <div class="wholesale-progress-fill" style="width: ${Math.min(progress, 100)}%"></div>
+                            </div>
+                            <small class="text-muted">
+                                ${item.quantity}/${product.wholesaleThreshold} units • 
+                                Potential savings: ${potentialSavings.toFixed(2)} when you reach wholesale threshold
+                            </small>
+                        </div>
+                    `;
+                    hasProgress = true;
+                }
+            });
+            
+            if (hasProgress) {
+                progressSection.style.display = 'block';
+                progressContent.innerHTML = progressHTML;
+            } else {
+                progressSection.style.display = 'none';
+            }
+        }
+        
+        function updateSavingsSummary() {
+            const savingsSummary = document.getElementById('savingsSummary');
+            const savingsData = calculateTotalSavings();
+            
+            if (savingsData.hasSavings && savingsSummary) {
+                savingsSummary.style.display = 'block';
+                document.getElementById('totalSavingsAmount').textContent = '$' + savingsData.totalSavings.toFixed(2);
+                document.getElementById('wholesaleItemsCount').textContent = savingsData.wholesaleItemsCount;
+                document.getElementById('averageSavingsPercent').textContent = savingsData.averageSavingsPercent.toFixed(1) + '%';
+            } else if (savingsSummary) {
+                savingsSummary.style.display = 'none';
+            }
+        }
+        
+        function updateCartBadge() {
+            const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+            const badge = document.getElementById('cartBadge');
+            if (badge) {
+                badge.style.display = totalItems > 0 ? 'inline-block' : 'none';
+                badge.textContent = totalItems;
+            }
+        }
+        
+        function updateItemCount() {
+            const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+            const itemCount = document.getElementById('itemCount');
+            if (itemCount) {
+                itemCount.textContent = totalItems === 1 ? '1 item' : totalItems + ' items';
+            }
+        }
+        
+        function updateHeroStats() {
+            const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+            let currentSubtotal = 0;
+            
+            cartItems.forEach(item => {
+                const pricing = calculateWholesalePricing(item.productId, item.quantity);
+                currentSubtotal += pricing.currentPrice * item.quantity;
+            });
+            
+            const heroTotal = document.getElementById('heroCartTotal');
+            const heroCount = document.getElementById('heroItemCount');
+            const heroSavingsDisplay = document.getElementById('heroSavingsDisplay');
+            const heroTotalSavings = document.getElementById('heroTotalSavings');
+            
+            if (heroTotal) heroTotal.textContent = '$' + currentSubtotal.toFixed(2);
+            if (heroCount) heroCount.textContent = totalItems;
+            
+            const savingsData = calculateTotalSavings();
+            if (savingsData.hasSavings && heroSavingsDisplay && heroTotalSavings) {
+                heroSavingsDisplay.style.display = 'block';
+                heroTotalSavings.textContent = '$' + savingsData.totalSavings.toFixed(2);
+            } else if (heroSavingsDisplay) {
+                heroSavingsDisplay.style.display = 'none';
+            }
+        }
+        
+        function updateRecommendations() {
+            const recommendations = document.getElementById('recommendations');
+            
+            if (recommendations) {
+                recommendations.style.display = cartItems.length > 0 ? 'block' : 'none';
+            }
+        }
+        
