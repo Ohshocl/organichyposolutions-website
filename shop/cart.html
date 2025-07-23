@@ -261,7 +261,7 @@
             background: linear-gradient(135deg, #f59e0b, #d97706);
         }
 
-        /* Quantity Controls */
+        /* FIXED QUANTITY CONTROLS - MAIN ISSUE */
         .quantity-controls {
             display: flex;
             align-items: center;
@@ -270,6 +270,7 @@
             padding: 0.8rem;
             border-radius: 15px;
             border: 2px solid #e2e8f0;
+            justify-content: center;
         }
 
         .quantity-btn {
@@ -285,6 +286,9 @@
             transition: all 0.3s ease;
             color: var(--ohs-organic-green);
             font-weight: bold;
+            /* CRITICAL: Make sure buttons work */
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .quantity-btn:hover:not(:disabled) {
@@ -296,13 +300,15 @@
         .quantity-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            border-color: #ccc;
+            color: #ccc;
         }
 
         .quantity-display {
             font-weight: bold;
             font-size: 1.2rem;
             color: var(--ohs-primary-blue);
-            min-width: 30px;
+            min-width: 40px;
             text-align: center;
         }
 
@@ -448,6 +454,16 @@
             .order-summary {
                 position: static;
                 margin-top: 2rem;
+            }
+
+            .quantity-controls {
+                gap: 0.5rem;
+                padding: 0.5rem;
+            }
+
+            .quantity-btn {
+                width: 35px;
+                height: 35px;
             }
         }
 
@@ -999,18 +1015,42 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Simplified Cart System -->
+    <!-- FIXED CART SYSTEM - Complete Rewrite -->
     <script>
-        // Global cart variables
+        // Global cart variables with improved initialization
         let cartItems = [];
         let isCartSystemReady = false;
         
-        // Load cart from localStorage
+        // CRITICAL FIX: Improved cart loading
         function loadCart() {
             try {
                 const stored = localStorage.getItem('ohsCart');
-                cartItems = stored ? JSON.parse(stored) : [];
+                if (stored) {
+                    cartItems = JSON.parse(stored);
+                    // Ensure all items have required properties
+                    cartItems = cartItems.map(item => ({
+                        productId: item.productId || `item_${Date.now()}_${Math.random()}`,
+                        name: item.name || 'Unknown Product',
+                        price: parseFloat(item.price) || 0,
+                        quantity: parseInt(item.quantity) || 1,
+                        type: item.type || item.productLine || 'organic',
+                        description: item.description || 'No description available',
+                        emoji: item.emoji || (item.type === 'premium' ? '👑' : '🌱'),
+                        size: item.size || '',
+                        sku: item.sku || '',
+                        volumeDiscounts: item.volumeDiscounts || null,
+                        ...item // Keep any additional properties
+                    }));
+                } else {
+                    cartItems = [];
+                }
                 console.log('✅ Cart loaded:', cartItems.length, 'items');
+                
+                // Add some test items if cart is empty (for testing)
+                if (cartItems.length === 0 && window.location.search.includes('test=true')) {
+                    addTestItems();
+                }
+                
             } catch (error) {
                 console.error('❌ Error loading cart:', error);
                 cartItems = [];
@@ -1019,11 +1059,59 @@
             isCartSystemReady = true;
         }
         
-        // Save cart to localStorage
+        // Add test items for demonstration
+        function addTestItems() {
+            cartItems = [
+                {
+                    productId: 'test_organic_1',
+                    name: '32oz Organic Multi-Surface Cleaner',
+                    price: 21.80,
+                    quantity: 23,
+                    type: 'organic',
+                    description: 'USDA Certified Organic hypochlorous acid solution for safe daily cleaning',
+                    emoji: '🧴',
+                    size: '32oz',
+                    sku: 'OHS-ORG-32-MS',
+                    volumeDiscounts: {
+                        '12+': { discount: 0.05, description: '5% off 12+' },
+                        '24+': { discount: 0.10, description: '10% off 24+' }
+                    }
+                },
+                {
+                    productId: 'test_premium_1',
+                    name: 'Professional Surface Disinfectant',
+                    price: 16.13,
+                    quantity: 50,
+                    type: 'premium',
+                    description: 'EPA registered commercial-grade disinfectant for professional use',
+                    emoji: '🏭',
+                    size: '32oz',
+                    sku: 'OHS-PRE-32-SD',
+                    volumeDiscounts: {
+                        '25+': { discount: 0.08, description: '8% off 25+' },
+                        '50+': { discount: 0.15, description: '15% off 50+' }
+                    }
+                },
+                {
+                    productId: 'test_premium_2',
+                    name: 'Industrial Floor Cleaner',
+                    price: 24.99,
+                    quantity: 3,
+                    type: 'premium',
+                    description: 'Heavy-duty floor cleaning solution for commercial facilities',
+                    emoji: '🧽',
+                    size: '1 Gallon',
+                    sku: 'OHS-PRE-GAL-FC'
+                }
+            ];
+            saveCart();
+        }
+        
+        // CRITICAL FIX: Improved cart saving
         function saveCart() {
             try {
                 localStorage.setItem('ohsCart', JSON.stringify(cartItems));
-                console.log('💾 Cart saved');
+                console.log('💾 Cart saved successfully');
                 // Broadcast update to other pages
                 window.dispatchEvent(new StorageEvent('storage', {
                     key: 'ohsCart',
@@ -1034,21 +1122,25 @@
             }
         }
         
-        // Update all displays
+        // CRITICAL FIX: Comprehensive display update
         function updateDisplay() {
             updateCartItems();
             updateOrderSummary();
             updateCartBadge();
             updateItemCount();
             updateVolumeDiscountDisplay();
+            updateRecommendations();
         }
         
-        // Update cart items display
+        // CRITICAL FIX: Complete cart items display rewrite
         function updateCartItems() {
             const container = document.getElementById('cartItems');
             const emptyCart = document.getElementById('emptyCart');
             
-            if (!container || !emptyCart) return;
+            if (!container || !emptyCart) {
+                console.error('❌ Cart container elements not found');
+                return;
+            }
             
             if (cartItems.length === 0) {
                 container.style.display = 'none';
@@ -1061,18 +1153,18 @@
             
             let html = '';
             cartItems.forEach((item, index) => {
-                const productType = item.type || item.productLine || 'organic';
+                const productType = item.type || 'organic';
                 const isOrganic = productType === 'organic';
                 
                 html += `
-                    <div class="cart-item">
+                    <div class="cart-item" data-index="${index}">
                         <div class="row align-items-center">
-                            <div class="col-md-2 col-3">
+                            <div class="col-md-2 col-3 mb-3 mb-md-0">
                                 <div class="product-image ${isOrganic ? 'organic' : 'premium'}">
                                     ${item.emoji || (isOrganic ? '🌱' : '👑')}
                                 </div>
                             </div>
-                            <div class="col-md-4 col-9">
+                            <div class="col-md-4 col-9 mb-3 mb-md-0">
                                 <h6 class="fw-bold mb-2">${item.name || 'Product Name'}</h6>
                                 <p class="text-muted small mb-2">${item.description || 'Product description'}</p>
                                 <div class="mb-2">
@@ -1080,26 +1172,32 @@
                                         ${isOrganic ? 'USDA Organic' : 'EPA Premium'}
                                     </span>
                                     ${item.size ? `<span class="badge bg-secondary ms-1">${item.size}</span>` : ''}
+                                    ${item.sku ? `<span class="badge bg-info ms-1">${item.sku}</span>` : ''}
                                 </div>
+                                ${getVolumeDiscountBadge(item)}
                             </div>
-                            <div class="col-md-2 col-6 text-center">
+                            <div class="col-md-3 col-12 mb-3 mb-md-0">
                                 <div class="quantity-controls">
-                                    <button class="quantity-btn" onclick="changeQuantity(${index}, -1)" ${item.quantity <= 1 ? 'disabled' : ''}>
+                                    <button class="quantity-btn" onclick="changeQuantity(${index}, -1)" 
+                                            ${item.quantity <= 1 ? 'disabled' : ''} 
+                                            title="Decrease quantity">
                                         <i class="fas fa-minus"></i>
                                     </button>
                                     <div class="quantity-display">${item.quantity}</div>
-                                    <button class="quantity-btn" onclick="changeQuantity(${index}, 1)">
+                                    <button class="quantity-btn" onclick="changeQuantity(${index}, 1)" 
+                                            title="Increase quantity">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
                             </div>
-                            <div class="col-md-2 col-3 text-center">
+                            <div class="col-md-2 col-6 text-center">
                                 <div class="price-display">$${item.price.toFixed(2)}</div>
                                 <small class="text-muted">each</small>
                             </div>
-                            <div class="col-md-2 col-3 text-center">
-                                <div class="price-display">$${(item.price * item.quantity).toFixed(2)}</div>
-                                <button class="btn btn-sm btn-outline-danger mt-2" onclick="removeItem(${index})" title="Remove item">
+                            <div class="col-md-1 col-6 text-center">
+                                <div class="price-display mb-2">$${(item.price * item.quantity).toFixed(2)}</div>
+                                <button class="btn btn-sm btn-outline-danger" onclick="removeItem(${index})" 
+                                        title="Remove item">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -1109,9 +1207,28 @@
             });
             
             container.innerHTML = html;
+            console.log('✅ Cart items display updated with', cartItems.length, 'items');
         }
         
-        // Simplified order summary calculation
+        // Helper function for volume discount badges
+        function getVolumeDiscountBadge(item) {
+            if (!item.volumeDiscounts) return '';
+            
+            let badgeHtml = '';
+            for (const [threshold, discountInfo] of Object.entries(item.volumeDiscounts)) {
+                const thresholdNum = parseInt(threshold.replace('+', ''));
+                if (item.quantity >= thresholdNum) {
+                    const savings = Math.round(discountInfo.discount * 100);
+                    badgeHtml = `<div class="mt-1"><span class="badge bg-success">
+                        <i class="fas fa-percentage me-1"></i>Saving ${savings}% (${discountInfo.description})
+                    </span></div>`;
+                    break;
+                }
+            }
+            return badgeHtml;
+        }
+        
+        // CRITICAL FIX: Improved order summary calculation
         function updateOrderSummary() {
             let subtotal = 0;
             let totalVolumeDiscount = 0;
@@ -1134,7 +1251,7 @@
             });
             
             const discountedSubtotal = subtotal - totalVolumeDiscount;
-            const tax = discountedSubtotal * 0.0775; // Utah tax
+            const tax = discountedSubtotal * 0.0775; // Utah tax rate
             let total = discountedSubtotal + tax;
             
             // Apply subscription discount if enabled
@@ -1148,30 +1265,46 @@
                 total -= subscriptionDiscount;
             }
             
-            // Update display
-            document.getElementById('subtotal').textContent = '$' + subtotal.toFixed(2);
-            document.getElementById('volumeDiscount').textContent = totalVolumeDiscount > 0 ? '-$' + totalVolumeDiscount.toFixed(2) : '$0.00';
-            document.getElementById('tax').textContent = '$' + tax.toFixed(2);
-            document.getElementById('total').textContent = '$' + total.toFixed(2);
+            // Update display elements with error checking
+            const elements = {
+                'subtotal': '$' + subtotal.toFixed(2),
+                'volumeDiscount': totalVolumeDiscount > 0 ? '-$' + totalVolumeDiscount.toFixed(2) : '$0.00',
+                'tax': '$' + tax.toFixed(2),
+                'total': '$' + total.toFixed(2)
+            };
+            
+            for (const [id, value] of Object.entries(elements)) {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = value;
+                } else {
+                    console.warn(`⚠️ Element ${id} not found`);
+                }
+            }
             
             // Update subscription discount display
             updateSubscriptionDiscountDisplay(subscriptionDiscount, subscriptionFrequency?.value || 'monthly');
+            
+            console.log('✅ Order summary updated - Subtotal:', subtotal.toFixed(2), 'Total:', total.toFixed(2));
         }
         
         // Update subscription discount display
         function updateSubscriptionDiscountDisplay(subscriptionDiscount, frequency) {
+            // Remove existing subscription discount row
             const existingRow = document.querySelector('.subscription-discount-row');
             if (existingRow) existingRow.remove();
             
             if (subscriptionDiscount > 0) {
-                const taxRow = document.getElementById('tax').closest('.summary-row');
-                const subscriptionRow = document.createElement('div');
-                subscriptionRow.className = 'summary-row subscription-discount-row';
-                subscriptionRow.innerHTML = `
-                    <span>Subscription (${frequency === 'quarterly' ? '10%' : '8%'}):</span>
-                    <span class="discount-text">-$${subscriptionDiscount.toFixed(2)}</span>
-                `;
-                taxRow.parentNode.insertBefore(subscriptionRow, taxRow);
+                const taxRow = document.getElementById('tax')?.closest('.summary-row');
+                if (taxRow) {
+                    const subscriptionRow = document.createElement('div');
+                    subscriptionRow.className = 'summary-row subscription-discount-row';
+                    subscriptionRow.innerHTML = `
+                        <span>Subscription (${frequency === 'quarterly' ? '10%' : '8%'}):</span>
+                        <span class="discount-text">-$${subscriptionDiscount.toFixed(2)}</span>
+                    `;
+                    taxRow.parentNode.insertBefore(subscriptionRow, taxRow.nextSibling);
+                }
             }
         }
         
@@ -1212,7 +1345,15 @@
             }
         }
         
-        // Cart management functions
+        // Update recommendations display
+        function updateRecommendations() {
+            const recommendations = document.getElementById('recommendations');
+            if (recommendations) {
+                recommendations.style.display = cartItems.length > 0 ? 'block' : 'none';
+            }
+        }
+        
+        // CRITICAL FIX: Cart management functions with improved error handling
         function updateCartBadge() {
             const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
             const badge = document.getElementById('cartBadge');
@@ -1230,37 +1371,70 @@
             }
         }
         
+        // CRITICAL FIX: Main quantity change function
         function changeQuantity(index, change) {
-            if (cartItems[index]) {
-                cartItems[index].quantity += change;
-                if (cartItems[index].quantity <= 0) {
-                    cartItems.splice(index, 1);
-                }
-                saveCart();
-                updateDisplay();
+            console.log('🔄 Changing quantity for item', index, 'by', change);
+            
+            if (!cartItems[index]) {
+                console.error('❌ Item not found at index', index);
+                return;
             }
+            
+            const newQuantity = cartItems[index].quantity + change;
+            
+            if (newQuantity <= 0) {
+                // Remove item if quantity becomes 0 or negative
+                if (confirm(`Remove "${cartItems[index].name}" from cart?`)) {
+                    cartItems.splice(index, 1);
+                    console.log('🗑️ Item removed from cart');
+                }
+            } else {
+                cartItems[index].quantity = newQuantity;
+                console.log('✅ Quantity updated to', newQuantity);
+            }
+            
+            saveCart();
+            updateDisplay();
         }
         
         function removeItem(index) {
-            if (cartItems[index]) {
+            console.log('🗑️ Removing item at index', index);
+            
+            if (!cartItems[index]) {
+                console.error('❌ Item not found at index', index);
+                return;
+            }
+            
+            if (confirm(`Remove "${cartItems[index].name}" from cart?`)) {
                 cartItems.splice(index, 1);
                 saveCart();
                 updateDisplay();
+                console.log('✅ Item removed successfully');
             }
         }
         
         function clearAllItems() {
-            if (cartItems.length === 0) return;
-            if (confirm('Clear all items from cart?')) {
+            if (cartItems.length === 0) {
+                alert('Your cart is already empty!');
+                return;
+            }
+            
+            if (confirm(`Clear all ${cartItems.length} items from cart?`)) {
                 cartItems = [];
                 saveCart();
                 updateDisplay();
+                console.log('🧹 Cart cleared');
             }
         }
         
         // Add item from products page
         function addToCart(productData) {
-            if (!productData || !productData.name || !productData.price) return;
+            console.log('➕ Adding to cart:', productData);
+            
+            if (!productData || !productData.name || !productData.price) {
+                console.error('❌ Invalid product data');
+                return;
+            }
             
             const existingIndex = cartItems.findIndex(item => 
                 (item.productId && item.productId === productData.productId) || 
@@ -1269,11 +1443,22 @@
             
             if (existingIndex >= 0) {
                 cartItems[existingIndex].quantity += productData.quantity || 1;
+                console.log('✅ Updated existing item quantity');
             } else {
                 cartItems.push({
-                    ...productData,
-                    quantity: productData.quantity || 1
+                    productId: productData.productId || `item_${Date.now()}_${Math.random()}`,
+                    name: productData.name,
+                    price: parseFloat(productData.price),
+                    quantity: productData.quantity || 1,
+                    type: productData.type || productData.productLine || 'organic',
+                    description: productData.description || 'No description available',
+                    emoji: productData.emoji || (productData.type === 'premium' ? '👑' : '🌱'),
+                    size: productData.size || '',
+                    sku: productData.sku || '',
+                    volumeDiscounts: productData.volumeDiscounts || null,
+                    ...productData
                 });
+                console.log('✅ Added new item to cart');
             }
             
             saveCart();
@@ -1289,19 +1474,27 @@
                 toggle.addEventListener('change', function() {
                     frequency.disabled = !this.checked;
                     updateDisplay();
+                    console.log('🔄 Subscription toggled:', this.checked);
                 });
                 
                 frequency.addEventListener('change', function() {
-                    if (toggle.checked) updateDisplay();
+                    if (toggle.checked) {
+                        updateDisplay();
+                        console.log('🔄 Subscription frequency changed:', this.value);
+                    }
                 });
             }
         }
         
         // Utility functions
         function applyCoupon() {
-            const code = document.getElementById('couponCode').value;
-            if (!code.trim()) return;
-            alert(`Coupon "${code}" will be applied at Shopify checkout`);
+            const code = document.getElementById('couponCode')?.value;
+            if (!code || !code.trim()) {
+                alert('Please enter a coupon code');
+                return;
+            }
+            alert(`Coupon "${code.trim()}" will be applied at Shopify checkout`);
+            console.log('🎫 Coupon code entered:', code.trim());
         }
         
         function proceedToCheckout() {
@@ -1310,41 +1503,95 @@
                 return;
             }
             
+            const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const checkoutData = {
                 items: cartItems,
-                subtotal: cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-                timestamp: new Date().toISOString()
+                subtotal: subtotal,
+                timestamp: new Date().toISOString(),
+                customerNote: 'Cart from OHS website'
             };
             
-            localStorage.setItem('ohsCheckout', JSON.stringify(checkoutData));
-            window.location.href = 'checkout.html';
+            try {
+                localStorage.setItem('ohsCheckout', JSON.stringify(checkoutData));
+                console.log('💳 Proceeding to checkout with', cartItems.length, 'items');
+                window.location.href = 'checkout.html';
+            } catch (error) {
+                console.error('❌ Error saving checkout data:', error);
+                alert('Error preparing checkout. Please try again.');
+            }
         }
         
-        // Expose functions globally
+        // Debug functions for testing
+        function debugCart() {
+            console.log('🐛 Current cart state:');
+            console.log('Items:', cartItems);
+            console.log('System ready:', isCartSystemReady);
+            console.log('LocalStorage:', localStorage.getItem('ohsCart'));
+        }
+        
+        function addSampleItem() {
+            const sampleItem = {
+                productId: `sample_${Date.now()}`,
+                name: 'Sample Product',
+                price: 15.99,
+                quantity: 1,
+                type: 'organic',
+                description: 'This is a sample product for testing',
+                emoji: '🧪',
+                size: '16oz',
+                sku: 'SAMPLE-001'
+            };
+            addToCart(sampleItem);
+        }
+        
+        // Expose functions globally for HTML onclick handlers
         window.addToCart = addToCart;
         window.changeQuantity = changeQuantity;
         window.removeItem = removeItem;
         window.clearAllItems = clearAllItems;
         window.applyCoupon = applyCoupon;
         window.proceedToCheckout = proceedToCheckout;
+        window.debugCart = debugCart;
+        window.addSampleItem = addSampleItem;
         
-        // Initialize
+        // Initialize cart system
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Cart page initializing...');
             loadCart();
             handleSubscriptionToggle();
-            console.log('✅ Cart page ready!');
+            
+            // Add test items button for debugging
+            if (window.location.search.includes('debug=true')) {
+                const testButton = document.createElement('button');
+                testButton.textContent = 'Add Sample Item';
+                testButton.className = 'btn btn-warning btn-sm';
+                testButton.onclick = addSampleItem;
+                document.querySelector('.cart-container').prepend(testButton);
+                
+                const debugButton = document.createElement('button');
+                debugButton.textContent = 'Debug Cart';
+                debugButton.className = 'btn btn-info btn-sm ms-2';
+                debugButton.onclick = debugCart;
+                document.querySelector('.cart-container').prepend(debugButton);
+            }
+            
+            console.log('✅ Cart page ready! Cart has', cartItems.length, 'items');
         });
         
         // Listen for cart updates from other pages
         window.addEventListener('storage', function(e) {
             if (e.key === 'ohsCart') {
-                console.log('📢 Cart updated from another page');
+                console.log('📢 Cart updated from another page, reloading...');
                 loadCart();
             }
         });
         
-        console.log('✅ Simplified cart system loaded!');
+        // Error handling for global errors
+        window.addEventListener('error', function(e) {
+            console.error('❌ JavaScript error:', e.error);
+        });
+        
+        console.log('✅ Fixed cart system loaded and ready!');
     </script>
 </body>
 </html>
