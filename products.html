@@ -239,13 +239,6 @@
                         <i class="fas fa-user"></i>Account
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#" onclick="toggleAccountMode('business')">
-                            <i class="fas fa-building"></i>Business Pricing
-                        </a></li>
-                        <li><a class="dropdown-item" href="#" onclick="toggleAccountMode('consumer')">
-                            <i class="fas fa-user"></i>Consumer Pricing
-                        </a></li>
-                        <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="auth/login.html">
                             <i class="fas fa-sign-in-alt"></i>Login
                             <span class="badge bg-warning ms-1">Coming Soon</span>
@@ -260,7 +253,8 @@
         </div>
     </div>
 </nav>
-<!-- CLEANED UP Hero Section - Same Style, Better Structure -->
+
+<!-- Hero Section -->
 <section class="hero-section">
     <div class="container text-center">
         <h1 class="display-4 fw-bold mb-3">Professional Hypochlorous Acid Products</h1>
@@ -337,21 +331,8 @@
     </div>
 </section>
 
-<!-- Account Mode Indicator -->
-<section class="account-section">
-    <div class="container">
-        <div id="accountModeIndicator" class="text-center mb-3 p-2 bg-light rounded">
-            <i class="fas fa-user me-2"></i>
-            <span id="accountModeText">Consumer Account</span>
-            <button class="btn btn-sm btn-outline-primary ms-2" onclick="toggleAccountMode('business')" id="accountToggleBtn">
-                Switch to Business Pricing
-            </button>
-        </div>
-    </div>
-</section>
-
 <style>
-    /* Keep Your Existing Hero Styling */
+    /* Hero Section Styling */
     .hero-section {
         background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
         color: white;
@@ -426,13 +407,6 @@
         margin: 0 auto;
     }
 
-    /* Account Section */
-    .account-section {
-        background: var(--gray-50);
-        padding: 1rem 0;
-        border-bottom: 1px solid var(--gray-200);
-    }
-
     /* Mobile Responsiveness */
     @media (max-width: 768px) {
         .hero-stats {
@@ -462,7 +436,8 @@
         }
     }
 </style>
-<!-- MARKETING-OPTIMIZED Filter Section -->
+
+<!-- Filter Section -->
 <section class="filter-section">
     <div class="container">
         <!-- Primary Filter Row -->
@@ -472,7 +447,7 @@
                     <i class="fas fa-flask me-2 text-primary"></i>
                     Find Your Perfect Solution
                 </h3>
-                <p class="filter-subtitle text-muted mb-0">Professional-grade products for every need</p>
+                <p class="filter-subtitle text-muted mb-0">Professional-grade products with wholesale pricing</p>
             </div>
             <div class="col-md-6">
                 <div class="primary-filter">
@@ -555,7 +530,7 @@
                                 <i class="fas fa-check-circle me-2"></i>
                                 Showing <span id="visibleProductCount">57</span> professional products
                             </strong>
-                            <span id="accountPricingNote" class="text-muted ms-2">(Consumer pricing - Switch to Business for wholesale rates)</span>
+                            <span class="text-muted ms-2">| Wholesale pricing available at quantity thresholds</span>
                         </div>
                         <div class="shipping-info mt-1">
                             <small class="text-success">
@@ -602,7 +577,7 @@
 </section>
 
 <style>
-    /* Marketing-Optimized Filter Section */
+    /* Filter Section Styling */
     .filter-section {
         background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 50%, #f1f5f9 100%);
         padding: 2.5rem 0;
@@ -859,7 +834,8 @@
         animation: tagSelected 0.3s ease;
     }
 </style>
-<!-- PRODUCTS DISPLAY SECTION - Preserving Existing Cart Integration -->
+
+<!-- Products Display Section -->
 <main class="products-main" id="productsMain">
     <div class="container-fluid">
         <!-- Loading State -->
@@ -884,10 +860,9 @@
             </div>
         </div>
 
-        <!-- Products Container - PRESERVE EXISTING STRUCTURE -->
+        <!-- Products Container -->
         <div id="productSections">
             <!-- Products dynamically loaded from cart.js PRODUCT_CATALOG -->
-            <!-- This preserves your existing loadProducts() functionality -->
         </div>
 
         <!-- No Results State -->
@@ -946,7 +921,7 @@
     </div>
 </main>
 
-<!-- FUNCTIONAL CART PREVIEW - Fixed Animation -->
+<!-- Cart Preview -->
 <div id="cartPreview" class="cart-preview">
     <div class="cart-header d-flex justify-content-between align-items-center mb-3">
         <h6 class="cart-title mb-0">
@@ -974,9 +949,9 @@
                 <span>Subtotal:</span>
                 <span id="cartSubtotal">$0.00</span>
             </div>
-            <div class="d-flex justify-content-between text-success mb-2" id="businessDiscountRow" style="display: none;">
-                <span>Business Discount:</span>
-                <span id="cartBusinessDiscount">-$0.00</span>
+            <div class="d-flex justify-content-between text-success mb-2" id="wholesaleDiscountRow" style="display: none;">
+                <span>Wholesale Discount:</span>
+                <span id="cartWholesaleDiscount">-$0.00</span>
             </div>
             <div class="d-flex justify-content-between mb-2">
                 <span>Shipping:</span>
@@ -1067,11 +1042,11 @@
         border: 1px solid rgba(46, 94, 170, 0.1);
     }
 
-    /* FUNCTIONAL CART PREVIEW */
+    /* Cart Preview */
     .cart-preview {
         position: fixed;
         top: 100px;
-        right: -420px; /* Start hidden */
+        right: -420px;
         width: 400px;
         max-height: 80vh;
         background: white;
@@ -1086,7 +1061,7 @@
     }
 
     .cart-preview.show {
-        right: 0; /* Slide in */
+        right: 0;
     }
 
     .cart-overlay {
@@ -1263,12 +1238,12 @@
         }
     }
 
-    /* Product Sections - Preserve Existing Styling */
+    /* Product Sections */
     #productSections {
         margin-top: 2rem;
     }
 
-    /* Preserve existing product card styling from your original CSS */
+    /* Product Cards */
     .product-card {
         background: white;
         border: none;
@@ -1288,7 +1263,7 @@
         border-color: var(--primary-blue);
     }
 
-    /* Section Headers - Preserve existing styling */
+    /* Section Headers */
     .section-header {
         text-align: center;
         padding: 2.5rem 0 1.5rem;
@@ -1308,6 +1283,58 @@
         border-radius: 1rem;
     }
 
+    /* Wholesale Threshold Badge */
+    .wholesale-threshold-badge {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+        margin-bottom: 0.5rem;
+        display: inline-block;
+    }
+
+    .wholesale-threshold-badge i {
+        margin-right: 0.5rem;
+    }
+
+    /* Price Display with Wholesale */
+    .price-display {
+        background: rgba(46, 94, 170, 0.05);
+        padding: 1rem;
+        border-radius: 0.75rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .price-display.wholesale-active {
+        background: rgba(34, 197, 94, 0.1);
+        border: 2px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .current-price {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-blue);
+        margin-bottom: 0.25rem;
+    }
+
+    .price-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        font-weight: 600;
+        color: var(--gray-600);
+    }
+
+    .wholesale-achieved {
+        color: var(--success-green);
+        font-weight: 700;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+    }
+
     /* Ensure compatibility with existing product loading functions */
     .product-card[data-visible="false"] {
         display: none !important;
@@ -1317,15 +1344,16 @@
         display: block !important;
     }
 </style>
+
 <!-- Bootstrap JS Bundle -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
 <!-- Load Cart System -->
 <script src="shop/js/cart.js"></script>
 
-<!-- COMPLETE PRODUCTS PAGE JAVASCRIPT -->
+<!-- Products Page JavaScript -->
 <script>
-    // Global variables - PRESERVE EXISTING STRUCTURE
+    // Global variables
     let currentFilters = { 
         certification: 'all', 
         useCase: [], 
@@ -1335,7 +1363,7 @@
     let productQuantities = {};
     let cartVisible = false;
 
-    // Wait for cart system to load - PRESERVE EXISTING
+    // Wait for cart system to load
     function waitForCartSystem() {
         return new Promise((resolve, reject) => {
             let attempts = 0;
@@ -1359,12 +1387,11 @@
         });
     }
 
-    // Initialize on DOM load - PRESERVE EXISTING
+    // Initialize on DOM load
     document.addEventListener('DOMContentLoaded', async function() {
         try {
             await waitForCartSystem();
             loadProducts();
-            updateAccountDisplay(getAccountType());
             updateCartBadges();
             updateProductCounts();
             initializeEventListeners();
@@ -1375,38 +1402,479 @@
         }
     });
 
-    // Initialize new event listeners
+    // Initialize event listeners
     function initializeEventListeners() {
-        // Update cart preview when cart changes
         document.addEventListener('cartUpdated', function() {
             updateCartPreview();
             updateCartBadges();
         });
     }
 
-    // NEW: Filter products function
+    // Load products function
+    function loadProducts() {
+        const productsContainer = document.getElementById('productSections');
+        const loadingDiv = document.getElementById('productsLoading');
+        
+        if (loadingDiv) loadingDiv.style.display = 'none';
+        
+        // Separate products by type
+        const organicProducts = [];
+        const premiumProducts = [];
+        
+        Object.values(PRODUCT_CATALOG).forEach(product => {
+            if (product.productLine === 'organic' || product.type === 'organic') {
+                organicProducts.push(product);
+            } else {
+                premiumProducts.push(product);
+            }
+            productQuantities[product.id] = 1;
+        });
+        
+        // Generate HTML
+        let html = '';
+        if (organicProducts.length > 0) {
+            html += createProductSection('organic', 'USDA Organic Line', organicProducts);
+        }
+        if (premiumProducts.length > 0) {
+            html += createProductSection('premium', 'EPA Premium Line', premiumProducts);
+        }
+        
+        if (productsContainer) {
+            productsContainer.innerHTML = html;
+        }
+        
+        updateProductCounts();
+    }
+
+    // Create product section
+    function createProductSection(type, title, products) {
+        const sectionClass = type === 'organic' ? 'organic' : 'premium';
+        const icon = type === 'organic' ? 'leaf' : 'crown';
+        
+        let html = `
+            <section id="${type}-products" class="mb-4">
+                <div class="section-header ${sectionClass}">
+                    <h2 class="section-title">
+                        <i class="fas fa-${icon} me-2"></i>${title}
+                    </h2>
+                    <p class="section-subtitle">${type === 'organic' ? 'Family-safe USDA Certified Organic' : 'Professional EPA Registered'}</p>
+                </div>
+                <div class="container">
+                    <div class="row">
+        `;
+        
+        products.forEach(product => {
+            html += createProductCard(product, type);
+        });
+        
+        html += '</div></div></section>';
+        return html;
+    }
+
+    // Create product card with wholesale threshold display
+    function createProductCard(product, type) {
+        const retail = product.pricing?.retail || product.price || 0;
+        const wholesale = product.pricing?.wholesale || (retail * 0.7);
+        const wholesaleThreshold = product.wholesaleThreshold || 1;
+        
+        const badgeColor = type === 'organic' ? '#4ADE80' : '#f59e0b';
+        const badgeText = type === 'organic' ? 'USDA ORGANIC' : 'EPA PREMIUM';
+        const certIcon = type === 'organic' ? 'leaf' : 'shield-alt';
+        
+        // Determine use cases for filtering
+        const useCases = [];
+        if (product.tags) {
+            if (product.tags.includes('commercial') || product.tags.includes('professional')) useCases.push('commercial');
+            if (product.tags.includes('residential') || product.tags.includes('family')) useCases.push('residential');
+            if (product.tags.includes('veterinary') || product.tags.includes('pet')) useCases.push('veterinary');
+            if (product.tags.includes('bulk') || product.tags.includes('industrial')) useCases.push('bulk');
+        }
+        // Default use cases if none specified
+        if (useCases.length === 0) {
+            if (type === 'organic') useCases.push('residential', 'veterinary');
+            if (type === 'premium') useCases.push('commercial', 'bulk');
+        }
+        
+        return `
+            <div class="col-xl-4 col-lg-6 col-md-6 mb-3">
+                <div class="product-card" 
+                     data-product-id="${product.id}"
+                     data-product-type="${type}"
+                     data-certification="${type === 'organic' ? 'usda' : 'epa'}"
+                     data-use-cases="${useCases.join(',')}"
+                     data-sku="${product.sku || product.id}"
+                     data-price="${retail}"
+                     data-visible="true">
+                    
+                    <div class="product-badge" style="background: ${badgeColor}; color: white;">
+                        <i class="fas fa-${certIcon} me-1"></i>${badgeText}
+                    </div>
+                    
+                    <div class="card-body p-3 text-center">
+                        <div class="product-icon mb-2">${product.emoji || '🧴'}</div>
+                        <h5 class="product-title mb-2">${product.name}</h5>
+                        
+                        <p class="text-muted small mb-2">${product.description || 'Professional hypochlorous acid solution'}</p>
+                        
+                        <!-- Wholesale Threshold Badge -->
+                        <div class="wholesale-threshold-badge">
+                            <i class="fas fa-box-open"></i>
+                            Wholesale at ${wholesaleThreshold}+ units
+                        </div>
+                        
+                        <!-- Dynamic Price Display -->
+                        <div class="price-display" id="priceDisplay-${product.id}">
+                            <div class="current-price" id="currentPrice-${product.id}">$${retail.toFixed(2)}</div>
+                            <div class="price-label" id="priceLabel-${product.id}">Retail Price</div>
+                            <div class="text-muted small">
+                                Wholesale: $${wholesale.toFixed(2)} (Save ${Math.round((1 - wholesale/retail) * 100)}%)
+                            </div>
+                        </div>
+                        
+                        <div class="text-muted small mb-2">SKU: ${product.sku || product.id}</div>
+                        
+                        <ul class="list-unstyled small mb-2">
+                            <li><i class="fas fa-check text-success me-1"></i>${type === 'organic' ? 'Family & Pet Safe' : 'Commercial Grade'}</li>
+                            <li><i class="fas fa-check text-success me-1"></i>Utah Made</li>
+                            <li><i class="fas fa-check text-success me-1"></i>Free Shipping</li>
+                        </ul>
+                        
+                        <div class="product-controls">
+                            <div class="quantity-controls mb-2">
+                                <div class="input-group justify-content-center">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="changeQuantity('${product.id}', -1)" type="button">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="number" class="form-control form-control-sm text-center" style="max-width: 70px;" 
+                                           id="qty-${product.id}" value="1" min="1" max="999"
+                                           onchange="setQuantity('${product.id}', this.value)">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="changeQuantity('${product.id}', 1)" type="button">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-success w-100 mb-2" onclick="addToCartFromProducts('${product.id}')">
+                                <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                            </button>
+                            
+                            <div class="d-flex gap-1 justify-content-center">
+                                <a href="tel:+18017125663" class="btn btn-sm btn-outline-info">
+                                    <i class="fas fa-phone me-1"></i>Help
+                                </a>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="showProductInfo('${product.id}')">
+                                    <i class="fas fa-info me-1"></i>Info
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Change quantity function with wholesale price update
+    function changeQuantity(productId, change) {
+        const currentQty = productQuantities[productId] || 1;
+        const newQty = Math.max(1, Math.min(999, currentQty + change));
+        setQuantity(productId, newQty);
+    }
+
+    // Set quantity and update price display
+    function setQuantity(productId, value) {
+        const qty = Math.max(1, Math.min(999, parseInt(value) || 1));
+        productQuantities[productId] = qty;
+        
+        const input = document.getElementById(`qty-${productId}`);
+        if (input) input.value = qty;
+        
+        // Update price display based on wholesale threshold
+        updateProductPriceDisplay(productId, qty);
+    }
+
+    // Update product price display based on quantity
+    function updateProductPriceDisplay(productId, quantity) {
+        const product = PRODUCT_CATALOG[productId];
+        if (!product) return;
+        
+        const wholesaleInfo = calculateWholesaleRate(productId, quantity);
+        const priceDisplay = document.getElementById(`priceDisplay-${productId}`);
+        const currentPrice = document.getElementById(`currentPrice-${productId}`);
+        const priceLabel = document.getElementById(`priceLabel-${productId}`);
+        
+        if (currentPrice) {
+            currentPrice.textContent = `$${wholesaleInfo.price.toFixed(2)}`;
+        }
+        
+        if (priceLabel) {
+            priceLabel.textContent = wholesaleInfo.isWholesale ? 'Wholesale Price' : 'Retail Price';
+        }
+        
+        if (priceDisplay) {
+            if (wholesaleInfo.isWholesale) {
+                priceDisplay.classList.add('wholesale-active');
+                
+                // Add wholesale achieved message if it doesn't exist
+                if (!priceDisplay.querySelector('.wholesale-achieved')) {
+                    const achievedMsg = document.createElement('div');
+                    achievedMsg.className = 'wholesale-achieved';
+                    achievedMsg.innerHTML = '<i class="fas fa-check-circle me-1"></i>Wholesale pricing unlocked!';
+                    priceDisplay.appendChild(achievedMsg);
+                }
+            } else {
+                priceDisplay.classList.remove('wholesale-active');
+                const achievedMsg = priceDisplay.querySelector('.wholesale-achieved');
+                if (achievedMsg) achievedMsg.remove();
+            }
+        }
+    }
+
+    // Add to cart from products
+    function addToCartFromProducts(productId) {
+        const product = PRODUCT_CATALOG[productId];
+        if (!product) return;
+        
+        const quantity = productQuantities[productId] || 1;
+        const wholesaleInfo = calculateWholesaleRate(productId, quantity);
+        const price = wholesaleInfo.price;
+        
+        try {
+            const cartItem = {
+                productId: product.id,
+                name: product.name,
+                price: price,
+                quantity: quantity,
+                emoji: product.emoji || '🧴',
+                type: product.type || product.productLine,
+                sku: product.sku || product.id,
+                addedAt: Date.now()
+            };
+            
+            let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+            const existingIndex = cart.findIndex(item => item.productId === product.id);
+            
+            if (existingIndex >= 0) {
+                cart[existingIndex].quantity += quantity;
+            } else {
+                cart.push(cartItem);
+            }
+            
+            localStorage.setItem('ohsCart', JSON.stringify(cart));
+            updateCartBadges();
+            updateCartPreview();
+            
+            showNotification(`Added ${quantity}x ${product.name}!`, 'success');
+        } catch (error) {
+            console.error('Failed to add to cart:', error);
+            showNotification('Failed to add item. Please try again.', 'error');
+        }
+    }
+
+    // Update cart preview with wholesale discounts
+    function updateCartPreview() {
+        const cartItems = document.getElementById('cartItems');
+        const cartSummary = document.getElementById('cartSummary');
+        
+        if (!cartItems || !cartSummary) return;
+        
+        try {
+            const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="empty-cart text-center py-4">
+                        <i class="fas fa-shopping-cart fa-3x mb-3 text-muted"></i>
+                        <h6 class="text-muted">Your cart is empty</h6>
+                        <p class="text-muted small">Add products to get started</p>
+                    </div>
+                `;
+                cartSummary.style.display = 'none';
+                return;
+            }
+            
+            // Show cart items
+            let itemsHTML = '';
+            let subtotal = 0;
+            let totalWholesaleSavings = 0;
+            
+            cart.forEach(item => {
+                const product = PRODUCT_CATALOG[item.productId];
+                if (!product) return;
+                
+                const wholesaleInfo = calculateWholesaleRate(item.productId, item.quantity);
+                const itemTotal = wholesaleInfo.price * item.quantity;
+                subtotal += itemTotal;
+                
+                // Calculate savings if wholesale rate applied
+                if (wholesaleInfo.isWholesale) {
+                    const retailTotal = product.pricing.retail * item.quantity;
+                    const savings = retailTotal - itemTotal;
+                    totalWholesaleSavings += savings;
+                }
+                
+                itemsHTML += `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-details">
+                                ${item.sku ? `SKU: ${item.sku} • ` : ''}
+                                $${wholesaleInfo.price.toFixed(2)} each
+                                ${wholesaleInfo.isWholesale ? 
+                                    `<span class="badge bg-success ms-1">Wholesale</span>` : 
+                                    `<small class="text-muted">(${product.wholesaleThreshold - item.quantity} more for wholesale)</small>`
+                                }
+                            </div>
+                        </div>
+                        <div class="cart-item-controls">
+                            <button class="cart-qty-btn" onclick="updateCartItemQuantity('${item.productId}', -1)" 
+                                    ${item.quantity <= 1 ? 'disabled' : ''}>
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span class="cart-qty-display">${item.quantity}</span>
+                            <button class="cart-qty-btn" onclick="updateCartItemQuantity('${item.productId}', 1)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="cart-item-remove" onclick="removeCartItem('${item.productId}')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            cartItems.innerHTML = itemsHTML;
+            
+            // Update cart summary
+            document.getElementById('cartSubtotal').textContent = `$${subtotal.toFixed(2)}`;
+            
+            // Show wholesale discount if applicable
+            if (totalWholesaleSavings > 0) {
+                document.getElementById('cartWholesaleDiscount').textContent = `-$${totalWholesaleSavings.toFixed(2)}`;
+                document.getElementById('wholesaleDiscountRow').style.display = 'flex';
+            } else {
+                document.getElementById('wholesaleDiscountRow').style.display = 'none';
+            }
+            
+            // Calculate final total
+            const finalTotal = subtotal;
+            document.getElementById('cartTotal').textContent = `$${finalTotal.toFixed(2)}`;
+            
+            // Update shipping
+            const shippingElement = document.getElementById('cartShipping');
+            if (finalTotal >= 75) {
+                shippingElement.textContent = 'FREE';
+                shippingElement.className = 'text-success';
+            } else {
+                const shippingCost = 8.99;
+                shippingElement.textContent = `$${shippingCost.toFixed(2)}`;
+                shippingElement.className = 'text-muted';
+                document.getElementById('cartTotal').textContent = `$${(finalTotal + shippingCost).toFixed(2)}`;
+            }
+            
+            cartSummary.style.display = 'block';
+            
+        } catch (error) {
+            console.error('Error updating cart preview:', error);
+        }
+    }
+
+    // Update cart item quantity
+    function updateCartItemQuantity(productId, change) {
+        try {
+            let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+            const item = cart.find(item => item.productId === productId);
+            
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    cart = cart.filter(item => item.productId !== productId);
+                } else {
+                    // Update price based on new quantity
+                    const wholesaleInfo = calculateWholesaleRate(productId, item.quantity);
+                    item.price = wholesaleInfo.price;
+                }
+                
+                localStorage.setItem('ohsCart', JSON.stringify(cart));
+                updateCartPreview();
+                updateCartBadges();
+                
+                document.dispatchEvent(new CustomEvent('cartUpdated'));
+            }
+        } catch (error) {
+            console.error('Error updating cart item:', error);
+        }
+    }
+
+    // Remove cart item
+    function removeCartItem(productId) {
+        try {
+            let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+            cart = cart.filter(item => item.productId !== productId);
+            
+            localStorage.setItem('ohsCart', JSON.stringify(cart));
+            updateCartPreview();
+            updateCartBadges();
+            
+            document.dispatchEvent(new CustomEvent('cartUpdated'));
+            
+            showNotification('Item removed from cart', 'info');
+        } catch (error) {
+            console.error('Error removing cart item:', error);
+        }
+    }
+
+    // Clear cart
+    function clearCart() {
+        if (confirm('Are you sure you want to clear your cart?')) {
+            localStorage.setItem('ohsCart', JSON.stringify([]));
+            updateCartPreview();
+            updateCartBadges();
+            
+            document.dispatchEvent(new CustomEvent('cartUpdated'));
+            
+            showNotification('Cart cleared', 'info');
+        }
+    }
+
+    // Toggle cart visibility
+    function toggleCart() {
+        const cartPreview = document.getElementById('cartPreview');
+        const cartOverlay = document.getElementById('cartOverlay');
+        
+        if (!cartPreview || !cartOverlay) return;
+        
+        cartVisible = !cartVisible;
+        
+        if (cartVisible) {
+            cartPreview.classList.add('show');
+            cartOverlay.classList.add('show');
+            updateCartPreview();
+        } else {
+            cartPreview.classList.remove('show');
+            cartOverlay.classList.remove('show');
+        }
+    }
+
+    // Filter products
     function filterProducts(filterValue) {
         currentFilters.certification = filterValue;
         applyAllFilters();
         
-        // Update filter dropdown
         const filterSelect = document.getElementById('productFilter');
         if (filterSelect) filterSelect.value = filterValue;
     }
 
-    // NEW: Quick filter function for use case tags
+    // Quick filter for use cases
     function quickFilter(useCase) {
         const tagButton = document.querySelector(`[onclick="quickFilter('${useCase}')"]`);
         
         if (currentFilters.useCase.includes(useCase)) {
-            // Remove filter
             currentFilters.useCase = currentFilters.useCase.filter(uc => uc !== useCase);
             if (tagButton) {
                 tagButton.classList.remove('active');
                 tagButton.classList.add('btn-outline-primary');
             }
         } else {
-            // Add filter
             currentFilters.useCase.push(useCase);
             if (tagButton) {
                 tagButton.classList.add('active');
@@ -1418,7 +1886,7 @@
         applyAllFilters();
     }
 
-    // NEW: Main filter application function
+    // Apply all filters
     function applyAllFilters() {
         const products = document.querySelectorAll('.product-card');
         let visibleCount = 0;
@@ -1426,9 +1894,7 @@
         products.forEach(product => {
             let isVisible = true;
             
-            // Get product data
-            const productType = product.getAttribute('data-product-type') || 
-                               product.getAttribute('data-certification') || '';
+            const productType = product.getAttribute('data-product-type') || '';
             const productUseCases = product.getAttribute('data-use-cases') || '';
             const productText = product.textContent.toLowerCase();
             const productSku = product.getAttribute('data-sku') || '';
@@ -1436,11 +1902,9 @@
             // Apply certification filter
             if (currentFilters.certification !== 'all') {
                 if (currentFilters.certification === 'popular') {
-                    // Show most popular products (you can define this logic)
                     const isPopular = product.getAttribute('data-popular') === 'true';
                     if (!isPopular) isVisible = false;
                 } else if (currentFilters.certification === 'new') {
-                    // Show new arrivals
                     const isNew = product.getAttribute('data-new') === 'true';
                     if (!isNew) isVisible = false;
                 } else {
@@ -1466,19 +1930,14 @@
                 if (!searchMatch) isVisible = false;
             }
             
-            // Show/hide product
             product.style.display = isVisible ? 'block' : 'none';
             product.setAttribute('data-visible', isVisible ? 'true' : 'false');
             if (isVisible) visibleCount++;
         });
         
-        // Update visible count
         updateVisibleProductCount(visibleCount);
-        
-        // Show/hide no results message
         toggleNoResultsMessage(visibleCount === 0);
         
-        // Hide popular searches when filtering
         const popularSearches = document.getElementById('popularSearches');
         if (popularSearches) {
             popularSearches.style.display = 
@@ -1487,19 +1946,18 @@
         }
     }
 
-    // UPDATED: Search products function
+    // Search products
     function searchProducts(query) {
         currentFilters.searchTerm = query.toLowerCase();
         applyAllFilters();
         
-        // Update search input
         const searchInput = document.getElementById('productSearch');
         if (searchInput && searchInput.value !== query) {
             searchInput.value = query;
         }
     }
 
-    // NEW: Clear search function
+    // Clear search
     function clearSearch() {
         const searchInput = document.getElementById('productSearch');
         if (searchInput) searchInput.value = '';
@@ -1507,7 +1965,7 @@
         applyAllFilters();
     }
 
-    // NEW: Sort products function
+    // Sort products
     function sortProducts(sortBy) {
         currentFilters.sortBy = sortBy;
         
@@ -1525,21 +1983,14 @@
             products.sort((a, b) => {
                 switch (sortBy) {
                     case 'name':
-                        const nameA = a.querySelector('.product-title, h5')?.textContent || '';
-                        const nameB = b.querySelector('.product-title, h5')?.textContent || '';
+                        const nameA = a.querySelector('.product-title')?.textContent || '';
+                        const nameB = b.querySelector('.product-title')?.textContent || '';
                         return nameA.localeCompare(nameB);
-                        
-                    case 'name-desc':
-                        const nameDescA = a.querySelector('.product-title, h5')?.textContent || '';
-                        const nameDescB = b.querySelector('.product-title, h5')?.textContent || '';
-                        return nameDescB.localeCompare(nameDescA);
                         
                     case 'price-low':
                     case 'price-high':
-                        const priceA = parseFloat(a.getAttribute('data-price') || 
-                                     a.querySelector('.price-retail')?.textContent?.replace(/[^0-9.]/g, '') || 0);
-                        const priceB = parseFloat(b.getAttribute('data-price') || 
-                                     b.querySelector('.price-retail')?.textContent?.replace(/[^0-9.]/g, '') || 0);
+                        const priceA = parseFloat(a.getAttribute('data-price') || 0);
+                        const priceB = parseFloat(b.getAttribute('data-price') || 0);
                         return sortBy === 'price-low' ? priceA - priceB : priceB - priceA;
                         
                     case 'popular':
@@ -1549,10 +2000,8 @@
                         
                     case 'size-small':
                     case 'size-large':
-                        const sizeA = parseFloat(a.getAttribute('data-size') || 
-                                   a.textContent.match(/(\d+)oz/)?.[1] || 0);
-                        const sizeB = parseFloat(b.getAttribute('data-size') || 
-                                   b.textContent.match(/(\d+)oz/)?.[1] || 0);
+                        const sizeA = parseFloat(a.textContent.match(/(\d+)oz/)?.[1] || 0);
+                        const sizeB = parseFloat(b.textContent.match(/(\d+)oz/)?.[1] || 0);
                         return sortBy === 'size-small' ? sizeA - sizeB : sizeB - sizeA;
                         
                     default:
@@ -1560,14 +2009,13 @@
                 }
             });
             
-            // Re-append sorted products
             products.forEach(product => {
-                container.appendChild(product.parentElement); // Append the col wrapper
+                container.appendChild(product.parentElement);
             });
         });
     }
 
-    // NEW: Clear all filters
+    // Clear all filters
     function clearAllFilters() {
         currentFilters = {
             certification: 'all',
@@ -1576,7 +2024,6 @@
             sortBy: 'popular'
         };
         
-        // Reset UI elements
         const searchInput = document.getElementById('productSearch');
         const filterSelect = document.getElementById('productFilter');
         const sortSelect = document.getElementById('productSort');
@@ -1585,7 +2032,6 @@
         if (filterSelect) filterSelect.value = 'all';
         if (sortSelect) sortSelect.value = 'popular';
         
-        // Reset tag buttons
         document.querySelectorAll('.tag-btn').forEach(btn => {
             btn.classList.remove('active', 'btn-primary');
             btn.classList.add('btn-outline-primary');
@@ -1594,7 +2040,7 @@
         applyAllFilters();
     }
 
-    // NEW: Scroll to products
+    // Scroll to products
     function scrollToProducts() {
         const productsSection = document.getElementById('productSections');
         if (productsSection) {
@@ -1605,292 +2051,7 @@
         }
     }
 
-    // ENHANCED: Toggle cart with animation
-    function toggleCart() {
-        const cartPreview = document.getElementById('cartPreview');
-        const cartOverlay = document.getElementById('cartOverlay');
-        
-        if (!cartPreview || !cartOverlay) return;
-        
-        cartVisible = !cartVisible;
-        
-        if (cartVisible) {
-            cartPreview.classList.add('show');
-            cartOverlay.classList.add('show');
-            updateCartPreview();
-        } else {
-            cartPreview.classList.remove('show');
-            cartOverlay.classList.remove('show');
-        }
-    }
-
-           
-// NEW: Update cart preview with actual items
-function updateCartPreview() {
-    const cartItems = document.getElementById('cartItems');
-    const cartSummary = document.getElementById('cartSummary');
-    
-    if (!cartItems || !cartSummary) return;
-    
-    try {
-        const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-        
-        if (cart.length === 0) {
-            cartItems.innerHTML = `
-                <div class="empty-cart text-center py-4">
-                    <i class="fas fa-shopping-cart fa-3x mb-3 text-muted"></i>
-                    <h6 class="text-muted">Your cart is empty</h6>
-                    <p class="text-muted small">Add products to get started</p>
-                </div>
-            `;
-            cartSummary.style.display = 'none';
-            return;
-        }
-        
-        // Show cart items
-        let itemsHTML = '';
-        let subtotal = 0;
-        
-cart.forEach(item => {
-    // Calculate volume discount for this item
-    const product = PRODUCT_CATALOG[item.productId];
-    const volumeDiscount = calculateVolumeDiscount(item.productId, item.quantity);
-    
-    // Apply volume discount to price
-    const originalPrice = item.price;
-    const discountedPrice = originalPrice * (1 - volumeDiscount.discount);
-    const itemTotal = discountedPrice * item.quantity;
-    const itemSavings = (originalPrice - discountedPrice) * item.quantity;
-    
-    subtotal += itemTotal;
-    
-    itemsHTML += `
-        <div class="cart-item">
-            <div class="cart-item-info">
-                <div class="cart-item-name">${item.name}</div>
-                <div class="cart-item-details">
-                    ${item.sku ? `SKU: ${item.sku} • ` : ''}
-                    ${volumeDiscount.discount > 0 ? 
-                        `<span class="text-success">$${discountedPrice.toFixed(2)} each (${volumeDiscount.label})</span>` :
-                        `$${originalPrice.toFixed(2)} each`
-                    }
-                    ${itemSavings > 0 ? `<br><small class="text-success">Saving $${itemSavings.toFixed(2)}</small>` : ''}
-                </div>
-            </div>
-            <div class="cart-item-controls">
-                <button class="cart-qty-btn" onclick="updateCartItemQuantity('${item.productId}', -1)" 
-                        ${item.quantity <= 1 ? 'disabled' : ''}>
-                    <i class="fas fa-minus"></i>
-                </button>
-                <span class="cart-qty-display">${item.quantity}</span>
-                <button class="cart-qty-btn" onclick="updateCartItemQuantity('${item.productId}', 1)">
-                    <i class="fas fa-plus"></i>
-                </button>
-                <button class="cart-item-remove" onclick="removeCartItem('${item.productId}')">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        </div>
-    `;
-});
-
-// Add these calls AFTER the cart.forEach loop and BEFORE calculating business discount:
-updateVolumeProgress();
-const totalVolumeSavings = updateVolumeSavingsDisplay();
-
-        cartItems.innerHTML = itemsHTML;
-        
-        // Update cart summary
-        const accountType = getAccountType();
-        const businessDiscount = accountType === 'business' ? subtotal * 0.1 : 0;
-        const finalTotal = subtotal - businessDiscount;
-        
-        document.getElementById('cartSubtotal').textContent = `$${subtotal.toFixed(2)}`;
-        document.getElementById('cartTotal').textContent = `$${finalTotal.toFixed(2)}`;
-        
-        if (businessDiscount > 0) {
-            document.getElementById('cartBusinessDiscount').textContent = `-$${businessDiscount.toFixed(2)}`;
-            document.getElementById('businessDiscountRow').style.display = 'flex';
-        } else {
-            document.getElementById('businessDiscountRow').style.display = 'none';
-        }
-        
-        // Update shipping
-        const shippingElement = document.getElementById('cartShipping');
-        if (finalTotal >= 75) {
-            shippingElement.textContent = 'FREE FOR QUALIFIED ORDERS';
-            shippingElement.className = 'text-success';
-        } else {
-            const shippingCost = 8.99;
-            shippingElement.textContent = `$${shippingCost.toFixed(2)}`;
-            shippingElement.className = 'text-muted';
-            document.getElementById('cartTotal').textContent = `$${(finalTotal + shippingCost).toFixed(2)}`;
-        }
-        
-        cartSummary.style.display = 'block';
-        
-    } catch (error) {
-        console.error('Error updating cart preview:', error);
-    }
-}
-
-    // NEW: Update cart item quantity
-    function updateCartItemQuantity(productId, change) {
-        try {
-            let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-            const item = cart.find(item => item.productId === productId);
-            
-            if (item) {
-                item.quantity += change;
-                if (item.quantity <= 0) {
-                    cart = cart.filter(item => item.productId !== productId);
-                }
-                
-                localStorage.setItem('ohsCart', JSON.stringify(cart));
-                updateCartPreview();
-                updateCartBadges();
-                
-                // Dispatch cart updated event
-                document.dispatchEvent(new CustomEvent('cartUpdated'));
-            }
-        } catch (error) {
-            console.error('Error updating cart item:', error);
-        }
-    }
-
-    // NEW: Remove cart item
-    function removeCartItem(productId) {
-        try {
-            let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-            cart = cart.filter(item => item.productId !== productId);
-            
-            localStorage.setItem('ohsCart', JSON.stringify(cart));
-            updateCartPreview();
-            updateCartBadges();
-            
-            // Dispatch cart updated event
-            document.dispatchEvent(new CustomEvent('cartUpdated'));
-            
-            showNotification('Item removed from cart', 'info');
-        } catch (error) {
-            console.error('Error removing cart item:', error);
-        }
-    }
-
-    // NEW: Clear entire cart
-    function clearCart() {
-        if (confirm('Are you sure you want to clear your cart?')) {
-            localStorage.setItem('ohsCart', JSON.stringify([]));
-            updateCartPreview();
-            updateCartBadges();
-            
-            // Dispatch cart updated event
-            document.dispatchEvent(new CustomEvent('cartUpdated'));
-            
-            showNotification('Cart cleared', 'info');
-        }
-    }
-
-    // PRESERVE ALL EXISTING FUNCTIONS FROM YOUR WORKING CODE
-    
-    // PRESERVE: Load products function - KEEP EXACT SAME
-    function loadProducts() {
-        const productsContainer = document.getElementById('productSections');
-        const loadingDiv = document.getElementById('productsLoading');
-        
-        if (loadingDiv) loadingDiv.style.display = 'none';
-        
-        // Separate products by type
-        const organicProducts = [];
-        const premiumProducts = [];
-        
-        Object.values(PRODUCT_CATALOG).forEach(product => {
-            if (product.productLine === 'organic' || product.type === 'organic') {
-                organicProducts.push(product);
-            } else {
-                premiumProducts.push(product);
-            }
-            productQuantities[product.id] = 1;
-        });
-        
-        // Generate HTML with USDA Organic first
-        let html = '';
-        if (organicProducts.length > 0) {
-            html += createProductSection('organic', 'USDA Organic Line', organicProducts);
-        }
-        if (premiumProducts.length > 0) {
-            html += createProductSection('premium', 'EPA Premium Line', premiumProducts);
-        }
-        
-        if (productsContainer) {
-            productsContainer.innerHTML = html;
-        }
-        
-        updateProductCounts();
-    }
-
-    // PRESERVE: All your existing utility functions
-    function getAccountType() {
-        return localStorage.getItem('ohsAccountType') || 'consumer';
-    }
-
-    function toggleAccountMode(mode) {
-        localStorage.setItem('ohsAccountType', mode);
-        updateAccountDisplay(mode);
-        loadProducts();
-        showNotification(`Switched to ${mode === 'business' ? 'Business' : 'Consumer'} pricing`, 'success');
-    }
-
-    function updateAccountDisplay(mode) {
-        const indicator = document.getElementById('accountModeIndicator');
-        const accountPricingNote = document.getElementById('accountPricingNote');
-        
-        if (indicator) {
-            const modeText = document.getElementById('accountModeText');
-            const toggleBtn = document.getElementById('accountToggleBtn');
-            
-            if (modeText) {
-                modeText.textContent = mode === 'business' ? 'Business Account' : 'Consumer Account';
-            }
-            
-            if (toggleBtn) {
-                if (mode === 'business') {
-                    toggleBtn.textContent = 'Switch to Consumer Pricing';
-                    toggleBtn.onclick = () => toggleAccountMode('consumer');
-                    indicator.classList.add('bg-success', 'text-white');
-                    indicator.classList.remove('bg-light');
-                } else {
-                    toggleBtn.textContent = 'Switch to Business Pricing';
-                    toggleBtn.onclick = () => toggleAccountMode('business');
-                    indicator.classList.remove('bg-success', 'text-white');
-                    indicator.classList.add('bg-light');
-                }
-            }
-        }
-        
-        if (accountPricingNote) {
-            accountPricingNote.textContent = mode === 'business' 
-                ? '(Business pricing - Wholesale rates active)'
-                : '(Consumer pricing - Switch to Business for wholesale rates)';
-        }
-    }
-
-    function updateVisibleProductCount(count) {
-        const countElement = document.getElementById('visibleProductCount');
-        if (countElement) {
-            countElement.textContent = count !== undefined ? count : 
-                document.querySelectorAll('.product-card[data-visible="true"]').length;
-        }
-    }
-
-    function toggleNoResultsMessage(show) {
-        const noResultsEl = document.getElementById('noResultsMessage');
-        const productSections = document.getElementById('productSections');
-        
-        if (noResultsEl) noResultsEl.style.display = show ? 'block' : 'none';
-        if (productSections) productSections.style.display = show ? 'none' : 'block';
-    }
-
+    // Update product counts
     function updateProductCounts() {
         if (typeof PRODUCT_CATALOG === 'undefined') return;
         
@@ -1899,7 +2060,6 @@ const totalVolumeSavings = updateVolumeSavingsDisplay();
         const premiumCount = Object.values(PRODUCT_CATALOG).length - organicCount;
         const totalCount = organicCount + premiumCount;
         
-        // Update counts in filter dropdown
         const filterSelect = document.getElementById('productFilter');
         if (filterSelect) {
             filterSelect.innerHTML = `
@@ -1911,7 +2071,6 @@ const totalVolumeSavings = updateVolumeSavingsDisplay();
             `;
         }
         
-        // Update counts everywhere else
         ['totalProductCount', 'allCount'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.textContent = totalCount;
@@ -1930,6 +2089,7 @@ const totalVolumeSavings = updateVolumeSavingsDisplay();
         updateVisibleProductCount();
     }
 
+    // Update cart badges
     function updateCartBadges() {
         try {
             const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
@@ -1951,6 +2111,7 @@ const totalVolumeSavings = updateVolumeSavingsDisplay();
         }
     }
 
+    // Show notification
     function showNotification(message, type = 'info') {
         const notification = document.createElement('div');
         notification.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} position-fixed`;
@@ -1972,6 +2133,164 @@ const totalVolumeSavings = updateVolumeSavingsDisplay();
         }, 4000);
     }
 
+    // Update visible product count
+    function updateVisibleProductCount(count) {
+        const countElement = document.getElementById('visibleProductCount');
+        if (countElement) {
+            countElement.textContent = count !== undefined ? count : 
+                document.querySelectorAll('.product-card[data-visible="true"]').length;
+        }
+    }
+
+    // Toggle no results message
+    function toggleNoResultsMessage(show) {
+        const noResultsEl = document.getElementById('noResultsMessage');
+        const productSections = document.getElementById('productSections');
+        
+        if (noResultsEl) noResultsEl.style.display = show ? 'block' : 'none';
+        if (productSections) productSections.style.display = show ? 'none' : 'block';
+    }
+
+    // Show product info
+    function showProductInfo(productId) {
+        const product = PRODUCT_CATALOG[productId];
+        if (!product) return;
+        
+        const modal = document.createElement('div');
+        modal.className = 'product-info-modal';
+        modal.innerHTML = `
+            <div class="product-info-overlay" onclick="this.parentElement.remove()">
+                <div class="product-info-content" onclick="event.stopPropagation()">
+                    <div class="product-info-header">
+                        <h4 class="mb-0">${product.name}</h4>
+                        <button class="btn-close" onclick="this.closest('.product-info-modal').remove()"></button>
+                    </div>
+                    <div class="product-info-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h6 class="text-primary mb-2">Product Description</h6>
+                                <p class="mb-3">${product.description || 'Professional hypochlorous acid solution for superior cleaning and disinfection.'}</p>
+                                
+                                <h6 class="text-info mb-2">Wholesale Information</h6>
+                                <div class="wholesale-info mb-3">
+                                    <p><strong>Wholesale Threshold:</strong> ${product.wholesaleThreshold} units</p>
+                                    <p><strong>Wholesale Price:</strong> $${product.pricing.wholesale.toFixed(2)} (Save ${Math.round((1 - product.pricing.wholesale/product.pricing.retail) * 100)}%)</p>
+                                    ${product.subscriptionOptions.length > 0 ? `
+                                        <p><strong>Subscription Options:</strong> ${product.subscriptionOptions.join(', ')}</p>
+                                    ` : ''}
+                                </div>
+                                
+                                ${product.certifications ? `
+                                    <h6 class="text-success mb-2">Certifications</h6>
+                                    <div class="certifications mb-3">
+                                        ${product.certifications.map(cert => `
+                                            <span class="badge bg-success me-1 mb-1">${cert}</span>
+                                        `).join('')}
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <div class="col-md-4">
+                                <div class="product-details">
+                                    <h6 class="text-info mb-2">Product Details</h6>
+                                    <p><strong>SKU:</strong> ${product.sku || product.id}</p>
+                                    <p><strong>Type:</strong> ${product.type || product.productLine}</p>
+                                    ${product.weight ? `<p><strong>Weight:</strong> ${product.weight} lbs</p>` : ''}
+                                    ${product.category ? `<p><strong>Category:</strong> ${product.category}</p>` : ''}
+                                    ${product.useCase ? `<p><strong>Use Cases:</strong> ${product.useCase.join(', ')}</p>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-info-footer">
+                        <button class="btn btn-secondary" onclick="this.closest('.product-info-modal').remove()">Close</button>
+                        <a href="tel:+18017125663" class="btn btn-primary">
+                            <i class="fas fa-phone me-1"></i>Call for More Info
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Add the CSS for the modal if it doesn't exist
+        if (!document.getElementById('product-info-styles')) {
+            const styles = document.createElement('style');
+            styles.id = 'product-info-styles';
+            styles.textContent = `
+                .product-info-modal {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 9999;
+                }
+                
+                .product-info-overlay {
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.5);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 20px;
+                }
+                
+                .product-info-content {
+                    background: white;
+                    border-radius: 1rem;
+                    max-width: 800px;
+                    width: 100%;
+                    max-height: 90vh;
+                    overflow-y: auto;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                }
+                
+                .product-info-header {
+                    display: flex;
+                    justify-content: between;
+                    align-items: center;
+                    padding: 1.5rem;
+                    border-bottom: 1px solid #e5e7eb;
+                }
+                
+                .product-info-body {
+                    padding: 1.5rem;
+                }
+                
+                .product-info-footer {
+                    padding: 1rem 1.5rem;
+                    border-top: 1px solid #e5e7eb;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+                
+                .wholesale-info {
+                    background: #f8f9fa;
+                    padding: 1rem;
+                    border-radius: 0.5rem;
+                    border-left: 4px solid #3b82f6;
+                }
+                
+                @media (max-width: 768px) {
+                    .product-info-content {
+                        margin: 10px;
+                        max-height: 95vh;
+                    }
+                    
+                    .product-info-footer {
+                        flex-direction: column;
+                        gap: 1rem;
+                    }
+                }
+            `;
+            document.head.appendChild(styles);
+        }
+    }
+
+    // Navigation functions
     function proceedToCart() {
         window.location.href = 'shop/cart.html';
     }
@@ -1980,6 +2299,7 @@ const totalVolumeSavings = updateVolumeSavingsDisplay();
         window.location.href = 'tel:+18017125663';
     }
 
+    // Fallback for failed cart system load
     function showFallbackProducts() {
         const productsContainer = document.getElementById('productSections');
         const loadingDiv = document.getElementById('productsLoading');
@@ -2005,341 +2325,10 @@ const totalVolumeSavings = updateVolumeSavingsDisplay();
         }
     }
 
-    // PRESERVE: All your existing createProductSection and createProductCard functions
-    // These will be loaded from your cart.js file
-
-// MISSING FUNCTIONS - Add these since they're not loading from cart.js
-function createProductSection(type, title, products) {
-    const sectionClass = type === 'organic' ? 'organic' : 'premium';
-    const icon = type === 'organic' ? 'leaf' : 'crown';
-    
-    let html = `
-        <section id="${type}-products" class="mb-4">
-            <div class="section-header ${sectionClass}">
-                <h2 class="section-title">
-                    <i class="fas fa-${icon} me-2"></i>${title}
-                </h2>
-                <p class="section-subtitle">${type === 'organic' ? 'Family-safe USDA Certified Organic' : 'Professional EPA Registered'}</p>
-            </div>
-            <div class="container">
-                <div class="row">
-    `;
-    
-    products.forEach(product => {
-        html += createProductCard(product, type);
-    });
-    
-    html += '</div></div></section>';
-    return html;
-}
-
-function createProductCard(product, type) {
-    const accountType = getAccountType();
-    const retail = product.pricing?.retail || product.price || 0;
-    const wholesale = product.pricing?.wholesale || (retail * 0.7);
-    const currentPrice = accountType === 'business' ? wholesale : retail;
-    
-    const badgeColor = type === 'organic' ? '#4ADE80' : '#f59e0b';
-    const badgeText = type === 'organic' ? 'USDA ORGANIC' : 'EPA PREMIUM';
-    const certIcon = type === 'organic' ? 'leaf' : 'shield-alt';
-    
-    // Determine use cases for filtering
-    const useCases = [];
-    if (product.tags) {
-        if (product.tags.includes('commercial') || product.tags.includes('professional')) useCases.push('commercial');
-        if (product.tags.includes('residential') || product.tags.includes('family')) useCases.push('residential');
-        if (product.tags.includes('veterinary') || product.tags.includes('pet')) useCases.push('veterinary');
-        if (product.tags.includes('bulk') || product.tags.includes('industrial')) useCases.push('bulk');
-    }
-    // Default use cases if none specified
-    if (useCases.length === 0) {
-        if (type === 'organic') useCases.push('residential', 'veterinary');
-        if (type === 'premium') useCases.push('commercial', 'bulk');
-    }
-    
-    return `
-        <div class="col-xl-4 col-lg-6 col-md-6 mb-3">
-            <div class="product-card" 
-                 data-product-id="${product.id}"
-                 data-product-type="${type}"
-                 data-certification="${type === 'organic' ? 'usda' : 'epa'}"
-                 data-use-cases="${useCases.join(',')}"
-                 data-sku="${product.sku || product.id}"
-                 data-price="${currentPrice}"
-                 data-visible="true">
-                
-                <div class="product-badge" style="background: ${badgeColor}; color: white;">
-                    <i class="fas fa-${certIcon} me-1"></i>${badgeText}
-                </div>
-                
-                <div class="card-body p-3 text-center">
-                    <div class="product-icon mb-2">${product.emoji || '🧴'}</div>
-                    <h5 class="product-title mb-2">${product.name}</h5>
-                    
-                    <p class="text-muted small mb-2">${product.description || 'Professional hypochlorous acid solution'}</p>
-                    
-                    <div class="pricing-section mb-2">
-                        <div class="price-retail h5 text-primary">$${currentPrice.toFixed(2)}</div>
-                        <small class="text-muted">SKU: ${product.sku || product.id}</small>
-                        
-                        ${accountType === 'consumer' && wholesale !== retail ? 
-                            `<div class="text-success small mt-1">Business: $${wholesale.toFixed(2)} <span class="badge bg-warning">Save ${Math.round((1 - wholesale/retail) * 100)}%</span></div>` : ''}
-                    </div>
-                    
-// REPLACE the features list with this enhanced version://
-<ul class="list-unstyled small mb-2">
-    <li><i class="fas fa-check text-success me-1"></i>${type === 'organic' ? 'Family & Pet Safe' : 'Commercial Grade'}</li>
-    <li><i class="fas fa-check text-success me-1"></i>Utah Made</li>
-    <li><i class="fas fa-check text-success me-1"></i>Free Shipping</li>
-    ${product.volumeDiscounts ? 
-        `<li><i class="fas fa-percent text-warning me-1"></i><strong>Volume Discounts:</strong> ${Object.entries(product.volumeDiscounts)
-            .sort(([a], [b]) => parseInt(a.replace('+', '')) - parseInt(b.replace('+', '')))
-            .map(([tier, data]) => {
-                const discount = Math.round(data.discount * 100);
-                return `${tier} (${discount}% off)`;
-            }).join(', ')}</li>` : ''}
-</ul>
-                    
-                    <div class="product-controls">
-                        <div class="quantity-controls mb-2">
-                            <div class="input-group justify-content-center">
-                                <button class="btn btn-outline-primary btn-sm" onclick="changeQuantity('${product.id}', -1)" type="button">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                                <input type="number" class="form-control form-control-sm text-center" style="max-width: 70px;" 
-                                       id="qty-${product.id}" value="1" min="1" max="999"
-                                       onchange="setQuantity('${product.id}', this.value)">
-                                <button class="btn btn-outline-primary btn-sm" onclick="changeQuantity('${product.id}', 1)" type="button">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <button class="btn btn-success w-100 mb-2" onclick="addToCartFromProducts('${product.id}')">
-                            <i class="fas fa-cart-plus me-2"></i>Add to Cart
-                        </button>
-                        
-                        <div class="d-flex gap-1 justify-content-center">
-                            <a href="tel:+18017125663" class="btn btn-sm btn-outline-info">
-                                <i class="fas fa-phone me-1"></i>Help
-                            </a>
-                            <button class="btn btn-sm btn-outline-secondary" onclick="showProductInfo('${product.id}')">
-                                <i class="fas fa-info me-1"></i>Info
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-// ADD MISSING UTILITY FUNCTIONS
-function changeQuantity(productId, change) {
-    const currentQty = productQuantities[productId] || 1;
-    const newQty = Math.max(1, Math.min(999, currentQty + change));
-    setQuantity(productId, newQty);
-}
-
-function setQuantity(productId, value) {
-    const qty = Math.max(1, Math.min(999, parseInt(value) || 1));
-    productQuantities[productId] = qty;
-    
-    const input = document.getElementById(`qty-${productId}`);
-    if (input) input.value = qty;
-}
-
-function addToCartFromProducts(productId) {
-    const product = PRODUCT_CATALOG[productId];
-    if (!product) return;
-    
-    const quantity = productQuantities[productId] || 1;
-    const accountType = getAccountType();
-    const price = accountType === 'business' ? 
-        (product.pricing?.wholesale || product.price * 0.7) : 
-        (product.pricing?.retail || product.price);
-    
-    try {
-        // Use clean cart format
-        const cartItem = {
-            productId: product.id,
-            name: product.name,
-            price: price,
-            quantity: quantity,
-            emoji: product.emoji || '🧴',
-            type: product.type || product.productLine,
-            sku: product.sku || product.id,
-            addedAt: Date.now()
-        };
-        
-        // Clean add to cart
-        let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-        const existingIndex = cart.findIndex(item => item.productId === product.id || item.id === product.id);
-        
-        if (existingIndex >= 0) {
-            cart[existingIndex].quantity += quantity;
-        } else {
-            cart.push(cartItem);
-        }
-        
-        localStorage.setItem('ohsCart', JSON.stringify(cart));
-        updateCartBadges();
-        updateCartPreview();
-        
-        showNotification(`Added ${quantity}x ${product.name}!`, 'success');
-    } catch (error) {
-        console.error('Failed to add to cart:', error);
-        showNotification('Failed to add item. Please try again.', 'error');
-    }
-}
-
-// REPLACE the entire showProductInfo function with this:
-function showProductInfo(productId) {
-    const product = PRODUCT_CATALOG[productId];
-    if (!product) return;
-    
-    // Create a more detailed info modal
-    const modal = document.createElement('div');
-    modal.className = 'product-info-modal';
-    modal.innerHTML = `
-        <div class="product-info-overlay" onclick="this.parentElement.remove()">
-            <div class="product-info-content" onclick="event.stopPropagation()">
-                <div class="product-info-header">
-                    <h4 class="mb-0">${product.name}</h4>
-                    <button class="btn-close" onclick="this.closest('.product-info-modal').remove()"></button>
-                </div>
-                <div class="product-info-body">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <h6 class="text-primary mb-2">Product Description</h6>
-                            <p class="mb-3">${product.description || 'Professional hypochlorous acid solution for superior cleaning and disinfection.'}</p>
-                            
-                            ${product.volumeDiscounts ? `
-                                <h6 class="text-warning mb-2">Volume Discounts Available</h6>
-                                <div class="volume-tiers mb-3">
-                                    ${Object.entries(product.volumeDiscounts).map(([tier, data]) => `
-                                        <div class="volume-tier">
-                                            <strong>${tier}:</strong> ${Math.round(data.discount * 100)}% off 
-                                            ${data.badge ? `<span class="badge bg-success ms-1">${data.badge}</span>` : ''}
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            ` : ''}
-                            
-                            ${product.certifications ? `
-                                <h6 class="text-success mb-2">Certifications</h6>
-                                <div class="certifications mb-3">
-                                    ${product.certifications.map(cert => `
-                                        <span class="badge bg-success me-1 mb-1">${cert}</span>
-                                    `).join('')}
-                                </div>
-                            ` : ''}
-                        </div>
-                        <div class="col-md-4">
-                            <div class="product-details">
-                                <h6 class="text-info mb-2">Product Details</h6>
-                                <p><strong>SKU:</strong> ${product.sku || product.id}</p>
-                                <p><strong>Type:</strong> ${product.type || product.productLine}</p>
-                                ${product.weight ? `<p><strong>Weight:</strong> ${product.weight} lbs</p>` : ''}
-                                ${product.category ? `<p><strong>Category:</strong> ${product.category}</p>` : ''}
-                                ${product.useCase ? `<p><strong>Use Cases:</strong> ${product.useCase.join(', ')}</p>` : ''}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="product-info-footer">
-                    <button class="btn btn-secondary" onclick="this.closest('.product-info-modal').remove()">Close</button>
-                    <a href="tel:+18017125663" class="btn btn-primary">
-                        <i class="fas fa-phone me-1"></i>Call for More Info
-                    </a>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-    
-    // Add the CSS for the modal if it doesn't exist
-    if (!document.getElementById('product-info-styles')) {
-        const styles = document.createElement('style');
-        styles.id = 'product-info-styles';
-        styles.textContent = `
-            .product-info-modal {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                z-index: 9999;
-            }
-            
-            .product-info-overlay {
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.5);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 20px;
-            }
-            
-            .product-info-content {
-                background: white;
-                border-radius: 1rem;
-                max-width: 800px;
-                width: 100%;
-                max-height: 90vh;
-                overflow-y: auto;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            }
-            
-            .product-info-header {
-                display: flex;
-                justify-content: between;
-                align-items: center;
-                padding: 1.5rem;
-                border-bottom: 1px solid #e5e7eb;
-            }
-            
-            .product-info-body {
-                padding: 1.5rem;
-            }
-            
-            .product-info-footer {
-                padding: 1rem 1.5rem;
-                border-top: 1px solid #e5e7eb;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            
-            .volume-tier {
-                padding: 0.5rem;
-                background: #f8f9fa;
-                border-radius: 0.5rem;
-                margin-bottom: 0.5rem;
-                border-left: 4px solid #fbbf24;
-            }
-            
-            @media (max-width: 768px) {
-                .product-info-content {
-                    margin: 10px;
-                    max-height: 95vh;
-                }
-                
-                .product-info-footer {
-                    flex-direction: column;
-                    gap: 1rem;
-                }
-            }
-        `;
-        document.head.appendChild(styles);
-    }
-}
-
-    console.log('✅ Enhanced Products Page JavaScript Loaded');
+    console.log('✅ Products Page JavaScript Loaded');
 </script>
-<!-- TRUST SIGNALS SECTION -->
+
+<!-- Trust Signals Section -->
 <section class="trust-signals-section">
     <div class="container">
         <div class="row">
@@ -2383,7 +2372,7 @@ function showProductInfo(productId) {
     </div>
 </section>
 
-<!-- COMPACT FOOTER LIKE REFERENCE -->
+<!-- Compact Footer -->
 <footer class="compact-footer">
     <div class="container">
         <div class="row align-items-start">
@@ -2550,7 +2539,7 @@ function showProductInfo(productId) {
         font-size: 0.9rem;
     }
 
-    /* Compact Footer - Similar to Reference */
+    /* Compact Footer */
     .compact-footer {
         background: #000000;
         color: #ffffff;
@@ -2784,6 +2773,5 @@ function showProductInfo(productId) {
     }
 </style>
 
-<!-- Close body and html tags -->
 </body>
-</html>    
+</html>
