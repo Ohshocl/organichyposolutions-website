@@ -2976,7 +2976,168 @@ function checkForDuplicates() {
         console.log('✅ No duplicates found in product catalog');
     }
 }
+// ===================================================================
+// VOLUME DISCOUNT FUNCTIONS - ADD TO END OF cart.js
+// ===================================================================
 
+function calculateVolumeDiscount(productId, quantity) {
+    const product = PRODUCT_CATALOG[productId];
+    if (!product || !product.volumeDiscounts) {
+        return { discount: 0, label: "No discount", tier: null };
+    }
+    
+    // Sort volume discount tiers by quantity (highest first)
+    const tiers = Object.entries(product.volumeDiscounts)
+        .map(([key, value]) => ({
+            minQuantity: parseInt(key.replace('+', '')),
+            ...value
+        }))
+        .sort((a, b) => b.minQuantity - a.minQuantity);
+    
+    // Find the applicable tier
+    for (let tier of tiers) {
+        if (quantity >= tier.minQuantity) {
+            return {
+                discount: tier.discount,
+                label: tier.badge || `${Math.round(tier.discount * 100)}% off`,
+                tier: tier,
+                minQuantity: tier.minQuantity
+            };
+        }
+    }
+    
+    return { discount: 0, label: "No discount", tier: null };
+}
+
+function updateVolumeProgress() {
+    try {
+        const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+        
+        // Calculate total items across all products
+        const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+        
+        // Find the next available discount tier across all products in cart
+        let nextTier = null;
+        let currentDiscount = 0;
+        
+        cart.forEach(item => {
+            const product = PRODUCT_CATALOG[item.productId];
+            if (product && product.volumeDiscounts) {
+                const tiers = Object.entries(product.volumeDiscounts)
+                    .map(([key, value]) => ({
+                        minQuantity: parseInt(key.replace('+', '')),
+                        ...value
+                    }))
+                    .sort((a, b) => a.minQuantity - b.minQuantity);
+                
+                // Find current discount for this item
+                const currentTier = calculateVolumeDiscount(item.productId, item.quantity);
+                if (currentTier.discount > currentDiscount) {
+                    currentDiscount = currentTier.discount;
+                }
+                
+                // Find next tier for this item
+                const nextItemTier = tiers.find(tier => item.quantity < tier.minQuantity);
+                if (nextItemTier && (!nextTier || nextItemTier.minQuantity < nextTier.minQuantity)) {
+                    nextTier = nextItemTier;
+                }
+            }
+        });
+        
+        // Update progress elements if they exist
+        const progressFill = document.getElementById('volumeProgressFill');
+        const itemsToNext = document.getElementById('itemsToNextDiscount');
+        const nextDiscountText = document.getElementById('nextDiscountText');
+        const currentDiscountText = document.getElementById('currentDiscountText');
+        const nextDiscountThreshold = document.getElementById('nextDiscountThreshold');
+        
+        if (nextTier) {
+            const itemsNeeded = nextTier.minQuantity - totalItems;
+            const progress = Math.min((totalItems / nextTier.minQuantity) * 100, 100);
+            
+            if (progressFill) progressFill.style.width = `${progress}%`;
+            if (itemsToNext) itemsToNext.textContent = Math.max(0, itemsNeeded);
+            if (nextDiscountText) nextDiscountText.textContent = `Next: ${Math.round(nextTier.discount * 100)}% at ${nextTier.minQuantity} items`;
+            if (nextDiscountThreshold) nextDiscountThreshold.textContent = nextTier.minQuantity;
+        }
+        
+        if (currentDiscountText) {
+            if (currentDiscount > 0) {
+                currentDiscountText.textContent = `Current: ${Math.round(currentDiscount * 100)}% discount active`;
+            } else {
+                currentDiscountText.textContent = "Current: No discount";
+            }
+        }
+        
+        // Show/hide volume progress section
+        const volumeProgressSection = document.getElementById('volumeProgressSection');
+        if (volumeProgressSection) {
+            if (totalItems > 0 && nextTier) {
+                volumeProgressSection.style.display = 'block';
+            } else {
+                volumeProgressSection.style.display = 'none';
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error updating volume progress:', error);
+    }
+}
+
+function updateVolumeSavingsDisplay() {
+    try {
+        const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+        let totalSavings = 0;
+        let hasVolumeDiscounts = false;
+        
+        cart.forEach(item => {
+            const product = PRODUCT_CATALOG[item.productId];
+            if (product) {
+                const volumeDiscount = calculateVolumeDiscount(item.productId, item.quantity);
+                if (volumeDiscount.discount > 0) {
+                    hasVolumeDiscounts = true;
+                    
+                    // Calculate savings using the original price vs discounted price
+                    const accountType = getAccountType ? getAccountType() : 'consumer';
+                    const originalPrice = accountType === 'business' ? 
+                        (product.pricing?.wholesale || product.price || 0) : 
+                        (product.pricing?.retail || product.price || 0);
+                    
+                    const savings = originalPrice * item.quantity * volumeDiscount.discount;
+                    totalSavings += savings;
+                }
+            }
+        });
+        
+        // Update volume savings display elements
+        const volumeSavingsDisplay = document.getElementById('volumeSavingsDisplay');
+        const savingsAmount = document.querySelector('.savings-amount, #volumeSavingsAmount');
+        
+        if (volumeSavingsDisplay) {
+            if (hasVolumeDiscounts && totalSavings > 0) {
+                volumeSavingsDisplay.style.display = 'block';
+                if (savingsAmount) {
+                    savingsAmount.textContent = `$${totalSavings.toFixed(2)}`;
+                }
+            } else {
+                volumeSavingsDisplay.style.display = 'none';
+            }
+        }
+        
+        return totalSavings;
+        
+    } catch (error) {
+        console.error('Error updating volume savings display:', error);
+        return 0;
+    }
+}
+
+// Helper function to get account type (if not already defined)
+function getAccountType() {
+    return localStorage.getItem('ohsAccountType') || 'consumer';
+}
+
+console.log('✅ Volume discount functions added to cart system');
 checkForDuplicates();
 
 console.log('🎉 COMPLETE PRODUCT CATALOG LOADED - 57 PRODUCTS TOTAL');
