@@ -72,6 +72,7 @@ function updateCartQuantity(productId, change) {
 document.addEventListener('DOMContentLoaded', function() {
     updateCartBadge();
 });
+
 // ===================================================================
 // COMPLETE PRODUCT CATALOG - 57 Products Total
 // Properly formatted for JavaScript execution
@@ -104,34 +105,6 @@ const PRODUCT_CATALOG = {
             retail: 14.14,
             retailMonthly: 13.04,
             retailQuarterly: 12.76
-        },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.521,
-            retailMonthly: 0.456,
-            retailQuarterly: 0.440
-        },
-        volumeDiscounts: {
-            '50+': { 
-                discount: 0.15, 
-                badge: '50+ Volume Discount', 
-                retailPrice: 12.02,
-                wholesalePrice: 8.75
-            },
-            '25+': { 
-                discount: 0.10, 
-                badge: '25+ Volume Discount',
-                retailPrice: 12.73,
-                wholesalePrice: 9.26
-            },
-            '10+': { 
-                discount: 0.05, 
-                badge: '10+ Volume Discount',
-                retailPrice: 13.43,
-                wholesalePrice: 9.78
-            }
         },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 50,
@@ -167,28 +140,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 21.96,
             retailQuarterly: 21.51
         },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.521,
-            retailMonthly: 0.456,
-            retailQuarterly: 0.440
-        },
-        volumeDiscounts: {
-            '25+': { 
-                discount: 0.15, 
-                badge: '25+ Volume Discount',
-                retailPrice: 20.25,
-                wholesalePrice: 14.71
-            },
-            '10+': { 
-                discount: 0.08, 
-                badge: '10+ Volume Discount',
-                retailPrice: 21.91,
-                wholesalePrice: 15.92
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 25,
         minOrder: 'Monthly Invoice',
@@ -217,28 +168,6 @@ const PRODUCT_CATALOG = {
             retail: 24.33,
             retailMonthly: 22.43,
             retailQuarterly: 21.97
-        },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.521,
-            retailMonthly: 0.456,
-            retailQuarterly: 0.440
-        },
-        volumeDiscounts: {
-            '25+': { 
-                discount: 0.15, 
-                badge: '25+ EPA Volume Discount',
-                retailPrice: 20.68,
-                wholesalePrice: 15.03
-            },
-            '10+': { 
-                discount: 0.08, 
-                badge: '10+ EPA Volume Discount',
-                retailPrice: 22.38,
-                wholesalePrice: 16.27
-            }
         },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 25,
@@ -269,28 +198,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 21.96,
             retailQuarterly: 21.51
         },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.521,
-            retailMonthly: 0.456,
-            retailQuarterly: 0.440
-        },
-        volumeDiscounts: {
-            '25+': { 
-                discount: 0.15, 
-                badge: '25+ Pet Care Discount',
-                retailPrice: 20.25,
-                wholesalePrice: 14.71
-            },
-            '10+': { 
-                discount: 0.08, 
-                badge: '10+ Pet Care Discount',
-                retailPrice: 21.91,
-                wholesalePrice: 15.92
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 25,
         minOrder: 'Monthly Invoice',
@@ -319,28 +226,6 @@ const PRODUCT_CATALOG = {
             retail: 40.65,
             retailMonthly: 37.49,
             retailQuarterly: 36.71
-        },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.521,
-            retailMonthly: 0.456,
-            retailQuarterly: 0.440
-        },
-        volumeDiscounts: {
-            '10+': { 
-                discount: 0.12, 
-                badge: '10+ Gallon Discount',
-                retailPrice: 35.77,
-                wholesalePrice: 26.11
-            },
-            '5+': { 
-                discount: 0.06, 
-                badge: '5+ Gallon Discount',
-                retailPrice: 38.21,
-                wholesalePrice: 27.89
-            }
         },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 10,
@@ -371,28 +256,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 38.50,
             retailQuarterly: 37.70
         },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.521,
-            retailMonthly: 0.456,
-            retailQuarterly: 0.440
-        },
-        volumeDiscounts: {
-            '10+': { 
-                discount: 0.12, 
-                badge: '10+ EPA Gallon Discount',
-                retailPrice: 36.72,
-                wholesalePrice: 26.81
-            },
-            '5+': { 
-                discount: 0.06, 
-                badge: '5+ EPA Gallon Discount',
-                retailPrice: 39.23,
-                wholesalePrice: 28.64
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 10,
         minOrder: 'Monthly Invoice',
@@ -421,34 +284,6 @@ const PRODUCT_CATALOG = {
             retail: 12.97,
             retailMonthly: 11.96,
             retailQuarterly: 11.71
-        },
-        margins: {
-            wholesale: 0.286,
-            wholesaleMonthly: 0.224,
-            wholesaleQuarterly: 0.207,
-            retail: 0.422,
-            retailMonthly: 0.371,
-            retailQuarterly: 0.358
-        },
-        volumeDiscounts: {
-            '1000+': { 
-                discount: 0.18, 
-                badge: '1000+ Organic Discount',
-                retailPrice: 10.64,
-                wholesalePrice: 7.86
-            },
-            '500+': { 
-                discount: 0.12, 
-                badge: '500+ Organic Discount',
-                retailPrice: 11.41,
-                wholesalePrice: 8.44
-            },
-            '100+': { 
-                discount: 0.08, 
-                badge: '100+ Organic Discount',
-                retailPrice: 11.93,
-                wholesalePrice: 8.82
-            }
         },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 1000,
@@ -482,34 +317,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 20.10,
             retailQuarterly: 19.68
         },
-        margins: {
-            wholesale: 0.286,
-            wholesaleMonthly: 0.224,
-            wholesaleQuarterly: 0.207,
-            retail: 0.422,
-            retailMonthly: 0.371,
-            retailQuarterly: 0.358
-        },
-        volumeDiscounts: {
-            '500+': { 
-                discount: 0.18, 
-                badge: '500+ Organic Discount',
-                retailPrice: 17.88,
-                wholesalePrice: 13.23
-            },
-            '250+': { 
-                discount: 0.12, 
-                badge: '250+ Organic Discount',
-                retailPrice: 19.18,
-                wholesalePrice: 14.19
-            },
-            '100+': { 
-                discount: 0.08, 
-                badge: '100+ Organic Discount',
-                retailPrice: 20.06,
-                wholesalePrice: 14.84
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 500,
         minOrder: 500,
@@ -539,40 +346,16 @@ const PRODUCT_CATALOG = {
             retailMonthly: 20.10,
             retailQuarterly: 19.68
         },
-        margins: {
-            wholesale: 0.286,
-            wholesaleMonthly: 0.224,
-            wholesaleQuarterly: 0.207,
-            retail: 0.422,
-            retailMonthly: 0.371,
-            retailQuarterly: 0.358
-        },
-        volumeDiscounts: {
-            '500+': { 
-                discount: 0.18, 
-                badge: '500+ Pet Safe Discount',
-                retailPrice: 17.88,
-                wholesalePrice: 13.23
-            },
-            '250+': { 
-                discount: 0.12, 
-                badge: '250+ Pet Safe Discount',
-                retailPrice: 19.18,
-                wholesalePrice: 14.19
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 500,
         minOrder: 500,
         type: 'organic',
         emoji: '🐾'
     },
-
-// ===================================================================
+    // ===================================================================
     // PREMIUM PERSONAL CARE & SKIN HEALTH
     // ===================================================================
 
-    
     'hc-3oz-skin-health-mist': {
         id: 'hc-3oz-skin-health-mist',
         shopifyHandle: '3oz-hc-pure-skin-health-mist',
@@ -594,28 +377,6 @@ const PRODUCT_CATALOG = {
             retail: 15.70,
             retailMonthly: 14.48,
             retailQuarterly: 14.18
-        },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.521,
-            retailMonthly: 0.456,
-            retailQuarterly: 0.440
-        },
-        volumeDiscounts: {
-            '50+': { 
-                discount: 0.15, 
-                badge: '50+ Skin Care Discount',
-                retailPrice: 13.35,
-                wholesalePrice: 9.71
-            },
-            '25+': { 
-                discount: 0.10, 
-                badge: '25+ Skin Care Discount',
-                retailPrice: 14.13,
-                wholesalePrice: 10.28
-            }
         },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 50,
@@ -647,22 +408,6 @@ const PRODUCT_CATALOG = {
             retail: 19.59,
             retailMonthly: 18.07,
             retailQuarterly: 17.69
-        },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.521,
-            retailMonthly: 0.456,
-            retailQuarterly: 0.440
-        },
-        volumeDiscounts: {
-            '25+': { 
-                discount: 0.15, 
-                badge: '25+ Professional Skin Care',
-                retailPrice: 16.65,
-                wholesalePrice: 12.11
-            }
         },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 25,
@@ -697,22 +442,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 24.81,
             retailQuarterly: 24.29
         },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.521,
-            retailMonthly: 0.456,
-            retailQuarterly: 0.440
-        },
-        volumeDiscounts: {
-            '25+': { 
-                discount: 0.15, 
-                badge: '25+ Veterinary Discount',
-                retailPrice: 22.85,
-                wholesalePrice: 16.63
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 25,
         minOrder: 'Monthly Invoice',
@@ -741,22 +470,6 @@ const PRODUCT_CATALOG = {
             retail: 45.18,
             retailMonthly: 41.66,
             retailQuarterly: 40.81
-        },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.521,
-            retailMonthly: 0.456,
-            retailQuarterly: 0.440
-        },
-        volumeDiscounts: {
-            '10+': { 
-                discount: 0.12, 
-                badge: '10+ Large Format Discount',
-                retailPrice: 39.76,
-                wholesalePrice: 28.95
-            }
         },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 10,
@@ -791,22 +504,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 24.02,
             retailQuarterly: 23.53
         },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.521,
-            retailMonthly: 0.456,
-            retailQuarterly: 0.440
-        },
-        volumeDiscounts: {
-            '25+': { 
-                discount: 0.15, 
-                badge: '25+ Laundry Pro Discount',
-                retailPrice: 22.13,
-                wholesalePrice: 16.11
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 25,
         minOrder: 'Monthly Invoice',
@@ -835,22 +532,6 @@ const PRODUCT_CATALOG = {
             retail: 45.06,
             retailMonthly: 41.55,
             retailQuarterly: 40.69
-        },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.521,
-            retailMonthly: 0.456,
-            retailQuarterly: 0.440
-        },
-        volumeDiscounts: {
-            '10+': { 
-                discount: 0.12, 
-                badge: '10+ Commercial Laundry Discount',
-                retailPrice: 39.65,
-                wholesalePrice: 28.86
-            }
         },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 10,
@@ -885,30 +566,14 @@ const PRODUCT_CATALOG = {
             retailMonthly: 24.19,
             retailQuarterly: 23.69
         },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.521,
-            retailMonthly: 0.456,
-            retailQuarterly: 0.440
-        },
-        volumeDiscounts: {
-            '20+': { 
-                discount: 0.15, 
-                badge: '20+ Wipes Bulk Discount',
-                retailPrice: 22.28,
-                wholesalePrice: 16.21
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 20,
         minOrder: 'Monthly Invoice',
         type: 'premium',
         emoji: '🧻'
     },
-// ===================================================================
-    // THERAPEUTIC & SPECIALIZED PRODUCTS (50.1% retail margin)
+    // ===================================================================
+    // THERAPEUTIC & SPECIALIZED PRODUCTS
     // ===================================================================
 
     'hc-16oz-equine-healing-gel': {
@@ -932,22 +597,6 @@ const PRODUCT_CATALOG = {
             retail: 43.75,
             retailMonthly: 40.36,
             retailQuarterly: 39.52
-        },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.501,
-            retailMonthly: 0.436,
-            retailQuarterly: 0.420
-        },
-        volumeDiscounts: {
-            '20+': { 
-                discount: 0.12, 
-                badge: '20+ Therapeutic Discount',
-                retailPrice: 38.50,
-                wholesalePrice: 29.20
-            }
         },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 20,
@@ -978,22 +627,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 36.58,
             retailQuarterly: 35.83
         },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.501,
-            retailMonthly: 0.436,
-            retailQuarterly: 0.420
-        },
-        volumeDiscounts: {
-            '20+': { 
-                discount: 0.12, 
-                badge: '20+ Healing Serum Discount',
-                retailPrice: 34.90,
-                wholesalePrice: 26.45
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 20,
         minOrder: 'Monthly Invoice',
@@ -1022,22 +655,6 @@ const PRODUCT_CATALOG = {
             retail: 42.33,
             retailMonthly: 39.07,
             retailQuarterly: 38.26
-        },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.501,
-            retailMonthly: 0.436,
-            retailQuarterly: 0.420
-        },
-        volumeDiscounts: {
-            '20+': { 
-                discount: 0.12, 
-                badge: '20+ Baby Care Discount',
-                retailPrice: 37.25,
-                wholesalePrice: 28.27
-            }
         },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 20,
@@ -1072,28 +689,12 @@ const PRODUCT_CATALOG = {
             retailMonthly: 71.02,
             retailQuarterly: 69.58
         },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.521,
-            retailMonthly: 0.456,
-            retailQuarterly: 0.440
-        },
         bundleContents: [
             '3oz HC-Pure Multi-Use Disinfectant',
             '32oz Multi Use Cleaner Ready to Use',
             'All-in-One Wipes'
         ],
         bundleSavings: 8.77,
-        volumeDiscounts: {
-            '10+': { 
-                discount: 0.10, 
-                badge: '10+ Bundle Discount',
-                retailPrice: 69.30,
-                wholesalePrice: 50.40
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 10,
         minOrder: 'Monthly Invoice',
@@ -1123,14 +724,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 148.25,
             retailQuarterly: 145.19
         },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.521,
-            retailMonthly: 0.456,
-            retailQuarterly: 0.440
-        },
         bundleContents: [
             '3oz HC-Pure Multi-Use Disinfectant',
             '32oz Multi Use Cleaner EPA',
@@ -1139,14 +732,6 @@ const PRODUCT_CATALOG = {
             '32oz Laundry Booster'
         ],
         bundleSavings: 19.50,
-        volumeDiscounts: {
-            '5+': { 
-                discount: 0.10, 
-                badge: '5+ Essential Bundle Discount',
-                retailPrice: 144.64,
-                wholesalePrice: 105.17
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 5,
         minOrder: 'Monthly Invoice',
@@ -1176,14 +761,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 183.78,
             retailQuarterly: 180.02
         },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.521,
-            retailMonthly: 0.456,
-            retailQuarterly: 0.440
-        },
         bundleContents: [
             '3oz HC-Pure Multi-Use Disinfectant',
             '32oz Multi Use Cleaner EPA',
@@ -1193,14 +770,6 @@ const PRODUCT_CATALOG = {
             '3oz HC-Pure Skin Health Mist'
         ],
         bundleSavings: 26.38,
-        volumeDiscounts: {
-            '3+': { 
-                discount: 0.10, 
-                badge: '3+ Complete Bundle Discount',
-                retailPrice: 179.34,
-                wholesalePrice: 130.45
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 3,
         minOrder: 'Monthly Invoice',
@@ -1230,28 +799,12 @@ const PRODUCT_CATALOG = {
             retailMonthly: 78.49,
             retailQuarterly: 76.88
         },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.521,
-            retailMonthly: 0.456,
-            retailQuarterly: 0.440
-        },
         bundleContents: [
             '32oz Multi Use Cleaner Ready to Use',
             '1 Gallon Ready to Use',
             'All-in-One Wipes'
         ],
         bundleSavings: 15.59,
-        volumeDiscounts: {
-            '5+': { 
-                discount: 0.10, 
-                badge: '5+ RTU Bundle Discount',
-                retailPrice: 76.55,
-                wholesalePrice: 55.67
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 5,
         minOrder: 'Monthly Invoice',
@@ -1281,14 +834,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 76.77,
             retailQuarterly: 75.18
         },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.521,
-            retailMonthly: 0.456,
-            retailQuarterly: 0.440
-        },
         bundleContents: [
             '32oz Pet Cleaner and Deodorizer',
             '32oz 500ppm Pet+ Solution',
@@ -1296,22 +841,14 @@ const PRODUCT_CATALOG = {
             '3oz HC-Pure Skin Health Mist'
         ],
         bundleSavings: 17.40,
-        volumeDiscounts: {
-            '5+': { 
-                discount: 0.10, 
-                badge: '5+ Pet Care Bundle Discount',
-                retailPrice: 74.87,
-                wholesalePrice: 54.45
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 5,
         minOrder: 'Monthly Invoice',
         type: 'premium',
         emoji: '🐾'
     },
-// ===================================================================
-    // EQUIPMENT & GENERATORS (50.1% retail margin)
+    // ===================================================================
+    // EQUIPMENT & GENERATORS
     // ===================================================================
 
     'hc-hypochlorous-station1-starter-kit': {
@@ -1335,22 +872,6 @@ const PRODUCT_CATALOG = {
             retail: 656.04,
             retailMonthly: 605.31,
             retailQuarterly: 592.92
-        },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.501,
-            retailMonthly: 0.436,
-            retailQuarterly: 0.420
-        },
-        volumeDiscounts: {
-            '2+': { 
-                discount: 0.08, 
-                badge: '2+ Equipment Discount',
-                retailPrice: 603.56,
-                wholesalePrice: 458.14
-            }
         },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 2,
@@ -1381,28 +902,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 13.31,
             retailQuarterly: 13.04
         },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.501,
-            retailMonthly: 0.436,
-            retailQuarterly: 0.420
-        },
-        volumeDiscounts: {
-            '100+': { 
-                discount: 0.15, 
-                badge: '100+ Refill Pouch Discount',
-                retailPrice: 12.26,
-                wholesalePrice: 9.31
-            },
-            '50+': { 
-                discount: 0.10, 
-                badge: '50+ Refill Pouch Discount',
-                retailPrice: 12.98,
-                wholesalePrice: 9.86
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 100,
         minOrder: 'Monthly Invoice',
@@ -1432,22 +931,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 1212.85,
             retailQuarterly: 1188.11
         },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.501,
-            retailMonthly: 0.436,
-            retailQuarterly: 0.420
-        },
-        volumeDiscounts: {
-            '1+': { 
-                discount: 0.05, 
-                badge: 'Equipment Discount Available',
-                retailPrice: 1248.31,
-                wholesalePrice: 947.28
-            }
-        },
         subscriptionOptions: ['quarterly'],
         wholesaleThreshold: 1,
         minOrder: 'Monthly Invoice',
@@ -1456,7 +939,7 @@ const PRODUCT_CATALOG = {
     },
 
     // ===================================================================
-    // BULK PACKAGING CASES (50.1% retail margin)
+    // BULK PACKAGING CASES
     // ===================================================================
 
     'hc-32oz-bulk-case': {
@@ -1480,28 +963,6 @@ const PRODUCT_CATALOG = {
             retail: 53.28,
             retailMonthly: 49.16,
             retailQuarterly: 48.16
-        },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.501,
-            retailMonthly: 0.436,
-            retailQuarterly: 0.420
-        },
-        volumeDiscounts: {
-            '15+': { 
-                discount: 0.10, 
-                badge: '15+ Bulk Case Discount',
-                retailPrice: 47.95,
-                wholesalePrice: 36.37
-            },
-            '10+': { 
-                discount: 0.05, 
-                badge: '10+ Bulk Case Discount',
-                retailPrice: 50.62,
-                wholesalePrice: 38.39
-            }
         },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 15,
@@ -1532,22 +993,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 102.04,
             retailQuarterly: 100.02
         },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.501,
-            retailMonthly: 0.436,
-            retailQuarterly: 0.420
-        },
-        volumeDiscounts: {
-            '5+': { 
-                discount: 0.10, 
-                badge: '5+ Gallon Case Discount',
-                retailPrice: 99.52,
-                wholesalePrice: 75.50
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 5,
         minOrder: 'Monthly Invoice',
@@ -1556,7 +1001,7 @@ const PRODUCT_CATALOG = {
     },
 
     // ===================================================================
-    // INDUSTRIAL EPA ORGANIC PRODUCTS (50.1% retail margin)
+    // INDUSTRIAL EPA ORGANIC PRODUCTS
     // ===================================================================
 
     'hc-150gal-organic-epa': {
@@ -1580,22 +1025,6 @@ const PRODUCT_CATALOG = {
             retail: 7214.40,
             retailMonthly: 6658.20,
             retailQuarterly: 6523.68
-        },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.501,
-            retailMonthly: 0.436,
-            retailQuarterly: 0.420
-        },
-        volumeDiscounts: {
-            '2+': { 
-                discount: 0.05, 
-                badge: 'Industrial Volume Discount',
-                retailPrice: 6853.68,
-                wholesalePrice: 5198.40
-            }
         },
         subscriptionOptions: ['quarterly'],
         wholesaleThreshold: 1,
@@ -1626,22 +1055,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 11978.64,
             retailQuarterly: 11734.08
         },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.501,
-            retailMonthly: 0.436,
-            retailQuarterly: 0.420
-        },
-        volumeDiscounts: {
-            '2+': { 
-                discount: 0.05, 
-                badge: 'Industrial Volume Discount',
-                retailPrice: 12335.71,
-                wholesalePrice: 9357.12
-            }
-        },
         subscriptionOptions: ['quarterly'],
         wholesaleThreshold: 1,
         minOrder: 'Monthly Invoice',
@@ -1670,22 +1083,6 @@ const PRODUCT_CATALOG = {
             retail: 20568.78,
             retailMonthly: 18984.02,
             retailQuarterly: 18597.36
-        },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.501,
-            retailMonthly: 0.436,
-            retailQuarterly: 0.420
-        },
-        volumeDiscounts: {
-            '2+': { 
-                discount: 0.05, 
-                badge: 'Large Industrial Discount',
-                retailPrice: 19540.34,
-                wholesalePrice: 14818.35
-            }
         },
         subscriptionOptions: ['quarterly'],
         wholesaleThreshold: 1,
@@ -1716,22 +1113,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 36043.92,
             retailQuarterly: 35323.68
         },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.501,
-            retailMonthly: 0.436,
-            retailQuarterly: 0.420
-        },
-        volumeDiscounts: {
-            '1+': { 
-                discount: 0.03, 
-                badge: 'Enterprise Volume Pricing',
-                retailPrice: 37873.06,
-                wholesalePrice: 28724.60
-            }
-        },
         subscriptionOptions: ['quarterly'],
         wholesaleThreshold: 1,
         minOrder: 'Monthly Invoice',
@@ -1760,22 +1141,6 @@ const PRODUCT_CATALOG = {
             retail: 111290.98,
             retailMonthly: 102710.76,
             retailQuarterly: 100645.92
-        },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.501,
-            retailMonthly: 0.436,
-            retailQuarterly: 0.420
-        },
-        volumeDiscounts: {
-            '1+': { 
-                discount: 0.03, 
-                badge: 'Enterprise Volume Pricing',
-                retailPrice: 107952.25,
-                wholesalePrice: 81932.56
-            }
         },
         subscriptionOptions: ['quarterly'],
         wholesaleThreshold: 1,
@@ -1806,30 +1171,14 @@ const PRODUCT_CATALOG = {
             retailMonthly: 162626.22,
             retailQuarterly: 159396.84
         },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.501,
-            retailMonthly: 0.436,
-            retailQuarterly: 0.420
-        },
-        volumeDiscounts: {
-            '1+': { 
-                discount: 0.03, 
-                badge: 'Enterprise Volume Pricing',
-                retailPrice: 170887.45,
-                wholesalePrice: 129634.03
-            }
-        },
         subscriptionOptions: ['quarterly'],
         wholesaleThreshold: 1,
         minOrder: 'Monthly Invoice',
         type: 'premium',
         emoji: '🏗️'
     },
-// ===================================================================
-    // INDUSTRIAL FDA PRODUCTS (Variable margin structure)
+    // ===================================================================
+    // INDUSTRIAL FDA PRODUCTS
     // ===================================================================
 
     'hc-150gal-fda': {
@@ -1853,22 +1202,6 @@ const PRODUCT_CATALOG = {
             retail: 7515.00,
             retailMonthly: 6936.00,
             retailQuarterly: 6799.50
-        },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.501,
-            retailMonthly: 0.436,
-            retailQuarterly: 0.420
-        },
-        volumeDiscounts: {
-            '2+': { 
-                discount: 0.05, 
-                badge: 'FDA Volume Discount',
-                retailPrice: 7139.25,
-                wholesalePrice: 5415.00
-            }
         },
         subscriptionOptions: ['quarterly'],
         wholesaleThreshold: 1,
@@ -1899,22 +1232,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 12485.40,
             retailQuarterly: 12236.70
         },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.501,
-            retailMonthly: 0.436,
-            retailQuarterly: 0.420
-        },
-        volumeDiscounts: {
-            '2+': { 
-                discount: 0.05, 
-                badge: 'FDA Volume Discount',
-                retailPrice: 12850.65,
-                wholesalePrice: 9747.00
-            }
-        },
         subscriptionOptions: ['quarterly'],
         wholesaleThreshold: 1,
         minOrder: 'Monthly Invoice',
@@ -1943,22 +1260,6 @@ const PRODUCT_CATALOG = {
             retail: 21413.37,
             retailMonthly: 19762.07,
             retailQuarterly: 19369.88
-        },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.501,
-            retailMonthly: 0.436,
-            retailQuarterly: 0.420
-        },
-        volumeDiscounts: {
-            '2+': { 
-                discount: 0.05, 
-                badge: 'FDA Large Volume Discount',
-                retailPrice: 20342.70,
-                wholesalePrice: 15436.16
-            }
         },
         subscriptionOptions: ['quarterly'],
         wholesaleThreshold: 1,
@@ -1989,22 +1290,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 37553.99,
             retailQuarterly: 36786.42
         },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.501,
-            retailMonthly: 0.436,
-            retailQuarterly: 0.420
-        },
-        volumeDiscounts: {
-            '1+': { 
-                discount: 0.03, 
-                badge: 'FDA Enterprise Pricing',
-                retailPrice: 39467.37,
-                wholesalePrice: 29945.68
-            }
-        },
         subscriptionOptions: ['quarterly'],
         wholesaleThreshold: 1,
         minOrder: 'Monthly Invoice',
@@ -2033,22 +1318,6 @@ const PRODUCT_CATALOG = {
             retail: 95960.91,
             retailMonthly: 88588.02,
             retailQuarterly: 86805.76
-        },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.396,
-            retailMonthly: 0.314,
-            retailQuarterly: 0.300
-        },
-        volumeDiscounts: {
-            '1+': { 
-                discount: 0.03, 
-                badge: 'FDA Enterprise Pricing',
-                retailPrice: 93082.08,
-                wholesalePrice: 85310.70
-            }
         },
         subscriptionOptions: ['quarterly'],
         wholesaleThreshold: 1,
@@ -2079,29 +1348,12 @@ const PRODUCT_CATALOG = {
             retailMonthly: 111450.50,
             retailQuarterly: 109223.25
         },
-        margins: {
-            wholesale: 0.341,
-            wholesaleMonthly: 0.285,
-            wholesaleQuarterly: 0.270,
-            retail: 0.241,
-            retailMonthly: 0.134,
-            retailQuarterly: 0.118
-        },
-        volumeDiscounts: {
-            '1+': { 
-                discount: 0.02, 
-                badge: 'Mega-Scale FDA Pricing',
-                retailPrice: 118374.84,
-                wholesalePrice: 136565.11
-            }
-        },
         subscriptionOptions: ['quarterly'],
         wholesaleThreshold: 1,
         minOrder: 'Monthly Invoice',
         type: 'premium',
         emoji: '🏭'
     },
-
     // ===================================================================
     // COMPLETE ORGANIC HYPOSOLUTIONS LINE
     // ===================================================================
@@ -2127,34 +1379,6 @@ const PRODUCT_CATALOG = {
             retail: 37.28,
             retailMonthly: 34.37,
             retailQuarterly: 33.66
-        },
-        margins: {
-            wholesale: 0.286,
-            wholesaleMonthly: 0.224,
-            wholesaleQuarterly: 0.207,
-            retail: 0.422,
-            retailMonthly: 0.371,
-            retailQuarterly: 0.358
-        },
-        volumeDiscounts: {
-            '440+': { 
-                discount: 0.18, 
-                badge: '440+ Organic Gallon Discount',
-                retailPrice: 30.57,
-                wholesalePrice: 22.61
-            },
-            '200+': { 
-                discount: 0.12, 
-                badge: '200+ Organic Gallon Discount',
-                retailPrice: 32.81,
-                wholesalePrice: 24.26
-            },
-            '100+': { 
-                discount: 0.08, 
-                badge: '100+ Organic Gallon Discount',
-                retailPrice: 34.30,
-                wholesalePrice: 25.36
-            }
         },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 440,
@@ -2185,28 +1409,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 16.88,
             retailQuarterly: 16.54
         },
-        margins: {
-            wholesale: 0.286,
-            wholesaleMonthly: 0.224,
-            wholesaleQuarterly: 0.207,
-            retail: 0.422,
-            retailMonthly: 0.371,
-            retailQuarterly: 0.358
-        },
-        volumeDiscounts: {
-            '600+': { 
-                discount: 0.18, 
-                badge: '600+ Organic Skin Care Discount',
-                retailPrice: 15.01,
-                wholesalePrice: 11.11
-            },
-            '300+': { 
-                discount: 0.12, 
-                badge: '300+ Organic Skin Care Discount',
-                retailPrice: 16.11,
-                wholesalePrice: 11.92
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 600,
         minOrder: 600,
@@ -2235,28 +1437,6 @@ const PRODUCT_CATALOG = {
             retail: 24.59,
             retailMonthly: 22.68,
             retailQuarterly: 22.22
-        },
-        margins: {
-            wholesale: 0.286,
-            wholesaleMonthly: 0.224,
-            wholesaleQuarterly: 0.207,
-            retail: 0.422,
-            retailMonthly: 0.371,
-            retailQuarterly: 0.358
-        },
-        volumeDiscounts: {
-            '500+': { 
-                discount: 0.18, 
-                badge: '500+ Organic Pet Care Discount',
-                retailPrice: 20.16,
-                wholesalePrice: 14.92
-            },
-            '250+': { 
-                discount: 0.12, 
-                badge: '250+ Organic Pet Care Discount',
-                retailPrice: 21.64,
-                wholesalePrice: 16.02
-            }
         },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 500,
@@ -2287,28 +1467,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 38.06,
             retailQuarterly: 37.27
         },
-        margins: {
-            wholesale: 0.286,
-            wholesaleMonthly: 0.224,
-            wholesaleQuarterly: 0.207,
-            retail: 0.422,
-            retailMonthly: 0.371,
-            retailQuarterly: 0.358
-        },
-        volumeDiscounts: {
-            '440+': { 
-                discount: 0.18, 
-                badge: '440+ Organic Veterinary Discount',
-                retailPrice: 33.84,
-                wholesalePrice: 25.03
-            },
-            '200+': { 
-                discount: 0.12, 
-                badge: '200+ Organic Veterinary Discount',
-                retailPrice: 36.32,
-                wholesalePrice: 26.87
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 440,
         minOrder: 440,
@@ -2337,28 +1495,6 @@ const PRODUCT_CATALOG = {
             retail: 23.86,
             retailMonthly: 22.00,
             retailQuarterly: 21.55
-        },
-        margins: {
-            wholesale: 0.286,
-            wholesaleMonthly: 0.224,
-            wholesaleQuarterly: 0.207,
-            retail: 0.422,
-            retailMonthly: 0.371,
-            retailQuarterly: 0.358
-        },
-        volumeDiscounts: {
-            '500+': { 
-                discount: 0.18, 
-                badge: '500+ Organic Laundry Discount',
-                retailPrice: 19.56,
-                wholesalePrice: 14.46
-            },
-            '250+': { 
-                discount: 0.12, 
-                badge: '250+ Organic Laundry Discount',
-                retailPrice: 21.00,
-                wholesalePrice: 15.52
-            }
         },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 500,
@@ -2389,28 +1525,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 37.95,
             retailQuarterly: 37.17
         },
-        margins: {
-            wholesale: 0.286,
-            wholesaleMonthly: 0.224,
-            wholesaleQuarterly: 0.207,
-            retail: 0.422,
-            retailMonthly: 0.371,
-            retailQuarterly: 0.358
-        },
-        volumeDiscounts: {
-            '440+': { 
-                discount: 0.18, 
-                badge: '440+ Organic Laundry Gallon Discount',
-                retailPrice: 33.74,
-                wholesalePrice: 24.96
-            },
-            '200+': { 
-                discount: 0.12, 
-                badge: '200+ Organic Laundry Gallon Discount',
-                retailPrice: 36.21,
-                wholesalePrice: 26.79
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 440,
         minOrder: 440,
@@ -2439,28 +1553,6 @@ const PRODUCT_CATALOG = {
             retail: 24.29,
             retailMonthly: 22.41,
             retailQuarterly: 21.94
-        },
-        margins: {
-            wholesale: 0.286,
-            wholesaleMonthly: 0.224,
-            wholesaleQuarterly: 0.207,
-            retail: 0.422,
-            retailMonthly: 0.371,
-            retailQuarterly: 0.358
-        },
-        volumeDiscounts: {
-            '200+': { 
-                discount: 0.18, 
-                badge: '200+ Organic Wipes Discount',
-                retailPrice: 19.92,
-                wholesalePrice: 14.74
-            },
-            '100+': { 
-                discount: 0.12, 
-                badge: '100+ Organic Wipes Discount',
-                retailPrice: 21.38,
-                wholesalePrice: 15.82
-            }
         },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 200,
@@ -2491,28 +1583,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 35.21,
             retailQuarterly: 34.47
         },
-        margins: {
-            wholesale: 0.286,
-            wholesaleMonthly: 0.224,
-            wholesaleQuarterly: 0.207,
-            retail: 0.372,
-            retailMonthly: 0.330,
-            retailQuarterly: 0.317
-        },
-        volumeDiscounts: {
-            '50+': { 
-                discount: 0.15, 
-                badge: '50+ Organic Therapeutic Discount',
-                retailPrice: 32.44,
-                wholesalePrice: 26.14
-            },
-            '25+': { 
-                discount: 0.08, 
-                badge: '25+ Organic Therapeutic Discount',
-                retailPrice: 35.11,
-                wholesalePrice: 28.29
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 50,
         minOrder: 50,
@@ -2541,28 +1611,6 @@ const PRODUCT_CATALOG = {
             retail: 34.63,
             retailMonthly: 31.95,
             retailQuarterly: 31.31
-        },
-        margins: {
-            wholesale: 0.286,
-            wholesaleMonthly: 0.224,
-            wholesaleQuarterly: 0.207,
-            retail: 0.372,
-            retailMonthly: 0.330,
-            retailQuarterly: 0.317
-        },
-        volumeDiscounts: {
-            '100+': { 
-                discount: 0.15, 
-                badge: '100+ Organic Serum Discount',
-                retailPrice: 29.44,
-                wholesalePrice: 23.71
-            },
-            '50+': { 
-                discount: 0.08, 
-                badge: '50+ Organic Serum Discount',
-                retailPrice: 31.86,
-                wholesalePrice: 25.66
-            }
         },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 100,
@@ -2593,35 +1641,12 @@ const PRODUCT_CATALOG = {
             retailMonthly: 33.20,
             retailQuarterly: 32.52
         },
-        margins: {
-            wholesale: 0.286,
-            wholesaleMonthly: 0.224,
-            wholesaleQuarterly: 0.207,
-            retail: 0.372,
-            retailMonthly: 0.330,
-            retailQuarterly: 0.317
-        },
-        volumeDiscounts: {
-            '100+': { 
-                discount: 0.15, 
-                badge: '100+ Organic Baby Care Discount',
-                retailPrice: 30.58,
-                wholesalePrice: 24.62
-            },
-            '50+': { 
-                discount: 0.08, 
-                badge: '50+ Organic Baby Care Discount',
-                retailPrice: 33.10,
-                wholesalePrice: 26.65
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 100,
         minOrder: 100,
         type: 'organic',
         emoji: '👶'
     },
-
     // ===================================================================
     // ORGANIC BUNDLE KITS
     // ===================================================================
@@ -2648,28 +1673,12 @@ const PRODUCT_CATALOG = {
             retailMonthly: 61.74,
             retailQuarterly: 60.50
         },
-        margins: {
-            wholesale: 0.286,
-            wholesaleMonthly: 0.224,
-            wholesaleQuarterly: 0.207,
-            retail: 0.422,
-            retailMonthly: 0.371,
-            retailQuarterly: 0.358
-        },
         bundleContents: [
             '3oz Organic Multi-Surface Disinfectant',
             '32oz Organic Ready-to-Use Cleaner',
             'Organic All-in-One Disinfecting Wipes'
         ],
         bundleSavings: 12.15,
-        volumeDiscounts: {
-            '300+': { 
-                discount: 0.10, 
-                badge: '300+ Organic Bundle Discount',
-                retailPrice: 60.23,
-                wholesalePrice: 44.55
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 300,
         minOrder: 300,
@@ -2699,14 +1708,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 128.87,
             retailQuarterly: 126.26
         },
-        margins: {
-            wholesale: 0.286,
-            wholesaleMonthly: 0.224,
-            wholesaleQuarterly: 0.207,
-            retail: 0.422,
-            retailMonthly: 0.371,
-            retailQuarterly: 0.358
-        },
         bundleContents: [
             '3oz Organic Multi-Surface Disinfectant',
             '32oz Organic Ready-to-Use Cleaner',
@@ -2715,14 +1716,6 @@ const PRODUCT_CATALOG = {
             '32oz Organic Laundry Booster'
         ],
         bundleSavings: 22.58,
-        volumeDiscounts: {
-            '250+': { 
-                discount: 0.10, 
-                badge: '250+ Organic Family Bundle Discount',
-                retailPrice: 125.76,
-                wholesalePrice: 93.08
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 250,
         minOrder: 250,
@@ -2752,14 +1745,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 159.88,
             retailQuarterly: 156.63
         },
-        margins: {
-            wholesale: 0.286,
-            wholesaleMonthly: 0.224,
-            wholesaleQuarterly: 0.207,
-            retail: 0.422,
-            retailMonthly: 0.371,
-            retailQuarterly: 0.358
-        },
         bundleContents: [
             '3oz Organic Multi-Surface Disinfectant',
             '32oz Organic Ready-to-Use Cleaner',
@@ -2769,14 +1754,6 @@ const PRODUCT_CATALOG = {
             '3oz Organic Skin Health Mist'
         ],
         bundleSavings: 31.38,
-        volumeDiscounts: {
-            '200+': { 
-                discount: 0.10, 
-                badge: '200+ Organic Complete Bundle Discount',
-                retailPrice: 156.02,
-                wholesalePrice: 115.45
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 200,
         minOrder: 200,
@@ -2806,28 +1783,12 @@ const PRODUCT_CATALOG = {
             retailMonthly: 68.18,
             retailQuarterly: 66.79
         },
-        margins: {
-            wholesale: 0.286,
-            wholesaleMonthly: 0.224,
-            wholesaleQuarterly: 0.207,
-            retail: 0.422,
-            retailMonthly: 0.371,
-            retailQuarterly: 0.358
-        },
         bundleContents: [
             '32oz Organic Ready-to-Use Cleaner',
             '1 Gallon Organic Ready-to-Use Solution',
             'Organic All-in-One Disinfecting Wipes'
         ],
         bundleSavings: 19.45,
-        volumeDiscounts: {
-            '300+': { 
-                discount: 0.10, 
-                badge: '300+ Organic RTU Bundle Discount',
-                retailPrice: 66.53,
-                wholesalePrice: 49.23
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 300,
         minOrder: 300,
@@ -2857,14 +1818,6 @@ const PRODUCT_CATALOG = {
             retailMonthly: 66.84,
             retailQuarterly: 65.48
         },
-        margins: {
-            wholesale: 0.286,
-            wholesaleMonthly: 0.224,
-            wholesaleQuarterly: 0.207,
-            retail: 0.422,
-            retailMonthly: 0.371,
-            retailQuarterly: 0.358
-        },
         bundleContents: [
             '32oz Organic Pet Safe Cleaner & Deodorizer',
             '32oz Organic 500ppm Pet+ & Equine Solution',
@@ -2872,14 +1825,6 @@ const PRODUCT_CATALOG = {
             '3oz Organic Skin Health Mist'
         ],
         bundleSavings: 18.53,
-        volumeDiscounts: {
-            '200+': { 
-                discount: 0.10, 
-                badge: '200+ Organic Pet Bundle Discount',
-                retailPrice: 65.21,
-                wholesalePrice: 48.25
-            }
-        },
         subscriptionOptions: ['monthly', 'quarterly'],
         wholesaleThreshold: 200,
         minOrder: 200,
@@ -2891,12 +1836,10 @@ const PRODUCT_CATALOG = {
 
 // Make it globally accessible
 window.PRODUCT_CATALOG = PRODUCT_CATALOG;
-
 // ===================================================================
 // PRICING RULES CONFIGURATION
 // ===================================================================
 const PRICING_RULES = {
-    volumeDiscount: 0.15,
     bulkOrderThreshold: 1000,
     businessAccountDiscount: 0.12,
     utahTaxRate: 0.0775,
@@ -2912,23 +1855,15 @@ const PRICING_RULES = {
         quarterly: 0.10,
         annual: 0.15
     },
-    wholesaleMargins: {
-        organic: 0.286,
-        premium: 0.341
-    },
     productLines: {
         premium: {
             name: 'Professional Premium Line',
-            margin: 0.341,
-            retailMargin: 0.521,
             minOrder: 'Monthly Invoice',
             badgeColor: '#f59e0b',
             badgeText: 'EPA Premium'
         },
         organic: {
             name: 'USDA Organic Line',
-            margin: 0.286,
-            retailMargin: 0.422,
             minOrder: 'Traditional MOQ',
             badgeColor: '#4ADE80',
             badgeText: 'USDA Organic'
@@ -2956,6 +1891,171 @@ const PRICING_RULES = {
 
 window.PRICING_RULES = PRICING_RULES;
 
+// ===================================================================
+// WHOLESALE RATE FUNCTIONS - Updated from Volume Discount Functions
+// ===================================================================
+
+function calculateWholesaleRate(productId, quantity) {
+    const product = PRODUCT_CATALOG[productId];
+    if (!product) {
+        return { 
+            isWholesale: false, 
+            price: 0, 
+            label: "Product not found", 
+            threshold: null 
+        };
+    }
+    
+    const isWholesale = quantity >= product.wholesaleThreshold;
+    
+    if (isWholesale) {
+        return {
+            isWholesale: true,
+            price: product.pricing.wholesale,
+            label: `Wholesale Rate (${product.wholesaleThreshold}+ units)`,
+            threshold: product.wholesaleThreshold
+        };
+    } else {
+        return {
+            isWholesale: false,
+            price: product.pricing.retail,
+            label: `Retail Rate (under ${product.wholesaleThreshold} units)`,
+            threshold: product.wholesaleThreshold
+        };
+    }
+}
+
+function getEffectivePrice(productId, quantity, subscriptionType = null) {
+    const product = PRODUCT_CATALOG[productId];
+    if (!product) return 0;
+    
+    const wholesaleInfo = calculateWholesaleRate(productId, quantity);
+    let basePrice = wholesaleInfo.price;
+    
+    // Apply subscription discounts on top of wholesale/retail rate
+    if (subscriptionType && product.subscriptionOptions.includes(subscriptionType)) {
+        if (subscriptionType === 'monthly') {
+            basePrice = wholesaleInfo.isWholesale ? 
+                product.pricing.wholesaleMonthly : 
+                product.pricing.retailMonthly;
+        } else if (subscriptionType === 'quarterly') {
+            basePrice = wholesaleInfo.isWholesale ? 
+                product.pricing.wholesaleQuarterly : 
+                product.pricing.retailQuarterly;
+        }
+    }
+    
+    return basePrice;
+}
+
+function updateWholesaleProgress() {
+    try {
+        const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+        
+        // Calculate progress for each item in cart
+        cart.forEach(item => {
+            const product = PRODUCT_CATALOG[item.productId];
+            if (product && product.wholesaleThreshold) {
+                const wholesaleInfo = calculateWholesaleRate(item.productId, item.quantity);
+                
+                // Update progress elements if they exist for this product
+                const progressSection = document.getElementById(`wholesaleProgress-${item.productId}`);
+                if (progressSection) {
+                    const progressFill = progressSection.querySelector('.wholesale-progress-fill');
+                    const itemsToNext = progressSection.querySelector('.items-to-wholesale');
+                    const thresholdText = progressSection.querySelector('.wholesale-threshold');
+                    
+                    if (!wholesaleInfo.isWholesale) {
+                        const itemsNeeded = product.wholesaleThreshold - item.quantity;
+                        const progress = Math.min((item.quantity / product.wholesaleThreshold) * 100, 100);
+                        
+                        if (progressFill) progressFill.style.width = `${progress}%`;
+                        if (itemsToNext) itemsToNext.textContent = Math.max(0, itemsNeeded);
+                        if (thresholdText) thresholdText.textContent = product.wholesaleThreshold;
+                        
+                        progressSection.style.display = 'block';
+                    } else {
+                        // Hide progress when wholesale is achieved
+                        progressSection.style.display = 'none';
+                    }
+                }
+            }
+        });
+        
+    } catch (error) {
+        console.error('Error updating wholesale progress:', error);
+    }
+}
+
+function updateWholesaleSavingsDisplay() {
+    try {
+        const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+        let totalSavings = 0;
+        let hasWholesaleRates = false;
+        
+        cart.forEach(item => {
+            const product = PRODUCT_CATALOG[item.productId];
+            if (product) {
+                const wholesaleInfo = calculateWholesaleRate(item.productId, item.quantity);
+                
+                if (wholesaleInfo.isWholesale) {
+                    hasWholesaleRates = true;
+                    
+                    // Calculate savings: retail price - wholesale price
+                    const retailPrice = product.pricing.retail;
+                    const wholesalePrice = product.pricing.wholesale;
+                    const savings = (retailPrice - wholesalePrice) * item.quantity;
+                    totalSavings += savings;
+                }
+            }
+        });
+        
+        // Update wholesale savings display elements
+        const wholesaleSavingsDisplay = document.getElementById('wholesaleSavingsDisplay');
+        const savingsAmount = document.querySelector('.wholesale-savings-amount, #wholesaleSavingsAmount');
+        
+        if (wholesaleSavingsDisplay) {
+            if (hasWholesaleRates && totalSavings > 0) {
+                wholesaleSavingsDisplay.style.display = 'block';
+                if (savingsAmount) {
+                    savingsAmount.textContent = `$${totalSavings.toFixed(2)}`;
+                }
+            } else {
+                wholesaleSavingsDisplay.style.display = 'none';
+            }
+        }
+        
+        return totalSavings;
+        
+    } catch (error) {
+        console.error('Error updating wholesale savings display:', error);
+        return 0;
+    }
+}
+
+// Helper function to get account type (if not already defined)
+function getAccountType() {
+    return localStorage.getItem('ohsAccountType') || 'consumer';
+}
+
+// Update the existing cart functions to use wholesale rates
+function updateCartBadge() {
+    const cartItems = loadCart();
+    const cartBadge = document.getElementById('cartBadge');
+    const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+    
+    if (totalItems > 0) {
+        cartBadge.textContent = totalItems;
+        cartBadge.style.display = 'inline-block';
+    } else {
+        cartBadge.style.display = 'none';
+    }
+    
+    // Update wholesale progress and savings when cart badge updates
+    updateWholesaleProgress();
+    updateWholesaleSavingsDisplay();
+}
+
 // Optional: Check for duplicate products
 function checkForDuplicates() {
     const productIds = Object.keys(PRODUCT_CATALOG);
@@ -2976,173 +2076,11 @@ function checkForDuplicates() {
         console.log('✅ No duplicates found in product catalog');
     }
 }
-// ===================================================================
-// VOLUME DISCOUNT FUNCTIONS - ADD TO END OF cart.js
-// ===================================================================
 
-function calculateVolumeDiscount(productId, quantity) {
-    const product = PRODUCT_CATALOG[productId];
-    if (!product || !product.volumeDiscounts) {
-        return { discount: 0, label: "No discount", tier: null };
-    }
-    
-    // Sort volume discount tiers by quantity (highest first)
-    const tiers = Object.entries(product.volumeDiscounts)
-        .map(([key, value]) => ({
-            minQuantity: parseInt(key.replace('+', '')),
-            ...value
-        }))
-        .sort((a, b) => b.minQuantity - a.minQuantity);
-    
-    // Find the applicable tier
-    for (let tier of tiers) {
-        if (quantity >= tier.minQuantity) {
-            return {
-                discount: tier.discount,
-                label: tier.badge || `${Math.round(tier.discount * 100)}% off`,
-                tier: tier,
-                minQuantity: tier.minQuantity
-            };
-        }
-    }
-    
-    return { discount: 0, label: "No discount", tier: null };
-}
-
-function updateVolumeProgress() {
-    try {
-        const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-        
-        // Calculate total items across all products
-        const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
-        
-        // Find the next available discount tier across all products in cart
-        let nextTier = null;
-        let currentDiscount = 0;
-        
-        cart.forEach(item => {
-            const product = PRODUCT_CATALOG[item.productId];
-            if (product && product.volumeDiscounts) {
-                const tiers = Object.entries(product.volumeDiscounts)
-                    .map(([key, value]) => ({
-                        minQuantity: parseInt(key.replace('+', '')),
-                        ...value
-                    }))
-                    .sort((a, b) => a.minQuantity - b.minQuantity);
-                
-                // Find current discount for this item
-                const currentTier = calculateVolumeDiscount(item.productId, item.quantity);
-                if (currentTier.discount > currentDiscount) {
-                    currentDiscount = currentTier.discount;
-                }
-                
-                // Find next tier for this item
-                const nextItemTier = tiers.find(tier => item.quantity < tier.minQuantity);
-                if (nextItemTier && (!nextTier || nextItemTier.minQuantity < nextTier.minQuantity)) {
-                    nextTier = nextItemTier;
-                }
-            }
-        });
-        
-        // Update progress elements if they exist
-        const progressFill = document.getElementById('volumeProgressFill');
-        const itemsToNext = document.getElementById('itemsToNextDiscount');
-        const nextDiscountText = document.getElementById('nextDiscountText');
-        const currentDiscountText = document.getElementById('currentDiscountText');
-        const nextDiscountThreshold = document.getElementById('nextDiscountThreshold');
-        
-        if (nextTier) {
-            const itemsNeeded = nextTier.minQuantity - totalItems;
-            const progress = Math.min((totalItems / nextTier.minQuantity) * 100, 100);
-            
-            if (progressFill) progressFill.style.width = `${progress}%`;
-            if (itemsToNext) itemsToNext.textContent = Math.max(0, itemsNeeded);
-            if (nextDiscountText) nextDiscountText.textContent = `Next: ${Math.round(nextTier.discount * 100)}% at ${nextTier.minQuantity} items`;
-            if (nextDiscountThreshold) nextDiscountThreshold.textContent = nextTier.minQuantity;
-        }
-        
-        if (currentDiscountText) {
-            if (currentDiscount > 0) {
-                currentDiscountText.textContent = `Current: ${Math.round(currentDiscount * 100)}% discount active`;
-            } else {
-                currentDiscountText.textContent = "Current: No discount";
-            }
-        }
-        
-        // Show/hide volume progress section
-        const volumeProgressSection = document.getElementById('volumeProgressSection');
-        if (volumeProgressSection) {
-            if (totalItems > 0 && nextTier) {
-                volumeProgressSection.style.display = 'block';
-            } else {
-                volumeProgressSection.style.display = 'none';
-            }
-        }
-        
-    } catch (error) {
-        console.error('Error updating volume progress:', error);
-    }
-}
-
-function updateVolumeSavingsDisplay() {
-    try {
-        const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-        let totalSavings = 0;
-        let hasVolumeDiscounts = false;
-        
-        cart.forEach(item => {
-            const product = PRODUCT_CATALOG[item.productId];
-            if (product) {
-                const volumeDiscount = calculateVolumeDiscount(item.productId, item.quantity);
-                if (volumeDiscount.discount > 0) {
-                    hasVolumeDiscounts = true;
-                    
-                    // Calculate savings using the original price vs discounted price
-                    const accountType = getAccountType ? getAccountType() : 'consumer';
-                    const originalPrice = accountType === 'business' ? 
-                        (product.pricing?.wholesale || product.price || 0) : 
-                        (product.pricing?.retail || product.price || 0);
-                    
-                    const savings = originalPrice * item.quantity * volumeDiscount.discount;
-                    totalSavings += savings;
-                }
-            }
-        });
-        
-        // Update volume savings display elements
-        const volumeSavingsDisplay = document.getElementById('volumeSavingsDisplay');
-        const savingsAmount = document.querySelector('.savings-amount, #volumeSavingsAmount');
-        
-        if (volumeSavingsDisplay) {
-            if (hasVolumeDiscounts && totalSavings > 0) {
-                volumeSavingsDisplay.style.display = 'block';
-                if (savingsAmount) {
-                    savingsAmount.textContent = `$${totalSavings.toFixed(2)}`;
-                }
-            } else {
-                volumeSavingsDisplay.style.display = 'none';
-            }
-        }
-        
-        return totalSavings;
-        
-    } catch (error) {
-        console.error('Error updating volume savings display:', error);
-        return 0;
-    }
-}
-
-// Helper function to get account type (if not already defined)
-function getAccountType() {
-    return localStorage.getItem('ohsAccountType') || 'consumer';
-}
-
-console.log('✅ Volume discount functions added to cart system');
+console.log('✅ Wholesale rate functions added to cart system');
 checkForDuplicates();
 
 console.log('🎉 COMPLETE PRODUCT CATALOG LOADED - 57 PRODUCTS TOTAL');
 console.log('🏆 Premium Line: 38 products | 🌱 Organic Line: 19 products');
 console.log('🛒 Shopify Ready | 🚚 ShipRight Integration Ready | 📦 Fulfillment Included');
-console.log('✅ Ready for Shopify Import | ⚙️ Pricing Configured | 🔄 Cart Functional');
-
-// REMOVED THE DUPLICATE LINE: window.PRODUCT_CATALOG = PRODUCT_CATALOG;
+console.log('✅ Ready for Shopify Import | ⚙️ Wholesale Pricing Configured | 🔄 Cart Functional');
