@@ -48,6 +48,7 @@
             --gray-100: #f3f4f6;
             --gray-200: #e5e7eb;
             --gray-300: #d1d5db;
+            --gray-600: #4b5563;
         }
 
         /* Enhanced Navbar */
@@ -1060,6 +1061,11 @@
         border-right: none;
     }
 
+    .cart-preview * {
+        position: relative;
+        z-index: auto;
+    }
+
     .cart-preview.show {
         right: 0;
     }
@@ -1161,6 +1167,8 @@
         font-size: 0.8rem;
         cursor: pointer;
         transition: all 0.2s ease;
+        position: relative;
+        z-index: 10;
     }
 
     .cart-qty-btn:hover {
@@ -1261,6 +1269,34 @@
         transform: translateY(-5px);
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
         border-color: var(--primary-blue);
+    }
+
+    /* Product Badge */
+    .product-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.4rem 0.8rem;
+        border-radius: 1rem;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        z-index: 5;
+    }
+
+    /* Product Icon */
+    .product-icon {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Product Title */
+    .product-title {
+        color: var(--primary-blue);
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
     }
 
     /* Section Headers */
@@ -1373,8 +1409,9 @@
                 attempts++;
                 
                 if (typeof PRODUCT_CATALOG !== 'undefined' && 
+                    typeof calculateWholesaleRate !== 'undefined' &&
                     Object.keys(PRODUCT_CATALOG).length > 0) {
-                    console.log('✅ Cart system loaded');
+                    console.log('✅ Cart system loaded with', Object.keys(PRODUCT_CATALOG).length, 'products');
                     resolve();
                 } else if (attempts >= maxAttempts) {
                     reject(new Error('Cart system timeout'));
@@ -1408,6 +1445,42 @@
             updateCartPreview();
             updateCartBadges();
         });
+        
+        // Add event delegation for cart preview buttons
+        const cartPreview = document.getElementById('cartPreview');
+        if (cartPreview) {
+            cartPreview.addEventListener('click', function(e) {
+                const target = e.target.closest('button');
+                if (!target) return;
+                
+                // Handle quantity adjustment buttons
+                if (target.classList.contains('cart-qty-btn')) {
+                    const cartItem = target.closest('.cart-item');
+                    if (cartItem) {
+                        const productId = cartItem.getAttribute('data-product-id');
+                        const isDecrease = target.querySelector('.fa-minus') !== null;
+                        if (productId) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            updateCartItemQuantity(productId, isDecrease ? -1 : 1);
+                        }
+                    }
+                }
+                
+                // Handle remove button
+                if (target.classList.contains('cart-item-remove')) {
+                    const cartItem = target.closest('.cart-item');
+                    if (cartItem) {
+                        const productId = cartItem.getAttribute('data-product-id');
+                        if (productId) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            removeCartItem(productId);
+                        }
+                    }
+                }
+            });
+        }
     }
 
     // Load products function
@@ -1475,7 +1548,7 @@
     function createProductCard(product, type) {
         const retail = product.pricing?.retail || product.price || 0;
         const wholesale = product.pricing?.wholesale || (retail * 0.7);
-        const wholesaleThreshold = product.wholesaleThreshold || 1;
+        const wholesaleThreshold = product.wholesaleThreshold || 6; // Default to 6 if not specified
         
         const badgeColor = type === 'organic' ? '#4ADE80' : '#f59e0b';
         const badgeText = type === 'organic' ? 'USDA ORGANIC' : 'EPA PREMIUM';
@@ -1632,11 +1705,17 @@
     // Add to cart from products
     function addToCartFromProducts(productId) {
         const product = PRODUCT_CATALOG[productId];
-        if (!product) return;
+        if (!product) {
+            console.error('Product not found:', productId);
+            showNotification('Product not found. Please refresh the page.', 'error');
+            return;
+        }
         
         const quantity = productQuantities[productId] || 1;
         const wholesaleInfo = calculateWholesaleRate(productId, quantity);
         const price = wholesaleInfo.price;
+        
+        console.log(`Adding to cart: ${product.name}, Qty: ${quantity}, Price: $${price}, Wholesale: ${wholesaleInfo.isWholesale}`);
         
         try {
             const cartItem = {
@@ -1654,7 +1733,10 @@
             const existingIndex = cart.findIndex(item => item.productId === product.id);
             
             if (existingIndex >= 0) {
+                // Update existing item quantity and recalculate price
                 cart[existingIndex].quantity += quantity;
+                const newWholesaleInfo = calculateWholesaleRate(productId, cart[existingIndex].quantity);
+                cart[existingIndex].price = newWholesaleInfo.price;
             } else {
                 cart.push(cartItem);
             }
@@ -1663,7 +1745,18 @@
             updateCartBadges();
             updateCartPreview();
             
-            showNotification(`Added ${quantity}x ${product.name}!`, 'success');
+            // Show detailed notification
+            const message = wholesaleInfo.isWholesale ? 
+                `Added ${quantity}x ${product.name} at wholesale rate!` : 
+                `Added ${quantity}x ${product.name}!`;
+            showNotification(message, 'success');
+            
+            // Reset quantity to 1 after adding
+            productQuantities[productId] = 1;
+            const qtyInput = document.getElementById(`qty-${productId}`);
+            if (qtyInput) qtyInput.value = 1;
+            updateProductPriceDisplay(productId, 1);
+            
         } catch (error) {
             console.error('Failed to add to cart:', error);
             showNotification('Failed to add item. Please try again.', 'error');
@@ -1699,21 +1792,25 @@
             
             cart.forEach(item => {
                 const product = PRODUCT_CATALOG[item.productId];
-                if (!product) return;
+                if (!product) {
+                    console.warn(`Product ${item.productId} not found in catalog`);
+                    return;
+                }
                 
                 const wholesaleInfo = calculateWholesaleRate(item.productId, item.quantity);
                 const itemTotal = wholesaleInfo.price * item.quantity;
                 subtotal += itemTotal;
                 
                 // Calculate savings if wholesale rate applied
-                if (wholesaleInfo.isWholesale) {
+                if (wholesaleInfo.isWholesale && product.pricing) {
                     const retailTotal = product.pricing.retail * item.quantity;
-                    const savings = retailTotal - itemTotal;
+                    const wholesaleTotal = product.pricing.wholesale * item.quantity;
+                    const savings = retailTotal - wholesaleTotal;
                     totalWholesaleSavings += savings;
                 }
                 
                 itemsHTML += `
-                    <div class="cart-item">
+                    <div class="cart-item" data-product-id="${item.productId}">
                         <div class="cart-item-info">
                             <div class="cart-item-name">${item.name}</div>
                             <div class="cart-item-details">
@@ -1721,20 +1818,21 @@
                                 $${wholesaleInfo.price.toFixed(2)} each
                                 ${wholesaleInfo.isWholesale ? 
                                     `<span class="badge bg-success ms-1">Wholesale</span>` : 
-                                    `<small class="text-muted">(${product.wholesaleThreshold - item.quantity} more for wholesale)</small>`
+                                    product.wholesaleThreshold > item.quantity ? 
+                                        `<small class="text-muted d-block">(+${product.wholesaleThreshold - item.quantity} for wholesale)</small>` : ''
                                 }
                             </div>
                         </div>
                         <div class="cart-item-controls">
                             <button class="cart-qty-btn" onclick="updateCartItemQuantity('${item.productId}', -1)" 
-                                    ${item.quantity <= 1 ? 'disabled' : ''}>
+                                    ${item.quantity <= 1 ? 'disabled' : ''} type="button">
                                 <i class="fas fa-minus"></i>
                             </button>
                             <span class="cart-qty-display">${item.quantity}</span>
-                            <button class="cart-qty-btn" onclick="updateCartItemQuantity('${item.productId}', 1)">
+                            <button class="cart-qty-btn" onclick="updateCartItemQuantity('${item.productId}', 1)" type="button">
                                 <i class="fas fa-plus"></i>
                             </button>
-                            <button class="cart-item-remove" onclick="removeCartItem('${item.productId}')">
+                            <button class="cart-item-remove" onclick="removeCartItem('${item.productId}')" type="button">
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
@@ -1782,26 +1880,41 @@
     function updateCartItemQuantity(productId, change) {
         try {
             let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-            const item = cart.find(item => item.productId === productId);
+            const itemIndex = cart.findIndex(item => item.productId === productId);
             
-            if (item) {
-                item.quantity += change;
-                if (item.quantity <= 0) {
-                    cart = cart.filter(item => item.productId !== productId);
+            if (itemIndex >= 0) {
+                const item = cart[itemIndex];
+                const newQuantity = item.quantity + change;
+                
+                if (newQuantity <= 0) {
+                    // Remove item from cart
+                    cart.splice(itemIndex, 1);
                 } else {
-                    // Update price based on new quantity
-                    const wholesaleInfo = calculateWholesaleRate(productId, item.quantity);
+                    // Update quantity and price based on new quantity
+                    item.quantity = newQuantity;
+                    const wholesaleInfo = calculateWholesaleRate(productId, newQuantity);
                     item.price = wholesaleInfo.price;
                 }
                 
                 localStorage.setItem('ohsCart', JSON.stringify(cart));
+                
+                // Force update all cart displays
                 updateCartPreview();
                 updateCartBadges();
                 
-                document.dispatchEvent(new CustomEvent('cartUpdated'));
+                // Dispatch event for other listeners
+                document.dispatchEvent(new CustomEvent('cartUpdated', {
+                    detail: { productId, newQuantity: newQuantity > 0 ? newQuantity : 0 }
+                }));
+                
+                // Show feedback
+                if (newQuantity <= 0) {
+                    showNotification('Item removed from cart', 'info');
+                }
             }
         } catch (error) {
             console.error('Error updating cart item:', error);
+            showNotification('Error updating quantity. Please try again.', 'error');
         }
     }
 
@@ -2249,7 +2362,7 @@
                 
                 .product-info-header {
                     display: flex;
-                    justify-content: between;
+                    justify-content: space-between;
                     align-items: center;
                     padding: 1.5rem;
                     border-bottom: 1px solid #e5e7eb;
