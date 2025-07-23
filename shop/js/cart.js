@@ -286,9 +286,9 @@ const PRODUCT_CATALOG = {
             retailQuarterly: 11.71
         },
         subscriptionOptions: ['monthly', 'quarterly'],
-        wholesaleThreshold: 1000,
-        minOrder: 1000,
-        maxOrder: 9999,
+        wholesaleThreshold: 50,
+        minOrder: 1,
+        maxOrder: 999,
         type: 'organic',
         emoji: '🌱',
         sdsDocument: 'assets/documents/ohs-3oz-organic-sds.pdf',
@@ -318,8 +318,8 @@ const PRODUCT_CATALOG = {
             retailQuarterly: 19.68
         },
         subscriptionOptions: ['monthly', 'quarterly'],
-        wholesaleThreshold: 500,
-        minOrder: 500,
+        wholesaleThreshold: 25,
+        minOrder: 1,
         type: 'organic',
         emoji: '🧽'
     },
@@ -347,8 +347,8 @@ const PRODUCT_CATALOG = {
             retailQuarterly: 19.68
         },
         subscriptionOptions: ['monthly', 'quarterly'],
-        wholesaleThreshold: 500,
-        minOrder: 500,
+        wholesaleThreshold: 25,
+        minOrder: 1,
         type: 'organic',
         emoji: '🐾'
     },
