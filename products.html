@@ -946,7 +946,7 @@
     </div>
 </main>
 
-<!-- FUNCTIONAL CART PREVIEW - Fixed Animation -->
+<!-- ENHANCED CART PREVIEW - With Volume Discounts -->
 <div id="cartPreview" class="cart-preview">
     <div class="cart-header d-flex justify-content-between align-items-center mb-3">
         <h6 class="cart-title mb-0">
@@ -964,35 +964,78 @@
         </div>
     </div>
     
-    <!-- Cart Summary -->
+    <!-- Enhanced Cart Summary -->
     <div id="cartSummary" class="cart-summary" style="display: none;">
         <hr class="my-3">
         
-        <!-- Pricing Breakdown -->
+        <!-- Enhanced Pricing Breakdown -->
         <div class="pricing-breakdown">
             <div class="d-flex justify-content-between mb-2">
                 <span>Subtotal:</span>
                 <span id="cartSubtotal">$0.00</span>
             </div>
+            
+            <!-- Volume/Wholesale Discount Row -->
+            <div class="d-flex justify-content-between text-success mb-2" id="volumeDiscountRow" style="display: none;">
+                <span id="discountLabel">Volume Discount:</span>
+                <span id="cartVolumeDiscount">-$0.00</span>
+            </div>
+            
+            <!-- Subscription Discount Row -->
+            <div class="d-flex justify-content-between text-info mb-2" id="subscriptionDiscountRow" style="display: none;">
+                <span>Subscription Discount:</span>
+                <span id="cartSubscriptionDiscount">-$0.00</span>
+            </div>
+            
+            <!-- Legacy Business Discount (Hidden) -->
             <div class="d-flex justify-content-between text-success mb-2" id="businessDiscountRow" style="display: none;">
                 <span>Business Discount:</span>
                 <span id="cartBusinessDiscount">-$0.00</span>
             </div>
+            
             <div class="d-flex justify-content-between mb-2">
                 <span>Shipping:</span>
                 <span id="cartShipping" class="text-success">FREE</span>
             </div>
+            
             <div class="d-flex justify-content-between fw-bold border-top pt-2">
                 <span>Total:</span>
                 <span id="cartTotal">$0.00</span>
             </div>
         </div>
         
+        <!-- Subscription Toggle -->
+        <div class="subscription-toggle mt-3 p-2 bg-light rounded">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="subscriptionToggle" onchange="toggleSubscription()">
+                <label class="form-check-label text-primary fw-bold" for="subscriptionToggle">
+                    <i class="fas fa-sync-alt me-1"></i>Enable Subscription (8-10% off)
+                </label>
+            </div>
+            <small class="text-muted d-block mt-1">
+                Monthly or Quarterly delivery with additional savings
+            </small>
+        </div>
+        
+        <!-- Volume Opportunities Alert -->
+        <div id="volumeOpportunities" class="volume-opportunities mt-3 p-2 bg-warning bg-opacity-10 rounded" style="display: none;">
+            <small class="text-warning">
+                <i class="fas fa-chart-line me-1"></i>
+                <strong>Wholesale Pricing Available!</strong>
+            </small>
+            <div id="volumeOpportunitiesList" class="mt-1 small">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+        
         <!-- Shipping Info -->
-        <div class="shipping-info mt-3 p-2 bg-light rounded">
-            <small class="text-muted d-flex align-items-center">
+        <div class="shipping-info mt-3 p-2 bg-success bg-opacity-10 rounded">
+            <small class="text-success d-flex align-items-center">
                 <i class="fas fa-truck me-2"></i>
-                <span>Estimated delivery: <strong id="deliveryEstimate">2-4 business days</strong></span>
+                <span>Estimated delivery: <strong>2-4 business days</strong></span>
+            </small>
+            <small class="text-muted d-block mt-1">
+                Free shipping on orders over $75 • Utah made • Same-day processing
             </small>
         </div>
         
@@ -1624,28 +1667,322 @@
         }
     }
 
-    // NEW: Update cart preview with actual items
-    function updateCartPreview() {
-        const cartItems = document.getElementById('cartItems');
-        const cartSummary = document.getElementById('cartSummary');
+   // ENHANCED: Update cart preview with catalog pricing
+function updateCartPreview() {
+    const cartItems = document.getElementById('cartItems');
+    const cartSummary = document.getElementById('cartSummary');
+    
+    if (!cartItems || !cartSummary) return;
+    
+    try {
+        const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
         
-        if (!cartItems || !cartSummary) return;
+        if (cart.length === 0) {
+            cartItems.innerHTML = `
+                <div class="empty-cart text-center py-4">
+                    <i class="fas fa-shopping-cart fa-3x mb-3 text-muted"></i>
+                    <h6 class="text-muted">Your cart is empty</h6>
+                    <p class="text-muted small">Add products to get started</p>
+                </div>
+            `;
+            cartSummary.style.display = 'none';
+            return;
+        }
         
-        try {
-            const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+        // Calculate pricing using catalog data with IF statements
+        let itemsHTML = '';
+        let rawSubtotal = 0;
+        let totalVolumeDiscount = 0;
+        let totalSubscriptionDiscount = 0;
+        const accountType = getAccountType();
+        const isSubscription = localStorage.getItem('subscriptionEnabled') === 'true';
+        
+        // Track volume opportunities
+        let volumeOpportunities = [];
+        
+        cart.forEach(item => {
+            const product = PRODUCT_CATALOG[item.productId];
+            if (!product) return;
             
-            if (cart.length === 0) {
-                cartItems.innerHTML = `
-                    <div class="empty-cart text-center py-4">
-                        <i class="fas fa-shopping-cart fa-3x mb-3 text-muted"></i>
-                        <h6 class="text-muted">Your cart is empty</h6>
-                        <p class="text-muted small">Add products to get started</p>
-                    </div>
-                `;
-                cartSummary.style.display = 'none';
-                return;
+            // Get pricing from catalog using IF statements for wholesale minimums
+            const pricingResult = calculateCatalogPricing(product, item.quantity, accountType, isSubscription);
+            const itemSubtotal = pricingResult.basePrice * item.quantity;
+            const itemVolumeDiscount = pricingResult.volumeDiscount * item.quantity;
+            const itemSubscriptionDiscount = pricingResult.subscriptionDiscount * item.quantity;
+            
+            rawSubtotal += itemSubtotal;
+            totalVolumeDiscount += itemVolumeDiscount;
+            totalSubscriptionDiscount += itemSubscriptionDiscount;
+            
+            // Check for wholesale opportunities
+            const opportunity = checkVolumeOpportunity(product, item.quantity);
+            if (opportunity) {
+                volumeOpportunities.push(opportunity);
             }
             
+            // Build discount badges
+            let badges = '';
+            if (pricingResult.volumeDiscountPercent > 0) {
+                badges += `<span class="badge bg-success ms-1">${pricingResult.volumeDiscountPercent}% Off</span>`;
+            }
+            if (pricingResult.subscriptionDiscountPercent > 0) {
+                badges += `<span class="badge bg-info ms-1">Sub: ${pricingResult.subscriptionDiscountPercent}%</span>`;
+            }
+            
+            // Wholesale threshold info
+            let thresholdInfo = '';
+            if (opportunity) {
+                thresholdInfo = `<div class="text-warning small mt-1">
+                    <i class="fas fa-info-circle me-1"></i>${opportunity.message}
+                </div>`;
+            }
+            
+            itemsHTML += `
+                <div class="cart-item">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-details">
+                            ${item.sku ? `SKU: ${item.sku} • ` : ''}$${pricingResult.finalPrice.toFixed(2)} each
+                            ${badges}
+                        </div>
+                        ${thresholdInfo}
+                    </div>
+                    <div class="cart-item-controls">
+                        <button class="cart-qty-btn" onclick="updateCartItemQuantity('${item.productId}', -1)" 
+                                ${item.quantity <= 1 ? 'disabled' : ''}>
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <span class="cart-qty-display">${item.quantity}</span>
+                        <button class="cart-qty-btn" onclick="updateCartItemQuantity('${item.productId}', 1)">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button class="cart-item-remove" onclick="removeCartItem('${item.productId}')">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+        
+        cartItems.innerHTML = itemsHTML;
+        
+        // Update enhanced cart summary with all discount types
+        updateEnhancedCartSummary(rawSubtotal, totalVolumeDiscount, totalSubscriptionDiscount, volumeOpportunities);
+        cartSummary.style.display = 'block';
+        
+    } catch (error) {
+        console.error('Error updating cart preview:', error);
+    }
+}
+// CORE: Calculate pricing from catalog using IF statements for wholesale minimums
+function calculateCatalogPricing(product, quantity, accountType, isSubscription) {
+    // Get base prices from your catalog structure
+    const retailPrice = parseFloat(product.pricing?.retail || product.price || 0);
+    const wholesalePrice = parseFloat(product.pricing?.wholesale || (retailPrice * 0.7));
+    
+    // Get wholesale threshold from catalog
+    const wholesaleThreshold = parseInt(product.wholesaleThreshold || 50);
+    
+    let basePrice = retailPrice;
+    let volumeDiscount = 0;
+    let subscriptionDiscount = 0;
+    let volumeDiscountPercent = 0;
+    let subscriptionDiscountPercent = 0;
+    let tier = 'retail';
+    
+    // IF STATEMENTS for wholesale minimums (as you specified)
+    if (accountType === 'business') {
+        if (quantity >= wholesaleThreshold) {
+            // Meets wholesale minimum - use wholesale price from catalog
+            basePrice = wholesalePrice;
+            volumeDiscount = retailPrice - wholesalePrice;
+            volumeDiscountPercent = Math.round((volumeDiscount / retailPrice) * 100);
+            tier = 'wholesale';
+        } else {
+            // Business customer but below wholesale minimum - 5% discount
+            basePrice = retailPrice * 0.95;
+            volumeDiscount = retailPrice * 0.05;
+            volumeDiscountPercent = 5;
+            tier = 'business';
+        }
+    }
+    
+    // IF STATEMENTS for subscription discounts (monthly/quarterly as you specified)
+    if (isSubscription) {
+        if (tier === 'wholesale') {
+            // 10% off wholesale for subscription (quarterly billing)
+            subscriptionDiscount = basePrice * 0.10;
+            subscriptionDiscountPercent = 10;
+        } else {
+            // 8% off retail for subscription (monthly/quarterly billing)
+            subscriptionDiscount = basePrice * 0.08;
+            subscriptionDiscountPercent = 8;
+        }
+    }
+    
+    const finalPrice = basePrice - subscriptionDiscount;
+    
+    return {
+        basePrice,
+        finalPrice,
+        volumeDiscount,
+        subscriptionDiscount,
+        volumeDiscountPercent,
+        subscriptionDiscountPercent,
+        tier,
+        meetsWholesaleThreshold: quantity >= wholesaleThreshold
+    };
+}
+
+// Check for wholesale pricing opportunities
+function checkVolumeOpportunity(product, currentQuantity) {
+    const wholesaleThreshold = parseInt(product.wholesaleThreshold || 50);
+    const retailPrice = parseFloat(product.pricing?.retail || product.price || 0);
+    const wholesalePrice = parseFloat(product.pricing?.wholesale || (retailPrice * 0.7));
+    
+    if (currentQuantity < wholesaleThreshold) {
+        const needed = wholesaleThreshold - currentQuantity;
+        const potentialSavings = Math.round(((retailPrice - wholesalePrice) / retailPrice) * 100);
+        
+        return {
+            productId: product.id,
+            productName: product.name,
+            needed: needed,
+            savings: potentialSavings,
+            message: `Add ${needed} more for ${potentialSavings}% wholesale pricing`
+        };
+    }
+    
+    return null;
+}
+   // Enhanced cart summary with volume discounts and subscription pricing
+function updateEnhancedCartSummary(subtotal, volumeDiscount, subscriptionDiscount, opportunities) {
+    // Update subtotal
+    document.getElementById('cartSubtotal').textContent = `$${subtotal.toFixed(2)}`;
+    
+    // Show volume/wholesale discount
+    const volumeDiscountRow = document.getElementById('volumeDiscountRow');
+    const volumeDiscountElement = document.getElementById('cartVolumeDiscount');
+    const discountLabel = document.getElementById('discountLabel');
+    
+    if (volumeDiscount > 0) {
+        volumeDiscountElement.textContent = `-$${volumeDiscount.toFixed(2)}`;
+        // Change label based on account type
+        const accountType = getAccountType();
+        if (accountType === 'business') {
+            discountLabel.textContent = 'Wholesale Discount:';
+        } else {
+            discountLabel.textContent = 'Business Discount:';
+        }
+        volumeDiscountRow.style.display = 'flex';
+    } else {
+        volumeDiscountRow.style.display = 'none';
+    }
+    
+    // Show subscription discount
+    const subscriptionDiscountRow = document.getElementById('subscriptionDiscountRow');
+    const subscriptionDiscountElement = document.getElementById('cartSubscriptionDiscount');
+    
+    if (subscriptionDiscount > 0) {
+        subscriptionDiscountElement.textContent = `-$${subscriptionDiscount.toFixed(2)}`;
+        subscriptionDiscountRow.style.display = 'flex';
+    } else {
+        subscriptionDiscountRow.style.display = 'none';
+    }
+    
+    // Calculate final total
+    const finalTotal = subtotal - volumeDiscount - subscriptionDiscount;
+    
+    // Update shipping calculation
+    const shippingElement = document.getElementById('cartShipping');
+    const shippingThreshold = 75; // Free shipping over $75
+    let shippingCost = 0;
+    
+    if (finalTotal >= shippingThreshold) {
+        shippingElement.textContent = 'FREE';
+        shippingElement.className = 'text-success';
+    } else {
+        shippingCost = 8.99;
+        shippingElement.textContent = `$${shippingCost.toFixed(2)}`;
+        shippingElement.className = 'text-muted';
+    }
+    
+    // Update final total with shipping
+    const grandTotal = finalTotal + shippingCost;
+    document.getElementById('cartTotal').textContent = `$${grandTotal.toFixed(2)}`;
+    
+    // Show wholesale opportunities
+    const opportunitiesDiv = document.getElementById('volumeOpportunities');
+    const opportunitiesList = document.getElementById('volumeOpportunitiesList');
+    
+    if (opportunities.length > 0) {
+        let opportunitiesHTML = '';
+        opportunities.forEach(opp => {
+            opportunitiesHTML += `
+                <div class="opportunity-item text-warning small">
+                    <strong>${opp.productName}:</strong> ${opp.message}
+                </div>
+            `;
+        });
+        opportunitiesList.innerHTML = opportunitiesHTML;
+        opportunitiesDiv.style.display = 'block';
+    } else {
+        opportunitiesDiv.style.display = 'none';
+    }
+    
+    // Hide legacy business discount row
+    const businessDiscountRow = document.getElementById('businessDiscountRow');
+    if (businessDiscountRow) {
+        businessDiscountRow.style.display = 'none';
+    }
+}
+
+// Toggle subscription pricing
+function toggleSubscription() {
+    const isEnabled = document.getElementById('subscriptionToggle').checked;
+    localStorage.setItem('subscriptionEnabled', isEnabled ? 'true' : 'false');
+    
+    // Recalculate all cart pricing
+    recalculateCartPricing();
+    
+    showNotification(
+        isEnabled ? 'Subscription pricing enabled! (8-10% additional discount)' : 'Subscription pricing disabled',
+        'info'
+    );
+}
+
+// Recalculate all cart items when subscription or account type changes
+function recalculateCartPricing() {
+    try {
+        const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+        const accountType = getAccountType();
+        const isSubscription = localStorage.getItem('subscriptionEnabled') === 'true';
+        let updated = false;
+        
+        cart.forEach(item => {
+            const product = PRODUCT_CATALOG[item.productId];
+            if (!product) return;
+            
+            const pricingResult = calculateCatalogPricing(product, item.quantity, accountType, isSubscription);
+            
+            // Update if price changed
+            if (Math.abs(item.price - pricingResult.finalPrice) > 0.01) {
+                item.price = pricingResult.finalPrice;
+                item.tier = pricingResult.tier;
+                updated = true;
+            }
+        });
+        
+        if (updated) {
+            localStorage.setItem('ohsCart', JSON.stringify(cart));
+        }
+        
+        updateCartPreview();
+        
+    } catch (error) {
+        console.error('Error recalculating cart pricing:', error);
+    }
+} 
             // Show cart items
             let itemsHTML = '';
             let subtotal = 0;
@@ -1715,29 +2052,43 @@
         }
     }
 
-    // NEW: Update cart item quantity
-    function updateCartItemQuantity(productId, change) {
-        try {
-            let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-            const item = cart.find(item => item.productId === productId);
+   // ENHANCED: Update cart item quantity with pricing recalculation
+function updateCartItemQuantity(productId, change) {
+    try {
+        let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+        const item = cart.find(item => item.productId === productId);
+        
+        if (item) {
+            const newQuantity = item.quantity + change;
             
-            if (item) {
-                item.quantity += change;
-                if (item.quantity <= 0) {
-                    cart = cart.filter(item => item.productId !== productId);
+            if (newQuantity <= 0) {
+                // Remove item
+                cart = cart.filter(item => item.productId !== productId);
+            } else {
+                // Recalculate price for new quantity using catalog
+                const product = PRODUCT_CATALOG[productId];
+                if (product) {
+                    const accountType = getAccountType();
+                    const isSubscription = localStorage.getItem('subscriptionEnabled') === 'true';
+                    const pricingResult = calculateCatalogPricing(product, newQuantity, accountType, isSubscription);
+                    
+                    item.quantity = newQuantity;
+                    item.price = pricingResult.finalPrice;
+                    item.tier = pricingResult.tier;
                 }
-                
-                localStorage.setItem('ohsCart', JSON.stringify(cart));
-                updateCartPreview();
-                updateCartBadges();
-                
-                // Dispatch cart updated event
-                document.dispatchEvent(new CustomEvent('cartUpdated'));
             }
-        } catch (error) {
-            console.error('Error updating cart item:', error);
+            
+            localStorage.setItem('ohsCart', JSON.stringify(cart));
+            updateCartPreview();
+            updateCartBadges();
+            
+            // Dispatch cart updated event
+            document.dispatchEvent(new CustomEvent('cartUpdated'));
         }
+    } catch (error) {
+        console.error('Error updating cart item:', error);
     }
+}
 
     // NEW: Remove cart item
     function removeCartItem(productId) {
@@ -1815,12 +2166,19 @@
         return localStorage.getItem('ohsAccountType') || 'consumer';
     }
 
-    function toggleAccountMode(mode) {
-        localStorage.setItem('ohsAccountType', mode);
-        updateAccountDisplay(mode);
-        loadProducts();
-        showNotification(`Switched to ${mode === 'business' ? 'Business' : 'Consumer'} pricing`, 'success');
-    }
+    // ENHANCED: Toggle account mode with pricing recalculation
+function toggleAccountMode(mode) {
+    localStorage.setItem('ohsAccountType', mode);
+    updateAccountDisplay(mode);
+    
+    // Recalculate all cart pricing for new account type
+    recalculateCartPricing();
+    
+    // Reload products with new pricing display
+    loadProducts();
+    
+    showNotification(`Switched to ${mode === 'business' ? 'Business' : 'Consumer'} pricing - Cart updated!`, 'success');
+}
 
     function updateAccountDisplay(mode) {
         const indicator = document.getElementById('accountModeIndicator');
@@ -2122,28 +2480,66 @@ function setQuantity(productId, value) {
     if (input) input.value = qty;
 }
 
+// ENHANCED: Add to cart with catalog pricing calculation
 function addToCartFromProducts(productId) {
     const product = PRODUCT_CATALOG[productId];
     if (!product) return;
     
     const quantity = productQuantities[productId] || 1;
     const accountType = getAccountType();
-    const price = accountType === 'business' ? 
-        (product.pricing?.wholesale || product.price * 0.7) : 
-        (product.pricing?.retail || product.price);
+    const isSubscription = localStorage.getItem('subscriptionEnabled') === 'true';
+    
+    // Calculate price using catalog data and IF statements
+    const pricingResult = calculateCatalogPricing(product, quantity, accountType, isSubscription);
     
     try {
-        // Use clean cart format
         const cartItem = {
             productId: product.id,
             name: product.name,
-            price: price,
+            price: pricingResult.finalPrice, // Use calculated price from catalog
             quantity: quantity,
             emoji: product.emoji || '🧴',
             type: product.type || product.productLine,
             sku: product.sku || product.id,
-            addedAt: Date.now()
+            addedAt: Date.now(),
+            tier: pricingResult.tier // Track pricing tier
         };
+        
+        let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+        const existingIndex = cart.findIndex(item => item.productId === product.id);
+        
+        if (existingIndex >= 0) {
+            // Recalculate pricing for new total quantity
+            const newQuantity = cart[existingIndex].quantity + quantity;
+            const newPricing = calculateCatalogPricing(product, newQuantity, accountType, isSubscription);
+            
+            cart[existingIndex].quantity = newQuantity;
+            cart[existingIndex].price = newPricing.finalPrice;
+            cart[existingIndex].tier = newPricing.tier;
+        } else {
+            cart.push(cartItem);
+        }
+        
+        localStorage.setItem('ohsCart', JSON.stringify(cart));
+        updateCartBadges();
+        updateCartPreview();
+        
+        // Enhanced notification with pricing info
+        let message = `Added ${quantity}x ${product.name}!`;
+        if (pricingResult.volumeDiscountPercent > 0) {
+            message += ` (${pricingResult.volumeDiscountPercent}% wholesale discount)`;
+        }
+        if (pricingResult.subscriptionDiscountPercent > 0) {
+            message += ` (+${pricingResult.subscriptionDiscountPercent}% subscription discount)`;
+        }
+        
+        showNotification(message, 'success');
+        
+    } catch (error) {
+        console.error('Failed to add to cart:', error);
+        showNotification('Failed to add item. Please try again.', 'error');
+    }
+}
         
         // Clean add to cart
         let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
@@ -2174,6 +2570,32 @@ function showProductInfo(productId) {
 }
 
     console.log('✅ Enhanced Products Page JavaScript Loaded');
+    // Initialize subscription toggle and enhanced cart system
+document.addEventListener('DOMContentLoaded', function() {
+    // Set subscription toggle based on saved state
+    const subscriptionToggle = document.getElementById('subscriptionToggle');
+    if (subscriptionToggle) {
+        subscriptionToggle.checked = localStorage.getItem('subscriptionEnabled') === 'true';
+    }
+    
+    // Initialize cart preview with enhanced pricing
+    setTimeout(() => {
+        updateCartPreview();
+    }, 100);
+});
+
+// Enhanced cart event listeners
+document.addEventListener('cartUpdated', function() {
+    updateCartPreview();
+    updateCartBadges();
+});
+
+// Account type change listener
+document.addEventListener('accountTypeChanged', function() {
+    recalculateCartPricing();
+});
+
+console.log('✅ Enhanced Cart System with Catalog Pricing Loaded');
 </script>
 <!-- TRUST SIGNALS SECTION -->
 <section class="trust-signals-section">
