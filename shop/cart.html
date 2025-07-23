@@ -62,8 +62,8 @@
       gtag('js', new Date());
       gtag('config', 'G-HEKE217WEY');
     </script>
-    
-    <style>
+</head>
+<style>
         :root {
             --ohs-primary-blue: #2E5EAA;
             --ohs-accent-blue: #7DD3FC;
@@ -74,7 +74,7 @@
             --ohs-dark-gray: #6c757d;
         }
 
-        /* EXACT NAVBAR STYLING FROM REFERENCE */
+        /* EXACT NAVBAR STYLING FROM INDEX PAGE */
         .navbar {
             background-color: #2E5EAA !important;
             padding: 0.3rem 0 !important;
@@ -225,15 +225,26 @@
             z-index: 10;
         }
 
-        /* Cart Items */
+        /* FIXED CART ITEMS - Critical Display Fix */
         .cart-item {
             border-bottom: 2px solid #f1f5f9;
             padding: 2rem 0;
             transition: all 0.3s ease;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            min-height: 120px !important;
+            background: white !important;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
         }
 
         .cart-item:hover {
-            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .cart-item:last-child {
@@ -261,7 +272,7 @@
             background: linear-gradient(135deg, #f59e0b, #d97706);
         }
 
-        /* FIXED QUANTITY CONTROLS - MAIN ISSUE */
+        /* FIXED QUANTITY CONTROLS */
         .quantity-controls {
             display: flex;
             align-items: center;
@@ -286,7 +297,6 @@
             transition: all 0.3s ease;
             color: var(--ohs-organic-green);
             font-weight: bold;
-            /* CRITICAL: Make sure buttons work */
             user-select: none;
             -webkit-user-select: none;
         }
@@ -331,6 +341,71 @@
 
         .quantity-input[type=number] {
             -moz-appearance: textfield;
+        }
+
+        /* VOLUME DISCOUNT STYLING - CRITICAL FIXES */
+        .volume-discount-badge {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-block;
+            margin: 0.25rem 0;
+            box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { transform: scale(1); box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3); }
+            50% { transform: scale(1.02); box-shadow: 0 4px 12px rgba(34, 197, 94, 0.5); }
+        }
+
+        .volume-threshold-indicator {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #92400e;
+            padding: 0.3rem 0.6rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+            margin: 0.25rem 0;
+            border: 1px solid #f59e0b;
+        }
+
+        .volume-savings-display {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border: 2px solid #22c55e;
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .volume-savings-display::before {
+            content: '💰';
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: white;
+            padding: 0 8px;
+            font-size: 1.2rem;
+        }
+
+        .volume-progress-bar {
+            background: #f3f4f6;
+            border-radius: 8px;
+            height: 8px;
+            margin: 0.5rem 0;
+            overflow: hidden;
+        }
+
+        .volume-progress-fill {
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+            height: 100%;
+            border-radius: 8px;
+            transition: width 0.5s ease;
         }
 
         /* Recommendation quantity controls */
@@ -410,6 +485,19 @@
             color: var(--ohs-organic-green);
         }
 
+        .original-price {
+            text-decoration: line-through;
+            color: #9ca3af;
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+        }
+
+        .discount-amount {
+            color: #22c55e;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
         /* Order Summary */
         .order-summary {
             background: linear-gradient(135deg, #f8fafc, #f1f5f9);
@@ -484,6 +572,9 @@
             text-align: center;
             padding: 4rem 2rem;
             color: #64748b;
+            background: linear-gradient(135deg, #f8fafc, #ffffff);
+            border-radius: 15px;
+            margin: 2rem 0;
         }
 
         .empty-cart i {
@@ -492,7 +583,15 @@
             opacity: 0.3;
         }
 
-        /* FOOTER STYLING - FIXED */
+        .empty-cart .cert-badge {
+            transition: transform 0.3s ease;
+        }
+
+        .empty-cart .cert-badge:hover {
+            transform: scale(1.1);
+        }
+
+        /* FOOTER STYLING FROM INDEX PAGE */
         .footer-section {
             background: #000000;
             color: white;
@@ -531,33 +630,6 @@
             border-color: rgba(255, 255, 255, 0.2) !important;
         }
 
-        /* Mobile */
-        @media (max-width: 768px) {
-            .hero-section {
-                padding: 2rem 0;
-            }
-            
-            .cart-container {
-                margin: 0 1rem;
-                margin-top: -1rem;
-            }
-            
-            .order-summary {
-                position: static;
-                margin-top: 2rem;
-            }
-
-            .quantity-controls {
-                gap: 0.5rem;
-                padding: 0.5rem;
-            }
-
-            .quantity-btn {
-                width: 35px;
-                height: 35px;
-            }
-        }
-
         /* Under Construction Badge */
         .construction-badge {
             background: linear-gradient(135deg, #f59e0b, #d97706);
@@ -581,7 +653,7 @@
             color: white;
         }
 
-        /* Additional styling for simplified cart elements */
+        /* Volume discount animations */
         #volumeDiscountBanner {
             animation: slideDown 0.5s ease-in-out;
             box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3);
@@ -611,44 +683,39 @@
             to { opacity: 1; }
         }
 
-        /* Enhanced cart item styling */
-        .cart-item {
-            transition: all 0.3s ease;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-            padding: 1.5rem;
-        }
-
-        .cart-item:hover {
-            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        /* Volume discount text styling */
         #volumeDiscountText {
             font-weight: 600;
         }
 
-        /* Improved empty cart styling */
-        .empty-cart {
-            background: linear-gradient(135deg, #f8fafc, #ffffff);
-            border-radius: 15px;
-            padding: 3rem 2rem;
-            margin: 2rem 0;
-        }
+        /* Mobile */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 2rem 0;
+            }
+            
+            .cart-container {
+                margin: 0 1rem;
+                margin-top: -1rem;
+            }
+            
+            .order-summary {
+                position: static;
+                margin-top: 2rem;
+            }
 
-        .empty-cart .cert-badge {
-            transition: transform 0.3s ease;
-        }
+            .quantity-controls {
+                gap: 0.5rem;
+                padding: 0.5rem;
+            }
 
-        .empty-cart .cert-badge:hover {
-            transform: scale(1.1);
+            .quantity-btn {
+                width: 35px;
+                height: 35px;
+            }
         }
     </style>
-</head>
-<body>
-    <!-- Navigation - Updated Structure -->
+    <body>
+    <!-- Navigation - Updated to Match Index Page Structure -->
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="../index.html">
@@ -678,6 +745,7 @@
                             <i class="fas fa-spray-can me-1"></i>Services
                         </a>
                     </li>
+                    <!-- DIRECT PRODUCTS LINK - NO DROPDOWN -->
                     <li class="nav-item">
                         <a class="nav-link" href="../products.html">
                             <i class="fas fa-shopping-bag me-1"></i>Products
@@ -688,6 +756,7 @@
                             <i class="fas fa-calculator me-1"></i>Calculator
                         </a>
                     </li>
+                    <!-- ABOUT DROPDOWN - MATCHING INDEX PAGE -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="../about.html" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-info-circle me-1"></i>About
@@ -708,7 +777,7 @@
                         </ul>
                     </li>
                     
-                    <!-- Customer Shopping & Account -->
+                    <!-- SHOP DROPDOWN - MATCHING INDEX PAGE -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle fw-semibold" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-shopping-cart me-1"></i>Shop
@@ -728,6 +797,7 @@
                         </ul>
                     </li>
                     
+                    <!-- ACCOUNT DROPDOWN - MATCHING INDEX PAGE -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user me-1"></i>Account
@@ -758,50 +828,97 @@
     </nav>
 
     <!-- Hero Section -->
-    <div class="hero-section">
-        <div class="container text-center">
-            <h1 class="display-4 fw-bold mb-3">Your Shopping Cart</h1>
-            <p class="lead">Complete your order of premium USDA Certified Organic and EPA registered HOCl products</p>
-            <div class="hero-stats">
-                <div class="row text-center">
-                    <div class="col-md-3 col-6 mb-3">
-                        <div class="cert-badge">
-                            <i class="fas fa-leaf me-2"></i>USDA Organic
-                        </div>
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-5 fw-bold mb-3">Shopping Cart</h1>
+                    <p class="lead mb-4">
+                        Review your premium hypochlorous acid products before checkout. 
+                        Professional-grade disinfectants with Utah's fastest delivery.
+                    </p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="cert-badge">
+                            <i class="fas fa-leaf me-1"></i> USDA Certified Organic
+                        </span>
+                        <span class="cert-badge">
+                            <i class="fas fa-shield-alt me-1"></i> EPA Registered
+                        </span>
+                        <span class="cert-badge">
+                            <i class="fas fa-shipping-fast me-1"></i> 2-4 Day Delivery
+                        </span>
+                        <span class="cert-badge">
+                            <i class="fas fa-calculator me-1"></i> Volume Discounts
+                        </span>
                     </div>
-                    <div class="col-md-3 col-6 mb-3">
-                        <div class="cert-badge">
-                            <i class="fas fa-shield-alt me-2"></i>EPA Registered
+                </div>
+                <div class="col-lg-4 text-end">
+                    <div class="hero-stats">
+                        <div class="mb-3">
+                            <h3 class="mb-1" id="heroCartTotal">$0.00</h3>
+                            <small class="text-light">Cart Total</small>
                         </div>
-                    </div>
-                    <div class="col-md-3 col-6 mb-3">
-                        <div class="cert-badge">
-                            <i class="fas fa-shipping-fast me-2"></i>FREE Shipping on Qualified Orders
+                        <div class="mb-3">
+                            <h4 class="mb-1" id="heroItemCount">0</h4>
+                            <small class="text-light">Items</small>
                         </div>
-                    </div>
-                    <div class="col-md-3 col-6 mb-3">
-                        <div class="cert-badge">
-                            <i class="fas fa-percentage me-2"></i>Volume Discounts
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a href="../products.html" class="btn btn-outline-light btn-sm">
+                                <i class="fas fa-arrow-left me-1"></i> Continue Shopping
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Main Content -->
-    <div class="container">
-        <div class="cart-container p-4">
-            <!-- Volume Discount Banner - Only shows when discounts are active -->
-            <div id="volumeDiscountBanner" class="alert alert-success text-center mb-4" style="background: linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green)); border: none; color: white; display: none;">
-                <div class="d-flex align-items-center justify-content-center">
-                    <i class="fas fa-percentage me-2 fs-4"></i>
-                    <div>
-                        <strong>Volume Discounts Applied!</strong> <span id="volumeDiscountText">You're saving with bulk pricing</span>
-                    </div>
+    <!-- Volume Discount Banner (Hidden by default, shown via JavaScript) -->
+    <div id="volumeDiscountBanner" class="alert alert-success mx-3 mt-3" style="display: none;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <strong><i class="fas fa-percentage me-2"></i>Volume Discount Applied!</strong>
+                    <span id="volumeDiscountText" class="ms-2"></span>
+                </div>
+                <div class="col-md-4 text-end">
+                    <button class="btn btn-sm btn-outline-success" onclick="toggleVolumePricingInfo()">
+                        View Pricing Tiers <i class="fas fa-chevron-down ms-1"></i>
+                    </button>
                 </div>
             </div>
+        </div>
+    </div>
 
+    <!-- Volume Pricing Info (Hidden by default) -->
+    <div id="volumePricingInfo" class="alert alert-info mx-3" style="display: none;">
+        <div class="container">
+            <h6 class="fw-bold mb-3">Volume Pricing Tiers</h6>
+            <div class="row">
+                <div class="col-md-3">
+                    <strong>25+ items:</strong> 8% off
+                </div>
+                <div class="col-md-3">
+                    <strong>50+ items:</strong> 15% off
+                </div>
+                <div class="col-md-3">
+                    <strong>100+ items:</strong> 20% off
+                </div>
+                <div class="col-md-3">
+                    <strong>200+ items:</strong> 25% off
+                </div>
+            </div>
+            <div class="mt-2">
+                <small class="text-muted">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Volume discounts automatically apply based on total quantity in cart. Prices shown include discount.
+                </small>
+            </div>
+        </div>
+    </div>
+<!-- Main Content -->
+    <div class="container">
+        <div class="cart-container p-4">
             <div class="row">
                 <!-- Cart Items -->
                 <div class="col-lg-8">
@@ -817,9 +934,9 @@
                         </div>
                     </div>
 
-                    <!-- Cart Items Container -->
+                    <!-- Cart Items Container - FIXED VOLUME DISCOUNT INTEGRATION -->
                     <div id="cartItems">
-                        <!-- Items will be dynamically inserted here -->
+                        <!-- Items will be dynamically inserted here with volume discount calculations -->
                     </div>
 
                     <!-- Empty Cart Message -->
@@ -858,7 +975,7 @@
                                         <div class="cert-badge bg-primary text-white mb-2">
                                             <i class="fas fa-shipping-fast"></i>
                                         </div>
-                                        <small class="text-muted">Free Shipping on Qualified Orders</small>
+                                        <small class="text-muted">Free Shipping on $75+</small>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-3 mb-3">
@@ -866,7 +983,7 @@
                                         <div class="cert-badge bg-info text-white mb-2">
                                             <i class="fas fa-percentage"></i>
                                         </div>
-                                        <small class="text-muted">Volume Discounts</small>
+                                        <small class="text-muted">Volume Discounts Start at 25+</small>
                                     </div>
                                 </div>
                             </div>
@@ -916,12 +1033,12 @@
                                     <div class="col-md-6 mb-3">
                                         <div class="d-flex align-items-center">
                                             <div class="product-image premium me-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
-                                                🧽
+                                                🏭
                                             </div>
                                             <div class="flex-grow-1">
                                                 <h6 class="mb-1">Professional Disinfecting Wipes</h6>
                                                 <p class="small text-muted mb-1">EPA registered for commercial use</p>
-                                                <div class="price-display">$28.45</div>
+                                                <div class="price-display">$26.21</div>
                                                 <div class="d-flex align-items-center gap-2 mt-2">
                                                     <div class="recommendation-quantity-controls">
                                                         <button class="quantity-btn-sm" onclick="changeRecommendationQuantity('rec2', -1)" 
@@ -944,12 +1061,19 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="mt-3 p-3 rounded" style="background: rgba(74, 222, 128, 0.1); border: 1px solid #22c55e;">
+                                    <small class="text-success">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        <strong>Volume Discount Tip:</strong> Add more items to unlock volume pricing! 
+                                        Next discount tier at <span id="nextDiscountThreshold">25</span> total items.
+                                    </small>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Order Summary -->
+                <!-- Order Summary with Volume Discount Integration -->
                 <div class="col-lg-4">
                     <div class="order-summary">
                         <h4>
@@ -960,31 +1084,69 @@
                             <span>Subtotal:</span>
                             <span id="subtotal">$0.00</span>
                         </div>
-                        <div class="summary-row">
+                        
+                        <!-- Volume Discount Row - Dynamically shown -->
+                        <div class="summary-row" id="volumeDiscountRow" style="display: none;">
                             <span>Volume Discounts:</span>
                             <span id="volumeDiscount" class="discount-text">$0.00</span>
                         </div>
+                        
+                        <!-- Wholesale Discount Row - Dynamically shown -->
+                        <div class="summary-row" id="wholesaleDiscountRow" style="display: none;">
+                            <span>Business Account:</span>
+                            <span id="wholesaleDiscount" class="discount-text">$0.00</span>
+                        </div>
+                        
                         <div class="summary-row">
                             <span>Shipping:</span>
-                            <span id="shipping" class="free-shipping">FREE</span>
+                            <span id="shipping" class="free-shipping">FREE on $75+</span>
                         </div>
                         <div class="summary-row">
                             <span>Utah Tax (7.75%):</span>
                             <span id="tax">$0.00</span>
                         </div>
+                        
                         <!-- Subscription discount row will be added dynamically -->
                         <div class="summary-row">
                             <span><strong>Total:</strong></span>
                             <span id="total"><strong>$0.00</strong></span>
                         </div>
 
-                        <!-- Volume Pricing Info - Simplified -->
-                        <div id="volumePricingInfo" class="mt-4 p-3 rounded" style="background: rgba(74, 222, 128, 0.1); border: 2px solid var(--ohs-organic-green); display: none;">
+                        <!-- Volume Pricing Progress - Shows progress toward next discount -->
+                        <div id="volumeProgressSection" class="mt-4 p-3 rounded" style="background: rgba(74, 222, 128, 0.05); border: 2px solid #22c55e; display: none;">
                             <h6 class="text-success mb-2">
-                                <i class="fas fa-info-circle me-2"></i>Volume Discounts Available
+                                <i class="fas fa-chart-line me-2"></i>Volume Discount Progress
                             </h6>
-                            <div class="small text-success">
-                                Each product has quantity-based discounts. Add more items to unlock savings!
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <small id="currentDiscountText">Current: No discount</small>
+                                    <small id="nextDiscountText">Next: 8% at 25 items</small>
+                                </div>
+                                <div class="volume-progress-bar mt-2">
+                                    <div class="volume-progress-fill" id="volumeProgressFill" style="width: 0%"></div>
+                                </div>
+                                <div class="text-center mt-1">
+                                    <small class="text-muted">
+                                        <span id="itemsToNextDiscount">25</span> more items for next discount
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Current Volume Savings Display -->
+                        <div id="volumeSavingsDisplay" class="volume-savings-display" style="display: none;">
+                            <h6 class="text-success mb-2">
+                                <i class="fas fa-piggy-bank me-2"></i>You're Saving with Volume Pricing!
+                            </h6>
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <div class="fw-bold text-success" id="totalVolumeSavings">$0.00</div>
+                                    <small class="text-muted">Total Saved</small>
+                                </div>
+                                <div class="col-6">
+                                    <div class="fw-bold text-success" id="averageDiscountPercent">0%</div>
+                                    <small class="text-muted">Avg Discount</small>
+                                </div>
                             </div>
                         </div>
 
@@ -1035,7 +1197,7 @@
                             </div>
                         </div>
 
-                        <!-- Delivery Information - Simplified -->
+                        <!-- Delivery Information -->
                         <div class="mt-4 p-3 rounded bg-light">
                             <h6 class="mb-2">
                                 <i class="fas fa-truck me-2 text-primary"></i>Shipping Information
@@ -1043,11 +1205,15 @@
                             <div class="small">
                                 <div class="d-flex justify-content-between mb-1">
                                     <span>Standard Shipping:</span>
-                                    <span class="free-shipping">FREE</span>
+                                    <span class="free-shipping">FREE on $75+</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Under $75:</span>
+                                    <span>$8.99</span>
                                 </div>
                                 <div class="text-muted">
                                     <i class="fas fa-map-marker-alt me-1"></i>
-                                    Ships from Salt Lake City, UT
+                                    Ships from Salt Lake City, UT (2-4 business days)
                                 </div>
                                 <div class="mt-2">
                                     <span class="construction-badge">ShipRight Integration</span>
@@ -1059,8 +1225,7 @@
             </div>
         </div>
     </div>
-
-    <!-- Footer - Updated to match reference structure with PROPER STYLING -->
+    <!-- Footer - Matching Index Page Structure -->
     <footer class="footer-section">
         <div class="container">
             <div class="row">
@@ -1132,7 +1297,7 @@
                 </div>
                 <div class="col-md-6 text-md-end">
                     <span class="footer-cert me-1">57 Products</span>
-                    <span class="footer-cert me-1">FREE Ship</span>
+                    <span class="footer-cert me-1">FREE Ship $75+</span>
                     <span class="footer-cert">Cart Ready</span>
                 </div>
             </div>
@@ -1142,42 +1307,122 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- FIXED CART SYSTEM - Complete Rewrite -->
+    <!-- FIXED CART SYSTEM WITH PROPER VOLUME DISCOUNT CALCULATIONS -->
     <script>
-        // Global cart variables with improved initialization
+        // ===================================================================
+        // PRODUCT CATALOG INTEGRATION - ACTUAL DISCOUNT DATA
+        // ===================================================================
+        
+        // Sample product data with actual volume discount structure from your catalog
+        const PRODUCT_CATALOG = {
+            // ORGANIC LINE EXAMPLES
+            'ohs-32oz-cleaner-ready': {
+                id: 'ohs-32oz-cleaner-ready',
+                name: '32oz Organic Ready-to-Use Cleaner',
+                price: 21.80,
+                type: 'organic',
+                emoji: '🧴',
+                sku: 'OHS-32OZ-CLEANER-RTU',
+                description: 'USDA Certified Organic hypochlorous acid cleaner',
+                volumeDiscounts: {
+                    25: { discount: 0.08, badge: '8% Off 25+' },
+                    50: { discount: 0.15, badge: '15% Off 50+' },
+                    100: { discount: 0.20, badge: '20% Off 100+' },
+                    200: { discount: 0.25, badge: '25% Off 200+' }
+                }
+            },
+            'ohs-3oz-disinfectant': {
+                id: 'ohs-3oz-disinfectant',
+                name: '3oz Organic Multi-Surface Disinfectant',
+                price: 12.97,
+                type: 'organic',
+                emoji: '✨',
+                sku: 'OHS-3OZ-DISINFECTANT',
+                description: 'Travel-size USDA Certified Organic disinfectant',
+                volumeDiscounts: {
+                    25: { discount: 0.08, badge: '8% Off 25+' },
+                    50: { discount: 0.15, badge: '15% Off 50+' },
+                    100: { discount: 0.20, badge: '20% Off 100+' }
+                }
+            },
+            
+            // PREMIUM LINE EXAMPLES
+            'hc-32oz-cleaner-ready': {
+                id: 'hc-32oz-cleaner-ready',
+                name: '32oz Multi Use Cleaner Ready to Use - Premium',
+                price: 23.82,
+                type: 'premium',
+                emoji: '👑',
+                sku: 'HC-32OZ-CLEANER-RTU',
+                description: 'Premium hypochlorous acid with advanced packaging',
+                volumeDiscounts: {
+                    25: { discount: 0.08, badge: '8% Off 25+' },
+                    50: { discount: 0.15, badge: '15% Off 50+' },
+                    100: { discount: 0.20, badge: '20% Off 100+' },
+                    200: { discount: 0.25, badge: '25% Off 200+' }
+                }
+            },
+            'hc-1gal-ready': {
+                id: 'hc-1gal-ready',
+                name: '1 Gallon Ready to Use - Premium',
+                price: 40.65,
+                type: 'premium',
+                emoji: '🏭',
+                sku: 'HC-1GAL-READY-RTU',
+                description: 'Premium bulk professional-grade solution',
+                volumeDiscounts: {
+                    10: { discount: 0.08, badge: '8% Off 10+' },
+                    25: { discount: 0.15, badge: '15% Off 25+' },
+                    50: { discount: 0.20, badge: '20% Off 50+' }
+                }
+            }
+        };
+
+        // ===================================================================
+        // CART SYSTEM VARIABLES
+        // ===================================================================
         let cartItems = [];
         let isCartSystemReady = false;
         
-        // CRITICAL FIX: Improved cart loading
+        // Volume discount thresholds from your catalog
+        const VOLUME_THRESHOLDS = [25, 50, 100, 200];
+        const DISCOUNT_RATES = {
+            25: 0.08,   // 8% off
+            50: 0.15,   // 15% off
+            100: 0.20,  // 20% off
+            200: 0.25   // 25% off
+        };
+
+        // ===================================================================
+        // CORE CART FUNCTIONS WITH VOLUME DISCOUNT INTEGRATION
+        // ===================================================================
+        
         function loadCart() {
             try {
                 const stored = localStorage.getItem('ohsCart');
                 if (stored) {
                     cartItems = JSON.parse(stored);
-                    // Ensure all items have required properties
                     cartItems = cartItems.map(item => ({
-                        productId: item.productId || `item_${Date.now()}_${Math.random()}`,
+                        productId: item.productId || item.id || `item_${Date.now()}`,
                         name: item.name || 'Unknown Product',
                         price: parseFloat(item.price) || 0,
                         quantity: parseInt(item.quantity) || 1,
                         type: item.type || item.productLine || 'organic',
-                        description: item.description || 'No description available',
+                        description: item.description || 'Professional hypochlorous acid product',
                         emoji: item.emoji || (item.type === 'premium' ? '👑' : '🌱'),
-                        size: item.size || '',
                         sku: item.sku || '',
-                        volumeDiscounts: item.volumeDiscounts || null,
-                        ...item // Keep any additional properties
+                        ...item
                     }));
                 } else {
                     cartItems = [];
                 }
-                console.log('✅ Cart loaded:', cartItems.length, 'items');
                 
-                // Add some test items if cart is empty (for testing)
+                // Add test items if cart is empty and test mode is on
                 if (cartItems.length === 0 && window.location.search.includes('test=true')) {
                     addTestItems();
                 }
                 
+                console.log('✅ Cart loaded:', cartItems.length, 'items');
             } catch (error) {
                 console.error('❌ Error loading cart:', error);
                 cartItems = [];
@@ -1186,60 +1431,46 @@
             isCartSystemReady = true;
         }
         
-        // Add test items for demonstration
         function addTestItems() {
             cartItems = [
                 {
-                    productId: 'test_organic_1',
-                    name: '32oz Organic Multi-Surface Cleaner',
+                    productId: 'ohs-32oz-cleaner-ready',
+                    name: '32oz Organic Ready-to-Use Cleaner',
                     price: 21.80,
-                    quantity: 23,
+                    quantity: 28,
                     type: 'organic',
-                    description: 'USDA Certified Organic hypochlorous acid solution for safe daily cleaning',
+                    description: 'USDA Certified Organic hypochlorous acid cleaner',
                     emoji: '🧴',
-                    size: '32oz',
-                    sku: 'OHS-ORG-32-MS',
-                    volumeDiscounts: {
-                        '12+': { discount: 0.05, description: '5% off 12+' },
-                        '24+': { discount: 0.10, description: '10% off 24+' }
-                    }
+                    sku: 'OHS-32OZ-CLEANER-RTU'
                 },
                 {
-                    productId: 'test_premium_1',
-                    name: 'Professional Surface Disinfectant',
-                    price: 16.13,
-                    quantity: 50,
+                    productId: 'hc-32oz-cleaner-ready',
+                    name: '32oz Multi Use Cleaner Ready to Use - Premium',
+                    price: 23.82,
+                    quantity: 35,
                     type: 'premium',
-                    description: 'EPA registered commercial-grade disinfectant for professional use',
-                    emoji: '🏭',
-                    size: '32oz',
-                    sku: 'OHS-PRE-32-SD',
-                    volumeDiscounts: {
-                        '25+': { discount: 0.08, description: '8% off 25+' },
-                        '50+': { discount: 0.15, description: '15% off 50+' }
-                    }
+                    description: 'Premium hypochlorous acid with advanced packaging',
+                    emoji: '👑',
+                    sku: 'HC-32OZ-CLEANER-RTU'
                 },
                 {
-                    productId: 'test_premium_2',
-                    name: 'Industrial Floor Cleaner',
-                    price: 24.99,
-                    quantity: 3,
-                    type: 'premium',
-                    description: 'Heavy-duty floor cleaning solution for commercial facilities',
-                    emoji: '🧽',
-                    size: '1 Gallon',
-                    sku: 'OHS-PRE-GAL-FC'
+                    productId: 'ohs-3oz-disinfectant',
+                    name: '3oz Organic Multi-Surface Disinfectant',
+                    price: 12.97,
+                    quantity: 15,
+                    type: 'organic',
+                    description: 'Travel-size USDA Certified Organic disinfectant',
+                    emoji: '✨',
+                    sku: 'OHS-3OZ-DISINFECTANT'
                 }
             ];
             saveCart();
         }
         
-        // CRITICAL FIX: Improved cart saving
         function saveCart() {
             try {
                 localStorage.setItem('ohsCart', JSON.stringify(cartItems));
                 console.log('💾 Cart saved successfully');
-                // Broadcast update to other pages
                 window.dispatchEvent(new StorageEvent('storage', {
                     key: 'ohsCart',
                     newValue: JSON.stringify(cartItems)
@@ -1249,7 +1480,84 @@
             }
         }
         
-        // CRITICAL FIX: Comprehensive display update
+        // ===================================================================
+        // VOLUME DISCOUNT CALCULATION ENGINE
+        // ===================================================================
+        
+        function calculateVolumeDiscount(productId, quantity) {
+            const product = PRODUCT_CATALOG[productId];
+            if (!product || !product.volumeDiscounts) {
+                return { discount: 0, badge: '', savings: 0 };
+            }
+            
+            // Find the highest applicable discount
+            let bestDiscount = { discount: 0, badge: '', savings: 0 };
+            
+            for (const [threshold, discountInfo] of Object.entries(product.volumeDiscounts)) {
+                const thresholdNum = parseInt(threshold);
+                if (quantity >= thresholdNum) {
+                    const itemPrice = product.price;
+                    const savings = itemPrice * quantity * discountInfo.discount;
+                    bestDiscount = {
+                        discount: discountInfo.discount,
+                        badge: discountInfo.badge,
+                        savings: savings,
+                        threshold: thresholdNum
+                    };
+                }
+            }
+            
+            return bestDiscount;
+        }
+        
+        function calculateTotalVolumeDiscount() {
+            let totalSavings = 0;
+            let totalOriginalPrice = 0;
+            let hasDiscounts = false;
+            
+            cartItems.forEach(item => {
+                const product = PRODUCT_CATALOG[item.productId];
+                if (product) {
+                    const originalItemTotal = product.price * item.quantity;
+                    totalOriginalPrice += originalItemTotal;
+                    
+                    const volumeDiscount = calculateVolumeDiscount(item.productId, item.quantity);
+                    if (volumeDiscount.savings > 0) {
+                        totalSavings += volumeDiscount.savings;
+                        hasDiscounts = true;
+                    }
+                }
+            });
+            
+            const averageDiscountPercent = totalOriginalPrice > 0 ? (totalSavings / totalOriginalPrice) * 100 : 0;
+            
+            return {
+                totalSavings,
+                averageDiscountPercent,
+                hasDiscounts
+            };
+        }
+        
+        function getNextDiscountThreshold() {
+            const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+            
+            for (const threshold of VOLUME_THRESHOLDS) {
+                if (totalItems < threshold) {
+                    return {
+                        threshold,
+                        itemsNeeded: threshold - totalItems,
+                        discount: DISCOUNT_RATES[threshold] * 100
+                    };
+                }
+            }
+            
+            return null; // Already at highest tier
+        }
+        
+        // ===================================================================
+        // DISPLAY UPDATE FUNCTIONS
+        // ===================================================================
+        
         function updateDisplay() {
             updateCartItems();
             updateOrderSummary();
@@ -1257,17 +1565,14 @@
             updateItemCount();
             updateVolumeDiscountDisplay();
             updateRecommendations();
+            updateHeroStats();
         }
         
-        // CRITICAL FIX: Complete cart items display rewrite
         function updateCartItems() {
             const container = document.getElementById('cartItems');
             const emptyCart = document.getElementById('emptyCart');
             
-            if (!container || !emptyCart) {
-                console.error('❌ Cart container elements not found');
-                return;
-            }
+            if (!container || !emptyCart) return;
             
             if (cartItems.length === 0) {
                 container.style.display = 'none';
@@ -1280,8 +1585,13 @@
             
             let html = '';
             cartItems.forEach((item, index) => {
-                const productType = item.type || 'organic';
-                const isOrganic = productType === 'organic';
+                const product = PRODUCT_CATALOG[item.productId] || {};
+                const isOrganic = item.type === 'organic';
+                const volumeDiscount = calculateVolumeDiscount(item.productId, item.quantity);
+                const originalPrice = item.price;
+                const discountedPrice = originalPrice * (1 - volumeDiscount.discount);
+                const itemTotal = discountedPrice * item.quantity;
+                const originalTotal = originalPrice * item.quantity;
                 
                 html += `
                     <div class="cart-item" data-index="${index}">
@@ -1292,43 +1602,51 @@
                                 </div>
                             </div>
                             <div class="col-md-4 col-9 mb-3 mb-md-0">
-                                <h6 class="fw-bold mb-2">${item.name || 'Product Name'}</h6>
-                                <p class="text-muted small mb-2">${item.description || 'Product description'}</p>
+                                <h6 class="fw-bold mb-2">${item.name}</h6>
+                                <p class="text-muted small mb-2">${item.description}</p>
                                 <div class="mb-2">
                                     <span class="badge ${isOrganic ? 'badge-organic' : 'badge-premium'}">
                                         ${isOrganic ? 'USDA Organic' : 'EPA Premium'}
                                     </span>
-                                    ${item.size ? `<span class="badge bg-secondary ms-1">${item.size}</span>` : ''}
                                     ${item.sku ? `<span class="badge bg-info ms-1">${item.sku}</span>` : ''}
+                                    ${volumeDiscount.discount > 0 ? `
+                                        <div class="mt-1">
+                                            <span class="volume-discount-badge">
+                                                <i class="fas fa-percentage me-1"></i>${volumeDiscount.badge}
+                                            </span>
+                                        </div>
+                                    ` : ''}
                                 </div>
-                                ${getVolumeDiscountBadge(item)}
                             </div>
                             <div class="col-md-3 col-12 mb-3 mb-md-0">
                                 <div class="quantity-controls">
                                     <button class="quantity-btn" onclick="changeQuantity(${index}, -1)" 
-                                            ${item.quantity <= 1 ? 'disabled' : ''} 
-                                            title="Decrease quantity">
+                                            ${item.quantity <= 1 ? 'disabled' : ''}>
                                         <i class="fas fa-minus"></i>
                                     </button>
                                     <input type="number" class="quantity-input" value="${item.quantity}" 
                                            min="1" max="999" 
                                            onchange="setQuantity(${index}, this.value)"
-                                           onclick="this.select()" 
-                                           title="Enter quantity directly">
-                                    <button class="quantity-btn" onclick="changeQuantity(${index}, 1)" 
-                                            title="Increase quantity">
+                                           onclick="this.select()">
+                                    <button class="quantity-btn" onclick="changeQuantity(${index}, 1)">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </div>
                             </div>
                             <div class="col-md-2 col-6 text-center">
-                                <div class="price-display">$${item.price.toFixed(2)}</div>
+                                <div class="price-display">$${discountedPrice.toFixed(2)}</div>
                                 <small class="text-muted">each</small>
+                                ${volumeDiscount.discount > 0 ? `
+                                    <div class="original-price">$${originalPrice.toFixed(2)}</div>
+                                ` : ''}
                             </div>
                             <div class="col-md-1 col-6 text-center">
-                                <div class="price-display mb-2">$${(item.price * item.quantity).toFixed(2)}</div>
-                                <button class="btn btn-sm btn-outline-danger" onclick="removeItem(${index})" 
-                                        title="Remove item">
+                                <div class="price-display mb-2">$${itemTotal.toFixed(2)}</div>
+                                ${volumeDiscount.discount > 0 ? `
+                                    <div class="original-price">$${originalTotal.toFixed(2)}</div>
+                                    <div class="discount-amount">-$${(originalTotal - itemTotal).toFixed(2)}</div>
+                                ` : ''}
+                                <button class="btn btn-sm btn-outline-danger mt-2" onclick="removeItem(${index})">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -1338,153 +1656,104 @@
             });
             
             container.innerHTML = html;
-            console.log('✅ Cart items display updated with', cartItems.length, 'items');
+            console.log('✅ Cart items updated with volume discounts');
         }
         
-        // Helper function for volume discount badges
-        function getVolumeDiscountBadge(item) {
-            if (!item.volumeDiscounts) return '';
-            
-            let badgeHtml = '';
-            for (const [threshold, discountInfo] of Object.entries(item.volumeDiscounts)) {
-                const thresholdNum = parseInt(threshold.replace('+', ''));
-                if (item.quantity >= thresholdNum) {
-                    const savings = Math.round(discountInfo.discount * 100);
-                    badgeHtml = `<div class="mt-1"><span class="badge bg-success">
-                        <i class="fas fa-percentage me-1"></i>Saving ${savings}% (${discountInfo.description})
-                    </span></div>`;
-                    break;
-                }
-            }
-            return badgeHtml;
-        }
-        
-        // CRITICAL FIX: Improved order summary calculation
         function updateOrderSummary() {
             let subtotal = 0;
             let totalVolumeDiscount = 0;
             
-            // Calculate subtotal and volume discounts
             cartItems.forEach(item => {
-                const itemSubtotal = item.price * item.quantity;
-                subtotal += itemSubtotal;
+                const product = PRODUCT_CATALOG[item.productId] || { price: item.price };
+                const volumeDiscount = calculateVolumeDiscount(item.productId, item.quantity);
+                const originalPrice = product.price || item.price;
+                const discountedPrice = originalPrice * (1 - volumeDiscount.discount);
+                const itemTotal = discountedPrice * item.quantity;
+                const originalTotal = originalPrice * item.quantity;
                 
-                // Check for volume discounts
-                if (item.volumeDiscounts) {
-                    for (const [threshold, discountInfo] of Object.entries(item.volumeDiscounts)) {
-                        const thresholdNum = parseInt(threshold.replace('+', ''));
-                        if (item.quantity >= thresholdNum) {
-                            totalVolumeDiscount += itemSubtotal * discountInfo.discount;
-                            break;
-                        }
-                    }
-                }
+                subtotal += itemTotal;
+                totalVolumeDiscount += (originalTotal - itemTotal);
             });
             
-            const discountedSubtotal = subtotal - totalVolumeDiscount;
-            const tax = discountedSubtotal * 0.0775; // Utah tax rate
-            let total = discountedSubtotal + tax;
+            const tax = subtotal * 0.0775; // Utah tax rate
+            const total = subtotal + tax;
             
-            // Apply subscription discount if enabled
-            const subscriptionToggle = document.getElementById('subscriptionToggle');
-            const subscriptionFrequency = document.getElementById('subscriptionFrequency');
-            let subscriptionDiscount = 0;
+            // Update display elements
+            document.getElementById('subtotal').textContent = '$' + (subtotal + totalVolumeDiscount).toFixed(2);
+            document.getElementById('tax').textContent = '$' + tax.toFixed(2);
+            document.getElementById('total').textContent = '$' + total.toFixed(2);
             
-            if (subscriptionToggle && subscriptionToggle.checked) {
-                const frequency = subscriptionFrequency ? subscriptionFrequency.value : 'monthly';
-                subscriptionDiscount = total * (frequency === 'quarterly' ? 0.10 : 0.08);
-                total -= subscriptionDiscount;
+            // Volume discount display
+            const volumeDiscountRow = document.getElementById('volumeDiscountRow');
+            if (totalVolumeDiscount > 0) {
+                volumeDiscountRow.style.display = 'flex';
+                document.getElementById('volumeDiscount').textContent = '-$' + totalVolumeDiscount.toFixed(2);
+            } else {
+                volumeDiscountRow.style.display = 'none';
             }
             
-            // Update display elements with error checking
-            const elements = {
-                'subtotal': '$' + subtotal.toFixed(2),
-                'volumeDiscount': totalVolumeDiscount > 0 ? '-$' + totalVolumeDiscount.toFixed(2) : '$0.00',
-                'tax': '$' + tax.toFixed(2),
-                'total': '$' + total.toFixed(2)
-            };
-            
-            for (const [id, value] of Object.entries(elements)) {
-                const element = document.getElementById(id);
-                if (element) {
-                    element.textContent = value;
-                } else {
-                    console.warn(`⚠️ Element ${id} not found`);
-                }
-            }
-            
-            // Update subscription discount display
-            updateSubscriptionDiscountDisplay(subscriptionDiscount, subscriptionFrequency?.value || 'monthly');
-            
-            console.log('✅ Order summary updated - Subtotal:', subtotal.toFixed(2), 'Total:', total.toFixed(2));
+            updateVolumeProgress();
+            updateVolumeSavingsDisplay();
         }
         
-        // Update subscription discount display
-        function updateSubscriptionDiscountDisplay(subscriptionDiscount, frequency) {
-            // Remove existing subscription discount row
-            const existingRow = document.querySelector('.subscription-discount-row');
-            if (existingRow) existingRow.remove();
-            
-            if (subscriptionDiscount > 0) {
-                const taxRow = document.getElementById('tax')?.closest('.summary-row');
-                if (taxRow) {
-                    const subscriptionRow = document.createElement('div');
-                    subscriptionRow.className = 'summary-row subscription-discount-row';
-                    subscriptionRow.innerHTML = `
-                        <span>Subscription (${frequency === 'quarterly' ? '10%' : '8%'}):</span>
-                        <span class="discount-text">-$${subscriptionDiscount.toFixed(2)}</span>
-                    `;
-                    taxRow.parentNode.insertBefore(subscriptionRow, taxRow.nextSibling);
-                }
-            }
-        }
-        
-        // Update volume discount banner display
         function updateVolumeDiscountDisplay() {
             const banner = document.getElementById('volumeDiscountBanner');
             const bannerText = document.getElementById('volumeDiscountText');
-            const pricingInfo = document.getElementById('volumePricingInfo');
+            const { totalSavings, hasDiscounts } = calculateTotalVolumeDiscount();
             
-            let hasVolumeDiscounts = false;
-            let discountCount = 0;
-            
-            cartItems.forEach(item => {
-                if (item.volumeDiscounts) {
-                    for (const [threshold, discountInfo] of Object.entries(item.volumeDiscounts)) {
-                        const thresholdNum = parseInt(threshold.replace('+', ''));
-                        if (item.quantity >= thresholdNum) {
-                            hasVolumeDiscounts = true;
-                            discountCount++;
-                            break;
-                        }
-                    }
-                }
-            });
-            
-            if (hasVolumeDiscounts && banner && bannerText) {
+            if (hasDiscounts && banner && bannerText) {
                 banner.style.display = 'block';
-                bannerText.textContent = discountCount === 1 ? 
-                    'You\'re saving with volume pricing on 1 product!' :
-                    `You're saving with volume pricing on ${discountCount} products!`;
+                bannerText.textContent = `You're saving $${totalSavings.toFixed(2)} with volume pricing!`;
             } else if (banner) {
                 banner.style.display = 'none';
             }
+        }
+        
+        function updateVolumeProgress() {
+            const progressSection = document.getElementById('volumeProgressSection');
+            const nextDiscount = getNextDiscountThreshold();
             
-            // Show/hide volume pricing info for empty cart
-            if (pricingInfo) {
-                pricingInfo.style.display = cartItems.length === 0 ? 'block' : 'none';
+            if (nextDiscount && progressSection) {
+                progressSection.style.display = 'block';
+                
+                const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+                const progress = (totalItems / nextDiscount.threshold) * 100;
+                
+                document.getElementById('currentDiscountText').textContent = 
+                    totalItems >= 25 ? `Current: ${Math.round(DISCOUNT_RATES[getCurrentDiscountTier(totalItems)] * 100)}% discount` : 'Current: No discount';
+                
+                document.getElementById('nextDiscountText').textContent = 
+                    `Next: ${nextDiscount.discount}% at ${nextDiscount.threshold} items`;
+                
+                document.getElementById('volumeProgressFill').style.width = Math.min(progress, 100) + '%';
+                document.getElementById('itemsToNextDiscount').textContent = nextDiscount.itemsNeeded;
+            } else if (progressSection) {
+                progressSection.style.display = 'none';
             }
         }
         
-        // Update recommendations display
-        function updateRecommendations() {
-            const recommendations = document.getElementById('recommendations');
-            if (recommendations) {
-                recommendations.style.display = cartItems.length > 0 ? 'block' : 'none';
+        function updateVolumeSavingsDisplay() {
+            const savingsDisplay = document.getElementById('volumeSavingsDisplay');
+            const { totalSavings, averageDiscountPercent, hasDiscounts } = calculateTotalVolumeDiscount();
+            
+            if (hasDiscounts && savingsDisplay) {
+                savingsDisplay.style.display = 'block';
+                document.getElementById('totalVolumeSavings').textContent = '$' + totalSavings.toFixed(2);
+                document.getElementById('averageDiscountPercent').textContent = averageDiscountPercent.toFixed(1) + '%';
+            } else if (savingsDisplay) {
+                savingsDisplay.style.display = 'none';
             }
         }
         
-        // CRITICAL FIX: Cart management functions with improved error handling
+        function getCurrentDiscountTier(totalItems) {
+            for (let i = VOLUME_THRESHOLDS.length - 1; i >= 0; i--) {
+                if (totalItems >= VOLUME_THRESHOLDS[i]) {
+                    return VOLUME_THRESHOLDS[i];
+                }
+            }
+            return 0;
+        }
+        
         function updateCartBadge() {
             const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
             const badge = document.getElementById('cartBadge');
@@ -1502,165 +1771,77 @@
             }
         }
         
-        // CRITICAL FIX: Main quantity change function
-        function changeQuantity(index, change) {
-            console.log('🔄 Changing quantity for item', index, 'by', change);
+        function updateHeroStats() {
+            const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+            let subtotal = 0;
             
-            if (!cartItems[index]) {
-                console.error('❌ Item not found at index', index);
-                return;
+            cartItems.forEach(item => {
+                const product = PRODUCT_CATALOG[item.productId] || { price: item.price };
+                const volumeDiscount = calculateVolumeDiscount(item.productId, item.quantity);
+                const discountedPrice = (product.price || item.price) * (1 - volumeDiscount.discount);
+                subtotal += discountedPrice * item.quantity;
+            });
+            
+            const heroTotal = document.getElementById('heroCartTotal');
+            const heroCount = document.getElementById('heroItemCount');
+            
+            if (heroTotal) heroTotal.textContent = '$' + subtotal.toFixed(2);
+            if (heroCount) heroCount.textContent = totalItems;
+        }
+        
+        function updateRecommendations() {
+            const recommendations = document.getElementById('recommendations');
+            const nextThreshold = document.getElementById('nextDiscountThreshold');
+            const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+            const nextDiscount = getNextDiscountThreshold();
+            
+            if (recommendations) {
+                recommendations.style.display = cartItems.length > 0 ? 'block' : 'none';
             }
+            
+            if (nextThreshold && nextDiscount) {
+                nextThreshold.textContent = nextDiscount.threshold;
+            }
+        }
+        
+        // ===================================================================
+        // CART MANAGEMENT FUNCTIONS
+        // ===================================================================
+        
+        function changeQuantity(index, change) {
+            if (!cartItems[index]) return;
             
             const newQuantity = cartItems[index].quantity + change;
             
             if (newQuantity <= 0) {
-                // Remove item if quantity becomes 0 or negative
                 if (confirm(`Remove "${cartItems[index].name}" from cart?`)) {
                     cartItems.splice(index, 1);
-                    console.log('🗑️ Item removed from cart');
                 }
             } else {
                 cartItems[index].quantity = newQuantity;
-                console.log('✅ Quantity updated to', newQuantity);
             }
             
             saveCart();
             updateDisplay();
         }
-
-        // NEW: Set quantity directly from input field
+        
         function setQuantity(index, value) {
-            console.log('📝 Setting quantity for item', index, 'to', value);
+            if (!cartItems[index]) return;
             
-            if (!cartItems[index]) {
-                console.error('❌ Item not found at index', index);
-                return;
-            }
-            
-            const newQuantity = parseInt(value) || 1;
-            const clampedQuantity = Math.max(1, Math.min(999, newQuantity));
-            
-            if (newQuantity !== clampedQuantity) {
-                console.log('⚠️ Quantity clamped from', newQuantity, 'to', clampedQuantity);
-            }
-            
-            cartItems[index].quantity = clampedQuantity;
-            console.log('✅ Quantity set to', clampedQuantity);
+            const newQuantity = Math.max(1, Math.min(999, parseInt(value) || 1));
+            cartItems[index].quantity = newQuantity;
             
             saveCart();
             updateDisplay();
-        }
-
-        // NEW: Recommendation product quantity management
-        let recommendationQuantities = {
-            'rec1': 1,
-            'rec2': 1
-        };
-
-        function changeRecommendationQuantity(recId, change) {
-            const newQuantity = recommendationQuantities[recId] + change;
-            const clampedQuantity = Math.max(1, Math.min(999, newQuantity));
-            
-            recommendationQuantities[recId] = clampedQuantity;
-            
-            // Update the input field
-            const input = document.getElementById(recId + '-qty');
-            if (input) input.value = clampedQuantity;
-            
-            // Update minus button state
-            const minusBtn = document.getElementById(recId + '-minus');
-            if (minusBtn) minusBtn.disabled = clampedQuantity <= 1;
-            
-            console.log('🔄 Recommendation', recId, 'quantity changed to', clampedQuantity);
-        }
-
-        function setRecommendationQuantity(recId, value) {
-            const newQuantity = parseInt(value) || 1;
-            const clampedQuantity = Math.max(1, Math.min(999, newQuantity));
-            
-            recommendationQuantities[recId] = clampedQuantity;
-            
-            // Update the input field in case it was clamped
-            const input = document.getElementById(recId + '-qty');
-            if (input) input.value = clampedQuantity;
-            
-            // Update minus button state
-            const minusBtn = document.getElementById(recId + '-minus');
-            if (minusBtn) minusBtn.disabled = clampedQuantity <= 1;
-            
-            console.log('📝 Recommendation', recId, 'quantity set to', clampedQuantity);
-        }
-
-        function addRecommendationToCart(recId) {
-            const quantity = recommendationQuantities[recId] || 1;
-            let productData;
-            
-            if (recId === 'rec1') {
-                productData = {
-                    productId: 'rec_organic_cleaner',
-                    name: '32oz Organic Multi-Surface Cleaner',
-                    price: 21.80,
-                    quantity: quantity,
-                    type: 'organic',
-                    description: 'Perfect for daily cleaning',
-                    emoji: '🧴',
-                    size: '32oz',
-                    sku: 'OHS-ORG-32-MS'
-                };
-            } else if (recId === 'rec2') {
-                productData = {
-                    productId: 'rec_premium_wipes',
-                    name: 'Professional Disinfecting Wipes',
-                    price: 28.45,
-                    quantity: quantity,
-                    type: 'premium',
-                    description: 'EPA registered for commercial use',
-                    emoji: '🧽',
-                    size: 'Container',
-                    sku: 'OHS-PRE-WIPES'
-                };
-            }
-            
-            if (productData) {
-                addToCart(productData);
-                console.log('✅ Added recommendation to cart:', productData.name, 'x' + quantity);
-                
-                // Reset recommendation quantity
-                recommendationQuantities[recId] = 1;
-                const input = document.getElementById(recId + '-qty');
-                if (input) input.value = 1;
-                const minusBtn = document.getElementById(recId + '-minus');
-                if (minusBtn) minusBtn.disabled = true;
-                
-                // Show success feedback
-                const addBtn = event.target.closest('button');
-                if (addBtn) {
-                    const originalText = addBtn.innerHTML;
-                    addBtn.innerHTML = '<i class="fas fa-check me-1"></i>Added!';
-                    addBtn.classList.add('btn-outline-success');
-                    addBtn.classList.remove('btn-success');
-                    setTimeout(() => {
-                        addBtn.innerHTML = originalText;
-                        addBtn.classList.remove('btn-outline-success');
-                        addBtn.classList.add('btn-success');
-                    }, 1500);
-                }
-            }
         }
         
         function removeItem(index) {
-            console.log('🗑️ Removing item at index', index);
-            
-            if (!cartItems[index]) {
-                console.error('❌ Item not found at index', index);
-                return;
-            }
+            if (!cartItems[index]) return;
             
             if (confirm(`Remove "${cartItems[index].name}" from cart?`)) {
                 cartItems.splice(index, 1);
                 saveCart();
                 updateDisplay();
-                console.log('✅ Item removed successfully');
             }
         }
         
@@ -1674,70 +1855,21 @@
                 cartItems = [];
                 saveCart();
                 updateDisplay();
-                console.log('🧹 Cart cleared');
             }
         }
         
-        // Add item from products page
-        function addToCart(productData) {
-            console.log('➕ Adding to cart:', productData);
-            
-            if (!productData || !productData.name || !productData.price) {
-                console.error('❌ Invalid product data');
-                return;
-            }
-            
-            const existingIndex = cartItems.findIndex(item => 
-                (item.productId && item.productId === productData.productId) || 
-                (item.name === productData.name && item.size === productData.size)
-            );
-            
-            if (existingIndex >= 0) {
-                cartItems[existingIndex].quantity += productData.quantity || 1;
-                console.log('✅ Updated existing item quantity');
-            } else {
-                cartItems.push({
-                    productId: productData.productId || `item_${Date.now()}_${Math.random()}`,
-                    name: productData.name,
-                    price: parseFloat(productData.price),
-                    quantity: productData.quantity || 1,
-                    type: productData.type || productData.productLine || 'organic',
-                    description: productData.description || 'No description available',
-                    emoji: productData.emoji || (productData.type === 'premium' ? '👑' : '🌱'),
-                    size: productData.size || '',
-                    sku: productData.sku || '',
-                    volumeDiscounts: productData.volumeDiscounts || null,
-                    ...productData
-                });
-                console.log('✅ Added new item to cart');
-            }
-            
-            saveCart();
-            updateDisplay();
-        }
+        // ===================================================================
+        // UTILITY FUNCTIONS
+        // ===================================================================
         
-        // Subscription handlers
-        function handleSubscriptionToggle() {
-            const toggle = document.getElementById('subscriptionToggle');
-            const frequency = document.getElementById('subscriptionFrequency');
-            
-            if (toggle && frequency) {
-                toggle.addEventListener('change', function() {
-                    frequency.disabled = !this.checked;
-                    updateDisplay();
-                    console.log('🔄 Subscription toggled:', this.checked);
-                });
-                
-                frequency.addEventListener('change', function() {
-                    if (toggle.checked) {
-                        updateDisplay();
-                        console.log('🔄 Subscription frequency changed:', this.value);
-                    }
-                });
+        function toggleVolumePricingInfo() {
+            const info = document.getElementById('volumePricingInfo');
+            if (info) {
+                info.style.display = info.style.display === 'none' ? 'block' : 'none';
+                info.classList.toggle('show');
             }
         }
         
-        // Utility functions
         function applyCoupon() {
             const code = document.getElementById('couponCode')?.value;
             if (!code || !code.trim()) {
@@ -1745,7 +1877,6 @@
                 return;
             }
             alert(`Coupon "${code.trim()}" will be applied at Shopify checkout`);
-            console.log('🎫 Coupon code entered:', code.trim());
         }
         
         function proceedToCheckout() {
@@ -1754,17 +1885,22 @@
                 return;
             }
             
-            const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const subtotal = cartItems.reduce((sum, item) => {
+                const product = PRODUCT_CATALOG[item.productId] || { price: item.price };
+                const volumeDiscount = calculateVolumeDiscount(item.productId, item.quantity);
+                const discountedPrice = (product.price || item.price) * (1 - volumeDiscount.discount);
+                return sum + (discountedPrice * item.quantity);
+            }, 0);
+            
             const checkoutData = {
                 items: cartItems,
                 subtotal: subtotal,
-                timestamp: new Date().toISOString(),
-                customerNote: 'Cart from OHS website'
+                volumeDiscounts: calculateTotalVolumeDiscount(),
+                timestamp: new Date().toISOString()
             };
             
             try {
                 localStorage.setItem('ohsCheckout', JSON.stringify(checkoutData));
-                console.log('💳 Proceeding to checkout with', cartItems.length, 'items');
                 window.location.href = 'checkout.html';
             } catch (error) {
                 console.error('❌ Error saving checkout data:', error);
@@ -1772,81 +1908,178 @@
             }
         }
         
-        // Debug functions for testing
-        function debugCart() {
-            console.log('🐛 Current cart state:');
-            console.log('Items:', cartItems);
-            console.log('System ready:', isCartSystemReady);
-            console.log('LocalStorage:', localStorage.getItem('ohsCart'));
+        // ===================================================================
+        // RECOMMENDATION SYSTEM
+        // ===================================================================
+        
+        let recommendationQuantities = { 'rec1': 1, 'rec2': 1 };
+        
+        function changeRecommendationQuantity(recId, change) {
+            const newQuantity = Math.max(1, recommendationQuantities[recId] + change);
+            recommendationQuantities[recId] = newQuantity;
+            
+            const input = document.getElementById(recId + '-qty');
+            const minusBtn = document.getElementById(recId + '-minus');
+            
+            if (input) input.value = newQuantity;
+            if (minusBtn) minusBtn.disabled = newQuantity <= 1;
         }
         
-        function addSampleItem() {
-            const sampleItem = {
-                productId: `sample_${Date.now()}`,
-                name: 'Sample Product',
-                price: 15.99,
-                quantity: 1,
-                type: 'organic',
-                description: 'This is a sample product for testing',
-                emoji: '🧪',
-                size: '16oz',
-                sku: 'SAMPLE-001'
-            };
-            addToCart(sampleItem);
+        function setRecommendationQuantity(recId, value) {
+            const newQuantity = Math.max(1, Math.min(999, parseInt(value) || 1));
+            recommendationQuantities[recId] = newQuantity;
+            
+            const input = document.getElementById(recId + '-qty');
+            const minusBtn = document.getElementById(recId + '-minus');
+            
+            if (input) input.value = newQuantity;
+            if (minusBtn) minusBtn.disabled = newQuantity <= 1;
         }
         
-        // Expose functions globally for HTML onclick handlers
-        window.addToCart = addToCart;
-        window.changeQuantity = changeQuantity;
-        window.setQuantity = setQuantity;
-        window.changeRecommendationQuantity = changeRecommendationQuantity;
-        window.setRecommendationQuantity = setRecommendationQuantity;
-        window.addRecommendationToCart = addRecommendationToCart;
-        window.removeItem = removeItem;
-        window.clearAllItems = clearAllItems;
-        window.applyCoupon = applyCoupon;
-        window.proceedToCheckout = proceedToCheckout;
-        window.debugCart = debugCart;
-        window.addSampleItem = addSampleItem;
+        function addRecommendationToCart(recId) {
+            const quantity = recommendationQuantities[recId];
+            let productData;
+            
+            if (recId === 'rec1') {
+                productData = {
+                    productId: 'ohs-32oz-cleaner-ready',
+                    name: '32oz Organic Multi-Surface Cleaner',
+                    price: 21.80,
+                    quantity: quantity,
+                    type: 'organic',
+                    description: 'Perfect for daily cleaning',
+                    emoji: '🧴',
+                    sku: 'OHS-32OZ-CLEANER-RTU'
+                };
+            } else if (recId === 'rec2') {
+                productData = {
+                    productId: 'hc-wipes-allinone',
+                    name: 'Professional Disinfecting Wipes',
+                    price: 26.21,
+                    quantity: quantity,
+                    type: 'premium',
+                    description: 'EPA registered for commercial use',
+                    emoji: '🏭',
+                    sku: 'HC-WIPES-ALLINONE'
+                };
+            }
+            
+            if (productData) {
+                // Check if item already exists
+                const existingIndex = cartItems.findIndex(item => item.productId === productData.productId);
+                
+                if (existingIndex >= 0) {
+                    cartItems[existingIndex].quantity += quantity;
+                } else {
+                    cartItems.push(productData);
+                }
+                
+                saveCart();
+                updateDisplay();
+                
+                // Reset recommendation quantity
+                recommendationQuantities[recId] = 1;
+                const input = document.getElementById(recId + '-qty');
+                const minusBtn = document.getElementById(recId + '-minus');
+                if (input) input.value = 1;
+                if (minusBtn) minusBtn.disabled = true;
+                
+                // Show success feedback
+                showAddToCartFeedback(productData.name, quantity);
+            }
+        }
         
-        // Initialize cart system
+        function showAddToCartFeedback(productName, quantity) {
+            const notification = document.createElement('div');
+            notification.className = 'position-fixed';
+            notification.style.cssText = `
+                top: 100px; right: 20px; z-index: 9999;
+                background: linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green));
+                color: white; padding: 15px 20px; border-radius: 10px;
+                box-shadow: 0 8px 25px rgba(74, 222, 128, 0.4);
+                font-weight: bold; transform: translateX(400px);
+                transition: all 0.3s ease;
+            `;
+            notification.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <div>
+                        <div>Added to Cart!</div>
+                        <small>${quantity}x ${productName}</small>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 3000);
+        }
+        
+        // ===================================================================
+        // SUBSCRIPTION HANDLING
+        // ===================================================================
+        
+        function handleSubscriptionToggle() {
+            const toggle = document.getElementById('subscriptionToggle');
+            const frequency = document.getElementById('subscriptionFrequency');
+            
+            if (toggle && frequency) {
+                toggle.addEventListener('change', function() {
+                    frequency.disabled = !this.checked;
+                    updateDisplay();
+                });
+                
+                frequency.addEventListener('change', function() {
+                    if (toggle.checked) {
+                        updateDisplay();
+                    }
+                });
+            }
+        }
+        
+        // ===================================================================
+        // INITIALIZATION
+        // ===================================================================
+        
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Cart page initializing...');
+            console.log('🚀 Cart system initializing with volume discount integration...');
             loadCart();
             handleSubscriptionToggle();
             
-            // Add test items button for debugging
+            // Add debug functionality if needed
             if (window.location.search.includes('debug=true')) {
-                const testButton = document.createElement('button');
-                testButton.textContent = 'Add Sample Item';
-                testButton.className = 'btn btn-warning btn-sm';
-                testButton.onclick = addSampleItem;
-                document.querySelector('.cart-container').prepend(testButton);
-                
-                const debugButton = document.createElement('button');
-                debugButton.textContent = 'Debug Cart';
-                debugButton.className = 'btn btn-info btn-sm ms-2';
-                debugButton.onclick = debugCart;
-                document.querySelector('.cart-container').prepend(debugButton);
+                window.debugCart = () => {
+                    console.log('Cart items:', cartItems);
+                    console.log('Volume discounts:', calculateTotalVolumeDiscount());
+                };
+                console.log('Debug mode: Use debugCart() to inspect cart state');
             }
             
-            console.log('✅ Cart page ready! Cart has', cartItems.length, 'items');
+            console.log('✅ Cart system ready with volume discount calculations!');
         });
         
-        // Listen for cart updates from other pages
+        // Listen for storage changes
         window.addEventListener('storage', function(e) {
             if (e.key === 'ohsCart') {
-                console.log('📢 Cart updated from another page, reloading...');
                 loadCart();
             }
         });
         
-        // Error handling for global errors
-        window.addEventListener('error', function(e) {
-            console.error('❌ JavaScript error:', e.error);
-        });
-        
-        console.log('✅ Fixed cart system loaded and ready!');
+        // Global function exposure
+        window.changeQuantity = changeQuantity;
+        window.setQuantity = setQuantity;
+        window.removeItem = removeItem;
+        window.clearAllItems = clearAllItems;
+        window.toggleVolumePricingInfo = toggleVolumePricingInfo;
+        window.applyCoupon = applyCoupon;
+        window.proceedToCheckout = proceedToCheckout;
+        window.changeRecommendationQuantity = changeRecommendationQuantity;
+        window.setRecommendationQuantity = setRecommendationQuantity;
+        window.addRecommendationToCart = addRecommendationToCart;
     </script>
 </body>
 </html>
