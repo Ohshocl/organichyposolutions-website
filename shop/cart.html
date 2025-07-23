@@ -304,12 +304,103 @@
             color: #ccc;
         }
 
-        .quantity-display {
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: var(--ohs-primary-blue);
-            min-width: 40px;
+        .quantity-input {
+            border: 2px solid var(--ohs-organic-green);
+            background: white;
+            border-radius: 8px;
+            width: 60px;
+            height: 40px;
             text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--ohs-primary-blue);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .quantity-input:focus {
+            border-color: var(--ohs-primary-blue);
+            box-shadow: 0 0 8px rgba(46, 94, 170, 0.3);
+        }
+
+        .quantity-input::-webkit-outer-spin-button,
+        .quantity-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .quantity-input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* Recommendation quantity controls */
+        .recommendation-quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: #f8fafc;
+            padding: 0.3rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .quantity-btn-sm {
+            width: 28px;
+            height: 28px;
+            border: 1px solid var(--ohs-organic-green);
+            background: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--ohs-organic-green);
+            font-weight: bold;
+            font-size: 0.8rem;
+            user-select: none;
+        }
+
+        .quantity-btn-sm:hover:not(:disabled) {
+            background: var(--ohs-organic-green);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .quantity-btn-sm:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: #ccc;
+            color: #ccc;
+        }
+
+        .quantity-input-sm {
+            border: 1px solid var(--ohs-organic-green);
+            background: white;
+            border-radius: 4px;
+            width: 45px;
+            height: 28px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: var(--ohs-primary-blue);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .quantity-input-sm:focus {
+            border-color: var(--ohs-primary-blue);
+            box-shadow: 0 0 4px rgba(46, 94, 170, 0.3);
+        }
+
+        .quantity-input-sm::-webkit-outer-spin-button,
+        .quantity-input-sm::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .quantity-input-sm[type=number] {
+            -moz-appearance: textfield;
         }
 
         /* Pricing */
@@ -797,10 +888,28 @@
                                             <div class="product-image organic me-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
                                                 🧴
                                             </div>
-                                            <div>
+                                            <div class="flex-grow-1">
                                                 <h6 class="mb-1">32oz Organic Multi-Surface Cleaner</h6>
                                                 <p class="small text-muted mb-1">Perfect for daily cleaning</p>
                                                 <div class="price-display">$21.80</div>
+                                                <div class="d-flex align-items-center gap-2 mt-2">
+                                                    <div class="recommendation-quantity-controls">
+                                                        <button class="quantity-btn-sm" onclick="changeRecommendationQuantity('rec1', -1)" 
+                                                                id="rec1-minus" disabled>
+                                                            <i class="fas fa-minus"></i>
+                                                        </button>
+                                                        <input type="number" class="quantity-input-sm" value="1" 
+                                                               min="1" max="999" id="rec1-qty"
+                                                               onchange="setRecommendationQuantity('rec1', this.value)"
+                                                               onclick="this.select()">
+                                                        <button class="quantity-btn-sm" onclick="changeRecommendationQuantity('rec1', 1)">
+                                                            <i class="fas fa-plus"></i>
+                                                        </button>
+                                                    </div>
+                                                    <button class="btn btn-sm btn-success" onclick="addRecommendationToCart('rec1')">
+                                                        <i class="fas fa-cart-plus me-1"></i>Add
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -809,10 +918,28 @@
                                             <div class="product-image premium me-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
                                                 🧽
                                             </div>
-                                            <div>
+                                            <div class="flex-grow-1">
                                                 <h6 class="mb-1">Professional Disinfecting Wipes</h6>
                                                 <p class="small text-muted mb-1">EPA registered for commercial use</p>
                                                 <div class="price-display">$28.45</div>
+                                                <div class="d-flex align-items-center gap-2 mt-2">
+                                                    <div class="recommendation-quantity-controls">
+                                                        <button class="quantity-btn-sm" onclick="changeRecommendationQuantity('rec2', -1)" 
+                                                                id="rec2-minus" disabled>
+                                                            <i class="fas fa-minus"></i>
+                                                        </button>
+                                                        <input type="number" class="quantity-input-sm" value="1" 
+                                                               min="1" max="999" id="rec2-qty"
+                                                               onchange="setRecommendationQuantity('rec2', this.value)"
+                                                               onclick="this.select()">
+                                                        <button class="quantity-btn-sm" onclick="changeRecommendationQuantity('rec2', 1)">
+                                                            <i class="fas fa-plus"></i>
+                                                        </button>
+                                                    </div>
+                                                    <button class="btn btn-sm btn-success" onclick="addRecommendationToCart('rec2')">
+                                                        <i class="fas fa-cart-plus me-1"></i>Add
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1183,7 +1310,11 @@
                                             title="Decrease quantity">
                                         <i class="fas fa-minus"></i>
                                     </button>
-                                    <div class="quantity-display">${item.quantity}</div>
+                                    <input type="number" class="quantity-input" value="${item.quantity}" 
+                                           min="1" max="999" 
+                                           onchange="setQuantity(${index}, this.value)"
+                                           onclick="this.select()" 
+                                           title="Enter quantity directly">
                                     <button class="quantity-btn" onclick="changeQuantity(${index}, 1)" 
                                             title="Increase quantity">
                                         <i class="fas fa-plus"></i>
@@ -1396,6 +1527,126 @@
             saveCart();
             updateDisplay();
         }
+
+        // NEW: Set quantity directly from input field
+        function setQuantity(index, value) {
+            console.log('📝 Setting quantity for item', index, 'to', value);
+            
+            if (!cartItems[index]) {
+                console.error('❌ Item not found at index', index);
+                return;
+            }
+            
+            const newQuantity = parseInt(value) || 1;
+            const clampedQuantity = Math.max(1, Math.min(999, newQuantity));
+            
+            if (newQuantity !== clampedQuantity) {
+                console.log('⚠️ Quantity clamped from', newQuantity, 'to', clampedQuantity);
+            }
+            
+            cartItems[index].quantity = clampedQuantity;
+            console.log('✅ Quantity set to', clampedQuantity);
+            
+            saveCart();
+            updateDisplay();
+        }
+
+        // NEW: Recommendation product quantity management
+        let recommendationQuantities = {
+            'rec1': 1,
+            'rec2': 1
+        };
+
+        function changeRecommendationQuantity(recId, change) {
+            const newQuantity = recommendationQuantities[recId] + change;
+            const clampedQuantity = Math.max(1, Math.min(999, newQuantity));
+            
+            recommendationQuantities[recId] = clampedQuantity;
+            
+            // Update the input field
+            const input = document.getElementById(recId + '-qty');
+            if (input) input.value = clampedQuantity;
+            
+            // Update minus button state
+            const minusBtn = document.getElementById(recId + '-minus');
+            if (minusBtn) minusBtn.disabled = clampedQuantity <= 1;
+            
+            console.log('🔄 Recommendation', recId, 'quantity changed to', clampedQuantity);
+        }
+
+        function setRecommendationQuantity(recId, value) {
+            const newQuantity = parseInt(value) || 1;
+            const clampedQuantity = Math.max(1, Math.min(999, newQuantity));
+            
+            recommendationQuantities[recId] = clampedQuantity;
+            
+            // Update the input field in case it was clamped
+            const input = document.getElementById(recId + '-qty');
+            if (input) input.value = clampedQuantity;
+            
+            // Update minus button state
+            const minusBtn = document.getElementById(recId + '-minus');
+            if (minusBtn) minusBtn.disabled = clampedQuantity <= 1;
+            
+            console.log('📝 Recommendation', recId, 'quantity set to', clampedQuantity);
+        }
+
+        function addRecommendationToCart(recId) {
+            const quantity = recommendationQuantities[recId] || 1;
+            let productData;
+            
+            if (recId === 'rec1') {
+                productData = {
+                    productId: 'rec_organic_cleaner',
+                    name: '32oz Organic Multi-Surface Cleaner',
+                    price: 21.80,
+                    quantity: quantity,
+                    type: 'organic',
+                    description: 'Perfect for daily cleaning',
+                    emoji: '🧴',
+                    size: '32oz',
+                    sku: 'OHS-ORG-32-MS'
+                };
+            } else if (recId === 'rec2') {
+                productData = {
+                    productId: 'rec_premium_wipes',
+                    name: 'Professional Disinfecting Wipes',
+                    price: 28.45,
+                    quantity: quantity,
+                    type: 'premium',
+                    description: 'EPA registered for commercial use',
+                    emoji: '🧽',
+                    size: 'Container',
+                    sku: 'OHS-PRE-WIPES'
+                };
+            }
+            
+            if (productData) {
+                addToCart(productData);
+                console.log('✅ Added recommendation to cart:', productData.name, 'x' + quantity);
+                
+                // Reset recommendation quantity
+                recommendationQuantities[recId] = 1;
+                const input = document.getElementById(recId + '-qty');
+                if (input) input.value = 1;
+                const minusBtn = document.getElementById(recId + '-minus');
+                if (minusBtn) minusBtn.disabled = true;
+                
+                // Show success feedback
+                const addBtn = event.target.closest('button');
+                if (addBtn) {
+                    const originalText = addBtn.innerHTML;
+                    addBtn.innerHTML = '<i class="fas fa-check me-1"></i>Added!';
+                    addBtn.classList.add('btn-outline-success');
+                    addBtn.classList.remove('btn-success');
+                    setTimeout(() => {
+                        addBtn.innerHTML = originalText;
+                        addBtn.classList.remove('btn-outline-success');
+                        addBtn.classList.add('btn-success');
+                    }, 1500);
+                }
+            }
+        }
         
         function removeItem(index) {
             console.log('🗑️ Removing item at index', index);
@@ -1547,6 +1798,10 @@
         // Expose functions globally for HTML onclick handlers
         window.addToCart = addToCart;
         window.changeQuantity = changeQuantity;
+        window.setQuantity = setQuantity;
+        window.changeRecommendationQuantity = changeRecommendationQuantity;
+        window.setRecommendationQuantity = setRecommendationQuantity;
+        window.addRecommendationToCart = addRecommendationToCart;
         window.removeItem = removeItem;
         window.clearAllItems = clearAllItems;
         window.applyCoupon = applyCoupon;
