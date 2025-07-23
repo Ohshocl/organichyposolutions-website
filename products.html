@@ -2086,16 +2086,18 @@ function createProductCard(product, type) {
                             `<div class="text-success small mt-1">Business: $${wholesale.toFixed(2)} <span class="badge bg-warning">Save ${Math.round((1 - wholesale/retail) * 100)}%</span></div>` : ''}
                     </div>
                     
-// REPLACE the features list with this enhanced version:
+// REPLACE the features list with this enhanced version://
 <ul class="list-unstyled small mb-2">
     <li><i class="fas fa-check text-success me-1"></i>${type === 'organic' ? 'Family & Pet Safe' : 'Commercial Grade'}</li>
     <li><i class="fas fa-check text-success me-1"></i>Utah Made</li>
     <li><i class="fas fa-check text-success me-1"></i>Free Shipping</li>
     ${product.volumeDiscounts ? 
-        `<li><i class="fas fa-percent text-warning me-1"></i><strong>Volume Discounts:</strong> ${Object.keys(product.volumeDiscounts).map(tier => {
-            const discount = Math.round(product.volumeDiscounts[tier].discount * 100);
-            return `${tier} (${discount}% off)`;
-        }).join(', ')}</li>` : ''}
+        `<li><i class="fas fa-percent text-warning me-1"></i><strong>Volume Discounts:</strong> ${Object.entries(product.volumeDiscounts)
+            .sort(([a], [b]) => parseInt(a.replace('+', '')) - parseInt(b.replace('+', '')))
+            .map(([tier, data]) => {
+                const discount = Math.round(data.discount * 100);
+                return `${tier} (${discount}% off)`;
+            }).join(', ')}</li>` : ''}
 </ul>
                     
                     <div class="product-controls">
