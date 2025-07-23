@@ -1624,96 +1624,115 @@
         }
     }
 
-    // NEW: Update cart preview with actual items
-    function updateCartPreview() {
-        const cartItems = document.getElementById('cartItems');
-        const cartSummary = document.getElementById('cartSummary');
+           
+// NEW: Update cart preview with actual items
+function updateCartPreview() {
+    const cartItems = document.getElementById('cartItems');
+    const cartSummary = document.getElementById('cartSummary');
+    
+    if (!cartItems || !cartSummary) return;
+    
+    try {
+        const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
         
-        if (!cartItems || !cartSummary) return;
-        
-        try {
-            const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-            
-            if (cart.length === 0) {
-                cartItems.innerHTML = `
-                    <div class="empty-cart text-center py-4">
-                        <i class="fas fa-shopping-cart fa-3x mb-3 text-muted"></i>
-                        <h6 class="text-muted">Your cart is empty</h6>
-                        <p class="text-muted small">Add products to get started</p>
-                    </div>
-                `;
-                cartSummary.style.display = 'none';
-                return;
-            }
-            
-            // Show cart items
-            let itemsHTML = '';
-            let subtotal = 0;
-            
-            cart.forEach(item => {
-                const itemTotal = item.price * item.quantity;
-                subtotal += itemTotal;
-                
-                itemsHTML += `
-                    <div class="cart-item">
-                        <div class="cart-item-info">
-                            <div class="cart-item-name">${item.name}</div>
-                            <div class="cart-item-details">
-                                ${item.sku ? `SKU: ${item.sku} • ` : ''}$${item.price.toFixed(2)} each
-                            </div>
-                        </div>
-                        <div class="cart-item-controls">
-                            <button class="cart-qty-btn" onclick="updateCartItemQuantity('${item.productId}', -1)" 
-                                    ${item.quantity <= 1 ? 'disabled' : ''}>
-                                <i class="fas fa-minus"></i>
-                            </button>
-                            <span class="cart-qty-display">${item.quantity}</span>
-                            <button class="cart-qty-btn" onclick="updateCartItemQuantity('${item.productId}', 1)">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                            <button class="cart-item-remove" onclick="removeCartItem('${item.productId}')">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            cartItems.innerHTML = itemsHTML;
-            
-            // Update cart summary
-            const accountType = getAccountType();
-            const businessDiscount = accountType === 'business' ? subtotal * 0.1 : 0;
-            const finalTotal = subtotal - businessDiscount;
-            
-            document.getElementById('cartSubtotal').textContent = `$${subtotal.toFixed(2)}`;
-            document.getElementById('cartTotal').textContent = `$${finalTotal.toFixed(2)}`;
-            
-            if (businessDiscount > 0) {
-                document.getElementById('cartBusinessDiscount').textContent = `-$${businessDiscount.toFixed(2)}`;
-                document.getElementById('businessDiscountRow').style.display = 'flex';
-            } else {
-                document.getElementById('businessDiscountRow').style.display = 'none';
-            }
-            
-            // Update shipping
-            const shippingElement = document.getElementById('cartShipping');
-            if (finalTotal >= 75) {
-                shippingElement.textContent = 'FREE';
-                shippingElement.className = 'text-success';
-            } else {
-                const shippingCost = 8.99;
-                shippingElement.textContent = `$${shippingCost.toFixed(2)}`;
-                shippingElement.className = 'text-muted';
-                document.getElementById('cartTotal').textContent = `$${(finalTotal + shippingCost).toFixed(2)}`;
-            }
-            
-            cartSummary.style.display = 'block';
-            
-        } catch (error) {
-            console.error('Error updating cart preview:', error);
+        if (cart.length === 0) {
+            cartItems.innerHTML = `
+                <div class="empty-cart text-center py-4">
+                    <i class="fas fa-shopping-cart fa-3x mb-3 text-muted"></i>
+                    <h6 class="text-muted">Your cart is empty</h6>
+                    <p class="text-muted small">Add products to get started</p>
+                </div>
+            `;
+            cartSummary.style.display = 'none';
+            return;
         }
+        
+        // Show cart items
+        let itemsHTML = '';
+        let subtotal = 0;
+        
+cart.forEach(item => {
+    // Calculate volume discount for this item
+    const product = PRODUCT_CATALOG[item.productId];
+    const volumeDiscount = calculateVolumeDiscount(item.productId, item.quantity);
+    
+    // Apply volume discount to price
+    const originalPrice = item.price;
+    const discountedPrice = originalPrice * (1 - volumeDiscount.discount);
+    const itemTotal = discountedPrice * item.quantity;
+    const itemSavings = (originalPrice - discountedPrice) * item.quantity;
+    
+    subtotal += itemTotal;
+    
+    itemsHTML += `
+        <div class="cart-item">
+            <div class="cart-item-info">
+                <div class="cart-item-name">${item.name}</div>
+                <div class="cart-item-details">
+                    ${item.sku ? `SKU: ${item.sku} • ` : ''}
+                    ${volumeDiscount.discount > 0 ? 
+                        `<span class="text-success">$${discountedPrice.toFixed(2)} each (${volumeDiscount.label})</span>` :
+                        `$${originalPrice.toFixed(2)} each`
+                    }
+                    ${itemSavings > 0 ? `<br><small class="text-success">Saving $${itemSavings.toFixed(2)}</small>` : ''}
+                </div>
+            </div>
+            <div class="cart-item-controls">
+                <button class="cart-qty-btn" onclick="updateCartItemQuantity('${item.productId}', -1)" 
+                        ${item.quantity <= 1 ? 'disabled' : ''}>
+                    <i class="fas fa-minus"></i>
+                </button>
+                <span class="cart-qty-display">${item.quantity}</span>
+                <button class="cart-qty-btn" onclick="updateCartItemQuantity('${item.productId}', 1)">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <button class="cart-item-remove" onclick="removeCartItem('${item.productId}')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    `;
+});
+
+// Add these calls AFTER the cart.forEach loop and BEFORE calculating business discount:
+updateVolumeProgress();
+const totalVolumeSavings = updateVolumeSavingsDisplay();
+
+        cartItems.innerHTML = itemsHTML;
+        
+        // Update cart summary
+        const accountType = getAccountType();
+        const businessDiscount = accountType === 'business' ? subtotal * 0.1 : 0;
+        const finalTotal = subtotal - businessDiscount;
+        
+        document.getElementById('cartSubtotal').textContent = `$${subtotal.toFixed(2)}`;
+        document.getElementById('cartTotal').textContent = `$${finalTotal.toFixed(2)}`;
+        
+        if (businessDiscount > 0) {
+            document.getElementById('cartBusinessDiscount').textContent = `-$${businessDiscount.toFixed(2)}`;
+            document.getElementById('businessDiscountRow').style.display = 'flex';
+        } else {
+            document.getElementById('businessDiscountRow').style.display = 'none';
+        }
+        
+        // Update shipping
+        const shippingElement = document.getElementById('cartShipping');
+        if (finalTotal >= 75) {
+            shippingElement.textContent = 'FREE FOR QUALIFIED ORDERS';
+            shippingElement.className = 'text-success';
+        } else {
+            const shippingCost = 8.99;
+            shippingElement.textContent = `$${shippingCost.toFixed(2)}`;
+            shippingElement.className = 'text-muted';
+            document.getElementById('cartTotal').textContent = `$${(finalTotal + shippingCost).toFixed(2)}`;
+        }
+        
+        cartSummary.style.display = 'block';
+        
+    } catch (error) {
+        console.error('Error updating cart preview:', error);
     }
+}
 
     // NEW: Update cart item quantity
     function updateCartItemQuantity(productId, change) {
