@@ -1381,8 +1381,8 @@ const PRODUCT_CATALOG = {
             retailQuarterly: 33.66
         },
         subscriptionOptions: ['monthly', 'quarterly'],
-        wholesaleThreshold: 440,
-        minOrder: 440,
+        wholesaleThreshold: 10,
+        minOrder: 1,
         type: 'organic',
         emoji: '🌿'
     },
@@ -1410,8 +1410,8 @@ const PRODUCT_CATALOG = {
             retailQuarterly: 16.54
         },
         subscriptionOptions: ['monthly', 'quarterly'],
-        wholesaleThreshold: 600,
-        minOrder: 600,
+        wholesaleThreshold: 25,
+        minOrder: 25,
         type: 'organic',
         emoji: '🌸'
     },
@@ -1439,8 +1439,8 @@ const PRODUCT_CATALOG = {
             retailQuarterly: 22.22
         },
         subscriptionOptions: ['monthly', 'quarterly'],
-        wholesaleThreshold: 500,
-        minOrder: 500,
+        wholesaleThreshold: 25,
+        minOrder: 25,
         type: 'organic',
         emoji: '🐎'
     },
@@ -1468,8 +1468,8 @@ const PRODUCT_CATALOG = {
             retailQuarterly: 37.27
         },
         subscriptionOptions: ['monthly', 'quarterly'],
-        wholesaleThreshold: 440,
-        minOrder: 440,
+        wholesaleThreshold: 10,
+        minOrder: 1,
         type: 'organic',
         emoji: '🏥'
     },
@@ -1497,8 +1497,8 @@ const PRODUCT_CATALOG = {
             retailQuarterly: 21.55
         },
         subscriptionOptions: ['monthly', 'quarterly'],
-        wholesaleThreshold: 500,
-        minOrder: 500,
+        wholesaleThreshold: 25,
+        minOrder: 1,
         type: 'organic',
         emoji: '👕'
     },
@@ -1526,8 +1526,8 @@ const PRODUCT_CATALOG = {
             retailQuarterly: 37.17
         },
         subscriptionOptions: ['monthly', 'quarterly'],
-        wholesaleThreshold: 440,
-        minOrder: 440,
+        wholesaleThreshold: 25,
+        minOrder: 1,
         type: 'organic',
         emoji: '🏭'
     },
@@ -1555,8 +1555,8 @@ const PRODUCT_CATALOG = {
             retailQuarterly: 21.94
         },
         subscriptionOptions: ['monthly', 'quarterly'],
-        wholesaleThreshold: 200,
-        minOrder: 200,
+        wholesaleThreshold: 20,
+        minOrder: 1,
         type: 'organic',
         emoji: '🧻'
     },
@@ -1584,8 +1584,8 @@ const PRODUCT_CATALOG = {
             retailQuarterly: 34.47
         },
         subscriptionOptions: ['monthly', 'quarterly'],
-        wholesaleThreshold: 50,
-        minOrder: 50,
+        wholesaleThreshold: 20,
+        minOrder: 1,
         type: 'organic',
         emoji: '🐎'
     },
@@ -1613,8 +1613,8 @@ const PRODUCT_CATALOG = {
             retailQuarterly: 31.31
         },
         subscriptionOptions: ['monthly', 'quarterly'],
-        wholesaleThreshold: 100,
-        minOrder: 100,
+        wholesaleThreshold: 20,
+        minOrder: 1,
         type: 'organic',
         emoji: '💊'
     },
@@ -1642,8 +1642,8 @@ const PRODUCT_CATALOG = {
             retailQuarterly: 32.52
         },
         subscriptionOptions: ['monthly', 'quarterly'],
-        wholesaleThreshold: 100,
-        minOrder: 100,
+        wholesaleThreshold: 20,
+        minOrder: 20,
         type: 'organic',
         emoji: '👶'
     },
@@ -1680,8 +1680,8 @@ const PRODUCT_CATALOG = {
         ],
         bundleSavings: 12.15,
         subscriptionOptions: ['monthly', 'quarterly'],
-        wholesaleThreshold: 300,
-        minOrder: 300,
+        wholesaleThreshold: 15,
+        minOrder: 1,
         type: 'organic',
         emoji: '🏠'
     },
@@ -1717,8 +1717,8 @@ const PRODUCT_CATALOG = {
         ],
         bundleSavings: 22.58,
         subscriptionOptions: ['monthly', 'quarterly'],
-        wholesaleThreshold: 250,
-        minOrder: 250,
+        wholesaleThreshold: 8,
+        minOrder: 1,
         type: 'organic',
         emoji: '👨‍👩‍👧‍👦'
     },
@@ -1755,8 +1755,8 @@ const PRODUCT_CATALOG = {
         ],
         bundleSavings: 31.38,
         subscriptionOptions: ['monthly', 'quarterly'],
-        wholesaleThreshold: 200,
-        minOrder: 200,
+        wholesaleThreshold: 8,
+        minOrder: 1,
         type: 'organic',
         emoji: '🌟'
     },
@@ -1790,8 +1790,8 @@ const PRODUCT_CATALOG = {
         ],
         bundleSavings: 19.45,
         subscriptionOptions: ['monthly', 'quarterly'],
-        wholesaleThreshold: 300,
-        minOrder: 300,
+        wholesaleThreshold: 12,
+        minOrder: 1,
         type: 'organic',
         emoji: '⚡'
     },
@@ -1826,8 +1826,8 @@ const PRODUCT_CATALOG = {
         ],
         bundleSavings: 18.53,
         subscriptionOptions: ['monthly', 'quarterly'],
-        wholesaleThreshold: 200,
-        minOrder: 200,
+        wholesaleThreshold: 12,
+        minOrder: 1,
         type: 'organic',
         emoji: '🐾'
     }
