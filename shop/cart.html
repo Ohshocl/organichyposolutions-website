@@ -224,8 +224,8 @@
             position: relative;
             z-index: 10;
         }
-    </style>  
-/* FIXED CART ITEMS - Critical Display Fix */
+
+        /* FIXED CART ITEMS - Critical Display Fix */
         .cart-item {
             border-bottom: 2px solid #f1f5f9;
             padding: 2rem 0;
@@ -407,8 +407,8 @@
             border-radius: 8px;
             transition: width 0.5s ease;
         }
-    
-/* Recommendation quantity controls */
+
+        /* Recommendation quantity controls */
         .recommendation-quantity-controls {
             display: flex;
             align-items: center;
@@ -590,7 +590,8 @@
         .empty-cart .cert-badge:hover {
             transform: scale(1.1);
         }
-    /* FOOTER STYLING FROM INDEX PAGE */
+
+        /* FOOTER STYLING FROM INDEX PAGE */
         .footer-section {
             background: #000000;
             color: white;
@@ -714,7 +715,7 @@
         }
     </style>
     <body>
-<!-- Navigation - Updated to Match Index Page Structure -->
+    <!-- Navigation - Updated to Match Index Page Structure -->
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="../index.html">
@@ -824,8 +825,9 @@
                 </ul>
             </div>
         </div>
-    </nav> 
-        <!-- Hero Section -->
+    </nav>
+
+    <!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
             <div class="row align-items-center">
@@ -914,7 +916,7 @@
             </div>
         </div>
     </div>
-    <!-- Main Content -->
+<!-- Main Content -->
     <div class="container">
         <div class="cart-container p-4">
             <div class="row">
@@ -987,6 +989,7 @@
                             </div>
                         </div>
                     </div>
+
                     <!-- Product Recommendations (when cart has items) -->
                     <div id="recommendations" style="display: none;" class="mt-4">
                         <div class="card">
@@ -1069,7 +1072,8 @@
                         </div>
                     </div>
                 </div>
-          <!-- Order Summary with Volume Discount Integration -->
+
+                <!-- Order Summary with Volume Discount Integration -->
                 <div class="col-lg-4">
                     <div class="order-summary">
                         <h4>
@@ -1093,12 +1097,6 @@
                             <span id="wholesaleDiscount" class="discount-text">$0.00</span>
                         </div>
                         
-                        <!-- FIXED SUBSCRIPTION DISCOUNT ROW - This was missing! -->
-                        <div class="summary-row" id="subscriptionDiscountRow" style="display: none;">
-                            <span>Subscription Discount:</span>
-                            <span id="subscriptionDiscount" class="discount-text">$0.00</span>
-                        </div>
-                        
                         <div class="summary-row">
                             <span>Shipping:</span>
                             <span id="shipping" class="free-shipping">FREE on $75+</span>
@@ -1108,6 +1106,7 @@
                             <span id="tax">$0.00</span>
                         </div>
                         
+                        <!-- Subscription discount row will be added dynamically -->
                         <div class="summary-row">
                             <span><strong>Total:</strong></span>
                             <span id="total"><strong>$0.00</strong></span>
@@ -1162,12 +1161,12 @@
                             </small>
                         </div>
 
-                        <!-- FIXED SUBSCRIPTION OPTION - This was missing proper functionality! -->
+                        <!-- Subscription Option -->
                         <div class="mt-4 p-3 rounded" style="background: rgba(46, 94, 170, 0.1); border: 2px solid var(--ohs-primary-blue);">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="subscriptionToggle" onchange="handleSubscriptionChange()">
+                                <input class="form-check-input" type="checkbox" id="subscriptionToggle">
                                 <label class="form-check-label" for="subscriptionToggle">
-                                    <strong class="text-primary">Subscribe & Save <span id="subscriptionPercentage">8%</span></strong>
+                                    <strong class="text-primary">Subscribe & Save 8%</strong>
                                 </label>
                             </div>
                             <small class="text-muted d-block mt-1">
@@ -1176,7 +1175,7 @@
                                 <span class="construction-badge ms-2">Under Construction</span>
                             </small>
                             <div class="mt-2">
-                                <select class="form-select form-select-sm" id="subscriptionFrequency" disabled onchange="handleSubscriptionFrequencyChange()">
+                                <select class="form-select form-select-sm" id="subscriptionFrequency" disabled>
                                     <option value="monthly">Monthly (8% discount)</option>
                                     <option value="quarterly">Quarterly (10% discount)</option>
                                 </select>
@@ -1226,7 +1225,7 @@
             </div>
         </div>
     </div>
-      <!-- Footer - Matching Index Page Structure -->
+    <!-- Footer - Matching Index Page Structure -->
     <footer class="footer-section">
         <div class="container">
             <div class="row">
@@ -1303,11 +1302,12 @@
                 </div>
             </div>
         </div>
-    </footer> 
-       <!-- Bootstrap JS -->
+    </footer>
+
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- FIXED CART SYSTEM WITH PROPER SUBSCRIPTION DISCOUNT CALCULATIONS -->
+    <!-- FIXED CART SYSTEM WITH PROPER VOLUME DISCOUNT CALCULATIONS -->
     <script>
         // ===================================================================
         // PRODUCT CATALOG INTEGRATION - ACTUAL DISCOUNT DATA
@@ -1379,12 +1379,10 @@
         };
 
         // ===================================================================
-        // CART SYSTEM VARIABLES WITH SUBSCRIPTION SUPPORT
+        // CART SYSTEM VARIABLES
         // ===================================================================
         let cartItems = [];
         let isCartSystemReady = false;
-        let subscriptionEnabled = false; // FIXED - Added subscription state tracking
-        let subscriptionDiscount = 0.08; // FIXED - Default monthly discount
         
         // Volume discount thresholds from your catalog
         const VOLUME_THRESHOLDS = [25, 50, 100, 200];
@@ -1393,12 +1391,6 @@
             50: 0.15,   // 15% off
             100: 0.20,  // 20% off
             200: 0.25   // 25% off
-        };
-
-        // FIXED - Subscription discount rates
-        const SUBSCRIPTION_DISCOUNTS = {
-            monthly: 0.08,    // 8% off
-            quarterly: 0.10   // 10% off
         };
 
         // ===================================================================
@@ -1460,6 +1452,16 @@
                     description: 'Premium hypochlorous acid with advanced packaging',
                     emoji: '👑',
                     sku: 'HC-32OZ-CLEANER-RTU'
+                },
+                {
+                    productId: 'ohs-3oz-disinfectant',
+                    name: '3oz Organic Multi-Surface Disinfectant',
+                    price: 12.97,
+                    quantity: 15,
+                    type: 'organic',
+                    description: 'Travel-size USDA Certified Organic disinfectant',
+                    emoji: '✨',
+                    sku: 'OHS-3OZ-DISINFECTANT'
                 }
             ];
             saveCart();
@@ -1535,12 +1537,6 @@
                 hasDiscounts
             };
         }
-
-        // FIXED - Calculate subscription discount amount
-        function calculateSubscriptionDiscountAmount(subtotalAfterVolume) {
-            if (!subscriptionEnabled) return 0;
-            return subtotalAfterVolume * subscriptionDiscount;
-        }
         
         function getNextDiscountThreshold() {
             const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -1559,7 +1555,7 @@
         }
         
         // ===================================================================
-        // DISPLAY UPDATE FUNCTIONS WITH SUBSCRIPTION SUPPORT
+        // DISPLAY UPDATE FUNCTIONS
         // ===================================================================
         
         function updateDisplay() {
@@ -1663,7 +1659,6 @@
             console.log('✅ Cart items updated with volume discounts');
         }
         
-        // FIXED - Updated order summary with subscription discount support
         function updateOrderSummary() {
             let subtotal = 0;
             let totalVolumeDiscount = 0;
@@ -1680,14 +1675,10 @@
                 totalVolumeDiscount += (originalTotal - itemTotal);
             });
             
-            // FIXED - Calculate subscription discount on post-volume subtotal
-            const subscriptionDiscountAmount = calculateSubscriptionDiscountAmount(subtotal);
-            const finalSubtotal = subtotal - subscriptionDiscountAmount;
+            const tax = subtotal * 0.0775; // Utah tax rate
+            const total = subtotal + tax;
             
-            const tax = finalSubtotal * 0.0775; // Utah tax rate
-            const total = finalSubtotal + tax;
-            
-            // Update display elements - FIXED to show original subtotal before discounts
+            // Update display elements
             document.getElementById('subtotal').textContent = '$' + (subtotal + totalVolumeDiscount).toFixed(2);
             document.getElementById('tax').textContent = '$' + tax.toFixed(2);
             document.getElementById('total').textContent = '$' + total.toFixed(2);
@@ -1699,15 +1690,6 @@
                 document.getElementById('volumeDiscount').textContent = '-$' + totalVolumeDiscount.toFixed(2);
             } else {
                 volumeDiscountRow.style.display = 'none';
-            }
-            
-            // FIXED - Subscription discount display
-            const subscriptionDiscountRow = document.getElementById('subscriptionDiscountRow');
-            if (subscriptionDiscountAmount > 0) {
-                subscriptionDiscountRow.style.display = 'flex';
-                document.getElementById('subscriptionDiscount').textContent = '-$' + subscriptionDiscountAmount.toFixed(2);
-            } else {
-                subscriptionDiscountRow.style.display = 'none';
             }
             
             updateVolumeProgress();
@@ -1800,14 +1782,10 @@
                 subtotal += discountedPrice * item.quantity;
             });
             
-            // Apply subscription discount to hero total too
-            const subscriptionDiscountAmount = calculateSubscriptionDiscountAmount(subtotal);
-            const finalTotal = subtotal - subscriptionDiscountAmount;
-            
             const heroTotal = document.getElementById('heroCartTotal');
             const heroCount = document.getElementById('heroItemCount');
             
-            if (heroTotal) heroTotal.textContent = '$' + finalTotal.toFixed(2);
+            if (heroTotal) heroTotal.textContent = '$' + subtotal.toFixed(2);
             if (heroCount) heroCount.textContent = totalItems;
         }
         
@@ -1823,51 +1801,6 @@
             
             if (nextThreshold && nextDiscount) {
                 nextThreshold.textContent = nextDiscount.threshold;
-            }
-        }
-
-        // ===================================================================
-        // FIXED SUBSCRIPTION HANDLERS
-        // ===================================================================
-        
-        function handleSubscriptionChange() {
-            const toggle = document.getElementById('subscriptionToggle');
-            const frequency = document.getElementById('subscriptionFrequency');
-            
-            subscriptionEnabled = toggle.checked;
-            frequency.disabled = !subscriptionEnabled;
-            
-            if (subscriptionEnabled) {
-                const selectedFrequency = frequency.value;
-                subscriptionDiscount = SUBSCRIPTION_DISCOUNTS[selectedFrequency];
-                
-                // Update percentage display
-                const percentage = Math.round(subscriptionDiscount * 100);
-                document.getElementById('subscriptionPercentage').textContent = percentage + '%';
-            }
-            
-            // Immediately update all displays
-            updateDisplay();
-            
-            console.log('Subscription:', subscriptionEnabled, 'Discount:', subscriptionDiscount);
-        }
-
-        function handleSubscriptionFrequencyChange() {
-            const toggle = document.getElementById('subscriptionToggle');
-            const frequency = document.getElementById('subscriptionFrequency');
-            
-            if (toggle.checked) {
-                const selectedFrequency = frequency.value;
-                subscriptionDiscount = SUBSCRIPTION_DISCOUNTS[selectedFrequency];
-                
-                // Update percentage display
-                const percentage = Math.round(subscriptionDiscount * 100);
-                document.getElementById('subscriptionPercentage').textContent = percentage + '%';
-                
-                // Immediately update all displays
-                updateDisplay();
-                
-                console.log('Subscription frequency changed:', selectedFrequency, 'New discount:', subscriptionDiscount);
             }
         }
         
@@ -1952,23 +1885,17 @@
                 return;
             }
             
-            let subtotal = 0;
-            cartItems.forEach(item => {
+            const subtotal = cartItems.reduce((sum, item) => {
                 const product = PRODUCT_CATALOG[item.productId] || { price: item.price };
                 const volumeDiscount = calculateVolumeDiscount(item.productId, item.quantity);
                 const discountedPrice = (product.price || item.price) * (1 - volumeDiscount.discount);
-                subtotal += discountedPrice * item.quantity;
-            });
-            
-            const subscriptionDiscountAmount = calculateSubscriptionDiscountAmount(subtotal);
-            const finalSubtotal = subtotal - subscriptionDiscountAmount;
+                return sum + (discountedPrice * item.quantity);
+            }, 0);
             
             const checkoutData = {
                 items: cartItems,
-                subtotal: finalSubtotal,
+                subtotal: subtotal,
                 volumeDiscounts: calculateTotalVolumeDiscount(),
-                subscriptionEnabled: subscriptionEnabled,
-                subscriptionDiscount: subscriptionDiscountAmount,
                 timestamp: new Date().toISOString()
             };
             
@@ -2093,37 +2020,46 @@
         }
         
         // ===================================================================
+        // SUBSCRIPTION HANDLING
+        // ===================================================================
+        
+        function handleSubscriptionToggle() {
+            const toggle = document.getElementById('subscriptionToggle');
+            const frequency = document.getElementById('subscriptionFrequency');
+            
+            if (toggle && frequency) {
+                toggle.addEventListener('change', function() {
+                    frequency.disabled = !this.checked;
+                    updateDisplay();
+                });
+                
+                frequency.addEventListener('change', function() {
+                    if (toggle.checked) {
+                        updateDisplay();
+                    }
+                });
+            }
+        }
+        
+        // ===================================================================
         // INITIALIZATION
         // ===================================================================
         
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Cart system initializing with subscription discount support...');
+            console.log('🚀 Cart system initializing with volume discount integration...');
             loadCart();
-            
-            // FIXED - Set up subscription event handlers properly
-            const subscriptionToggle = document.getElementById('subscriptionToggle');
-            const subscriptionFrequency = document.getElementById('subscriptionFrequency');
-            
-            if (subscriptionToggle) {
-                subscriptionToggle.addEventListener('change', handleSubscriptionChange);
-            }
-            
-            if (subscriptionFrequency) {
-                subscriptionFrequency.addEventListener('change', handleSubscriptionFrequencyChange);
-            }
+            handleSubscriptionToggle();
             
             // Add debug functionality if needed
             if (window.location.search.includes('debug=true')) {
                 window.debugCart = () => {
                     console.log('Cart items:', cartItems);
                     console.log('Volume discounts:', calculateTotalVolumeDiscount());
-                    console.log('Subscription enabled:', subscriptionEnabled);
-                    console.log('Subscription discount:', subscriptionDiscount);
                 };
                 console.log('Debug mode: Use debugCart() to inspect cart state');
             }
             
-            console.log('✅ Cart system ready with subscription discount support!');
+            console.log('✅ Cart system ready with volume discount calculations!');
         });
         
         // Listen for storage changes
@@ -2144,8 +2080,6 @@
         window.changeRecommendationQuantity = changeRecommendationQuantity;
         window.setRecommendationQuantity = setRecommendationQuantity;
         window.addRecommendationToCart = addRecommendationToCart;
-        window.handleSubscriptionChange = handleSubscriptionChange;
-        window.handleSubscriptionFrequencyChange = handleSubscriptionFrequencyChange;
     </script>
 </body>
-</html> 
+</html>
