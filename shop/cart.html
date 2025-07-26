@@ -895,7 +895,7 @@
                                                 🧴
                                             </div>
                                             <div class="flex-grow-1">
-                                                <h6 class="mb-1">32oz Organic Multi-Surface Cleaner</h6>
+                                                <h6 class="mb-1">32oz Organic Ready-to-Use Cleaner</h6>
                                                 <p class="small text-muted mb-1">Perfect for daily cleaning</p>
                                                 <div class="price-display">$21.80</div>
                                                 <div class="d-flex align-items-center gap-2 mt-2">
@@ -919,37 +919,37 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="d-flex align-items-center">
-                                            <div class="product-image premium me-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
-                                                🏭
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <h6 class="mb-1">Professional Disinfecting Wipes</h6>
-                                                <p class="small text-muted mb-1">EPA registered for commercial use</p>
-                                                <div class="price-display">$26.21</div>
-                                                <div class="d-flex align-items-center gap-2 mt-2">
-                                                    <div class="recommendation-quantity-controls">
-                                                        <button class="quantity-btn-sm" onclick="changeRecommendationQuantity('rec2', -1)" 
-                                                                id="rec2-minus" disabled>
-                                                            <i class="fas fa-minus"></i>
-                                                        </button>
-                                                        <input type="number" class="quantity-input-sm" value="1" 
-                                                               min="1" max="999" id="rec2-qty"
-                                                               onchange="setRecommendationQuantity('rec2', this.value)"
-                                                               onclick="this.select()">
-                                                        <button class="quantity-btn-sm" onclick="changeRecommendationQuantity('rec2', 1)">
-                                                            <i class="fas fa-plus"></i>
-                                                        </button>
-                                                    </div>
-                                                    <button class="btn btn-sm btn-success" onclick="addRecommendationToCart('rec2')">
-                                                        <i class="fas fa-cart-plus me-1"></i>Add
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                 
+<div class="col-md-6 mb-3">
+    <div class="d-flex align-items-center">
+        <div class="product-image premium me-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
+            🧻  <!-- Changed from 🏭 to match wipes -->
+        </div>
+        <div class="flex-grow-1">
+            <h6 class="mb-1">All-in-one Wipes</h6>  <!-- Updated product name -->
+            <p class="small text-muted mb-1">EPA registered for commercial use</p>
+            <div class="price-display">$26.21</div>
+            <div class="d-flex align-items-center gap-2 mt-2">
+                <div class="recommendation-quantity-controls">
+                    <button class="quantity-btn-sm" onclick="changeRecommendationQuantity('rec2', -1)" 
+                            id="rec2-minus" disabled>
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <input type="number" class="quantity-input-sm" value="1" 
+                           min="1" max="999" id="rec2-qty"
+                           onchange="setRecommendationQuantity('rec2', this.value)"
+                           onclick="this.select()">
+                    <button class="quantity-btn-sm" onclick="changeRecommendationQuantity('rec2', 1)">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <button class="btn btn-sm btn-success" onclick="addRecommendationToCart('rec2')">
+                    <i class="fas fa-cart-plus me-1"></i>Add
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
                                 <div class="mt-3 p-3 rounded" style="background: rgba(74, 222, 128, 0.1); border: 1px solid #22c55e;">
                                     <small class="text-success">
                                         <i class="fas fa-info-circle me-1"></i>
@@ -1216,20 +1216,20 @@
         function addTestItems() {
             cartItems = [
                 {
-                    productId: 'ohs-32oz-cleaner-ready',
+                    productId: 'ohs-32oz-organic-cleaner',  // FIXED
                     name: '32oz Organic Ready-to-Use Cleaner',
                     price: 21.80,
-                    quantity: 8, // Above wholesale threshold of 6
+                    quantity: 600,  // Above wholesale threshold of 500
                     type: 'organic',
                     description: 'USDA Certified Organic hypochlorous acid cleaner',
                     emoji: '🧴',
                     sku: 'OHS-32OZ-CLEANER-RTU'
                 },
                 {
-                    productId: 'hc-32oz-cleaner-ready',
+                    productId: 'hc-32oz-cleaner-rtu',  // FIXED
                     name: '32oz Multi Use Cleaner Ready to Use - Premium',
                     price: 23.82,
-                    quantity: 3, // Below wholesale threshold
+                    quantity: 20,  // Below wholesale threshold of 25
                     type: 'premium',
                     description: 'Premium hypochlorous acid with advanced packaging',
                     emoji: '👑',
@@ -1239,11 +1239,11 @@
                     productId: 'ohs-3oz-disinfectant',
                     name: '3oz Organic Multi-Surface Disinfectant',
                     price: 12.97,
-                    quantity: 12, // Above wholesale threshold
+                    quantity: 1200,  // Above wholesale threshold of 1000
                     type: 'organic',
                     description: 'Travel-size USDA Certified Organic disinfectant',
                     emoji: '✨',
-                    sku: 'OHS-3OZ-DISINFECTANT'
+                    sku: 'OHS-3OZ-ORGANIC'  // FIXED
                 }
             ];
             saveCart();
@@ -1622,8 +1622,8 @@
             
             if (recId === 'rec1') {
                 productData = {
-                    productId: 'ohs-32oz-cleaner-ready',
-                    name: '32oz Organic Multi-Surface Cleaner',
+                    productId: 'ohs-32oz-organic-cleaner',  // FIXED
+                    name: '32oz Organic Ready-to-Use Cleaner',
                     price: 21.80,
                     quantity: quantity,
                     type: 'organic',
@@ -1633,13 +1633,13 @@
                 };
             } else if (recId === 'rec2') {
                 productData = {
-                    productId: 'hc-wipes-allinone',
-                    name: 'Professional Disinfecting Wipes',
+                    productId: 'hc-all-in-one-wipes',  // FIXED
+                    name: 'All-in-one Wipes',
                     price: 26.21,
                     quantity: quantity,
                     type: 'premium',
                     description: 'EPA registered for commercial use',
-                    emoji: '🏭',
+                    emoji: '🧻',  // FIXED
                     sku: 'HC-WIPES-ALLINONE'
                 };
             }
