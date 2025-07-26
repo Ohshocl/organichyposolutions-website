@@ -215,7 +215,7 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        /* Cart Container and Layout Fixes */
+        /* Cart Container */
         .cart-container {
             background: white;
             border-radius: 20px;
@@ -225,19 +225,44 @@
             z-index: 10;
         }
 
+        /* Force proper Bootstrap grid layout */
         .cart-container .row {
-            display: flex;
-            flex-wrap: wrap;
+            display: flex !important;
+            flex-wrap: wrap !important;
+            margin-left: -12px;
+            margin-right: -12px;
         }
 
-        .cart-items-column {
-            flex: 0 0 66.666667%;
-            max-width: 66.666667%;
+        .cart-container .col-lg-8 {
+            padding-left: 12px;
+            padding-right: 12px;
         }
 
-        .order-summary-column {
-            flex: 0 0 33.333333%;
-            max-width: 33.333333%;
+        .cart-container .col-lg-4 {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        /* Specific grid behavior for large screens */
+        @media (min-width: 992px) {
+            .cart-container .col-lg-8 {
+                flex: 0 0 66.666667% !important;
+                max-width: 66.666667% !important;
+            }
+            
+            .cart-container .col-lg-4 {
+                flex: 0 0 33.333333% !important;
+                max-width: 33.333333% !important;
+            }
+        }
+
+        /* Stack on mobile */
+        @media (max-width: 991.98px) {
+            .cart-container .col-lg-8,
+            .cart-container .col-lg-4 {
+                flex: 0 0 100% !important;
+                max-width: 100% !important;
+            }
         }
 
         /* FIXED CART ITEMS - Critical Display Fix */
@@ -656,12 +681,6 @@
                 margin-top: -1rem;
             }
             
-            .cart-items-column,
-            .order-summary-column {
-                flex: 0 0 100%;
-                max-width: 100%;
-            }
-            
             .order-summary {
                 position: static;
                 margin-top: 2rem;
@@ -681,16 +700,6 @@
             .item-price-column {
                 min-width: auto;
                 max-width: none;
-            }
-        }
-
-        @media (min-width: 992px) {
-            .cart-items-column {
-                padding-right: 1.5rem;
-            }
-            
-            .order-summary-column {
-                padding-left: 1.5rem;
             }
         }
     </style>
@@ -858,7 +867,7 @@
         <div class="cart-container p-4">
             <div class="row">
                 <!-- Cart Items - LEFT SIDE -->
-                <div class="col-lg-8 cart-items-column">
+                <div class="col-lg-8">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h3 class="mb-0">
                             <i class="fas fa-shopping-cart me-2 text-primary"></i>Shopping Cart
@@ -1010,7 +1019,7 @@
                 </div>
 
                 <!-- Order Summary - RIGHT SIDE -->
-                <div class="col-lg-4 order-summary-column">
+                <div class="col-lg-4">
                     <div class="order-summary">
                         <h4>
                             <i class="fas fa-receipt me-2"></i>Order Summary
