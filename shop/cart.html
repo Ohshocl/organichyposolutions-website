@@ -444,11 +444,21 @@
             -moz-appearance: textfield;
         }
 
-        /* Pricing */
+        /* Pricing - FIXED WIDTH FOR ITEM TOTALS */
         .price-display {
             font-size: 1.2rem;
             font-weight: bold;
             color: var(--ohs-organic-green);
+        }
+
+        .item-total-column {
+            min-width: 120px;
+            max-width: 120px;
+        }
+
+        .item-price-column {
+            min-width: 100px;
+            max-width: 100px;
         }
 
         .original-price {
@@ -557,12 +567,13 @@
             transform: scale(1.1);
         }
 
-        /* FOOTER STYLING FROM INDEX PAGE */
+        /* FOOTER STYLING FROM INDEX PAGE - FIXED FULL WIDTH */
         .footer-section {
             background: #000000;
             color: white;
             padding: 3rem 0 2rem 0;
             margin-top: 3rem;
+            width: 100%;
         }
 
         .footer-section h5, 
@@ -643,6 +654,12 @@
             .quantity-btn {
                 width: 35px;
                 height: 35px;
+            }
+
+            .item-total-column,
+            .item-price-column {
+                min-width: auto;
+                max-width: none;
             }
         }
     </style>
@@ -809,8 +826,8 @@
     <div class="container">
         <div class="cart-container p-4">
             <div class="row">
-                <!-- Cart Items -->
-                <div class="col-lg-8">
+                <!-- Cart Items - LEFT SIDE -->
+                <div class="col-lg-8 order-1">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h3 class="mb-0">
                             <i class="fas fa-shopping-cart me-2 text-primary"></i>Shopping Cart
@@ -961,8 +978,8 @@
                     </div>
                 </div>
 
-                <!-- Order Summary with Wholesale Integration -->
-                <div class="col-lg-4">
+                <!-- Order Summary - RIGHT SIDE -->
+                <div class="col-lg-4 order-2">
                     <div class="order-summary">
                         <h4>
                             <i class="fas fa-receipt me-2"></i>Order Summary
@@ -1082,9 +1099,10 @@
             </div>
         </div>
     </div>
-    <!-- Footer - Matching Index Page Structure -->
+    
+    <!-- Footer - FIXED TO FULL WIDTH -->
     <footer class="footer-section">
-        <div class="container">
+        <div class="container-fluid px-4">
             <div class="row">
                 <div class="col-md-3 mb-4">
                     <div class="d-flex align-items-center mb-3">
@@ -1379,14 +1397,14 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="col-md-2 col-6 text-center">
+                            <div class="col-md-2 col-6 text-center item-price-column">
                                 <div class="price-display">$${displayPrice.toFixed(2)}</div>
                                 <small class="text-muted">each</small>
                                 ${wholesaleInfo.isWholesale && wholesaleInfo.savings > 0 ? `
                                     <div class="discount-amount">Save $${wholesaleInfo.savings.toFixed(2)}</div>
                                 ` : ''}
                             </div>
-                            <div class="col-md-1 col-6 text-center">
+                            <div class="col-md-1 col-6 text-center item-total-column">
                                 <div class="price-display mb-2">$${itemTotal.toFixed(2)}</div>
                                 <button class="btn btn-sm btn-outline-danger mt-2" onclick="removeItem(${index})">
                                     <i class="fas fa-trash"></i>
