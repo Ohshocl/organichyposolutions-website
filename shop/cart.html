@@ -223,46 +223,9 @@
             margin-top: -3rem;
             position: relative;
             z-index: 10;
-        }
-
-        /* Force proper Bootstrap grid layout */
-        .cart-container .row {
-            display: flex !important;
-            flex-wrap: wrap !important;
-            margin-left: -12px;
-            margin-right: -12px;
-        }
-
-        .cart-container .col-lg-8 {
-            padding-left: 12px;
-            padding-right: 12px;
-        }
-
-        .cart-container .col-lg-4 {
-            padding-left: 12px;
-            padding-right: 12px;
-        }
-
-        /* Specific grid behavior for large screens */
-        @media (min-width: 992px) {
-            .cart-container .col-lg-8 {
-                flex: 0 0 66.666667% !important;
-                max-width: 66.666667% !important;
-            }
-            
-            .cart-container .col-lg-4 {
-                flex: 0 0 33.333333% !important;
-                max-width: 33.333333% !important;
-            }
-        }
-
-        /* Stack on mobile */
-        @media (max-width: 991.98px) {
-            .cart-container .col-lg-8,
-            .cart-container .col-lg-4 {
-                flex: 0 0 100% !important;
-                max-width: 100% !important;
-            }
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* FIXED CART ITEMS - Critical Display Fix */
@@ -863,27 +826,29 @@
     </section>
 
 <!-- Main Content -->
-    <div class="container">
-        <div class="cart-container p-4">
-            <div class="row">
-                <!-- Cart Items - LEFT SIDE -->
-                <div class="col-lg-8">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h3 class="mb-0">
-                            <i class="fas fa-shopping-cart me-2 text-primary"></i>Shopping Cart
-                        </h3>
-                        <div class="d-flex gap-3 align-items-center">
-                            <small class="text-muted" id="itemCount">0 items</small>
-                            <button class="btn btn-outline-danger btn-sm" onclick="clearAllItems()">
-                                <i class="fas fa-trash me-1"></i>Clear All
-                            </button>
-                        </div>
-                    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="cart-container p-4">
+                    <div class="row">
+                        <!-- Cart Items - LEFT SIDE -->
+                        <div class="col-lg-8">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h3 class="mb-0">
+                                    <i class="fas fa-shopping-cart me-2 text-primary"></i>Shopping Cart
+                                </h3>
+                                <div class="d-flex gap-3 align-items-center">
+                                    <small class="text-muted" id="itemCount">0 items</small>
+                                    <button class="btn btn-outline-danger btn-sm" onclick="clearAllItems()">
+                                        <i class="fas fa-trash me-1"></i>Clear All
+                                    </button>
+                                </div>
+                            </div>
 
-                    <!-- Cart Items Container - FIXED WHOLESALE INTEGRATION -->
-                    <div id="cartItems">
-                        <!-- Items will be dynamically inserted here with wholesale calculations -->
-                    </div>
+                            <!-- Cart Items Container - FIXED WHOLESALE INTEGRATION -->
+                            <div id="cartItems">
+                                <!-- Items will be dynamically inserted here with wholesale calculations -->
+                            </div>
 
                     <!-- Empty Cart Message -->
                     <div id="emptyCart" class="empty-cart">
@@ -1015,15 +980,14 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                        </div>
 
-                <!-- Order Summary - RIGHT SIDE -->
-                <div class="col-lg-4">
-                    <div class="order-summary">
-                        <h4>
-                            <i class="fas fa-receipt me-2"></i>Order Summary
-                        </h4>
+                        <!-- Order Summary - RIGHT SIDE -->
+                        <div class="col-lg-4">
+                            <div class="order-summary">
+                                <h4>
+                                    <i class="fas fa-receipt me-2"></i>Order Summary
+                                </h4>
                         
                         <div class="summary-row">
                             <span>Subtotal:</span>
@@ -1132,6 +1096,8 @@
                                 <div class="mt-2">
                                     <span class="construction-badge">ShipRight Integration</span>
                                 </div>
+                            </div>
+                        </div>
                             </div>
                         </div>
                     </div>
