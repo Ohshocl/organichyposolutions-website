@@ -476,42 +476,113 @@
             font-size: 0.85rem;
         }
 
-        /* Order Summary */
-        .order-summary {
-            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        /* Sticky Order Summary - Marketing Focused */
+        .sticky-order-summary {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, var(--ohs-primary-blue) 0%, #1e3a8a 100%);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 -8px 25px rgba(0,0,0,0.2);
+            z-index: 1000;
+            border-top: 4px solid var(--ohs-organic-green);
+            transition: transform 0.3s ease;
+        }
+
+        .sticky-order-summary.hidden {
+            transform: translateY(100%);
+        }
+
+        .order-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .marketing-badge {
+            background: rgba(74, 222, 128, 0.2);
+            color: var(--ohs-organic-green);
+            padding: 0.25rem 0.75rem;
             border-radius: 20px;
-            padding: 2.5rem;
-            position: sticky;
-            top: 2rem;
-            border: 2px solid #e2e8f0;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            backdrop-filter: blur(10px);
         }
 
-        .order-summary h4 {
-            color: var(--ohs-primary-blue);
-            font-weight: bold;
-            border-bottom: 3px solid var(--ohs-organic-green);
-            padding-bottom: 0.5rem;
-            margin-bottom: 2rem;
+        .checkout-cta {
+            background: linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green));
+            border: none;
+            border-radius: 15px;
+            padding: 0.75rem 2rem;
+            box-shadow: 0 6px 20px rgba(74, 222, 128, 0.4);
+            transition: all 0.3s ease;
+            min-width: 200px;
         }
 
+        .checkout-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 222, 128, 0.6);
+            background: linear-gradient(135deg, var(--ohs-dark-green), #16a34a);
+        }
+
+        .shipping-progress {
+            opacity: 0.9;
+        }
+
+        .shipping-progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .shipping-progress-bar .progress-bar {
+            transition: width 0.5s ease;
+            background: linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green)) !important;
+        }
+
+        /* Modal Styling */
         .summary-row {
             display: flex;
             justify-content: space-between;
-            padding: 0.8rem 0;
+            padding: 0.5rem 0;
             border-bottom: 1px solid #e2e8f0;
-            font-weight: 500;
         }
 
-        .summary-row:last-child {
-            border-bottom: 3px solid var(--ohs-organic-green);
-            font-weight: bold;
-            font-size: 1.3rem;
-            color: var(--ohs-primary-blue);
-            background: linear-gradient(135deg, #ecfdf5, #dcfce7);
-            margin: 1rem -1rem;
-            padding: 1rem;
-            border-radius: 12px;
+        /* Add bottom padding to body when sticky summary is shown */
+        body.sticky-summary-active {
+            padding-bottom: 140px;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .sticky-order-summary {
+                padding: 1rem 0;
+            }
+            
+            .checkout-cta {
+                min-width: auto;
+                padding: 0.5rem 1rem;
+            }
+            
+            .order-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            body.sticky-summary-active {
+                padding-bottom: 120px;
+            }
         }
 
         .discount-text {
@@ -829,9 +900,9 @@
         <div class="row">
             <div class="col-12">
                 <div class="cart-container p-4">
+                    <!-- Single Column Layout -->
                     <div class="row">
-                        <!-- Cart Items - LEFT SIDE -->
-                        <div class="col-lg-8">
+                        <div class="col-12">
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <h3 class="mb-0">
                                     <i class="fas fa-shopping-cart me-2 text-primary"></i>Shopping Cart
@@ -844,9 +915,9 @@
                                 </div>
                             </div>
 
-                            <!-- Cart Items Container - FIXED WHOLESALE INTEGRATION -->
+                            <!-- Cart Items Container -->
                             <div id="cartItems">
-                                <!-- Items will be dynamically inserted here with wholesale calculations -->
+                                <!-- Items will be dynamically inserted here -->
                             </div>
 
                     <!-- Empty Cart Message -->
@@ -1573,16 +1644,47 @@
         }
         
         // ===================================================================
-        // UTILITY FUNCTIONS
+        // UTILITY FUNCTIONS - UPDATED FOR STICKY SUMMARY
         // ===================================================================
         
         function applyCoupon() {
-            const code = document.getElementById('couponCode')?.value;
+            // Check if called from modal or sticky bar
+            const modalCouponCode = document.getElementById('modalCouponCode');
+            const code = modalCouponCode ? modalCouponCode.value : prompt('Enter coupon code:');
+            
             if (!code || !code.trim()) {
                 alert('Please enter a coupon code');
                 return;
             }
-            alert(`Coupon "${code.trim()}" will be applied at Shopify checkout`);
+            
+            // Show success message
+            const notification = document.createElement('div');
+            notification.className = 'position-fixed';
+            notification.style.cssText = `
+                top: 100px; right: 20px; z-index: 9999;
+                background: linear-gradient(135deg, var(--ohs-primary-blue), #1e3a8a);
+                color: white; padding: 15px 20px; border-radius: 10px;
+                box-shadow: 0 8px 25px rgba(46, 94, 170, 0.4);
+                font-weight: bold; transform: translateX(400px);
+                transition: all 0.3s ease;
+            `;
+            notification.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-tag me-2"></i>
+                    <div>
+                        <div>Coupon Ready!</div>
+                        <small>"${code.trim()}" will be applied at checkout</small>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 3000);
         }
         
         function proceedToCheckout() {
@@ -1608,6 +1710,25 @@
             } catch (error) {
                 console.error('❌ Error saving checkout data:', error);
                 alert('Error preparing checkout. Please try again.');
+            }
+        }
+        
+        // Scroll handling to hide sticky bar when reaching footer
+        function handleStickyScroll() {
+            const stickyBar = document.getElementById('stickyOrderSummary');
+            const footer = document.querySelector('.footer-section');
+            
+            if (!footer || cartItems.length === 0) return;
+            
+            const footerRect = footer.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+            const stickyHeight = stickyBar.offsetHeight;
+            
+            // Hide sticky bar when footer comes into view
+            if (footerRect.top <= windowHeight - stickyHeight) {
+                stickyBar.classList.add('hidden');
+            } else {
+                stickyBar.classList.remove('hidden');
             }
         }
         
@@ -1790,6 +1911,12 @@
             loadCart();
             handleSubscriptionToggle();
             
+            // Add scroll event listener for sticky bar
+            window.addEventListener('scroll', handleStickyScroll);
+            
+            // Initialize sticky summary visibility
+            updateStickyVisibility();
+            
             // Add debug functionality if needed
             if (window.location.search.includes('debug=true')) {
                 window.debugCart = () => {
@@ -1799,7 +1926,7 @@
                 console.log('Debug mode: Use debugCart() to inspect cart state');
             }
             
-            console.log('✅ Cart system ready with wholesale pricing!');
+            console.log('✅ Cart system ready with sticky order summary!');
         });
         
         // Listen for storage changes
@@ -1819,6 +1946,7 @@
         window.changeRecommendationQuantity = changeRecommendationQuantity;
         window.setRecommendationQuantity = setRecommendationQuantity;
         window.addRecommendationToCart = addRecommendationToCart;
+        window.handleStickyScroll = handleStickyScroll;
     </script>
 </body>
 </html>
