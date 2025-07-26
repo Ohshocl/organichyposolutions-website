@@ -231,17 +231,16 @@
         /* FIXED CART ITEMS - Critical Display Fix */
         .cart-item {
             border-bottom: 2px solid #f1f5f9;
-            padding: 2rem 0;
+            padding: 1.5rem;
             transition: all 0.3s ease;
             display: block !important;
             visibility: visible !important;
             opacity: 1 !important;
-            min-height: 120px !important;
             background: white !important;
             border-radius: 12px;
             margin-bottom: 1rem;
-            padding: 1.5rem;
             border: 1px solid #e2e8f0;
+            overflow: hidden; /* Prevent content overflow */
         }
 
         .cart-item:hover {
@@ -1365,7 +1364,7 @@
                                     ${item.emoji || (isOrganic ? '🌱' : '👑')}
                                 </div>
                             </div>
-                            <div class="col-md-4 col-9 mb-3 mb-md-0">
+                            <div class="col-md-3 col-9 mb-3 mb-md-0">
                                 <h6 class="fw-bold mb-2">${item.name}</h6>
                                 <p class="text-muted small mb-2">${item.description}</p>
                                 <div class="mb-2">
@@ -1404,14 +1403,14 @@
                                 </div>
                             </div>
                             <div class="col-md-2 col-6 text-center item-price-column">
-                                <div class="price-display">$${displayPrice.toFixed(2)}</div>
+                                <div class="price-display">${displayPrice.toFixed(2)}</div>
                                 <small class="text-muted">each</small>
                                 ${wholesaleInfo.isWholesale && wholesaleInfo.savings > 0 ? `
-                                    <div class="discount-amount">Save $${wholesaleInfo.savings.toFixed(2)}</div>
+                                    <div class="discount-amount">Save ${wholesaleInfo.savings.toFixed(2)}</div>
                                 ` : ''}
                             </div>
-                            <div class="col-md-1 col-6 text-center item-total-column">
-                                <div class="price-display mb-2">$${itemTotal.toFixed(2)}</div>
+                            <div class="col-md-2 col-6 text-center item-total-column">
+                                <div class="price-display mb-2">${itemTotal.toFixed(2)}</div>
                                 <button class="btn btn-sm btn-outline-danger mt-2" onclick="removeItem(${index})">
                                     <i class="fas fa-trash"></i>
                                 </button>
