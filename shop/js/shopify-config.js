@@ -10,253 +10,229 @@ const SHOPIFY_CONFIG = {
     
     // Product variant mapping - maps your cart.js SKUs to Shopify variant IDs
     variantMapping: {
-        'OHS-PET-CARE-BUNDLE': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-PET-CARE-BUNDLE-RETAIL - $72.45
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-PET-CARE-BUNDLE-WHOLESALE - $53.61
+        'HC-1000GAL-EPA': {
+            retail: 'gid://shopify/ProductVariant/41829066309703',    // $39044.39
+            wholesale: 'gid://shopify/ProductVariant/41829066375239' // $29612.99
         },
-        'OHS-RTU-VALUE-BUNDLE': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-RTU-VALUE-BUNDLE-RETAIL - $62.73
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-RTU-VALUE-BUNDLE-WHOLESALE - $46.38
+        'HC-100ML-DIAPER-GEL': {
+            retail: 'gid://shopify/ProductVariant/41829065097287',    // $24.85
+            wholesale: 'gid://shopify/ProductVariant/41829065162823' // $18.09
+        },
+        'HC-150GAL-EPA': {
+            retail: 'gid://shopify/ProductVariant/41829065883719',    // $7214.4
+            wholesale: 'gid://shopify/ProductVariant/41829065949255' // $5472
+        },
+        'HC-150GAL-FDA': {
+            retail: 'gid://shopify/ProductVariant/41829066702919',    // $7515
+            wholesale: 'gid://shopify/ProductVariant/41829066768455' // $5700
+        },
+        'HC-16OZ-EQUINE-GEL': {
+            retail: 'gid://shopify/ProductVariant/41829064441927',    // $43.75
+            wholesale: 'gid://shopify/ProductVariant/41829064507463' // $33.18
+        },
+        'HC-1GAL-500PPM': {
+            retail: 'gid://shopify/ProductVariant/41829064147015',    // $46.51
+            wholesale: 'gid://shopify/ProductVariant/41829064212551' // $33.86
+        },
+        'HC-1GAL-BULK-CASE': {
+            retail: 'gid://shopify/ProductVariant/41829065752647',    // $110.58
+            wholesale: 'gid://shopify/ProductVariant/41829065818183' // $83.89
+        },
+        'HC-1GAL-EPA': {
+            retail: 'gid://shopify/ProductVariant/41829062967367',    // $54.02
+            wholesale: 'gid://shopify/ProductVariant/41829063032903' // $39.33
+        },
+        'HC-1GAL-LAUNDRY-BOOSTER': {
+            retail: 'gid://shopify/ProductVariant/41829064704071',    // $45.06
+            wholesale: 'gid://shopify/ProductVariant/41829064769607' // $32.8
+        },
+        'HC-1GAL-RTU': {
+            retail: 'gid://shopify/ProductVariant/41829062639687',    // $41.73
+            wholesale: 'gid://shopify/ProductVariant/41829062705223' // $30.47
+        },
+        'HC-3000GAL-EPA': {
+            retail: 'gid://shopify/ProductVariant/41829066440775',    // $111290.98
+            wholesale: 'gid://shopify/ProductVariant/41829066506311' // $84466.56
+        },
+        'HC-3000GAL-FDA': {
+            retail: 'gid://shopify/ProductVariant/41829067227207',    // $95960.91
+            wholesale: 'gid://shopify/ProductVariant/41829067292743' // $87949.17
+        },
+        'HC-300GAL-EPA': {
+            retail: 'gid://shopify/ProductVariant/41829066014791',    // $12984.96
+            wholesale: 'gid://shopify/ProductVariant/41829066113095' // $9849.6
+        },
+        'HC-300GAL-FDA': {
+            retail: 'gid://shopify/ProductVariant/41829066833991',    // $13527
+            wholesale: 'gid://shopify/ProductVariant/41829066899527' // $10260
+        },
+        'HC-32OZ-500PPM-VET': {
+            retail: 'gid://shopify/ProductVariant/41829063786567',    // $26.88
+            wholesale: 'gid://shopify/ProductVariant/41829063852103' // $19.56
+        },
+        'HC-32OZ-BULK-CASE': {
+            retail: 'gid://shopify/ProductVariant/41829065621575',    // $53.28
+            wholesale: 'gid://shopify/ProductVariant/41829065687111' // $40.41
+        },
+        'HC-32OZ-EPA': {
+            retail: 'gid://shopify/ProductVariant/41829062115399',    // $24.33
+            wholesale: 'gid://shopify/ProductVariant/41829062180935' // $17.68
+        },
+        'HC-32OZ-LAUNDRY-BOOSTER': {
+            retail: 'gid://shopify/ProductVariant/41829064572999',    // $26.04
+            wholesale: 'gid://shopify/ProductVariant/41829064638535' // $18.95
+        },
+        'HC-32OZ-PET-CLEANER': {
+            retail: 'gid://shopify/ProductVariant/41829063295047',    // $23.82
+            wholesale: 'gid://shopify/ProductVariant/41829063360583' // $17.3
+        },
+        'HC-32OZ-RTU': {
+            retail: 'gid://shopify/ProductVariant/41829061787719',    // $23.82
+            wholesale: 'gid://shopify/ProductVariant/41829061853255' // $17.3
+        },
+        'HC-3OZ-DISINFECTANT': {
+            retail: 'gid://shopify/ProductVariant/41829060411463',    // $14.14
+            wholesale: 'gid://shopify/ProductVariant/41829060476999' // $10.29
+        },
+        'HC-3OZ-SKIN-MIST': {
+            retail: 'gid://shopify/ProductVariant/41829060771911',    // $15.7
+            wholesale: 'gid://shopify/ProductVariant/41829060837447' // $11.42
+        },
+        'HC-5000GAL-EPA': {
+            retail: 'gid://shopify/ProductVariant/41829066571847',    // $176172.63
+            wholesale: 'gid://shopify/ProductVariant/41829066637383' // $133663.95
+        },
+        'HC-5000GAL-FDA': {
+            retail: 'gid://shopify/ProductVariant/41829067358279',    // $120790.65
+            wholesale: 'gid://shopify/ProductVariant/41829067423815' // $139352.15
+        },
+        'HC-500GAL-EPA': {
+            retail: 'gid://shopify/ProductVariant/41829066178631',    // $20568.78
+            wholesale: 'gid://shopify/ProductVariant/41829066244167' // $15598.26
+        },
+        'HC-500GAL-FDA': {
+            retail: 'gid://shopify/ProductVariant/41829066965063',    // $21413.37
+            wholesale: 'gid://shopify/ProductVariant/41829067030599' // $16248.59
+        },
+        'HC-8OZ-SKIN-MIST': {
+            retail: 'gid://shopify/ProductVariant/41829061263431',    // $19.59
+            wholesale: 'gid://shopify/ProductVariant/41829061328967' // $14.25
+        },
+        'HC-COMPLETE-BUNDLE': {
+            retail: 'gid://shopify/ProductVariant/41829067751495',    // $199.27
+            wholesale: 'gid://shopify/ProductVariant/41829067817031' // $144.94
+        },
+        'HC-ESSENTIAL-BUNDLE': {
+            retail: 'gid://shopify/ProductVariant/41829067620423',    // $165.92
+            wholesale: 'gid://shopify/ProductVariant/41829067685959' // $120.8
+        },
+        'HC-HEALING-SERUM': {
+            retail: 'gid://shopify/ProductVariant/41829064966215',    // $42.18
+            wholesale: 'gid://shopify/ProductVariant/41829065031751' // $30.71
+        },
+        'HC-PET-CARE-BUNDLE': {
+            retail: 'gid://shopify/ProductVariant/41829068013639',    // $83.19
+            wholesale: 'gid://shopify/ProductVariant/41829068079175' // $60.5
+        },
+        'HC-POOL-GENERATOR': {
+            retail: 'gid://shopify/ProductVariant/41829065490503',    // $1314.01
+            wholesale: 'gid://shopify/ProductVariant/41829065556039' // $997.14
+        },
+        'HC-REFILL-POUCH': {
+            retail: 'gid://shopify/ProductVariant/41829065359431',    // $14.42
+            wholesale: 'gid://shopify/ProductVariant/41829065424967' // $10.95
+        },
+        'HC-RTU-VALUE-BUNDLE': {
+            retail: 'gid://shopify/ProductVariant/41829067882567',    // $85.06
+            wholesale: 'gid://shopify/ProductVariant/41829067948103' // $61.86
+        },
+        'HC-STARTER-BUNDLE': {
+            retail: 'gid://shopify/ProductVariant/41829067489351',    // $89.45
+            wholesale: 'gid://shopify/ProductVariant/41829067554887' // $65.13
+        },
+        'HC-STATION1-KIT': {
+            retail: 'gid://shopify/ProductVariant/41829065228359',    // $656.04
+            wholesale: 'gid://shopify/ProductVariant/41829065293895' // $477.98
+        },
+        'HC-WIPES-100CT': {
+            retail: 'gid://shopify/ProductVariant/41829064835143',    // $26.21
+            wholesale: 'gid://shopify/ProductVariant/41829064900679' // $19.07
+        },
+        'OHS-100ML-DIAPER-GEL': {
+            retail: 'gid://shopify/ProductVariant/41829069881415',    // $35.98
+            wholesale: 'gid://shopify/ProductVariant/41829069946951' // $28.97
+        },
+        'OHS-16OZ-EQUINE-GEL': {
+            retail: 'gid://shopify/ProductVariant/41829069226055',    // $32.15
+            wholesale: 'gid://shopify/ProductVariant/41829069291591' // $23.79
+        },
+        'OHS-1GAL-500PPM': {
+            retail: 'gid://shopify/ProductVariant/41829069094983',    // $45.18
+            wholesale: 'gid://shopify/ProductVariant/41829069160519' // $32.9
+        },
+        'OHS-1GAL-LAUNDRY': {
+            retail: 'gid://shopify/ProductVariant/41829069488199',    // $41.15
+            wholesale: 'gid://shopify/ProductVariant/41829069553735' // $30.44
+        },
+        'OHS-1GAL-READY-RTU': {
+            retail: 'gid://shopify/ProductVariant/41829068701767',    // $37.28
+            wholesale: 'gid://shopify/ProductVariant/41829068767303' // $25.57
+        },
+        'OHS-32OZ-500PPM': {
+            retail: 'gid://shopify/ProductVariant/41829068963911',    // $24.59
+            wholesale: 'gid://shopify/ProductVariant/41829069029447' // $18.2
+        },
+        'OHS-32OZ-LAUNDRY': {
+            retail: 'gid://shopify/ProductVariant/41829069357127',    // $23.86
+            wholesale: 'gid://shopify/ProductVariant/41829069422663' // $17.64
+        },
+        'OHS-32OZ-PET-SAFE': {
+            retail: 'gid://shopify/ProductVariant/41829068832839',    // $21.8
+            wholesale: 'gid://shopify/ProductVariant/41829068898375' // $16.13
+        },
+        'OHS-32OZ-RTU': {
+            retail: 'gid://shopify/ProductVariant/41829068537927',    // $21.8
+            wholesale: 'gid://shopify/ProductVariant/41829068603463' // $16.13
+        },
+        'OHS-3OZ-DISINFECTANT': {
+            retail: 'gid://shopify/ProductVariant/41829068144711',    // $12.97
+            wholesale: 'gid://shopify/ProductVariant/41829068210247' // $9.59
+        },
+        'OHS-3OZ-SKIN-MIST': {
+            retail: 'gid://shopify/ProductVariant/41829068275783',    // $14.38
+            wholesale: 'gid://shopify/ProductVariant/41829068341319' // $10.64
+        },
+        'OHS-8OZ-SKIN-MIST': {
+            retail: 'gid://shopify/ProductVariant/41829068406855',    // $18.31
+            wholesale: 'gid://shopify/ProductVariant/41829068472391' // $13.55
         },
         'OHS-COMPLETE-CARE-BUNDLE': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-COMPLETE-CARE-BUNDLE-RETAIL - $94.51
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-COMPLETE-CARE-BUNDLE-WHOLESALE - $69.88
+            retail: 'gid://shopify/ProductVariant/41829070274631',    // $173.36
+            wholesale: 'gid://shopify/ProductVariant/41829070340167' // $128.28
         },
         'OHS-ESSENTIAL-FAMILY-BUNDLE': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-ESSENTIAL-FAMILY-BUNDLE-RETAIL - $45.64
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-ESSENTIAL-FAMILY-BUNDLE-WHOLESALE - $33.75
+            retail: 'gid://shopify/ProductVariant/41829070143559',    // $139.73
+            wholesale: 'gid://shopify/ProductVariant/41829070209095' // $103.42
+        },
+        'OHS-HEALING-SERUM': {
+            retail: 'gid://shopify/ProductVariant/41829069750343',    // $34.63
+            wholesale: 'gid://shopify/ProductVariant/41829069815879' // $27.89
+        },
+        'OHS-ORGANIC-WIPES': {
+            retail: 'gid://shopify/ProductVariant/41829069619271',    // $16.45
+            wholesale: 'gid://shopify/ProductVariant/41829069684807' // $12.17
+        },
+        'OHS-PET-CARE-BUNDLE': {
+            retail: 'gid://shopify/ProductVariant/41829070536775',    // $72.45
+            wholesale: 'gid://shopify/ProductVariant/41829070602311' // $53.61
+        },
+        'OHS-RTU-VALUE-BUNDLE': {
+            retail: 'gid://shopify/ProductVariant/41829070405703',    // $73.92
+            wholesale: 'gid://shopify/ProductVariant/41829070471239' // $54.7
         },
         'OHS-STARTER-HOME-BUNDLE': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-STARTER-HOME-BUNDLE-RETAIL - $38.73
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-STARTER-HOME-BUNDLE-WHOLESALE - $28.64
-        },
-        'OHS-PREMIUM-CLEANING-BUNDLE': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-PREMIUM-CLEANING-BUNDLE-RETAIL - $83.27
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-PREMIUM-CLEANING-BUNDLE-WHOLESALE - $61.59
-        },
-        'OHS-MULTI-SURFACE-BUNDLE': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-MULTI-SURFACE-BUNDLE-RETAIL - $56.82
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-MULTI-SURFACE-BUNDLE-WHOLESALE - $42.03
-        },
-        'OHS-SANITIZING-BUNDLE': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-SANITIZING-BUNDLE-RETAIL - $49.91
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-SANITIZING-BUNDLE-WHOLESALE - $36.92
-        },
-        'OHS-PROFESSIONAL-BUNDLE': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-PROFESSIONAL-BUNDLE-RETAIL - $109.82
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-PROFESSIONAL-BUNDLE-WHOLESALE - $81.24
-        },
-        'OHS-ECO-SAFE-BUNDLE': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-ECO-SAFE-BUNDLE-RETAIL - $67.18
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-ECO-SAFE-BUNDLE-WHOLESALE - $49.68
-        },
-        'OHS-CONCENTRATED-SOLUTION-16OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-CONCENTRATED-SOLUTION-16OZ-RETAIL - $28.64
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-CONCENTRATED-SOLUTION-16OZ-WHOLESALE - $21.18
-        },
-        'OHS-CONCENTRATED-SOLUTION-32OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-CONCENTRATED-SOLUTION-32OZ-RETAIL - $45.64
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-CONCENTRATED-SOLUTION-32OZ-WHOLESALE - $33.75
-        },
-        'OHS-CONCENTRATED-SOLUTION-64OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-CONCENTRATED-SOLUTION-64OZ-RETAIL - $72.45
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-CONCENTRATED-SOLUTION-64OZ-WHOLESALE - $53.61
-        },
-        'OHS-CONCENTRATED-SOLUTION-GALLON': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-CONCENTRATED-SOLUTION-GALLON-RETAIL - $109.82
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-CONCENTRATED-SOLUTION-GALLON-WHOLESALE - $81.24
-        },
-        'OHS-RTU-SURFACE-CLEANER-16OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-RTU-SURFACE-CLEANER-16OZ-RETAIL - $21.82
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-RTU-SURFACE-CLEANER-16OZ-WHOLESALE - $16.13
-        },
-        'OHS-RTU-SURFACE-CLEANER-32OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-RTU-SURFACE-CLEANER-32OZ-RETAIL - $35.36
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-RTU-SURFACE-CLEANER-32OZ-WHOLESALE - $26.14
-        },
-        'OHS-RTU-SURFACE-CLEANER-64OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-RTU-SURFACE-CLEANER-64OZ-RETAIL - $56.82
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-RTU-SURFACE-CLEANER-64OZ-WHOLESALE - $42.03
-        },
-        'OHS-RTU-SURFACE-CLEANER-GALLON': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-RTU-SURFACE-CLEANER-GALLON-RETAIL - $83.27
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-RTU-SURFACE-CLEANER-GALLON-WHOLESALE - $61.59
-        },
-        'OHS-FABRIC-FRESHENER-16OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-FABRIC-FRESHENER-16OZ-RETAIL - $19.18
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-FABRIC-FRESHENER-16OZ-WHOLESALE - $14.18
-        },
-        'OHS-FABRIC-FRESHENER-32OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-FABRIC-FRESHENER-32OZ-RETAIL - $31.09
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-FABRIC-FRESHENER-32OZ-WHOLESALE - $23.00
-        },
-        'OHS-FABRIC-FRESHENER-64OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-FABRIC-FRESHENER-64OZ-RETAIL - $49.91
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-FABRIC-FRESHENER-64OZ-WHOLESALE - $36.92
-        },
-        'OHS-FABRIC-FRESHENER-GALLON': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-FABRIC-FRESHENER-GALLON-RETAIL - $74.73
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-FABRIC-FRESHENER-GALLON-WHOLESALE - $55.29
-        },
-        'OHS-ODOR-ELIMINATOR-16OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-ODOR-ELIMINATOR-16OZ-RETAIL - $23.73
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-ODOR-ELIMINATOR-16OZ-WHOLESALE - $17.55
-        },
-        'OHS-ODOR-ELIMINATOR-32OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-ODOR-ELIMINATOR-32OZ-RETAIL - $38.73
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-ODOR-ELIMINATOR-32OZ-WHOLESALE - $28.64
-        },
-        'OHS-ODOR-ELIMINATOR-64OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-ODOR-ELIMINATOR-64OZ-RETAIL - $61.09
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-ODOR-ELIMINATOR-64OZ-WHOLESALE - $45.17
-        },
-        'OHS-ODOR-ELIMINATOR-GALLON': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-ODOR-ELIMINATOR-GALLON-RETAIL - $91.64
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-ODOR-ELIMINATOR-GALLON-WHOLESALE - $67.78
-        },
-        'OHS-SANITIZING-SPRAY-16OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-SANITIZING-SPRAY-16OZ-RETAIL - $20.45
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-SANITIZING-SPRAY-16OZ-WHOLESALE - $15.13
-        },
-        'OHS-SANITIZING-SPRAY-32OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-SANITIZING-SPRAY-32OZ-RETAIL - $32.73
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-SANITIZING-SPRAY-32OZ-WHOLESALE - $24.21
-        },
-        'OHS-SANITIZING-SPRAY-64OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-SANITIZING-SPRAY-64OZ-RETAIL - $52.18
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-SANITIZING-SPRAY-64OZ-WHOLESALE - $38.60
-        },
-        'OHS-SANITIZING-SPRAY-GALLON': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-SANITIZING-SPRAY-GALLON-RETAIL - $78.18
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-SANITIZING-SPRAY-GALLON-WHOLESALE - $57.82
-        },
-        'OHS-HAND-SANITIZER-8OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-HAND-SANITIZER-8OZ-RETAIL - $16.36
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-HAND-SANITIZER-8OZ-WHOLESALE - $12.10
-        },
-        'OHS-HAND-SANITIZER-16OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-HAND-SANITIZER-16OZ-RETAIL - $26.18
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-HAND-SANITIZER-16OZ-WHOLESALE - $19.36
-        },
-        'OHS-HAND-SANITIZER-32OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-HAND-SANITIZER-32OZ-RETAIL - $41.82
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-HAND-SANITIZER-32OZ-WHOLESALE - $30.93
-        },
-        'OHS-HAND-SANITIZER-64OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-HAND-SANITIZER-64OZ-RETAIL - $66.82
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-HAND-SANITIZER-64OZ-WHOLESALE - $49.43
-        },
-        'OHS-DISINFECTING-WIPES-80CT': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-DISINFECTING-WIPES-80CT-RETAIL - $18.18
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-DISINFECTING-WIPES-80CT-WHOLESALE - $13.45
-        },
-        'OHS-DISINFECTING-WIPES-160CT': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-DISINFECTING-WIPES-160CT-RETAIL - $29.18
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-DISINFECTING-WIPES-160CT-WHOLESALE - $21.58
-        },
-        'OHS-DISINFECTING-WIPES-320CT': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-DISINFECTING-WIPES-320CT-RETAIL - $46.64
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-DISINFECTING-WIPES-320CT-WHOLESALE - $34.49
-        },
-        'OHS-DISINFECTING-WIPES-BULK': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // OHS-DISINFECTING-WIPES-BULK-RETAIL - $69.82
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // OHS-DISINFECTING-WIPES-BULK-WHOLESALE - $51.64
-        },
-        'HC-MULTI-SURFACE-CLEANER-16OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-MULTI-SURFACE-CLEANER-16OZ-RETAIL - $24.73
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-MULTI-SURFACE-CLEANER-16OZ-WHOLESALE - $18.29
-        },
-        'HC-MULTI-SURFACE-CLEANER-32OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-MULTI-SURFACE-CLEANER-32OZ-RETAIL - $39.91
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-MULTI-SURFACE-CLEANER-32OZ-WHOLESALE - $29.51
-        },
-        'HC-MULTI-SURFACE-CLEANER-64OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-MULTI-SURFACE-CLEANER-64OZ-RETAIL - $63.64
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-MULTI-SURFACE-CLEANER-64OZ-WHOLESALE - $47.06
-        },
-        'HC-MULTI-SURFACE-CLEANER-GALLON': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-MULTI-SURFACE-CLEANER-GALLON-RETAIL - $95.45
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-MULTI-SURFACE-CLEANER-GALLON-WHOLESALE - $70.58
-        },
-        'HC-DISINFECTANT-SPRAY-16OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-DISINFECTANT-SPRAY-16OZ-RETAIL - $22.27
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-DISINFECTANT-SPRAY-16OZ-WHOLESALE - $16.47
-        },
-        'HC-DISINFECTANT-SPRAY-32OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-DISINFECTANT-SPRAY-32OZ-RETAIL - $35.82
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-DISINFECTANT-SPRAY-32OZ-WHOLESALE - $26.48
-        },
-        'HC-DISINFECTANT-SPRAY-64OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-DISINFECTANT-SPRAY-64OZ-RETAIL - $57.27
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-DISINFECTANT-SPRAY-64OZ-WHOLESALE - $42.37
-        },
-        'HC-DISINFECTANT-SPRAY-GALLON': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-DISINFECTANT-SPRAY-GALLON-RETAIL - $85.82
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-DISINFECTANT-SPRAY-GALLON-WHOLESALE - $63.48
-        },
-        'HC-FABRIC-SANITIZER-16OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-FABRIC-SANITIZER-16OZ-RETAIL - $20.91
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-FABRIC-SANITIZER-16OZ-WHOLESALE - $15.46
-        },
-        'HC-FABRIC-SANITIZER-32OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-FABRIC-SANITIZER-32OZ-RETAIL - $33.36
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-FABRIC-SANITIZER-32OZ-WHOLESALE - $24.68
-        },
-        'HC-FABRIC-SANITIZER-64OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-FABRIC-SANITIZER-64OZ-RETAIL - $53.45
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-FABRIC-SANITIZER-64OZ-WHOLESALE - $39.54
-        },
-        'HC-FABRIC-SANITIZER-GALLON': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-FABRIC-SANITIZER-GALLON-RETAIL - $80.00
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-FABRIC-SANITIZER-GALLON-WHOLESALE - $59.16
-        },
-        'HC-GLASS-CLEANER-16OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-GLASS-CLEANER-16OZ-RETAIL - $18.64
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-GLASS-CLEANER-16OZ-WHOLESALE - $13.79
-        },
-        'HC-GLASS-CLEANER-32OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-GLASS-CLEANER-32OZ-RETAIL - $29.82
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-GLASS-CLEANER-32OZ-WHOLESALE - $22.06
-        },
-        'HC-GLASS-CLEANER-64OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-GLASS-CLEANER-64OZ-RETAIL - $47.64
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-GLASS-CLEANER-64OZ-WHOLESALE - $35.23
-        },
-        'HC-GLASS-CLEANER-GALLON': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-GLASS-CLEANER-GALLON-RETAIL - $71.45
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-GLASS-CLEANER-GALLON-WHOLESALE - $52.84
-        },
-        'HC-HAND-SANITIZER-8OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-HAND-SANITIZER-8OZ-RETAIL - $19.73
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-HAND-SANITIZER-8OZ-WHOLESALE - $14.60
-        },
-        'HC-HAND-SANITIZER-16OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-HAND-SANITIZER-16OZ-RETAIL - $31.36
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-HAND-SANITIZER-16OZ-WHOLESALE - $23.20
-        },
-        'HC-HAND-SANITIZER-32OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-HAND-SANITIZER-32OZ-RETAIL - $50.18
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-HAND-SANITIZER-32OZ-WHOLESALE - $37.11
-        },
-        'HC-HAND-SANITIZER-64OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-HAND-SANITIZER-64OZ-RETAIL - $80.18
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-HAND-SANITIZER-64OZ-WHOLESALE - $59.28
-        },
-        'HC-WIPES-ALLINONE': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-WIPES-ALLINONE-RETAIL - $26.21
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-WIPES-ALLINONE-WHOLESALE - $19.07
-        },
-        'HC-WIPES-PREMIUM': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-WIPES-PREMIUM-RETAIL - $34.91
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-WIPES-PREMIUM-WHOLESALE - $25.45
-        },
-        'HC-BULK-REFILL-SOLUTION': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-BULK-REFILL-SOLUTION-RETAIL - $124.55
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-BULK-REFILL-SOLUTION-WHOLESALE - $92.12
-        },
-        'HC-LAUNDRY-BOOSTER-32OZ': {
-            retail: 'gid://shopify/ProductVariant/RETAIL_VARIANT_ID_HERE',    // HC-LAUNDRY-BOOSTER-32OZ-RETAIL - $35.45
-            wholesale: 'gid://shopify/ProductVariant/WHOLESALE_VARIANT_ID_HERE' // HC-LAUNDRY-BOOSTER-32OZ-WHOLESALE - $26.22
+            retail: 'gid://shopify/ProductVariant/41829070012487',    // $66.92
+            wholesale: 'gid://shopify/ProductVariant/41829070078023' // $49.5
         }
     }
 };
