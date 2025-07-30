@@ -2195,7 +2195,30 @@ const OHS_PRODUCTS = {
     }
 
 }; // END OHS PRODUCTS
+// Make sure PRODUCT_CATALOG is globally accessible
+window.PRODUCT_CATALOG = {
+    ...HYPO_PRODUCTS,
+    ...OHS_PRODUCTS
+};
 
+// Make sure calculateWholesaleRate is globally accessible  
+window.calculateWholesaleRate = function(productId, quantity) {
+    const product = window.PRODUCT_CATALOG[productId];
+    if (!product || !product.pricing) {
+        return { price: 0, isWholesale: false };
+    }
+    
+    // Simple wholesale logic - you can enhance this
+    const threshold = product.wholesaleThreshold || 12;
+    const isWholesale = quantity >= threshold;
+    
+    return {
+        price: isWholesale ? product.pricing.wholesale : product.pricing.retail,
+        isWholesale: isWholesale
+    };
+};
+
+console.log('✅ Cart system ready with', Object.keys(window.PRODUCT_CATALOG).length, 'products');
 console.log('✅ OHS ORGANIC COMPLETE - All 19 products with Shopify variant IDs mapped');
 console.log('🚫 NO ORDER MINIMUMS - All minOrder set to 1 as requested');
 console.log('🔗 VARIANT IDS MAPPED - All 4 variants per product (retail, wholesale, retail sub, wholesale sub)');
