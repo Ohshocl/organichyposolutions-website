@@ -2224,16 +2224,17 @@ console.log('🚫 NO ORDER MINIMUMS - All minOrder set to 1 as requested');
 console.log('🔗 VARIANT IDS MAPPED - All 4 variants per product (retail, wholesale, retail sub, wholesale sub)');
 console.log('🌱 ORGANIC CERTIFIED - All products USDA Organic #8150019050');
 console.log('📦 READY FOR INTEGRATION - OHS section complete');
+
 // =================================================================
 // MISSING FUNCTIONS FROM CART-BACKUP.JS + STEP 2C REQUIREMENT
 // =================================================================
 
-// 1. GET ACCOUNT TYPE (FROM CART-BACKUP.JS)
+// 1. GET ACCOUNT TYPE
 function getAccountType() {
     return localStorage.getItem('ohsAccountType') || 'consumer';
 }
 
-// 2. ENHANCED CART BADGE UPDATE (FROM CART-BACKUP.JS)
+// 2. ENHANCED CART BADGE UPDATE
 function updateCartBadge() {
     const cartItems = JSON.parse(localStorage.getItem('ohsCart') || '[]');
     const cartBadge = document.getElementById('cartBadge');
@@ -2248,7 +2249,6 @@ function updateCartBadge() {
         }
     }
     
-    // Update wholesale progress and savings when cart badge updates
     updateWholesaleProgress();
     updateWholesaleSavingsDisplay();
 }
@@ -2257,15 +2257,15 @@ function updateCartBadge() {
 function updateWholesaleProgress() {
     const cartItems = JSON.parse(localStorage.getItem('ohsCart') || '[]');
     const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-    console.log(`📊 Wholesale progress: ${totalQuantity} items in cart`);
+    console.log('Wholesale progress: ' + totalQuantity + ' items in cart');
 }
 
 // 4. WHOLESALE SAVINGS DISPLAY
 function updateWholesaleSavingsDisplay() {
-    console.log('💰 Wholesale savings updated');
+    console.log('Wholesale savings updated');
 }
 
-// 5. CHECK FOR DUPLICATES (FROM CART-BACKUP.JS)
+// 5. CHECK FOR DUPLICATES
 function checkForDuplicates() {
     const productIds = Object.keys(PRODUCT_CATALOG);
     const productNames = Object.values(PRODUCT_CATALOG).map(p => p.name);
@@ -2274,15 +2274,15 @@ function checkForDuplicates() {
     const uniqueNames = [...new Set(productNames)];
     
     if (productIds.length !== uniqueIds.length) {
-        console.error('❌ DUPLICATE PRODUCT IDs FOUND:', productIds.length - uniqueIds.length, 'duplicates');
+        console.error('DUPLICATE PRODUCT IDs FOUND:', productIds.length - uniqueIds.length, 'duplicates');
     }
     
     if (productNames.length !== uniqueNames.length) {
-        console.error('❌ DUPLICATE PRODUCT NAMES FOUND:', productNames.length - uniqueNames.length, 'duplicates');
+        console.error('DUPLICATE PRODUCT NAMES FOUND:', productNames.length - uniqueNames.length, 'duplicates');
     }
     
     if (productIds.length === uniqueIds.length && productNames.length === uniqueNames.length) {
-        console.log('✅ No duplicates found in product catalog');
+        console.log('No duplicates found in product catalog');
     }
 }
 
@@ -2290,26 +2290,25 @@ function checkForDuplicates() {
 function verifyShopifyVariants() {
     const products = Object.values(PRODUCT_CATALOG);
     const withVariants = products.filter(p => p.shopifyVariants);
-    console.log(`✅ ${withVariants.length} of ${products.length} products have Shopify variants`);
+    console.log(withVariants.length + ' of ' + products.length + ' products have Shopify variants');
     
     if (withVariants.length === products.length) {
-        console.log('🎉 All products ready for Shopify integration!');
+        console.log('All products ready for Shopify integration!');
     } else {
-        console.warn('⚠️ Some products missing Shopify variants');
-        // Show which products are missing variants
+        console.warn('Some products missing Shopify variants');
         const missingVariants = products.filter(p => !p.shopifyVariants);
         missingVariants.forEach(product => {
-            console.warn(`❌ Missing variants: ${product.id} - ${product.name}`);
+            console.warn('Missing variants: ' + product.id + ' - ' + product.name);
         });
     }
 }
 
 // 7. INITIALIZATION CALLS
-console.log('✅ Wholesale rate functions added to cart system');
+console.log('Wholesale rate functions added to cart system');
 checkForDuplicates();
-verifyShopifyVariants(); // REQUIRED BY STEP 2C
+verifyShopifyVariants();
 
-console.log('🎉 COMPLETE PRODUCT CATALOG LOADED - 57 PRODUCTS TOTAL');
-console.log('🏆 Premium Line: 38 products | 🌱 Organic Line: 19 products');
-console.log('🛒 Shopify Ready | 🚚 ShipRight Integration Ready | 📦 Fulfillment Included');
-console.log('✅ Ready for Shopify Import | ⚙️ Wholesale Pricing Configured | 🔄 Cart Functional');
+console.log('COMPLETE PRODUCT CATALOG LOADED - 57 PRODUCTS TOTAL');
+console.log('Premium Line: 38 products | Organic Line: 19 products');
+console.log('Shopify Ready | ShipRight Integration Ready | Fulfillment Included');
+console.log('Ready for Shopify Import | Wholesale Pricing Configured | Cart Functional');
