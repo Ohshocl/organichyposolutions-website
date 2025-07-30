@@ -2197,7 +2197,7 @@ const OHS_PRODUCTS = {
 }; // END OHS PRODUCTS
 // Make sure PRODUCT_CATALOG is globally accessible
 window.PRODUCT_CATALOG = {
-    ...HYPO_PRODUCTS,
+    ...HYPO_COMPANY_PRODUCTS,
     ...OHS_PRODUCTS
 };
 
@@ -2267,8 +2267,8 @@ function updateWholesaleSavingsDisplay() {
 
 // 5. CHECK FOR DUPLICATES
 function checkForDuplicates() {
-    const productIds = Object.keys(PRODUCT_CATALOG);
-    const productNames = Object.values(PRODUCT_CATALOG).map(p => p.name);
+    const productIds = Object.keys(window.PRODUCT_CATALOG);
+    const productNames = Object.values(window.PRODUCT_CATALOG).map(p => p.name);
     
     const uniqueIds = [...new Set(productIds)];
     const uniqueNames = [...new Set(productNames)];
@@ -2288,7 +2288,7 @@ function checkForDuplicates() {
 
 // 6. VERIFY SHOPIFY VARIANTS (REQUIRED BY STEP 2C)
 function verifyShopifyVariants() {
-    const products = Object.values(PRODUCT_CATALOG);
+    const products = Object.values(window.PRODUCT_CATALOG);
     const withVariants = products.filter(p => p.shopifyVariants);
     console.log(withVariants.length + ' of ' + products.length + ' products have Shopify variants');
     
