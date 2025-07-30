@@ -1479,7 +1479,7 @@ console.log('📦 READY FOR INTEGRATION - Hypo Company section complete');
     // ===================================================================
     // PERSONAL CARE PRODUCTS (3 Products)
     // ===================================================================
-
+const OHS_PRODUCTS = {
     'ohs-3oz-organic-disinfectant': {
         id: 'ohs-3oz-organic-disinfectant',
         shopifyHandle: '3oz-organic-multi-surface-disinfectant',
