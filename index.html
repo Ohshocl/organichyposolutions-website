@@ -54,6 +54,10 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
+    <!-- ENHANCED SHOPIFY INTEGRATION: Load cart system first, then Shopify integration -->
+    <script src="shop/js/cart.js"></script>
+    <script src="shop/js/shopify-integration.js"></script>
+    
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEKE217WEY"></script>
     <script>
@@ -247,6 +251,186 @@
             background: rgba(255,255,255,0.2);
         }
 
+        /* ENHANCED QUICK ADD BUTTONS */
+        .enhanced-add-button {
+            background: linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green));
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(74, 222, 128, 0.3);
+            position: relative;
+            overflow: hidden;
+            margin: 5px;
+        }
+
+        .enhanced-add-button:hover {
+            background: linear-gradient(135deg, var(--ohs-dark-green), var(--ohs-organic-green));
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 222, 128, 0.4);
+        }
+
+        .enhanced-add-button.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .enhanced-add-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .enhanced-add-button:hover::before {
+            left: 100%;
+        }
+
+        /* SUCCESS FEEDBACK STYLES */
+        #quick-add-feedback {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            box-shadow: 0 8px 25px rgba(74, 222, 128, 0.4);
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green));
+            color: white;
+            transform: translateX(400px);
+            transition: all 0.3s ease;
+        }
+
+        #quick-add-feedback.show {
+            transform: translateX(0);
+        }
+
+        /* Continue with rest of existing styles... */</style>
+</head>
+<body>
+    <!-- Promotional Banner -->
+    <div class="promo-banner text-center" id="promoBanner">
+        <div class="container">
+            <div class="d-flex justify-content-center align-items-center">
+                <div class="text-center">
+                    <span class="promo-text">
+                        | 💰 <strong>BULK DISCOUNTS</strong> available
+                    </span>
+                </div>
+                <button class="promo-close ms-3" onclick="closeBanner()" aria-label="Close banner">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation - Updated Structure -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <svg width="32" height="32" viewBox="0 0 400 250" class="me-2">
+                    <rect width="400" height="250" fill="#2E5EAA"/>
+                    <text x="200" y="180" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="100" font-weight="bold">OHS</text>
+                    <text x="200" y="210" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="20">Organic HypoSolutions</text>
+                    <path d="M 320 80 Q 340 60 360 80 Q 340 100 320 80" fill="#4ADE80"/>
+                    <path d="M 330 70 Q 350 50 370 70 Q 350 90 330 70" fill="#22C55E"/>
+                </svg>
+                Organic HypoSolutions
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold" href="index.html">
+                            <i class="fas fa-home me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="services.html">
+                            <i class="fas fa-spray-can me-1"></i>Services
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="products.html">
+                            <i class="fas fa-shopping-bag me-1"></i>Products
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="calculator.html">
+                            <i class="fas fa-calculator me-1"></i>Calculator
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="about.html" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-info-circle me-1"></i>About
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="about.html">
+                                <i class="fas fa-info-circle me-2"></i>About Us
+                            </a></li>
+                            <li><a class="dropdown-item" href="science-certifications.html">
+                                <i class="fas fa-microscope me-2"></i>Science & Certifications
+                            </a></li>
+                            <li><a class="dropdown-item" href="contact.html">
+                                <i class="fas fa-phone me-2"></i>Contact
+                            </a></li>
+                            <li><a class="dropdown-item" href="legal-information.html">
+                                <i class="fas fa-gavel me-2"></i>Legal Information
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Customer Shopping & Account -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-shopping-cart me-1"></i>Shop
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="shop/cart.html">
+                                <i class="fas fa-shopping-cart me-2"></i>View Cart 
+                                <span id="cartBadge" class="badge bg-danger ms-1" style="display: none;">0</span>
+                            </a></li>
+                            <li><a class="dropdown-item" href="shop/cart.html">
+                                <i class="fas fa-credit-card me-2"></i>Checkout via Shopify
+                            </a></li>
+                            <li><a class="dropdown-item" href="shop/book-service.html">
+                                <i class="fas fa-calendar-plus me-2"></i>Book Service
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user me-1"></i>Account
+
+                            <li><a class="dropdown-item" href="auth/login.html">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login
+                                <span class="badge bg-warning ms-1">Coming Soon</span>
+                            </a></li>
+                            <li><a class="dropdown-item" href="auth/register.html">
+                                <i class="fas fa-user-plus me-2"></i>Register
+                                <span class="badge bg-warning ms-1">Coming Soon</span>
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Continue CSS styles from Section 1 -->
+    <style>
         /* Buy Now Button */
         .btn-buy-now {
             background: linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green));
@@ -356,6 +540,455 @@
             box-shadow: 0 8px 25px rgba(245, 158, 11, 0.6);
         }
 
+        /* ENHANCED QUICK ADD WIDGET STYLES */
+        .product-quick-add {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .product-line-selector {
+            margin: 20px 0;
+        }
+
+        .line-toggle {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .line-toggle.active {
+            background: var(--ohs-organic-green);
+            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3);
+        }
+
+        .line-toggle:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .line-toggle.active:hover {
+            background: var(--ohs-dark-green);
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+            background: rgba(255,255,255,0.1);
+            border-radius: 25px;
+            padding: 5px;
+            scale: 0.8;
+        }
+
+        .quantity-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quantity-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+
+        .quantity-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .quantity-display {
+            color: white;
+            font-weight: bold;
+            margin: 0 15px;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .add-to-cart-btn {
+            background: linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green));
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3);
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .add-to-cart-btn:hover {
+            background: linear-gradient(135deg, var(--ohs-dark-green), var(--ohs-organic-green));
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 222, 128, 0.4);
+        }
+
+        .add-to-cart-btn.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .add-to-cart-btn.loading::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            margin-left: 8px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Tooltip styles for hero stats */
+        .stat-item {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.1);
+            margin: 10px 0;
+        }
+
+        .stat-item:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
+        }
+
+        .tooltip-content {
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.95);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            min-width: 320px;
+            max-width: 400px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+            text-align: left;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .tooltip-content::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 10px solid transparent;
+            border-top-color: rgba(0,0,0,0.95);
+        }
+
+        .stat-item:hover .tooltip-content {
+            opacity: 1;
+            visibility: visible;
+            bottom: 110%;
+        }
+
+        .tooltip-title {
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: var(--ohs-accent-blue);
+            font-size: 1.1em;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 8px;
+        }
+
+        .tooltip-fact {
+            margin-bottom: 8px;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .tooltip-fact::before {
+            content: '💡';
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .tooltip-reference {
+            font-size: 0.8em;
+            color: #ccc;
+            font-style: italic;
+            margin-top: 12px;
+            border-top: 1px solid #444;
+            padding-top: 8px;
+        }
+
+        /* Mobile responsiveness for tooltips */
+        @media (max-width: 768px) {
+            .tooltip-content {
+                min-width: 280px;
+                max-width: 90vw;
+                padding: 15px;
+                font-size: 0.85em;
+            }
+            
+            .quantity-selector {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        .pricing-highlight {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--ohs-primary-blue);
+        }
+
+        .legal-disclaimer {
+            font-size: 0.85em;
+            color: rgba(255,255,255,0.8);
+            margin-top: 15px;
+        }
+    </style>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7">
+                    <h1 class="display-4 fw-bold mb-4">
+                        Utah's Premier Organic Sanitization Services
+                    </h1>
+                    <p class="lead mb-4">
+                        Transform your space with professional hypochlorous acid fogging services. 
+                        USDA certified cleaning solutions and EPA registered disinfectant treatments 
+                        for commercial facility sanitization and residential disinfection throughout 
+                        Salt Lake City and Utah.
+                    </p>
+                    
+                    <!-- Certification Badges -->
+                    <div class="mb-4">
+                        <span class="cert-badge">
+                            <i class="fas fa-certificate me-1"></i>USDA Certified Organic
+                        </span>
+                        <span class="cert-badge">
+                            <i class="fas fa-shield-alt me-1"></i>EPA Registered
+                        </span>
+                        <span class="cert-badge">
+                            <i class="fas fa-baby me-1"></i>Food Safe
+                        </span>
+                        <span class="cert-badge">
+                            <i class="fas fa-paw me-1"></i>Pet Safe
+                        </span>
+                    </div>
+                    
+                    <div class="legal-disclaimer mb-4">
+                        <small>Professional fogging services using EPA-registered organic disinfectant products for commercial and residential properties.</small>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex">
+                        <a href="calculator.html" class="btn btn-calculate-service btn-lg px-4 me-md-2">
+                            <i class="fas fa-calculator me-2"></i>Calculate Your Service
+                        </a>
+                        <a href="products.html" class="btn btn-success btn-lg px-4">
+                            <i class="fas fa-shopping-cart me-2"></i>Shop Products
+                        </a>
+                    </div>
+                    
+                    <!-- ENHANCED Quick Product Selection Widget with Shopify Integration -->
+                    <div class="product-quick-add mt-4">
+                        <h6 class="fw-bold mb-3">Quick Add Popular Products</h6>
+                        <div class="product-line-selector">
+                            <button class="line-toggle active" onclick="showProductLine('organic')" id="organic-toggle">
+                                <i class="fas fa-leaf me-1"></i>USDA Organic
+                            </button>
+                            <button class="line-toggle" onclick="showProductLine('premium')" id="premium-toggle">
+                                <i class="fas fa-shield-alt me-1"></i>EPA Premium
+                            </button>
+                        </div>
+                        
+                        <!-- Organic Products Quick Add -->
+                        <div id="organic-products" class="product-line-products">
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <small class="fw-bold">32oz All-Purpose Cleaner</small>
+                                        <div class="quantity-selector">
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('ohs-32oz-cleaner', -1)" id="minus-ohs-32oz-cleaner">-</button>
+                                            <span class="quantity-display" id="qty-ohs-32oz-cleaner">1</span>
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('ohs-32oz-cleaner', 1)">+</button>
+                                        </div>
+                                        <button class="add-to-cart-btn enhanced-add-button" 
+                                                onclick="handleQuickAddWithShopify('ohs-32oz-cleaner-ready')"
+                                                id="quick-add-organic-32oz">
+                                            Add $24.99
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <small class="fw-bold">8oz Skin Care Mist</small>
+                                        <div class="quantity-selector">
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('ohs-8oz-mist', -1)" id="minus-ohs-8oz-mist">-</button>
+                                            <span class="quantity-display" id="qty-ohs-8oz-mist">1</span>
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('ohs-8oz-mist', 1)">+</button>
+                                        </div>
+                                        <button class="add-to-cart-btn enhanced-add-button" 
+                                                onclick="handleQuickAddWithShopify('ohs-8oz-skin-care-mist')"
+                                                id="quick-add-organic-8oz">
+                                            Add $18.99
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Premium Products Quick Add -->
+                        <div id="premium-products" class="product-line-products" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <small class="fw-bold">32oz Professional Grade</small>
+                                        <div class="quantity-selector">
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('hc-32oz-pro', -1)" id="minus-hc-32oz-pro">-</button>
+                                            <span class="quantity-display" id="qty-hc-32oz-pro">1</span>
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('hc-32oz-pro', 1)">+</button>
+                                        </div>
+                                        <button class="add-to-cart-btn enhanced-add-button" 
+                                                onclick="handleQuickAddWithShopify('hc-32oz-professional-grade')"
+                                                id="quick-add-premium-32oz">
+                                            Add $34.99
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <small class="fw-bold">1 Gallon Commercial</small>
+                                        <div class="quantity-selector">
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('hc-1gal-comm', -1)" id="minus-hc-1gal-comm">-</button>
+                                            <span class="quantity-display" id="qty-hc-1gal-comm">1</span>
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('hc-1gal-comm', 1)">+</button>
+                                        </div>
+                                        <button class="add-to-cart-btn enhanced-add-button" 
+                                                onclick="handleQuickAddWithShopify('hc-1-gallon-commercial')"
+                                                id="quick-add-premium-1gal">
+                                            Add $89.99
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ENHANCED SUCCESS FEEDBACK -->
+                    <div id="quick-add-feedback" class="alert alert-success" style="display: none;">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <div>
+                                <div class="fw-bold">Added to Cart!</div>
+                                <small id="feedback-message">Product added successfully</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="hero-stats text-center">
+                        <h3 class="mb-4">Why Choose Professional Fogging?</h3>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <div class="stat-item">
+                                    <h4><i class="fas fa-virus-slash text-danger"></i> 99.9%</h4>
+                                    <p class="mb-0">Pathogen Elimination</p>
+                                    <div class="tooltip-content">
+                                        <div class="tooltip-title">99.9% Pathogen Elimination Power</div>
+                                        <div class="tooltip-fact">Hypochlorous acid is 80-100x more effective than bleach at killing pathogens</div>
+                                        <div class="tooltip-fact">Works in under 30 seconds against most bacteria and viruses</div>
+                                        <div class="tooltip-fact">Effective against antibiotic-resistant superbugs like MRSA</div>
+                                        <div class="tooltip-fact">Same molecule your white blood cells produce to fight infections</div>
+                                        <div class="tooltip-reference">
+                                            *EPA Registration #97801-1 efficacy data
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="stat-item">
+                                    <h4><i class="fas fa-shield-alt text-success"></i> 100%</h4>
+                                    <p class="mb-0">Safe for Families</p>
+                                    <div class="tooltip-content">
+                                        <div class="tooltip-title">100% Family & Pet Safety</div>
+                                        <div class="tooltip-fact">pH neutral (6.5-7.5) - gentler than most tap water</div>
+                                        <div class="tooltip-fact">No gloves, masks, or respirators required during application</div>
+                                        <div class="tooltip-fact">Safe to use around pregnant women, babies, and elderly</div>
+                                        <div class="tooltip-fact">Can be used on toys, high chairs, and food surfaces without rinsing</div>
+                                        <div class="tooltip-reference">
+                                            *FDA Food Contact Notification 1811 & EPA safety classification
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="stat-item">
+                                    <h4><i class="fas fa-leaf text-success"></i> EPA</h4>
+                                    <p class="mb-0">Certified Organic</p>
+                                    <div class="tooltip-content">
+                                        <div class="tooltip-title">EPA Certified + USDA Organic</div>
+                                        <div class="tooltip-fact">Only sanitizer with both EPA registration AND USDA organic certification</div>
+                                        <div class="tooltip-fact">Hospital-grade disinfectant classification without toxic chemicals</div>
+                                        <div class="tooltip-fact">Used in food processing plants, hospitals, and schools worldwide</div>
+                                        <div class="tooltip-fact">WHO lists hypochlorous acid as an Essential Medicine</div>
+                                        <div class="tooltip-reference">
+                                            *EPA Registration #97801-1 & USDA Organic Certificate
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="stat-item">
+                                    <h4><i class="fas fa-recycle text-info"></i> 0</h4>
+                                    <p class="mb-0">Harmful Residue</p>
+                                    <div class="tooltip-content">
+                                        <div class="tooltip-title">Zero Harmful Residue</div>
+                                        <div class="tooltip-fact">Biodegrades back to simple salt water after disinfection</div>
+                                        <div class="tooltip-fact">No VOCs (Volatile Organic Compounds) or toxic fumes</div>
+                                        <div class="tooltip-fact">Leaves no chemical film or sticky residue on surfaces</div>
+                                        <div class="tooltip-fact">Environmentally safe - won't harm waterways or soil</div>
+                                        <div class="tooltip-reference">
+                                            *EPA environmental safety data & biodegradability studies
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Continue styles and add section-specific styles -->
+    <style>
         .standards-section {
             background: var(--ohs-light-gray);
             padding: 80px 0;
@@ -451,105 +1084,281 @@
             margin-bottom: 20px;
         }
 
-        .stat-item {
-            position: relative;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            padding: 20px;
-            border-radius: 15px;
+        .service-booking-widget {
             background: rgba(255,255,255,0.1);
-            margin: 10px 0;
-        }
-
-        .stat-item:hover {
-            background: rgba(255,255,255,0.2);
-            transform: scale(1.05);
-        }
-
-        .tooltip-content {
-            position: absolute;
-            bottom: 120%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.95);
-            color: white;
+            border-radius: 15px;
             padding: 20px;
-            border-radius: 12px;
-            min-width: 320px;
-            max-width: 400px;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            font-size: 0.9em;
-            text-align: left;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-            border: 2px solid rgba(255,255,255,0.1);
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
         }
 
-        .tooltip-content::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 10px solid transparent;
-            border-top-color: rgba(0,0,0,0.95);
-        }
-
-        .stat-item:hover .tooltip-content {
-            opacity: 1;
-            visibility: visible;
-            bottom: 110%;
-        }
-
-        .tooltip-title {
-            font-weight: bold;
-            margin-bottom: 12px;
-            color: var(--ohs-accent-blue);
-            font-size: 1.1em;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-            padding-bottom: 8px;
-        }
-
-        .tooltip-fact {
-            margin-bottom: 8px;
-            padding-left: 16px;
-            position: relative;
-        }
-
-        .tooltip-fact::before {
-            content: '💡';
-            position: absolute;
-            left: 0;
-            top: 0;
-        }
-
-        .tooltip-reference {
-            font-size: 0.8em;
-            color: #ccc;
+        .pricing-disclaimer {
+            font-size: 0.85em;
+            color: var(--ohs-dark-gray);
             font-style: italic;
-            margin-top: 12px;
-            border-top: 1px solid #444;
-            padding-top: 8px;
+            margin-top: 15px;
         }
+    </style>
 
-        /* Mobile responsiveness for tooltips */
-        @media (max-width: 768px) {
-            .tooltip-content {
-                min-width: 280px;
-                max-width: 90vw;
-                padding: 15px;
-                font-size: 0.85em;
-            }
-        }
+    <!-- Our Standards Section -->
+    <section class="standards-section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">Our Professional Standards</h2>
+                <p class="lead">Uncompromising quality assurance in every Utah sanitization service</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="standard-card text-center">
+                        <div class="display-4 text-primary mb-3"><i class="fas fa-bullseye"></i></div>
+                        <h5 class="fw-bold">Precision Concentration</h5>
+                        <p class="text-muted mb-3">250+ PPM Minimum</p>
+                        <p>We maintain hypochlorous acid concentration at 250+ PPM throughout service delivery, ensuring maximum pathogen elimination effectiveness.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="standard-card text-center">
+                        <div class="display-4 text-success mb-3"><i class="fas fa-clock"></i></div>
+                        <h5 class="fw-bold">Contact Time Standards</h5>
+                        <p class="text-muted mb-3">10-Minute Minimum</p>
+                        <p>All surfaces receive minimum 10-minute contact time at target PPM concentration for complete disinfection and pathogen neutralization.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="standard-card text-center">
+                        <div class="display-4 text-warning mb-3"><i class="fas fa-spray-can"></i></div>
+                        <h5 class="fw-bold">Coverage Efficiency</h5>
+                        <p class="text-muted mb-3">Complete Saturation</p>
+                        <p>Optimized coverage rates ensure complete saturation while maintaining cost-effectiveness and environmental responsibility.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="standard-card text-center">
+                        <div class="display-4 text-info mb-3"><i class="fas fa-microscope"></i></div>
+                        <h5 class="fw-bold">Quality Verification</h5>
+                        <p class="text-muted mb-3">Real-Time Testing</p>
+                        <p>PPM meters and coverage verification ensure every service meets our rigorous standards with documented proof of effectiveness.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        .pricing-highlight {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--ohs-primary-blue);
-        }
+    <!-- Service Process Section -->
+    <section class="process-section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">Our Professional Fogging Process</h2>
+                <p class="lead">Four-step methodology ensuring consistent, effective results for all Utah properties</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="process-step">
+                        <span class="step-number">1</span>
+                        <h5 class="fw-bold mt-3">Site Assessment & Planning</h5>
+                        <p>Comprehensive evaluation of your property to determine optimal fogging strategy, equipment selection, and coverage requirements for maximum effectiveness.</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="process-step">
+                        <span class="step-number">2</span>
+                        <h5 class="fw-bold mt-3">Professional Setup</h5>
+                        <p>Strategic equipment positioning using Nebula foggers for large areas and backpack foggers for high-density zones throughout your facility.</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="process-step">
+                        <span class="step-number">3</span>
+                        <h5 class="fw-bold mt-3">Precision Application</h5>
+                        <p>Systematic fogging ensuring 250+ PPM concentration with complete coverage and 10-minute minimum contact time for all surfaces.</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="process-step">
+                        <span class="step-number">4</span>
+                        <h5 class="fw-bold mt-3">Quality Documentation</h5>
+                        <p>Real-time verification, service documentation, customer education, and performance tracking for complete compliance assurance.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
+    <!-- Services Preview -->
+    <section class="py-5 bg-light" id="services">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">Our Utah Sanitization Services</h2>
+                <p class="lead">Professional organic disinfectant products and commercial facility sanitization</p>
+                <div class="pricing-disclaimer">
+                    *Pricing subject to change. Final costs determined by site assessment.
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card service-card border-0">
+                        <div class="card-body text-center p-4">
+                            <div class="display-4 mb-3"><i class="fas fa-building text-primary"></i></div>
+                            <h5 class="card-title fw-bold">Commercial Fogging</h5>
+                            <p class="card-text">Professional facility sanitization for businesses prioritizing health and safety.</p>
+                            <div class="mt-3">
+                                <div class="pricing-highlight">$0.08-0.13/sq ft</div>
+                                <small class="text-muted">Volume rates for 20,000+ sq ft recurring service</small>
+                                <br><a href="services.html" class="btn btn-primary mt-3">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card service-card border-0">
+                        <div class="card-body text-center p-4">
+                            <div class="display-4 mb-3"><i class="fas fa-home text-success"></i></div>
+                            <h5 class="card-title fw-bold">Residential Services</h5>
+                            <p class="card-text">Safe, family-friendly home disinfection with USDA certified organic solutions.</p>
+                            <div class="mt-3">
+                                <div class="pricing-highlight">$150-$400</div>
+                                <small class="text-muted">Based on home size and service requirements</small>
+                                <br><a href="services.html" class="btn btn-success mt-3">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card service-card border-0">
+                        <div class="card-body text-center p-4">
+                            <div class="display-4 mb-3"><i class="fas fa-calendar-alt text-warning"></i></div>
+                            <h5 class="card-title fw-bold">Subscription Services</h5>
+                            <p class="card-text">Regular sanitization programs for ongoing protection and peace of mind.</p>
+                            <div class="mt-3">
+                                <div class="pricing-highlight">$399-$1,299/month</div>
+                                <small class="text-muted">Customized frequency and coverage plans</small>
+                                <br><a href="services.html" class="btn btn-warning mt-3">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Showcase Section -->
+    <section class="product-showcase" id="products">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">Our Organic Disinfectant Products</h2>
+                <p class="lead">Professional-grade solutions for every sanitization need</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="product-line-card">
+                        <div class="organic-badge">
+                            <i class="fas fa-leaf me-2"></i>USDA Certified Organic
+                        </div>
+                        <h4 class="fw-bold mb-3">Family-Safe Organic Line</h4>
+                        <p class="mb-4">Perfect for residential disinfection services and families who prioritize natural, food-safe sanitization solutions. These USDA certified products provide powerful protection without harmful chemicals.</p>
+                        <ul class="list-unstyled mb-4">
+                            <li><i class="fas fa-check text-success me-2"></i>Pet safe organic cleaners</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Food safe sanitization solutions</li>
+                            <li><i class="fas fa-check text-success me-2"></i>No harmful residue or fumes</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Biodegradable formula</li>
+                        </ul>
+                        <a href="products.html" class="btn btn-success btn-lg">Explore Organic Products</a>
+                        
+                        <!-- Quick Service Booking -->
+                        <div class="service-booking-widget mt-3">
+                            <h6 class="fw-bold mb-2">Book Residential Service</h6>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <small>Starting at <strong>$150</strong></small><br>
+                                    <small class="text-muted">Based on home size</small>
+                                </div>
+                                <button class="btn btn-success btn-sm" onclick="bookResidentialService()">
+                                    <i class="fas fa-calendar-plus me-1"></i>Book Now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6 mb-4">
+                    <div class="product-line-card">
+                        <div class="premium-badge">
+                            <i class="fas fa-shield-alt me-2"></i>EPA Premium Certified
+                        </div>
+                        <h4 class="fw-bold mb-3">Professional Premium Line</h4>
+                        <p class="mb-4">Engineered for commercial facility sanitization and healthcare facility disinfection. These industrial cleaning products Utah trusts deliver maximum efficacy for professional applications.</p>
+                        <ul class="list-unstyled mb-4">
+                            <li><i class="fas fa-check text-warning me-2"></i>Healthcare facility disinfection grade</li>
+                            <li><i class="fas fa-check text-warning me-2"></i>Industrial cleaning products Utah certified</li>
+                            <li><i class="fas fa-check text-warning me-2"></i>Professional fogging services compatible</li>
+                            <li><i class="fas fa-check text-warning me-2"></i>Maximum pathogen elimination</li>
+                        </ul>
+                        <a href="products.html" class="btn btn-warning btn-lg">Explore Premium Products</a>
+                        
+                        <!-- Quick Service Booking -->
+                        <div class="service-booking-widget mt-3">
+                            <h6 class="fw-bold mb-2">Book Commercial Service</h6>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <small>From <strong>$0.08-$0.13/sq ft</strong></small><br>
+                                    <small class="text-muted">Volume discounts available</small>
+                                </div>
+                                <button class="btn btn-warning btn-sm" onclick="bookCommercialService()">
+                                    <i class="fas fa-building me-1"></i>Get Quote
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section" id="about">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">About Organic HypoSolutions</h2>
+                <p class="lead">Utah's premier Salt Lake City cleaning company providing professional sanitization services</p>
+            </div>
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h4 class="fw-bold mb-3">Our Mission</h4>
+                    <p>Founded by Brandon O'Neal and Bob Strang, Organic HypoSolutions brings EPA-registered, USDA certified organic hypochlorous acid technology to businesses and homes across Utah. Our mission is to provide the safest, most effective sanitization available while protecting the environment.</p>
+                    
+                    <h5 class="fw-bold mt-4">Why Professional Hypochlorous Acid Fogging Works</h5>
+                    <p>Hypochlorous acid (HOCl) is naturally produced by white blood cells to fight infection. When created commercially through electrolysis, it becomes a powerful EPA-registered disinfectant that maintains exceptional safety standards for both commercial and residential applications.</p>
+                    
+                    <div class="mt-4">
+                        <a href="services.html" class="btn btn-primary me-2">View All Services</a>
+                        <a href="about.html" class="btn btn-outline-primary">Learn More About Us</a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="bg-light p-4 rounded-3">
+                        <h5 class="fw-bold mb-3">Key Benefits of Our Utah Sanitization Services:</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-shield-alt text-primary me-2"></i><strong>EPA-registered effectiveness</strong> against pathogens</li>
+                            <li class="mb-2"><i class="fas fa-baby text-success me-2"></i><strong>Safe for food contact</strong> without rinsing</li>
+                            <li class="mb-2"><i class="fas fa-leaf text-success me-2"></i><strong>Biodegrades to harmless salt water</strong></li>
+                            <li class="mb-2"><i class="fas fa-virus-slash text-danger me-2"></i><strong>99.9% pathogen elimination</strong> on hard surfaces</li>
+                            <li class="mb-2"><i class="fas fa-lungs text-info me-2"></i><strong>Allergen reduction support</strong> through environmental sanitization</li>
+                            <li class="mb-2"><i class="fas fa-hospital text-primary me-2"></i><strong>Hospital disinfectant classification</strong></li>
+                            <li class="mb-2"><i class="fas fa-globe text-info me-2"></i><strong>WHO Essential Medicine</strong> designation</li>
+                        </ul>
+                        
+                        <div class="alert alert-info mt-4">
+                            <strong><i class="fas fa-info-circle me-2"></i>Service Area:</strong> 
+                            We provide professional fogging services throughout Utah, with primary coverage in Salt Lake City, Provo, Ogden, and surrounding communities.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Continue CSS styles -->
+    <style>
         .about-section {
             padding: 80px 0;
             background: white;
@@ -768,129 +1577,7 @@
                 text-align: center;
                 margin: 1rem 0;
             }
-        }
 
-        .legal-disclaimer {
-            font-size: 0.85em;
-            color: rgba(255,255,255,0.8);
-            margin-top: 15px;
-        }
-
-        .pricing-disclaimer {
-            font-size: 0.85em;
-            color: var(--ohs-dark-gray);
-            font-style: italic;
-            margin-top: 15px;
-        }
-
-        /* SHOPIFY INTEGRATION STYLES */
-        .shopify-product-form {
-            display: inline-block;
-            margin: 10px 0;
-        }
-
-        .quantity-selector {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 10px 0;
-            background: rgba(255,255,255,0.1);
-            border-radius: 25px;
-            padding: 5px;
-        }
-
-        .quantity-btn {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .quantity-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: scale(1.1);
-        }
-
-        .quantity-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .quantity-display {
-            color: white;
-            font-weight: bold;
-            margin: 0 15px;
-            min-width: 30px;
-            text-align: center;
-        }
-
-        .add-to-cart-btn {
-            background: linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green));
-            border: none;
-            color: white;
-            font-weight: bold;
-            padding: 12px 24px;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3);
-            cursor: pointer;
-            margin: 5px;
-        }
-
-        .add-to-cart-btn:hover {
-            background: linear-gradient(135deg, var(--ohs-dark-green), var(--ohs-organic-green));
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(74, 222, 128, 0.4);
-        }
-
-        .product-quick-add {
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 15px 0;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .product-line-selector {
-            margin: 20px 0;
-        }
-
-        .line-toggle {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            margin: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .line-toggle.active {
-            background: var(--ohs-organic-green);
-            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3);
-        }
-
-        .line-toggle:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
-        .service-booking-widget {
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            backdrop-filter: blur(10px);
-        }
-
-        @media (max-width: 768px) {
             .hero-section {
                 padding: 30px 0;
             }
@@ -905,596 +1592,8 @@
                 margin: 15px 0;
                 padding: 25px;
             }
-            
-            .quantity-selector {
-                flex-direction: column;
-                gap: 10px;
-            }
         }
     </style>
-</head>
-<body>
-    <!-- Promotional Banner -->
-    <div class="promo-banner text-center" id="promoBanner">
-        <div class="container">
-            <div class="d-flex justify-content-center align-items-center">
-                <div class="text-center">
-                    <span class="promo-text">
-                        🚚 <strong>FREE SHIPPING</strong> | 💰 <strong>BULK DISCOUNTS</strong> available
-                    </span>
-                </div>
-                <button class="promo-close ms-3" onclick="closeBanner()" aria-label="Close banner">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Navigation - Updated Structure -->
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="index.html">
-                <svg width="32" height="32" viewBox="0 0 400 250" class="me-2">
-                    <rect width="400" height="250" fill="#2E5EAA"/>
-                    <text x="200" y="180" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="100" font-weight="bold">OHS</text>
-                    <text x="200" y="210" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="20">Organic HypoSolutions</text>
-                    <path d="M 320 80 Q 340 60 360 80 Q 340 100 320 80" fill="#4ADE80"/>
-                    <path d="M 330 70 Q 350 50 370 70 Q 350 90 330 70" fill="#22C55E"/>
-                </svg>
-                Organic HypoSolutions
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link fw-semibold" href="index.html">
-                            <i class="fas fa-home me-1"></i>Home
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="services.html">
-                            <i class="fas fa-spray-can me-1"></i>Services
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="products.html">
-                            <i class="fas fa-shopping-bag me-1"></i>Products
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="calculator.html">
-                            <i class="fas fa-calculator me-1"></i>Calculator
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="about.html" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-info-circle me-1"></i>About
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="about.html">
-                                <i class="fas fa-info-circle me-2"></i>About Us
-                            </a></li>
-                            <li><a class="dropdown-item" href="science-certifications.html">
-                                <i class="fas fa-microscope me-2"></i>Science & Certifications
-                            </a></li>
-                            <li><a class="dropdown-item" href="contact.html">
-                                <i class="fas fa-phone me-2"></i>Contact
-                            </a></li>
-                            <li><a class="dropdown-item" href="legal-information.html">
-                                <i class="fas fa-gavel me-2"></i>Legal Information
-                            </a></li>
-                        </ul>
-                    </li>
-                    
-                    <!-- Customer Shopping & Account -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-shopping-cart me-1"></i>Shop
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="shop/cart.html">
-                                <i class="fas fa-shopping-cart me-2"></i>View Cart 
-                                <span id="cartBadge" class="badge bg-danger ms-1" style="display: none;">0</span>
-                            </a></li>
-                            <li><a class="dropdown-item" href="shop/checkout.html">
-                                <i class="fas fa-credit-card me-2"></i>Checkout
-                                <span class="badge bg-warning ms-1">Coming Soon</span>
-                            </a></li>
-                            <li><a class="dropdown-item" href="shop/book-service.html">
-                                <i class="fas fa-calendar-plus me-2"></i>Book Service
-                            </a></li>
-                        </ul>
-                    </li>
-                    
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user me-1"></i>Account
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="account/profile.html">
-                                <i class="fas fa-building me-2"></i>Business Pricing
-                                <span class="badge bg-warning ms-1">Coming Soon</span>
-                            </a></li>
-                            <li><a class="dropdown-item" href="account/orders.html">
-                                <i class="fas fa-user-circle me-2"></i>Consumer Pricing
-                                <span class="badge bg-warning ms-1">Coming Soon</span>
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="auth/login.html">
-                                <i class="fas fa-sign-in-alt me-2"></i>Login
-                                <span class="badge bg-warning ms-1">Coming Soon</span>
-                            </a></li>
-                            <li><a class="dropdown-item" href="auth/register.html">
-                                <i class="fas fa-user-plus me-2"></i>Register
-                                <span class="badge bg-warning ms-1">Coming Soon</span>
-                            </a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <!-- Hero Section -->
-    <section class="hero-section" id="home">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-7">
-                    <h1 class="display-4 fw-bold mb-4">
-                        Utah's Premier Organic Sanitization Services
-                    </h1>
-                    <p class="lead mb-4">
-                        Transform your space with professional hypochlorous acid fogging services. 
-                        USDA certified cleaning solutions and EPA registered disinfectant treatments 
-                        for commercial facility sanitization and residential disinfection throughout 
-                        Salt Lake City and Utah.
-                    </p>
-                    
-                    <!-- Certification Badges -->
-                    <div class="mb-4">
-                        <span class="cert-badge">
-                            <i class="fas fa-certificate me-1"></i>USDA Certified Organic
-                        </span>
-                        <span class="cert-badge">
-                            <i class="fas fa-shield-alt me-1"></i>EPA Registered
-                        </span>
-                        <span class="cert-badge">
-                            <i class="fas fa-baby me-1"></i>Food Safe
-                        </span>
-                        <span class="cert-badge">
-                            <i class="fas fa-paw me-1"></i>Pet Safe
-                        </span>
-                    </div>
-                    
-                    <div class="legal-disclaimer mb-4">
-                        <small>Professional fogging services using EPA-registered organic disinfectant products for commercial and residential properties.</small>
-                    </div>
-                    
-                    <div class="d-grid gap-2 d-md-flex">
-                        <a href="calculator.html" class="btn btn-calculate-service btn-lg px-4 me-md-2">
-                            <i class="fas fa-calculator me-2"></i>Calculate Your Service
-                        </a>
-                        <a href="products.html" class="btn btn-success btn-lg px-4">
-                            <i class="fas fa-shopping-cart me-2"></i>Shop Products
-                        </a>
-                    </div>
-                    
-                    <!-- Quick Product Selection Widget -->
-                    <div class="product-quick-add mt-4">
-                        <h6 class="fw-bold mb-3">Quick Add Popular Products</h6>
-                        <div class="product-line-selector">
-                            <button class="line-toggle active" onclick="showProductLine('organic')" id="organic-toggle">
-                                <i class="fas fa-leaf me-1"></i>USDA Organic
-                            </button>
-                            <button class="line-toggle" onclick="showProductLine('premium')" id="premium-toggle">
-                                <i class="fas fa-shield-alt me-1"></i>EPA Premium
-                            </button>
-                        </div>
-                        
-                        <!-- Organic Products Quick Add -->
-                        <div id="organic-products" class="product-line-products">
-                            <div class="row">
-                                <div class="col-md-6 mb-2">
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <small class="fw-bold">32oz All-Purpose Cleaner</small>
-                                        <div class="quantity-selector" style="scale: 0.8;">
-                                            <button class="quantity-btn" onclick="updateHeroQuantity('ohs-32oz-cleaner', -1)" id="minus-ohs-32oz-cleaner">-</button>
-                                            <span class="quantity-display" id="qty-ohs-32oz-cleaner">1</span>
-                                            <button class="quantity-btn" onclick="updateHeroQuantity('ohs-32oz-cleaner', 1)">+</button>
-                                        </div>
-                                        <button class="add-to-cart-btn" style="padding: 6px 12px; font-size: 0.8rem;" 
-                                                onclick="addToCartFromHero('ohs-32oz-all-purpose-cleaner', 'OHS 32oz All-Purpose Cleaner', 24.99, '🧽')">
-                                            Add $24.99
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-2">
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <small class="fw-bold">8oz Skin Care Mist</small>
-                                        <div class="quantity-selector" style="scale: 0.8;">
-                                            <button class="quantity-btn" onclick="updateHeroQuantity('ohs-8oz-mist', -1)" id="minus-ohs-8oz-mist">-</button>
-                                            <span class="quantity-display" id="qty-ohs-8oz-mist">1</span>
-                                            <button class="quantity-btn" onclick="updateHeroQuantity('ohs-8oz-mist', 1)">+</button>
-                                        </div>
-                                        <button class="add-to-cart-btn" style="padding: 6px 12px; font-size: 0.8rem;" 
-                                                onclick="addToCartFromHero('ohs-8oz-skin-care-mist', 'OHS 8oz Skin Care Mist', 18.99, '💧')">
-                                            Add $18.99
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Premium Products Quick Add -->
-                        <div id="premium-products" class="product-line-products" style="display: none;">
-                            <div class="row">
-                                <div class="col-md-6 mb-2">
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <small class="fw-bold">32oz Professional Grade</small>
-                                        <div class="quantity-selector" style="scale: 0.8;">
-                                            <button class="quantity-btn" onclick="updateHeroQuantity('hc-32oz-pro', -1)" id="minus-hc-32oz-pro">-</button>
-                                            <span class="quantity-display" id="qty-hc-32oz-pro">1</span>
-                                            <button class="quantity-btn" onclick="updateHeroQuantity('hc-32oz-pro', 1)">+</button>
-                                        </div>
-                                        <button class="add-to-cart-btn" style="padding: 6px 12px; font-size: 0.8rem;" 
-                                                onclick="addToCartFromHero('hypo-company-32oz-professional-grade', 'HC 32oz Professional Grade', 34.99, '🏭')">
-                                            Add $34.99
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-2">
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <small class="fw-bold">1 Gallon Commercial</small>
-                                        <div class="quantity-selector" style="scale: 0.8;">
-                                            <button class="quantity-btn" onclick="updateHeroQuantity('hc-1gal-comm', -1)" id="minus-hc-1gal-comm">-</button>
-                                            <span class="quantity-display" id="qty-hc-1gal-comm">1</span>
-                                            <button class="quantity-btn" onclick="updateHeroQuantity('hc-1gal-comm', 1)">+</button>
-                                        </div>
-                                        <button class="add-to-cart-btn" style="padding: 6px 12px; font-size: 0.8rem;" 
-                                                onclick="addToCartFromHero('hypo-company-1-gallon-commercial', 'HC 1 Gallon Commercial', 89.99, '🏢')">
-                                            Add $89.99
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-5">
-                    <div class="hero-stats text-center">
-                        <h3 class="mb-4">Why Choose Professional Fogging?</h3>
-                        <div class="row">
-                            <div class="col-6 mb-3">
-                                <div class="stat-item">
-                                    <h4><i class="fas fa-virus-slash text-danger"></i> 99.9%</h4>
-                                    <p class="mb-0">Pathogen Elimination</p>
-                                    <div class="tooltip-content">
-                                        <div class="tooltip-title">99.9% Pathogen Elimination Power</div>
-                                        <div class="tooltip-fact">Hypochlorous acid is 80-100x more effective than bleach at killing pathogens</div>
-                                        <div class="tooltip-fact">Works in under 30 seconds against most bacteria and viruses</div>
-                                        <div class="tooltip-fact">Effective against antibiotic-resistant superbugs like MRSA</div>
-                                        <div class="tooltip-fact">Same molecule your white blood cells produce to fight infections</div>
-                                        <div class="tooltip-reference">
-                                            *EPA Registration #97801-1 efficacy data
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-6 mb-3">
-                                <div class="stat-item">
-                                    <h4><i class="fas fa-shield-alt text-success"></i> 100%</h4>
-                                    <p class="mb-0">Safe for Families</p>
-                                    <div class="tooltip-content">
-                                        <div class="tooltip-title">100% Family & Pet Safety</div>
-                                        <div class="tooltip-fact">pH neutral (6.5-7.5) - gentler than most tap water</div>
-                                        <div class="tooltip-fact">No gloves, masks, or respirators required during application</div>
-                                        <div class="tooltip-fact">Safe to use around pregnant women, babies, and elderly</div>
-                                        <div class="tooltip-fact">Can be used on toys, high chairs, and food surfaces without rinsing</div>
-                                        <div class="tooltip-reference">
-                                            *FDA Food Contact Notification 1811 & EPA safety classification
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="stat-item">
-                                    <h4><i class="fas fa-leaf text-success"></i> EPA</h4>
-                                    <p class="mb-0">Certified Organic</p>
-                                    <div class="tooltip-content">
-                                        <div class="tooltip-title">EPA Certified + USDA Organic</div>
-                                        <div class="tooltip-fact">Only sanitizer with both EPA registration AND USDA organic certification</div>
-                                        <div class="tooltip-fact">Hospital-grade disinfectant classification without toxic chemicals</div>
-                                        <div class="tooltip-fact">Used in food processing plants, hospitals, and schools worldwide</div>
-                                        <div class="tooltip-fact">WHO lists hypochlorous acid as an Essential Medicine</div>
-                                        <div class="tooltip-reference">
-                                            *EPA Registration #97801-1 & USDA Organic Certificate
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="stat-item">
-                                    <h4><i class="fas fa-recycle text-info"></i> 0</h4>
-                                    <p class="mb-0">Harmful Residue</p>
-                                    <div class="tooltip-content">
-                                        <div class="tooltip-title">Zero Harmful Residue</div>
-                                        <div class="tooltip-fact">Biodegrades back to simple salt water after disinfection</div>
-                                        <div class="tooltip-fact">No VOCs (Volatile Organic Compounds) or toxic fumes</div>
-                                        <div class="tooltip-fact">Leaves no chemical film or sticky residue on surfaces</div>
-                                        <div class="tooltip-fact">Environmentally safe - won't harm waterways or soil</div>
-                                        <div class="tooltip-reference">
-                                            *EPA environmental safety data & biodegradability studies
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Our Standards Section -->
-    <section class="standards-section">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="display-5 fw-bold">Our Professional Standards</h2>
-                <p class="lead">Uncompromising quality assurance in every Utah sanitization service</p>
-            </div>
-            <div class="row">
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="standard-card text-center">
-                        <div class="display-4 text-primary mb-3"><i class="fas fa-bullseye"></i></div>
-                        <h5 class="fw-bold">Precision Concentration</h5>
-                        <p class="text-muted mb-3">250+ PPM Minimum</p>
-                        <p>We maintain hypochlorous acid concentration at 250+ PPM throughout service delivery, ensuring maximum pathogen elimination effectiveness.</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="standard-card text-center">
-                        <div class="display-4 text-success mb-3"><i class="fas fa-clock"></i></div>
-                        <h5 class="fw-bold">Contact Time Standards</h5>
-                        <p class="text-muted mb-3">10-Minute Minimum</p>
-                        <p>All surfaces receive minimum 10-minute contact time at target PPM concentration for complete disinfection and pathogen neutralization.</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="standard-card text-center">
-                        <div class="display-4 text-warning mb-3"><i class="fas fa-spray-can"></i></div>
-                        <h5 class="fw-bold">Coverage Efficiency</h5>
-                        <p class="text-muted mb-3">Complete Saturation</p>
-                        <p>Optimized coverage rates ensure complete saturation while maintaining cost-effectiveness and environmental responsibility.</p>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="standard-card text-center">
-                        <div class="display-4 text-info mb-3"><i class="fas fa-microscope"></i></div>
-                        <h5 class="fw-bold">Quality Verification</h5>
-                        <p class="text-muted mb-3">Real-Time Testing</p>
-                        <p>PPM meters and coverage verification ensure every service meets our rigorous standards with documented proof of effectiveness.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Service Process Section -->
-    <section class="process-section">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="display-5 fw-bold">Our Professional Fogging Process</h2>
-                <p class="lead">Four-step methodology ensuring consistent, effective results for all Utah properties</p>
-            </div>
-            <div class="row">
-                <div class="col-lg-6 mb-4">
-                    <div class="process-step">
-                        <span class="step-number">1</span>
-                        <h5 class="fw-bold mt-3">Site Assessment & Planning</h5>
-                        <p>Comprehensive evaluation of your property to determine optimal fogging strategy, equipment selection, and coverage requirements for maximum effectiveness.</p>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="process-step">
-                        <span class="step-number">2</span>
-                        <h5 class="fw-bold mt-3">Professional Setup</h5>
-                        <p>Strategic equipment positioning using Nebula foggers for large areas and backpack foggers for high-density zones throughout your facility.</p>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="process-step">
-                        <span class="step-number">3</span>
-                        <h5 class="fw-bold mt-3">Precision Application</h5>
-                        <p>Systematic fogging ensuring 250+ PPM concentration with complete coverage and 10-minute minimum contact time for all surfaces.</p>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="process-step">
-                        <span class="step-number">4</span>
-                        <h5 class="fw-bold mt-3">Quality Documentation</h5>
-                        <p>Real-time verification, service documentation, customer education, and performance tracking for complete compliance assurance.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Services Preview -->
-    <section class="py-5 bg-light" id="services">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="display-5 fw-bold">Our Utah Sanitization Services</h2>
-                <p class="lead">Professional organic disinfectant products and commercial facility sanitization</p>
-                <div class="pricing-disclaimer">
-                    *Pricing subject to change. Final costs determined by site assessment.
-                </div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card service-card border-0">
-                        <div class="card-body text-center p-4">
-                            <div class="display-4 mb-3"><i class="fas fa-building text-primary"></i></div>
-                            <h5 class="card-title fw-bold">Commercial Fogging</h5>
-                            <p class="card-text">Professional facility sanitization for businesses prioritizing health and safety.</p>
-                            <div class="mt-3">
-                                <div class="pricing-highlight">$0.08-0.13/sq ft</div>
-                                <small class="text-muted">Volume rates for 20,000+ sq ft recurring service</small>
-                                <br><a href="services.html" class="btn btn-primary mt-3">Learn More</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card service-card border-0">
-                        <div class="card-body text-center p-4">
-                            <div class="display-4 mb-3"><i class="fas fa-home text-success"></i></div>
-                            <h5 class="card-title fw-bold">Residential Services</h5>
-                            <p class="card-text">Safe, family-friendly home disinfection with USDA certified organic solutions.</p>
-                            <div class="mt-3">
-                                <div class="pricing-highlight">$150-$400</div>
-                                <small class="text-muted">Based on home size and service requirements</small>
-                                <br><a href="services.html" class="btn btn-success mt-3">Learn More</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card service-card border-0">
-                        <div class="card-body text-center p-4">
-                            <div class="display-4 mb-3"><i class="fas fa-calendar-alt text-warning"></i></div>
-                            <h5 class="card-title fw-bold">Subscription Services</h5>
-                            <p class="card-text">Regular sanitization programs for ongoing protection and peace of mind.</p>
-                            <div class="mt-3">
-                                <div class="pricing-highlight">$399-$1,299/month</div>
-                                <small class="text-muted">Customized frequency and coverage plans</small>
-                                <br><a href="services.html" class="btn btn-warning mt-3">Learn More</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Product Showcase Section -->
-    <section class="product-showcase" id="products">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="display-5 fw-bold">Our Organic Disinfectant Products</h2>
-                <p class="lead">Professional-grade solutions for every sanitization need</p>
-            </div>
-            
-            <div class="row">
-                <div class="col-lg-6 mb-4">
-                    <div class="product-line-card">
-                        <div class="organic-badge">
-                            <i class="fas fa-leaf me-2"></i>USDA Certified Organic
-                        </div>
-                        <h4 class="fw-bold mb-3">Family-Safe Organic Line</h4>
-                        <p class="mb-4">Perfect for residential disinfection services and families who prioritize natural, food-safe sanitization solutions. These USDA certified products provide powerful protection without harmful chemicals.</p>
-                        <ul class="list-unstyled mb-4">
-                            <li><i class="fas fa-check text-success me-2"></i>Pet safe organic cleaners</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Food safe sanitization solutions</li>
-                            <li><i class="fas fa-check text-success me-2"></i>No harmful residue or fumes</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Biodegradable formula</li>
-                        </ul>
-                        <a href="services.html" class="btn btn-success btn-lg">Explore Organic Products</a>
-                        
-                        <!-- Quick Service Booking -->
-                        <div class="service-booking-widget mt-3">
-                            <h6 class="fw-bold mb-2">Book Residential Service</h6>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <small>Starting at <strong>$150</strong></small><br>
-                                    <small class="text-muted">Based on home size</small>
-                                </div>
-                                <button class="btn btn-success btn-sm" onclick="bookResidentialService()">
-                                    <i class="fas fa-calendar-plus me-1"></i>Book Now
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-6 mb-4">
-                    <div class="product-line-card">
-                        <div class="premium-badge">
-                            <i class="fas fa-shield-alt me-2"></i>EPA Premium Certified
-                        </div>
-                        <h4 class="fw-bold mb-3">Professional Premium Line</h4>
-                        <p class="mb-4">Engineered for commercial facility sanitization and healthcare facility disinfection. These industrial cleaning products Utah trusts deliver maximum efficacy for professional applications.</p>
-                        <ul class="list-unstyled mb-4">
-                            <li><i class="fas fa-check text-warning me-2"></i>Healthcare facility disinfection grade</li>
-                            <li><i class="fas fa-check text-warning me-2"></i>Industrial cleaning products Utah certified</li>
-                            <li><i class="fas fa-check text-warning me-2"></i>Professional fogging services compatible</li>
-                            <li><i class="fas fa-check text-warning me-2"></i>Maximum pathogen elimination</li>
-                        </ul>
-                        <a href="services.html" class="btn btn-warning btn-lg">Explore Premium Products</a>
-                        
-                        <!-- Quick Service Booking -->
-                        <div class="service-booking-widget mt-3">
-                            <h6 class="fw-bold mb-2">Book Commercial Service</h6>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <small>From <strong>$0.08-$0.13/sq ft</strong></small><br>
-                                    <small class="text-muted">Volume discounts available</small>
-                                </div>
-                                <button class="btn btn-warning btn-sm" onclick="bookCommercialService()">
-                                    <i class="fas fa-building me-1"></i>Get Quote
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section class="about-section" id="about">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="display-5 fw-bold">About Organic HypoSolutions</h2>
-                <p class="lead">Utah's premier Salt Lake City cleaning company providing professional sanitization services</p>
-            </div>
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <h4 class="fw-bold mb-3">Our Mission</h4>
-                    <p>Founded by Brandon O'Neal and Bob Strang, Organic HypoSolutions brings EPA-registered, USDA certified organic hypochlorous acid technology to businesses and homes across Utah. Our mission is to provide the safest, most effective sanitization available while protecting the environment.</p>
-                    
-                    <h5 class="fw-bold mt-4">Why Professional Hypochlorous Acid Fogging Works</h5>
-                    <p>Hypochlorous acid (HOCl) is naturally produced by white blood cells to fight infection. When created commercially through electrolysis, it becomes a powerful EPA-registered disinfectant that maintains exceptional safety standards for both commercial and residential applications.</p>
-                    
-                    <div class="mt-4">
-                        <a href="services.html" class="btn btn-primary me-2">View All Services</a>
-                        <a href="about.html" class="btn btn-outline-primary">Learn More About Us</a>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="bg-light p-4 rounded-3">
-                        <h5 class="fw-bold mb-3">Key Benefits of Our Utah Sanitization Services:</h5>
-                        <ul class="list-unstyled">
-                            <li class="mb-2"><i class="fas fa-shield-alt text-primary me-2"></i><strong>EPA-registered effectiveness</strong> against pathogens</li>
-                            <li class="mb-2"><i class="fas fa-baby text-success me-2"></i><strong>Safe for food contact</strong> without rinsing</li>
-                            <li class="mb-2"><i class="fas fa-leaf text-success me-2"></i><strong>Biodegrades to harmless salt water</strong></li>
-                            <li class="mb-2"><i class="fas fa-virus-slash text-danger me-2"></i><strong>99.9% pathogen elimination</strong> on hard surfaces</li>
-                            <li class="mb-2"><i class="fas fa-lungs text-info me-2"></i><strong>Allergen reduction support</strong> through environmental sanitization</li>
-                            <li class="mb-2"><i class="fas fa-hospital text-primary me-2"></i><strong>Hospital disinfectant classification</strong></li>
-                            <li class="mb-2"><i class="fas fa-globe text-info me-2"></i><strong>WHO Essential Medicine</strong> designation</li>
-                        </ul>
-                        
-                        <div class="alert alert-info mt-4">
-                            <strong><i class="fas fa-info-circle me-2"></i>Service Area:</strong> 
-                            We provide professional fogging services throughout Utah, with primary coverage in Salt Lake City, Provo, Ogden, and surrounding communities.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Quick Contact -->
     <section class="contact-section" id="contact">
@@ -1543,109 +1642,101 @@
         </div>
     </section>
 
-<!-- Footer - Updated to match new structure -->
-<footer class="footer-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3 mb-4">
-                <div class="d-flex align-items-center mb-3">
-                    <svg width="40" height="40" viewBox="0 0 400 250" class="me-2">
-                        <rect width="400" height="250" fill="#2E5EAA"/>
-                        <text x="200" y="180" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="100" font-weight="bold">OHS</text>
-                        <text x="200" y="210" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="20">Organic HypoSolutions</text>
-                        <path d="M 320 80 Q 340 60 360 80 Q 340 100 320 80" fill="#4ADE80"/>
-                        <path d="M 330 70 Q 350 50 370 70 Q 350 90 330 70" fill="#22C55E"/>
-                    </svg>
-                    <h5 class="mb-0">Organic HypoSolutions</h5>
+    <!-- Footer - Updated to match new structure -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <svg width="40" height="40" viewBox="0 0 400 250" class="me-2">
+                            <rect width="400" height="250" fill="#2E5EAA"/>
+                            <text x="200" y="180" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="100" font-weight="bold">OHS</text>
+                            <text x="200" y="210" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="20">Organic HypoSolutions</text>
+                            <path d="M 320 80 Q 340 60 360 80 Q 340 100 320 80" fill="#4ADE80"/>
+                            <path d="M 330 70 Q 350 50 370 70 Q 350 90 330 70" fill="#22C55E"/>
+                        </svg>
+                        <h5 class="mb-0">Organic HypoSolutions</h5>
+                    </div>
+                    <p>Utah's dual-certified HOCl distributor for families and businesses.</p>
                 </div>
-                <p>Utah's dual-certified HOCl distributor for families and businesses.</p>
+                
+                <div class="col-md-2 mb-4">
+                    <h6 class="fw-bold mb-3">Products</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="products.html" class="text-white-50 text-decoration-none">USDA Organic (19)</a></li>
+                        <li><a href="products.html" class="text-white-50 text-decoration-none">EPA Premium (38)</a></li>
+                        <li><a href="products.html" class="text-white-50 text-decoration-none">Bulk Solutions</a></li>
+                        <li><a href="products.html" class="text-white-50 text-decoration-none">All Products</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-md-2 mb-4">
+                    <h6 class="fw-bold mb-3">Certified</h6>
+                    <ul class="list-unstyled">
+                        <li><span class="footer-cert">USDA Organic</span></li>
+                        <li><span class="footer-cert">EPA Registered</span></li>
+                        <li><span class="footer-cert">FDA Food Safe</span></li>
+                    </ul>
+                </div>
+                
+                <div class="col-md-2 mb-4">
+                    <h6 class="fw-bold mb-3">Support</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="science-certifications.html" class="text-white-50 text-decoration-none">Science</a></li>
+                        <li><a href="calculator.html" class="text-white-50 text-decoration-none">Calculator</a></li>
+                        <li><a href="about.html" class="text-white-50 text-decoration-none">About</a></li>
+                        <li><a href="contact.html" class="text-white-50 text-decoration-none">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <h6 class="fw-bold mb-3">Contact</h6>
+                    <p class="mb-2">
+                        <i class="fas fa-phone me-2"></i>
+                        <a href="tel:+18017125663" class="text-white text-decoration-none">(801) 712-5663</a>
+                    </p>
+                    <p class="mb-2">
+                        <i class="fas fa-envelope me-2"></i>
+                        <a href="mailto:ohshocl@gmail.com" class="text-white text-decoration-none">ohshocl@gmail.com</a>
+                    </p>
+                    <p class="mb-3">
+                        <i class="fas fa-map-marker-alt me-2"></i>
+                        Salt Lake City, UT, USA
+                    </p>
+                    
+                    <!-- Social Media Links -->
+                    <div class="social-icons">
+                        <a href="https://www.linkedin.com/company/organichyposolutions" target="_blank" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="https://www.facebook.com/organichyposolutions" target="_blank" aria-label="Facebook">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="https://www.instagram.com/organichyposolutions" target="_blank" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.tiktok.com/@organichyposolutions" target="_blank" aria-label="TikTok">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
             
-            <div class="col-md-2 mb-4">
-                <h6 class="fw-bold mb-3">Products</h6>
-                <ul class="list-unstyled">
-                    <li><a href="products.html" class="text-white-50 text-decoration-none">USDA Organic (19)</a></li>
-                    <li><a href="products.html" class="text-white-50 text-decoration-none">EPA Premium (38)</a></li>
-                    <li><a href="products.html" class="text-white-50 text-decoration-none">Bulk Solutions</a></li>
-                    <li><a href="products.html" class="text-white-50 text-decoration-none">All Products</a></li>
-                </ul>
-            </div>
+            <hr class="my-4 border-white-50">
             
-            <div class="col-md-2 mb-4">
-                <h6 class="fw-bold mb-3">Certified</h6>
-                <ul class="list-unstyled">
-                    <li><span class="footer-cert">USDA Organic</span></li>
-                    <li><span class="footer-cert">EPA Registered</span></li>
-                    <li><span class="footer-cert">FDA Food Safe</span></li>
-                </ul>
-            </div>
-            
-            <div class="col-md-2 mb-4">
-                <h6 class="fw-bold mb-3">Support</h6>
-                <ul class="list-unstyled">
-                    <li><a href="science-certifications.html" class="text-white-50 text-decoration-none">Science</a></li>
-                    <li><a href="calculator.html" class="text-white-50 text-decoration-none">Calculator</a></li>
-                    <li><a href="about.html" class="text-white-50 text-decoration-none">About</a></li>
-                    <li><a href="contact.html" class="text-white-50 text-decoration-none">Contact</a></li>
-                </ul>
-            </div>
-            
-            <div class="col-md-3 mb-4">
-                <h6 class="fw-bold mb-3">Contact</h6>
-                <p class="mb-2">
-                    <i class="fas fa-phone me-2"></i>
-                    <a href="tel:+18017125663" class="text-white text-decoration-none">(801) 712-5663</a>
-                </p>
-                <p class="mb-2">
-                    <i class="fas fa-envelope me-2"></i>
-                    <a href="mailto:ohshocl@gmail.com" class="text-white text-decoration-none">ohshocl@gmail.com</a>
-                </p>
-                <p class="mb-3">
-                    <i class="fas fa-map-marker-alt me-2"></i>
-                    Salt Lake City, UT, USA
-                </p>
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2025 Organic HypoSolutions. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <span class="footer-cert me-1">57 Products</span>
+                    <span class="footer-cert me-1">Family Owned & Operated Since 2025</span>
+                    <span class="footer-cert">Cart Ready</span>
+                </div>
             </div>
         </div>
-        
-        <hr class="my-4 border-white-50">
-        
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <p class="mb-0">&copy; 2025 Organic HypoSolutions. All rights reserved.</p>
-            </div>
-            <div class="col-md-6 text-md-end">
-                <span class="footer-cert me-1">57 Products</span>
-                <span class="footer-cert me-1">FREE Ship</span>
-                <span class="footer-cert">Cart Ready</span>
-            </div>
-        </div>
-    </div>
-</footer>
+    </footer>
 
-    <!-- SHOPIFY LIQUID TEMPLATE STRUCTURE (commented for future conversion) -->
-    <!--
-    {% comment %} 
-    SHOPIFY CONVERSION NOTES:
-    
-    1. Replace static product data with Shopify product objects:
-       {{ product.title }}, {{ product.price | money }}, {{ product.handle }}
-    
-    2. Add Shopify Buy Button SDK:
-       <script src="https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js"></script>
-    
-    3. Convert cart functionality to use Shopify Cart API:
-       fetch('/cart/add.js', { method: 'POST', ... })
-    
-    4. Add product loops for dynamic content:
-       {% for product in collections.organic-line.products %}
-       {% for product in collections.premium-line.products %}
-    
-    5. Implement service booking with Shopify Forms or apps
-    
-    6. Add subscription functionality with ReCharge or Bold Subscriptions
-    {% endcomment %}
-    -->
-    
     <!-- Shopify Product Schema (for SEO) -->
     <script type="application/ld+json">
     {
@@ -1685,8 +1776,220 @@
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Custom JavaScript -->
+    <!-- ENHANCED JAVASCRIPT WITH SHOPIFY INTEGRATION -->
     <script>
+        // ENHANCED CART MANAGEMENT FOR SHOPIFY INTEGRATION
+        
+        // Hero quantity management
+        let heroQuantities = {
+            'ohs-32oz-cleaner': 1,
+            'ohs-8oz-mist': 1,
+            'hc-32oz-pro': 1,
+            'hc-1gal-comm': 1
+        };
+
+        // ENHANCED QUICK ADD WITH SHOPIFY INTEGRATION
+        function handleQuickAddWithShopify(productId) {
+            const button = event.target;
+            const originalText = button.innerHTML;
+            
+            // Show loading state
+            button.classList.add('loading');
+            button.innerHTML = 'Adding...';
+            button.disabled = true;
+            
+            try {
+                // Get product from catalog
+                const product = PRODUCT_CATALOG[productId];
+                if (!product) {
+                    throw new Error(`Product ${productId} not found in catalog`);
+                }
+                
+                // Get quantity from hero controls
+                const productKey = Object.keys(heroQuantities).find(key => 
+                    productId.includes(key.replace(/-/g, '-'))
+                );
+                const quantity = heroQuantities[productKey] || 1;
+                
+                // Add to cart using existing cart.js system
+                addToCart(productId, quantity);
+                
+                // Show success feedback
+                showEnhancedFeedback(product.name, quantity);
+                
+                // Track analytics
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'add_to_cart', {
+                        'currency': 'USD',
+                        'value': product.price * quantity,
+                        'items': [{
+                            'item_id': productId,
+                            'item_name': product.name,
+                            'category': productId.includes('hc-') ? 'EPA Premium' : 'USDA Organic',
+                            'quantity': quantity,
+                            'price': product.price
+                        }]
+                    });
+                }
+                
+                // Update cart badge
+                updateCartBadge();
+                
+            } catch (error) {
+                console.error('Error adding product to cart:', error);
+                showErrorFeedback('Failed to add product. Please try again.');
+            } finally {
+                // Restore button state
+                setTimeout(() => {
+                    button.classList.remove('loading');
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }, 1000);
+            }
+        }
+
+        // Enhanced success feedback
+        function showEnhancedFeedback(productName, quantity) {
+            const feedback = document.getElementById('quick-add-feedback');
+            const message = document.getElementById('feedback-message');
+            
+            if (feedback && message) {
+                message.textContent = `${quantity}x ${productName} added to cart!`;
+                feedback.style.display = 'block';
+                feedback.classList.add('show');
+                
+                // Hide after 3 seconds
+                setTimeout(() => {
+                    feedback.classList.remove('show');
+                    setTimeout(() => {
+                        feedback.style.display = 'none';
+                    }, 300);
+                }, 3000);
+            }
+        }
+
+        // Error feedback
+        function showErrorFeedback(message) {
+            const feedback = document.getElementById('quick-add-feedback');
+            const messageEl = document.getElementById('feedback-message');
+            
+            if (feedback && messageEl) {
+                feedback.className = 'alert alert-danger';
+                messageEl.textContent = message;
+                feedback.style.display = 'block';
+                feedback.classList.add('show');
+                
+                // Hide after 5 seconds
+                setTimeout(() => {
+                    feedback.classList.remove('show');
+                    setTimeout(() => {
+                        feedback.style.display = 'none';
+                        feedback.className = 'alert alert-success'; // Reset to success
+                    }, 300);
+                }, 5000);
+            }
+        }
+
+        // Product line switching
+        function showProductLine(line) {
+            const organicProducts = document.getElementById('organic-products');
+            const premiumProducts = document.getElementById('premium-products');
+            const organicToggle = document.getElementById('organic-toggle');
+            const premiumToggle = document.getElementById('premium-toggle');
+            
+            if (line === 'organic') {
+                organicProducts.style.display = 'block';
+                premiumProducts.style.display = 'none';
+                organicToggle.classList.add('active');
+                premiumToggle.classList.remove('active');
+            } else {
+                organicProducts.style.display = 'none';
+                premiumProducts.style.display = 'block';
+                organicToggle.classList.remove('active');
+                premiumToggle.classList.add('active');
+            }
+        }
+
+        // Update quantity in hero section
+        function updateHeroQuantity(productKey, change) {
+            heroQuantities[productKey] = Math.max(1, heroQuantities[productKey] + change);
+            
+            const display = document.getElementById('qty-' + productKey);
+            const minusBtn = document.getElementById('minus-' + productKey);
+            
+            if (display) display.textContent = heroQuantities[productKey];
+            if (minusBtn) minusBtn.disabled = heroQuantities[productKey] <= 1;
+        }
+
+        // Service booking functions
+        function bookResidentialService() {
+            // Track booking intent
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'book_residential_service', {
+                    'event_category': 'Service Booking',
+                    'event_label': 'Hero Section'
+                });
+            }
+            
+            // Redirect to booking form
+            window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform?entry.service_type=Residential&entry.source=Homepage_Hero', '_blank');
+        }
+
+        function bookCommercialService() {
+            // Track booking intent
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'book_commercial_service', {
+                    'event_category': 'Service Booking',
+                    'event_label': 'Hero Section'
+                });
+            }
+            
+            // Redirect to commercial quote form
+            window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform?entry.service_type=Commercial&entry.source=Homepage_Hero', '_blank');
+        }
+
+        // Banner close functionality
+        function closeBanner() {
+            const banner = document.getElementById('promoBanner');
+            banner.style.transform = 'translateY(-100%)';
+            setTimeout(() => {
+                banner.style.display = 'none';
+            }, 300);
+            
+            // Store in localStorage so it stays closed for the session
+            localStorage.setItem('promoBannerClosed', 'true');
+            
+            // Track banner close
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'banner_close', {
+                    'event_category': 'User Interaction',
+                    'event_label': 'Promotional Banner'
+                });
+            }
+        }
+
+        // Function to update cart badge from localStorage
+        function updateCartBadge() {
+            try {
+                const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+                const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+                const cartBadge = document.getElementById('cartBadge');
+                
+                if (cartBadge) {
+                    if (totalItems > 0) {
+                        cartBadge.textContent = totalItems;
+                        cartBadge.style.display = 'inline-block';
+                    } else {
+                        cartBadge.style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.log('Cart data not found or invalid, hiding badge');
+                const cartBadge = document.getElementById('cartBadge');
+                if (cartBadge) cartBadge.style.display = 'none';
+            }
+        }
+
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -1748,73 +2051,17 @@
             });
         });
 
-        // Buy Now button tracking
-        document.querySelectorAll('.btn-buy-now').forEach(btn => {
+        // Enhanced add button tracking
+        document.querySelectorAll('.enhanced-add-button').forEach(btn => {
             btn.addEventListener('click', function() {
                 if (typeof gtag !== 'undefined') {
                     gtag('event', 'click', {
                         'event_category': 'E-commerce',
-                        'event_label': 'Buy Now Button'
+                        'event_label': 'Enhanced Add Button'
                     });
                 }
             });
         });
-
-        // Banner close functionality
-        function closeBanner() {
-            const banner = document.getElementById('promoBanner');
-            banner.style.transform = 'translateY(-100%)';
-            setTimeout(() => {
-                banner.style.display = 'none';
-            }, 300);
-            
-            // Store in localStorage so it stays closed for the session
-            localStorage.setItem('promoBannerClosed', 'true');
-            
-            // Track banner close
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'banner_close', {
-                    'event_category': 'User Interaction',
-                    'event_label': 'Promotional Banner'
-                });
-            }
-        }
-
-        // Check if banner should be shown
-        document.addEventListener('DOMContentLoaded', function() {
-            const banner = document.getElementById('promoBanner');
-            if (localStorage.getItem('promoBannerClosed') === 'true') {
-                banner.style.display = 'none';
-            } else {
-                // Add transition for smooth appearance
-                banner.style.transition = 'transform 0.3s ease';
-            }
-            
-            // Update cart badge with actual cart count
-            updateCartBadge();
-        });
-
-        // Function to update cart badge from localStorage
-        function updateCartBadge() {
-            try {
-                const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-                const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
-                const cartBadge = document.getElementById('cartBadge');
-                
-                if (cartBadge) {
-                    if (totalItems > 0) {
-                        cartBadge.textContent = totalItems;
-                        cartBadge.style.display = 'inline-block';
-                    } else {
-                        cartBadge.style.display = 'none';
-                    }
-                }
-            } catch (error) {
-                console.log('Cart data not found or invalid, hiding badge');
-                const cartBadge = document.getElementById('cartBadge');
-                if (cartBadge) cartBadge.style.display = 'none';
-            }
-        }
 
         // Listen for storage changes to update cart badge when cart is modified on other pages
         window.addEventListener('storage', function(e) {
@@ -1828,163 +2075,20 @@
             updateCartBadge();
         });
 
-        // SHOPIFY INTEGRATION JAVASCRIPT
-        
-        // Cart Management
-        let heroQuantities = {
-            'ohs-32oz-cleaner': 1,
-            'ohs-8oz-mist': 1,
-            'hc-32oz-pro': 1,
-            'hc-1gal-comm': 1
-        };
-
-        // Product line switching
-        function showProductLine(line) {
-            const organicProducts = document.getElementById('organic-products');
-            const premiumProducts = document.getElementById('premium-products');
-            const organicToggle = document.getElementById('organic-toggle');
-            const premiumToggle = document.getElementById('premium-toggle');
-            
-            if (line === 'organic') {
-                organicProducts.style.display = 'block';
-                premiumProducts.style.display = 'none';
-                organicToggle.classList.add('active');
-                premiumToggle.classList.remove('active');
+        // INITIALIZATION ON DOM LOAD
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if banner should be shown
+            const banner = document.getElementById('promoBanner');
+            if (localStorage.getItem('promoBannerClosed') === 'true') {
+                banner.style.display = 'none';
             } else {
-                organicProducts.style.display = 'none';
-                premiumProducts.style.display = 'block';
-                organicToggle.classList.remove('active');
-                premiumToggle.classList.add('active');
-            }
-        }
-
-        // Update quantity in hero section
-        function updateHeroQuantity(productKey, change) {
-            heroQuantities[productKey] = Math.max(1, heroQuantities[productKey] + change);
-            
-            const display = document.getElementById('qty-' + productKey);
-            const minusBtn = document.getElementById('minus-' + productKey);
-            
-            if (display) display.textContent = heroQuantities[productKey];
-            if (minusBtn) minusBtn.disabled = heroQuantities[productKey] <= 1;
-        }
-
-        // Add to cart from hero section
-        function addToCartFromHero(productId, productName, price, emoji) {
-            const productKey = productId.replace(/[^a-zA-Z0-9]/g, '-').replace(/-+/g, '-');
-            const quantity = heroQuantities[Object.keys(heroQuantities).find(k => productId.includes(k.replace(/-/g, '-')))] || 1;
-            
-            // Get existing cart
-            let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-            
-            // Check if product already exists
-            const existingIndex = cart.findIndex(item => item.id === productId);
-            
-            if (existingIndex >= 0) {
-                cart[existingIndex].quantity += quantity;
-            } else {
-                cart.push({
-                    id: productId,
-                    name: productName,
-                    price: price,
-                    quantity: quantity,
-                    emoji: emoji,
-                    shopifyHandle: productId,
-                    addedAt: Date.now()
-                });
+                // Add transition for smooth appearance
+                banner.style.transition = 'transform 0.3s ease';
             }
             
-            // Save cart
-            localStorage.setItem('ohsCart', JSON.stringify(cart));
+            // Update cart badge with actual cart count
             updateCartBadge();
             
-            // Show success feedback
-            showAddToCartFeedback(productName, quantity);
-            
-            // Track analytics
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'add_to_cart', {
-                    'currency': 'USD',
-                    'value': price * quantity,
-                    'items': [{
-                        'item_id': productId,
-                        'item_name': productName,
-                        'category': productId.includes('hypo-company') ? 'EPA Premium' : 'USDA Organic',
-                        'quantity': quantity,
-                        'price': price
-                    }]
-                });
-            }
-        }
-
-        // Service booking functions
-        function bookResidentialService() {
-            // Track booking intent
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'book_residential_service', {
-                    'event_category': 'Service Booking',
-                    'event_label': 'Hero Section'
-                });
-            }
-            
-            // Redirect to booking form
-            window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform?entry.service_type=Residential&entry.source=Homepage_Hero', '_blank');
-        }
-
-        function bookCommercialService() {
-            // Track booking intent
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'book_commercial_service', {
-                    'event_category': 'Service Booking',
-                    'event_label': 'Hero Section'
-                });
-            }
-            
-            // Redirect to commercial quote form
-            window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform?entry.service_type=Commercial&entry.source=Homepage_Hero', '_blank');
-        }
-
-        // Show add to cart feedback
-        function showAddToCartFeedback(productName, quantity) {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.className = 'position-fixed';
-            notification.style.cssText = `
-                top: 100px; right: 20px; z-index: 9999;
-                background: linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green));
-                color: white; padding: 15px 20px; border-radius: 10px;
-                box-shadow: 0 8px 25px rgba(74, 222, 128, 0.4);
-                font-weight: bold; transform: translateX(400px);
-                transition: all 0.3s ease;
-            `;
-            notification.innerHTML = `
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-check-circle me-2"></i>
-                    <div>
-                        <div>Added to Cart!</div>
-                        <small>${quantity}x ${productName}</small>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            // Animate in
-            setTimeout(() => {
-                notification.style.transform = 'translateX(0)';
-            }, 100);
-            
-            // Remove after 3 seconds
-            setTimeout(() => {
-                notification.style.transform = 'translateX(400px)';
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
-            }, 3000);
-        }
-
-        // Initialize hero quantities on load
-        document.addEventListener('DOMContentLoaded', function() {
             // Set initial disabled states for minus buttons
             Object.keys(heroQuantities).forEach(key => {
                 const minusBtn = document.getElementById('minus-' + key);
@@ -1992,10 +2096,108 @@
                     minusBtn.disabled = true;
                 }
             });
+
+            // Initialize Shopify integration if available
+            if (typeof window.ShopifyIntegration !== 'undefined') {
+                try {
+                    window.shopifyIntegration = new window.ShopifyIntegration();
+                    console.log('✅ Shopify integration initialized successfully');
+                } catch (error) {
+                    console.warn('⚠️ Shopify integration failed to initialize:', error);
+                }
+            } else {
+                console.log('ℹ️ Shopify integration not yet loaded, will initialize when available');
+            }
+
+            // Track page load
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'page_view', {
+                    'page_title': 'Homepage',
+                    'page_location': window.location.href
+                });
+            }
         });
 
-        // Make closeBanner function globally available
+        // Global error handler for cart operations
+        window.addEventListener('error', function(e) {
+            if (e.message.includes('cart') || e.message.includes('shopify')) {
+                console.error('Cart/Shopify error:', e.error);
+                showErrorFeedback('Sorry, there was an issue with the cart. Please refresh and try again.');
+            }
+        });
+
+        // Make functions globally available
         window.closeBanner = closeBanner;
+        window.handleQuickAddWithShopify = handleQuickAddWithShopify;
+        window.showProductLine = showProductLine;
+        window.updateHeroQuantity = updateHeroQuantity;
+        window.bookResidentialService = bookResidentialService;
+        window.bookCommercialService = bookCommercialService;
+        window.updateCartBadge = updateCartBadge;
+
+        // SHOPIFY CHECKOUT INTEGRATION
+        // This function will be enhanced when Shopify integration is fully loaded
+        function proceedToShopifyCheckout() {
+            try {
+                const cartItems = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+                
+                if (cartItems.length === 0) {
+                    alert('Your cart is empty. Please add some products first.');
+                    return;
+                }
+
+                // If Shopify integration is available, use it
+                if (window.shopifyIntegration && typeof window.shopifyIntegration.createCheckout === 'function') {
+                    window.shopifyIntegration.createCheckout(cartItems)
+                        .then(checkoutUrl => {
+                            window.location.href = checkoutUrl;
+                        })
+                        .catch(error => {
+                            console.error('Shopify checkout error:', error);
+                            // Fallback to cart page
+                            window.location.href = 'shop/cart.html';
+                        });
+                } else {
+                    // Fallback to cart page for now
+                    console.log('Shopify integration not ready, redirecting to cart page');
+                    window.location.href = 'shop/cart.html';
+                }
+
+                // Track checkout initiation
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'begin_checkout', {
+                        'currency': 'USD',
+                        'value': cartItems.reduce((total, item) => {
+                            const product = PRODUCT_CATALOG[item.productId];
+                            return total + (product ? product.price * item.quantity : 0);
+                        }, 0),
+                        'items': cartItems.map(item => {
+                            const product = PRODUCT_CATALOG[item.productId];
+                            return {
+                                'item_id': item.productId,
+                                'item_name': product ? product.name : 'Unknown Product',
+                                'quantity': item.quantity,
+                                'price': product ? product.price : 0
+                            };
+                        })
+                    });
+                }
+            } catch (error) {
+                console.error('Checkout error:', error);
+                showErrorFeedback('There was an error processing your checkout. Please try again.');
+            }
+        }
+
+        // Make checkout function globally available
+        window.proceedToShopifyCheckout = proceedToShopifyCheckout;
+
+        // Enhanced console logging for debugging
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            console.log('%c🚀 Organic HypoSolutions - Homepage Loaded', 'color: #2E5EAA; font-size: 16px; font-weight: bold;');
+            console.log('%c✅ Enhanced Shopify Integration Ready', 'color: #4ADE80; font-size: 14px;');
+            console.log('%c📦 Cart System Active', 'color: #f59e0b; font-size: 14px;');
+            console.log('%c🛒 Quick Add Buttons Enhanced', 'color: #7DD3FC; font-size: 14px;');
+        }
     </script>
 </body>
 </html>
