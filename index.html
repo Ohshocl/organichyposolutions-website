@@ -54,9 +54,52 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- ENHANCED SHOPIFY INTEGRATION: Load config first, then cart system, then Shopify integration -->
-<script src="shop/js/cart.js"></script>
-<script src="shop/js/shopify-integration.js"></script>
+    <!-- SHOPIFY BUY SDK -->
+    <script src="https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js"></script>
+    
+    <!-- SHOPIFY INTEGRATION CONFIG -->
+    <script>
+        // Shopify Configuration
+        window.SHOPIFY_CONFIG = {
+            domain: 'organichyposolutions.myshopify.com', // Replace with your actual domain
+            storefrontAccessToken: 'YOUR_STOREFRONT_ACCESS_TOKEN', // Replace with your token
+            initialized: false
+        };
+
+        // Product Variant Mapping from CSV data
+        window.SHOPIFY_PRODUCTS = {
+            // Organic Products (OHS)
+            'ohs-32oz-cleaner-ready': {
+                variantId: '50486044754252',
+                productId: '9686659391820',
+                handle: 'ohs-32oz-all-purpose-cleaner-ready-to-use-usda-organic',
+                title: 'OHS 32oz All-Purpose Cleaner Ready-to-Use (USDA Organic)',
+                price: 24.99
+            },
+            'ohs-8oz-skin-care-mist': {
+                variantId: '50486045868364',
+                productId: '9686663848268',
+                handle: 'ohs-8oz-skin-care-mist-usda-organic',
+                title: 'OHS 8oz Skin Care Mist (USDA Organic)',
+                price: 18.99
+            },
+            // Premium Products (HC)
+            'hc-32oz-professional-grade': {
+                variantId: '50486089023820',
+                productId: '9686689538380',
+                handle: 'hc-32oz-professional-grade-disinfectant-cleaner',
+                title: 'HC 32oz Professional-Grade Disinfectant Cleaner',
+                price: 34.99
+            },
+            'hc-1-gallon-commercial': {
+                variantId: '50486089187660',
+                productId: '9686689636684',
+                handle: 'hc-1-gallon-commercial-grade-disinfectant',
+                title: 'HC 1 Gallon Commercial-Grade Disinfectant',
+                price: 89.99
+            }
+        };
+    </script>
     
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEKE217WEY"></script>
@@ -313,129 +356,6 @@
             transform: translateX(0);
         }
 
-        /* Rest of styles will continue in next sections... */
-    </style>
-</head>
-<body>
-    <!-- GREEN Promotional Banner with BULK DISCOUNTS AS HIGH AS 42% -->
-    <div class="promo-banner text-center" id="promoBanner">
-        <div class="container">
-            <div class="d-flex justify-content-center align-items-center">
-                <div class="text-center">
-                    <span class="promo-text">
-                        💰 <strong>BULK DISCOUNTS AS HIGH AS 42%</strong> available
-                    </span>
-                </div>
-                <button class="promo-close ms-3" onclick="closeBanner()" aria-label="Close banner">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- FIXED Navigation - Updated Structure -->
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="index.html">
-                <svg width="32" height="32" viewBox="0 0 400 250" class="me-2">
-                    <rect width="400" height="250" fill="#2E5EAA"/>
-                    <text x="200" y="180" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="100" font-weight="bold">OHS</text>
-                    <text x="200" y="210" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="20">Organic HypoSolutions</text>
-                    <path d="M 320 80 Q 340 60 360 80 Q 340 100 320 80" fill="#4ADE80"/>
-                    <path d="M 330 70 Q 350 50 370 70 Q 350 90 330 70" fill="#22C55E"/>
-                </svg>
-                Organic HypoSolutions
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link fw-semibold" href="index.html">
-                            <i class="fas fa-home me-1"></i>Home
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="services.html">
-                            <i class="fas fa-spray-can me-1"></i>Services
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="products.html">
-                            <i class="fas fa-shopping-bag me-1"></i>Products
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="calculator.html">
-                            <i class="fas fa-calculator me-1"></i>Calculator
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="about.html" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-info-circle me-1"></i>About
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="about.html">
-                                <i class="fas fa-info-circle me-2"></i>About Us
-                            </a></li>
-                            <li><a class="dropdown-item" href="science-certifications.html">
-                                <i class="fas fa-microscope me-2"></i>Science & Certifications
-                            </a></li>
-                            <li><a class="dropdown-item" href="contact.html">
-                                <i class="fas fa-phone me-2"></i>Contact
-                            </a></li>
-                            <li><a class="dropdown-item" href="legal-information.html">
-                                <i class="fas fa-gavel me-2"></i>Legal Information
-                            </a></li>
-                        </ul>
-                    </li>
-                    
-                    <!-- Customer Shopping & Account -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-shopping-cart me-1"></i>Shop
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="shop/cart.html">
-                                <i class="fas fa-shopping-cart me-2"></i>View Cart 
-                                <span id="cartBadge" class="badge bg-danger ms-1" style="display: none;">0</span>
-                            </a></li>
-                            <li><a class="dropdown-item" href="shop/cart.html">
-                                <i class="fas fa-credit-card me-2"></i>Checkout via Shopify
-                            </a></li>
-                            <li><a class="dropdown-item" href="shop/book-service.html">
-                                <i class="fas fa-calendar-plus me-2"></i>Book Service
-                            </a></li>
-                        </ul>
-                    </li>
-                    
-                    <!-- FIXED Account Dropdown - ONLY Login and Register -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user me-1"></i>Account
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="auth/login.html">
-                                <i class="fas fa-sign-in-alt me-2"></i>Login
-                                <span class="badge bg-warning ms-1">Coming Soon</span>
-                            </a></li>
-                            <li><a class="dropdown-item" href="auth/register.html">
-                                <i class="fas fa-user-plus me-2"></i>Register
-                                <span class="badge bg-warning ms-1">Coming Soon</span>
-                            </a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-<!-- =================== SECTION 2: HERO & MAIN CONTENT =================== -->
-    
-    <!-- Continue CSS styles from Section 1 -->
-    <style>
         /* Buy Now Button */
         .btn-buy-now {
             background: linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green));
@@ -891,7 +811,304 @@
             padding: 80px 0;
             background: white;
         }
+
+        .contact-section {
+            padding: 60px 0;
+            background: linear-gradient(135deg, var(--ohs-primary-blue) 0%, var(--ohs-accent-blue) 100%);
+            color: white;
+        }
+
+        /* UPDATED PROFESSIONAL FOOTER STYLING - MATCHING REFERENCE IMAGE */
+        .footer-section {
+            background: #000000;
+            color: white;
+            padding: 3rem 0 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Brand Section */
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand-logo {
+            background: var(--ohs-primary-blue);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-right: 0.75rem;
+        }
+
+        .footer-brand-name {
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .footer-tagline {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+            margin-bottom: 0;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Footer Section Headings */
+        .footer-heading {
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Footer Lists */
+        .footer-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-list li {
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .footer-list a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s ease;
+        }
+
+        .footer-list a:hover {
+            color: var(--ohs-accent-blue);
+            text-decoration: none;
+        }
+
+        /* Contact Info Styling */
+        .footer-contact {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .footer-contact i {
+            margin-right: 0.5rem;
+            width: 16px;
+            color: var(--ohs-accent-blue);
+        }
+
+        .footer-contact a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-contact a:hover {
+            color: var(--ohs-accent-blue);
+        }
+
+        /* Social Media Icons */
+        .social-icons {
+            margin-top: 1rem;
+        }
+
+        .social-icons a {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.2rem;
+            margin-right: 1rem;
+            transition: color 0.2s ease;
+            text-decoration: none;
+        }
+
+        .social-icons a:hover {
+            color: var(--ohs-accent-blue);
+        }
+
+        /* Bottom Copyright */
+        .footer-bottom {
+            border-top: 1px solid #333;
+            padding-top: 1rem;
+            margin-top: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8rem;
+        }
+
+        .footer-badges {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .footer-badge {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .footer-section {
+                padding: 2rem 0 1rem;
+                text-align: center;
+            }
+            
+            .footer-brand {
+                justify-content: center;
+                margin-bottom: 1.5rem;
+            }
+            
+            .social-icons {
+                text-align: center;
+                margin: 1rem 0;
+            }
+
+            .hero-section {
+                padding: 30px 0;
+            }
+            
+            .contact-btn {
+                font-size: 1rem;
+                padding: 12px 24px;
+                margin: 8px;
+            }
+            
+            .process-step {
+                margin: 15px 0;
+                padding: 25px;
+            }
+        }
     </style>
+</head>
+<body>
+    <!-- GREEN Promotional Banner with BULK DISCOUNTS AS HIGH AS 42% -->
+    <div class="promo-banner text-center" id="promoBanner">
+        <div class="container">
+            <div class="d-flex justify-content-center align-items-center">
+                <div class="text-center">
+                    <span class="promo-text">
+                        💰 <strong>BULK DISCOUNTS AS HIGH AS 42%</strong> available
+                    </span>
+                </div>
+                <button class="promo-close ms-3" onclick="closeBanner()" aria-label="Close banner">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIXED Navigation - Updated Structure -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <svg width="32" height="32" viewBox="0 0 400 250" class="me-2">
+                    <rect width="400" height="250" fill="#2E5EAA"/>
+                    <text x="200" y="180" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="100" font-weight="bold">OHS</text>
+                    <text x="200" y="210" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="20">Organic HypoSolutions</text>
+                    <path d="M 320 80 Q 340 60 360 80 Q 340 100 320 80" fill="#4ADE80"/>
+                    <path d="M 330 70 Q 350 50 370 70 Q 350 90 330 70" fill="#22C55E"/>
+                </svg>
+                Organic HypoSolutions
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold" href="index.html">
+                            <i class="fas fa-home me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="services.html">
+                            <i class="fas fa-spray-can me-1"></i>Services
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="products.html">
+                            <i class="fas fa-shopping-bag me-1"></i>Products
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="calculator.html">
+                            <i class="fas fa-calculator me-1"></i>Calculator
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="about.html" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-info-circle me-1"></i>About
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="about.html">
+                                <i class="fas fa-info-circle me-2"></i>About Us
+                            </a></li>
+                            <li><a class="dropdown-item" href="science-certifications.html">
+                                <i class="fas fa-microscope me-2"></i>Science & Certifications
+                            </a></li>
+                            <li><a class="dropdown-item" href="contact.html">
+                                <i class="fas fa-phone me-2"></i>Contact
+                            </a></li>
+                            <li><a class="dropdown-item" href="legal-information.html">
+                                <i class="fas fa-gavel me-2"></i>Legal Information
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Customer Shopping & Account -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-shopping-cart me-1"></i>Shop
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="shop/cart.html">
+                                <i class="fas fa-shopping-cart me-2"></i>View Cart 
+                                <span id="cartBadge" class="badge bg-danger ms-1" style="display: none;">0</span>
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" onclick="proceedToShopifyCheckout()">
+                                <i class="fas fa-credit-card me-2"></i>Checkout via Shopify
+                            </a></li>
+                            <li><a class="dropdown-item" href="shop/book-service.html">
+                                <i class="fas fa-calendar-plus me-2"></i>Book Service
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- FIXED Account Dropdown - ONLY Login and Register -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user me-1"></i>Account
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="auth/login.html">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login
+                                <span class="badge bg-warning ms-1">Coming Soon</span>
+                            </a></li>
+                            <li><a class="dropdown-item" href="auth/register.html">
+                                <i class="fas fa-user-plus me-2"></i>Register
+                                <span class="badge bg-warning ms-1">Coming Soon</span>
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
     <!-- Hero Section -->
     <section class="hero-section" id="home">
@@ -961,7 +1178,7 @@
                                             <button class="quantity-btn" onclick="updateHeroQuantity('ohs-32oz-cleaner', 1)">+</button>
                                         </div>
                                         <button class="add-to-cart-btn enhanced-add-button" 
-                                                onclick="handleQuickAddWithShopify('ohs-32oz-cleaner-ready')"
+                                                onclick="handleQuickAddToShopify('ohs-32oz-cleaner-ready')"
                                                 id="quick-add-organic-32oz">
                                             Add $24.99
                                         </button>
@@ -976,7 +1193,7 @@
                                             <button class="quantity-btn" onclick="updateHeroQuantity('ohs-8oz-mist', 1)">+</button>
                                         </div>
                                         <button class="add-to-cart-btn enhanced-add-button" 
-                                                onclick="handleQuickAddWithShopify('ohs-8oz-skin-care-mist')"
+                                                onclick="handleQuickAddToShopify('ohs-8oz-skin-care-mist')"
                                                 id="quick-add-organic-8oz">
                                             Add $18.99
                                         </button>
@@ -997,7 +1214,7 @@
                                             <button class="quantity-btn" onclick="updateHeroQuantity('hc-32oz-pro', 1)">+</button>
                                         </div>
                                         <button class="add-to-cart-btn enhanced-add-button" 
-                                                onclick="handleQuickAddWithShopify('hc-32oz-professional-grade')"
+                                                onclick="handleQuickAddToShopify('hc-32oz-professional-grade')"
                                                 id="quick-add-premium-32oz">
                                             Add $34.99
                                         </button>
@@ -1012,7 +1229,7 @@
                                             <button class="quantity-btn" onclick="updateHeroQuantity('hc-1gal-comm', 1)">+</button>
                                         </div>
                                         <button class="add-to-cart-btn enhanced-add-button" 
-                                                onclick="handleQuickAddWithShopify('hc-1-gallon-commercial')"
+                                                onclick="handleQuickAddToShopify('hc-1-gallon-commercial')"
                                                 id="quick-add-premium-1gal">
                                             Add $89.99
                                         </button>
@@ -1365,190 +1582,6 @@
             </div>
         </div>
     </section>
-<!-- =================== SECTION 3: CONTACT, FOOTER & JAVASCRIPT =================== -->
-    
-    <!-- Continue CSS styles for footer -->
-    <style>
-        .contact-section {
-            padding: 60px 0;
-            background: linear-gradient(135deg, var(--ohs-primary-blue) 0%, var(--ohs-accent-blue) 100%);
-            color: white;
-        }
-
-        /* UPDATED PROFESSIONAL FOOTER STYLING - MATCHING REFERENCE IMAGE */
-        .footer-section {
-            background: #000000;
-            color: white;
-            padding: 3rem 0 1rem;
-            font-size: 0.9rem;
-        }
-
-        /* Brand Section */
-        .footer-brand {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .footer-brand-logo {
-            background: var(--ohs-primary-blue);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 1rem;
-            margin-right: 0.75rem;
-        }
-
-        .footer-brand-name {
-            color: white;
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin: 0;
-        }
-
-        .footer-tagline {
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.5;
-            margin-bottom: 0;
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-        }
-
-        /* Footer Section Headings */
-        .footer-heading {
-            color: white;
-            font-weight: 700;
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Footer Lists */
-        .footer-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .footer-list li {
-            margin-bottom: 0.5rem;
-            line-height: 1.4;
-        }
-
-        .footer-list a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: color 0.2s ease;
-        }
-
-        .footer-list a:hover {
-            color: var(--ohs-accent-blue);
-            text-decoration: none;
-        }
-
-        /* Contact Info Styling */
-        .footer-contact {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.85rem;
-            line-height: 1.6;
-        }
-
-        .footer-contact i {
-            margin-right: 0.5rem;
-            width: 16px;
-            color: var(--ohs-accent-blue);
-        }
-
-        .footer-contact a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-
-        .footer-contact a:hover {
-            color: var(--ohs-accent-blue);
-        }
-
-        /* Social Media Icons */
-        .social-icons {
-            margin-top: 1rem;
-        }
-
-        .social-icons a {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 1.2rem;
-            margin-right: 1rem;
-            transition: color 0.2s ease;
-            text-decoration: none;
-        }
-
-        .social-icons a:hover {
-            color: var(--ohs-accent-blue);
-        }
-
-        /* Bottom Copyright */
-        .footer-bottom {
-            border-top: 1px solid #333;
-            padding-top: 1rem;
-            margin-top: 2rem;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.8rem;
-        }
-
-        .footer-badges {
-            display: flex;
-            gap: 0.5rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 0.5rem;
-        }
-
-        .footer-badge {
-            background: rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.8);
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-            .footer-section {
-                padding: 2rem 0 1rem;
-                text-align: center;
-            }
-            
-            .footer-brand {
-                justify-content: center;
-                margin-bottom: 1.5rem;
-            }
-            
-            .social-icons {
-                text-align: center;
-                margin: 1rem 0;
-            }
-
-            .hero-section {
-                padding: 30px 0;
-            }
-            
-            .contact-btn {
-                font-size: 1rem;
-                padding: 12px 24px;
-                margin: 8px;
-            }
-            
-            .process-step {
-                margin: 15px 0;
-                padding: 25px;
-            }
-        }
-    </style>
 
     <!-- Quick Contact -->
     <section class="contact-section" id="contact">
@@ -1733,10 +1766,12 @@
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- ENHANCED JAVASCRIPT WITH SHOPIFY INTEGRATION -->
+    <!-- SHOPIFY INTEGRATION JAVASCRIPT -->
     <script>
-        // ENHANCED CART MANAGEMENT FOR SHOPIFY INTEGRATION
-        
+        // Global Shopify client variable
+        let shopifyClient = null;
+        let shopifyCart = null;
+
         // Hero quantity management
         let heroQuantities = {
             'ohs-32oz-cleaner': 1,
@@ -1745,70 +1780,96 @@
             'hc-1gal-comm': 1
         };
 
-        // ENHANCED QUICK ADD WITH SHOPIFY INTEGRATION
-        function handleQuickAddWithShopify(productId) {
+        // Initialize Shopify Buy SDK
+        async function initializeShopify() {
+            try {
+                // Create Shopify Buy client
+                shopifyClient = ShopifyBuy.buildClient({
+                    domain: window.SHOPIFY_CONFIG.domain,
+                    storefrontAccessToken: window.SHOPIFY_CONFIG.storefrontAccessToken
+                });
+
+                // Create or restore cart
+                const cartId = localStorage.getItem('shopifyCartId');
+                if (cartId) {
+                    try {
+                        shopifyCart = await shopifyClient.checkout.fetch(cartId);
+                        // If cart is completed, create a new one
+                        if (shopifyCart.completedAt) {
+                            shopifyCart = await shopifyClient.checkout.create();
+                            localStorage.setItem('shopifyCartId', shopifyCart.id);
+                        }
+                    } catch (error) {
+                        // Cart not found, create new one
+                        shopifyCart = await shopifyClient.checkout.create();
+                        localStorage.setItem('shopifyCartId', shopifyCart.id);
+                    }
+                } else {
+                    shopifyCart = await shopifyClient.checkout.create();
+                    localStorage.setItem('shopifyCartId', shopifyCart.id);
+                }
+
+                window.SHOPIFY_CONFIG.initialized = true;
+                updateCartBadge();
+                
+                console.log('✅ Shopify integration initialized successfully');
+            } catch (error) {
+                console.error('❌ Failed to initialize Shopify:', error);
+                showErrorFeedback('Failed to connect to store. Please refresh the page.');
+            }
+        }
+
+        // Handle quick add to Shopify cart
+        async function handleQuickAddToShopify(productKey) {
             const button = event.target;
             const originalText = button.innerHTML;
             
+            // Ensure Shopify is initialized
+            if (!window.SHOPIFY_CONFIG.initialized || !shopifyClient || !shopifyCart) {
+                await initializeShopify();
+            }
+
             // Show loading state
             button.classList.add('loading');
             button.innerHTML = 'Adding...';
             button.disabled = true;
             
             try {
-                // Get product from catalog (check if PRODUCT_CATALOG exists)
-                if (typeof PRODUCT_CATALOG === 'undefined') {
-                    throw new Error('Product catalog not loaded');
-                }
-                
-                const product = PRODUCT_CATALOG[productId];
-                if (!product) {
-                    throw new Error(`Product ${productId} not found in catalog`);
+                // Get product info from our mapping
+                const productInfo = window.SHOPIFY_PRODUCTS[productKey];
+                if (!productInfo) {
+                    throw new Error(`Product ${productKey} not found`);
                 }
                 
                 // Get quantity from hero controls
-                const productKey = Object.keys(heroQuantities).find(key => 
-                    productId.includes(key.replace(/-/g, '-'))
+                const productQuantityKey = Object.keys(heroQuantities).find(key => 
+                    productKey.includes(key.replace(/-/g, '-'))
                 );
-                const quantity = heroQuantities[productKey] || 1;
+                const quantity = heroQuantities[productQuantityKey] || 1;
                 
-                // Add to cart using existing cart.js system (check if function exists)
-                if (typeof addToCart === 'function') {
-                    addToCart(productId, quantity);
-                } else {
-                    // Fallback: create cart item manually
-                    let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-                    const existingIndex = cart.findIndex(item => item.productId === productId);
-                    
-                    if (existingIndex >= 0) {
-                        cart[existingIndex].quantity += quantity;
-                    } else {
-                        cart.push({
-                            productId: productId,
-                            name: product.name,
-                            price: product.price,
-                            quantity: quantity,
-                            addedAt: Date.now()
-                        });
-                    }
-                    
-                    localStorage.setItem('ohsCart', JSON.stringify(cart));
-                }
+                // Add to Shopify cart
+                const lineItemsToAdd = [{
+                    variantId: productInfo.variantId,
+                    quantity: quantity
+                }];
+                
+                shopifyCart = await shopifyClient.checkout.addLineItems(shopifyCart.id, lineItemsToAdd);
+                localStorage.setItem('shopifyCartId', shopifyCart.id);
                 
                 // Show success feedback
-                showEnhancedFeedback(product.name, quantity);
+                showEnhancedFeedback(productInfo.title, quantity);
                 
                 // Track analytics
                 if (typeof gtag !== 'undefined') {
                     gtag('event', 'add_to_cart', {
                         'currency': 'USD',
-                        'value': product.price * quantity,
+                        'value': productInfo.price * quantity,
                         'items': [{
-                            'item_id': productId,
-                            'item_name': product.name,
-                            'category': productId.includes('hc-') ? 'EPA Premium' : 'USDA Organic',
+                            'item_id': productInfo.variantId,
+                            'item_name': productInfo.title,
+                            'category': productKey.includes('hc-') ? 'EPA Premium' : 'USDA Organic',
                             'quantity': quantity,
-                            'price': product.price
+                            'price': productInfo.price
                         }]
                     });
                 }
@@ -1817,7 +1878,7 @@
                 updateCartBadge();
                 
             } catch (error) {
-                console.error('Error adding product to cart:', error);
+                console.error('Error adding product to Shopify cart:', error);
                 showErrorFeedback('Failed to add product. Please try again.');
             } finally {
                 // Restore button state
@@ -1868,6 +1929,58 @@
                         feedback.className = 'alert alert-success'; // Reset to success
                     }, 300);
                 }, 5000);
+            }
+        }
+
+        // Update cart badge based on Shopify cart
+        function updateCartBadge() {
+            if (!shopifyCart) return;
+            
+            const totalItems = shopifyCart.lineItems.reduce((sum, item) => sum + item.quantity, 0);
+            const cartBadge = document.getElementById('cartBadge');
+            
+            if (cartBadge) {
+                if (totalItems > 0) {
+                    cartBadge.textContent = totalItems;
+                    cartBadge.style.display = 'inline-block';
+                } else {
+                    cartBadge.style.display = 'none';
+                }
+            }
+        }
+
+        // Proceed to Shopify checkout
+        async function proceedToShopifyCheckout() {
+            try {
+                if (!shopifyCart || !shopifyCart.lineItems || shopifyCart.lineItems.length === 0) {
+                    alert('Your cart is empty. Please add some products first.');
+                    return;
+                }
+
+                // Track checkout initiation
+                if (typeof gtag !== 'undefined') {
+                    const totalValue = shopifyCart.lineItems.reduce((total, item) => {
+                        return total + (parseFloat(item.variant.price) * item.quantity);
+                    }, 0);
+
+                    gtag('event', 'begin_checkout', {
+                        'currency': 'USD',
+                        'value': totalValue,
+                        'items': shopifyCart.lineItems.map(item => ({
+                            'item_id': item.variant.id,
+                            'item_name': item.title,
+                            'quantity': item.quantity,
+                            'price': parseFloat(item.variant.price)
+                        }))
+                    });
+                }
+
+                // Redirect to Shopify checkout
+                window.location.href = shopifyCart.webUrl;
+                
+            } catch (error) {
+                console.error('Checkout error:', error);
+                showErrorFeedback('There was an error processing your checkout. Please try again.');
             }
         }
 
@@ -1949,28 +2062,6 @@
             }
         }
 
-        // Function to update cart badge from localStorage
-        function updateCartBadge() {
-            try {
-                const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-                const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
-                const cartBadge = document.getElementById('cartBadge');
-                
-                if (cartBadge) {
-                    if (totalItems > 0) {
-                        cartBadge.textContent = totalItems;
-                        cartBadge.style.display = 'inline-block';
-                    } else {
-                        cartBadge.style.display = 'none';
-                    }
-                }
-            } catch (error) {
-                console.log('Cart data not found or invalid, hiding badge');
-                const cartBadge = document.getElementById('cartBadge');
-                if (cartBadge) cartBadge.style.display = 'none';
-            }
-        }
-
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -2032,32 +2123,34 @@
             });
         });
 
-        // Enhanced add button tracking
-        document.querySelectorAll('.enhanced-add-button').forEach(btn => {
-            btn.addEventListener('click', function() {
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'click', {
-                        'event_category': 'E-commerce',
-                        'event_label': 'Enhanced Add Button'
-                    });
-                }
-            });
-        });
-
         // Listen for storage changes to update cart badge when cart is modified on other pages
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'ohsCart') {
-                updateCartBadge();
+        window.addEventListener('storage', async function(e) {
+            if (e.key === 'shopifyCartId' && e.newValue) {
+                try {
+                    if (shopifyClient) {
+                        shopifyCart = await shopifyClient.checkout.fetch(e.newValue);
+                        updateCartBadge();
+                    }
+                } catch (error) {
+                    console.error('Failed to fetch updated cart:', error);
+                }
             }
         });
 
         // Also check for cart updates when the page regains focus
-        window.addEventListener('focus', function() {
-            updateCartBadge();
+        window.addEventListener('focus', async function() {
+            if (shopifyClient && shopifyCart) {
+                try {
+                    shopifyCart = await shopifyClient.checkout.fetch(shopifyCart.id);
+                    updateCartBadge();
+                } catch (error) {
+                    console.error('Failed to refresh cart:', error);
+                }
+            }
         });
 
         // INITIALIZATION ON DOM LOAD
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             // Check if banner should be shown
             const banner = document.getElementById('promoBanner');
             if (localStorage.getItem('promoBannerClosed') === 'true') {
@@ -2067,8 +2160,8 @@
                 banner.style.transition = 'transform 0.3s ease';
             }
             
-            // Update cart badge with actual cart count
-            updateCartBadge();
+            // Initialize Shopify
+            await initializeShopify();
             
             // Set initial disabled states for minus buttons
             Object.keys(heroQuantities).forEach(key => {
@@ -2077,18 +2170,6 @@
                     minusBtn.disabled = true;
                 }
             });
-
-            // Initialize Shopify integration if available
-            if (typeof window.ShopifyIntegration !== 'undefined') {
-                try {
-                    window.shopifyIntegration = new window.ShopifyIntegration();
-                    console.log('✅ Shopify integration initialized successfully');
-                } catch (error) {
-                    console.warn('⚠️ Shopify integration failed to initialize:', error);
-                }
-            } else {
-                console.log('ℹ️ Shopify integration not yet loaded, will initialize when available');
-            }
 
             // Track page load
             if (typeof gtag !== 'undefined') {
@@ -2099,85 +2180,23 @@
             }
         });
 
-        // Global error handler for cart operations
-        window.addEventListener('error', function(e) {
-            if (e.message.includes('cart') || e.message.includes('shopify')) {
-                console.error('Cart/Shopify error:', e.error);
-                showErrorFeedback('Sorry, there was an issue with the cart. Please refresh and try again.');
-            }
-        });
-
         // Make functions globally available
         window.closeBanner = closeBanner;
-        window.handleQuickAddWithShopify = handleQuickAddWithShopify;
+        window.handleQuickAddToShopify = handleQuickAddToShopify;
         window.showProductLine = showProductLine;
         window.updateHeroQuantity = updateHeroQuantity;
         window.bookResidentialService = bookResidentialService;
         window.bookCommercialService = bookCommercialService;
         window.updateCartBadge = updateCartBadge;
-
-        // SHOPIFY CHECKOUT INTEGRATION
-        // This function will be enhanced when Shopify integration is fully loaded
-        function proceedToShopifyCheckout() {
-            try {
-                const cartItems = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-                
-                if (cartItems.length === 0) {
-                    alert('Your cart is empty. Please add some products first.');
-                    return;
-                }
-
-                // If Shopify integration is available, use it
-                if (window.shopifyIntegration && typeof window.shopifyIntegration.createCheckout === 'function') {
-                    window.shopifyIntegration.createCheckout(cartItems)
-                        .then(checkoutUrl => {
-                            window.location.href = checkoutUrl;
-                        })
-                        .catch(error => {
-                            console.error('Shopify checkout error:', error);
-                            // Fallback to cart page
-                            window.location.href = 'shop/cart.html';
-                        });
-                } else {
-                    // Fallback to cart page for now
-                    console.log('Shopify integration not ready, redirecting to cart page');
-                    window.location.href = 'shop/cart.html';
-                }
-
-                // Track checkout initiation
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'begin_checkout', {
-                        'currency': 'USD',
-                        'value': cartItems.reduce((total, item) => {
-                            return total + ((item.price || 0) * (item.quantity || 0));
-                        }, 0),
-                        'items': cartItems.map(item => {
-                            return {
-                                'item_id': item.productId || 'unknown',
-                                'item_name': item.name || 'Unknown Product',
-                                'quantity': item.quantity || 0,
-                                'price': item.price || 0
-                            };
-                        })
-                    });
-                }
-            } catch (error) {
-                console.error('Checkout error:', error);
-                showErrorFeedback('There was an error processing your checkout. Please try again.');
-            }
-        }
-
-        // Make checkout function globally available
         window.proceedToShopifyCheckout = proceedToShopifyCheckout;
 
         // Enhanced console logging for debugging
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
             console.log('%c🚀 Organic HypoSolutions - Homepage Loaded', 'color: #2E5EAA; font-size: 16px; font-weight: bold;');
-            console.log('%c✅ Enhanced Shopify Integration Ready', 'color: #4ADE80; font-size: 14px;');
-            console.log('%c📦 Cart System Active', 'color: #f59e0b; font-size: 14px;');
-            console.log('%c🛒 Quick Add Buttons Enhanced', 'color: #7DD3FC; font-size: 14px;');
+            console.log('%c✅ Shopify Buy SDK Integration Active', 'color: #4ADE80; font-size: 14px;');
+            console.log('%c📦 Product Variant Mapping Loaded', 'color: #f59e0b; font-size: 14px;');
+            console.log('%c🛒 Quick Add Buttons Connected to Shopify', 'color: #7DD3FC; font-size: 14px;');
         }
     </script>
 </body>
 </html>
-    
