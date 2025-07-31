@@ -54,26 +54,10 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- FIXED SHOPIFY INTEGRATION: Load cart system first, conditionally load Shopify integration -->
-    <script src="shop/js/cart.js"></script>
-    
-    <!-- Conditionally load Shopify integration -->
-    <script>
-        // Try to load shopify config if it exists
-        const configScript = document.createElement('script');
-        configScript.src = 'shop/js/shopify-config.js';
-        configScript.onerror = function() {
-            console.log('Shopify config not found - running in local mode');
-        };
-        configScript.onload = function() {
-            console.log('Shopify config loaded successfully');
-            // Only load integration if config loads
-            const integrationScript = document.createElement('script');
-            integrationScript.src = 'shop/js/shopify-integration.js';
-            document.head.appendChild(integrationScript);
-        };
-        document.head.appendChild(configScript);
-    </script>
+    <!-- ENHANCED SHOPIFY INTEGRATION: Load config first, then cart system, then Shopify integration -->
+<script src="shop/js/shopify-config.js"></script>
+<script src="shop/js/cart.js"></script>
+<script src="shop/js/shopify-integration.js"></script>
     
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEKE217WEY"></script>
@@ -329,6 +313,8 @@
         #quick-add-feedback.show {
             transform: translateX(0);
         }
+
+        /* Rest of styles will continue in next sections... */
     </style>
 </head>
 <body>
@@ -446,6 +432,7 @@
                 </ul>
             </div>
         </div>
+    </nav>
 <!-- =================== SECTION 2: HERO & MAIN CONTENT =================== -->
     
     <!-- Continue CSS styles from Section 1 -->
@@ -2194,8 +2181,4 @@
     </script>
 </body>
 </html>
-        
-
-
-        
-    </nav>
+    
