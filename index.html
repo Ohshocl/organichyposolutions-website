@@ -937,7 +937,102 @@
                         </a>
                     </div>
                     
-                    
+                    <!-- ENHANCED Quick Product Selection Widget with Shopify Integration -->
+                    <div class="product-quick-add mt-4">
+                        <h6 class="fw-bold mb-3">Quick Add Popular Products</h6>
+                        <div class="product-line-selector">
+                            <button class="line-toggle active" onclick="showProductLine('organic')" id="organic-toggle">
+                                <i class="fas fa-leaf me-1"></i>USDA Organic
+                            </button>
+                            <button class="line-toggle" onclick="showProductLine('premium')" id="premium-toggle">
+                                <i class="fas fa-shield-alt me-1"></i>EPA Premium
+                            </button>
+                        </div>
+                        
+                        <!-- Organic Products Quick Add -->
+                        <div id="organic-products" class="product-line-products">
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <small class="fw-bold">32oz All-Purpose Cleaner</small>
+                                        <div class="quantity-selector">
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('ohs-32oz-cleaner', -1)" id="minus-ohs-32oz-cleaner">-</button>
+                                            <span class="quantity-display" id="qty-ohs-32oz-cleaner">1</span>
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('ohs-32oz-cleaner', 1)">+</button>
+                                        </div>
+                                        <button class="add-to-cart-btn enhanced-add-button" 
+                                                onclick="handleQuickAddWithShopify('ohs-32oz-cleaner-ready')"
+                                                id="quick-add-organic-32oz">
+                                            Add $24.99
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <small class="fw-bold">8oz Skin Care Mist</small>
+                                        <div class="quantity-selector">
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('ohs-8oz-mist', -1)" id="minus-ohs-8oz-mist">-</button>
+                                            <span class="quantity-display" id="qty-ohs-8oz-mist">1</span>
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('ohs-8oz-mist', 1)">+</button>
+                                        </div>
+                                        <button class="add-to-cart-btn enhanced-add-button" 
+                                                onclick="handleQuickAddWithShopify('ohs-8oz-skin-care-mist')"
+                                                id="quick-add-organic-8oz">
+                                            Add $18.99
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Premium Products Quick Add -->
+                        <div id="premium-products" class="product-line-products" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <small class="fw-bold">32oz Professional Grade</small>
+                                        <div class="quantity-selector">
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('hc-32oz-pro', -1)" id="minus-hc-32oz-pro">-</button>
+                                            <span class="quantity-display" id="qty-hc-32oz-pro">1</span>
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('hc-32oz-pro', 1)">+</button>
+                                        </div>
+                                        <button class="add-to-cart-btn enhanced-add-button" 
+                                                onclick="handleQuickAddWithShopify('hc-32oz-professional-grade')"
+                                                id="quick-add-premium-32oz">
+                                            Add $34.99
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <small class="fw-bold">1 Gallon Commercial</small>
+                                        <div class="quantity-selector">
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('hc-1gal-comm', -1)" id="minus-hc-1gal-comm">-</button>
+                                            <span class="quantity-display" id="qty-hc-1gal-comm">1</span>
+                                            <button class="quantity-btn" onclick="updateHeroQuantity('hc-1gal-comm', 1)">+</button>
+                                        </div>
+                                        <button class="add-to-cart-btn enhanced-add-button" 
+                                                onclick="handleQuickAddWithShopify('hc-1-gallon-commercial')"
+                                                id="quick-add-premium-1gal">
+                                            Add $89.99
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ENHANCED SUCCESS FEEDBACK -->
+                    <div id="quick-add-feedback" class="alert alert-success" style="display: none;">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <div>
+                                <div class="fw-bold">Added to Cart!</div>
+                                <small id="feedback-message">Product added successfully</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-lg-5">
                     <div class="hero-stats text-center">
                         <h3 class="mb-4">Why Choose Professional Fogging?</h3>
