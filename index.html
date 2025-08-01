@@ -54,52 +54,23 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- SHOPIFY BUY SDK -->
-    <script src="https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js"></script>
-    
-    <!-- SHOPIFY INTEGRATION CONFIG -->
+    <!-- LOAD SHOPIFY CONFIG FIRST -->
     <script>
-        // Shopify Configuration
-        window.SHOPIFY_CONFIG = {
-            domain: 'organichyposolutions.myshopify.com', // Replace with your actual domain
-            storefrontAccessToken: 'YOUR_STOREFRONT_ACCESS_TOKEN', // Replace with your token
-            initialized: false
-        };
-
-        // Product Variant Mapping from CSV data
-        window.SHOPIFY_PRODUCTS = {
-            // Organic Products (OHS)
-            'ohs-32oz-cleaner-ready': {
-                variantId: '50486044754252',
-                productId: '9686659391820',
-                handle: 'ohs-32oz-all-purpose-cleaner-ready-to-use-usda-organic',
-                title: 'OHS 32oz All-Purpose Cleaner Ready-to-Use (USDA Organic)',
-                price: 24.99
-            },
-            'ohs-8oz-skin-care-mist': {
-                variantId: '50486045868364',
-                productId: '9686663848268',
-                handle: 'ohs-8oz-skin-care-mist-usda-organic',
-                title: 'OHS 8oz Skin Care Mist (USDA Organic)',
-                price: 18.99
-            },
-            // Premium Products (HC)
-            'hc-32oz-professional-grade': {
-                variantId: '50486089023820',
-                productId: '9686689538380',
-                handle: 'hc-32oz-professional-grade-disinfectant-cleaner',
-                title: 'HC 32oz Professional-Grade Disinfectant Cleaner',
-                price: 34.99
-            },
-            'hc-1-gallon-commercial': {
-                variantId: '50486089187660',
-                productId: '9686689636684',
-                handle: 'hc-1-gallon-commercial-grade-disinfectant',
-                title: 'HC 1 Gallon Commercial-Grade Disinfectant',
-                price: 89.99
-            }
-        };
+        // SHOPIFY CONFIGURATION - Will be populated by GitHub Actions
+        window.SHOPIFY_DOMAIN = window.SHOPIFY_DOMAIN || 'organichyposolutions.myshopify.com';
+        window.SHOPIFY_STOREFRONT_TOKEN = window.SHOPIFY_STOREFRONT_TOKEN || null;
+        window.SHOPIFY_DEBUG = true;
+        
+        console.log('🔐 Shopify configuration loaded');
+        console.log('🏪 Store:', window.SHOPIFY_DOMAIN);
+        console.log('🔑 Token configured:', window.SHOPIFY_STOREFRONT_TOKEN ? '✅' : '❌');
     </script>
+    
+    <!-- LOAD PRODUCT CATALOG -->
+    <script src="shop/js/product-catalog.js"></script>
+    
+    <!-- LOAD CART SYSTEM -->
+    <script src="shop/js/cart.js"></script>
     
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-HEKE217WEY"></script>
@@ -1080,8 +1051,8 @@
                                 <i class="fas fa-shopping-cart me-2"></i>View Cart 
                                 <span id="cartBadge" class="badge bg-danger ms-1" style="display: none;">0</span>
                             </a></li>
-                            <li><a class="dropdown-item" href="#" onclick="proceedToShopifyCheckout()">
-                                <i class="fas fa-credit-card me-2"></i>Checkout via Shopify
+                            <li><a class="dropdown-item" href="#" onclick="proceedToCheckout()">
+                                <i class="fas fa-credit-card me-2"></i>Checkout
                             </a></li>
                             <li><a class="dropdown-item" href="shop/book-service.html">
                                 <i class="fas fa-calendar-plus me-2"></i>Book Service
@@ -1178,7 +1149,7 @@
                                             <button class="quantity-btn" onclick="updateHeroQuantity('ohs-32oz-cleaner', 1)">+</button>
                                         </div>
                                         <button class="add-to-cart-btn enhanced-add-button" 
-                                                onclick="handleQuickAddToShopify('ohs-32oz-cleaner-ready')"
+                                                onclick="quickAddProduct('ohs-32oz-organic-cleaner')"
                                                 id="quick-add-organic-32oz">
                                             Add $24.99
                                         </button>
@@ -1193,7 +1164,7 @@
                                             <button class="quantity-btn" onclick="updateHeroQuantity('ohs-8oz-mist', 1)">+</button>
                                         </div>
                                         <button class="add-to-cart-btn enhanced-add-button" 
-                                                onclick="handleQuickAddToShopify('ohs-8oz-skin-care-mist')"
+                                                onclick="quickAddProduct('ohs-8oz-organic-skin-health-mist')"
                                                 id="quick-add-organic-8oz">
                                             Add $18.99
                                         </button>
@@ -1214,7 +1185,7 @@
                                             <button class="quantity-btn" onclick="updateHeroQuantity('hc-32oz-pro', 1)">+</button>
                                         </div>
                                         <button class="add-to-cart-btn enhanced-add-button" 
-                                                onclick="handleQuickAddToShopify('hc-32oz-professional-grade')"
+                                                onclick="quickAddProduct('hc-32oz-cleaner-epa')"
                                                 id="quick-add-premium-32oz">
                                             Add $34.99
                                         </button>
@@ -1229,7 +1200,7 @@
                                             <button class="quantity-btn" onclick="updateHeroQuantity('hc-1gal-comm', 1)">+</button>
                                         </div>
                                         <button class="add-to-cart-btn enhanced-add-button" 
-                                                onclick="handleQuickAddToShopify('hc-1-gallon-commercial')"
+                                                onclick="quickAddProduct('hc-1gal-ready-to-use-epa')"
                                                 id="quick-add-premium-1gal">
                                             Add $89.99
                                         </button>
@@ -1770,132 +1741,137 @@
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- SHOPIFY INTEGRATION JAVASCRIPT -->
+    <!-- SIMPLIFIED JAVASCRIPT - USES API APPROACH -->
     <script>
-        // Global Shopify client variable
-        let shopifyClient = null;
-        let shopifyCart = null;
-
-        // Hero quantity management
-        let heroQuantities = {
-            'ohs-32oz-cleaner': 1,
-            'ohs-8oz-mist': 1,
-            'hc-32oz-pro': 1,
-            'hc-1gal-comm': 1
-        };
-
-        // Initialize Shopify Buy SDK
-        async function initializeShopify() {
-            try {
-                // Create Shopify Buy client
-                shopifyClient = ShopifyBuy.buildClient({
-                    domain: window.SHOPIFY_CONFIG.domain,
-                    storefrontAccessToken: window.SHOPIFY_CONFIG.storefrontAccessToken
-                });
-
-                // Create or restore cart
-                const cartId = localStorage.getItem('shopifyCartId');
-                if (cartId) {
-                    try {
-                        shopifyCart = await shopifyClient.checkout.fetch(cartId);
-                        // If cart is completed, create a new one
-                        if (shopifyCart.completedAt) {
-                            shopifyCart = await shopifyClient.checkout.create();
-                            localStorage.setItem('shopifyCartId', shopifyCart.id);
-                        }
-                    } catch (error) {
-                        // Cart not found, create new one
-                        shopifyCart = await shopifyClient.checkout.create();
-                        localStorage.setItem('shopifyCartId', shopifyCart.id);
-                    }
-                } else {
-                    shopifyCart = await shopifyClient.checkout.create();
-                    localStorage.setItem('shopifyCartId', shopifyCart.id);
-                }
-
-                window.SHOPIFY_CONFIG.initialized = true;
-                updateCartBadge();
+        // ===================================================================
+        // SIMPLE CART SYSTEM USING EXISTING API STRUCTURE
+        // ===================================================================
+        
+        // Wait for cart system and product catalog to load
+        function waitForCartSystem() {
+            return new Promise((resolve, reject) => {
+                let attempts = 0;
+                const maxAttempts = 50;
                 
-                console.log('✅ Shopify integration initialized successfully');
-            } catch (error) {
-                console.error('❌ Failed to initialize Shopify:', error);
-                showErrorFeedback('Failed to connect to store. Please refresh the page.');
-            }
+                const checkSystems = () => {
+                    if (typeof PRODUCT_CATALOG !== 'undefined' && 
+                        typeof addToCart === 'function' && 
+                        typeof updateCartBadge === 'function') {
+                        resolve(true);
+                    } else if (attempts >= maxAttempts) {
+                        reject(new Error('Cart system failed to load'));
+                    } else {
+                        attempts++;
+                        setTimeout(checkSystems, 100);
+                    }
+                };
+                
+                checkSystems();
+            });
         }
-
-        // Handle quick add to Shopify cart
-        async function handleQuickAddToShopify(productKey) {
+        
+        // Hero quantity management (simplified)
+        let heroQuantities = {
+            'ohs-32oz-organic-cleaner': 1,
+            'ohs-8oz-organic-skin-health-mist': 1,
+            'hc-32oz-cleaner-epa': 1,
+            'hc-1gal-ready-to-use-epa': 1
+        };
+        
+        // Quick add product function using existing cart system
+        function quickAddProduct(productId) {
             const button = event.target;
             const originalText = button.innerHTML;
             
-            // Ensure Shopify is initialized
-            if (!window.SHOPIFY_CONFIG.initialized || !shopifyClient || !shopifyCart) {
-                await initializeShopify();
-            }
-
             // Show loading state
-            button.classList.add('loading');
-            button.innerHTML = 'Adding...';
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
             button.disabled = true;
+            button.classList.add('loading');
             
             try {
-                // Get product info from our mapping
-                const productInfo = window.SHOPIFY_PRODUCTS[productKey];
-                if (!productInfo) {
-                    throw new Error(`Product ${productKey} not found`);
+                // Use existing cart system
+                if (typeof addToCart === 'function') {
+                    // Get quantity if it exists in our hero quantities
+                    const quantity = heroQuantities[productId] || 1;
+                    
+                    // Add to cart using existing function
+                    for (let i = 0; i < quantity; i++) {
+                        addToCart(productId);
+                    }
+                    
+                    // Get product info for feedback
+                    const product = PRODUCT_CATALOG[productId];
+                    if (product) {
+                        showSuccessFeedback(product.name, quantity);
+                    }
+                    
+                    // Update cart badge
+                    if (typeof updateCartBadge === 'function') {
+                        updateCartBadge();
+                    }
+                    
+                    console.log(`✅ Added ${quantity}x ${productId} to cart`);
+                } else {
+                    throw new Error('Cart system not loaded');
                 }
-                
-                // Get quantity from hero controls
-                const productQuantityKey = Object.keys(heroQuantities).find(key => 
-                    productKey.includes(key.replace(/-/g, '-'))
-                );
-                const quantity = heroQuantities[productQuantityKey] || 1;
-                
-                // Add to Shopify cart
-                const lineItemsToAdd = [{
-                    variantId: productInfo.variantId,
-                    quantity: quantity
-                }];
-                
-                shopifyCart = await shopifyClient.checkout.addLineItems(shopifyCart.id, lineItemsToAdd);
-                localStorage.setItem('shopifyCartId', shopifyCart.id);
-                
-                // Show success feedback
-                showEnhancedFeedback(productInfo.title, quantity);
-                
-                // Track analytics
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'add_to_cart', {
-                        'currency': 'USD',
-                        'value': productInfo.price * quantity,
-                        'items': [{
-                            'item_id': productInfo.variantId,
-                            'item_name': productInfo.title,
-                            'category': productKey.includes('hc-') ? 'EPA Premium' : 'USDA Organic',
-                            'quantity': quantity,
-                            'price': productInfo.price
-                        }]
-                    });
-                }
-                
-                // Update cart badge
-                updateCartBadge();
                 
             } catch (error) {
-                console.error('Error adding product to Shopify cart:', error);
+                console.error('Error adding product to cart:', error);
                 showErrorFeedback('Failed to add product. Please try again.');
             } finally {
                 // Restore button state
                 setTimeout(() => {
-                    button.classList.remove('loading');
                     button.innerHTML = originalText;
                     button.disabled = false;
+                    button.classList.remove('loading');
                 }, 1000);
             }
         }
-
-        // Enhanced success feedback
-        function showEnhancedFeedback(productName, quantity) {
+        
+        // Product line switching
+        function showProductLine(line) {
+            const organicProducts = document.getElementById('organic-products');
+            const premiumProducts = document.getElementById('premium-products');
+            const organicToggle = document.getElementById('organic-toggle');
+            const premiumToggle = document.getElementById('premium-toggle');
+            
+            if (line === 'organic') {
+                organicProducts.style.display = 'block';
+                premiumProducts.style.display = 'none';
+                organicToggle.classList.add('active');
+                premiumToggle.classList.remove('active');
+            } else {
+                organicProducts.style.display = 'none';
+                premiumProducts.style.display = 'block';
+                organicToggle.classList.remove('active');
+                premiumToggle.classList.add('active');
+            }
+        }
+        
+        // Update quantity in hero section
+        function updateHeroQuantity(productKey, change) {
+            // Find the matching product ID
+            const productMappings = {
+                'ohs-32oz-cleaner': 'ohs-32oz-organic-cleaner',
+                'ohs-8oz-mist': 'ohs-8oz-organic-skin-health-mist',
+                'hc-32oz-pro': 'hc-32oz-cleaner-epa',
+                'hc-1gal-comm': 'hc-1gal-ready-to-use-epa'
+            };
+            
+            const productId = productMappings[productKey];
+            if (productId && heroQuantities[productId]) {
+                heroQuantities[productId] = Math.max(1, heroQuantities[productId] + change);
+                
+                const display = document.getElementById('qty-' + productKey);
+                const minusBtn = document.getElementById('minus-' + productKey);
+                
+                if (display) display.textContent = heroQuantities[productId];
+                if (minusBtn) minusBtn.disabled = heroQuantities[productId] <= 1;
+            }
+        }
+        
+        // Show success feedback
+        function showSuccessFeedback(productName, quantity) {
             const feedback = document.getElementById('quick-add-feedback');
             const message = document.getElementById('feedback-message');
             
@@ -1913,8 +1889,8 @@
                 }, 3000);
             }
         }
-
-        // Error feedback
+        
+        // Show error feedback
         function showErrorFeedback(message) {
             const feedback = document.getElementById('quick-add-feedback');
             const messageEl = document.getElementById('feedback-message');
@@ -1935,90 +1911,22 @@
                 }, 5000);
             }
         }
-
-        // Update cart badge based on Shopify cart
-        function updateCartBadge() {
-            if (!shopifyCart) return;
-            
-            const totalItems = shopifyCart.lineItems.reduce((sum, item) => sum + item.quantity, 0);
-            const cartBadge = document.getElementById('cartBadge');
-            
-            if (cartBadge) {
-                if (totalItems > 0) {
-                    cartBadge.textContent = totalItems;
-                    cartBadge.style.display = 'inline-block';
-                } else {
-                    cartBadge.style.display = 'none';
-                }
-            }
-        }
-
-        // Proceed to Shopify checkout
-        async function proceedToShopifyCheckout() {
+        
+        // Proceed to checkout using existing system
+        function proceedToCheckout() {
             try {
-                if (!shopifyCart || !shopifyCart.lineItems || shopifyCart.lineItems.length === 0) {
-                    alert('Your cart is empty. Please add some products first.');
-                    return;
+                if (typeof proceedToShopifyCheckout === 'function') {
+                    proceedToShopifyCheckout();
+                } else {
+                    // Fallback - redirect to cart page
+                    window.location.href = 'shop/cart.html';
                 }
-
-                // Track checkout initiation
-                if (typeof gtag !== 'undefined') {
-                    const totalValue = shopifyCart.lineItems.reduce((total, item) => {
-                        return total + (parseFloat(item.variant.price) * item.quantity);
-                    }, 0);
-
-                    gtag('event', 'begin_checkout', {
-                        'currency': 'USD',
-                        'value': totalValue,
-                        'items': shopifyCart.lineItems.map(item => ({
-                            'item_id': item.variant.id,
-                            'item_name': item.title,
-                            'quantity': item.quantity,
-                            'price': parseFloat(item.variant.price)
-                        }))
-                    });
-                }
-
-                // Redirect to Shopify checkout
-                window.location.href = shopifyCart.webUrl;
-                
             } catch (error) {
                 console.error('Checkout error:', error);
                 showErrorFeedback('There was an error processing your checkout. Please try again.');
             }
         }
-
-        // Product line switching
-        function showProductLine(line) {
-            const organicProducts = document.getElementById('organic-products');
-            const premiumProducts = document.getElementById('premium-products');
-            const organicToggle = document.getElementById('organic-toggle');
-            const premiumToggle = document.getElementById('premium-toggle');
-            
-            if (line === 'organic') {
-                organicProducts.style.display = 'block';
-                premiumProducts.style.display = 'none';
-                organicToggle.classList.add('active');
-                premiumToggle.classList.remove('active');
-            } else {
-                organicProducts.style.display = 'none';
-                premiumProducts.style.display = 'block';
-                organicToggle.classList.remove('active');
-                premiumToggle.classList.add('active');
-            }
-        }
-
-        // Update quantity in hero section
-        function updateHeroQuantity(productKey, change) {
-            heroQuantities[productKey] = Math.max(1, heroQuantities[productKey] + change);
-            
-            const display = document.getElementById('qty-' + productKey);
-            const minusBtn = document.getElementById('minus-' + productKey);
-            
-            if (display) display.textContent = heroQuantities[productKey];
-            if (minusBtn) minusBtn.disabled = heroQuantities[productKey] <= 1;
-        }
-
+        
         // Service booking functions
         function bookResidentialService() {
             // Track booking intent
@@ -2030,6 +1938,158 @@
             }
             
             // Redirect to booking form
+            window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform?entry.service_type=Residential&entry.source=Homepage_Hero', '_blank');
+        }
+
+        function bookCommercialService() {
+            // Track booking intent
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'book_commercial_service', {
+                    'event_category': 'Service Booking',
+                    'event_label': 'Hero Section'
+                });
+            }
+            
+            // Redirect to commercial quote form
+            window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform?entry.service_type=Commercial&entry.source=Homepage_Hero', '_blank');
+        }
+        
+        // Banner close functionality
+        function closeBanner() {
+            const banner = document.getElementById('promoBanner');
+            banner.style.transform = 'translateY(-100%)';
+            setTimeout(() => {
+                banner.style.display = 'none';
+            }, 300);
+            
+            // Store in localStorage so it stays closed for the session
+            localStorage.setItem('promoBannerClosed', 'true');
+            
+            // Track banner close
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'banner_close', {
+                    'event_category': 'User Interaction',
+                    'event_label': 'Promotional Banner'
+                });
+            }
+        }
+        
+        // Check if banner should be shown
+        function checkBanner() {
+            const banner = document.getElementById('promoBanner');
+            if (localStorage.getItem('promoBannerClosed') === 'true') {
+                banner.style.display = 'none';
+            }
+        }
+        
+        // Smooth scrolling for anchor links
+        function initSmoothScrolling() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        }
+        
+        // Add animation to cards on scroll
+        function initAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all cards for animation
+            document.querySelectorAll('.service-card, .standard-card, .process-step, .product-line-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+        }
+        
+        // Initialize everything when DOM is ready
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🎉 OHS Homepage Loading...');
+            
+            // Check banner status
+            checkBanner();
+            
+            // Initialize smooth scrolling
+            initSmoothScrolling();
+            
+            // Initialize animations
+            initAnimations();
+            
+            try {
+                // Wait for cart system to load
+                await waitForCartSystem();
+                console.log('✅ Cart system ready');
+                
+                // Set initial disabled states for minus buttons
+                Object.keys(heroQuantities).forEach(productId => {
+                    const productKey = Object.keys({
+                        'ohs-32oz-cleaner': 'ohs-32oz-organic-cleaner',
+                        'ohs-8oz-mist': 'ohs-8oz-organic-skin-health-mist',
+                        'hc-32oz-pro': 'hc-32oz-cleaner-epa',
+                        'hc-1gal-comm': 'hc-1gal-ready-to-use-epa'
+                    }).find(key => 
+                        {'ohs-32oz-cleaner': 'ohs-32oz-organic-cleaner',
+                         'ohs-8oz-mist': 'ohs-8oz-organic-skin-health-mist',
+                         'hc-32oz-pro': 'hc-32oz-cleaner-epa',
+                         'hc-1gal-comm': 'hc-1gal-ready-to-use-epa'}[key] === productId
+                    );
+                    
+                    if (productKey) {
+                        const minusBtn = document.getElementById('minus-' + productKey);
+                        if (minusBtn && heroQuantities[productId] <= 1) {
+                            minusBtn.disabled = true;
+                        }
+                    }
+                });
+                
+                console.log('✅ Homepage initialization complete');
+                
+            } catch (error) {
+                console.error('❌ Homepage initialization failed:', error);
+                console.log('🔄 Cart system may still be loading...');
+            }
+
+            // Track page load
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'page_view', {
+                    'page_title': 'Homepage',
+                    'page_location': window.location.href
+                });
+            }
+        });
+        
+        // Make functions globally available
+        window.closeBanner = closeBanner;
+        window.quickAddProduct = quickAddProduct;
+        window.showProductLine = showProductLine;
+        window.updateHeroQuantity = updateHeroQuantity;
+        window.bookResidentialService = bookResidentialService;
+        window.bookCommercialService = bookCommercialService;
+        window.proceedToCheckout = proceedToCheckout;
+        
+        console.log('🚀 Homepage JavaScript Loaded - Using API Approach');
+    </script> to booking form
             window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform?entry.service_type=Residential&entry.source=Homepage_Hero', '_blank');
         }
 
