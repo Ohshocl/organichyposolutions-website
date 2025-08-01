@@ -1846,11 +1846,14 @@
     <!-- SELF-CONTAINED JAVASCRIPT - NO EXTERNAL DEPENDENCIES -->
     <script>
         // ===================================================================
-        // SIMPLE CART SYSTEM - COMPLETELY SELF-CONTAINED
+        // UNIFIED CART SYSTEM - COMPATIBLE WITH PRODUCTS PAGE
         // ===================================================================
         
-        // Simple cart storage
-        let cartItems = JSON.parse(localStorage.getItem('ohsSimpleCart') || '[]');
+        // Use the same localStorage key as your products page cart system
+        const CART_STORAGE_KEY = 'ohsCart'; // Standard key used across site
+        
+        // Load existing cart (compatible with products page format)
+        let cartItems = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
         
         // Hero quantity management
         let heroQuantities = {
@@ -1860,7 +1863,7 @@
             'hc-1gal-ready-to-use-epa': 1
         };
         
-        // Quick add product function using hardcoded catalog
+        // Quick add product function - COMPATIBLE FORMAT
         function quickAddProduct(productId) {
             const button = event.target;
             const originalText = button.innerHTML;
@@ -1880,23 +1883,34 @@
                 // Get quantity
                 const quantity = heroQuantities[productId] || 1;
                 
-                // Add to cart array
-                const existingItem = cartItems.find(item => item.id === productId);
-                if (existingItem) {
-                    existingItem.quantity += quantity;
+                // Check if product already exists in cart
+                const existingItemIndex = cartItems.findIndex(item => item.productId === productId);
+                
+                if (existingItemIndex !== -1) {
+                    // Update existing item quantity
+                    cartItems[existingItemIndex].quantity += quantity;
                 } else {
+                    // Add new item in format compatible with products page
                     cartItems.push({
-                        id: productId,
+                        productId: productId,           // Standard field name
                         name: product.name,
                         price: product.pricing.retail,
                         category: product.badgeType,
                         quantity: quantity,
-                        variantId: product.shopifyVariants.retail
+                        variantId: product.shopifyVariants.retail,
+                        // Additional fields for compatibility
+                        handle: product.shopifyHandle,
+                        sku: product.sku,
+                        type: product.type,
+                        addedAt: new Date().toISOString()
                     });
                 }
                 
-                // Save to localStorage
-                localStorage.setItem('ohsSimpleCart', JSON.stringify(cartItems));
+                // Save to localStorage with standard key
+                localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
+                
+                // Trigger storage event for cross-page updates
+                window.dispatchEvent(new Event('storage'));
                 
                 // Update cart badge
                 updateCartBadge();
@@ -1904,7 +1918,8 @@
                 // Show success feedback
                 showSuccessFeedback(product.name, quantity);
                 
-                console.log(`✅ Added ${quantity}x ${product.name} to cart`);
+                console.log(`✅ Added ${quantity}x ${product.name} to unified cart`);
+                console.log(`📦 Cart now has ${cartItems.length} unique items`);
                 
                 // Track analytics
                 if (typeof gtag !== 'undefined') {
@@ -1934,7 +1949,7 @@
             }
         }
         
-        // Update cart badge
+        // Update cart badge - COMPATIBLE with products page
         function updateCartBadge() {
             const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
             const cartBadge = document.getElementById('cartBadge');
@@ -1947,9 +1962,25 @@
                     cartBadge.style.display = 'none';
                 }
             }
+            
+            // Also update any other cart displays on the page
+            const cartCount = document.querySelector('.cart-count');
+            if (cartCount) {
+                cartCount.textContent = totalItems;
+            }
         }
         
-        // Proceed to checkout (redirect to cart page or Shopify)
+        // Listen for cart updates from other pages
+        window.addEventListener('storage', function(e) {
+            if (e.key === CART_STORAGE_KEY) {
+                // Cart was updated on another page/tab
+                cartItems = JSON.parse(e.newValue || '[]');
+                updateCartBadge();
+                console.log('🔄 Cart updated from another page');
+            }
+        });
+        
+        // Proceed to checkout - UNIFIED SYSTEM
         function proceedToCheckout() {
             try {
                 if (cartItems.length === 0) {
@@ -1957,12 +1988,15 @@
                     return;
                 }
                 
+                console.log('🛒 Proceeding to checkout with', cartItems.length, 'unique items');
+                console.log('📦 Total items:', cartItems.reduce((sum, item) => sum + item.quantity, 0));
+                
                 // Check if we have Shopify integration
                 if (window.SHOPIFY_STOREFRONT_TOKEN) {
                     // Create Shopify checkout using GraphQL API
                     createShopifyCheckout();
                 } else {
-                    // Fallback - redirect to cart page
+                    // Redirect to cart page - cart data will be available there
                     window.location.href = 'shop/cart.html';
                 }
                 
@@ -1972,14 +2006,18 @@
             }
         }
         
-        // Create Shopify checkout using GraphQL API
+        // Create Shopify checkout using GraphQL API - ENHANCED
         async function createShopifyCheckout() {
             try {
+                console.log('🔗 Creating Shopify checkout...');
+                
                 // Convert cart items to Shopify line items
                 const lineItems = cartItems.map(item => ({
                     variantId: item.variantId,
                     quantity: item.quantity
                 }));
+                
+                console.log('📦 Line items for checkout:', lineItems);
                 
                 // GraphQL mutation for creating checkout
                 const mutation = `
@@ -1991,6 +2029,14 @@
                                 totalPriceV2 {
                                     amount
                                     currencyCode
+                                }
+                                lineItems(first: 250) {
+                                    edges {
+                                        node {
+                                            title
+                                            quantity
+                                        }
+                                    }
                                 }
                             }
                             checkoutUserErrors {
@@ -2018,8 +2064,11 @@
                 });
                 
                 const data = await response.json();
+                console.log('📋 Shopify checkout response:', data);
                 
                 if (data.data && data.data.checkoutCreate.checkout) {
+                    const checkout = data.data.checkoutCreate.checkout;
+                    
                     // Track checkout initiation
                     if (typeof gtag !== 'undefined') {
                         const totalValue = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
@@ -2035,14 +2084,24 @@
                         });
                     }
                     
+                    console.log('✅ Checkout created successfully');
+                    console.log('🔗 Redirecting to:', checkout.webUrl);
+                    
+                    // Store checkout ID for potential future use
+                    localStorage.setItem('lastCheckoutId', checkout.id);
+                    
                     // Redirect to Shopify checkout
-                    window.location.href = data.data.checkoutCreate.checkout.webUrl;
+                    window.location.href = checkout.webUrl;
+                    
                 } else {
-                    throw new Error('Failed to create checkout');
+                    const errors = data.data?.checkoutCreate?.checkoutUserErrors || [];
+                    console.error('❌ Checkout creation failed:', errors);
+                    throw new Error('Failed to create checkout: ' + errors.map(e => e.message).join(', '));
                 }
                 
             } catch (error) {
-                console.error('Shopify checkout error:', error);
+                console.error('❌ Shopify checkout error:', error);
+                alert('There was an issue creating your checkout. Redirecting to cart page...');
                 // Fallback to cart page
                 window.location.href = 'shop/cart.html';
             }
@@ -2070,7 +2129,7 @@
         
         // Update quantity in hero section
         function updateHeroQuantity(productKey, change) {
-            // Product key mappings
+            // Product key mappings - FIXED MAPPING
             const productMappings = {
                 'ohs-32oz-cleaner': 'ohs-32oz-organic-cleaner',
                 'ohs-8oz-mist': 'ohs-8oz-organic-skin-health-mist',
@@ -2244,30 +2303,24 @@
             // Load existing cart and update badge
             updateCartBadge();
             
-            // Set initial disabled states for minus buttons
-            Object.keys(heroQuantities).forEach(productId => {
-                const productKey = Object.keys({
-                    'ohs-32oz-cleaner': 'ohs-32oz-organic-cleaner',
-                    'ohs-8oz-mist': 'ohs-8oz-organic-skin-health-mist',
-                    'hc-32oz-pro': 'hc-32oz-cleaner-epa',
-                    'hc-1gal-comm': 'hc-1gal-ready-to-use-epa'
-                }).find(key => 
-                    {'ohs-32oz-cleaner': 'ohs-32oz-organic-cleaner',
-                     'ohs-8oz-mist': 'ohs-8oz-organic-skin-health-mist',
-                     'hc-32oz-pro': 'hc-32oz-cleaner-epa',
-                     'hc-1gal-comm': 'hc-1gal-ready-to-use-epa'}[key] === productId
-                );
-                
-                if (productKey) {
-                    const minusBtn = document.getElementById('minus-' + productKey);
-                    if (minusBtn && heroQuantities[productId] <= 1) {
-                        minusBtn.disabled = true;
-                    }
+            // Set initial disabled states for minus buttons - SIMPLIFIED
+            const productKeyMappings = {
+                'ohs-32oz-cleaner': 'ohs-32oz-organic-cleaner',
+                'ohs-8oz-mist': 'ohs-8oz-organic-skin-health-mist',
+                'hc-32oz-pro': 'hc-32oz-cleaner-epa',
+                'hc-1gal-comm': 'hc-1gal-ready-to-use-epa'
+            };
+            
+            Object.entries(productKeyMappings).forEach(([displayKey, productId]) => {
+                const minusBtn = document.getElementById('minus-' + displayKey);
+                if (minusBtn && heroQuantities[productId] <= 1) {
+                    minusBtn.disabled = true;
                 }
             });
             
             console.log('✅ Homepage initialization complete');
-            console.log('📦 Cart loaded with', cartItems.length, 'items');
+            console.log('📦 Unified cart loaded with', cartItems.length, 'unique items');
+            console.log('🔗 Cart will sync with products page via localStorage key:', CART_STORAGE_KEY);
 
             // Track page load
             if (typeof gtag !== 'undefined') {
