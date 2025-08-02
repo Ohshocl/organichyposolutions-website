@@ -2195,7 +2195,7 @@ const OHS_PRODUCTS = {
     }
 
 }; // END OHS PRODUCTS
-
+window.PRODUCT_CATALOG = { ...HYPO_COMPANY_PRODUCTS, ...OHS_PRODUCTS };
 // =================================================================
 // ENHANCED CART SYSTEM - INTEGRATED WITH YOUR EXISTING CATALOG
 // Replace everything after: window.PRODUCT_CATALOG = { ...HYPO_COMPANY_PRODUCTS, ...OHS_PRODUCTS };
@@ -2645,11 +2645,11 @@ class Cart {
 }
 
 // =================================================================
-// GLOBAL CART INITIALIZATION
+// GLOBAL CART INITIALIZATION - DEFERRED UNTIL SCRIPT COMPLETES
 // =================================================================
 
 /**
- * Initialize the cart system
+ * Initialize the cart system - called after script loads completely
  */
 function initializeCart() {
     window.cart = new Cart();
@@ -2710,7 +2710,7 @@ function initializeCart() {
 }
 
 // =================================================================
-// VERIFICATION AND DIAGNOSTICS
+// VERIFICATION AND DIAGNOSTICS - ONLY CALLED AFTER INIT
 // =================================================================
 
 /**
@@ -2796,37 +2796,31 @@ function testCartFunctionality() {
 }
 
 // =================================================================
-// INITIALIZATION
+// DEFERRED INITIALIZATION - RUNS AFTER THE ENTIRE SCRIPT LOADS
 // =================================================================
 
-// Initialize when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-        initializeCart();
-        checkForDuplicates();
-        verifyShopifyVariants();
-        
-        // Test functionality in development
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            testCartFunctionality();
-        }
-    });
-} else {
+// Use setTimeout(0) to defer execution until after the current script finishes
+setTimeout(function() {
+    // Initialize the cart system
     initializeCart();
+    
+    // Run diagnostics
     checkForDuplicates();
     verifyShopifyVariants();
-}
-
-// =================================================================
-// FINAL LOGGING
-// =================================================================
-
-console.log('🛍️ ORGANIC HYPOSOLUTIONS CART SYSTEM LOADED');
-console.log('📊 Product Statistics:');
-console.log(`   Total Products: ${Object.keys(window.PRODUCT_CATALOG).length}`);
-console.log(`   Premium Line: ${Object.values(window.PRODUCT_CATALOG).filter(p => p.productLine === 'premium').length} products`);
-console.log(`   Organic Line: ${Object.values(window.PRODUCT_CATALOG).filter(p => p.productLine === 'organic').length} products`);
-console.log('🔗 Shopify Integration: READY');
-console.log('💳 API Endpoints: /api/shopify/create-checkout.js');
-console.log('📦 Cart Functions: Global window.cart, window.addProductToCart()');
-console.log('⚡ Status: FULLY OPERATIONAL');
+    
+    // Test functionality in development
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        testCartFunctionality();
+    }
+    
+    // Log final status
+    console.log('🛍️ ORGANIC HYPOSOLUTIONS CART SYSTEM LOADED');
+    console.log('📊 Product Statistics:');
+    console.log(`   Total Products: ${Object.keys(window.PRODUCT_CATALOG).length}`);
+    console.log(`   Premium Line: ${Object.values(window.PRODUCT_CATALOG).filter(p => p.productLine === 'premium').length} products`);
+    console.log(`   Organic Line: ${Object.values(window.PRODUCT_CATALOG).filter(p => p.productLine === 'organic').length} products`);
+    console.log('🔗 Shopify Integration: READY');
+    console.log('💳 API Endpoints: /api/shopify/create-checkout.js');
+    console.log('📦 Cart Functions: Global window.cart, window.addProductToCart()');
+    console.log('⚡ Status: FULLY OPERATIONAL');
+}, 0);
