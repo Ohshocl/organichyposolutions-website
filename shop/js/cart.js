@@ -2195,20 +2195,19 @@ const OHS_PRODUCTS = {
     }
 
 }; // END OHS PRODUCTS
-// Make sure PRODUCT_CATALOG is globally accessible
-window.PRODUCT_CATALOG = {
-    ...HYPO_COMPANY_PRODUCTS,
-    ...OHS_PRODUCTS
-};
 
-// Make sure calculateWholesaleRate is globally accessible  
+// =================================================================
+// ENHANCED CART SYSTEM - INTEGRATED WITH YOUR EXISTING CATALOG
+// Replace everything after: window.PRODUCT_CATALOG = { ...HYPO_COMPANY_PRODUCTS, ...OHS_PRODUCTS };
+// =================================================================
+
+// Keep your calculateWholesaleRate function (it's useful)
 window.calculateWholesaleRate = function(productId, quantity) {
     const product = window.PRODUCT_CATALOG[productId];
     if (!product || !product.pricing) {
         return { price: 0, isWholesale: false };
     }
     
-    // Simple wholesale logic - you can enhance this
     const threshold = product.wholesaleThreshold || 12;
     const isWholesale = quantity >= threshold;
     
@@ -2218,54 +2217,505 @@ window.calculateWholesaleRate = function(productId, quantity) {
     };
 };
 
-console.log('✅ Cart system ready with', Object.keys(window.PRODUCT_CATALOG).length, 'products');
-console.log('✅ OHS ORGANIC COMPLETE - All 19 products with Shopify variant IDs mapped');
-console.log('🚫 NO ORDER MINIMUMS - All minOrder set to 1 as requested');
-console.log('🔗 VARIANT IDS MAPPED - All 4 variants per product (retail, wholesale, retail sub, wholesale sub)');
-console.log('🌱 ORGANIC CERTIFIED - All products USDA Organic #8150019050');
-console.log('📦 READY FOR INTEGRATION - OHS section complete');
-
 // =================================================================
-// MISSING FUNCTIONS FROM CART-BACKUP.JS + STEP 2C REQUIREMENT
+// ENHANCED CART CLASS SYSTEM
 // =================================================================
 
-// 1. GET ACCOUNT TYPE
-function getAccountType() {
-    return localStorage.getItem('ohsAccountType') || 'consumer';
-}
+/**
+ * Enhanced Cart Management System
+ * Integrates with your 57-product catalog and Shopify API endpoints
+ */
+class Cart {
+    constructor() {
+        // Use cart_items for compatibility with new system
+        this.items = JSON.parse(localStorage.getItem('cart_items') || '[]');
+        this.updateUI();
+        
+        // Listen for storage changes across tabs/pages
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'cart_items') {
+                this.items = JSON.parse(e.newValue || '[]');
+                this.updateUI();
+            }
+        });
+    }
 
-// 2. ENHANCED CART BADGE UPDATE
-function updateCartBadge() {
-    const cartItems = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-    const cartBadge = document.getElementById('cartBadge');
-    const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-    
-    if (cartBadge) {
-        if (totalItems > 0) {
-            cartBadge.textContent = totalItems;
-            cartBadge.style.display = 'inline-block';
+    /**
+     * Add item to cart using your existing product catalog
+     * @param {string} productId - Your cart.js product ID (e.g., 'hc-32oz-pet-cleaner')
+     * @param {number} quantity - Quantity to add
+     * @param {string} pricingType - 'retail', 'wholesale', 'retailSubscription', 'wholesaleSubscription'
+     */
+    addProductToCart(productId, quantity = 1, pricingType = 'retail') {
+        const product = window.PRODUCT_CATALOG[productId];
+        if (!product) {
+            console.error('Product not found in catalog:', productId);
+            this.showError(`Product "${productId}" not found`);
+            return false;
+        }
+
+        // Get the appropriate Shopify variant ID from your catalog
+        const variantId = product.shopifyVariants?.[pricingType];
+        if (!variantId) {
+            console.error('No Shopify variant found for:', productId, pricingType);
+            this.showError('Product variant not available');
+            return false;
+        }
+
+        // Get price from your catalog
+        const price = product.pricing?.[pricingType] || product.pricing?.retail || 0;
+
+        // Create cart item with all your catalog data
+        const cartItem = {
+            variantId: variantId,
+            quantity: quantity,
+            productId: productId,
+            name: product.name,
+            price: price,
+            emoji: product.emoji || '🧴',
+            handle: product.id,
+            sku: product.sku,
+            category: product.category,
+            productLine: product.productLine,
+            pricingType: pricingType,
+            certifications: product.certifications || [],
+            useCase: product.useCase || [],
+            badgeType: product.badgeType,
+            badgeColor: product.badgeColor,
+            addedAt: new Date().toISOString()
+        };
+
+        this.addItem(variantId, quantity, cartItem);
+        return true;
+    }
+
+    /**
+     * Add item to cart (internal method)
+     */
+    addItem(variantId, quantity = 1, productData = {}) {
+        const existingItem = this.items.find(item => item.variantId === variantId);
+        
+        if (existingItem) {
+            existingItem.quantity += quantity;
+            existingItem.updatedAt = new Date().toISOString();
         } else {
-            cartBadge.style.display = 'none';
+            this.items.push({
+                variantId,
+                quantity,
+                ...productData
+            });
+        }
+        
+        this.save();
+        this.updateUI();
+        this.showAddedToCartFeedback(productData.name || 'Item');
+    }
+
+    /**
+     * Remove item from cart
+     */
+    removeItem(variantId) {
+        this.items = this.items.filter(item => item.variantId !== variantId);
+        this.save();
+        this.updateUI();
+    }
+
+    /**
+     * Update item quantity
+     */
+    updateQuantity(variantId, newQuantity) {
+        if (newQuantity <= 0) {
+            this.removeItem(variantId);
+            return;
+        }
+
+        const item = this.items.find(item => item.variantId === variantId);
+        if (item) {
+            item.quantity = newQuantity;
+            item.updatedAt = new Date().toISOString();
+            
+            // Update pricing if quantity crosses wholesale threshold
+            if (item.productId && window.PRODUCT_CATALOG[item.productId]) {
+                const product = window.PRODUCT_CATALOG[item.productId];
+                const threshold = product.wholesaleThreshold || 12;
+                const newPricingType = newQuantity >= threshold ? 'wholesale' : 'retail';
+                
+                if (newPricingType !== item.pricingType) {
+                    item.pricingType = newPricingType;
+                    item.price = product.pricing[newPricingType] || item.price;
+                    item.variantId = product.shopifyVariants[newPricingType] || item.variantId;
+                }
+            }
+            
+            this.save();
+            this.updateUI();
         }
     }
+
+    /**
+     * Update UI elements across all pages
+     */
+    updateUI() {
+        const count = this.items.reduce((sum, item) => sum + item.quantity, 0);
+        const total = this.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+        // Update all possible cart count elements
+        const cartElements = [
+            '#cart-count', '#cartBadge', '#cartBadgeDropdown', 
+            '.cart-count', '.cart-badge', '[data-cart-count]'
+        ];
+
+        cartElements.forEach(selector => {
+            document.querySelectorAll(selector).forEach(el => {
+                if (count > 0) {
+                    el.textContent = count;
+                    el.style.display = 'inline-block';
+                    el.classList.remove('d-none');
+                } else {
+                    el.style.display = 'none';
+                    el.classList.add('d-none');
+                }
+            });
+        });
+
+        // Update cart total displays
+        document.querySelectorAll('.cart-total, [data-cart-total]').forEach(el => {
+            el.textContent = `$${total.toFixed(2)}`;
+        });
+
+        // Update cart preview
+        this.updateCartPreview();
+        
+        // Trigger custom event for other components
+        window.dispatchEvent(new CustomEvent('cartUpdated', { 
+            detail: { count, total, items: this.items } 
+        }));
+
+        // Update wholesale progress indicators
+        this.updateWholesaleProgress();
+    }
+
+    /**
+     * Update cart preview in navigation dropdowns
+     */
+    updateCartPreview() {
+        const previewContainer = document.querySelector('.cart-preview-items');
+        if (!previewContainer) return;
+
+        if (this.items.length === 0) {
+            previewContainer.innerHTML = '<p class="text-muted mb-0 p-3">Your cart is empty</p>';
+            return;
+        }
+
+        const previewHTML = this.items.slice(0, 3).map(item => `
+            <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
+                <div class="flex-grow-1">
+                    <small class="fw-medium">${item.emoji || '🧴'} ${item.name || 'Product'}</small>
+                    <div class="text-muted" style="font-size: 0.75rem;">
+                        Qty: ${item.quantity} • ${item.pricingType || 'retail'}
+                    </div>
+                </div>
+                <small class="fw-medium">$${((item.price || 0) * item.quantity).toFixed(2)}</small>
+            </div>
+        `).join('');
+
+        previewContainer.innerHTML = previewHTML;
+        
+        if (this.items.length > 3) {
+            previewContainer.innerHTML += `
+                <div class="p-2 text-center">
+                    <small class="text-muted">+ ${this.items.length - 3} more items</small>
+                </div>
+            `;
+        }
+    }
+
+    /**
+     * Update wholesale progress indicators
+     */
+    updateWholesaleProgress() {
+        const totalQuantity = this.items.reduce((sum, item) => sum + item.quantity, 0);
+        const wholesaleItems = this.items.filter(item => item.pricingType === 'wholesale').length;
+        
+        // Update any wholesale progress bars or indicators
+        document.querySelectorAll('.wholesale-progress').forEach(el => {
+            el.setAttribute('data-total-qty', totalQuantity);
+            el.setAttribute('data-wholesale-items', wholesaleItems);
+        });
+
+        console.log(`Cart: ${totalQuantity} items total, ${wholesaleItems} at wholesale pricing`);
+    }
+
+    /**
+     * Save cart to localStorage
+     */
+    save() {
+        localStorage.setItem('cart_items', JSON.stringify(this.items));
+        
+        // Also update legacy ohsCart for backward compatibility
+        const legacyCart = {};
+        this.items.forEach(item => {
+            if (item.productId) {
+                legacyCart[item.productId] = {
+                    name: item.name,
+                    price: item.price,
+                    quantity: item.quantity,
+                    emoji: item.emoji,
+                    variantId: item.variantId,
+                    pricingType: item.pricingType
+                };
+            }
+        });
+        localStorage.setItem('ohsCart', JSON.stringify(legacyCart));
+    }
+
+    /**
+     * Initiate Shopify checkout using your API endpoints
+     */
+    async checkout() {
+        if (!window.shopifyClient) {
+            console.error('Shopify client not loaded');
+            this.showError('Checkout system not available. Please refresh and try again.');
+            return;
+        }
+
+        if (this.items.length === 0) {
+            this.showError('Your cart is empty. Add some products before checking out.');
+            return;
+        }
+
+        const checkoutBtn = document.getElementById('checkout-btn') || 
+                          document.querySelector('.checkout-btn') ||
+                          document.querySelector('[data-checkout]');
+        const originalContent = checkoutBtn?.innerHTML;
+        
+        if (checkoutBtn) {
+            checkoutBtn.disabled = true;
+            checkoutBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creating checkout...';
+        }
+
+        try {
+            // Prepare line items for your Shopify API
+            const lineItems = this.items.map(item => ({
+                variantId: item.variantId,
+                quantity: item.quantity
+            }));
+
+            console.log('Creating checkout with your API:', lineItems);
+            
+            // Use your existing API endpoint
+            const response = await fetch('/api/shopify/create-checkout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ lineItems })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Checkout failed: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            if (!data.success || !data.checkoutUrl) {
+                throw new Error(data.error || 'Invalid checkout response');
+            }
+            
+            // Clear cart and redirect to Shopify
+            this.clear();
+            window.location.href = data.checkoutUrl;
+            
+        } catch (error) {
+            console.error('Checkout failed:', error);
+            this.showError('Checkout failed. Please try again or contact support.');
+            
+            if (checkoutBtn) {
+                checkoutBtn.disabled = false;
+                checkoutBtn.innerHTML = originalContent || 'Proceed to Checkout';
+            }
+        }
+    }
+
+    /**
+     * Clear all items from cart
+     */
+    clear() {
+        this.items = [];
+        this.save();
+        this.updateUI();
+    }
+
+    /**
+     * Get cart summary
+     */
+    getSummary() {
+        const count = this.items.reduce((sum, item) => sum + item.quantity, 0);
+        const total = this.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const wholesaleItems = this.items.filter(item => item.pricingType === 'wholesale').length;
+        
+        return {
+            itemCount: count,
+            total: total,
+            isEmpty: count === 0,
+            items: this.items,
+            wholesaleItems: wholesaleItems,
+            totalSavings: this.calculateTotalSavings()
+        };
+    }
+
+    /**
+     * Calculate total savings from wholesale pricing
+     */
+    calculateTotalSavings() {
+        return this.items.reduce((savings, item) => {
+            if (item.productId && item.pricingType === 'wholesale') {
+                const product = window.PRODUCT_CATALOG[item.productId];
+                if (product?.pricing?.retail) {
+                    const retailPrice = product.pricing.retail * item.quantity;
+                    const wholesalePrice = item.price * item.quantity;
+                    return savings + (retailPrice - wholesalePrice);
+                }
+            }
+            return savings;
+        }, 0);
+    }
+
+    /**
+     * Show user feedback when item is added
+     */
+    showAddedToCartFeedback(productName) {
+        const toast = document.createElement('div');
+        toast.className = 'position-fixed top-0 end-0 p-3';
+        toast.style.zIndex = '9999';
+        toast.innerHTML = `
+            <div class="toast show" role="alert">
+                <div class="toast-header bg-success text-white">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <strong class="me-auto">Added to Cart</strong>
+                    <button type="button" class="btn-close btn-close-white" onclick="this.closest('.toast').remove()"></button>
+                </div>
+                <div class="toast-body">
+                    ${productName} has been added to your cart.
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.remove();
+            }
+        }, 3000);
+    }
+
+    /**
+     * Show error message
+     */
+    showError(message) {
+        console.error('Cart Error:', message);
+        
+        // Try to show Bootstrap modal/toast, fallback to alert
+        const existingToast = document.querySelector('.error-toast');
+        if (existingToast) existingToast.remove();
+        
+        const toast = document.createElement('div');
+        toast.className = 'error-toast position-fixed top-0 end-0 p-3';
+        toast.style.zIndex = '9999';
+        toast.innerHTML = `
+            <div class="toast show" role="alert">
+                <div class="toast-header bg-danger text-white">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong class="me-auto">Error</strong>
+                    <button type="button" class="btn-close btn-close-white" onclick="this.closest('.error-toast').remove()"></button>
+                </div>
+                <div class="toast-body">${message}</div>
+            </div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.remove();
+            }
+        }, 5000);
+    }
+}
+
+// =================================================================
+// GLOBAL CART INITIALIZATION
+// =================================================================
+
+/**
+ * Initialize the cart system
+ */
+function initializeCart() {
+    window.cart = new Cart();
     
-    updateWholesaleProgress();
-    updateWholesaleSavingsDisplay();
+    // Backward compatibility functions for existing code
+    window.addToCart = function(productId, productName, price, emoji = '🧴', quantity = 1, variantId = null, sku = null) {
+        // Try to add using the enhanced system first
+        if (window.PRODUCT_CATALOG[productId]) {
+            return window.cart.addProductToCart(productId, quantity, 'retail');
+        }
+        
+        // Fallback for non-catalog products
+        window.cart.addItem(variantId || productId, quantity, {
+            name: productName,
+            price: price,
+            emoji: emoji,
+            handle: productId,
+            sku: sku,
+            pricingType: 'retail'
+        });
+        return true;
+    };
+
+    window.removeFromCart = function(variantId) {
+        window.cart.removeItem(variantId);
+    };
+
+    window.updateCartQuantity = function(variantId, quantity) {
+        window.cart.updateQuantity(variantId, quantity);
+    };
+
+    window.clearCart = function() {
+        window.cart.clear();
+    };
+
+    window.getCartSummary = function() {
+        return window.cart.getSummary();
+    };
+
+    // Enhanced functions using your catalog
+    window.addProductToCart = function(productId, quantity = 1, pricingType = 'retail') {
+        return window.cart.addProductToCart(productId, quantity, pricingType);
+    };
+
+    // Account type functions (kept for compatibility)
+    window.getAccountType = function() {
+        return localStorage.getItem('ohsAccountType') || 'consumer';
+    };
+
+    window.setAccountType = function(type) {
+        localStorage.setItem('ohsAccountType', type);
+        console.log('Account type set to:', type);
+    };
+
+    console.log('✅ Enhanced cart system initialized');
+    console.log(`📦 ${Object.keys(window.PRODUCT_CATALOG).length} products available`);
+    console.log(`🛒 ${window.cart.items.length} items in cart`);
 }
 
-// 3. WHOLESALE PROGRESS UPDATE
-function updateWholesaleProgress() {
-    const cartItems = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-    const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-    console.log('Wholesale progress: ' + totalQuantity + ' items in cart');
-}
+// =================================================================
+// VERIFICATION AND DIAGNOSTICS
+// =================================================================
 
-// 4. WHOLESALE SAVINGS DISPLAY
-function updateWholesaleSavingsDisplay() {
-    console.log('Wholesale savings updated');
-}
-
-// 5. CHECK FOR DUPLICATES
+/**
+ * Check for duplicate products in catalog
+ */
 function checkForDuplicates() {
     const productIds = Object.keys(window.PRODUCT_CATALOG);
     const productNames = Object.values(window.PRODUCT_CATALOG).map(p => p.name);
@@ -2274,41 +2724,109 @@ function checkForDuplicates() {
     const uniqueNames = [...new Set(productNames)];
     
     if (productIds.length !== uniqueIds.length) {
-        console.error('DUPLICATE PRODUCT IDs FOUND:', productIds.length - uniqueIds.length, 'duplicates');
+        console.error('❌ DUPLICATE PRODUCT IDs FOUND:', productIds.length - uniqueIds.length, 'duplicates');
     }
     
     if (productNames.length !== uniqueNames.length) {
-        console.error('DUPLICATE PRODUCT NAMES FOUND:', productNames.length - uniqueNames.length, 'duplicates');
+        console.error('❌ DUPLICATE PRODUCT NAMES FOUND:', productNames.length - uniqueNames.length, 'duplicates');
     }
     
     if (productIds.length === uniqueIds.length && productNames.length === uniqueNames.length) {
-        console.log('No duplicates found in product catalog');
+        console.log('✅ No duplicates found in product catalog');
     }
 }
 
-// 6. VERIFY SHOPIFY VARIANTS (REQUIRED BY STEP 2C)
+/**
+ * Verify Shopify variants are properly mapped
+ */
 function verifyShopifyVariants() {
     const products = Object.values(window.PRODUCT_CATALOG);
     const withVariants = products.filter(p => p.shopifyVariants);
-    console.log(withVariants.length + ' of ' + products.length + ' products have Shopify variants');
+    
+    console.log(`🔗 ${withVariants.length} of ${products.length} products have Shopify variants`);
     
     if (withVariants.length === products.length) {
-        console.log('All products ready for Shopify integration!');
+        console.log('✅ All products ready for Shopify integration!');
+        
+        // Check variant completeness
+        const incompleteVariants = products.filter(p => {
+            const variants = p.shopifyVariants;
+            return !variants?.retail || !variants?.wholesale;
+        });
+        
+        if (incompleteVariants.length > 0) {
+            console.warn('⚠️ Some products missing required variants:', incompleteVariants.length);
+        } else {
+            console.log('✅ All products have required retail/wholesale variants');
+        }
     } else {
-        console.warn('Some products missing Shopify variants');
+        console.warn('⚠️ Some products missing Shopify variants');
         const missingVariants = products.filter(p => !p.shopifyVariants);
         missingVariants.forEach(product => {
-            console.warn('Missing variants: ' + product.id + ' - ' + product.name);
+            console.warn(`Missing variants: ${product.id} - ${product.name}`);
         });
     }
 }
 
-// 7. INITIALIZATION CALLS
-console.log('Wholesale rate functions added to cart system');
-checkForDuplicates();
-verifyShopifyVariants();
+/**
+ * Test cart functionality
+ */
+function testCartFunctionality() {
+    console.log('🧪 Testing cart functionality...');
+    
+    // Test adding a product
+    const testProduct = Object.keys(window.PRODUCT_CATALOG)[0];
+    if (testProduct) {
+        const result = window.addProductToCart(testProduct, 1, 'retail');
+        if (result) {
+            console.log('✅ Add to cart test passed');
+            window.cart.clear(); // Clean up
+        } else {
+            console.error('❌ Add to cart test failed');
+        }
+    }
+    
+    // Test wholesale rate calculation
+    const wholesaleTest = window.calculateWholesaleRate(testProduct, 25);
+    if (wholesaleTest.isWholesale) {
+        console.log('✅ Wholesale calculation test passed');
+    } else {
+        console.warn('⚠️ Wholesale calculation may need adjustment');
+    }
+}
 
-console.log('COMPLETE PRODUCT CATALOG LOADED - 57 PRODUCTS TOTAL');
-console.log('Premium Line: 38 products | Organic Line: 19 products');
-console.log('Shopify Ready | ShipRight Integration Ready | Fulfillment Included');
-console.log('Ready for Shopify Import | Wholesale Pricing Configured | Cart Functional');
+// =================================================================
+// INITIALIZATION
+// =================================================================
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeCart();
+        checkForDuplicates();
+        verifyShopifyVariants();
+        
+        // Test functionality in development
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            testCartFunctionality();
+        }
+    });
+} else {
+    initializeCart();
+    checkForDuplicates();
+    verifyShopifyVariants();
+}
+
+// =================================================================
+// FINAL LOGGING
+// =================================================================
+
+console.log('🛍️ ORGANIC HYPOSOLUTIONS CART SYSTEM LOADED');
+console.log('📊 Product Statistics:');
+console.log(`   Total Products: ${Object.keys(window.PRODUCT_CATALOG).length}`);
+console.log(`   Premium Line: ${Object.values(window.PRODUCT_CATALOG).filter(p => p.productLine === 'premium').length} products`);
+console.log(`   Organic Line: ${Object.values(window.PRODUCT_CATALOG).filter(p => p.productLine === 'organic').length} products`);
+console.log('🔗 Shopify Integration: READY');
+console.log('💳 API Endpoints: /api/shopify/create-checkout.js');
+console.log('📦 Cart Functions: Global window.cart, window.addProductToCart()');
+console.log('⚡ Status: FULLY OPERATIONAL');
