@@ -2801,26 +2801,61 @@ function testCartFunctionality() {
 
 // Use setTimeout(0) to defer execution until after the current script finishes
 setTimeout(function() {
-    // Initialize the cart system
-    initializeCart();
-    
-    // Run diagnostics
-    checkForDuplicates();
-    verifyShopifyVariants();
-    
-    // Test functionality in development
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        testCartFunctionality();
+    try {
+        // Initialize the cart system
+        initializeCart();
+        
+        // Run diagnostics
+        checkForDuplicates();
+        verifyShopifyVariants();
+        
+        // Test functionality in development
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            testCartFunctionality();
+        }
+        
+        // Log final status - all inside try/catch and setTimeout
+        console.log('🛍️ ORGANIC HYPOSOLUTIONS CART SYSTEM LOADED');
+        console.log('📊 Product Statistics:');
+        console.log(`   Total Products: ${Object.keys(window.PRODUCT_CATALOG).length}`);
+        console.log(`   Premium Line: ${Object.values(window.PRODUCT_CATALOG).filter(p => p.productLine === 'premium').length} products`);
+        console.log(`   Organic Line: ${Object.values(window.PRODUCT_CATALOG).filter(p => p.productLine === 'organic').length} products`);
+        console.log('🔗 Shopify Integration: READY');
+        console.log('💳 API Endpoints: /api/shopify/create-checkout.js');
+        console.log('📦 Cart Functions: Global window.cart, window.addProductToCart()');
+        console.log('⚡ Status: FULLY OPERATIONAL');
+        
+    } catch (error) {
+        console.error('❌ Cart system initialization failed:', error);
+        console.log('🔧 Retrying initialization in 1 second...');
+        
+        // Retry once more after 1 second
+        setTimeout(function() {
+            try {
+                initializeCart();
+                console.log('✅ Cart system initialized on retry');
+            } catch (retryError) {
+                console.error('❌ Cart system failed on retry:', retryError);
+            }
+        }, 1000);
     }
-    
-    // Log final status
-    console.log('🛍️ ORGANIC HYPOSOLUTIONS CART SYSTEM LOADED');
-    console.log('📊 Product Statistics:');
-    console.log(`   Total Products: ${Object.keys(window.PRODUCT_CATALOG).length}`);
-    console.log(`   Premium Line: ${Object.values(window.PRODUCT_CATALOG).filter(p => p.productLine === 'premium').length} products`);
-    console.log(`   Organic Line: ${Object.values(window.PRODUCT_CATALOG).filter(p => p.productLine === 'organic').length} products`);
-    console.log('🔗 Shopify Integration: READY');
-    console.log('💳 API Endpoints: /api/shopify/create-checkout.js');
-    console.log('📦 Cart Functions: Global window.cart, window.addProductToCart()');
-    console.log('⚡ Status: FULLY OPERATIONAL');
 }, 0);
+
+// =================================================================
+// IMMEDIATE COMPATIBILITY LAYER - RUNS RIGHT AWAY
+// =================================================================
+
+// Create basic cart object immediately to prevent "cart is undefined" errors
+window.cart = {
+    items: [],
+    addProductToCart: function() { console.warn('Cart not yet initialized'); },
+    clear: function() { console.warn('Cart not yet initialized'); },
+    getSummary: function() { return { itemCount: 0, total: 0, isEmpty: true }; }
+};
+
+// Basic compatibility functions that work immediately
+window.addToCart = function() { console.warn('Cart system loading...'); };
+window.removeFromCart = function() { console.warn('Cart system loading...'); };
+window.clearCart = function() { console.warn('Cart system loading...'); };
+
+console.log('⏳ Cart system loading...');
