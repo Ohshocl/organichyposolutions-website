@@ -150,35 +150,11 @@
 </head>
 <body>
 
-<!-- ================================================================== -->
-<!-- STANDARD NAVIGATION TEMPLATE - ORGANIC HYPOSOLUTIONS              -->
-<!-- File: templates/standard-nav.html                                  -->
-<!-- Purpose: Reusable navigation component for all pages               -->
-<!-- Dependencies: Bootstrap 5.3.0, Font Awesome 6.0.0, global-styles.css -->
-<!-- Last Updated: August 2025                                          -->
-<!-- ================================================================== -->
-
-<!-- Green Promotional Banner -->
-<div class="promo-banner text-center" id="promoBanner">
-    <div class="container">
-        <div class="d-flex justify-content-center align-items-center">
-            <div class="text-center">
-                <span class="promo-text">
-                    💰 <strong>BULK DISCOUNTS AS HIGH AS 42%</strong> available
-                </span>
-            </div>
-            <button class="promo-close ms-3" onclick="closeBanner()" aria-label="Close banner">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- Main Navigation -->
+<!-- STREAMLINED Navigation with Consolidated Dropdowns -->
 <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="index.html">
-            <svg width="32" height="32" viewBox="0 0 400 250" class="me-2">
+            <svg width="36" height="36" viewBox="0 0 400 250" class="me-2">
                 <rect width="400" height="250" fill="#2E5EAA"/>
                 <text x="200" y="180" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="100" font-weight="bold">OHS</text>
                 <text x="200" y="210" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="20">Organic HypoSolutions</text>
@@ -188,7 +164,7 @@
             Organic HypoSolutions
         </a>
         
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         
@@ -196,75 +172,80 @@
             <ul class="navbar-nav ms-auto align-items-center">
                 <li class="nav-item">
                     <a class="nav-link" href="index.html">
-                        <i class="fas fa-home me-1"></i>Home
+                        <i class="fas fa-home"></i>Home
                     </a>
                 </li>
+                
                 <li class="nav-item">
                     <a class="nav-link" href="services.html">
-                        <i class="fas fa-spray-can me-1"></i>Services
+                        <i class="fas fa-spray-can"></i>Services
                     </a>
                 </li>
+                
                 <li class="nav-item">
-                    <a class="nav-link" href="products.html">
-                        <i class="fas fa-shopping-bag me-1"></i>Products
+                    <a class="nav-link active" href="products.html">
+                        <i class="fas fa-shopping-bag"></i>Products
                     </a>
                 </li>
+                
                 <li class="nav-item">
                     <a class="nav-link" href="calculator.html">
-                        <i class="fas fa-calculator me-1"></i>Calculator
+                        <i class="fas fa-calculator"></i>Calculator
                     </a>
                 </li>
+                
+                <!-- Company Info Dropdown with About as main link -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="about.html" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-info-circle me-1"></i>About
+                    <a class="nav-link dropdown-toggle" href="about.html" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-info-circle"></i>About
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="about.html">
-                            <i class="fas fa-info-circle me-2"></i>About Us
-                        </a></li>
                         <li><a class="dropdown-item" href="science-certifications.html">
-                            <i class="fas fa-microscope me-2"></i>Science & Certifications
-                        </a></li>
-                        <li><a class="dropdown-item" href="contact.html">
-                            <i class="fas fa-phone me-2"></i>Contact
+                            <i class="fas fa-microscope"></i>Science & Certifications
                         </a></li>
                         <li><a class="dropdown-item" href="legal-information.html">
-                            <i class="fas fa-gavel me-2"></i>Legal Information
+                            <i class="fas fa-gavel"></i>Legal Information
+                        </a></li>
+                        <li><a class="dropdown-item" href="contact.html">
+                            <i class="fas fa-phone"></i>Contact
                         </a></li>
                     </ul>
                 </li>
                 
-                <!-- Customer Shopping & Account -->
+                <!-- Shop Dropdown -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="shopDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-shopping-cart me-1"></i>Shop
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-shopping-cart"></i>Shop
+                        <span id="cartBadge" class="badge bg-danger ms-1" style="display: none;">0</span>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="shop/cart.html">
-                            <i class="fas fa-shopping-cart me-2"></i>View Cart 
-                            <span id="cartBadge" class="badge bg-danger ms-1" style="display: none;">0</span>
+                            <i class="fas fa-shopping-cart"></i>View Cart
+                            <span id="cartBadgeDropdown" class="badge bg-primary ms-1" style="display: none;">0</span>
                         </a></li>
-                        <li><a class="dropdown-item" href="#" onclick="proceedToCheckout()">
-                            <i class="fas fa-credit-card me-2"></i>Checkout
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="shop/checkout.html">
+                            <i class="fas fa-credit-card"></i>Checkout
+                            <span class="badge bg-warning ms-1">Coming Soon</span>
                         </a></li>
                         <li><a class="dropdown-item" href="shop/book-service.html">
-                            <i class="fas fa-calendar-plus me-2"></i>Book Service
+                            <i class="fas fa-calendar-plus"></i>Book Service
                         </a></li>
                     </ul>
                 </li>
                 
                 <!-- Account Dropdown -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-user me-1"></i>Account
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user"></i>Account
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="auth/login.html">
-                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                            <i class="fas fa-sign-in-alt"></i>Login
                             <span class="badge bg-warning ms-1">Coming Soon</span>
                         </a></li>
                         <li><a class="dropdown-item" href="auth/register.html">
-                            <i class="fas fa-user-plus me-2"></i>Register
+                            <i class="fas fa-user-plus"></i>Register
                             <span class="badge bg-warning ms-1">Coming Soon</span>
                         </a></li>
                     </ul>
@@ -273,337 +254,6 @@
         </div>
     </div>
 </nav>
-
-<!-- ================================================================== -->
-<!-- REQUIRED CSS STYLES                                               -->
-<!-- ================================================================== -->
-
-<style>
-    :root {
-        --ohs-primary-blue: #2E5EAA;
-        --ohs-accent-blue: #7DD3FC;
-        --ohs-organic-green: #4ADE80;
-        --ohs-dark-green: #22C55E;
-        --ohs-premium-gold: #f59e0b;
-        --ohs-light-gray: #f8f9fa;
-        --ohs-dark-gray: #6c757d;
-    }
-
-    /* GREEN Promotional Banner */
-    .promo-banner {
-        background: linear-gradient(90deg, #22C55E 0%, #4ADE80 50%, #22C55E 100%);
-        color: white;
-        padding: 8px 0;
-        font-weight: 600;
-        font-size: 0.9rem;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .promo-banner::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-        animation: shimmer 3s infinite;
-    }
-
-    @keyframes shimmer {
-        0% { left: -100%; }
-        100% { left: 100%; }
-    }
-
-    .promo-text {
-        animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.02); }
-    }
-
-    .promo-close {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.2rem;
-        cursor: pointer;
-        padding: 0;
-        width: 24px;
-        height: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        transition: background 0.3s ease;
-    }
-
-    .promo-close:hover {
-        background: rgba(255,255,255,0.2);
-    }
-
-    /* EXACT NAVBAR STYLING FROM YOUR INDEX.HTML */
-    .navbar {
-        background-color: #2E5EAA !important;
-        padding: 0.3rem 0 !important;
-        box-shadow: none !important;
-        min-height: 80px !important;
-    }
-
-    .navbar-brand {
-        color: white !important;
-        font-size: 1.5rem !important;
-        font-weight: bold !important;
-        padding: 0.2rem 0 !important;
-        display: flex !important;
-        align-items: center !important;
-    }
-
-    .navbar-brand svg {
-        width: 32px !important;
-        height: 32px !important;
-    }
-
-    .navbar-nav .nav-link {
-        color: white !important;
-        font-weight: 500 !important;
-        padding: 0.5rem 1rem !important;
-        margin: 0 !important;
-        border-radius: 0 !important;
-        transition: all 0.2s ease !important;
-        display: flex !important;
-        align-items: center !important;
-    }
-
-    .navbar-nav .nav-link i {
-        margin-right: 0.5rem !important;
-        font-size: 0.9rem !important;
-    }
-
-    .navbar-nav .nav-link:hover {
-        color: #7DD3FC !important;
-        background-color: rgba(255, 255, 255, 0.1) !important;
-    }
-
-    .navbar-nav .nav-link.active,
-    .navbar-nav .nav-link.fw-semibold {
-        color: #7DD3FC !important;
-        background-color: rgba(255, 255, 255, 0.15) !important;
-    }
-
-    /* Override Bootstrap navbar defaults */
-    .navbar-light .navbar-nav .nav-link {
-        color: white !important;
-    }
-
-    .navbar-light .navbar-nav .nav-link:hover,
-    .navbar-light .navbar-nav .nav-link:focus {
-        color: #7DD3FC !important;
-    }
-
-    .navbar-light .navbar-brand {
-        color: white !important;
-    }
-
-    .navbar-light .navbar-brand:hover,
-    .navbar-light .navbar-brand:focus {
-        color: white !important;
-    }
-
-    /* Dropdown Styling */
-    .dropdown-menu {
-        background-color: white !important;
-        border: none !important;
-        border-radius: 8px !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
-        padding: 0.5rem 0 !important;
-        margin-top: 0.25rem !important;
-    }
-
-    .dropdown-item {
-        color: #2E5EAA !important;
-        padding: 0.5rem 1rem !important;
-        border-radius: 0 !important;
-        transition: all 0.2s ease !important;
-    }
-
-    .dropdown-item:hover,
-    .dropdown-item:focus {
-        background-color: #f8f9fa !important;
-        color: #2E5EAA !important;
-    }
-
-    .dropdown-item i {
-        width: 16px !important;
-        margin-right: 8px !important;
-    }
-
-    .badge {
-        font-size: 0.7rem !important;
-        font-weight: normal !important;
-    }
-
-    /* Navbar toggler for mobile */
-    .navbar-toggler {
-        border-color: rgba(255, 255, 255, 0.3) !important;
-    }
-
-    .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
-    }
-
-    /* Mobile responsiveness */
-    @media (max-width: 991.98px) {
-        .navbar-nav .nav-link {
-            padding: 0.5rem 0.75rem !important;
-        }
-    }
-</style>
-
-<!-- ================================================================== -->
-<!-- REQUIRED JAVASCRIPT                                               -->
-<!-- ================================================================== -->
-
-<script>
-// Banner close functionality
-function closeBanner() {
-    const banner = document.getElementById('promoBanner');
-    banner.style.transform = 'translateY(-100%)';
-    setTimeout(() => {
-        banner.style.display = 'none';
-    }, 300);
-    
-    // Store in localStorage so it stays closed for the session
-    localStorage.setItem('promoBannerClosed', 'true');
-    
-    // Track banner close
-    if (typeof gtag !== 'undefined') {
-        gtag('event', 'banner_close', {
-            'event_category': 'User Interaction',
-            'event_label': 'Promotional Banner'
-        });
-    }
-}
-
-// Check if banner should be shown
-function checkBanner() {
-    const banner = document.getElementById('promoBanner');
-    if (localStorage.getItem('promoBannerClosed') === 'true') {
-        banner.style.display = 'none';
-    }
-}
-
-// Proceed to checkout function
-function proceedToCheckout() {
-    // Implement checkout logic here or redirect to cart
-    window.location.href = 'shop/cart.html';
-}
-
-// Initialize on DOM load
-document.addEventListener('DOMContentLoaded', function() {
-    checkBanner();
-});
-
-// Make functions globally available
-window.closeBanner = closeBanner;
-window.proceedToCheckout = proceedToCheckout;
-</script>
-
-<!-- ================================================================== -->
-<!-- IMPLEMENTATION INSTRUCTIONS                                       -->
-<!-- ================================================================== -->
-
-<!--
-REQUIRED DEPENDENCIES:
-- Bootstrap 5.3.0: https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css
-- Font Awesome 6.0.0: https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css
-- Bootstrap JS: https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js
-
-USAGE EXAMPLES:
-
-1. ROOT-LEVEL PAGES (index.html, services.html, products.html, etc.):
-   - Use template as-is
-   - Add "fw-semibold" class to current page nav-link
-   - Example: <a class="nav-link fw-semibold" href="index.html">
-
-2. SUBDIRECTORY PAGES (shop/, auth/, account/):
-   - Update all href paths with "../" prefix
-   - Example: href="index.html" becomes href="../index.html"
-   - Example: href="shop/cart.html" becomes href="cart.html" (if in shop/ folder)
-
-3. CART INTEGRATION:
-   - Include your cart.js and shopify-client.js for cart-enabled pages
-   - Cart badges will automatically update when cart systems are loaded
-   - Required for: shop/cart.html, shop/book-service.html
-
-PATH ADJUSTMENT EXAMPLES:
-
-Root Level (index.html):
-<a class="nav-link" href="index.html">Home</a>
-<a class="dropdown-item" href="shop/cart.html">View Cart</a>
-
-Subdirectory (shop/cart.html):
-<a class="nav-link" href="../index.html">Home</a>
-<a class="dropdown-item" href="cart.html">View Cart</a>
-
-Subdirectory (auth/login.html):
-<a class="nav-link" href="../index.html">Home</a>
-<a class="dropdown-item" href="../shop/cart.html">View Cart</a>
-
-ACTIVE PAGE HIGHLIGHTING:
-Add "fw-semibold" class to the current page's nav-link:
-- Home page: <a class="nav-link fw-semibold" href="index.html">
-- Services page: <a class="nav-link fw-semibold" href="services.html">
-- etc.
-
-STYLING NOTES:
-- Uses your exact color scheme: #2E5EAA primary blue, #7DD3FC accent
-- Includes green promotional banner with shimmer animation
-- Same logo SVG structure as your index.html
-- Responsive design matching your current implementation
-- All CSS is self-contained within the template
-
-CART FUNCTIONALITY:
-The cart badge (#cartBadge) will be managed by your existing cart system.
-Include your cart management scripts on pages that need cart functionality.
--->
-
-<!-- ================================================================== -->
-<!-- COMPLETE HTML HEAD TEMPLATE                                       -->
-<!-- ================================================================== -->
-
-<!--
-Use this complete head section for all pages:
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>[PAGE TITLE] - Organic HypoSolutions</title>
-    <meta name="description" content="[PAGE DESCRIPTION]">
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="assets/images/logos/ohs-favicon.ico">
-</head>
-<body>
-    <!-- Insert navigation template here -->
-    
-    <!-- Page content -->
-    
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
--->
 
 <!-- Hero Section -->
 <section class="hero-section">
