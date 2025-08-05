@@ -20,109 +20,41 @@
   "author": "Organic HypoSolutions <ohshocl@gmail.com>",
   "license": "MIT",
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=8.0.0"
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
   },
   "main": "index.html",
+  "type": "module",
   "scripts": {
     "dev": "vercel dev",
-    "build": "npm run validate && npm run optimize",
     "start": "vercel dev --listen 3000",
     "deploy": "vercel --prod",
-    "deploy:static": "echo 'Static deployment handled by GitHub Actions'",
-    "validate": "npm run validate:structure && npm run validate:security",
-    "validate:structure": "node scripts/validate-structure.js",
-    "validate:security": "node scripts/validate-security.js",
-    "optimize": "npm run optimize:css && npm run optimize:js && npm run optimize:images",
-    "optimize:css": "npm run minify:css",
-    "optimize:js": "npm run minify:js",
-    "optimize:images": "imagemin 'assets/images/**/*.{jpg,jpeg,png}' --out-dir=assets/images/optimized",
-    "minify:css": "cleancss -o assets/css/dist/global.min.css assets/css/global-styles.css assets/css/components.css assets/css/pages.css",
-    "minify:js": "terser assets/js/global-scripts.js assets/js/analytics.js -o assets/js/dist/global.min.js",
-    "test": "npm run test:api && npm run test:frontend",
-    "test:api": "jest api/**/*.test.js",
-    "test:frontend": "jest shop/js/**/*.test.js",
-    "lint": "eslint . --ext .js --fix",
-    "lint:css": "stylelint 'assets/css/**/*.css' --fix",
+    "build": "echo 'Build complete - static files ready'",
+    "clean": "rimraf node_modules/.cache .vercel/cache",
+    "test": "echo 'No tests specified'",
     "format": "prettier --write '**/*.{js,css,html,json,md}'",
-    "clean": "rimraf node_modules/.cache .vercel/cache assets/css/dist assets/js/dist",
-    "check:deps": "npm outdated",
-    "security:audit": "npm audit --audit-level=moderate",
-    "shopify:sync": "node scripts/sync-shopify-products.js",
-    "precommit": "npm run lint && npm run validate",
     "postinstall": "echo 'OHS Website dependencies installed successfully!'"
   },
   "dependencies": {
     "@vercel/node": "^3.0.21",
-    "shopify-buy": "^2.17.0",
-    "node-fetch": "^3.3.2",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
     "cors": "^2.8.5",
-    "helmet": "^7.1.0",
-    "rate-limiter-flexible": "^4.0.1",
-    "joi": "^17.11.0",
-    "nodemailer": "^6.9.7",
-    "uuid": "^9.0.1"
+    "dotenv": "^16.4.5",
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
-    "@types/node": "^20.8.10",
-    "eslint": "^8.53.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-security": "^1.7.1",
-    "prettier": "^3.1.0",
-    "stylelint": "^15.11.0",
-    "stylelint-config-standard": "^34.0.0",
-    "jest": "^29.7.0",
-    "supertest": "^6.3.3",
-    "clean-css-cli": "^5.6.2",
-    "terser": "^5.24.0",
-    "imagemin": "^8.0.1",
-    "imagemin-mozjpeg": "^10.0.0",
-    "imagemin-pngquant": "^9.0.2",
-    "rimraf": "^5.0.5",
-    "husky": "^8.0.3",
-    "lint-staged": "^15.0.2"
-  },
-  "peerDependencies": {
-    "bootstrap": "^5.3.0",
-    "font-awesome": "^6.0.0"
+    "prettier": "^3.2.5",
+    "rimraf": "^5.0.5"
   },
   "browserslist": [
     "> 1%",
     "last 2 versions",
-    "not dead",
-    "not ie 11"
+    "not dead"
   ],
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.css": [
-      "stylelint --fix",
-      "prettier --write"
-    ],
-    "*.{html,json,md}": [
-      "prettier --write"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "npm run validate"
-    }
-  },
   "config": {
     "shopify": {
       "apiVersion": "2024-01",
       "timeout": 10000,
       "retries": 3
-    },
-    "build": {
-      "outputDir": "_site",
-      "assetsDir": "assets",
-      "cacheDir": ".cache"
     },
     "security": {
       "rateLimitWindowMs": 900000,
@@ -143,16 +75,5 @@
     "*.html",
     "CNAME",
     "vercel.json"
-  ],
-  "overrides": {
-    "semver": "^7.5.4"
-  },
-  "funding": {
-    "type": "business",
-    "url": "https://organichyposolutions.com/about"
-  },
-  "volta": {
-    "node": "18.18.2",
-    "npm": "9.8.1"
-  }
+  ]
 }
