@@ -3,22 +3,11 @@
   "version": 2,
   "name": "organichyposolutions-api",
   "description": "Organic HypoSolutions - Serverless API Functions for Shopify Integration",
-  "builds": [
-    {
-      "src": "api/**/*.js",
-      "use": "@vercel/node",
-      "config": {
-        "maxLambdaSize": "10mb",
-        "memory": 1024,
-        "maxDuration": 10
-      }
-    }
-  ],
   "functions": {
     "api/**/*.js": {
       "runtime": "nodejs18.x",
       "memory": 1024,
-      "maxDuration": 10,
+      "maxDuration": 30,
       "environment": {
         "NODE_ENV": "production"
       }
@@ -47,11 +36,6 @@
       "src": "/api/health",
       "dest": "/api/health.js",
       "methods": ["GET"]
-    },
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1",
-      "status": 404
     }
   ],
   "headers": [
@@ -60,7 +44,7 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://organichyposolutions.com"
+          "value": "*"
         },
         {
           "key": "Access-Control-Allow-Methods",
@@ -111,20 +95,6 @@
     "SITE_URL": "https://organichyposolutions.com",
     "API_VERSION": "2024-01"
   },
-  "build": {
-    "env": {
-      "NODE_ENV": "production",
-      "NPM_CONFIG_PRODUCTION": "true"
-    }
-  },
-  "installCommand": "npm ci --omit=dev",
-  "buildCommand": "npm run build",
-  "outputDirectory": "api",
-  "framework": null,
-  "regions": [
-    "iad1",
-    "sfo1"
-  ],
   "rewrites": [
     {
       "source": "/api/shopify/products",
@@ -144,11 +114,6 @@
       "source": "/api",
       "destination": "/api/health",
       "permanent": false
-    },
-    {
-      "source": "/api/",
-      "destination": "/api/health",
-      "permanent": false
     }
   ],
   "trailingSlash": false,
@@ -157,15 +122,5 @@
   "github": {
     "enabled": true,
     "autoJobCancelation": true
-  },
-  "crons": [
-    {
-      "path": "/api/shopify/sync-inventory",
-      "schedule": "0 */6 * * *"
-    },
-    {
-      "path": "/api/health",
-      "schedule": "*/5 * * * *"
-    }
-  ]
+  }
 }
