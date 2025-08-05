@@ -1,43 +1,10 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "version": 2,
-  "name": "organichyposolutions-api",
-  "description": "Organic HypoSolutions - Serverless API Functions for Shopify Integration",
   "functions": {
     "api/**/*.js": {
       "runtime": "nodejs18.x",
-      "memory": 1024,
-      "maxDuration": 30,
-      "environment": {
-        "NODE_ENV": "production"
-      }
+      "maxDuration": 30
     }
   },
-  "routes": [
-    {
-      "src": "/api/shopify/get-products",
-      "dest": "/api/shopify/get-products.js",
-      "methods": ["GET", "OPTIONS"],
-      "headers": {
-        "Cache-Control": "s-maxage=300, stale-while-revalidate=600"
-      }
-    },
-    {
-      "src": "/api/shopify/create-checkout",
-      "dest": "/api/shopify/create-checkout.js",
-      "methods": ["POST", "OPTIONS"]
-    },
-    {
-      "src": "/api/forms/contact",
-      "dest": "/api/forms/contact.js",
-      "methods": ["POST", "OPTIONS"]
-    },
-    {
-      "src": "/api/health",
-      "dest": "/api/health.js",
-      "methods": ["GET"]
-    }
-  ],
   "headers": [
     {
       "source": "/api/(.*)",
@@ -52,75 +19,9 @@
         },
         {
           "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type, Authorization, X-Requested-With"
-        },
-        {
-          "key": "Access-Control-Max-Age",
-          "value": "86400"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        },
-        {
-          "key": "Strict-Transport-Security",
-          "value": "max-age=31536000; includeSubDomains"
-        }
-      ]
-    },
-    {
-      "source": "/api/shopify/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-store, no-cache, must-revalidate"
+          "value": "Content-Type"
         }
       ]
     }
-  ],
-  "env": {
-    "NODE_ENV": "production",
-    "SITE_URL": "https://organichyposolutions.com",
-    "API_VERSION": "2024-01"
-  },
-  "rewrites": [
-    {
-      "source": "/api/shopify/products",
-      "destination": "/api/shopify/get-products"
-    },
-    {
-      "source": "/api/shopify/checkout",
-      "destination": "/api/shopify/create-checkout"
-    },
-    {
-      "source": "/api/contact",
-      "destination": "/api/forms/contact"
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/api",
-      "destination": "/api/health",
-      "permanent": false
-    }
-  ],
-  "trailingSlash": false,
-  "cleanUrls": true,
-  "public": false,
-  "github": {
-    "enabled": true,
-    "autoJobCancelation": true
-  }
+  ]
 }
