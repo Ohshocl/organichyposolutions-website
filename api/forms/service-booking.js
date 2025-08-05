@@ -1,12 +1,35 @@
-// /api/forms/service-booking.js
-// API endpoint for handling service booking form submissions
+/**
+ * Service Booking API Endpoint
+ * File: /api/forms/service-booking.js
+ * 
+ * Handles service booking form submissions from shop/book-service.html
+ * Processes booking data, validates inputs, and sends notifications
+ * 
+ * Dependencies: nodemailer (npm install nodemailer)
+ * Integration: Called by shop/book-service.html form submission
+ * Email: Sends notifications to ohshocl@gmail.com
+ */
+
+import nodemailer from 'nodemailer';
 
 export default async function handler(req, res) {
+    // Set CORS headers for frontend integration
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+    // Handle preflight OPTIONS request
+    if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return;
+    }
+
     // Only allow POST requests
     if (req.method !== 'POST') {
         return res.status(405).json({ 
-            success: false, 
-            message: 'Method not allowed. Use POST.' 
+            error: 'Method not allowed',
+            message: 'Only POST requests are accepted'
         });
     }
 
@@ -14,274 +37,388 @@ export default async function handler(req, res) {
         // Extract form data
         const {
             serviceType,
-            customerName,
-            customerEmail,
-            customerPhone,
-            preferredDate,
-            preferredTime,
-            serviceLocation,
+            firstName,
+            lastName,
+            email,
+            phone,
+            address,
+            city,
+            state,
+            zipCode,
             propertySize,
-            additionalServices,
-            specialRequirements,
-            hearAboutUs,
-            notes
+            urgency,
+            serviceDescription,
+            addons,
+            termsAccepted
         } = req.body;
 
         // Validate required fields
         const requiredFields = {
             serviceType: 'Service type',
-            customerName: 'Full name',
-            customerEmail: 'Email address',
-            customerPhone: 'Phone number',
-            preferredDate: 'Preferred date'
+            firstName: 'First name',
+            lastName: 'Last name',
+            email: 'Email address',
+            phone: 'Phone number',
+            address: 'Street address',
+            city: 'City',
+            state: 'State',
+            zipCode: 'ZIP code',
+            termsAccepted: 'Terms acceptance'
         };
 
         const missingFields = [];
         for (const [field, label] of Object.entries(requiredFields)) {
-            if (!req.body[field] || req.body[field].trim() === '') {
+            if (!req.body[field] || req.body[field] === '') {
                 missingFields.push(label);
             }
         }
 
         if (missingFields.length > 0) {
             return res.status(400).json({
-                success: false,
-                message: `Missing required fields: ${missingFields.join(', ')}`
+                error: 'Missing required fields',
+                missingFields: missingFields,
+                message: `Please provide: ${missingFields.join(', ')}`
             });
         }
 
         // Validate email format
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(customerEmail)) {
+        if (!emailRegex.test(email)) {
             return res.status(400).json({
-                success: false,
+                error: 'Invalid email format',
                 message: 'Please provide a valid email address'
             });
         }
 
-        // Validate phone number (basic validation)
-        const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-        const cleanPhone = customerPhone.replace(/\D/g, '');
-        if (cleanPhone.length < 10) {
+        // Validate phone format (basic US phone number validation)
+        const phoneRegex = /^[\+]?[1]?[\s\-\.]?[(]?[\d\s\-\.\(\)]{10,}$/;
+        if (!phoneRegex.test(phone)) {
             return res.status(400).json({
-                success: false,
+                error: 'Invalid phone format',
                 message: 'Please provide a valid phone number'
             });
         }
 
-        // Validate date (must be in the future)
-        const selectedDate = new Date(preferredDate);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        if (selectedDate < today) {
+        // Validate service type
+        const validServiceTypes = ['residential', 'commercial', 'emergency'];
+        if (!validServiceTypes.includes(serviceType)) {
             return res.status(400).json({
-                success: false,
-                message: 'Please select a future date for your service'
+                error: 'Invalid service type',
+                message: 'Please select a valid service type'
             });
         }
 
-        // Format the booking data
+        // Process add-ons (if any)
+        const processedAddons = Array.isArray(addons) ? addons : (addons ? [addons] : []);
+        const validAddons = ['organic-treatment', 'hvac-treatment', 'followup-products', 'certificate'];
+        const invalidAddons = processedAddons.filter(addon => !validAddons.includes(addon));
+        
+        if (invalidAddons.length > 0) {
+            return res.status(400).json({
+                error: 'Invalid add-ons selected',
+                invalidAddons: invalidAddons
+            });
+        }
+
+        // Calculate pricing estimate
+        function calculateEstimate() {
+            let basePrice = 0;
+            
+            // Base pricing by service type
+            switch (serviceType) {
+                case 'residential':
+                    basePrice = 125;
+                    break;
+                case 'commercial':
+                    basePrice = 295;
+                    break;
+                case 'emergency':
+                    basePrice = 200;
+                    break;
+            }
+
+            // Property size multiplier
+            const sizeMultipliers = {
+                'under-1000': 1,
+                '1000-2500': 1.5,
+                '2500-5000': 2.2,
+                '5000-10000': 3.5,
+                'over-10000': 5
+            };
+
+            if (propertySize && sizeMultipliers[propertySize]) {
+                basePrice *= sizeMultipliers[propertySize];
+            }
+
+            // Urgency multiplier
+            const urgencyMultipliers = {
+                'standard': 1,
+                'priority': 1.3,
+                'emergency': 1.8
+            };
+
+            if (urgency && urgencyMultipliers[urgency]) {
+                basePrice *= urgencyMultipliers[urgency];
+            }
+
+            // Add-on costs
+            let addonCost = 0;
+            processedAddons.forEach(addon => {
+                switch (addon) {
+                    case 'organic-treatment':
+                        addonCost += 25;
+                        break;
+                    case 'hvac-treatment':
+                        addonCost += 75;
+                        break;
+                    case 'followup-products':
+                        addonCost += 45;
+                        break;
+                    case 'certificate':
+                        addonCost += 15;
+                        break;
+                }
+            });
+
+            return Math.round(basePrice + addonCost);
+        }
+
+        const estimatedCost = calculateEstimate();
+
+        // Create booking record
         const bookingData = {
-            serviceType: serviceType.trim(),
+            id: `SB_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            timestamp: new Date().toISOString(),
+            serviceType,
             customer: {
-                name: customerName.trim(),
-                email: customerEmail.trim().toLowerCase(),
-                phone: customerPhone.trim()
+                firstName,
+                lastName,
+                email,
+                phone
             },
-            scheduling: {
-                preferredDate: preferredDate,
-                preferredTime: preferredTime || 'Flexible',
-                location: serviceLocation?.trim() || 'Not specified'
+            location: {
+                address,
+                city,
+                state,
+                zipCode
             },
             serviceDetails: {
                 propertySize: propertySize || 'Not specified',
-                additionalServices: additionalServices || [],
-                specialRequirements: specialRequirements?.trim() || 'None',
-                notes: notes?.trim() || 'None'
+                urgency: urgency || 'standard',
+                description: serviceDescription || 'No additional details provided',
+                addons: processedAddons
             },
-            marketing: {
-                hearAboutUs: hearAboutUs || 'Not specified'
-            },
-            submission: {
-                date: new Date().toISOString(),
-                ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress
-            }
+            estimatedCost,
+            status: 'pending',
+            source: 'website_booking_form'
         };
 
-        // Generate booking reference number
-        const bookingRef = `OHS-${Date.now()}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
-        bookingData.bookingReference = bookingRef;
+        // Format email content
+        const customerEmailContent = `
+Dear ${firstName} ${lastName},
 
-        // Log the booking (in production, you'd save to database)
-        console.log('New Service Booking:', bookingData);
+Thank you for booking a service with Organic HypoSolutions!
 
-        // Send confirmation email (you'll need to implement email service)
-        await sendBookingConfirmation(bookingData);
-        
-        // Send notification to business (you'll need to implement this)
-        await sendBusinessNotification(bookingData);
+BOOKING DETAILS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Service Type: ${serviceType.charAt(0).toUpperCase() + serviceType.slice(1)}
+Booking ID: ${bookingData.id}
+Estimated Cost: $${estimatedCost}
+
+SERVICE LOCATION:
+${address}
+${city}, ${state} ${zipCode}
+
+SERVICE DETAILS:
+Property Size: ${propertySize || 'Not specified'}
+Urgency: ${urgency || 'Standard (2-3 days)'}
+${serviceDescription ? `Description: ${serviceDescription}` : ''}
+
+${processedAddons.length > 0 ? `SELECTED ADD-ONS:
+${processedAddons.map(addon => {
+    switch (addon) {
+        case 'organic-treatment': return '• USDA Organic Treatment (+$25)';
+        case 'hvac-treatment': return '• HVAC System Treatment (+$75)';
+        case 'followup-products': return '• Follow-up Products (+$45)';
+        case 'certificate': return '• Completion Certificate (+$15)';
+        default: return `• ${addon}`;
+    }
+}).join('\n')}` : ''}
+
+NEXT STEPS:
+• Our team will contact you within 2 hours to confirm your appointment
+• We'll schedule a convenient time for your service
+• Payment is due upon completion of service
+• We accept cash, check, and all major credit cards
+
+Questions? Contact us:
+Phone: (801) 712-5663
+Email: ohshocl@gmail.com
+
+Thank you for choosing Organic HypoSolutions for your disinfection needs!
+
+Best regards,
+The OHS Team
+Utah's Premier Hypochlorous Acid Specialists
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        `.trim();
+
+        const teamNotificationContent = `
+🚨 NEW SERVICE BOOKING ALERT 🚨
+
+${urgency === 'emergency' ? '⚠️  EMERGENCY SERVICE - CONTACT IMMEDIATELY' : urgency === 'priority' ? '🟡 PRIORITY SERVICE - Contact within 1 hour' : '🟢 STANDARD SERVICE - Contact within 2 hours'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BOOKING DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Booking ID: ${bookingData.id}
+Submitted: ${new Date().toLocaleString('en-US', { timeZone: 'America/Denver' })} MST
+Service Type: ${serviceType.charAt(0).toUpperCase() + serviceType.slice(1)}
+Estimated Value: ${estimatedCost}
+Urgency Level: ${urgency || 'Standard (2-3 days)'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CUSTOMER CONTACT INFO (PRIORITY)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Name: ${firstName} ${lastName}
+Phone: ${phone} ${urgency === 'emergency' ? '📞 CALL IMMEDIATELY' : urgency === 'priority' ? '📞 CALL WITHIN 1 HOUR' : '📞 CALL WITHIN 2 HOURS'}
+Email: ${email}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SERVICE LOCATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${address}
+${city}, ${state} ${zipCode}
+Property Size: ${propertySize || 'Not specified'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SERVICE REQUIREMENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${serviceDescription ? `Customer Notes: "${serviceDescription}"` : 'No additional notes provided'}
+
+${processedAddons.length > 0 ? `Requested Add-ons:
+${processedAddons.map(addon => {
+    switch (addon) {
+        case 'organic-treatment': return '• USDA Organic Treatment (+$25)';
+        case 'hvac-treatment': return '• HVAC System Treatment (+$75)';
+        case 'followup-products': return '• Follow-up Products (+$45)';
+        case 'certificate': return '• Completion Certificate (+$15)';
+        default: return `• ${addon}`;
+    }
+}).join('\n')}` : 'No add-ons selected'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+REQUIRED ACTIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. ${urgency === 'emergency' ? 'CALL CUSTOMER IMMEDIATELY' : urgency === 'priority' ? 'Call customer within 1 hour' : 'Call customer within 2 hours'}
+2. Confirm service appointment date/time
+3. Verify pricing and service requirements
+4. Schedule technician and equipment
+5. Send calendar invite to customer
+
+Next Steps: Use booking ID ${bookingData.id} for all correspondence.
+
+WEBSITE BOOKING SYSTEM - AUTO-GENERATED
+        `.trim();
+
+        // Send email notifications
+        try {
+            // Send confirmation email to customer
+            await sendEmail({
+                to: email,
+                subject: `Service Booking Confirmation - ${bookingData.id}`,
+                text: customerEmailContent
+            });
+
+            // Send notification email to OHS team
+            await sendEmail({
+                to: 'ohshocl@gmail.com',
+                subject: `🚨 NEW SERVICE BOOKING: ${serviceType.toUpperCase()} - ${estimatedCost} (${urgency || 'standard'})`,
+                text: teamNotificationContent
+            });
+
+            console.log('📧 Email notifications sent successfully');
+        } catch (emailError) {
+            console.error('📧 Email sending failed:', emailError);
+            // Don't fail the booking if email fails - just log it
+        }
+
+        // Log booking for development/testing
+        console.log('📋 New Service Booking:', JSON.stringify(bookingData, null, 2));
 
         // Return success response
         res.status(200).json({
             success: true,
-            message: 'Service booking request submitted successfully!',
-            bookingReference: bookingRef,
-            data: {
-                serviceType: bookingData.serviceType,
-                preferredDate: bookingData.scheduling.preferredDate,
-                customerName: bookingData.customer.name
-            }
+            message: 'Service booking submitted successfully',
+            bookingId: bookingData.id,
+            estimatedCost: estimatedCost,
+            nextSteps: [
+                'Our team will contact you within 2 hours',
+                'We will schedule a convenient appointment time',
+                'Service will be performed by licensed professionals',
+                'Payment is due upon completion'
+            ]
         });
 
     } catch (error) {
-        console.error('Service booking error:', error);
-        
+        console.error('Service booking API error:', error);
+
+        // Return error response
         res.status(500).json({
-            success: false,
-            message: 'Internal server error. Please try again later.',
-            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+            error: 'Internal server error',
+            message: 'Unable to process booking request. Please try again or call us at (801) 712-5663.',
+            timestamp: new Date().toISOString()
         });
     }
 }
 
-// Email confirmation function (implement based on your email service)
-async function sendBookingConfirmation(bookingData) {
-    try {
-        // Example implementation - replace with your email service
-        const emailData = {
-            to: bookingData.customer.email,
-            subject: `Service Booking Confirmation - ${bookingData.bookingReference}`,
-            html: generateConfirmationEmail(bookingData)
-        };
+/**
+ * Gmail SMTP Email Service Implementation
+ * Sends booking confirmations to customers and notifications to ohshocl@gmail.com
+ */
 
-        // Send email using your preferred service (SendGrid, Mailgun, etc.)
-        // await emailService.send(emailData);
-        
-        console.log('Confirmation email would be sent to:', bookingData.customer.email);
+// Configure Gmail SMTP transporter
+const transporter = nodemailer.createTransporter({
+    service: 'gmail',
+    auth: {
+        user: process.env.GMAIL_USER, // ohshocl@gmail.com
+        pass: process.env.GMAIL_APP_PASSWORD // Gmail App Password (not your regular password)
+    }
+});
+
+async function sendEmail({ to, subject, text }) {
+    const mailOptions = {
+        from: `"Organic HypoSolutions" <${process.env.GMAIL_USER}>`,
+        to,
+        subject,
+        text,
+        // Add HTML version for better formatting
+        html: text.replace(/\n/g, '<br>').replace(/━/g, '─')
+    };
+    
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log('📧 Email sent successfully:', info.messageId);
+        return info;
     } catch (error) {
-        console.error('Failed to send confirmation email:', error);
-        // Don't throw error - booking should still succeed even if email fails
+        console.error('📧 Gmail SMTP error:', error);
+        throw error;
     }
 }
 
-// Business notification function
-async function sendBusinessNotification(bookingData) {
-    try {
-        const businessEmail = process.env.BUSINESS_EMAIL || 'info@ohshomeservices.com';
-        
-        const emailData = {
-            to: businessEmail,
-            subject: `New Service Booking Request - ${bookingData.serviceType}`,
-            html: generateBusinessNotificationEmail(bookingData)
-        };
-
-        // Send email using your preferred service
-        // await emailService.send(emailData);
-        
-        console.log('Business notification would be sent to:', businessEmail);
-    } catch (error) {
-        console.error('Failed to send business notification:', error);
-    }
-}
-
-// Generate customer confirmation email HTML
-function generateConfirmationEmail(bookingData) {
-    return `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <title>Booking Confirmation</title>
-        </head>
-        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                <h2 style="color: #28a745;">Service Booking Confirmation</h2>
-                
-                <p>Dear ${bookingData.customer.name},</p>
-                
-                <p>Thank you for choosing OHS Home Services! We've received your service booking request.</p>
-                
-                <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                    <h3>Booking Details:</h3>
-                    <p><strong>Booking Reference:</strong> ${bookingData.bookingReference}</p>
-                    <p><strong>Service Type:</strong> ${bookingData.serviceType}</p>
-                    <p><strong>Preferred Date:</strong> ${new Date(bookingData.scheduling.preferredDate).toLocaleDateString()}</p>
-                    <p><strong>Preferred Time:</strong> ${bookingData.scheduling.preferredTime}</p>
-                    <p><strong>Location:</strong> ${bookingData.scheduling.location}</p>
-                </div>
-                
-                <p><strong>What's Next?</strong></p>
-                <ul>
-                    <li>Our team will review your request within 24 hours</li>
-                    <li>We'll contact you at ${bookingData.customer.phone} to confirm details</li>
-                    <li>You'll receive a final confirmation with appointment details</li>
-                </ul>
-                
-                <p>If you have any questions, please don't hesitate to contact us:</p>
-                <p>📞 Phone: [Your Phone Number]<br>
-                📧 Email: [Your Email]<br>
-                🌐 Website: [Your Website]</p>
-                
-                <p>Thank you for choosing OHS Home Services!</p>
-                
-                <hr style="margin: 30px 0;">
-                <p style="font-size: 12px; color: #666;">
-                    This is an automated confirmation. Please keep this email for your records.
-                </p>
-            </div>
-        </body>
-        </html>
-    `;
-}
-
-// Generate business notification email HTML
-function generateBusinessNotificationEmail(bookingData) {
-    return `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <title>New Service Booking</title>
-        </head>
-        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                <h2 style="color: #dc3545;">New Service Booking Request</h2>
-                
-                <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                    <h3>Booking Information:</h3>
-                    <p><strong>Reference:</strong> ${bookingData.bookingReference}</p>
-                    <p><strong>Service:</strong> ${bookingData.serviceType}</p>
-                    <p><strong>Date Requested:</strong> ${new Date(bookingData.scheduling.preferredDate).toLocaleDateString()}</p>
-                    <p><strong>Time:</strong> ${bookingData.scheduling.preferredTime}</p>
-                </div>
-                
-                <div style="background: #e9f7ef; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                    <h3>Customer Details:</h3>
-                    <p><strong>Name:</strong> ${bookingData.customer.name}</p>
-                    <p><strong>Email:</strong> ${bookingData.customer.email}</p>
-                    <p><strong>Phone:</strong> ${bookingData.customer.phone}</p>
-                    <p><strong>Location:</strong> ${bookingData.scheduling.location}</p>
-                </div>
-                
-                <div style="background: #fff3cd; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                    <h3>Service Details:</h3>
-                    <p><strong>Property Size:</strong> ${bookingData.serviceDetails.propertySize}</p>
-                    <p><strong>Additional Services:</strong> ${Array.isArray(bookingData.serviceDetails.additionalServices) ? bookingData.serviceDetails.additionalServices.join(', ') : bookingData.serviceDetails.additionalServices}</p>
-                    <p><strong>Special Requirements:</strong> ${bookingData.serviceDetails.specialRequirements}</p>
-                    <p><strong>Notes:</strong> ${bookingData.serviceDetails.notes}</p>
-                    <p><strong>How they heard about us:</strong> ${bookingData.marketing.hearAboutUs}</p>
-                </div>
-                
-                <p><strong>Action Required:</strong> Contact customer within 24 hours to confirm booking details.</p>
-                
-                <hr style="margin: 30px 0;">
-                <p style="font-size: 12px; color: #666;">
-                    Submitted: ${new Date(bookingData.submission.date).toLocaleString()}<br>
-                    IP Address: ${bookingData.submission.ip}
-                </p>
-            </div>
-        </body>
-        </html>
-    `;
-}
+/**
+ * GMAIL SETUP INSTRUCTIONS
+ * 
+ * 1. Enable 2-Factor Authentication on ohshocl@gmail.com
+ * 2. Generate an App Password:
+ *    - Go to Google Account settings
+ *    - Security → 2-Step Verification → App passwords
+ *    - Select "Mail" and generate password
+ * 3. Add environment variables to Vercel:
+ *    GMAIL_USER=ohshocl@gmail.com
+ *    GMAIL_APP_PASSWORD=your_16_character_app_password
+ * 
+ * For development (.env.local):
+ * GMAIL_USER=ohshocl@gmail.com
+ * GMAIL_APP_PASSWORD=your_app_password_here
+ */
