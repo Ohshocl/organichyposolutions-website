@@ -1,93 +1,150 @@
-// ================================================================
-// api/health.js
-// Health Check Endpoint for OHS API Functions
-// ================================================================
+/**
+ * ORGANIC HYPOSOLUTIONS - API HEALTH CHECK ENDPOINT
+ * ================================================================
+ * File: /api/health.js
+ * Purpose: Simple health check endpoint for monitoring and testing
+ * URL: /api/health
+ * Method: GET
+ * ================================================================
+ */
 
 export default async function handler(req, res) {
-  // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', 'https://organichyposolutions.com');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
-
-  // Only allow GET requests
-  if (req.method !== 'GET') {
-    res.status(405).json({
-      error: 'Method not allowed',
-      message: 'This endpoint only accepts GET requests'
-    });
-    return;
-  }
-
-  try {
-    const startTime = Date.now();
     
-    // Basic system checks
-    const healthChecks = {
-      timestamp: new Date().toISOString(),
-      status: 'healthy',
-      version: process.env.npm_package_version || '2.1.0',
-      environment: process.env.NODE_ENV || 'development',
-      uptime: process.uptime(),
-      memory: process.memoryUsage(),
-      system: {
-        nodeVersion: process.version,
-        platform: process.platform,
-        arch: process.arch
-      },
-      api: {
-        baseUrl: process.env.SITE_URL || 'https://organichyposolutions.com',
-        version: process.env.API_VERSION || '2024-01'
-      },
-      shopify: {
-        configured: !!(process.env.SHOPIFY_DOMAIN && process.env.SHOPIFY_STOREFRONT_TOKEN),
-        domain: process.env.SHOPIFY_DOMAIN ? 
-          process.env.SHOPIFY_DOMAIN.replace(/^https?:\/\//, '') : null
-      },
-      services: {
-        email: !!process.env.CONTACT_EMAIL,
-        analytics: !!process.env.GOOGLE_ANALYTICS_ID
-      }
-    };
+    // =================================================================
+    // CORS HEADERS
+    // =================================================================
+    
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
 
-    // Calculate response time
-    const responseTime = Date.now() - startTime;
-    healthChecks.responseTime = `${responseTime}ms`;
-
-    // Determine overall health status
-    if (!healthChecks.shopify.configured) {
-      healthChecks.status = 'degraded';
-      healthChecks.warnings = ['Shopify integration not fully configured'];
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
     }
 
-    // Add request information
-    healthChecks.request = {
-      userAgent: req.headers['user-agent'],
-      ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
-      method: req.method,
-      url: req.url
-    };
+    // Only allow GET requests
+    if (req.method !== 'GET') {
+        return res.status(405).json({
+            success: false,
+            error: 'Method not allowed',
+            allowedMethods: ['GET']
+        });
+    }
 
-    // Set appropriate status code
-    const statusCode = healthChecks.status === 'healthy' ? 200 : 
-                      healthChecks.status === 'degraded' ? 200 : 503;
+    try {
+        
+        // =================================================================
+        // HEALTH CHECK DATA
+        // =================================================================
+        
+        const timestamp = new Date().toISOString();
+        const uptime = process.uptime();
+        const memoryUsage = process.memoryUsage();
+        
+        // Check environment variables (basic check)
+        const hasShopifyConfig = !!(
+            process.env.SHOPIFY_DOMAIN && 
+            process.env.SHOPIFY_STOREFRONT_TOKEN
+        );
+        
+        const hasEmailConfig = !!(
+            process.env.GMAIL_USER && 
+            process.env.GMAIL_APP_PASSWORD
+        );
 
-    res.status(statusCode).json(healthChecks);
+        // =================================================================
+        // API ENDPOINTS STATUS
+        // =================================================================
+        
+        const apiEndpoints = [
+            { name: 'Health Check', path: '/api/health', status: 'operational' },
+            { name: 'Get Products', path: '/api/shopify/get-products', status: hasShopifyConfig ? 'operational' : 'degraded' },
+            { name: 'Create Checkout', path: '/api/shopify/create-checkout', status: hasShopifyConfig ? 'operational' : 'degraded' },
+            { name: 'Contact Form', path: '/api/forms/contact', status: hasEmailConfig ? 'operational' : 'degraded' }
+        ];
 
-  } catch (error) {
-    console.error('Health check error:', error);
-    
-    res.status(503).json({
-      timestamp: new Date().toISOString(),
-      status: 'unhealthy',
-      error: 'Internal server error',
-      message: 'Health check failed',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
+        // =================================================================
+        // RESPONSE DATA
+        // =================================================================
+        
+        const healthData = {
+            success: true,
+            status: 'healthy',
+            service: 'Organic HypoSolutions API',
+            version: '2.1.0',
+            timestamp: timestamp,
+            uptime: {
+                seconds: Math.floor(uptime),
+                readable: `${Math.floor(uptime / 3600)}h ${Math.floor((uptime % 3600) / 60)}m ${Math.floor(uptime % 60)}s`
+            },
+            system: {
+                node: process.version,
+                platform: process.platform,
+                arch: process.arch,
+                memory: {
+                    used: `${Math.round(memoryUsage.heapUsed / 1024 / 1024)}MB`,
+                    total: `${Math.round(memoryUsage.heapTotal / 1024 / 1024)}MB`,
+                    external: `${Math.round(memoryUsage.external / 1024 / 1024)}MB`
+                }
+            },
+            configuration: {
+                shopify: hasShopifyConfig ? 'configured' : 'missing',
+                email: hasEmailConfig ? 'configured' : 'missing',
+                environment: process.env.NODE_ENV || 'development'
+            },
+            endpoints: apiEndpoints,
+            business: {
+                name: 'Organic HypoSolutions',
+                website: 'https://organichyposolutions.com',
+                phone: '(801) 712-5663',
+                email: 'ohshocl@gmail.com',
+                serviceArea: 'Utah'
+            }
+        };
+
+        // =================================================================
+        // LOG HEALTH CHECK
+        // =================================================================
+        
+        console.log(`🏥 Health check requested at ${timestamp}`);
+        console.log(`📊 System status: ${healthData.status}`);
+        console.log(`⏱️ Uptime: ${healthData.uptime.readable}`);
+        console.log(`🔧 Shopify config: ${hasShopifyConfig ? '✅' : '❌'}`);
+        console.log(`📧 Email config: ${hasEmailConfig ? '✅' : '❌'}`);
+
+        // =================================================================
+        // SUCCESS RESPONSE
+        // =================================================================
+        
+        res.status(200).json(healthData);
+
+    } catch (error) {
+        
+        // =================================================================
+        // ERROR HANDLING
+        // =================================================================
+        
+        console.error('❌ Health check error:', error);
+        
+        res.status(500).json({
+            success: false,
+            status: 'unhealthy',
+            service: 'Organic HypoSolutions API',
+            error: 'Health check failed',
+            message: error.message,
+            timestamp: new Date().toISOString()
+        });
+    }
 }
+
+// =================================================================
+// EXPORT CONFIGURATION - VERCEL COMPATIBLE
+// =================================================================
+
+// ✅ CURRENT: Using supported Node.js runtime
+export const config = {
+    runtime: 'nodejs',      // Current supported runtime (Node.js 20.x)
+    maxDuration: 10         // 10 seconds timeout for health checks
+};
