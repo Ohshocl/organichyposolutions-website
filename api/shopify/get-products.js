@@ -3,7 +3,7 @@
  * ================================================================
  * File: /api/shopify/get-products.js
  * Purpose: Fetch products directly from Shopify
- * FIXED: Removed complex cart.js server-side integration
+ * FIXED: Updated runtime configuration for Vercel compatibility
  * SIMPLIFIED: Just fetches from Shopify, let frontend handle cart.js mapping
  * ================================================================
  */
@@ -174,10 +174,11 @@ export default async function handler(req, res) {
 }
 
 // =================================================================
-// EXPORT CONFIGURATION
+// EXPORT CONFIGURATION - FIXED FOR VERCEL COMPATIBILITY
 // =================================================================
 
+// ✅ UPDATED: Changed from deprecated 'nodejs18.x' to current 'nodejs'
 export const config = {
-    runtime: 'nodejs18.x',
-    maxDuration: 30
+    runtime: 'nodejs',      // Current supported runtime (Node.js 20.x)
+    maxDuration: 30         // 30 seconds timeout
 };
