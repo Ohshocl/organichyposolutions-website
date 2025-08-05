@@ -1,55 +1,25 @@
 /**
- * ORGANIC HYPOSOLUTIONS - CREATE CHECKOUT API ENDPOINT
+ * ORGANIC HYPOSOLUTIONS - CREATE CHECKOUT API ENDPOINT (FIXED)
  * ================================================================
  * File: /api/shopify/create-checkout.js
  * Purpose: Server-side endpoint for creating Shopify checkouts
- * Dependencies: /api/_utils/shopify-client.js
- * Method: POST
- * 
- * REQUEST BODY:
- * {
- *   "lineItems": [
- *     {
- *       "variantId": "gid://shopify/ProductVariant/123456789",
- *       "quantity": 2
- *     }
- *   ],
- *   "shippingAddress": { // Optional
- *     "firstName": "John",
- *     "lastName": "Doe", 
- *     "company": "OHS Customer",
- *     "address1": "123 Main St",
- *     "city": "Salt Lake City",
- *     "province": "UT",
- *     "country": "US",
- *     "zip": "84101"
- *   }
- * }
- * 
- * RESPONSE:
- * Success: { success: true, checkoutUrl: "https://...", checkoutId: "..." }
- * Error: { success: false, error: "Error message", details: [...] }
+ * FIXED: Import compatibility with shopify-client.js
  * ================================================================
  */
 
-import { createCheckout, convertCartToLineItems, validateVariant } from '../_utils/shopify-client.js';
+import { createCheckout } from '../_utils/shopify-client.js';
 
-/**
- * Main handler for create-checkout API endpoint
- */
 export default async function handler(req, res) {
     
     // =================================================================
     // CORS HEADERS & PREFLIGHT
     // =================================================================
     
-    // Set CORS headers for cross-origin requests
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
     res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
     
-    // Handle preflight OPTIONS request
     if (req.method === 'OPTIONS') {
         console.log('🔄 Handling CORS preflight request');
         res.status(200).end();
@@ -75,16 +45,32 @@ export default async function handler(req, res) {
     try {
         
         // =================================================================
+        // ENVIRONMENT VALIDATION
+        // =================================================================
+        
+        const SHOPIFY_DOMAIN = process.env.SHOPIFY_DOMAIN;
+        const SHOPIFY_STOREFRONT_TOKEN = process.env.SHOPIFY_STOREFRONT_TOKEN;
+
+        if (!SHOPIFY_DOMAIN || !SHOPIFY_STOREFRONT_TOKEN) {
+            console.error('❌ Missing Shopify environment variables');
+            return res.status(500).json({
+                success: false,
+                error: 'Server configuration error',
+                details: ['Missing Shopify credentials'],
+                helpText: 'Please contact support if this error persists'
+            });
+        }
+        
+        // =================================================================
         // REQUEST BODY VALIDATION
         // =================================================================
         
-        const { lineItems, shippingAddress, customerType, cartData } = req.body;
+        const { lineItems, shippingAddress, note } = req.body;
         
-        // Log request for debugging
         console.log('📊 Request data:', {
             lineItemsCount: lineItems?.length || 0,
             hasShippingAddress: !!shippingAddress,
-            customerType: customerType || 'retail'
+            hasNote: !!note
         });
 
         // Validate line items exist
@@ -171,7 +157,6 @@ export default async function handler(req, res) {
         let processedShippingAddress = null;
         
         if (shippingAddress) {
-            // Validate shipping address format
             const requiredFields = ['firstName', 'lastName', 'address1', 'city', 'province', 'country', 'zip'];
             const addressErrors = [];
             
@@ -240,7 +225,6 @@ export default async function handler(req, res) {
         console.log(`🔗 Checkout URL: ${checkout.webUrl}`);
         console.log(`💰 Total: ${checkout.totalPriceV2?.amount} ${checkout.totalPriceV2?.currencyCode}`);
 
-        // Prepare success response
         const response = {
             success: true,
             checkoutUrl: checkout.webUrl,
@@ -248,6 +232,10 @@ export default async function handler(req, res) {
             totalPrice: {
                 amount: checkout.totalPriceV2?.amount || '0.00',
                 currencyCode: checkout.totalPriceV2?.currencyCode || 'USD'
+            },
+            subtotalPrice: {
+                amount: checkout.subtotalPriceV2?.amount || '0.00',
+                currencyCode: checkout.subtotalPriceV2?.currencyCode || 'USD'
             },
             lineItemsCount: checkout.lineItems?.edges?.length || validatedLineItems.length,
             requiresShipping: checkout.requiresShipping || true,
@@ -260,7 +248,6 @@ export default async function handler(req, res) {
                 processedLineItems: validatedLineItems,
                 originalRequest: {
                     lineItemsCount: lineItems.length,
-                    customerType: customerType,
                     hasShippingAddress: !!shippingAddress
                 }
             };
@@ -277,7 +264,6 @@ export default async function handler(req, res) {
         console.error('❌ Checkout creation error:', error);
         console.error('Stack trace:', error.stack);
 
-        // Determine error type and appropriate response
         let statusCode = 500;
         let errorMessage = 'Internal server error during checkout creation';
         const errorDetails = [error.message];
@@ -307,67 +293,7 @@ export default async function handler(req, res) {
 // EXPORT CONFIGURATION
 // =================================================================
 
-// Set the runtime for Vercel serverless functions
 export const config = {
     runtime: 'nodejs18.x',
-    maxDuration: 30 // 30 seconds timeout
+    maxDuration: 30
 };
-
-// =================================================================
-// USAGE EXAMPLES
-// =================================================================
-
-/*
-Example Frontend Usage:
-
-// Basic checkout creation
-const response = await fetch('/api/shopify/create-checkout', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-        lineItems: [
-            {
-                variantId: 'gid://shopify/ProductVariant/123456789',
-                quantity: 2
-            },
-            {
-                variantId: 'gid://shopify/ProductVariant/987654321',
-                quantity: 1
-            }
-        ]
-    })
-});
-
-const data = await response.json();
-
-if (data.success) {
-    // Redirect to checkout
-    window.location.href = data.checkoutUrl;
-} else {
-    console.error('Checkout failed:', data.error);
-    alert('Failed to create checkout: ' + data.error);
-}
-
-// With shipping address
-const responseWithShipping = await fetch('/api/shopify/create-checkout', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-        lineItems: [...],
-        shippingAddress: {
-            firstName: 'John',
-            lastName: 'Doe',
-            company: 'OHS Customer',
-            address1: '123 Main St',
-            city: 'Salt Lake City',
-            province: 'UT',
-            country: 'US',
-            zip: '84101'
-        }
-    })
-});
-*/
