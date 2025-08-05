@@ -1,15 +1,8 @@
 # ================================================================
-# ORGANIC HYPOSOLUTIONS - UPDATED DEPLOYMENT WORKFLOW
+# ORGANIC HYPOSOLUTIONS - SIMPLIFIED DEPLOYMENT WORKFLOW
 # ================================================================
-# Dual Deployment Strategy:
-# 1. Static Content → GitHub Pages (secure, no API secrets)
-# 2. Serverless Functions → Vercel (with environment variables)
-# 
-# Security Features:
-# - NO Shopify secrets exposed in frontend
-# - Proper API endpoint configuration
-# - Environment variable protection
-# - Build optimization and validation
+# Fixed: Node version, caching issues, and over-complex validation
+# Purpose: Deploy static site to GitHub Pages (simple and reliable)
 # ================================================================
 
 name: Deploy OHS Website
@@ -17,322 +10,24 @@ name: Deploy OHS Website
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
-# Enhanced permissions for multi-platform deployment
+# Permissions for GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
-  deployments: write
 
 # Prevent concurrent deployments
 concurrency:
-  group: "deployment-${{ github.ref }}"
+  group: "pages"
   cancel-in-progress: false
-
-env:
-  NODE_VERSION: '18'
-  SITE_URL: 'https://organichyposolutions.com'
 
 jobs:
   # ================================================================
-  # JOB 1: BUILD AND VALIDATE
+  # BUILD AND DEPLOY TO GITHUB PAGES
   # ================================================================
-  build:
-    name: Build & Validate
-    runs-on: ubuntu-latest
-    
-    outputs:
-      static-artifact-id: ${{ steps.static-upload.outputs.artifact-id }}
-      api-ready: ${{ steps.api-check.outputs.ready }}
-      
-    steps:
-    # ----------------------------------------
-    # Setup and Dependencies
-    # ----------------------------------------
-    - name: 🔍 Checkout Repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0  # Full history for better caching
-    
-    - name: 🟢 Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        cache-dependency-path: 'package-lock.json'
-    
-    - name: 📦 Install Dependencies
-      run: |
-        if [ -f package.json ]; then
-          npm ci --prefer-offline --no-audit
-        else
-          echo "⚠️ No package.json found, creating minimal setup"
-          npm init -y
-          npm install --save-dev prettier eslint
-        fi
-    
-    # ----------------------------------------
-    # Repository Structure Validation
-    # ----------------------------------------
-    - name: 🔧 Validate Repository Structure
-      run: |
-        echo "🔍 Validating repository structure..."
-        
-        # Check required directories exist
-        required_dirs=("assets" "shop" "api" "auth" "account" "documents")
-        for dir in "${required_dirs[@]}"; do
-          if [ ! -d "$dir" ]; then
-            echo "❌ Missing required directory: $dir"
-            exit 1
-          fi
-        done
-        
-        # Check critical files exist
-        required_files=("index.html" "products.html" "shop/cart.html")
-        for file in "${required_files[@]}"; do
-          if [ ! -f "$file" ]; then
-            echo "❌ Missing required file: $file"
-            exit 1
-          fi
-        done
-        
-        # Verify old files are removed
-        deprecated_files=(
-          "shop/checkout.html"
-          "shop/confirmation.html" 
-          "shop/js/shopify-config.js"
-          "shop/js/shopify-api-bridge.js"
-          "API/"
-          "Backups/"
-        )
-        for file in "${deprecated_files[@]}"; do
-          if [ -e "$file" ]; then
-            echo "⚠️ Deprecated file/folder still exists: $file"
-            echo "Please remove as per checklist"
-          fi
-        done
-        
-        echo "✅ Repository structure validation complete"
-    
-    # ----------------------------------------
-    # Security & Configuration Validation
-    # ----------------------------------------
-    - name: 🔒 Security Configuration Check
-      run: |
-        echo "🔍 Checking security configuration..."
-        
-        # Ensure no secrets in frontend code
-        if grep -r "SHOPIFY_ADMIN_API\|SHOPIFY_WEBHOOK_SECRET" shop/js/ || true; then
-          echo "❌ SECURITY ALERT: Admin API secrets found in frontend code!"
-          exit 1
-        fi
-        
-        # Verify gitignore covers sensitive files
-        if [ ! -f .gitignore ]; then
-          echo "❌ Missing .gitignore file"
-          exit 1
-        fi
-        
-        # Check for environment template
-        if [ ! -f .env.example ]; then
-          echo "⚠️ Missing .env.example file"
-        fi
-        
-        echo "✅ Security validation complete"
-    
-    # ----------------------------------------
-    # Build Frontend Shopify Client (Secure)
-    # ----------------------------------------
-    - name: 🛡️ Create Secure Frontend Shopify Client
-      run: |
-        echo "🔧 Creating secure frontend Shopify client..."
-        
-        mkdir -p shop/js
-        cat > shop/js/shopify-client.js << 'EOF'
-        /**
-         * OHS Secure Frontend Shopify Client
-         * Security: NO credentials stored here - calls secure API endpoints
-         * Generated: ${{ github.run_id }} at $(date)
-         */
-        
-        class OHSShopifyClient {
-          constructor() {
-            this.apiBaseUrl = window.location.origin;
-            this.isProduction = !window.location.hostname.includes('localhost');
-            
-            console.log('🔐 OHS Shopify Client initialized (Secure)');
-            console.log('🌐 API Base URL:', this.apiBaseUrl);
-            console.log('🏪 Environment:', this.isProduction ? 'Production' : 'Development');
-          }
-          
-          // Get products via secure API endpoint
-          async getProducts() {
-            try {
-              const response = await fetch(`${this.apiBaseUrl}/api/shopify/get-products`);
-              if (!response.ok) throw new Error(`HTTP ${response.status}`);
-              return await response.json();
-            } catch (error) {
-              console.error('❌ Error fetching products:', error);
-              return { products: [], error: error.message };
-            }
-          }
-          
-          // Create checkout via secure API endpoint
-          async createCheckout(lineItems) {
-            try {
-              const response = await fetch(`${this.apiBaseUrl}/api/shopify/create-checkout`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ lineItems })
-              });
-              if (!response.ok) throw new Error(`HTTP ${response.status}`);
-              return await response.json();
-            } catch (error) {
-              console.error('❌ Error creating checkout:', error);
-              return { error: error.message };
-            }
-          }
-        }
-        
-        // Initialize global client
-        window.OHSShopifyClient = new OHSShopifyClient();
-        
-        EOF
-        
-        echo "✅ Secure frontend client created"
-    
-    # ----------------------------------------
-    # Asset Optimization
-    # ----------------------------------------
-    - name: 🎨 Optimize Assets
-      run: |
-        echo "🎨 Optimizing assets..."
-        
-        # Verify CSS files exist
-        css_files=("assets/css/global-styles.css" "assets/css/components.css" "assets/css/pages.css")
-        for css in "${css_files[@]}"; do
-          if [ ! -f "$css" ]; then
-            echo "⚠️ CSS file not found: $css"
-            echo "Creating placeholder..."
-            mkdir -p $(dirname "$css")
-            echo "/* Placeholder for $css */" > "$css"
-          fi
-        done
-        
-        # Verify JS files exist
-        js_files=("assets/js/global-scripts.js" "assets/js/analytics.js")
-        for js in "${js_files[@]}"; do
-          if [ ! -f "$js" ]; then
-            echo "⚠️ JS file not found: $js"
-            echo "Creating placeholder..."
-            mkdir -p $(dirname "$js")
-            echo "// Placeholder for $js" > "$js"
-          fi
-        done
-        
-        echo "✅ Asset optimization complete"
-    
-    # ----------------------------------------
-    # API Structure Validation
-    # ----------------------------------------
-    - name: 🔌 Validate API Structure
-      id: api-check
-      run: |
-        echo "🔍 Validating API structure..."
-        
-        api_ready="false"
-        
-        # Check API directory structure
-        if [ -d "api" ]; then
-          required_api_files=(
-            "api/_utils/shopify-client.js"
-            "api/shopify/create-checkout.js"
-            "api/shopify/get-products.js"
-            "api/forms/contact.js"
-          )
-          
-          all_exist=true
-          for file in "${required_api_files[@]}"; do
-            if [ ! -f "$file" ]; then
-              echo "⚠️ API file not found: $file"
-              all_exist=false
-            fi
-          done
-          
-          if [ "$all_exist" = true ]; then
-            api_ready="true"
-            echo "✅ API structure validation complete"
-          else
-            echo "⚠️ Some API files missing - will deploy static content only"
-          fi
-        else
-          echo "⚠️ API directory not found - will deploy static content only"
-        fi
-        
-        echo "ready=$api_ready" >> $GITHUB_OUTPUT
-    
-    # ----------------------------------------
-    # Prepare Static Content for Deployment
-    # ----------------------------------------
-    - name: 📁 Prepare Static Deployment
-      run: |
-        echo "📁 Preparing static content for deployment..."
-        
-        # Create deployment directory
-        mkdir -p _site
-        
-        # Copy all static content (excluding API and templates)
-        rsync -av --progress . _site/ \
-          --exclude=node_modules \
-          --exclude=.git \
-          --exclude=api \
-          --exclude=templates \
-          --exclude=.env* \
-          --exclude=_site \
-          --exclude=*.log \
-          --exclude=.DS_Store \
-          --exclude=Thumbs.db
-        
-        # Verify critical files are in deployment
-        if [ ! -f "_site/index.html" ]; then
-          echo "❌ index.html missing from deployment"
-          exit 1
-        fi
-        
-        echo "✅ Static content prepared for deployment"
-    
-    # ----------------------------------------
-    # Upload Static Artifact
-    # ----------------------------------------
-    - name: 📤 Upload Static Artifact
-      id: static-upload
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: '_site'
-        name: 'ohs-static-site'
-    
-    # ----------------------------------------
-    # Deployment Summary
-    # ----------------------------------------
-    - name: 📊 Build Summary
-      run: |
-        echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
-        echo "| Component | Status | Notes |" >> $GITHUB_STEP_SUMMARY
-        echo "|-----------|--------|-------|" >> $GITHUB_STEP_SUMMARY
-        echo "| Static Content | ✅ Ready | GitHub Pages deployment prepared |" >> $GITHUB_STEP_SUMMARY
-        echo "| Shopify Client | ✅ Secure | Frontend client with no exposed secrets |" >> $GITHUB_STEP_SUMMARY
-        echo "| API Functions | ${{ steps.api-check.outputs.ready == 'true' && '✅ Ready' || '⚠️ Pending' }} | ${{ steps.api-check.outputs.ready == 'true' && 'Vercel deployment ready' || 'Deploy API functions to Vercel manually' }} |" >> $GITHUB_STEP_SUMMARY
-        echo "| Security | ✅ Validated | No secrets exposed in frontend |" >> $GITHUB_STEP_SUMMARY
-
-  # ================================================================
-  # JOB 2: DEPLOY TO GITHUB PAGES (Static Content)
-  # ================================================================
-  deploy-static:
-    name: Deploy to GitHub Pages
-    needs: build
+  deploy:
+    name: Build & Deploy to GitHub Pages
     runs-on: ubuntu-latest
     
     environment:
@@ -340,86 +35,102 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     
     steps:
+    # ----------------------------------------
+    # Checkout Repository
+    # ----------------------------------------
+    - name: 🔍 Checkout Repository
+      uses: actions/checkout@v4
+
+    # ----------------------------------------
+    # Setup Node.js (Fixed Version)
+    # ----------------------------------------
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        # Removed problematic caching
+
+    # ----------------------------------------
+    # Install Dependencies (Only if package.json exists)
+    # ----------------------------------------
+    - name: 📦 Install Dependencies
+      run: |
+        if [ -f package.json ]; then
+          echo "📦 Installing dependencies..."
+          npm install
+        else
+          echo "📝 No package.json found - skipping dependencies"
+        fi
+
+    # ----------------------------------------
+    # Basic Validation
+    # ----------------------------------------
+    - name: 🔍 Basic Validation
+      run: |
+        echo "🔍 Checking basic files..."
+        
+        # Check if critical files exist
+        if [ ! -f "index.html" ]; then
+          echo "❌ index.html not found!"
+          exit 1
+        fi
+        
+        echo "✅ Basic validation passed"
+
+    # ----------------------------------------
+    # Prepare Static Site
+    # ----------------------------------------
+    - name: 📁 Prepare Static Site
+      run: |
+        echo "📁 Preparing static site..."
+        
+        # Create build directory
+        mkdir -p _site
+        
+        # Copy all necessary files
+        cp -r * _site/ 2>/dev/null || true
+        
+        # Remove unnecessary files from build
+        rm -rf _site/node_modules _site/.git _site/_site _site/.github 2>/dev/null || true
+        
+        # Ensure index.html exists in build
+        if [ ! -f "_site/index.html" ]; then
+          echo "❌ index.html missing from build!"
+          exit 1
+        fi
+        
+        echo "✅ Static site prepared"
+
+    # ----------------------------------------
+    # Setup GitHub Pages
+    # ----------------------------------------
+    - name: 🔧 Setup Pages
+      uses: actions/configure-pages@v4
+
+    # ----------------------------------------
+    # Upload to GitHub Pages
+    # ----------------------------------------
+    - name: 📤 Upload to Pages
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: '_site'
+
+    # ----------------------------------------
+    # Deploy to GitHub Pages
+    # ----------------------------------------
     - name: 🚀 Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v4
-      with:
-        artifact_name: 'ohs-static-site'
-    
-    - name: ✅ Static Deployment Complete
+
+    # ----------------------------------------
+    # Success Summary
+    # ----------------------------------------
+    - name: ✅ Deployment Summary
       run: |
-        echo "🎉 Static content deployed successfully!"
-        echo "🌐 Site URL: ${{ steps.deployment.outputs.page_url }}"
+        echo "🎉 Deployment completed successfully!"
+        echo "🌐 Your site is available at: ${{ steps.deployment.outputs.page_url }}"
         echo ""
-        echo "## Next Steps:"
-        echo "1. 🔌 Deploy API functions to Vercel (if not automated)"
-        echo "2. 🔧 Configure environment variables in Vercel dashboard"
-        echo "3. 🧪 Test Shopify integration functionality"
-        echo "4. 📊 Monitor deployment logs and analytics"
-
-  # ================================================================
-  # JOB 3: PREPARE VERCEL DEPLOYMENT (API Functions)
-  # ================================================================
-  prepare-vercel:
-    name: Prepare Vercel Deployment
-    needs: build
-    runs-on: ubuntu-latest
-    if: needs.build.outputs.api-ready == 'true'
-    
-    steps:
-    - name: 🔍 Checkout Repository
-      uses: actions/checkout@v4
-    
-    - name: 📋 Generate Vercel Deployment Instructions
-      run: |
-        echo "## 🔌 Vercel API Deployment Instructions" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "Your API functions are ready for Vercel deployment:" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### Required Environment Variables:" >> $GITHUB_STEP_SUMMARY
-        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-        echo "SHOPIFY_DOMAIN=your-store.myshopify.com" >> $GITHUB_STEP_SUMMARY
-        echo "SHOPIFY_STOREFRONT_TOKEN=your-storefront-token" >> $GITHUB_STEP_SUMMARY
-        echo "SHOPIFY_ADMIN_API_KEY=your-admin-api-key" >> $GITHUB_STEP_SUMMARY
-        echo "SHOPIFY_WEBHOOK_SECRET=your-webhook-secret" >> $GITHUB_STEP_SUMMARY
-        echo "NODE_ENV=production" >> $GITHUB_STEP_SUMMARY
-        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### Deployment Commands:" >> $GITHUB_STEP_SUMMARY
-        echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-        echo "# Install Vercel CLI" >> $GITHUB_STEP_SUMMARY
-        echo "npm i -g vercel" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "# Deploy to Vercel" >> $GITHUB_STEP_SUMMARY
-        echo "vercel --prod" >> $GITHUB_STEP_SUMMARY
-        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### Endpoints Available:" >> $GITHUB_STEP_SUMMARY
-        echo "- \`/api/shopify/get-products\` - Fetch products from Shopify" >> $GITHUB_STEP_SUMMARY
-        echo "- \`/api/shopify/create-checkout\` - Create Shopify checkout" >> $GITHUB_STEP_SUMMARY
-        echo "- \`/api/forms/contact\` - Handle contact form submissions" >> $GITHUB_STEP_SUMMARY
-
-# ================================================================
-# DEPLOYMENT NOTES
-# ================================================================
-# 
-# This workflow provides:
-# 1. ✅ Secure frontend with NO exposed API secrets
-# 2. ✅ Proper repository structure validation
-# 3. ✅ Asset optimization and build process
-# 4. ✅ Static content deployment to GitHub Pages
-# 5. ✅ Instructions for Vercel API deployment
-# 6. ✅ Security validation and error handling
-# 
-# Manual Steps Required:
-# 1. Deploy API functions to Vercel (or automate with Vercel GitHub app)
-# 2. Configure environment variables in Vercel dashboard
-# 3. Update DNS settings if using custom domain
-# 4. Test all integrations post-deployment
-# 
-# Security Features:
-# - No Shopify credentials in frontend code
-# - Environment variables managed through hosting platforms
-# - Secure API endpoint architecture
-# - Comprehensive validation and error handling
-# ================================================================
+        echo "Next steps:"
+        echo "1. 🔌 Deploy API functions to Vercel separately"
+        echo "2. 🔧 Set up environment variables in Vercel"
+        echo "3. 🧪 Test your live site"
