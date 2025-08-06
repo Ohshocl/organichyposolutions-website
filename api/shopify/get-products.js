@@ -8,167 +8,162 @@ cat > api/shopify/get-products.js << 'EOF'
  * ================================================================
  */
 
-const { getProducts } = require('../_utils/shopify-client');
+const ShopifyClient = require('../_utils/shopify-client');
 
 module.exports = async function handler(req, res) {
-    // =================================================================
-    // CORS HEADERS
-    // =================================================================
-    
+    // Set CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Content-Type', 'application/json');
 
-    // Handle preflight requests
+    // Handle OPTIONS request
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
     }
 
     // Only allow GET requests
     if (req.method !== 'GET') {
-        return res.status(405).json({
-            success: false,
-            error: 'Method not allowed',
-            allowedMethods: ['GET']
+        return res.status(405).json({ 
+            error: 'Method Not Allowed',
+            message: 'Only GET requests are supported'
         });
     }
 
     try {
-        console.log('🔍 Fetching products from Shopify...');
-
-        // =================================================================
-        // ENVIRONMENT VALIDATION
-        // =================================================================
+        console.log('GET /api/shopify/get-products - Starting request');
         
-        const SHOPIFY_DOMAIN = process.env.SHOPIFY_DOMAIN;
-        const SHOPIFY_STOREFRONT_TOKEN = process.env.SHOPIFY_STOREFRONT_TOKEN;
+        // Parse query parameters
+        const { limit = '20', vendor, productType, tags } = req.query;
+        const productLimit = Math.min(parseInt(limit) || 20, 100); // Cap at 100
+        
+        console.log('Request parameters:', { productLimit, vendor, productType, tags });
 
-        if (!SHOPIFY_DOMAIN || !SHOPIFY_STOREFRONT_TOKEN) {
-            console.error('❌ Missing Shopify environment variables');
-            return res.status(500).json({
-                success: false,
-                error: 'Server configuration error',
-                details: ['Missing Shopify credentials'],
-                helpText: 'Please contact support if this error persists'
-            });
+        // Initialize Shopify client
+        const shopify = new ShopifyClient();
+        
+        // Fetch products from Shopify
+        const products = await shopify.getProducts(productLimit);
+        
+        console.log(`Successfully fetched ${products.length} products from Shopify`);
+
+        // Apply additional filters if specified
+        let filteredProducts = products;
+        
+        if (vendor) {
+            filteredProducts = filteredProducts.filter(product => 
+                product.vendor && product.vendor.toLowerCase().includes(vendor.toLowerCase())
+            );
+        }
+        
+        if (productType) {
+            filteredProducts = filteredProducts.filter(product => 
+                product.productType && product.productType.toLowerCase().includes(productType.toLowerCase())
+            );
+        }
+        
+        if (tags) {
+            const searchTags = tags.toLowerCase().split(',').map(tag => tag.trim());
+            filteredProducts = filteredProducts.filter(product => 
+                product.tags && product.tags.some(tag => 
+                    searchTags.some(searchTag => tag.toLowerCase().includes(searchTag))
+                )
+            );
         }
 
-        // =================================================================
-        // QUERY PARAMETERS
-        // =================================================================
-        
-        const {
-            limit = '50',
-            cursor = null
-        } = req.query;
-
-        const parsedLimit = Math.min(parseInt(limit) || 50, 250);
-
-        console.log(\`📋 Fetching \${parsedLimit} products\`);
-
-        // =================================================================
-        // FETCH FROM SHOPIFY
-        // =================================================================
-        
-        const shopifyResult = await getProducts(parsedLimit, cursor);
-        
-        if (!shopifyResult.success) {
-            console.error('❌ Shopify fetch failed:', shopifyResult.errors);
-            return res.status(500).json({
-                success: false,
-                error: 'Failed to fetch products from Shopify',
-                details: shopifyResult.errors || ['Unknown Shopify error']
-            });
-        }
-
-        // =================================================================
-        // FORMAT PRODUCTS (SIMPLE FORMAT)
-        // =================================================================
-        
-        const products = shopifyResult.products.map(product => {
-            // Get default variant for pricing
-            const defaultVariant = product.variants?.edges?.[0]?.node;
+        // Transform products for frontend
+        const transformedProducts = filteredProducts.map(product => ({
+            id: product.id,
+            title: product.title,
+            handle: product.handle,
+            description: product.description,
+            vendor: product.vendor,
+            productType: product.productType,
+            tags: product.tags,
+            availableForSale: product.availableForSale,
+            totalInventory: product.totalInventory,
             
-            return {
-                // Basic Shopify data
-                id: product.id,
-                handle: product.handle,
-                title: product.title,
-                description: product.description,
-                vendor: product.vendor || 'Organic HypoSolutions',
-                productType: product.productType,
-                tags: product.tags || [],
-                
-                // Availability
-                availableForSale: product.availableForSale,
-                
-                // Pricing from Shopify
-                price: parseFloat(defaultVariant?.priceV2?.amount || 0),
-                compareAtPrice: parseFloat(defaultVariant?.compareAtPriceV2?.amount || 0),
-                currency: defaultVariant?.priceV2?.currencyCode || 'USD',
-                
-                // Images
-                images: product.images?.edges?.map(edge => ({
-                    id: edge.node.id,
-                    url: edge.node.url,
-                    altText: edge.node.altText || product.title
-                })) || [],
-                featuredImage: product.images?.edges?.[0]?.node?.url || null,
-                
-                // Variants
-                variants: product.variants?.edges?.map(edge => ({
-                    id: edge.node.id,
-                    title: edge.node.title,
-                    sku: edge.node.sku,
-                    price: parseFloat(edge.node.priceV2?.amount || 0),
-                    compareAtPrice: parseFloat(edge.node.compareAtPriceV2?.amount || 0),
-                    availableForSale: edge.node.availableForSale,
-                    quantityAvailable: edge.node.quantityAvailable
-                })) || [],
-                
-                // Default variant for easy access
-                defaultVariantId: defaultVariant?.id,
-                
-                // Timestamps
-                createdAt: product.createdAt,
-                updatedAt: product.updatedAt
-            };
-        });
+            // Price information
+            priceRange: {
+                min: parseFloat(product.priceRange.minVariantPrice.amount),
+                max: parseFloat(product.priceRange.maxVariantPrice.amount),
+                currencyCode: product.priceRange.minVariantPrice.currencyCode
+            },
+            
+            compareAtPriceRange: product.compareAtPriceRange && {
+                min: parseFloat(product.compareAtPriceRange.minVariantPrice.amount),
+                max: parseFloat(product.compareAtPriceRange.maxVariantPrice.amount),
+                currencyCode: product.compareAtPriceRange.minVariantPrice.currencyCode
+            },
+            
+            // Images
+            featuredImage: product.featuredImage && {
+                url: product.featuredImage.url,
+                altText: product.featuredImage.altText,
+                width: product.featuredImage.width,
+                height: product.featuredImage.height
+            },
+            
+            images: product.images.edges.map(edge => ({
+                url: edge.node.url,
+                altText: edge.node.altText,
+                width: edge.node.width,
+                height: edge.node.height
+            })),
+            
+            // Variants
+            variants: product.variants.edges.map(edge => ({
+                id: edge.node.id,
+                title: edge.node.title,
+                sku: edge.node.sku,
+                price: parseFloat(edge.node.price.amount),
+                compareAtPrice: edge.node.compareAtPrice ? parseFloat(edge.node.compareAtPrice.amount) : null,
+                currencyCode: edge.node.price.currencyCode,
+                availableForSale: edge.node.availableForSale,
+                quantityAvailable: edge.node.quantityAvailable,
+                weight: edge.node.weight,
+                weightUnit: edge.node.weightUnit,
+                requiresShipping: edge.node.requiresShipping,
+                taxable: edge.node.taxable,
+                selectedOptions: edge.node.selectedOptions
+            }))
+        }));
 
-        // =================================================================
-        // SUCCESS RESPONSE
-        // =================================================================
-        
-        console.log(\`✅ Successfully fetched \${products.length} products\`);
-
-        const responseData = {
+        const response = {
             success: true,
-            products: products,
-            pagination: {
-                hasNextPage: shopifyResult.pageInfo?.hasNextPage || false,
-                hasPreviousPage: shopifyResult.pageInfo?.hasPreviousPage || false,
-                startCursor: shopifyResult.pageInfo?.startCursor || null,
-                endCursor: shopifyResult.pageInfo?.endCursor || null
+            data: {
+                products: transformedProducts,
+                count: transformedProducts.length,
+                total: products.length,
+                filters: { vendor, productType, tags }
             },
             meta: {
-                total: products.length,
-                requested: parsedLimit,
                 timestamp: new Date().toISOString(),
-                domain: SHOPIFY_DOMAIN
+                requestId: `req_${Date.now()}`,
+                api: 'shopify-products',
+                version: '1.0'
             }
         };
 
-        res.status(200).json(responseData);
+        console.log(`Returning ${transformedProducts.length} products to frontend`);
+        return res.status(200).json(response);
 
     } catch (error) {
-        console.error('❌ API Error:', error);
-        console.error('Stack trace:', error.stack);
-
-        res.status(500).json({
+        console.error('Error in get-products API:', error);
+        
+        return res.status(500).json({
             success: false,
-            error: 'Internal server error',
-            message: error.message,
-            helpText: 'Please try again or contact support if the error persists'
+            error: {
+                message: 'Failed to fetch products',
+                details: error.message,
+                code: 'SHOPIFY_API_ERROR'
+            },
+            meta: {
+                timestamp: new Date().toISOString(),
+                requestId: `req_${Date.now()}`,
+                api: 'shopify-products',
+                version: '1.0'
+            }
         });
     }
 };
