@@ -2,36 +2,27 @@
  * ORGANIC HYPOSOLUTIONS - GET PRODUCTS API ENDPOINT
  * ================================================================
  * File: /api/shopify/get-products.js
+ * Simple implementation to fix CORS errors
  */
+
+// Import CORS helper
+const { setCorsHeaders, handlePreflight } = require('../_utils/cors');
 
 export default async function handler(req, res) {
   // Set proper CORS headers
-  const allowedOrigins = [
-    'https://organichyposolutions.com',
-    'https://www.organichyposolutions.com',
-    'https://organichyposolutions-website.vercel.app',
-    'https://organichyposolutions-website-git-main-ohss-projects-e45c0d7a.vercel.app',
-    'https://organichyposolutions-website-zsvji7i3s-ohss-projects-e45c0d7a.vercel.app'
-  ];
+  setCorsHeaders(req, res);
   
-  const origin = req.headers.origin;
-  if (origin && allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  } else {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-  }
-  
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader(
-    'Access-Control-Allow-Headers', 
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization'
-  );
-
   // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
+  if (handlePreflight(req, res)) {
     return;
+  }
+
+  // Only allow GET requests
+  if (req.method !== 'GET') {
+    return res.status(405).json({
+      success: false,
+      error: 'Method not allowed'
+    });
   }
 
   try {
