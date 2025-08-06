@@ -8,284 +8,184 @@ cat > api/shopify/create-checkout.js << 'EOF'
  * ================================================================
  */
 
-const { createCheckout } = require('../_utils/shopify-client');
+const ShopifyClient = require('../_utils/shopify-client');
 
 module.exports = async function handler(req, res) {
-    
-    // =================================================================
-    // CORS HEADERS & PREFLIGHT
-    // =================================================================
-    
-    res.setHeader('Access-Control-Allow-Credentials', true);
+    // Set CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-    res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
-    
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Content-Type', 'application/json');
+
+    // Handle OPTIONS request
     if (req.method === 'OPTIONS') {
-        console.log('🔄 Handling CORS preflight request');
-        res.status(200).end();
-        return;
+        return res.status(200).end();
     }
 
-    // =================================================================
-    // METHOD VALIDATION
-    // =================================================================
-    
+    // Only allow POST requests
     if (req.method !== 'POST') {
-        console.warn(\`❌ Invalid method: \${req.method}\`);
         return res.status(405).json({ 
-            success: false,
-            error: 'Method not allowed',
-            allowedMethods: ['POST'],
-            details: ['This endpoint only accepts POST requests']
+            error: 'Method Not Allowed',
+            message: 'Only POST requests are supported'
         });
     }
-
-    console.log('🛒 Processing checkout creation request...');
 
     try {
+        console.log('POST /api/shopify/create-checkout - Starting request');
         
-        // =================================================================
-        // ENVIRONMENT VALIDATION
-        // =================================================================
-        
-        const SHOPIFY_DOMAIN = process.env.SHOPIFY_DOMAIN;
-        const SHOPIFY_STOREFRONT_TOKEN = process.env.SHOPIFY_STOREFRONT_TOKEN;
-
-        if (!SHOPIFY_DOMAIN || !SHOPIFY_STOREFRONT_TOKEN) {
-            console.error('❌ Missing Shopify environment variables');
-            return res.status(500).json({
-                success: false,
-                error: 'Server configuration error',
-                details: ['Missing Shopify credentials'],
-                helpText: 'Please contact support if this error persists'
-            });
-        }
-        
-        // =================================================================
-        // REQUEST BODY VALIDATION
-        // =================================================================
-        
-        const { lineItems, shippingAddress, note } = req.body;
-        
-        console.log('📊 Request data:', {
-            lineItemsCount: lineItems?.length || 0,
-            hasShippingAddress: !!shippingAddress,
-            hasNote: !!note
-        });
-
-        // Validate line items exist
-        if (!lineItems) {
+        // Validate request body
+        if (!req.body || !req.body.lineItems) {
             return res.status(400).json({
                 success: false,
-                error: 'Missing line items',
-                details: ['Request body must include lineItems array']
-            });
-        }
-
-        // Validate line items is array
-        if (!Array.isArray(lineItems)) {
-            return res.status(400).json({
-                success: false,
-                error: 'Invalid line items format',
-                details: ['lineItems must be an array']
-            });
-        }
-
-        // Validate line items not empty
-        if (lineItems.length === 0) {
-            return res.status(400).json({
-                success: false,
-                error: 'Empty cart',
-                details: ['At least one line item is required']
-            });
-        }
-
-        // =================================================================
-        // LINE ITEMS VALIDATION & PROCESSING
-        // =================================================================
-        
-        const validatedLineItems = [];
-        const validationErrors = [];
-
-        for (let i = 0; i < lineItems.length; i++) {
-            const item = lineItems[i];
-            
-            // Check required fields
-            if (!item.variantId) {
-                validationErrors.push(\`Line item \${i + 1}: Missing variantId\`);
-                continue;
-            }
-            
-            if (!item.quantity || typeof item.quantity !== 'number' || item.quantity <= 0) {
-                validationErrors.push(\`Line item \${i + 1}: Invalid quantity (must be positive number)\`);
-                continue;
-            }
-
-            // Ensure variantId is in correct format
-            let variantId = item.variantId;
-            if (!variantId.startsWith('gid://shopify/ProductVariant/')) {
-                // Convert numeric ID to GID format if needed
-                if (/^\d+$/.test(variantId)) {
-                    variantId = \`gid://shopify/ProductVariant/\${variantId}\`;
-                } else {
-                    validationErrors.push(\`Line item \${i + 1}: Invalid variantId format\`);
-                    continue;
+                error: {
+                    message: 'Missing required field: lineItems',
+                    code: 'INVALID_REQUEST_BODY'
                 }
-            }
-
-            validatedLineItems.push({
-                variantId: variantId,
-                quantity: parseInt(item.quantity)
             });
         }
 
-        // Return validation errors if any
-        if (validationErrors.length > 0) {
+        const { lineItems, shippingAddress, email, note } = req.body;
+        
+        // Validate line items
+        if (!Array.isArray(lineItems) || lineItems.length === 0) {
             return res.status(400).json({
                 success: false,
-                error: 'Line item validation failed',
-                details: validationErrors
+                error: {
+                    message: 'lineItems must be a non-empty array',
+                    code: 'INVALID_LINE_ITEMS'
+                }
             });
         }
 
-        console.log(\`✅ Validated \${validatedLineItems.length} line items\`);
-
-        // =================================================================
-        // SHIPPING ADDRESS VALIDATION (Optional)
-        // =================================================================
-        
-        let processedShippingAddress = null;
-        
-        if (shippingAddress) {
-            const requiredFields = ['firstName', 'lastName', 'address1', 'city', 'province', 'country', 'zip'];
-            const addressErrors = [];
-            
-            for (const field of requiredFields) {
-                if (!shippingAddress[field] || typeof shippingAddress[field] !== 'string') {
-                    addressErrors.push(\`Missing or invalid \${field}\`);
-                }
-            }
-            
-            if (addressErrors.length > 0) {
+        // Validate each line item
+        for (const item of lineItems) {
+            if (!item.variantId || !item.quantity) {
                 return res.status(400).json({
                     success: false,
-                    error: 'Invalid shipping address',
-                    details: addressErrors
+                    error: {
+                        message: 'Each line item must have variantId and quantity',
+                        code: 'INVALID_LINE_ITEM_FORMAT'
+                    }
                 });
             }
             
-            processedShippingAddress = {
-                firstName: shippingAddress.firstName.trim(),
-                lastName: shippingAddress.lastName.trim(),
-                company: shippingAddress.company?.trim() || '',
-                address1: shippingAddress.address1.trim(),
-                address2: shippingAddress.address2?.trim() || '',
-                city: shippingAddress.city.trim(),
-                province: shippingAddress.province.trim(),
-                country: shippingAddress.country.trim(),
-                zip: shippingAddress.zip.trim()
-            };
-            
-            console.log('📮 Shipping address validated');
+            if (typeof item.quantity !== 'number' || item.quantity <= 0) {
+                return res.status(400).json({
+                    success: false,
+                    error: {
+                        message: 'Quantity must be a positive number',
+                        code: 'INVALID_QUANTITY'
+                    }
+                });
+            }
         }
 
-        // =================================================================
-        // CREATE SHOPIFY CHECKOUT
-        // =================================================================
-        
-        console.log('🔄 Creating Shopify checkout...');
-        
-        const checkoutResult = await createCheckout(validatedLineItems, processedShippingAddress);
-        
-        if (!checkoutResult.success) {
-            console.error('❌ Checkout creation failed:', checkoutResult.errors);
-            return res.status(500).json({
-                success: false,
-                error: 'Failed to create checkout',
-                details: checkoutResult.errors
-            });
-        }
+        console.log('Request data:', { 
+            lineItemsCount: lineItems.length, 
+            hasShippingAddress: !!shippingAddress,
+            hasEmail: !!email 
+        });
 
-        const checkout = checkoutResult.checkout;
+        // Initialize Shopify client
+        const shopify = new ShopifyClient();
         
-        if (!checkout || !checkout.webUrl) {
-            console.error('❌ Invalid checkout response - missing webUrl');
-            return res.status(500).json({
-                success: false,
-                error: 'Invalid checkout response',
-                details: ['Checkout was created but webUrl is missing']
-            });
-        }
-
-        // =================================================================
-        // SUCCESS RESPONSE
-        // =================================================================
-        
-        console.log('✅ Checkout created successfully');
-        console.log(\`🔗 Checkout URL: \${checkout.webUrl}\`);
-        console.log(\`💰 Total: \${checkout.totalPriceV2?.amount} \${checkout.totalPriceV2?.currencyCode}\`);
-
-        const response = {
-            success: true,
-            checkoutUrl: checkout.webUrl,
-            checkoutId: checkout.id,
-            totalPrice: {
-                amount: checkout.totalPriceV2?.amount || '0.00',
-                currencyCode: checkout.totalPriceV2?.currencyCode || 'USD'
-            },
-            subtotalPrice: {
-                amount: checkout.subtotalPriceV2?.amount || '0.00',
-                currencyCode: checkout.subtotalPriceV2?.currencyCode || 'USD'
-            },
-            lineItemsCount: checkout.lineItems?.edges?.length || validatedLineItems.length,
-            requiresShipping: checkout.requiresShipping || true,
-            ready: checkout.ready || false
+        // Prepare checkout input
+        const checkoutInput = {
+            lineItems: lineItems.map(item => ({
+                variantId: item.variantId,
+                quantity: item.quantity
+            }))
         };
 
-        // Add debugging info in development
-        if (process.env.NODE_ENV === 'development') {
-            response.debug = {
-                processedLineItems: validatedLineItems,
-                originalRequest: {
-                    lineItemsCount: lineItems.length,
-                    hasShippingAddress: !!shippingAddress
-                }
-            };
+        // Add optional fields
+        if (email) {
+            checkoutInput.email = email;
+        }
+        
+        if (shippingAddress) {
+            checkoutInput.shippingAddress = shippingAddress;
+        }
+        
+        if (note) {
+            checkoutInput.note = note;
         }
 
-        res.status(200).json(response);
+        console.log('Creating checkout with input:', checkoutInput);
+
+        // Create checkout
+        const checkout = await shopify.createCheckout(checkoutInput.lineItems);
+        
+        console.log('Checkout created successfully:', {
+            checkoutId: checkout.id,
+            webUrl: checkout.webUrl,
+            totalPrice: checkout.totalPrice
+        });
+
+        // Transform response
+        const response = {
+            success: true,
+            data: {
+                checkout: {
+                    id: checkout.id,
+                    webUrl: checkout.webUrl,
+                    totalPrice: {
+                        amount: parseFloat(checkout.totalPrice.amount),
+                        currencyCode: checkout.totalPrice.currencyCode
+                    },
+                    subtotalPrice: {
+                        amount: parseFloat(checkout.subtotalPrice.amount),
+                        currencyCode: checkout.subtotalPrice.currencyCode
+                    },
+                    totalTax: checkout.totalTax && {
+                        amount: parseFloat(checkout.totalTax.amount),
+                        currencyCode: checkout.totalTax.currencyCode
+                    },
+                    lineItems: checkout.lineItems.edges.map(edge => ({
+                        id: edge.node.id,
+                        quantity: edge.node.quantity,
+                        title: edge.node.title,
+                        variant: {
+                            id: edge.node.variant.id,
+                            title: edge.node.variant.title,
+                            price: {
+                                amount: parseFloat(edge.node.variant.price.amount),
+                                currencyCode: edge.node.variant.price.currencyCode
+                            },
+                            product: {
+                                title: edge.node.variant.product.title,
+                                handle: edge.node.variant.product.handle
+                            }
+                        }
+                    })),
+                    shippingAddress: checkout.shippingAddress
+                }
+            },
+            meta: {
+                timestamp: new Date().toISOString(),
+                requestId: `req_${Date.now()}`,
+                api: 'shopify-checkout',
+                version: '1.0'
+            }
+        };
+
+        return res.status(201).json(response);
 
     } catch (error) {
+        console.error('Error in create-checkout API:', error);
         
-        // =================================================================
-        // ERROR HANDLING
-        // =================================================================
-        
-        console.error('❌ Checkout creation error:', error);
-        console.error('Stack trace:', error.stack);
-
-        let statusCode = 500;
-        let errorMessage = 'Internal server error during checkout creation';
-        const errorDetails = [error.message];
-
-        // Handle specific error types
-        if (error.message.includes('GraphQL')) {
-            statusCode = 400;
-            errorMessage = 'Shopify API error';
-        } else if (error.message.includes('Network')) {
-            statusCode = 503;
-            errorMessage = 'Service temporarily unavailable';
-        } else if (error.message.includes('Authentication') || error.message.includes('Unauthorized')) {
-            statusCode = 401;
-            errorMessage = 'Authentication error';
-        }
-
-        res.status(statusCode).json({
+        return res.status(500).json({
             success: false,
-            error: errorMessage,
-            details: errorDetails,
-            timestamp: new Date().toISOString()
+            error: {
+                message: 'Failed to create checkout',
+                details: error.message,
+                code: 'SHOPIFY_CHECKOUT_ERROR'
+            },
+            meta: {
+                timestamp: new Date().toISOString(),
+                requestId: `req_${Date.now()}`,
+                api: 'shopify-checkout',
+                version: '1.0'
+            }
         });
     }
 };
