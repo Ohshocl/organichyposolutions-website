@@ -7,7 +7,7 @@
 
 export default async function handler(req, res) {
   // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', 'https://organichyposolutions.com');
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
@@ -44,8 +44,8 @@ export default async function handler(req, res) {
   }
 }
 
-// Export configuration for Vercel
+// Export configuration for Vercel - FIXED RUNTIME VALUE
 export const config = {
-  runtime: 'nodejs18.x',
+  runtime: 'nodejs', // Changed from 'nodejs18.x' to 'nodejs'
   maxDuration: 30
 };
