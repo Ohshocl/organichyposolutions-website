@@ -1,12 +1,12 @@
 /**
- * ORGANIC HYPOSOLUTIONS - TEST API ENDPOINT
+ * ORGANIC HYPOSOLUTIONS - GENERAL API TEST ENDPOINT
  * ================================================================
- * File: /api/shopify/test.js (or /api/shopify/shopify-test.js)
- * Purpose: Test endpoint for Shopify API integration
+ * File: /api/test.js
+ * Purpose: Simple test endpoint for API availability
  */
 
 // Import CORS helper
-const { setCorsHeaders, handlePreflight } = require('../_utils/cors');
+const { setCorsHeaders, handlePreflight } = require('./_utils/cors');
 
 export default async function handler(req, res) {
   // Set CORS headers
@@ -18,15 +18,21 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Simple test response
+    // Basic API test response
     res.status(200).json({
       success: true,
-      message: "Test API is working!",
+      message: "General API test endpoint is working!",
       timestamp: new Date().toISOString(),
-      shopifyConfigured: !!(process.env.SHOPIFY_DOMAIN && process.env.SHOPIFY_STOREFRONT_TOKEN)
+      environment: process.env.NODE_ENV || 'development',
+      apiVersion: '1.0',
+      method: req.method,
+      headers: {
+        contentType: req.headers['content-type'],
+        userAgent: req.headers['user-agent']
+      }
     });
   } catch (error) {
-    console.error('Test API error:', error);
+    console.error('API test error:', error);
     
     res.status(500).json({
       success: false,
@@ -39,5 +45,5 @@ export default async function handler(req, res) {
 
 export const config = {
   runtime: 'nodejs',
-  maxDuration: 30
+  maxDuration: 10
 };
