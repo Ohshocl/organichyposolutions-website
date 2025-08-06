@@ -1,3 +1,4 @@
+cat > api/shopify/get-products.js << 'EOF'
 /**
  * ORGANIC HYPOSOLUTIONS - GET PRODUCTS API ENDPOINT (COMMONJS COMPATIBLE)
  * ================================================================
@@ -63,7 +64,7 @@ module.exports = async function handler(req, res) {
 
         const parsedLimit = Math.min(parseInt(limit) || 50, 250);
 
-        console.log(`📋 Fetching ${parsedLimit} products`);
+        console.log(\`📋 Fetching \${parsedLimit} products\`);
 
         // =================================================================
         // FETCH FROM SHOPIFY
@@ -138,7 +139,7 @@ module.exports = async function handler(req, res) {
         // SUCCESS RESPONSE
         // =================================================================
         
-        console.log(`✅ Successfully fetched ${products.length} products`);
+        console.log(\`✅ Successfully fetched \${products.length} products\`);
 
         const responseData = {
             success: true,
@@ -171,3 +172,4 @@ module.exports = async function handler(req, res) {
         });
     }
 };
+EOF
