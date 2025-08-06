@@ -8,108 +8,139 @@ cat > api/_utils/shopify-client.js << 'EOF'
  * ================================================================
  */
 
-// =================================================================
-// CONFIGURATION & VALIDATION
-// =================================================================
-
-const SHOPIFY_DOMAIN = process.env.SHOPIFY_DOMAIN;
-const SHOPIFY_STOREFRONT_TOKEN = process.env.SHOPIFY_STOREFRONT_TOKEN;
-const API_VERSION = '2024-01';
-
-// Validate required environment variables
-if (!SHOPIFY_DOMAIN || !SHOPIFY_STOREFRONT_TOKEN) {
-    console.error('❌ Missing required Shopify environment variables');
-    console.error('Required: SHOPIFY_DOMAIN, SHOPIFY_STOREFRONT_TOKEN');
-    throw new Error('Missing Shopify configuration');
+// Environment validation
+function validateEnvironment() {
+    const required = ['SHOPIFY_DOMAIN', 'SHOPIFY_STOREFRONT_TOKEN'];
+    const missing = required.filter(key => !process.env[key]);
+    
+    if (missing.length > 0) {
+        throw new Error(`Missing required environment variables: ${missing.join(', ')}`);
+    }
 }
 
-console.log('✅ Shopify client initialized for domain:', SHOPIFY_DOMAIN);
+// Shopify Client Class
+class ShopifyClient {
+    constructor() {
+        validateEnvironment();
+        
+        this.domain = process.env.SHOPIFY_DOMAIN;
+        this.storefrontToken = process.env.SHOPIFY_STOREFRONT_TOKEN;
+        this.apiVersion = '2024-01';
+        
+        this.endpoint = `https://${this.domain}/api/${this.apiVersion}/graphql.json`;
+        
+        console.log('ShopifyClient initialized:', {
+            domain: this.domain,
+            hasToken: !!this.storefrontToken,
+            endpoint: this.endpoint
+        });
+    }
 
-// =================================================================
-// GRAPHQL MUTATIONS & QUERIES
-// =================================================================
+    async query(query, variables = {}) {
+        try {
+            console.log('Making Shopify query:', { query: query.substring(0, 100) + '...', variables });
+            
+            const response = await fetch(this.endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Shopify-Storefront-Access-Token': this.storefrontToken,
+                },
+                body: JSON.stringify({ query, variables })
+            });
 
-const CREATE_CHECKOUT_MUTATION = \`
-    mutation checkoutCreate($input: CheckoutCreateInput!) {
-        checkoutCreate(input: $input) {
-            checkout {
-                id
-                webUrl
-                totalPriceV2 {
-                    amount
-                    currencyCode
-                }
-                subtotalPriceV2 {
-                    amount
-                    currencyCode
-                }
-                totalTaxV2 {
-                    amount
-                    currencyCode
-                }
-                lineItems(first: 250) {
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            
+            if (data.errors) {
+                console.error('GraphQL errors:', data.errors);
+                throw new Error('GraphQL errors: ' + JSON.stringify(data.errors));
+            }
+
+            return data.data;
+        } catch (error) {
+            console.error('Shopify query failed:', error);
+            throw error;
+        }
+    }
+
+    async getProducts(limit = 20) {
+        const query = `
+            query GetProducts($first: Int!) {
+                products(first: $first) {
                     edges {
                         node {
                             id
                             title
-                            quantity
-                            variant {
-                                id
-                                title
-                                priceV2 {
+                            handle
+                            description
+                            vendor
+                            productType
+                            tags
+                            availableForSale
+                            totalInventory
+                            priceRange {
+                                minVariantPrice {
+                                    amount
+                                    currencyCode
+                                }
+                                maxVariantPrice {
                                     amount
                                     currencyCode
                                 }
                             }
-                        }
-                    }
-                }
-                shippingAddress {
-                    firstName
-                    lastName
-                    company
-                    address1
-                    city
-                    province
-                    country
-                    zip
-                }
-                ready
-                requiresShipping
-                currencyCode
-            }
-            checkoutUserErrors {
-                field
-                message
-                code
-            }
-            userErrors {
-                field
-                message
-            }
-        }
-    }
-\`;
-
-const GET_PRODUCTS_QUERY = \`
-    query getProducts($first: Int!, $after: String) {
-        products(first: $first, after: $after) {
-            edges {
-                node {
-                    id
-                    handle
-                    title
-                    description
-                    descriptionHtml
-                    vendor
-                    productType
-                    tags
-                    availableForSale
-                    createdAt
-                    updatedAt
-                    images(first: 10) {
-                        edges {
-                            node {
+                            compareAtPriceRange {
+                                minVariantPrice {
+                                    amount
+                                    currencyCode
+                                }
+                                maxVariantPrice {
+                                    amount
+                                    currencyCode
+                                }
+                            }
+                            variants(first: 10) {
+                                edges {
+                                    node {
+                                        id
+                                        title
+                                        sku
+                                        price {
+                                            amount
+                                            currencyCode
+                                        }
+                                        compareAtPrice {
+                                            amount
+                                            currencyCode
+                                        }
+                                        availableForSale
+                                        quantityAvailable
+                                        weight
+                                        weightUnit
+                                        requiresShipping
+                                        taxable
+                                        selectedOptions {
+                                            name
+                                            value
+                                        }
+                                    }
+                                }
+                            }
+                            images(first: 5) {
+                                edges {
+                                    node {
+                                        id
+                                        url
+                                        altText
+                                        width
+                                        height
+                                    }
+                                }
+                            }
+                            featuredImage {
                                 id
                                 url
                                 altText
@@ -118,269 +149,84 @@ const GET_PRODUCTS_QUERY = \`
                             }
                         }
                     }
-                    variants(first: 100) {
-                        edges {
-                            node {
-                                id
-                                title
-                                sku
-                                availableForSale
-                                quantityAvailable
-                                requiresShipping
-                                weight
-                                weightUnit
-                                priceV2 {
-                                    amount
-                                    currencyCode
-                                }
-                                compareAtPriceV2 {
-                                    amount
-                                    currencyCode
-                                }
-                                selectedOptions {
-                                    name
-                                    value
-                                }
-                                image {
+                }
+            }
+        `;
+
+        const result = await this.query(query, { first: limit });
+        return result.products.edges.map(edge => edge.node);
+    }
+
+    async createCheckout(lineItems) {
+        const query = `
+            mutation CheckoutCreate($input: CheckoutCreateInput!) {
+                checkoutCreate(input: $input) {
+                    checkout {
+                        id
+                        webUrl
+                        totalPrice {
+                            amount
+                            currencyCode
+                        }
+                        subtotalPrice {
+                            amount
+                            currencyCode
+                        }
+                        totalTax {
+                            amount
+                            currencyCode
+                        }
+                        lineItems(first: 50) {
+                            edges {
+                                node {
                                     id
-                                    url
-                                    altText
+                                    quantity
+                                    title
+                                    variant {
+                                        id
+                                        title
+                                        price {
+                                            amount
+                                            currencyCode
+                                        }
+                                        product {
+                                            title
+                                            handle
+                                        }
+                                    }
                                 }
                             }
                         }
-                    }
-                    options {
-                        id
-                        name
-                        values
-                    }
-                    priceRange {
-                        minVariantPrice {
-                            amount
-                            currencyCode
-                        }
-                        maxVariantPrice {
-                            amount
-                            currencyCode
+                        shippingAddress {
+                            address1
+                            address2
+                            city
+                            province
+                            country
+                            zip
                         }
                     }
-                    seo {
-                        title
-                        description
+                    checkoutUserErrors {
+                        field
+                        message
+                        code
                     }
                 }
             }
-            pageInfo {
-                hasNextPage
-                hasPreviousPage
-                startCursor
-                endCursor
-            }
-        }
-    }
-\`;
+        `;
 
-// =================================================================
-// CORE API FUNCTIONS
-// =================================================================
-
-async function makeGraphQLRequest(query, variables = {}) {
-    const url = \`https://\${SHOPIFY_DOMAIN}/api/\${API_VERSION}/graphql.json\`;
-    
-    try {
-        console.log(\`🔄 Making Shopify API request to: \${url}\`);
+        const input = { lineItems };
+        const result = await this.query(query, { input });
         
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Shopify-Storefront-Access-Token': SHOPIFY_STOREFRONT_TOKEN,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ 
-                query, 
-                variables 
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error(\`HTTP error! status: \${response.status}\`);
+        if (result.checkoutCreate.checkoutUserErrors.length > 0) {
+            throw new Error('Checkout creation failed: ' + 
+                JSON.stringify(result.checkoutCreate.checkoutUserErrors));
         }
-
-        const data = await response.json();
-        console.log('✅ Shopify API response received');
         
-        if (data.errors && data.errors.length > 0) {
-            console.error('❌ GraphQL errors:', data.errors);
-            throw new Error(\`GraphQL errors: \${data.errors.map(e => e.message).join(', ')}\`);
-        }
-
-        return data;
-        
-    } catch (error) {
-        console.error('❌ Shopify API request failed:', error);
-        throw new Error(\`Shopify API request failed: \${error.message}\`);
+        return result.checkoutCreate.checkout;
     }
 }
 
-async function createCheckout(lineItems, shippingAddress = null) {
-    try {
-        console.log('🛒 Creating Shopify checkout with line items:', lineItems);
-        
-        if (!Array.isArray(lineItems) || lineItems.length === 0) {
-            throw new Error('Line items must be a non-empty array');
-        }
-
-        lineItems.forEach((item, index) => {
-            if (!item.variantId || !item.quantity || item.quantity <= 0) {
-                throw new Error(\`Invalid line item at index \${index}: must have variantId and positive quantity\`);
-            }
-        });
-
-        const variables = {
-            input: {
-                lineItems: lineItems.map(item => ({
-                    variantId: item.variantId,
-                    quantity: parseInt(item.quantity)
-                }))
-            }
-        };
-
-        if (shippingAddress) {
-            variables.input.shippingAddress = shippingAddress;
-        }
-
-        const response = await makeGraphQLRequest(CREATE_CHECKOUT_MUTATION, variables);
-
-        if (response.data?.checkoutCreate?.checkoutUserErrors?.length > 0) {
-            const errors = response.data.checkoutCreate.checkoutUserErrors;
-            console.error('❌ Checkout creation errors:', errors);
-            throw new Error(\`Checkout errors: \${errors.map(e => \`\${e.field}: \${e.message}\`).join(', ')}\`);
-        }
-
-        const checkout = response.data?.checkoutCreate?.checkout;
-        if (!checkout) {
-            throw new Error('No checkout data returned from Shopify');
-        }
-
-        console.log('✅ Checkout created successfully:', checkout.id);
-        return {
-            success: true,
-            checkout,
-            errors: []
-        };
-
-    } catch (error) {
-        console.error('❌ Checkout creation failed:', error);
-        return {
-            success: false,
-            checkout: null,
-            errors: [error.message]
-        };
-    }
-}
-
-async function getProducts(first = 100, after = null) {
-    try {
-        console.log(\`📦 Fetching \${first} products from Shopify\`);
-        
-        if (first > 250) {
-            console.warn('⚠️ Limiting request to 250 products (Shopify maximum)');
-            first = 250;
-        }
-
-        const variables = { first };
-        if (after) {
-            variables.after = after;
-        }
-
-        const response = await makeGraphQLRequest(GET_PRODUCTS_QUERY, variables);
-
-        const products = response.data?.products;
-        if (!products) {
-            throw new Error('No products data returned from Shopify');
-        }
-
-        console.log(\`✅ Fetched \${products.edges.length} products\`);
-        return {
-            success: true,
-            products: products.edges.map(edge => edge.node),
-            pageInfo: products.pageInfo,
-            errors: []
-        };
-
-    } catch (error) {
-        console.error('❌ Products fetch failed:', error);
-        return {
-            success: false,
-            products: [],
-            pageInfo: null,
-            errors: [error.message]
-        };
-    }
-}
-
-function getWholesaleThreshold() {
-    return parseInt(process.env.WHOLESALE_THRESHOLD || '25');
-}
-
-function convertCartToLineItems(ohsCart) {
-    const lineItems = [];
-    
-    for (const [productId, cartItem] of Object.entries(ohsCart)) {
-        if (cartItem && cartItem.quantity > 0) {
-            lineItems.push({
-                variantId: cartItem.variantId || cartItem.shopifyVariantId,
-                quantity: cartItem.quantity
-            });
-        }
-    }
-    
-    return lineItems;
-}
-
-async function validateVariant(variantId) {
-    try {
-        const query = \`
-            query getVariant($id: ID!) {
-                node(id: $id) {
-                    ... on ProductVariant {
-                        id
-                        availableForSale
-                        quantityAvailable
-                    }
-                }
-            }
-        \`;
-
-        const response = await makeGraphQLRequest(query, { id: variantId });
-        const variant = response.data?.node;
-
-        return variant && variant.availableForSale && variant.quantityAvailable > 0;
-
-    } catch (error) {
-        console.error('❌ Variant validation failed:', error);
-        return false;
-    }
-}
-
-// =================================================================
-// COMMONJS EXPORTS
-// =================================================================
-
-module.exports = {
-    createCheckout,
-    getProducts,
-    getWholesaleThreshold,
-    convertCartToLineItems,
-    validateVariant,
-    DOMAIN: SHOPIFY_DOMAIN,
-    VERSION: API_VERSION
-};
-
-console.log('🏪 Organic HypoSolutions Shopify Client Initialized (CommonJS)');
-console.log(\`   Domain: \${SHOPIFY_DOMAIN}\`);
-console.log(\`   API Version: \${API_VERSION}\`);
-console.log('🔐 Environment variables loaded securely');
-console.log('📡 Ready for API requests');
+// Export the class using CommonJS
+module.exports = ShopifyClient;
 EOF
