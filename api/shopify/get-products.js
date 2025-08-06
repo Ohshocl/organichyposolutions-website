@@ -1,5 +1,5 @@
 // /api/shopify/get-products.js
-// DEBUG VERSION - Test if basic API call works
+// Clean version - no shell commands or extra content
 
 export default async function handler(req, res) {
     console.log('🔍 DEBUG: Products API called');
