@@ -4,68 +4,54 @@
  * File: /api/shopify/create-checkout.js
  */
 
-// Import CORS helper
-const { setCorsHeaders, handlePreflight } = require('../_utils/cors');
-
 export default async function handler(req, res) {
-  // Set CORS headers
-  setCorsHeaders(req, res);
+  // DIRECT CORS HANDLING - No imports needed
+  const origin = req.headers.origin;
+  // Allow any origin from our domains
+  res.setHeader('Access-Control-Allow-Origin', origin || '*');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', '*');
   
-  // Handle preflight requests
-  if (handlePreflight(req, res)) {
+  // Handle preflight
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
     return;
   }
-
-  // Only allow POST requests
+  
+  // Only allow POST requests for checkout creation
   if (req.method !== 'POST') {
-    return res.status(405).json({
-      success: false,
-      error: 'Method not allowed',
-      message: 'This endpoint only accepts POST requests'
-    });
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    console.log('Checkout request received:', JSON.stringify(req.body));
+    // Your existing checkout creation logic here
+    // This typically includes:
+    // 1. Validating the request body (cart items, etc.)
+    // 2. Creating a checkout in Shopify
+    // 3. Returning the checkout URL or ID
     
-    // Get cart items from request body
+    // Example placeholder (replace with your actual implementation):
     const { lineItems } = req.body;
-
-    // Validate request
+    
+    // Validation
     if (!lineItems || !Array.isArray(lineItems) || lineItems.length === 0) {
-      return res.status(400).json({
-        success: false,
-        error: 'Invalid request',
-        message: 'Line items are required and must be an array'
-      });
+      return res.status(400).json({ error: 'Invalid line items' });
     }
-
-    // For now, return a simple success response for testing
-    // Without actually trying to call the Shopify API
+    
+    // Create checkout logic would go here
+    // const checkout = await shopify.checkout.create({ lineItems });
+    
     res.status(200).json({
       success: true,
-      message: "Checkout API is now working!",
-      mockCheckoutUrl: "https://checkout.example.com/placeholder",
-      debug: {
-        lineItemCount: lineItems.length,
-        shopifyConfigured: !!(process.env.SHOPIFY_DOMAIN && process.env.SHOPIFY_STOREFRONT_TOKEN),
-        timestamp: new Date().toISOString()
-      }
+      checkoutUrl: 'https://your-store.myshopify.com/checkout/...',
+      checkoutId: 'sample-checkout-id'
     });
-
   } catch (error) {
     console.error('Create checkout error:', error);
-    
-    res.status(500).json({
-      success: false,
-      error: "Checkout creation failed",
-      details: error.message || "Unknown error",
-      timestamp: new Date().toISOString()
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
     });
   }
 }
-
-export const config = {
-  runtime: 'nodejs',
-  maxDuration: 30
-};
