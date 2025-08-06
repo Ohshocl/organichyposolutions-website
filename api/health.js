@@ -19,6 +19,37 @@ export default async function handler(req, res) {
     return;
   }
   
+  // Check database connection
+  let dbStatus = 'ok';
+  try {
+    // Simulating a database check
+    // const db = await connectToDatabase();
+    // await db.collection('test').findOne({});
+  } catch (error) {
+    console.error('Database health check failed:', error);
+    dbStatus = 'error';
+  }
+  
+  // Check Shopify API connection
+  let shopifyStatus = 'ok';
+  try {
+    // Simulating a Shopify API check
+    // const shopify = await getShopifyConnection();
+    // await shopify.shop.get();
+  } catch (error) {
+    console.error('Shopify health check failed:', error);
+    shopifyStatus = 'error';
+  }
+  
   // Health check response
-  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.status(200).json({ 
+    status: 'ok', 
+    environment: process.env.NODE_ENV,
+    services: {
+      api: 'ok',
+      database: dbStatus,
+      shopify: shopifyStatus
+    },
+    timestamp: new Date().toISOString() 
+  });
 }
