@@ -6,7 +6,7 @@
  */
 
 // Import CORS helper
-const { setCorsHeaders, handlePreflight } = require('../_utils/cors');
+const { setCorsHeaders, handlePreflight } = require('../../api/_utils/cors');
 
 export default async function handler(req, res) {
   // Set proper CORS headers
