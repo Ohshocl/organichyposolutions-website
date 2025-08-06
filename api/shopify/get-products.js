@@ -1,16 +1,15 @@
 /**
- * ORGANIC HYPOSOLUTIONS - GET PRODUCTS API ENDPOINT (SIMPLIFIED & FIXED)
+ * ORGANIC HYPOSOLUTIONS - GET PRODUCTS API ENDPOINT (COMMONJS COMPATIBLE)
  * ================================================================
  * File: /api/shopify/get-products.js
  * Purpose: Fetch products directly from Shopify
- * FIXED: Updated runtime configuration for Vercel compatibility
- * SIMPLIFIED: Just fetches from Shopify, let frontend handle cart.js mapping
+ * FIXED: Changed to CommonJS for Vercel compatibility
  * ================================================================
  */
 
-import { getProducts } from '../_utils/shopify-client.js';
+const { getProducts } = require('../_utils/shopify-client');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
     // =================================================================
     // CORS HEADERS
     // =================================================================
@@ -171,14 +170,4 @@ export default async function handler(req, res) {
             helpText: 'Please try again or contact support if the error persists'
         });
     }
-}
-
-// =================================================================
-// EXPORT CONFIGURATION - FIXED FOR VERCEL COMPATIBILITY
-// =================================================================
-
-// ✅ UPDATED: Changed from deprecated 'nodejs18.x' to current 'nodejs'
-export const config = {
-    runtime: 'nodejs',      // Current supported runtime (Node.js 20.x)
-    maxDuration: 30         // 30 seconds timeout
 };
