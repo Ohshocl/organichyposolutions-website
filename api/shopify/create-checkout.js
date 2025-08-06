@@ -1,15 +1,15 @@
 /**
- * ORGANIC HYPOSOLUTIONS - CREATE CHECKOUT API ENDPOINT (FIXED)
+ * ORGANIC HYPOSOLUTIONS - CREATE CHECKOUT API ENDPOINT (COMMONJS COMPATIBLE)
  * ================================================================
  * File: /api/shopify/create-checkout.js
  * Purpose: Server-side endpoint for creating Shopify checkouts
- * FIXED: Import compatibility with shopify-client.js
+ * FIXED: Changed to CommonJS for Vercel compatibility
  * ================================================================
  */
 
-import { createCheckout } from '../_utils/shopify-client.js';
+const { createCheckout } = require('../_utils/shopify-client');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
     
     // =================================================================
     // CORS HEADERS & PREFLIGHT
@@ -287,13 +287,4 @@ export default async function handler(req, res) {
             timestamp: new Date().toISOString()
         });
     }
-}
-
-// =================================================================
-// EXPORT CONFIGURATION
-// =================================================================
-
-export const config = {
-    runtime: 'nodejs',
-    maxDuration: 30
 };
