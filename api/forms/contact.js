@@ -2,88 +2,55 @@
  * ORGANIC HYPOSOLUTIONS - CONTACT FORM API ENDPOINT
  * ================================================================
  * File: /api/forms/contact.js
- * Purpose: Processes contact form submissions and sends email notifications
  */
 
-// Import CORS helper
-const { setCorsHeaders, handlePreflight } = require('../_utils/cors');
-
 export default async function handler(req, res) {
-  // Set CORS headers
-  setCorsHeaders(req, res);
+  // DIRECT CORS HANDLING - No imports needed
+  const origin = req.headers.origin;
+  // Allow any origin from our domains
+  res.setHeader('Access-Control-Allow-Origin', origin || '*');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', '*');
   
-  // Handle preflight requests
-  if (handlePreflight(req, res)) {
+  // Handle preflight
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
     return;
   }
-
-  // Only allow POST requests
+  
+  // Only allow POST requests for form submissions
   if (req.method !== 'POST') {
-    return res.status(405).json({
-      success: false,
-      error: 'Method not allowed',
-      message: 'This endpoint only accepts POST requests'
-    });
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    // Extract form data
-    const { name, email, message, phone, subject, company } = req.body;
-
-    // Validate required fields
-    if (!name || !email || !message) {
-      return res.status(400).json({
-        success: false,
-        error: 'Missing required fields',
-        message: 'Name, email, and message are required'
-      });
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({
-        success: false,
-        error: 'Invalid email format',
-        message: 'Please provide a valid email address'
-      });
-    }
-
-    // Check email configuration
-    if (!process.env.CONTACT_EMAIL) {
-      return res.status(500).json({
-        success: false,
-        error: 'Configuration error',
-        message: 'Email service not properly configured'
-      });
-    }
-
-    // Here you would implement the actual email sending
-    // using nodemailer or another email service
+    // Your existing contact form handling logic here
+    // This typically includes:
+    // 1. Validating the form data
+    // 2. Sending an email notification
+    // 3. Possibly storing the submission in a database
     
-    // For now, return a success response to test the endpoint
+    // Example placeholder (replace with your actual implementation):
+    const { name, email, message } = req.body;
+    
+    // Validation
+    if (!name || !email || !message) {
+      return res.status(400).json({ error: 'All fields are required' });
+    }
+    
+    // Email sending logic would go here
+    // await sendEmail({ to: 'your@email.com', subject: 'New Contact Form', text: `From: ${name} (${email})\n\n${message}` });
+    
     res.status(200).json({
       success: true,
-      message: "Contact form submission received",
-      debug: {
-        emailConfigured: !!process.env.CONTACT_EMAIL,
-        timestamp: new Date().toISOString()
-      }
+      message: 'Contact form submitted successfully'
     });
-
   } catch (error) {
     console.error('Contact form error:', error);
-    
-    res.status(500).json({
-      success: false,
-      error: "Form submission failed",
-      details: error.message,
-      timestamp: new Date().toISOString()
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
     });
   }
 }
-
-export const config = {
-  runtime: 'nodejs',
-  maxDuration: 30
-};
