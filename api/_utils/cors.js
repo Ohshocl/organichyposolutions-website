@@ -2,23 +2,7 @@
  * ORGANIC HYPOSOLUTIONS - CORS Helper Utility
  * ================================================================
  * File: /api/_utils/cors.js
- * Purpose: Centralized CORS handling for all API endpoints
  */
-
-// Allowed origins for CORS
-const allowedOrigins = [
-  // Production domains
-  'https://organichyposolutions.com',
-  'https://www.organichyposolutions.com',
-  
-  // Vercel preview domains
-  'https://organichyposolutions-website.vercel.app',
-  'https://organichyposolutions-website-git-main-ohss-projects-e45c0d7a.vercel.app',
-  'https://organichyposolutions-website-zsvji7i3s-ohss-projects-e45c0d7a.vercel.app',
-  
-  // Local development
-  'http://localhost:3000'
-];
 
 /**
  * Sets up CORS headers for API responses
@@ -28,11 +12,16 @@ const allowedOrigins = [
 function setCorsHeaders(req, res) {
   const origin = req.headers.origin;
   
-  // Set allowed origin
-  if (origin && allowedOrigins.includes(origin)) {
+  // Allow any origin from organichyposolutions domain
+  if (origin && (
+      origin.includes('organichyposolutions.com') || 
+      origin.includes('organichyposolutions-website') ||
+      origin.includes('ohss-projects') ||
+      origin.includes('localhost')
+    )) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   } else {
-    // For development/testing
+    // More permissive for development
     res.setHeader('Access-Control-Allow-Origin', '*');
   }
   
@@ -61,6 +50,5 @@ function handlePreflight(req, res) {
 
 module.exports = {
   setCorsHeaders,
-  handlePreflight,
-  allowedOrigins
+  handlePreflight
 };
