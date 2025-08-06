@@ -3,7 +3,7 @@
  * ================================================================
  * File: /shop/js/shopify-client.js
  * Purpose: Frontend API client for Shopify integration
- * Dependencies: Your API endpoints (/api/shopify/*)
+ * Dependencies: Your API endpoints (https://organichyposolutions-website-9mvivar9w-ohss-projects-e45c0d7a.vercel.app/api/shopify/*)
  * Security: NO credentials - only calls your secure API endpoints
  * 
  * MUST LOAD AFTER: cart.js
@@ -21,7 +21,7 @@
  */
 class ShopifyClient {
     constructor() {
-        this.apiBase = '/api/shopify';
+        this.apiBase = 'https://organichyposolutions-website-9mvivar9w-ohss-projects-e45c0d7a.vercel.app/api/shopify';
         this.isInitialized = false;
         this.retryConfig = {
             maxRetries: 3,
@@ -39,7 +39,7 @@ class ShopifyClient {
     async initialize() {
         try {
             // Basic connectivity test
-            const testResponse = await this.makeRequest('/api/shopify/get-products?limit=1');
+            const testResponse = await this.makeRequest('https://organichyposolutions-website-9mvivar9w-ohss-projects-e45c0d7a.vercel.app/api/shopify/get-products?limit=1');
             if (testResponse.success || testResponse.products) {
                 console.log('✅ Shopify API connectivity verified');
                 this.isInitialized = true;
@@ -85,7 +85,7 @@ class ShopifyClient {
         };
 
         try {
-            const response = await this.makeRequest('/api/shopify/create-checkout', {
+            const response = await this.makeRequest('https://organichyposolutions-website-9mvivar9w-ohss-projects-e45c0d7a.vercel.app/api/shopify/create-checkout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -127,7 +127,7 @@ class ShopifyClient {
         if (options.search) queryParams.append('search', options.search);
         if (options.sortBy) queryParams.append('sortBy', options.sortBy);
 
-        const url = `/api/shopify/get-products${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
+        const url = `https://organichyposolutions-website-9mvivar9w-ohss-projects-e45c0d7a.vercel.app/api/shopify/get-products${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
         
         try {
             console.log('📦 Fetching products from API...');
@@ -240,7 +240,7 @@ class ShopifyClient {
      */
     async healthCheck() {
         try {
-            const response = await this.makeRequest('/api/shopify/get-products?limit=1');
+            const response = await this.makeRequest('https://organichyposolutions-website-9mvivar9w-ohss-projects-e45c0d7a.vercel.app/api/shopify/get-products?limit=1');
             return response.success || response.products !== undefined;
         } catch (error) {
             console.warn('API health check failed:', error.message);
@@ -319,6 +319,6 @@ if (typeof module !== 'undefined' && module.exports) {
 // =================================================================
 
 console.log('🔌 Shopify Frontend Client Loaded');
-console.log('   Endpoints: /api/shopify/create-checkout, /api/shopify/get-products');
+console.log('   Endpoints: https://organichyposolutions-website-9mvivar9w-ohss-projects-e45c0d7a.vercel.app/api/shopify/create-checkout, https://organichyposolutions-website-9mvivar9w-ohss-projects-e45c0d7a.vercel.app/api/shopify/get-products');
 console.log('   Security: No credentials in frontend - API calls only');
 console.log('   Integration: Ready for cart.checkout() calls');

@@ -2504,7 +2504,7 @@ class Cart {
             console.log('Creating checkout with your API:', lineItems);
             
             // Use your existing API endpoint
-            const response = await fetch('/api/shopify/create-checkout', {
+            const response = await fetch('https://organichyposolutions-website-9mvivar9w-ohss-projects-e45c0d7a.vercel.app/api/shopify/create-checkout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -2821,7 +2821,7 @@ setTimeout(function() {
         console.log(`   Premium Line: ${Object.values(window.PRODUCT_CATALOG).filter(p => p.productLine === 'premium').length} products`);
         console.log(`   Organic Line: ${Object.values(window.PRODUCT_CATALOG).filter(p => p.productLine === 'organic').length} products`);
         console.log('🔗 Shopify Integration: READY');
-        console.log('💳 API Endpoints: /api/shopify/create-checkout.js');
+        console.log('💳 API Endpoints: https://organichyposolutions-website-9mvivar9w-ohss-projects-e45c0d7a.vercel.app/api/shopify/create-checkout.js');
         console.log('📦 Cart Functions: Global window.cart, window.addProductToCart()');
         console.log('⚡ Status: FULLY OPERATIONAL');
         
