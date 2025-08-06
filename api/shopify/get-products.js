@@ -2,14 +2,31 @@
  * ORGANIC HYPOSOLUTIONS - GET PRODUCTS API ENDPOINT
  * ================================================================
  * File: /api/shopify/get-products.js
- * Simple implementation to fix "cat error"
  */
 
 export default async function handler(req, res) {
-  // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  // Set proper CORS headers
+  const allowedOrigins = [
+    'https://organichyposolutions.com',
+    'https://www.organichyposolutions.com',
+    'https://organichyposolutions-website.vercel.app',
+    'https://organichyposolutions-website-git-main-ohss-projects-e45c0d7a.vercel.app',
+    'https://organichyposolutions-website-zsvji7i3s-ohss-projects-e45c0d7a.vercel.app'
+  ];
+  
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+  
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader(
+    'Access-Control-Allow-Headers', 
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization'
+  );
 
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
@@ -17,20 +34,28 @@ export default async function handler(req, res) {
     return;
   }
 
-  // Only allow GET requests
-  if (req.method !== 'GET') {
-    return res.status(405).json({
-      success: false,
-      error: 'Method not allowed'
-    });
-  }
-
   try {
-    // Simple response for now - can be enhanced later
+    // Check Shopify configuration
+    const shopifyConfigured = !!(
+      process.env.SHOPIFY_DOMAIN && 
+      process.env.SHOPIFY_STOREFRONT_TOKEN
+    );
+    
+    // Response with Shopify configuration status
     res.status(200).json({
       success: true,
       message: "Products API is working!",
-      debug: "File fixed - no more cat errors"
+      config: {
+        shopify: {
+          configured: shopifyConfigured,
+          domain: process.env.SHOPIFY_DOMAIN || null,
+          tokenConfigured: !!process.env.SHOPIFY_STOREFRONT_TOKEN
+        }
+      },
+      debug: {
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV || 'development'
+      }
     });
   } catch (error) {
     console.error('Get products error:', error);
@@ -44,8 +69,7 @@ export default async function handler(req, res) {
   }
 }
 
-// Export configuration for Vercel - FIXED RUNTIME VALUE
 export const config = {
-  runtime: 'nodejs', // Changed from 'nodejs18.x' to 'nodejs'
+  runtime: 'nodejs',
   maxDuration: 30
 };
