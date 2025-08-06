@@ -1,3 +1,4 @@
+cat > api/shopify/create-checkout.js << 'EOF'
 /**
  * ORGANIC HYPOSOLUTIONS - CREATE CHECKOUT API ENDPOINT (COMMONJS COMPATIBLE)
  * ================================================================
@@ -31,7 +32,7 @@ module.exports = async function handler(req, res) {
     // =================================================================
     
     if (req.method !== 'POST') {
-        console.warn(`❌ Invalid method: ${req.method}`);
+        console.warn(\`❌ Invalid method: \${req.method}\`);
         return res.status(405).json({ 
             success: false,
             error: 'Method not allowed',
@@ -112,12 +113,12 @@ module.exports = async function handler(req, res) {
             
             // Check required fields
             if (!item.variantId) {
-                validationErrors.push(`Line item ${i + 1}: Missing variantId`);
+                validationErrors.push(\`Line item \${i + 1}: Missing variantId\`);
                 continue;
             }
             
             if (!item.quantity || typeof item.quantity !== 'number' || item.quantity <= 0) {
-                validationErrors.push(`Line item ${i + 1}: Invalid quantity (must be positive number)`);
+                validationErrors.push(\`Line item \${i + 1}: Invalid quantity (must be positive number)\`);
                 continue;
             }
 
@@ -126,9 +127,9 @@ module.exports = async function handler(req, res) {
             if (!variantId.startsWith('gid://shopify/ProductVariant/')) {
                 // Convert numeric ID to GID format if needed
                 if (/^\d+$/.test(variantId)) {
-                    variantId = `gid://shopify/ProductVariant/${variantId}`;
+                    variantId = \`gid://shopify/ProductVariant/\${variantId}\`;
                 } else {
-                    validationErrors.push(`Line item ${i + 1}: Invalid variantId format`);
+                    validationErrors.push(\`Line item \${i + 1}: Invalid variantId format\`);
                     continue;
                 }
             }
@@ -148,7 +149,7 @@ module.exports = async function handler(req, res) {
             });
         }
 
-        console.log(`✅ Validated ${validatedLineItems.length} line items`);
+        console.log(\`✅ Validated \${validatedLineItems.length} line items\`);
 
         // =================================================================
         // SHIPPING ADDRESS VALIDATION (Optional)
@@ -162,7 +163,7 @@ module.exports = async function handler(req, res) {
             
             for (const field of requiredFields) {
                 if (!shippingAddress[field] || typeof shippingAddress[field] !== 'string') {
-                    addressErrors.push(`Missing or invalid ${field}`);
+                    addressErrors.push(\`Missing or invalid \${field}\`);
                 }
             }
             
@@ -222,8 +223,8 @@ module.exports = async function handler(req, res) {
         // =================================================================
         
         console.log('✅ Checkout created successfully');
-        console.log(`🔗 Checkout URL: ${checkout.webUrl}`);
-        console.log(`💰 Total: ${checkout.totalPriceV2?.amount} ${checkout.totalPriceV2?.currencyCode}`);
+        console.log(\`🔗 Checkout URL: \${checkout.webUrl}\`);
+        console.log(\`💰 Total: \${checkout.totalPriceV2?.amount} \${checkout.totalPriceV2?.currencyCode}\`);
 
         const response = {
             success: true,
@@ -288,3 +289,4 @@ module.exports = async function handler(req, res) {
         });
     }
 };
+EOF
