@@ -1,9 +1,9 @@
 /**
- * ORGANIC HYPOSOLUTIONS - SERVER-SIDE SHOPIFY CLIENT (FIXED)
+ * ORGANIC HYPOSOLUTIONS - SERVER-SIDE SHOPIFY CLIENT (COMMONJS COMPATIBLE)
  * ================================================================
  * File: /api/_utils/shopify-client.js
  * Purpose: Secure server-side Shopify API communication
- * FIXED: Changed to ES6 modules for compatibility
+ * FIXED: Changed to CommonJS for Vercel compatibility
  * ================================================================
  */
 
@@ -25,7 +25,7 @@ if (!SHOPIFY_DOMAIN || !SHOPIFY_STOREFRONT_TOKEN) {
 console.log('✅ Shopify client initialized for domain:', SHOPIFY_DOMAIN);
 
 // =================================================================
-// GRAPHQL MUTATIONS & QUERIES (KEPT YOUR EXACT QUERIES)
+// GRAPHQL MUTATIONS & QUERIES
 // =================================================================
 
 const CREATE_CHECKOUT_MUTATION = `
@@ -180,7 +180,7 @@ const GET_PRODUCTS_QUERY = `
 `;
 
 // =================================================================
-// CORE API FUNCTIONS (KEPT YOUR EXACT LOGIC)
+// CORE API FUNCTIONS
 // =================================================================
 
 async function makeGraphQLRequest(query, variables = {}) {
@@ -188,7 +188,6 @@ async function makeGraphQLRequest(query, variables = {}) {
     
     try {
         console.log(`🔄 Making Shopify API request to: ${url}`);
-        console.log('📊 Variables:', JSON.stringify(variables, null, 2));
         
         const response = await fetch(url, {
             method: 'POST',
@@ -223,7 +222,7 @@ async function makeGraphQLRequest(query, variables = {}) {
     }
 }
 
-export async function createCheckout(lineItems, shippingAddress = null) {
+async function createCheckout(lineItems, shippingAddress = null) {
     try {
         console.log('🛒 Creating Shopify checkout with line items:', lineItems);
         
@@ -280,7 +279,7 @@ export async function createCheckout(lineItems, shippingAddress = null) {
     }
 }
 
-export async function getProducts(first = 100, after = null) {
+async function getProducts(first = 100, after = null) {
     try {
         console.log(`📦 Fetching ${first} products from Shopify`);
         
@@ -320,11 +319,11 @@ export async function getProducts(first = 100, after = null) {
     }
 }
 
-export function getWholesaleThreshold() {
+function getWholesaleThreshold() {
     return parseInt(process.env.WHOLESALE_THRESHOLD || '25');
 }
 
-export function convertCartToLineItems(ohsCart) {
+function convertCartToLineItems(ohsCart) {
     const lineItems = [];
     
     for (const [productId, cartItem] of Object.entries(ohsCart)) {
@@ -339,7 +338,7 @@ export function convertCartToLineItems(ohsCart) {
     return lineItems;
 }
 
-export async function validateVariant(variantId) {
+async function validateVariant(variantId) {
     try {
         const query = `
             query getVariant($id: ID!) {
@@ -364,11 +363,21 @@ export async function validateVariant(variantId) {
     }
 }
 
-// Export configuration
-export const DOMAIN = SHOPIFY_DOMAIN;
-export const VERSION = API_VERSION;
+// =================================================================
+// COMMONJS EXPORTS
+// =================================================================
 
-console.log('🏪 Organic HypoSolutions Shopify Client Initialized (ES6 Module)');
+module.exports = {
+    createCheckout,
+    getProducts,
+    getWholesaleThreshold,
+    convertCartToLineItems,
+    validateVariant,
+    DOMAIN: SHOPIFY_DOMAIN,
+    VERSION: API_VERSION
+};
+
+console.log('🏪 Organic HypoSolutions Shopify Client Initialized (CommonJS)');
 console.log(`   Domain: ${SHOPIFY_DOMAIN}`);
 console.log(`   API Version: ${API_VERSION}`);
 console.log('🔐 Environment variables loaded securely');
