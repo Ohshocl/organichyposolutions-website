@@ -1,3 +1,4 @@
+cat > api/_utils/shopify-client.js << 'EOF'
 /**
  * ORGANIC HYPOSOLUTIONS - SERVER-SIDE SHOPIFY CLIENT (COMMONJS COMPATIBLE)
  * ================================================================
@@ -28,7 +29,7 @@ console.log('✅ Shopify client initialized for domain:', SHOPIFY_DOMAIN);
 // GRAPHQL MUTATIONS & QUERIES
 // =================================================================
 
-const CREATE_CHECKOUT_MUTATION = `
+const CREATE_CHECKOUT_MUTATION = \`
     mutation checkoutCreate($input: CheckoutCreateInput!) {
         checkoutCreate(input: $input) {
             checkout {
@@ -88,9 +89,9 @@ const CREATE_CHECKOUT_MUTATION = `
             }
         }
     }
-`;
+\`;
 
-const GET_PRODUCTS_QUERY = `
+const GET_PRODUCTS_QUERY = \`
     query getProducts($first: Int!, $after: String) {
         products(first: $first, after: $after) {
             edges {
@@ -177,17 +178,17 @@ const GET_PRODUCTS_QUERY = `
             }
         }
     }
-`;
+\`;
 
 // =================================================================
 // CORE API FUNCTIONS
 // =================================================================
 
 async function makeGraphQLRequest(query, variables = {}) {
-    const url = `https://${SHOPIFY_DOMAIN}/api/${API_VERSION}/graphql.json`;
+    const url = \`https://\${SHOPIFY_DOMAIN}/api/\${API_VERSION}/graphql.json\`;
     
     try {
-        console.log(`🔄 Making Shopify API request to: ${url}`);
+        console.log(\`🔄 Making Shopify API request to: \${url}\`);
         
         const response = await fetch(url, {
             method: 'POST',
@@ -203,7 +204,7 @@ async function makeGraphQLRequest(query, variables = {}) {
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error(\`HTTP error! status: \${response.status}\`);
         }
 
         const data = await response.json();
@@ -211,14 +212,14 @@ async function makeGraphQLRequest(query, variables = {}) {
         
         if (data.errors && data.errors.length > 0) {
             console.error('❌ GraphQL errors:', data.errors);
-            throw new Error(`GraphQL errors: ${data.errors.map(e => e.message).join(', ')}`);
+            throw new Error(\`GraphQL errors: \${data.errors.map(e => e.message).join(', ')}\`);
         }
 
         return data;
         
     } catch (error) {
         console.error('❌ Shopify API request failed:', error);
-        throw new Error(`Shopify API request failed: ${error.message}`);
+        throw new Error(\`Shopify API request failed: \${error.message}\`);
     }
 }
 
@@ -232,7 +233,7 @@ async function createCheckout(lineItems, shippingAddress = null) {
 
         lineItems.forEach((item, index) => {
             if (!item.variantId || !item.quantity || item.quantity <= 0) {
-                throw new Error(`Invalid line item at index ${index}: must have variantId and positive quantity`);
+                throw new Error(\`Invalid line item at index \${index}: must have variantId and positive quantity\`);
             }
         });
 
@@ -254,7 +255,7 @@ async function createCheckout(lineItems, shippingAddress = null) {
         if (response.data?.checkoutCreate?.checkoutUserErrors?.length > 0) {
             const errors = response.data.checkoutCreate.checkoutUserErrors;
             console.error('❌ Checkout creation errors:', errors);
-            throw new Error(`Checkout errors: ${errors.map(e => `${e.field}: ${e.message}`).join(', ')}`);
+            throw new Error(\`Checkout errors: \${errors.map(e => \`\${e.field}: \${e.message}\`).join(', ')}\`);
         }
 
         const checkout = response.data?.checkoutCreate?.checkout;
@@ -281,7 +282,7 @@ async function createCheckout(lineItems, shippingAddress = null) {
 
 async function getProducts(first = 100, after = null) {
     try {
-        console.log(`📦 Fetching ${first} products from Shopify`);
+        console.log(\`📦 Fetching \${first} products from Shopify\`);
         
         if (first > 250) {
             console.warn('⚠️ Limiting request to 250 products (Shopify maximum)');
@@ -300,7 +301,7 @@ async function getProducts(first = 100, after = null) {
             throw new Error('No products data returned from Shopify');
         }
 
-        console.log(`✅ Fetched ${products.edges.length} products`);
+        console.log(\`✅ Fetched \${products.edges.length} products\`);
         return {
             success: true,
             products: products.edges.map(edge => edge.node),
@@ -340,7 +341,7 @@ function convertCartToLineItems(ohsCart) {
 
 async function validateVariant(variantId) {
     try {
-        const query = `
+        const query = \`
             query getVariant($id: ID!) {
                 node(id: $id) {
                     ... on ProductVariant {
@@ -350,7 +351,7 @@ async function validateVariant(variantId) {
                     }
                 }
             }
-        `;
+        \`;
 
         const response = await makeGraphQLRequest(query, { id: variantId });
         const variant = response.data?.node;
@@ -378,7 +379,8 @@ module.exports = {
 };
 
 console.log('🏪 Organic HypoSolutions Shopify Client Initialized (CommonJS)');
-console.log(`   Domain: ${SHOPIFY_DOMAIN}`);
-console.log(`   API Version: ${API_VERSION}`);
+console.log(\`   Domain: \${SHOPIFY_DOMAIN}\`);
+console.log(\`   API Version: \${API_VERSION}\`);
 console.log('🔐 Environment variables loaded securely');
 console.log('📡 Ready for API requests');
+EOF
