@@ -4,6 +4,9 @@
  * File: /api/shopify/create-checkout.js
  */
 
+// Shopify client import
+import Client from 'shopify-buy';
+
 export default async function handler(req, res) {
   // DIRECT CORS HANDLING - No imports needed
   const origin = req.headers.origin;
@@ -25,33 +28,106 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Your existing checkout creation logic here
-    // This typically includes:
-    // 1. Validating the request body (cart items, etc.)
-    // 2. Creating a checkout in Shopify
-    // 3. Returning the checkout URL or ID
+    // Extract checkout data from request body
+    const { 
+      lineItems,
+      email,
+      shippingAddress,
+      note,
+      customAttributes = []
+    } = req.body;
     
-    // Example placeholder (replace with your actual implementation):
-    const { lineItems } = req.body;
-    
-    // Validation
+    // Validate required data
     if (!lineItems || !Array.isArray(lineItems) || lineItems.length === 0) {
-      return res.status(400).json({ error: 'Invalid line items' });
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Invalid line items. At least one item is required.' 
+      });
     }
     
-    // Create checkout logic would go here
-    // const checkout = await shopify.checkout.create({ lineItems });
+    // Validate line items format
+    for (const item of lineItems) {
+      if (!item.variantId || !item.quantity) {
+        return res.status(400).json({
+          success: false,
+          error: 'Each line item must include a variantId and quantity'
+        });
+      }
+    }
     
+    // Initialize Shopify client
+    const shopifyClient = Client.buildClient({
+      domain: process.env.SHOPIFY_STORE_DOMAIN,
+      storefrontAccessToken: process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN
+    });
+    
+    // Create a new checkout
+    const checkout = await shopifyClient.checkout.create();
+    
+    // Format line items for Shopify
+    const formattedLineItems = lineItems.map(item => ({
+      variantId: item.variantId,
+      quantity: parseInt(item.quantity)
+    }));
+    
+    // Add line items to checkout
+    const checkoutWithItems = await shopifyClient.checkout.addLineItems(
+      checkout.id, 
+      formattedLineItems
+    );
+    
+    // Set customer email if provided
+    let updatedCheckout = checkoutWithItems;
+    if (email) {
+      updatedCheckout = await shopifyClient.checkout.updateEmail(
+        updatedCheckout.id, 
+        email
+      );
+    }
+    
+    // Set shipping address if provided
+    if (shippingAddress) {
+      updatedCheckout = await shopifyClient.checkout.updateShippingAddress(
+        updatedCheckout.id,
+        shippingAddress
+      );
+    }
+    
+    // Set note if provided
+    if (note) {
+      // Note: The SDK might not directly support notes, this is a workaround
+      updatedCheckout = await shopifyClient.checkout.updateAttributes(
+        updatedCheckout.id,
+        { note }
+      );
+    }
+    
+    // Set custom attributes if provided
+    if (customAttributes && customAttributes.length > 0) {
+      updatedCheckout = await shopifyClient.checkout.updateAttributes(
+        updatedCheckout.id,
+        { customAttributes }
+      );
+    }
+    
+    // Return checkout information
     res.status(200).json({
       success: true,
-      checkoutUrl: 'https://your-store.myshopify.com/checkout/...',
-      checkoutId: 'sample-checkout-id'
+      checkout: {
+        id: updatedCheckout.id,
+        webUrl: updatedCheckout.webUrl,
+        subtotalPrice: updatedCheckout.subtotalPrice,
+        totalPrice: updatedCheckout.totalPrice,
+        lineItems: updatedCheckout.lineItems
+      }
     });
+    
   } catch (error) {
     console.error('Create checkout error:', error);
-    res.status(500).json({ 
-      success: false, 
-      error: error.message 
+    res.status(500).json({
+      success: false,
+      error: 'Failed to create checkout',
+      details: error.message
     });
   }
 }
