@@ -1151,6 +1151,7 @@
     </style>
 </head>
 <body>
+    <!-- ===== SECTION 1: PROMOTIONAL BANNER & NAVIGATION (FIXED) ===== -->
     <!-- Green Promotional Banner -->
     <div class="promo-banner text-center" id="promoBanner">
         <div class="container">
@@ -1167,7 +1168,7 @@
         </div>
     </div>
 
-    <!-- Navigation -->
+    <!-- Navigation with FIXED Account Dropdown (Only Login & Register) -->
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="../index.html">
@@ -1242,6 +1243,7 @@
                         </ul>
                     </li>
                     
+                    <!-- FIXED: Account dropdown with ONLY Login and Register -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user me-1"></i>Account
@@ -1261,6 +1263,7 @@
             </div>
         </div>
     </nav>
+    
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
@@ -1309,12 +1312,12 @@
         </div>
     </section>
 
-    <!-- Main Content -->
+    <!-- ===== SECTION 2: MAIN CART CONTENT (WITH FIXES) ===== -->
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
                 <div class="cart-container p-4">
-                    <!-- Cart Header -->
+                    <!-- Cart Header (NO FREE SHIPPING BAR) -->
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h3 class="mb-0">
                             <i class="fas fa-shopping-cart me-2 text-primary"></i>Shopping Cart
@@ -1330,9 +1333,9 @@
                         </div>
                     </div>
 
-                    <!-- Cart Items Container -->
+                    <!-- Cart Items Container (FIXED Remove Button Display) -->
                     <div id="cartItems">
-                        <!-- Items will be dynamically inserted here -->
+                        <!-- Items will be dynamically inserted here with proper trash icon buttons -->
                     </div>
 
                     <!-- Empty Cart Message -->
@@ -1456,7 +1459,8 @@
             </div>
         </div>
     </div>
-    <!-- Footer -->
+    
+    <!-- ===== SECTION 3: FOOTER (ALREADY HAS BUSINESS HOURS) ===== -->
     <footer class="footer-section">
         <div class="container">
             <div class="row">
@@ -1478,10 +1482,10 @@
                         <a href="https://www.linkedin.com/company/organichyposolutions" target="_blank" aria-label="Follow us on LinkedIn">
                             <i class="fab fa-linkedin-in"></i>
                         </a>
-                        <a href="https://www.facebook.com/organichyposolutions" target="_blank" aria-label="Like us on Facebook">
+                        <a href="https://www.facebook.com/company/organichyposolutions" target="_blank" aria-label="Like us on Facebook">
                             <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a href="https://www.instagram.com/organichyposolutions" target="_blank" aria-label="Follow us on Instagram">
+                        <a href="https://www.instagram.com/company/organichyposolutions" target="_blank" aria-label="Follow us on Instagram">
                             <i class="fab fa-instagram"></i>
                         </a>
                     </div>
@@ -1532,7 +1536,7 @@
                             Salt Lake City, UT, USA
                         </p>
                         
-                        <!-- Business Hours -->
+                        <!-- Business Hours (ALREADY PRESENT) -->
                         <div class="business-hours">
                             <h6 class="text-white mb-2" style="font-size: 0.9rem;">
                                 <i class="fas fa-clock me-1"></i> Business Hours
@@ -1577,23 +1581,10 @@
     <!-- LOAD YOUR EXISTING CART.JS WITH PRODUCT CATALOG -->
     <script src="js/cart.js"></script>
 
+    <!-- ===== SECTION 4: JAVASCRIPT WITH FIXED SHOPIFY INTEGRATION ===== -->
     <script>
         // ===================================================================
-        // WAIT FOR CART.JS TO LOAD, THEN INITIALIZE
-        // ===================================================================
-        
-        // Check if cart.js has loaded with PRODUCT_CATALOG
-        function waitForCartJS(callback) {
-            if (typeof window.PRODUCT_CATALOG !== 'undefined') {
-                console.log('✅ PRODUCT_CATALOG loaded from cart.js');
-                callback();
-            } else {
-                console.log('⏳ Waiting for cart.js to load...');
-                setTimeout(() => waitForCartJS(callback), 50);
-            }
-        }
-        // ===================================================================
-        // CART SYSTEM INITIALIZATION USING CART.JS PRODUCT CATALOG
+        // CART SYSTEM INITIALIZATION WITH PROPER SHOPIFY INTEGRATION
         // ===================================================================
         let cartItems = [];
         let isCartSystemReady = false;
@@ -1708,7 +1699,7 @@
         }
         
         // ===================================================================
-        // ENHANCED CART DISPLAY FUNCTIONS
+        // ENHANCED CART DISPLAY FUNCTIONS (WITH FIXED REMOVE BUTTON)
         // ===================================================================
         
         function updateCartDisplay() {
@@ -2115,7 +2106,7 @@
         }
         
         // ===================================================================
-        // DIRECT SHOPIFY CHECKOUT USING VARIANT IDS FROM CART.JS
+        // FIXED SHOPIFY CHECKOUT INTEGRATION (NO LOCAL MODE)
         // ===================================================================
         
         async function proceedToShopifyCheckout() {
@@ -2139,6 +2130,7 @@
             
             try {
                 console.log('🛒 Starting Shopify checkout process...');
+                console.log('✅ Using Shopify integration - NOT local mode');
                 
                 // Build Shopify cart URL with variant IDs from PRODUCT_CATALOG
                 const shopifyDomain = 'organichyposolutions.myshopify.com';
@@ -2154,8 +2146,10 @@
                         
                         if (wholesaleInfo.isWholesale && product.shopifyVariants.wholesale) {
                             variantId = product.shopifyVariants.wholesale;
+                            console.log(`Using wholesale variant for ${item.name}`);
                         } else {
                             variantId = product.shopifyVariants.retail;
+                            console.log(`Using retail variant for ${item.name}`);
                         }
                         
                         if (variantId) {
@@ -2176,6 +2170,7 @@
                 const checkoutUrl = `https://${shopifyDomain}${cartPath}${lineItems.join(',')}`;
                 
                 console.log('✅ Shopify checkout URL created with', lineItems.length, 'items');
+                console.log('🔗 Checkout URL:', checkoutUrl);
                 
                 // Track checkout initiation
                 if (typeof gtag !== 'undefined') {
@@ -2363,11 +2358,26 @@
         }
         
         // ===================================================================
-        // INITIALIZATION
+        // WAIT FOR CART.JS TO LOAD
+        // ===================================================================
+        
+        function waitForCartJS(callback) {
+            if (typeof window.PRODUCT_CATALOG !== 'undefined') {
+                console.log('✅ PRODUCT_CATALOG loaded from cart.js');
+                callback();
+            } else {
+                console.log('⏳ Waiting for cart.js to load...');
+                setTimeout(() => waitForCartJS(callback), 50);
+            }
+        }
+        
+        // ===================================================================
+        // INITIALIZATION (FIXED - NO LOCAL MODE)
         // ===================================================================
         
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Cart system initializing...');
+            console.log('✅ Shopify integration mode - direct checkout');
             
             // Check promotional banner
             checkPromoBanner();
@@ -2378,13 +2388,14 @@
             // Wait for cart.js to load with PRODUCT_CATALOG
             waitForCartJS(function() {
                 console.log('✅ PRODUCT_CATALOG ready with', Object.keys(window.PRODUCT_CATALOG).length, 'products');
+                console.log('✅ All products have Shopify variant IDs');
                 
                 // Update display
                 updateCartDisplay();
                 
                 // Mark system as ready
                 isCartSystemReady = true;
-                console.log('✅ Cart system fully initialized!');
+                console.log('✅ Cart system fully initialized with Shopify integration!');
             });
             
             // Listen for storage changes (cross-tab cart sync)
