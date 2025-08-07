@@ -1296,21 +1296,25 @@
 
         // Update quantity
         function updateQuantity(index, change) {
-            cartItems[index].quantity = Math.max(1, cartItems[index].quantity + change);
-            saveCart();
-            updateCartDisplay();
+            if (cartItems[index]) {
+                cartItems[index].quantity = Math.max(1, cartItems[index].quantity + change);
+                saveCart();
+                updateCartDisplay();
+            }
         }
 
         // Set quantity
         function setQuantity(index, value) {
-            cartItems[index].quantity = Math.max(1, Math.min(999, parseInt(value) || 1));
-            saveCart();
-            updateCartDisplay();
+            if (cartItems[index]) {
+                cartItems[index].quantity = Math.max(1, Math.min(999, parseInt(value) || 1));
+                saveCart();
+                updateCartDisplay();
+            }
         }
 
         // Remove item
         function removeItem(index) {
-            if (confirm('Remove this item from cart?')) {
+            if (cartItems[index] && confirm('Remove this item from cart?')) {
                 cartItems.splice(index, 1);
                 saveCart();
                 updateCartDisplay();
