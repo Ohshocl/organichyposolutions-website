@@ -997,20 +997,24 @@
             });
         }
 
-        // Load cart from localStorage
+        // Enhanced cart loading that handles multiple formats
         function loadCart() {
             try {
                 const stored = localStorage.getItem('ohsCart');
                 if (stored) {
                     const parsedCart = JSON.parse(stored);
-                    // Ensure cart is always an array
+                    
+                    // Handle different cart formats
                     if (Array.isArray(parsedCart)) {
-                        cartItems = parsedCart;
+                        // Array format (from products page or index.html)
+                        cartItems = parsedCart.map(item => normalizeCartItem(item));
+                    } else if (typeof parsedCart === 'object' && parsedCart !== null) {
+                        // Object format (legacy)
+                        cartItems = Object.values(parsedCart).map(item => normalizeCartItem(item));
                     } else {
-                        console.warn('Cart data is not an array, resetting cart');
                         cartItems = [];
-                        localStorage.setItem('ohsCart', JSON.stringify([]));
                     }
+                    
                     console.log('Cart loaded:', cartItems.length, 'items');
                 } else {
                     cartItems = [];
@@ -1018,9 +1022,33 @@
             } catch (error) {
                 console.error('Error loading cart, resetting to empty:', error);
                 cartItems = [];
-                // Clear corrupted data
                 localStorage.setItem('ohsCart', JSON.stringify([]));
             }
+        }
+
+        // Normalize cart items to standard format
+        function normalizeCartItem(item) {
+            // Handle different item structures
+            const normalizedItem = {
+                productId: item.productId || item.id || item.handle || generateTempId(item),
+                name: item.name || item.title || 'Unknown Product',
+                price: parseFloat(item.price) || 0,
+                quantity: parseInt(item.quantity) || 1,
+                emoji: item.emoji || '🧽',
+                type: item.type || (item.name && item.name.toLowerCase().includes('organic') ? 'organic' : 'premium'),
+                sku: item.sku || item.productId || null,
+                variantId: item.variantId || null,
+                addedAt: item.addedAt || Date.now()
+            };
+            
+            return normalizedItem;
+        }
+
+        // Generate temporary ID for items without proper ID
+        function generateTempId(item) {
+            const name = (item.name || 'unknown').toLowerCase().replace(/[^a-z0-9]/g, '-');
+            const price = (item.price || 0).toString().replace('.', '-');
+            return `temp-${name}-${price}`;
         }
 
         // Save cart to localStorage
@@ -1036,37 +1064,61 @@
             }
         }
 
-        // Calculate wholesale pricing using cart.js function
+        // Enhanced wholesale calculation that works with any cart item
         function calculateWholesale(productId, quantity) {
-            // Use the function from cart.js if available
-            if (typeof window.calculateWholesaleRate === 'function') {
+            // Try to use the function from cart.js if available and product exists in catalog
+            if (typeof window.calculateWholesaleRate === 'function' && 
+                window.PRODUCT_CATALOG && window.PRODUCT_CATALOG[productId]) {
                 return window.calculateWholesaleRate(productId, quantity);
             }
             
-            // Fallback calculation
-            const product = window.PRODUCT_CATALOG ? window.PRODUCT_CATALOG[productId] : null;
-            if (!product || !product.pricing) {
+            // Fallback calculation for items not in catalog (like from index.html)
+            const item = cartItems.find(item => item.productId === productId);
+            if (!item) {
                 return {
                     isWholesale: false,
                     price: 0,
                     savings: 0,
-                    threshold: 6
+                    threshold: 6,
+                    retailPrice: 0,
+                    wholesalePrice: 0
                 };
             }
             
-            const threshold = product.wholesaleThreshold || 6;
-            const isWholesale = quantity >= threshold;
-            const retailPrice = product.pricing.retail || 0;
-            const wholesalePrice = product.pricing.wholesale || (retailPrice * 0.7);
+            // Check if this is a product from the catalog
+            const product = window.PRODUCT_CATALOG ? window.PRODUCT_CATALOG[productId] : null;
             
-            return {
-                isWholesale: isWholesale,
-                threshold: threshold,
-                price: isWholesale ? wholesalePrice : retailPrice,
-                retailPrice: retailPrice,
-                wholesalePrice: wholesalePrice,
-                savings: isWholesale ? (retailPrice - wholesalePrice) * quantity : 0
-            };
+            if (product && product.pricing) {
+                // Use catalog data
+                const threshold = product.wholesaleThreshold || 6;
+                const isWholesale = quantity >= threshold;
+                const retailPrice = product.pricing.retail || item.price;
+                const wholesalePrice = product.pricing.wholesale || (retailPrice * 0.7);
+                
+                return {
+                    isWholesale: isWholesale,
+                    threshold: threshold,
+                    price: isWholesale ? wholesalePrice : retailPrice,
+                    retailPrice: retailPrice,
+                    wholesalePrice: wholesalePrice,
+                    savings: isWholesale ? (retailPrice - wholesalePrice) * quantity : 0
+                };
+            } else {
+                // Simple wholesale calculation for non-catalog items
+                const threshold = 6; // Default threshold
+                const isWholesale = quantity >= threshold;
+                const retailPrice = item.price;
+                const wholesalePrice = retailPrice * 0.8; // 20% discount
+                
+                return {
+                    isWholesale: isWholesale,
+                    threshold: threshold,
+                    price: isWholesale ? wholesalePrice : retailPrice,
+                    retailPrice: retailPrice,
+                    wholesalePrice: wholesalePrice,
+                    savings: isWholesale ? (retailPrice - wholesalePrice) * quantity : 0
+                };
+            }
         }
 
         // Update cart display
@@ -1242,20 +1294,59 @@
             }
         }
 
-        // Load recommendations
+        // Enhanced recommendations that work with any cart content
         function loadRecommendations() {
             const container = document.getElementById('recommendationCards');
             if (!container) return;
             
-            // Show different recommendations based on cart contents
-            let recommendations = RECOMMENDATION_PRODUCTS;
+            // Get recommendations based on cart contents and available products
+            let recommendations = [...RECOMMENDATION_PRODUCTS];
             
-            // Filter out items already in cart
+            // Filter out items already in cart (by productId or name matching)
             const cartProductIds = cartItems.map(item => item.productId);
-            recommendations = recommendations.filter(rec => !cartProductIds.includes(rec.id));
+            const cartNames = cartItems.map(item => item.name.toLowerCase());
+            
+            recommendations = recommendations.filter(rec => {
+                const nameMatch = cartNames.some(cartName => 
+                    cartName.includes(rec.name.toLowerCase()) || 
+                    rec.name.toLowerCase().includes(cartName)
+                );
+                return !cartProductIds.includes(rec.id) && !nameMatch;
+            });
+            
+            // Add catalog-based recommendations if available
+            if (window.PRODUCT_CATALOG) {
+                const catalogRecs = Object.values(window.PRODUCT_CATALOG)
+                    .filter(product => !cartProductIds.includes(product.id))
+                    .slice(0, 2)
+                    .map(product => ({
+                        id: product.id,
+                        name: product.name,
+                        description: product.description || 'Professional hypochlorous acid solution',
+                        emoji: product.emoji || '🧴',
+                        price: product.pricing?.retail || 20,
+                        wholesalePrice: product.pricing?.wholesale || 15,
+                        type: product.type || product.productLine,
+                        variantId: product.shopifyVariants?.retail
+                    }));
+                
+                recommendations = [...recommendations, ...catalogRecs];
+            }
             
             // Show max 3 recommendations
             recommendations = recommendations.slice(0, 3);
+            
+            if (recommendations.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-4">
+                        <p class="text-muted">You have a great selection! Consider bulk quantities for wholesale savings.</p>
+                        <a href="../products.html" class="btn btn-outline-primary">
+                            <i class="fas fa-shopping-bag me-2"></i>Browse More Products
+                        </a>
+                    </div>
+                `;
+                return;
+            }
             
             let html = '';
             recommendations.forEach(product => {
@@ -1264,8 +1355,8 @@
                         <div class="rec-product-emoji">${product.emoji}</div>
                         <div class="rec-product-name">${product.name}</div>
                         <div class="rec-product-desc">${product.description}</div>
-                        <div class="rec-product-price">$${product.price.toFixed(2)}</div>
-                        <button class="rec-add-btn" onclick="addRecommendationToCart('${product.id}')">
+                        <div class="rec-product-price">${product.price.toFixed(2)}</div>
+                        <button class="rec-add-btn" onclick="addRecommendationToCart('${product.id}', ${JSON.stringify(product).replace(/"/g, '&quot;')})">
                             <i class="fas fa-cart-plus me-2"></i>Add to Cart
                         </button>
                     </div>
@@ -1275,19 +1366,37 @@
             container.innerHTML = html;
         }
 
-        // Add recommendation to cart
-        function addRecommendationToCart(productId) {
-            const product = RECOMMENDATION_PRODUCTS.find(p => p.id === productId);
-            if (!product) return;
+        // Enhanced recommendation add function
+        function addRecommendationToCart(productId, productData) {
+            let product;
+            
+            // Try to get from passed data first, then from various sources
+            if (typeof productData === 'string') {
+                try {
+                    product = JSON.parse(productData);
+                } catch (e) {
+                    product = RECOMMENDATION_PRODUCTS.find(p => p.id === productId);
+                }
+            } else if (typeof productData === 'object') {
+                product = productData;
+            } else {
+                product = RECOMMENDATION_PRODUCTS.find(p => p.id === productId) ||
+                         (window.PRODUCT_CATALOG && window.PRODUCT_CATALOG[productId]);
+            }
+            
+            if (!product) {
+                showNotification('Product not found', 'error');
+                return;
+            }
             
             const cartItem = {
                 productId: product.id,
                 name: product.name,
                 price: product.price,
                 quantity: 1,
-                emoji: product.emoji,
-                type: product.type,
-                variantId: product.variantId,
+                emoji: product.emoji || '🧴',
+                type: product.type || 'premium',
+                variantId: product.variantId || null,
                 addedAt: Date.now()
             };
             
@@ -1307,7 +1416,7 @@
             showNotification(`Added ${product.name}!`, 'success');
         }
 
-        // DIRECT SHOPIFY CHECKOUT
+        // Enhanced checkout that handles all cart item types
         function proceedToCheckout() {
             if (cartItems.length === 0) {
                 showNotification('Your cart is empty!', 'warning');
@@ -1320,11 +1429,12 @@
             
             try {
                 const lineItems = [];
+                const itemsWithoutVariants = [];
                 
                 cartItems.forEach(item => {
                     let variantId = null;
                     
-                    // Try to get variant ID from multiple sources
+                    // Try multiple sources for variant ID
                     if (item.variantId) {
                         variantId = item.variantId;
                     } else if (window.PRODUCT_CATALOG && window.PRODUCT_CATALOG[item.productId]) {
@@ -1336,15 +1446,33 @@
                                 ? product.shopifyVariants.wholesale 
                                 : product.shopifyVariants.retail;
                         }
+                    } else {
+                        // Try to map common products from index.html to known variant IDs
+                        variantId = getVariantIdFromName(item.name, item.productId);
                     }
                     
                     if (variantId) {
                         lineItems.push(`${variantId}:${item.quantity}`);
                         console.log(`Adding to checkout: ${item.name} (${variantId}:${item.quantity})`);
                     } else {
-                        console.warn(`No variant ID found for product: ${item.productId}`);
+                        itemsWithoutVariants.push(item.name);
+                        console.warn(`No variant ID found for: ${item.name} (${item.productId})`);
                     }
                 });
+                
+                // Show warning if some items couldn't be added to checkout
+                if (itemsWithoutVariants.length > 0 && lineItems.length > 0) {
+                    const confirmed = confirm(
+                        `Some items don't have checkout variants and will be skipped:\n\n${itemsWithoutVariants.join('\n')}\n\nProceed with remaining items?`
+                    );
+                    if (!confirmed) {
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-lock me-2"></i>SECURE CHECKOUT';
+                        return;
+                    }
+                } else if (itemsWithoutVariants.length > 0 && lineItems.length === 0) {
+                    throw new Error(`No items could be processed for checkout. Please contact us at (801) 712-5663 for assistance.`);
+                }
                 
                 if (lineItems.length === 0) {
                     throw new Error('No valid products found for checkout');
@@ -1364,7 +1492,50 @@
                 showNotification('Checkout failed: ' + error.message, 'error');
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-lock me-2"></i>SECURE CHECKOUT';
+                
+                // Show contact info for manual assistance
+                setTimeout(() => {
+                    const contactConfirm = confirm(
+                        'Having trouble with checkout? Would you like to call us for assistance?\n\nPhone: (801) 712-5663'
+                    );
+                    if (contactConfirm) {
+                        window.location.href = 'tel:+18017125663';
+                    }
+                }, 3000);
             }
+        }
+
+        // Map product names/IDs to known variant IDs
+        function getVariantIdFromName(name, productId) {
+            // Common mappings for index.html quick add products
+            const variantMappings = {
+                // Based on your quick add products
+                'ohs-32oz-organic-cleaner': '47796971995475',
+                'ohs-8oz-organic-skin-health-mist': '47796972028243',
+                'hc-32oz-cleaner-epa': '47796972061011',
+                'hc-1gal-ready-to-use-epa': '47796972093779',
+                
+                // Name-based mappings
+                '32oz organic cleaner': '47796971995475',
+                '8oz skin health mist': '47796972028243',
+                '32oz epa cleaner': '47796972061011',
+                '1 gallon epa': '47796972093779'
+            };
+            
+            // Try exact productId match first
+            if (variantMappings[productId]) {
+                return variantMappings[productId];
+            }
+            
+            // Try name-based matching
+            const lowerName = name.toLowerCase();
+            for (const [key, variantId] of Object.entries(variantMappings)) {
+                if (lowerName.includes(key) || key.includes(lowerName)) {
+                    return variantId;
+                }
+            }
+            
+            return null;
         }
 
         // Show notification
@@ -1429,32 +1600,43 @@
             }
         });
 
-        // Expose functions globally for products page compatibility
+        // Universal add to cart function for all pages
         window.addToCartFromProducts = function(productId) {
             try {
                 console.log('addToCartFromProducts called for:', productId);
                 
-                if (!window.PRODUCT_CATALOG || !window.PRODUCT_CATALOG[productId]) {
-                    console.error('Product not found:', productId);
-                    showNotification('Product not found. Please refresh the page.', 'error');
-                    return;
+                // Try to find product in catalog first
+                let product = null;
+                let quantity = 1;
+                
+                if (window.PRODUCT_CATALOG && window.PRODUCT_CATALOG[productId]) {
+                    product = window.PRODUCT_CATALOG[productId];
+                    quantity = parseInt(document.getElementById(`qty-${productId}`)?.value) || 1;
+                } else {
+                    // Handle products not in catalog (like from index.html)
+                    const existingItem = cartItems.find(item => item.productId === productId);
+                    if (existingItem) {
+                        // Use existing item data
+                        product = existingItem;
+                        quantity = 1;
+                    } else {
+                        throw new Error('Product not found in catalog or cart');
+                    }
                 }
                 
-                const product = window.PRODUCT_CATALOG[productId];
-                const quantity = parseInt(document.getElementById(`qty-${productId}`)?.value) || 1;
                 const wholesale = calculateWholesale(productId, quantity);
                 
                 const cartItem = {
-                    productId: product.id,
-                    name: product.name,
-                    price: wholesale.price,
+                    productId: productId,
+                    name: product.name || product.title || 'Unknown Product',
+                    price: wholesale.price || product.price || 0,
                     quantity: quantity,
                     emoji: product.emoji || '🧴',
-                    type: product.type || product.productLine,
-                    sku: product.sku || product.id,
+                    type: product.type || product.productLine || 'premium',
+                    sku: product.sku || productId,
                     variantId: wholesale.isWholesale && product.shopifyVariants?.wholesale 
                         ? product.shopifyVariants.wholesale 
-                        : product.shopifyVariants?.retail,
+                        : product.shopifyVariants?.retail || product.variantId,
                     addedAt: Date.now()
                 };
                 
@@ -1472,19 +1654,17 @@
                 }
                 
                 // Find existing item
-                const existingIndex = cart.findIndex(item => item.productId === product.id);
+                const existingIndex = cart.findIndex(item => item.productId === productId);
                 
                 if (existingIndex >= 0) {
                     // Update existing item
                     cart[existingIndex].quantity += quantity;
                     const newWholesale = calculateWholesale(productId, cart[existingIndex].quantity);
                     cart[existingIndex].price = newWholesale.price;
-                    cart[existingIndex].variantId = newWholesale.isWholesale && product.shopifyVariants?.wholesale 
-                        ? product.shopifyVariants.wholesale 
-                        : product.shopifyVariants?.retail;
+                    cart[existingIndex] = normalizeCartItem(cart[existingIndex]);
                 } else {
                     // Add new item
-                    cart.push(cartItem);
+                    cart.push(normalizeCartItem(cartItem));
                 }
                 
                 // Save cart
@@ -1519,6 +1699,65 @@
         };
 
         window.calculateWholesaleRate = calculateWholesale;
+        
+        // Add compatibility function for index.html quick add
+        window.addToCartFromHero = function(productId, productName, price, emoji) {
+            try {
+                const cartItem = {
+                    productId: productId,
+                    name: productName,
+                    price: parseFloat(price),
+                    quantity: 1,
+                    emoji: emoji || '🧽',
+                    type: productName.toLowerCase().includes('organic') ? 'organic' : 'premium',
+                    addedAt: Date.now()
+                };
+                
+                // Get existing cart
+                let cart = [];
+                try {
+                    const storedCart = localStorage.getItem('ohsCart');
+                    if (storedCart) {
+                        const parsedCart = JSON.parse(storedCart);
+                        cart = Array.isArray(parsedCart) ? parsedCart : [];
+                    }
+                } catch (parseError) {
+                    console.warn('Invalid cart data, resetting');
+                    cart = [];
+                }
+                
+                // Find existing item
+                const existingIndex = cart.findIndex(item => item.productId === productId);
+                
+                if (existingIndex >= 0) {
+                    cart[existingIndex].quantity += 1;
+                } else {
+                    cart.push(normalizeCartItem(cartItem));
+                }
+                
+                // Save cart
+                localStorage.setItem('ohsCart', JSON.stringify(cart));
+                
+                // Update displays
+                window.dispatchEvent(new StorageEvent('storage', {
+                    key: 'ohsCart',
+                    newValue: JSON.stringify(cart)
+                }));
+                
+                // Update this page if we're on it
+                if (window.location.pathname.includes('cart.html')) {
+                    loadCart();
+                    updateCartDisplay();
+                }
+                
+                console.log('Added to cart from hero:', cartItem);
+                return true;
+                
+            } catch (error) {
+                console.error('Error adding from hero:', error);
+                return false;
+            }
+        };
     </script>
 </body>
 </html>
