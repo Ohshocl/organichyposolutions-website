@@ -713,6 +713,9 @@
                             <li><a class="dropdown-item" href="../contact.html">
                                 <i class="fas fa-phone me-2"></i>Contact
                             </a></li>
+                            <li><a class="dropdown-item" href="../legal-information.html">
+                                <i class="fas fa-gavel me-2"></i>Legal Information
+                            </a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -838,14 +841,22 @@
                             <div class="summary-icon">
                                 <i class="fas fa-tag"></i>
                             </div>
-                            <div class="summary-value" id="wholesaleSavings" style="display: none;">-$0.00</div>
-                            <div class="summary-value" style="display: block;">Wholesale</div>
+                            <div class="summary-value" id="wholesaleSavingsAmount" style="display: none;">-$0.00</div>
+                            <div class="summary-value" id="wholesaleSavingsDefault" style="display: block;">Wholesale</div>
                             <div class="summary-label">Savings Applied</div>
                         </div>
                         
                         <div class="summary-item">
                             <div class="summary-icon">
                                 <i class="fas fa-truck"></i>
+                            </div>
+                            <div class="summary-value">Calculated</div>
+                            <div class="summary-label">Shipping at Checkout</div>
+                        </div>
+                        
+                        <div class="summary-item">
+                            <div class="summary-icon">
+                                <i class="fas fa-calculator"></i>
                             </div>
                             <div class="summary-value">+Tax</div>
                             <div class="summary-label">Utah Tax at Checkout</div>
@@ -995,11 +1006,9 @@
     <!-- CRITICAL: Load Product Catalog First -->
     <script src="js/cart.js"></script>
 
-    <!-- FIXED Enhanced Cart System Script -->
+    <!-- Enhanced Cart System Script -->
     <script>
-        // ===================================================================
-        // GLOBAL VARIABLES AND CONSTANTS
-        // ===================================================================
+        // Global variables
         let cartItems = [];
         let isCartSystemReady = false;
         const SHOPIFY_DOMAIN = 'organichyposolutions.myshopify.com';
@@ -1038,9 +1047,7 @@
             }
         ];
 
-        // ===================================================================
-        // CRITICAL FIX 1: WAIT FOR CART SYSTEM TO LOAD
-        // ===================================================================
+        // Wait for cart system to load
         function waitForCartSystem() {
             return new Promise((resolve, reject) => {
                 let attempts = 0;
@@ -1057,7 +1064,7 @@
                         resolve();
                     } else if (attempts >= maxAttempts) {
                         console.warn('⚠️ Cart system timeout, proceeding with limited functionality');
-                        resolve(); // Don't reject, allow fallback functionality
+                        resolve();
                     } else {
                         setTimeout(checkSystem, 100);
                     }
@@ -1067,9 +1074,7 @@
             });
         }
 
-        // ===================================================================
-        // CRITICAL FIX 2: SAFE CART LOADING WITH VALIDATION
-        // ===================================================================
+        // Enhanced cart loading that handles multiple formats
         async function loadCartFromLocalStorage() {
             try {
                 console.log('📦 Loading cart from localStorage...');
@@ -1113,23 +1118,18 @@
             }
         }
 
-        // ===================================================================
-        // CRITICAL FIX 3: CART ITEM VALIDATION AND NORMALIZATION
-        // ===================================================================
+        // Validate and normalize cart items
         function validateAndNormalizeCartItem(item) {
-            // Check basic item structure
             if (!item || typeof item !== 'object') {
                 console.warn('Invalid item structure:', item);
                 return null;
             }
             
-            // Ensure required fields exist
             if (!item.productId && !item.id && !item.name) {
                 console.warn('Item missing product identifier:', item);
                 return null;
             }
             
-            // Create normalized item
             const normalizedItem = {
                 productId: item.productId || item.id || generateTempId(item),
                 name: item.name || item.title || 'Unknown Product',
@@ -1142,24 +1142,20 @@
                 addedAt: item.addedAt || Date.now()
             };
             
-            // Validate price is not NaN
             if (isNaN(normalizedItem.price)) {
                 console.warn('⚠️ Invalid price detected, setting to 0:', item);
                 normalizedItem.price = 0;
             }
             
-            // Check if product exists in catalog (if available) and update pricing
             if (typeof PRODUCT_CATALOG !== 'undefined' && PRODUCT_CATALOG[normalizedItem.productId]) {
                 const product = PRODUCT_CATALOG[normalizedItem.productId];
                 console.log(`📦 Found product in catalog: ${product.name}`);
                 
-                // Use catalog data for more accurate information
                 normalizedItem.name = product.name;
                 normalizedItem.emoji = product.emoji || normalizedItem.emoji;
                 normalizedItem.type = product.type || product.productLine || normalizedItem.type;
                 normalizedItem.sku = product.sku || normalizedItem.sku;
                 
-                // Update price with wholesale calculation if available
                 if (typeof calculateWholesaleRate === 'function') {
                     try {
                         const wholesaleInfo = calculateWholesaleRate(normalizedItem.productId, normalizedItem.quantity);
@@ -1176,25 +1172,20 @@
             return normalizedItem;
         }
 
-        // Generate temporary ID for items without proper ID
         function generateTempId(item) {
             const name = (item.name || 'unknown').toLowerCase().replace(/[^a-z0-9]/g, '-');
             const price = (item.price || 0).toString().replace('.', '-');
             return `temp-${name}-${price}`;
         }
 
-        // ===================================================================
-        // CRITICAL FIX 4: SAFE WHOLESALE CALCULATION WITH FALLBACKS
-        // ===================================================================
+        // Safe wholesale calculation
         function safeCalculateWholesaleRate(productId, quantity) {
             try {
-                // Use the global calculateWholesaleRate if available and product exists in catalog
                 if (typeof calculateWholesaleRate === 'function' && 
                     typeof PRODUCT_CATALOG !== 'undefined' && 
                     PRODUCT_CATALOG[productId]) {
                     const result = calculateWholesaleRate(productId, quantity);
                     
-                    // Validate the result
                     if (result && typeof result.price === 'number' && !isNaN(result.price)) {
                         return {
                             price: result.price,
@@ -1207,7 +1198,6 @@
                     }
                 }
                 
-                // Fallback calculation for items not in catalog
                 const item = cartItems.find(item => item.productId === productId);
                 if (!item) {
                     console.warn(`❌ Item not found for productId: ${productId}`);
@@ -1221,7 +1211,6 @@
                     };
                 }
                 
-                // Check if this is a product from the catalog
                 const product = (typeof PRODUCT_CATALOG !== 'undefined') ? PRODUCT_CATALOG[productId] : null;
                 
                 if (product && product.pricing) {
@@ -1241,11 +1230,10 @@
                     };
                 } else {
                     console.log(`🏪 Using fallback calculation for:`, item.name);
-                    // Simple wholesale calculation for non-catalog items
                     const threshold = 6;
                     const isWholesale = quantity >= threshold;
                     const retailPrice = parseFloat(item.price) || 0;
-                    const wholesalePrice = retailPrice * 0.8; // 20% discount
+                    const wholesalePrice = retailPrice * 0.8;
                     
                     return {
                         isWholesale: isWholesale,
@@ -1270,9 +1258,7 @@
             }
         }
 
-        // ===================================================================
-        // CRITICAL FIX 5: SAFE CART DISPLAY WITH ERROR HANDLING
-        // ===================================================================
+        // Update cart display
         function updateCartDisplay() {
             try {
                 const cartContainer = document.getElementById('cartItems');
@@ -1284,7 +1270,6 @@
                     return;
                 }
                 
-                // Show empty state if no items
                 if (!cartItems || cartItems.length === 0) {
                     cartContainer.innerHTML = '';
                     if (emptyCartMessage) emptyCartMessage.style.display = 'block';
@@ -1293,7 +1278,6 @@
                     return;
                 }
                 
-                // Hide empty message and show cart
                 if (emptyCartMessage) emptyCartMessage.style.display = 'none';
                 if (cartSummary) cartSummary.style.display = 'block';
                 
@@ -1326,7 +1310,7 @@
             }
         }
 
-        // Create cart item HTML with safe values
+        // Create cart item HTML
         function createCartItemHTML(item, wholesaleInfo, index) {
             const itemTotal = (wholesaleInfo.price || 0) * item.quantity;
             
@@ -1386,13 +1370,14 @@
             `;
         }
 
-        // Update cart summary with safe calculations
+        // Update cart summary with actual wholesale savings
         function updateCartSummary(subtotal, totalSavings) {
             try {
                 const subtotalElement = document.getElementById('cartSubtotal');
                 const totalElement = document.getElementById('cartTotal');
                 const heroTotalElement = document.getElementById('heroCartTotal');
-                const savingsElement = document.getElementById('wholesaleSavings');
+                const savingsAmountElement = document.getElementById('wholesaleSavingsAmount');
+                const savingsDefaultElement = document.getElementById('wholesaleSavingsDefault');
                 
                 const safeSubtotal = isNaN(subtotal) ? 0 : subtotal;
                 const safeTotalSavings = isNaN(totalSavings) ? 0 : totalSavings;
@@ -1401,17 +1386,21 @@
                 if (totalElement) totalElement.textContent = '$' + safeSubtotal.toFixed(2);
                 if (heroTotalElement) heroTotalElement.textContent = '$' + safeSubtotal.toFixed(2);
                 
-                // Show wholesale savings if applicable
-                if (savingsElement) {
-                    if (safeTotalSavings > 0) {
-                        savingsElement.textContent = '-$' + safeTotalSavings.toFixed(2);
-                        savingsElement.style.display = 'block';
-                        const nextElement = savingsElement.nextElementSibling;
-                        if (nextElement) nextElement.style.display = 'none';
-                    } else {
-                        savingsElement.style.display = 'none';
-                        const nextElement = savingsElement.nextElementSibling;
-                        if (nextElement) nextElement.style.display = 'block';
+                // Show wholesale savings amount if applicable
+                if (safeTotalSavings > 0) {
+                    if (savingsAmountElement) {
+                        savingsAmountElement.textContent = '-$' + safeTotalSavings.toFixed(2);
+                        savingsAmountElement.style.display = 'block';
+                    }
+                    if (savingsDefaultElement) {
+                        savingsDefaultElement.style.display = 'none';
+                    }
+                } else {
+                    if (savingsAmountElement) {
+                        savingsAmountElement.style.display = 'none';
+                    }
+                    if (savingsDefaultElement) {
+                        savingsDefaultElement.style.display = 'block';
                     }
                 }
             } catch (error) {
@@ -1419,10 +1408,6 @@
             }
         }
 
-        // ===================================================================
-        // CART MANIPULATION FUNCTIONS
-        // ===================================================================
-        
         // Save cart to localStorage
         function saveCart() {
             try {
@@ -1458,7 +1443,6 @@
                     const newQuantity = Math.max(1, cartItems[index].quantity + change);
                     cartItems[index].quantity = newQuantity;
                     
-                    // Recalculate price with new quantity for wholesale rates
                     const wholesaleInfo = safeCalculateWholesaleRate(cartItems[index].productId, newQuantity);
                     cartItems[index].price = wholesaleInfo.price;
                     
@@ -1478,7 +1462,6 @@
                     const newQuantity = Math.max(1, Math.min(999, parseInt(value) || 1));
                     cartItems[index].quantity = newQuantity;
                     
-                    // Recalculate price with new quantity
                     const wholesaleInfo = safeCalculateWholesaleRate(cartItems[index].productId, newQuantity);
                     cartItems[index].price = wholesaleInfo.price;
                     
@@ -1511,7 +1494,6 @@
         function clearCart() {
             try {
                 if (cartItems.length === 0) {
-                    // Double-check localStorage in case of sync issues
                     const storedCart = localStorage.getItem('ohsCart');
                     if (storedCart && storedCart !== '[]') {
                         console.warn('⚠️ Cart display shows empty but localStorage has data:', storedCart);
@@ -1545,18 +1527,14 @@
             }
         }
 
-        // ===================================================================
-        // RECOMMENDATIONS SYSTEM
-        // ===================================================================
+        // Load recommendations
         function loadRecommendations() {
             try {
                 const container = document.getElementById('recommendationCards');
                 if (!container) return;
                 
-                // Get recommendations based on cart contents and available products
                 let recommendations = [...RECOMMENDATION_PRODUCTS];
                 
-                // Filter out items already in cart
                 const cartProductIds = cartItems.map(item => item.productId);
                 const cartNames = cartItems.map(item => item.name.toLowerCase());
                 
@@ -1568,7 +1546,6 @@
                     return !cartProductIds.includes(rec.id) && !nameMatch;
                 });
                 
-                // Add catalog-based recommendations if available
                 if (typeof PRODUCT_CATALOG !== 'undefined') {
                     const catalogRecs = Object.values(PRODUCT_CATALOG)
                         .filter(product => !cartProductIds.includes(product.id))
@@ -1587,7 +1564,6 @@
                     recommendations = [...recommendations, ...catalogRecs];
                 }
                 
-                // Show max 3 recommendations
                 recommendations = recommendations.slice(0, 3);
                 
                 if (recommendations.length === 0) {
@@ -1657,7 +1633,6 @@
                     addedAt: Date.now()
                 };
                 
-                // Check if item already exists
                 const existingIndex = cartItems.findIndex(item => item.productId === product.id);
                 if (existingIndex >= 0) {
                     cartItems[existingIndex].quantity += 1;
@@ -1676,9 +1651,7 @@
             }
         }
 
-        // ===================================================================
-        // CHECKOUT FUNCTIONALITY
-        // ===================================================================
+        // Proceed to checkout
         function proceedToCheckout() {
             if (cartItems.length === 0) {
                 showNotification('Your cart is empty!', 'warning');
@@ -1696,7 +1669,6 @@
                 cartItems.forEach(item => {
                     let variantId = null;
                     
-                    // Try multiple sources for variant ID
                     if (item.variantId) {
                         variantId = item.variantId;
                     } else if (typeof PRODUCT_CATALOG !== 'undefined' && PRODUCT_CATALOG[item.productId]) {
@@ -1709,7 +1681,6 @@
                                 : product.shopifyVariants.retail;
                         }
                     } else {
-                        // Try to map common products to known variant IDs
                         variantId = getVariantIdFromName(item.name, item.productId);
                     }
                     
@@ -1722,7 +1693,6 @@
                     }
                 });
                 
-                // Show warning if some items couldn't be added to checkout
                 if (itemsWithoutVariants.length > 0 && lineItems.length > 0) {
                     const confirmed = confirm(
                         `Some items don't have checkout variants and will be skipped:\n\n${itemsWithoutVariants.join('\n')}\n\nProceed with remaining items?`
@@ -1746,14 +1716,12 @@
                 showNotification('Opening secure checkout...', 'success');
                 
                 setTimeout(() => {
-                    // Open checkout in new tab
                     const newTab = window.open(checkoutUrl, '_blank');
                     if (newTab) {
                         newTab.focus();
                         btn.disabled = false;
                         btn.innerHTML = '<i class="fas fa-lock me-2"></i>SECURE CHECKOUT';
                     } else {
-                        // Popup blocked, fallback to same window
                         console.warn('Popup blocked, opening in same window');
                         window.location.href = checkoutUrl;
                     }
@@ -1765,7 +1733,6 @@
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-lock me-2"></i>SECURE CHECKOUT';
                 
-                // Show contact info for manual assistance
                 setTimeout(() => {
                     const contactConfirm = confirm(
                         'Having trouble with checkout? Would you like to call us for assistance?\n\nPhone: (801) 712-5663'
@@ -1804,10 +1771,6 @@
             return null;
         }
 
-        // ===================================================================
-        // UI HELPER FUNCTIONS
-        // ===================================================================
-        
         // Show notification
         function showNotification(message, type = 'success') {
             try {
@@ -1856,43 +1819,34 @@
             }
         }
 
-        // ===================================================================
-        // CRITICAL FIX 6: INITIALIZATION WITH PROPER ERROR HANDLING
-        // ===================================================================
+        // Initialize cart system
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('🚀 Initializing enhanced cart system...');
             
             try {
-                // Check banner first
                 if (localStorage.getItem('promoBannerClosed') === 'true') {
                     const banner = document.getElementById('promoBanner');
                     if (banner) banner.style.display = 'none';
                 }
                 
-                // Show loading state
                 const cartLoading = document.getElementById('cartLoading');
                 const cartContent = document.getElementById('cartContent');
                 
                 if (cartLoading) cartLoading.style.display = 'block';
                 if (cartContent) cartContent.style.display = 'none';
                 
-                // Wait for cart system (with timeout)
                 console.log('⏳ Waiting for cart system...');
                 await waitForCartSystem();
                 
-                // Load cart data
                 console.log('📦 Loading cart from localStorage...');
                 await loadCartFromLocalStorage();
                 
-                // Hide loading and show content
                 if (cartLoading) cartLoading.style.display = 'none';
                 if (cartContent) cartContent.style.display = 'block';
                 
-                // Update display
                 console.log('🎨 Updating cart display...');
                 updateCartDisplay();
                 
-                // Set up cross-tab synchronization
                 window.addEventListener('storage', function(e) {
                     if (e.key === 'ohsCart') {
                         console.log('🔄 Cart updated from another tab');
@@ -1909,7 +1863,6 @@
                 console.error('❌ Cart initialization error:', error);
                 showErrorState();
                 
-                // Try basic functionality anyway
                 try {
                     await loadCartFromLocalStorage();
                     const cartLoading = document.getElementById('cartLoading');
@@ -1926,158 +1879,6 @@
                 }
             }
         });
-
-        // ===================================================================
-        // GLOBAL CART FUNCTIONS FOR CROSS-PAGE COMPATIBILITY
-        // ===================================================================
-        
-        // Universal add to cart function for all pages
-        window.addToCartFromProducts = function(productId) {
-            try {
-                console.log('addToCartFromProducts called for:', productId);
-                
-                let product = null;
-                let quantity = 1;
-                
-                if (typeof PRODUCT_CATALOG !== 'undefined' && PRODUCT_CATALOG[productId]) {
-                    product = PRODUCT_CATALOG[productId];
-                    quantity = parseInt(document.getElementById(`qty-${productId}`)?.value) || 1;
-                } else {
-                    const existingItem = cartItems.find(item => item.productId === productId);
-                    if (existingItem) {
-                        product = existingItem;
-                        quantity = 1;
-                    } else {
-                        throw new Error('Product not found in catalog or cart');
-                    }
-                }
-                
-                const wholesaleInfo = safeCalculateWholesaleRate(productId, quantity);
-                
-                const cartItem = {
-                    productId: productId,
-                    name: product.name || product.title || 'Unknown Product',
-                    price: wholesaleInfo.price || product.price || 0,
-                    quantity: quantity,
-                    emoji: product.emoji || '🧴',
-                    type: product.type || product.productLine || 'premium',
-                    sku: product.sku || productId,
-                    variantId: wholesaleInfo.isWholesale && product.shopifyVariants?.wholesale 
-                        ? product.shopifyVariants.wholesale 
-                        : product.shopifyVariants?.retail || product.variantId,
-                    addedAt: Date.now()
-                };
-                
-                // Get existing cart
-                let cart = [];
-                try {
-                    const storedCart = localStorage.getItem('ohsCart');
-                    if (storedCart) {
-                        const parsedCart = JSON.parse(storedCart);
-                        cart = Array.isArray(parsedCart) ? parsedCart : [];
-                    }
-                } catch (parseError) {
-                    console.warn('Invalid cart data in localStorage, resetting cart');
-                    cart = [];
-                }
-                
-                // Find existing item
-                const existingIndex = cart.findIndex(item => item.productId === productId);
-                
-                if (existingIndex >= 0) {
-                    cart[existingIndex].quantity += quantity;
-                    const newWholesaleInfo = safeCalculateWholesaleRate(productId, cart[existingIndex].quantity);
-                    cart[existingIndex].price = newWholesaleInfo.price;
-                    cart[existingIndex] = validateAndNormalizeCartItem(cart[existingIndex]);
-                } else {
-                    cart.push(validateAndNormalizeCartItem(cartItem));
-                }
-                
-                // Save cart
-                localStorage.setItem('ohsCart', JSON.stringify(cart));
-                
-                // Update displays
-                window.dispatchEvent(new StorageEvent('storage', {
-                    key: 'ohsCart',
-                    newValue: JSON.stringify(cart)
-                }));
-                
-                // Update this page if we're on it
-                if (window.location.pathname.includes('cart.html')) {
-                    loadCartFromLocalStorage().then(() => {
-                        updateCartDisplay();
-                    });
-                }
-                
-                const message = wholesaleInfo.isWholesale ? 
-                    `Added ${quantity}x ${product.name} at wholesale rate!` : 
-                    `Added ${quantity}x ${product.name}!`;
-                showNotification(message, 'success');
-                
-                console.log('Successfully added to cart:', cartItem);
-                return true;
-                
-            } catch (error) {
-                console.error('Failed to add to cart:', error);
-                showNotification('Failed to add item. Please try again.', 'error');
-                return false;
-            }
-        };
-
-        // Add compatibility function for index.html quick add
-        window.addToCartFromHero = function(productId, productName, price, emoji) {
-            try {
-                const cartItem = {
-                    productId: productId,
-                    name: productName,
-                    price: parseFloat(price),
-                    quantity: 1,
-                    emoji: emoji || '🧽',
-                    type: productName.toLowerCase().includes('organic') ? 'organic' : 'premium',
-                    addedAt: Date.now()
-                };
-                
-                let cart = [];
-                try {
-                    const storedCart = localStorage.getItem('ohsCart');
-                    if (storedCart) {
-                        const parsedCart = JSON.parse(storedCart);
-                        cart = Array.isArray(parsedCart) ? parsedCart : [];
-                    }
-                } catch (parseError) {
-                    console.warn('Invalid cart data, resetting');
-                    cart = [];
-                }
-                
-                const existingIndex = cart.findIndex(item => item.productId === productId);
-                
-                if (existingIndex >= 0) {
-                    cart[existingIndex].quantity += 1;
-                } else {
-                    cart.push(validateAndNormalizeCartItem(cartItem));
-                }
-                
-                localStorage.setItem('ohsCart', JSON.stringify(cart));
-                
-                window.dispatchEvent(new StorageEvent('storage', {
-                    key: 'ohsCart',
-                    newValue: JSON.stringify(cart)
-                }));
-                
-                if (window.location.pathname.includes('cart.html')) {
-                    loadCartFromLocalStorage().then(() => {
-                        updateCartDisplay();
-                    });
-                }
-                
-                console.log('Added to cart from hero:', cartItem);
-                return true;
-                
-            } catch (error) {
-                console.error('Error adding from hero:', error);
-                return false;
-            }
-        };
 
         console.log('✅ Enhanced cart system loaded and ready');
     </script>
