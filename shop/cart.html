@@ -153,7 +153,7 @@
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             margin: 2rem auto;
-            max-width: 1400px;
+            max-width: 1200px;
             padding: 2rem;
         }
 
@@ -242,23 +242,25 @@
             color: var(--ohs-primary-blue);
         }
 
-        /* Order Summary */
-        .order-summary-container {
+        /* Order Summary - Bottom Layout */
+        .order-summary-bottom {
             background: linear-gradient(135deg, #4ECCA3 0%, #3B82C4 50%, #4ECCA3 100%);
             border-radius: 20px;
             padding: 2rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            position: sticky;
-            top: 100px;
+            margin-top: 2rem;
             color: white;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
         }
 
-        .order-summary-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 2rem;
-            margin-bottom: 1rem;
+            align-items: center;
+        }
+
+        .summary-item {
+            text-align: center;
         }
 
         .summary-icon {
@@ -271,11 +273,7 @@
             justify-content: center;
             font-size: 1.5rem;
             backdrop-filter: blur(10px);
-        }
-
-        .summary-item {
-            flex: 1;
-            text-align: center;
+            margin: 0 auto 0.5rem;
         }
 
         .summary-label {
@@ -295,15 +293,14 @@
             background: linear-gradient(135deg, #22C55E, #16A34A);
             border: none;
             border-radius: 12px;
-            padding: 0.9rem 2rem;
+            padding: 1rem 2rem;
             color: white;
             font-weight: bold;
-            font-size: 1rem;
+            font-size: 1.1rem;
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
-            min-width: 180px;
             width: 100%;
             margin-top: 1rem;
         }
@@ -361,8 +358,73 @@
             background: white;
             border-radius: 15px;
             padding: 2rem;
-            margin-top: 3rem;
+            margin-top: 2rem;
             box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .recommendation-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .recommendation-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-color: var(--ohs-organic-green);
+        }
+
+        .rec-product-emoji {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .rec-product-name {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .rec-product-desc {
+            font-size: 0.85rem;
+            color: #64748b;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+        }
+
+        .rec-product-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--ohs-organic-green);
+            margin-bottom: 1rem;
+        }
+
+        .rec-add-btn {
+            background: var(--ohs-organic-green);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .rec-add-btn:hover {
+            background: var(--ohs-dark-green);
+            transform: translateY(-1px);
         }
 
         .wholesale-tip {
@@ -531,25 +593,9 @@
                 height: 35px;
             }
 
-            .order-summary-container {
-                position: relative;
-                top: 0;
-                margin-top: 2rem;
-                padding: 1.5rem 1rem;
-            }
-
-            .order-summary-row {
-                flex-direction: column;
+            .summary-grid {
+                grid-template-columns: 1fr;
                 gap: 1rem;
-            }
-
-            .summary-icon {
-                margin-bottom: 0.5rem;
-            }
-
-            .checkout-btn {
-                width: 100%;
-                margin-top: 1rem;
             }
 
             .recommendations-section {
@@ -557,24 +603,13 @@
                 margin-top: 2rem;
             }
 
+            .recommendation-cards {
+                grid-template-columns: 1fr;
+            }
+
             .wholesale-tip {
                 flex-direction: column;
                 text-align: center;
-            }
-        }
-
-        @media (min-width: 769px) and (max-width: 1199px) {
-            .order-summary-row {
-                flex-wrap: wrap;
-            }
-
-            .summary-item {
-                min-width: 100px;
-            }
-
-            .checkout-btn {
-                width: 100%;
-                margin-top: 1rem;
             }
         }
     </style>
@@ -715,87 +750,93 @@
     <!-- Main Cart Content -->
     <div class="container">
         <div class="cart-container">
-            <div class="row">
-                <!-- Cart Items Column -->
-                <div class="col-lg-8">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h3 class="mb-0">
-                            <i class="fas fa-shopping-cart me-2 text-primary"></i>Cart Items
-                        </h3>
-                        <button class="btn btn-outline-danger btn-sm" onclick="clearCart()" id="clearCartBtn">
-                            <i class="fas fa-trash me-1"></i>Clear Cart
-                        </button>
-                    </div>
+            <!-- Cart Items Section -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="mb-0">
+                    <i class="fas fa-shopping-cart me-2 text-primary"></i>Cart Items
+                </h3>
+                <button class="btn btn-outline-danger btn-sm" onclick="clearCart()" id="clearCartBtn">
+                    <i class="fas fa-trash me-1"></i>Clear Cart
+                </button>
+            </div>
 
-                    <!-- Cart Items Container -->
-                    <div id="cartItems">
-                        <!-- Items will be dynamically inserted here -->
-                    </div>
+            <!-- Cart Items Container -->
+            <div id="cartItems">
+                <!-- Items will be dynamically inserted here -->
+            </div>
 
-                    <!-- Empty Cart Message -->
-                    <div id="emptyCart" class="empty-cart" style="display: none;">
-                        <i class="fas fa-shopping-cart"></i>
-                        <h4 class="mt-3 mb-3">Your cart is empty</h4>
-                        <p class="text-muted mb-4">Browse our USDA Certified Organic and EPA registered products!</p>
-                        <a href="../products.html" class="btn btn-primary btn-lg">
-                            <i class="fas fa-shopping-bag me-2"></i>Browse Products
-                        </a>
-                    </div>
-                </div>
+            <!-- Empty Cart Message -->
+            <div id="emptyCart" class="empty-cart" style="display: none;">
+                <i class="fas fa-shopping-cart"></i>
+                <h4 class="mt-3 mb-3">Your cart is empty</h4>
+                <p class="text-muted mb-4">Browse our USDA Certified Organic and EPA registered products!</p>
+                <a href="../products.html" class="btn btn-primary btn-lg">
+                    <i class="fas fa-shopping-bag me-2"></i>Browse Products
+                </a>
+            </div>
 
-                <!-- Order Summary Column -->
-                <div class="col-lg-4">
-                    <div class="order-summary-container" id="orderSummary" style="display: none;">
-                        <div class="text-center mb-3">
-                            <h4>Order Summary</h4>
-                        </div>
-                        
-                        <div class="order-summary-row">
-                            <div class="summary-icon">
-                                <i class="fas fa-receipt"></i>
-                            </div>
-                            
-                            <div class="summary-item">
-                                <div class="summary-value" id="subtotal">$0.00</div>
-                                <div class="summary-label">Subtotal</div>
-                            </div>
-                            
-                            <div class="summary-item">
-                                <div class="summary-value">+Tax</div>
-                                <div class="summary-label">Utah Tax at Checkout</div>
-                            </div>
-                            
-                            <div class="summary-item">
-                                <div class="summary-value" id="total">$0.00</div>
-                                <div class="summary-label">Total</div>
-                            </div>
-                        </div>
-                        
-                        <!-- Wholesale Savings (if applicable) -->
-                        <div id="wholesaleSavingsRow" style="display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.2);">
-                            <div class="text-center">
-                                <div class="d-flex align-items-center justify-content-center">
-                                    <i class="fas fa-tag me-2"></i>
-                                    <span>Wholesale Savings Applied:</span>
-                                    <span id="wholesaleSavings" class="ms-2 fw-bold">-$0.00</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button class="checkout-btn" onclick="proceedToCheckout()" id="checkoutBtn">
-                            <i class="fas fa-lock me-2"></i>SECURE CHECKOUT
-                        </button>
-                    </div>
+            <!-- Wholesale Tip -->
+            <div class="wholesale-tip">
+                <i class="fas fa-info-circle"></i>
+                <div class="wholesale-tip-text">
+                    <strong>Wholesale Tip:</strong> Many products offer wholesale pricing at specific quantity thresholds! Look for individual product thresholds in the cart above.
                 </div>
             </div>
 
-            <!-- Recommendations Section -->
-            <div class="recommendations-section">
-                <div class="wholesale-tip">
-                    <i class="fas fa-info-circle"></i>
-                    <div class="wholesale-tip-text">
-                        <strong>Wholesale Tip:</strong> Many products offer wholesale pricing at specific quantity thresholds! Look for individual product thresholds in the cart.
+            <!-- Order Summary - Bottom Layout -->
+            <div class="order-summary-bottom" id="orderSummary" style="display: none;">
+                <h4 class="text-center mb-3">Order Summary</h4>
+                
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="summary-icon">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                        <div class="summary-value" id="subtotal">$0.00</div>
+                        <div class="summary-label">Subtotal</div>
                     </div>
+                    
+                    <div class="summary-item">
+                        <div class="summary-icon">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <div class="summary-value" id="wholesaleSavings" style="display: none;">-$0.00</div>
+                        <div class="summary-value" style="display: block;">Wholesale</div>
+                        <div class="summary-label">Savings Applied</div>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <div class="summary-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <div class="summary-value">+Tax</div>
+                        <div class="summary-label">Utah Tax at Checkout</div>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <div class="summary-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="summary-value" id="total">$0.00</div>
+                        <div class="summary-label">Total</div>
+                    </div>
+                </div>
+
+                <button class="checkout-btn" onclick="proceedToCheckout()" id="checkoutBtn">
+                    <i class="fas fa-lock me-2"></i>SECURE CHECKOUT
+                </button>
+            </div>
+
+            <!-- Things You May Like Section -->
+            <div class="recommendations-section" id="recommendationsSection">
+                <h5 class="text-center mb-0">
+                    <i class="fas fa-lightbulb me-2 text-warning"></i>
+                    Things You May Like
+                </h5>
+                <p class="text-center text-muted">Based on your cart items</p>
+
+                <div class="recommendation-cards" id="recommendationCards">
+                    <!-- Recommendations will be dynamically inserted here -->
                 </div>
             </div>
         </div>
@@ -897,21 +938,76 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Load Product Catalog -->
+    <!-- Load Product Catalog First -->
     <script src="js/cart.js"></script>
 
-    <!-- Cart System Script -->
+    <!-- Enhanced Cart System Script -->
     <script>
+        // Global variables
         let cartItems = [];
         const SHOPIFY_DOMAIN = 'organichyposolutions.myshopify.com';
+
+        // Sample recommendations data
+        const RECOMMENDATION_PRODUCTS = [
+            {
+                id: 'multi_surface_32oz',
+                name: '32oz Multi-Surface Disinfectant',
+                description: 'Premium EPA-certified multi-surface disinfectant in economical 32oz size.',
+                emoji: '🧴',
+                price: 24.99,
+                wholesalePrice: 19.99,
+                type: 'premium',
+                variantId: '47796971995475'
+            },
+            {
+                id: 'skin_health_8oz',
+                name: '8oz HC-Pure Skin Health Mist',
+                description: 'Premium hypochlorous acid skin health mist for therapeutic use.',
+                emoji: '💧',
+                price: 19.59,
+                wholesalePrice: 15.99,
+                type: 'premium',
+                variantId: '47796972028243'
+            },
+            {
+                id: 'organic_sanitizer_16oz',
+                name: '16oz Organic Hand Sanitizer',
+                description: 'USDA Certified Organic hand sanitizer for family use.',
+                emoji: '✨',
+                price: 18.99,
+                wholesalePrice: 14.99,
+                type: 'organic',
+                variantId: '47796972061011'
+            }
+        ];
+
+        // Wait for cart system to load
+        async function waitForCartSystem() {
+            return new Promise((resolve) => {
+                const checkSystem = () => {
+                    if (typeof window.PRODUCT_CATALOG !== 'undefined' && 
+                        typeof window.calculateWholesaleRate === 'function') {
+                        console.log('✅ Cart system loaded with', Object.keys(window.PRODUCT_CATALOG).length, 'products');
+                        resolve();
+                    } else {
+                        setTimeout(checkSystem, 100);
+                    }
+                };
+                checkSystem();
+            });
+        }
 
         // Load cart from localStorage
         function loadCart() {
             try {
                 const stored = localStorage.getItem('ohsCart');
                 if (stored) {
-                    cartItems = JSON.parse(stored);
+                    const parsedCart = JSON.parse(stored);
+                    // Ensure cart is an array
+                    cartItems = Array.isArray(parsedCart) ? parsedCart : [];
                     console.log('Cart loaded:', cartItems.length, 'items');
+                } else {
+                    cartItems = [];
                 }
             } catch (error) {
                 console.error('Error loading cart:', error);
@@ -932,31 +1028,36 @@
             }
         }
 
-        // Calculate wholesale pricing
+        // Calculate wholesale pricing using cart.js function
         function calculateWholesale(productId, quantity) {
+            // Use the function from cart.js if available
+            if (typeof window.calculateWholesaleRate === 'function') {
+                return window.calculateWholesaleRate(productId, quantity);
+            }
+            
+            // Fallback calculation
             const product = window.PRODUCT_CATALOG ? window.PRODUCT_CATALOG[productId] : null;
             if (!product || !product.pricing) {
                 return {
                     isWholesale: false,
-                    finalPrice: 0,
+                    price: 0,
                     savings: 0,
-                    savingsPercent: 0
+                    threshold: 6
                 };
             }
             
-            const threshold = product.wholesaleThreshold || 25;
+            const threshold = product.wholesaleThreshold || 6;
             const isWholesale = quantity >= threshold;
             const retailPrice = product.pricing.retail || 0;
-            const wholesalePrice = product.pricing.wholesale || retailPrice;
+            const wholesalePrice = product.pricing.wholesale || (retailPrice * 0.7);
             
             return {
                 isWholesale: isWholesale,
                 threshold: threshold,
-                finalPrice: isWholesale ? wholesalePrice : retailPrice,
+                price: isWholesale ? wholesalePrice : retailPrice,
                 retailPrice: retailPrice,
                 wholesalePrice: wholesalePrice,
-                savings: isWholesale ? (retailPrice - wholesalePrice) * quantity : 0,
-                savingsPercent: isWholesale ? Math.round(((retailPrice - wholesalePrice) / retailPrice) * 100) : 0
+                savings: isWholesale ? (retailPrice - wholesalePrice) * quantity : 0
             };
         }
 
@@ -965,6 +1066,8 @@
             const container = document.getElementById('cartItems');
             const emptyCart = document.getElementById('emptyCart');
             const orderSummary = document.getElementById('orderSummary');
+            
+            if (!container) return;
             
             if (cartItems.length === 0) {
                 container.style.display = 'none';
@@ -984,7 +1087,7 @@
             
             cartItems.forEach((item, index) => {
                 const wholesale = calculateWholesale(item.productId, item.quantity);
-                const itemTotal = wholesale.finalPrice * item.quantity;
+                const itemTotal = wholesale.price * item.quantity;
                 subtotal += itemTotal;
                 totalSavings += wholesale.savings;
                 
@@ -1004,7 +1107,7 @@
                                 ${wholesale.isWholesale ? `
                                     <div class="mt-2">
                                         <span class="badge bg-info">Wholesale Active!</span>
-                                        <small class="text-success d-block">Saving ${wholesale.savingsPercent}%</small>
+                                        <small class="text-success d-block">Saving ${Math.round(((wholesale.retailPrice - wholesale.wholesalePrice) / wholesale.retailPrice) * 100)}%</small>
                                     </div>
                                 ` : `
                                     <small class="text-muted d-block mt-1">
@@ -1027,7 +1130,7 @@
                             </div>
                             <div class="col-2 text-center">
                                 <div class="price-display">
-                                    $${wholesale.finalPrice.toFixed(2)}
+                                    $${wholesale.price.toFixed(2)}
                                     ${wholesale.isWholesale ? `
                                         <span class="original-price">$${wholesale.retailPrice.toFixed(2)}</span>
                                     ` : ''}
@@ -1051,14 +1154,19 @@
             document.getElementById('total').textContent = '$' + subtotal.toFixed(2);
             document.getElementById('heroCartTotal').textContent = '$' + subtotal.toFixed(2);
             
-            if (totalSavings > 0) {
-                document.getElementById('wholesaleSavingsRow').style.display = 'block';
-                document.getElementById('wholesaleSavings').textContent = '-$' + totalSavings.toFixed(2);
-            } else {
-                document.getElementById('wholesaleSavingsRow').style.display = 'none';
+            // Show wholesale savings if applicable
+            const savingsElement = document.getElementById('wholesaleSavings');
+            if (totalSavings > 0 && savingsElement) {
+                savingsElement.textContent = '-$' + totalSavings.toFixed(2);
+                savingsElement.style.display = 'block';
+                savingsElement.nextElementSibling.style.display = 'none';
+            } else if (savingsElement) {
+                savingsElement.style.display = 'none';
+                savingsElement.nextElementSibling.style.display = 'block';
             }
             
             updateBadge();
+            loadRecommendations();
         }
 
         // Update cart badge
@@ -1074,7 +1182,13 @@
         // Update quantity
         function updateQuantity(index, change) {
             if (cartItems[index]) {
-                cartItems[index].quantity = Math.max(1, cartItems[index].quantity + change);
+                const newQuantity = Math.max(1, cartItems[index].quantity + change);
+                cartItems[index].quantity = newQuantity;
+                
+                // Recalculate price with new quantity for wholesale rates
+                const wholesale = calculateWholesale(cartItems[index].productId, newQuantity);
+                cartItems[index].price = wholesale.price;
+                
                 saveCart();
                 updateCartDisplay();
             }
@@ -1083,7 +1197,13 @@
         // Set quantity
         function setQuantity(index, value) {
             if (cartItems[index]) {
-                cartItems[index].quantity = Math.max(1, Math.min(999, parseInt(value) || 1));
+                const newQuantity = Math.max(1, Math.min(999, parseInt(value) || 1));
+                cartItems[index].quantity = newQuantity;
+                
+                // Recalculate price with new quantity
+                const wholesale = calculateWholesale(cartItems[index].productId, newQuantity);
+                cartItems[index].price = wholesale.price;
+                
                 saveCart();
                 updateCartDisplay();
             }
@@ -1114,6 +1234,71 @@
             }
         }
 
+        // Load recommendations
+        function loadRecommendations() {
+            const container = document.getElementById('recommendationCards');
+            if (!container) return;
+            
+            // Show different recommendations based on cart contents
+            let recommendations = RECOMMENDATION_PRODUCTS;
+            
+            // Filter out items already in cart
+            const cartProductIds = cartItems.map(item => item.productId);
+            recommendations = recommendations.filter(rec => !cartProductIds.includes(rec.id));
+            
+            // Show max 3 recommendations
+            recommendations = recommendations.slice(0, 3);
+            
+            let html = '';
+            recommendations.forEach(product => {
+                html += `
+                    <div class="recommendation-card">
+                        <div class="rec-product-emoji">${product.emoji}</div>
+                        <div class="rec-product-name">${product.name}</div>
+                        <div class="rec-product-desc">${product.description}</div>
+                        <div class="rec-product-price">$${product.price.toFixed(2)}</div>
+                        <button class="rec-add-btn" onclick="addRecommendationToCart('${product.id}')">
+                            <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                        </button>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Add recommendation to cart
+        function addRecommendationToCart(productId) {
+            const product = RECOMMENDATION_PRODUCTS.find(p => p.id === productId);
+            if (!product) return;
+            
+            const cartItem = {
+                productId: product.id,
+                name: product.name,
+                price: product.price,
+                quantity: 1,
+                emoji: product.emoji,
+                type: product.type,
+                variantId: product.variantId,
+                addedAt: Date.now()
+            };
+            
+            // Check if item already exists
+            const existingIndex = cartItems.findIndex(item => item.productId === product.id);
+            if (existingIndex >= 0) {
+                cartItems[existingIndex].quantity += 1;
+                // Recalculate price for wholesale
+                const wholesale = calculateWholesale(product.id, cartItems[existingIndex].quantity);
+                cartItems[existingIndex].price = wholesale.price;
+            } else {
+                cartItems.push(cartItem);
+            }
+            
+            saveCart();
+            updateCartDisplay();
+            showNotification(`Added ${product.name}!`, 'success');
+        }
+
         // DIRECT SHOPIFY CHECKOUT
         function proceedToCheckout() {
             if (cartItems.length === 0) {
@@ -1129,29 +1314,37 @@
                 const lineItems = [];
                 
                 cartItems.forEach(item => {
-                    const product = window.PRODUCT_CATALOG ? window.PRODUCT_CATALOG[item.productId] : null;
+                    let variantId = null;
                     
-                    if (product && product.shopifyVariants) {
+                    // Try to get variant ID from multiple sources
+                    if (item.variantId) {
+                        variantId = item.variantId;
+                    } else if (window.PRODUCT_CATALOG && window.PRODUCT_CATALOG[item.productId]) {
+                        const product = window.PRODUCT_CATALOG[item.productId];
                         const wholesale = calculateWholesale(item.productId, item.quantity);
-                        const variantId = wholesale.isWholesale && product.shopifyVariants.wholesale 
-                            ? product.shopifyVariants.wholesale 
-                            : product.shopifyVariants.retail;
                         
-                        if (variantId) {
-                            lineItems.push(`${variantId}:${item.quantity}`);
+                        if (product.shopifyVariants) {
+                            variantId = wholesale.isWholesale && product.shopifyVariants.wholesale 
+                                ? product.shopifyVariants.wholesale 
+                                : product.shopifyVariants.retail;
                         }
-                    } else if (item.variantId) {
-                        lineItems.push(`${item.variantId}:${item.quantity}`);
+                    }
+                    
+                    if (variantId) {
+                        lineItems.push(`${variantId}:${item.quantity}`);
+                        console.log(`Adding to checkout: ${item.name} (${variantId}:${item.quantity})`);
+                    } else {
+                        console.warn(`No variant ID found for product: ${item.productId}`);
                     }
                 });
                 
                 if (lineItems.length === 0) {
-                    throw new Error('No valid products found');
+                    throw new Error('No valid products found for checkout');
                 }
                 
                 const checkoutUrl = `https://${SHOPIFY_DOMAIN}/cart/${lineItems.join(',')}`;
                 
-                console.log('Redirecting to:', checkoutUrl);
+                console.log('Checkout URL:', checkoutUrl);
                 showNotification('Redirecting to secure checkout...', 'success');
                 
                 setTimeout(() => {
@@ -1195,39 +1388,88 @@
             }
         }
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check banner
-            if (localStorage.getItem('promoBannerClosed') === 'true') {
-                const banner = document.getElementById('promoBanner');
-                if (banner) banner.style.display = 'none';
-            }
-            
-            // Load cart
-            loadCart();
-            
-            // Wait for product catalog
-            if (typeof window.PRODUCT_CATALOG === 'undefined') {
-                console.log('Waiting for product catalog...');
-                const checkCatalog = setInterval(() => {
-                    if (typeof window.PRODUCT_CATALOG !== 'undefined') {
-                        clearInterval(checkCatalog);
-                        console.log('Product catalog loaded');
+        // Initialize cart system
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                // Check banner
+                if (localStorage.getItem('promoBannerClosed') === 'true') {
+                    const banner = document.getElementById('promoBanner');
+                    if (banner) banner.style.display = 'none';
+                }
+                
+                // Load cart first
+                loadCart();
+                
+                // Wait for cart system and then update display
+                await waitForCartSystem();
+                updateCartDisplay();
+                
+                // Listen for cart updates from other tabs
+                window.addEventListener('storage', function(e) {
+                    if (e.key === 'ohsCart') {
+                        loadCart();
                         updateCartDisplay();
                     }
-                }, 100);
+                });
+                
+                console.log('✅ Cart page fully loaded');
+                
+            } catch (error) {
+                console.error('Cart initialization error:', error);
+                // Still load cart even if product catalog fails
+                updateCartDisplay();
+            }
+        });
+
+        // Expose functions globally for products page compatibility
+        window.addToCartFromProducts = function(productId) {
+            // This function will be called from the products page
+            console.log('addToCartFromProducts called for:', productId);
+            
+            if (!window.PRODUCT_CATALOG || !window.PRODUCT_CATALOG[productId]) {
+                console.error('Product not found:', productId);
+                return;
+            }
+            
+            const product = window.PRODUCT_CATALOG[productId];
+            const quantity = 1; // Default quantity
+            const wholesale = calculateWholesale(productId, quantity);
+            
+            const cartItem = {
+                productId: product.id,
+                name: product.name,
+                price: wholesale.price,
+                quantity: quantity,
+                emoji: product.emoji || '🧴',
+                type: product.type || product.productLine,
+                sku: product.sku || product.id,
+                addedAt: Date.now()
+            };
+            
+            // Get existing cart
+            let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+            const existingIndex = cart.findIndex(item => item.productId === product.id);
+            
+            if (existingIndex >= 0) {
+                cart[existingIndex].quantity += quantity;
+                const newWholesale = calculateWholesale(productId, cart[existingIndex].quantity);
+                cart[existingIndex].price = newWholesale.price;
             } else {
+                cart.push(cartItem);
+            }
+            
+            localStorage.setItem('ohsCart', JSON.stringify(cart));
+            
+            // Update this page if we're on it
+            if (window.location.pathname.includes('cart.html')) {
+                loadCart();
                 updateCartDisplay();
             }
             
-            // Listen for cart updates from other tabs
-            window.addEventListener('storage', function(e) {
-                if (e.key === 'ohsCart') {
-                    loadCart();
-                    updateCartDisplay();
-                }
-            });
-        });
+            console.log('Added to cart:', cartItem);
+        };
+
+        window.calculateWholesaleRate = calculateWholesale;
     </script>
 </body>
 </html>
