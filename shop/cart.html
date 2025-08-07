@@ -984,15 +984,33 @@
         // Wait for cart system to load
         async function waitForCartSystem() {
             return new Promise((resolve) => {
+                let attempts = 0;
+                const maxAttempts = 50;
+                
                 const checkSystem = () => {
-                    if (typeof window.PRODUCT_CATALOG !== 'undefined' && 
-                        typeof window.calculateWholesaleRate === 'function') {
+                    attempts++;
+                    console.log(`🔍 Checking cart system... attempt ${attempts}/${maxAttempts}`);
+                    
+                    const hasProductCatalog = typeof window.PRODUCT_CATALOG !== 'undefined';
+                    const hasCalculateFunction = typeof originalWholesaleCalculator === 'function';
+                    
+                    console.log('📊 System check:', {
+                        PRODUCT_CATALOG: hasProductCatalog,
+                        calculateWholesaleRate: hasCalculateFunction,
+                        catalogSize: hasProductCatalog ? Object.keys(window.PRODUCT_CATALOG).length : 0
+                    });
+                    
+                    if (attempts >= maxAttempts) {
+                        console.warn('⚠️  Cart system timeout, proceeding without full catalog');
+                        resolve();
+                    } else if (hasProductCatalog && Object.keys(window.PRODUCT_CATALOG).length > 0) {
                         console.log('✅ Cart system loaded with', Object.keys(window.PRODUCT_CATALOG).length, 'products');
                         resolve();
                     } else {
                         setTimeout(checkSystem, 100);
                     }
                 };
+                
                 checkSystem();
             });
         }
@@ -1064,12 +1082,19 @@
             }
         }
 
+        // Store reference to original wholesale calculation if it exists
+        const originalWholesaleCalculator = window.calculateWholesaleRate;
+
         // Enhanced wholesale calculation that works with any cart item
         function calculateWholesale(productId, quantity) {
-            // Try to use the function from cart.js if available and product exists in catalog
-            if (typeof window.calculateWholesaleRate === 'function' && 
+            // Use the original function from cart.js if available and product exists in catalog
+            if (originalWholesaleCalculator && typeof originalWholesaleCalculator === 'function' && 
                 window.PRODUCT_CATALOG && window.PRODUCT_CATALOG[productId]) {
-                return window.calculateWholesaleRate(productId, quantity);
+                try {
+                    return originalWholesaleCalculator(productId, quantity);
+                } catch (error) {
+                    console.warn('Error in original wholesale calculator, using fallback:', error);
+                }
             }
             
             // Fallback calculation for items not in catalog (like from index.html)
@@ -1281,16 +1306,41 @@
 
         // Clear cart
         function clearCart() {
+            console.log('🗑️  clearCart called, current cartItems:', cartItems);
+            console.log('🗑️  localStorage ohsCart:', localStorage.getItem('ohsCart'));
+            
             if (cartItems.length === 0) {
+                // Double-check localStorage in case of sync issues
+                const storedCart = localStorage.getItem('ohsCart');
+                if (storedCart && storedCart !== '[]') {
+                    console.warn('⚠️  Cart display shows empty but localStorage has data:', storedCart);
+                    // Try to reload cart from storage
+                    loadCart();
+                    if (cartItems.length > 0) {
+                        updateCartDisplay();
+                        // Ask again now that we've loaded the cart
+                        if (confirm(`Found ${cartItems.length} items in storage. Clear all items from cart?`)) {
+                            cartItems = [];
+                            saveCart();
+                            updateCartDisplay();
+                            showNotification('Cart cleared', 'success');
+                        }
+                        return;
+                    }
+                }
+                
                 showNotification('Cart is already empty', 'warning');
                 return;
             }
             
-            if (confirm('Clear all items from cart?')) {
+            if (confirm(`Clear all ${cartItems.length} items from cart?`)) {
+                console.log('🗑️  User confirmed, clearing cart');
                 cartItems = [];
                 saveCart();
                 updateCartDisplay();
                 showNotification('Cart cleared', 'success');
+            } else {
+                console.log('🗑️  User cancelled clear operation');
             }
         }
 
@@ -1569,23 +1619,35 @@
 
         // Initialize cart system
         document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🚀 Initializing cart system...');
+            
             try {
-                // Check banner
+                // Check banner first
                 if (localStorage.getItem('promoBannerClosed') === 'true') {
                     const banner = document.getElementById('promoBanner');
                     if (banner) banner.style.display = 'none';
                 }
                 
-                // Load cart first
+                // Load cart data first (this should always work)
+                console.log('📦 Loading cart from localStorage...');
                 loadCart();
                 
-                // Wait for cart system and then update display
+                // Show initial state even if cart system isn't ready
+                console.log('🎨 Initial cart display...');
+                updateCartDisplay();
+                
+                // Wait for full cart system (but don't block basic functionality)
+                console.log('⏳ Waiting for cart system...');
                 await waitForCartSystem();
+                
+                // Update display with full system
+                console.log('🔄 Updating with full system...');
                 updateCartDisplay();
                 
                 // Listen for cart updates from other tabs
                 window.addEventListener('storage', function(e) {
                     if (e.key === 'ohsCart') {
+                        console.log('🔄 Cart updated from another tab');
                         loadCart();
                         updateCartDisplay();
                     }
@@ -1594,9 +1656,29 @@
                 console.log('✅ Cart page fully loaded');
                 
             } catch (error) {
-                console.error('Cart initialization error:', error);
-                // Still load cart even if product catalog fails
-                updateCartDisplay();
+                console.error('❌ Cart initialization error:', error);
+                
+                // Still try to load and display cart even if there are errors
+                try {
+                    loadCart();
+                    updateCartDisplay();
+                    console.log('🔧 Basic cart functionality restored');
+                } catch (fallbackError) {
+                    console.error('❌ Fallback also failed:', fallbackError);
+                    
+                    // Show error message to user
+                    const container = document.getElementById('cartItems');
+                    if (container) {
+                        container.innerHTML = `
+                            <div class="alert alert-danger">
+                                <h5>Cart Loading Error</h5>
+                                <p>There was an error loading your cart. Please try refreshing the page.</p>
+                                <button class="btn btn-primary" onclick="window.location.reload()">Refresh Page</button>
+                                <a href="tel:+18017125663" class="btn btn-outline-primary ms-2">Call for Help: (801) 712-5663</a>
+                            </div>
+                        `;
+                    }
+                }
             }
         });
 
@@ -1698,7 +1780,10 @@
             }
         };
 
-        window.calculateWholesaleRate = calculateWholesale;
+        // Only expose our wholesale calculator if the original doesn't exist
+        if (!originalWholesaleCalculator) {
+            window.calculateWholesaleRate = calculateWholesale;
+        }
         
         // Add compatibility function for index.html quick add
         window.addToCartFromHero = function(productId, productName, price, emoji) {
