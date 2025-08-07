@@ -1059,6 +1059,13 @@
                 addedAt: item.addedAt || Date.now()
             };
             
+            // Ensure price is never NaN
+            if (isNaN(normalizedItem.price)) {
+                console.warn('⚠️ Invalid price detected, setting to 0:', item);
+                normalizedItem.price = 0;
+            }
+            
+            console.log(`🔄 Normalized item:`, normalizedItem);
             return normalizedItem;
         }
 
@@ -1100,6 +1107,7 @@
             // Fallback calculation for items not in catalog (like from index.html)
             const item = cartItems.find(item => item.productId === productId);
             if (!item) {
+                console.warn(`❌ Item not found for productId: ${productId}`);
                 return {
                     isWholesale: false,
                     price: 0,
@@ -1110,14 +1118,17 @@
                 };
             }
             
+            console.log(`📋 Processing fallback calculation for:`, item);
+            
             // Check if this is a product from the catalog
             const product = window.PRODUCT_CATALOG ? window.PRODUCT_CATALOG[productId] : null;
             
             if (product && product.pricing) {
+                console.log(`📦 Using catalog data for:`, product.name);
                 // Use catalog data
                 const threshold = product.wholesaleThreshold || 6;
                 const isWholesale = quantity >= threshold;
-                const retailPrice = product.pricing.retail || item.price;
+                const retailPrice = product.pricing.retail || item.price || 0;
                 const wholesalePrice = product.pricing.wholesale || (retailPrice * 0.7);
                 
                 return {
@@ -1129,10 +1140,11 @@
                     savings: isWholesale ? (retailPrice - wholesalePrice) * quantity : 0
                 };
             } else {
+                console.log(`🏪 Using simple calculation for:`, item.name);
                 // Simple wholesale calculation for non-catalog items
                 const threshold = 6; // Default threshold
                 const isWholesale = quantity >= threshold;
-                const retailPrice = item.price;
+                const retailPrice = parseFloat(item.price) || 0;
                 const wholesalePrice = retailPrice * 0.8; // 20% discount
                 
                 return {
@@ -1531,10 +1543,21 @@
                 const checkoutUrl = `https://${SHOPIFY_DOMAIN}/cart/${lineItems.join(',')}`;
                 
                 console.log('Checkout URL:', checkoutUrl);
-                showNotification('Redirecting to secure checkout...', 'success');
+                showNotification('Opening secure checkout in new tab...', 'success');
                 
                 setTimeout(() => {
-                    window.location.href = checkoutUrl;
+                    // Open checkout in new tab
+                    const newTab = window.open(checkoutUrl, '_blank');
+                    if (newTab) {
+                        newTab.focus();
+                        // Reset button after opening
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-lock me-2"></i>SECURE CHECKOUT';
+                    } else {
+                        // Popup blocked, fallback to same window
+                        console.warn('Popup blocked, opening in same window');
+                        window.location.href = checkoutUrl;
+                    }
                 }, 1000);
                 
             } catch (error) {
