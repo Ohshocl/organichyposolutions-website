@@ -1003,15 +1003,23 @@
                 const stored = localStorage.getItem('ohsCart');
                 if (stored) {
                     const parsedCart = JSON.parse(stored);
-                    // Ensure cart is an array
-                    cartItems = Array.isArray(parsedCart) ? parsedCart : [];
+                    // Ensure cart is always an array
+                    if (Array.isArray(parsedCart)) {
+                        cartItems = parsedCart;
+                    } else {
+                        console.warn('Cart data is not an array, resetting cart');
+                        cartItems = [];
+                        localStorage.setItem('ohsCart', JSON.stringify([]));
+                    }
                     console.log('Cart loaded:', cartItems.length, 'items');
                 } else {
                     cartItems = [];
                 }
             } catch (error) {
-                console.error('Error loading cart:', error);
+                console.error('Error loading cart, resetting to empty:', error);
                 cartItems = [];
+                // Clear corrupted data
+                localStorage.setItem('ohsCart', JSON.stringify([]));
             }
         }
 
@@ -1423,50 +1431,91 @@
 
         // Expose functions globally for products page compatibility
         window.addToCartFromProducts = function(productId) {
-            // This function will be called from the products page
-            console.log('addToCartFromProducts called for:', productId);
-            
-            if (!window.PRODUCT_CATALOG || !window.PRODUCT_CATALOG[productId]) {
-                console.error('Product not found:', productId);
-                return;
+            try {
+                console.log('addToCartFromProducts called for:', productId);
+                
+                if (!window.PRODUCT_CATALOG || !window.PRODUCT_CATALOG[productId]) {
+                    console.error('Product not found:', productId);
+                    showNotification('Product not found. Please refresh the page.', 'error');
+                    return;
+                }
+                
+                const product = window.PRODUCT_CATALOG[productId];
+                const quantity = parseInt(document.getElementById(`qty-${productId}`)?.value) || 1;
+                const wholesale = calculateWholesale(productId, quantity);
+                
+                const cartItem = {
+                    productId: product.id,
+                    name: product.name,
+                    price: wholesale.price,
+                    quantity: quantity,
+                    emoji: product.emoji || '🧴',
+                    type: product.type || product.productLine,
+                    sku: product.sku || product.id,
+                    variantId: wholesale.isWholesale && product.shopifyVariants?.wholesale 
+                        ? product.shopifyVariants.wholesale 
+                        : product.shopifyVariants?.retail,
+                    addedAt: Date.now()
+                };
+                
+                // Get existing cart with robust error handling
+                let cart = [];
+                try {
+                    const storedCart = localStorage.getItem('ohsCart');
+                    if (storedCart) {
+                        const parsedCart = JSON.parse(storedCart);
+                        cart = Array.isArray(parsedCart) ? parsedCart : [];
+                    }
+                } catch (parseError) {
+                    console.warn('Invalid cart data in localStorage, resetting cart');
+                    cart = [];
+                }
+                
+                // Find existing item
+                const existingIndex = cart.findIndex(item => item.productId === product.id);
+                
+                if (existingIndex >= 0) {
+                    // Update existing item
+                    cart[existingIndex].quantity += quantity;
+                    const newWholesale = calculateWholesale(productId, cart[existingIndex].quantity);
+                    cart[existingIndex].price = newWholesale.price;
+                    cart[existingIndex].variantId = newWholesale.isWholesale && product.shopifyVariants?.wholesale 
+                        ? product.shopifyVariants.wholesale 
+                        : product.shopifyVariants?.retail;
+                } else {
+                    // Add new item
+                    cart.push(cartItem);
+                }
+                
+                // Save cart
+                localStorage.setItem('ohsCart', JSON.stringify(cart));
+                
+                // Update cart displays
+                window.dispatchEvent(new StorageEvent('storage', {
+                    key: 'ohsCart',
+                    newValue: JSON.stringify(cart)
+                }));
+                
+                // Update this page if we're on it
+                if (window.location.pathname.includes('cart.html')) {
+                    loadCart();
+                    updateCartDisplay();
+                }
+                
+                // Show success message
+                const message = wholesale.isWholesale ? 
+                    `Added ${quantity}x ${product.name} at wholesale rate!` : 
+                    `Added ${quantity}x ${product.name}!`;
+                showNotification(message, 'success');
+                
+                console.log('Successfully added to cart:', cartItem);
+                return true;
+                
+            } catch (error) {
+                console.error('Failed to add to cart:', error);
+                showNotification('Failed to add item. Please try again.', 'error');
+                return false;
             }
-            
-            const product = window.PRODUCT_CATALOG[productId];
-            const quantity = 1; // Default quantity
-            const wholesale = calculateWholesale(productId, quantity);
-            
-            const cartItem = {
-                productId: product.id,
-                name: product.name,
-                price: wholesale.price,
-                quantity: quantity,
-                emoji: product.emoji || '🧴',
-                type: product.type || product.productLine,
-                sku: product.sku || product.id,
-                addedAt: Date.now()
-            };
-            
-            // Get existing cart
-            let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-            const existingIndex = cart.findIndex(item => item.productId === product.id);
-            
-            if (existingIndex >= 0) {
-                cart[existingIndex].quantity += quantity;
-                const newWholesale = calculateWholesale(productId, cart[existingIndex].quantity);
-                cart[existingIndex].price = newWholesale.price;
-            } else {
-                cart.push(cartItem);
-            }
-            
-            localStorage.setItem('ohsCart', JSON.stringify(cart));
-            
-            // Update this page if we're on it
-            if (window.location.pathname.includes('cart.html')) {
-                loadCart();
-                updateCartDisplay();
-            }
-            
-            console.log('Added to cart:', cartItem);
         };
 
         window.calculateWholesaleRate = calculateWholesale;
