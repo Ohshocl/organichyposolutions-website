@@ -147,6 +147,22 @@
             display: inline-block;
         }
 
+        /* Patent Pending Badge */
+        .patent-badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0.3rem;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
         /* Cart Container */
         .cart-container {
             background: white;
@@ -606,21 +622,188 @@
             color: #ef4444;
         }
 
-        /* Mobile Responsive */
+        /* Enhanced Mobile Responsive */
         @media (max-width: 768px) {
+            .hero-section {
+                padding: 20px 0;
+            }
+
+            .hero-section h1 {
+                font-size: 1.75rem !important;
+            }
+
+            .hero-section .lead {
+                font-size: 0.95rem;
+            }
+
+            .cert-badge, .patent-badge {
+                font-size: 0.65rem;
+                padding: 0.25rem 0.6rem;
+                margin: 0.1rem;
+            }
+
             .cart-container {
-                margin: 1rem;
+                margin: 1rem 0.5rem;
                 padding: 1rem;
+                border-radius: 15px;
+            }
+
+            .cart-item {
+                padding: 1rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .product-image {
+                width: 60px;
+                height: 60px;
+                font-size: 1.8rem;
+            }
+
+            .cart-item .row > div {
+                margin-bottom: 0.75rem;
+            }
+
+            .cart-item .col-2,
+            .cart-item .col-4,
+            .cart-item .col-3,
+            .cart-item .col-1 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+
+            .cart-item .col-2 {
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+
+            .cart-item .col-4 {
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+
+            .cart-item .col-3 {
+                margin-bottom: 1rem;
+            }
+
+            .cart-item .col-1 {
+                text-align: center;
             }
 
             .quantity-controls {
                 gap: 0.5rem;
-                padding: 0.5rem;
+                padding: 0.6rem;
+                margin: 0 auto;
+                max-width: 200px;
             }
 
             .quantity-btn {
                 width: 35px;
                 height: 35px;
+                font-size: 0.9rem;
+            }
+
+            .quantity-input {
+                width: 50px;
+                height: 35px;
+                font-size: 1rem;
+            }
+
+            .price-display {
+                font-size: 1.1rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 1.5rem;
+            }
+
+            .summary-item {
+                margin-bottom: 1rem;
+            }
+
+            .summary-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .summary-value {
+                font-size: 1.2rem;
+            }
+
+            .summary-label {
+                font-size: 0.7rem;
+            }
+
+            .checkout-btn {
+                font-size: 1rem;
+                padding: 0.875rem 1.5rem;
+            }
+
+            .recommendations-section {
+                padding: 1.5rem 1rem;
+                margin-top: 1.5rem;
+            }
+
+            .recommendation-cards {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .recommendation-card {
+                padding: 1.25rem;
+            }
+
+            .wholesale-tip {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+
+            .wholesale-tip-text {
+                font-size: 0.85rem;
+            }
+
+            .order-summary-bottom {
+                padding: 1.5rem;
+            }
+
+            .empty-cart {
+                padding: 2rem 1rem;
+            }
+
+            .empty-cart i {
+                font-size: 3rem;
+            }
+
+            .notification {
+                right: 10px;
+                left: 10px;
+                min-width: auto;
+                max-width: calc(100vw - 20px);
+                transform: translateY(-100px);
+            }
+
+            .notification.show {
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .cart-container {
+                margin: 0.5rem 0.25rem;
+                padding: 0.75rem;
+            }
+
+            .cart-item {
+                padding: 0.75rem;
+            }
+
+            .product-image {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
             }
 
             .summary-grid {
@@ -628,18 +811,20 @@
                 gap: 1rem;
             }
 
+            .hero-section {
+                padding: 15px 0;
+            }
+
+            .hero-section h1 {
+                font-size: 1.5rem !important;
+            }
+
+            .order-summary-bottom {
+                padding: 1.25rem;
+            }
+
             .recommendations-section {
-                padding: 1.5rem;
-                margin-top: 2rem;
-            }
-
-            .recommendation-cards {
-                grid-template-columns: 1fr;
-            }
-
-            .wholesale-tip {
-                flex-direction: column;
-                text-align: center;
+                padding: 1rem 0.75rem;
             }
         }
     </style>
@@ -770,6 +955,9 @@
                         <span class="cert-badge">
                             <i class="fas fa-box-open me-1"></i> Wholesale Pricing
                         </span>
+                        <span class="patent-badge">
+                            <i class="fas fa-star me-1"></i> World's Only Organic Hypochlorous Solution - Patent Pending
+                        </span>
                     </div>
                 </div>
                 <div class="col-lg-4 text-end">
@@ -841,9 +1029,8 @@
                             <div class="summary-icon">
                                 <i class="fas fa-tag"></i>
                             </div>
-                            <div class="summary-value" id="wholesaleSavingsAmount" style="display: none;">-$0.00</div>
-                            <div class="summary-value" id="wholesaleSavingsDefault" style="display: block;">Wholesale</div>
-                            <div class="summary-label">Savings Applied</div>
+                            <div class="summary-value" id="wholesaleSavingsAmount">$0.00</div>
+                            <div class="summary-label">Wholesale Savings</div>
                         </div>
                         
                         <div class="summary-item">
@@ -860,14 +1047,6 @@
                             </div>
                             <div class="summary-value">+Tax</div>
                             <div class="summary-label">Utah Tax at Checkout</div>
-                        </div>
-                        
-                        <div class="summary-item">
-                            <div class="summary-icon">
-                                <i class="fas fa-dollar-sign"></i>
-                            </div>
-                            <div class="summary-value" id="cartTotal">$0.00</div>
-                            <div class="summary-label">Total</div>
                         </div>
                     </div>
 
@@ -1374,33 +1553,23 @@
         function updateCartSummary(subtotal, totalSavings) {
             try {
                 const subtotalElement = document.getElementById('cartSubtotal');
-                const totalElement = document.getElementById('cartTotal');
                 const heroTotalElement = document.getElementById('heroCartTotal');
-                const savingsAmountElement = document.getElementById('wholesaleSavingsAmount');
-                const savingsDefaultElement = document.getElementById('wholesaleSavingsDefault');
+                const savingsElement = document.getElementById('wholesaleSavingsAmount');
                 
                 const safeSubtotal = isNaN(subtotal) ? 0 : subtotal;
                 const safeTotalSavings = isNaN(totalSavings) ? 0 : totalSavings;
                 
                 if (subtotalElement) subtotalElement.textContent = '$' + safeSubtotal.toFixed(2);
-                if (totalElement) totalElement.textContent = '$' + safeSubtotal.toFixed(2);
                 if (heroTotalElement) heroTotalElement.textContent = '$' + safeSubtotal.toFixed(2);
                 
-                // Show wholesale savings amount if applicable
-                if (safeTotalSavings > 0) {
-                    if (savingsAmountElement) {
-                        savingsAmountElement.textContent = '-$' + safeTotalSavings.toFixed(2);
-                        savingsAmountElement.style.display = 'block';
-                    }
-                    if (savingsDefaultElement) {
-                        savingsDefaultElement.style.display = 'none';
-                    }
-                } else {
-                    if (savingsAmountElement) {
-                        savingsAmountElement.style.display = 'none';
-                    }
-                    if (savingsDefaultElement) {
-                        savingsDefaultElement.style.display = 'block';
+                // Show wholesale savings amount
+                if (savingsElement) {
+                    if (safeTotalSavings > 0) {
+                        savingsElement.textContent = '$' + safeTotalSavings.toFixed(2);
+                        savingsElement.style.color = '#22C55E';
+                    } else {
+                        savingsElement.textContent = '$0.00';
+                        savingsElement.style.color = 'white';
                     }
                 }
             } catch (error) {
