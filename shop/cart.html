@@ -1357,7 +1357,7 @@
             return `temp-${name}-${price}`;
         }
 
-        // Safe wholesale calculation
+        // Safe wholesale calculation - FIXED VERSION
         function safeCalculateWholesaleRate(productId, quantity) {
             try {
                 if (typeof calculateWholesaleRate === 'function' && 
@@ -1366,13 +1366,19 @@
                     const result = calculateWholesaleRate(productId, quantity);
                     
                     if (result && typeof result.price === 'number' && !isNaN(result.price)) {
+                        // Calculate proper savings if wholesale pricing is active
+                        const retailPrice = result.retailPrice || PRODUCT_CATALOG[productId].pricing?.retail || result.price;
+                        const wholesalePrice = result.wholesalePrice || PRODUCT_CATALOG[productId].pricing?.wholesale || result.price;
+                        const isWholesale = result.isWholesale || false;
+                        const savings = isWholesale ? (retailPrice - wholesalePrice) * quantity : 0;
+                        
                         return {
                             price: result.price,
-                            isWholesale: result.isWholesale || false,
+                            isWholesale: isWholesale,
                             threshold: result.threshold || 6,
-                            retailPrice: result.retailPrice || result.price,
-                            wholesalePrice: result.wholesalePrice || result.price,
-                            savings: result.savings || 0
+                            retailPrice: retailPrice,
+                            wholesalePrice: wholesalePrice,
+                            savings: savings
                         };
                     }
                 }
@@ -1393,11 +1399,11 @@
                 const product = (typeof PRODUCT_CATALOG !== 'undefined') ? PRODUCT_CATALOG[productId] : null;
                 
                 if (product && product.pricing) {
-                    console.log(`📦 Using catalog data for:`, product.name);
                     const threshold = product.wholesaleThreshold || 6;
                     const isWholesale = quantity >= threshold;
                     const retailPrice = product.pricing.retail || item.price || 0;
                     const wholesalePrice = product.pricing.wholesale || (retailPrice * 0.7);
+                    const savings = isWholesale ? (retailPrice - wholesalePrice) * quantity : 0;
                     
                     return {
                         isWholesale: isWholesale,
@@ -1405,14 +1411,14 @@
                         price: isWholesale ? wholesalePrice : retailPrice,
                         retailPrice: retailPrice,
                         wholesalePrice: wholesalePrice,
-                        savings: isWholesale ? (retailPrice - wholesalePrice) * quantity : 0
+                        savings: savings
                     };
                 } else {
-                    console.log(`🏪 Using fallback calculation for:`, item.name);
                     const threshold = 6;
                     const isWholesale = quantity >= threshold;
                     const retailPrice = parseFloat(item.price) || 0;
                     const wholesalePrice = retailPrice * 0.8;
+                    const savings = isWholesale ? (retailPrice - wholesalePrice) * quantity : 0;
                     
                     return {
                         isWholesale: isWholesale,
@@ -1420,7 +1426,7 @@
                         price: isWholesale ? wholesalePrice : retailPrice,
                         retailPrice: retailPrice,
                         wholesalePrice: wholesalePrice,
-                        savings: isWholesale ? (retailPrice - wholesalePrice) * quantity : 0
+                        savings: savings
                     };
                 }
                 
@@ -1549,7 +1555,7 @@
             `;
         }
 
-        // Update cart summary with actual wholesale savings
+        // Update cart summary - FIXED VERSION
         function updateCartSummary(subtotal, totalSavings) {
             try {
                 const subtotalElement = document.getElementById('cartSubtotal');
@@ -1569,7 +1575,7 @@
                         savingsElement.style.color = '#22C55E';
                     } else {
                         savingsElement.textContent = '$0.00';
-                        savingsElement.style.color = 'white';
+                        savingsElement.style.color = 'rgba(255, 255, 255, 0.7)';
                     }
                 }
             } catch (error) {
@@ -1605,13 +1611,14 @@
             }
         }
 
-        // Update quantity
+        // Update quantity - FIXED VERSION
         function updateQuantity(index, change) {
             try {
                 if (cartItems[index]) {
                     const newQuantity = Math.max(1, cartItems[index].quantity + change);
                     cartItems[index].quantity = newQuantity;
                     
+                    // Force recalculation of wholesale pricing
                     const wholesaleInfo = safeCalculateWholesaleRate(cartItems[index].productId, newQuantity);
                     cartItems[index].price = wholesaleInfo.price;
                     
@@ -1624,13 +1631,14 @@
             }
         }
 
-        // Set quantity
+        // Set quantity - FIXED VERSION
         function setQuantity(index, value) {
             try {
                 if (cartItems[index]) {
                     const newQuantity = Math.max(1, Math.min(999, parseInt(value) || 1));
                     cartItems[index].quantity = newQuantity;
                     
+                    // Force recalculation of wholesale pricing
                     const wholesaleInfo = safeCalculateWholesaleRate(cartItems[index].productId, newQuantity);
                     cartItems[index].price = wholesaleInfo.price;
                     
