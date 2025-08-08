@@ -1472,10 +1472,11 @@
                 
                 cartItems.forEach((item, index) => {
                     try {
-                        const wholesaleInfo = safeCalculateWholesaleRate(item.productId, item.quantity);
+                        // Use the same wholesale calculation as product page
+                        const wholesaleInfo = calculateWholesaleRate(item.productId, item.quantity);
                         const itemTotal = wholesaleInfo.price * item.quantity;
                         subtotal += itemTotal;
-                        totalWholesaleSavings += wholesaleInfo.savings;
+                        totalWholesaleSavings += wholesaleInfo.savings || 0;
                         
                         cartHTML += createCartItemHTML(item, wholesaleInfo, index);
                         
@@ -1611,16 +1612,18 @@
             }
         }
 
-        // Update quantity - FIXED VERSION
+        // Update quantity - MINIMAL FIX
         function updateQuantity(index, change) {
             try {
                 if (cartItems[index]) {
                     const newQuantity = Math.max(1, cartItems[index].quantity + change);
                     cartItems[index].quantity = newQuantity;
                     
-                    // Force recalculation of wholesale pricing
-                    const wholesaleInfo = safeCalculateWholesaleRate(cartItems[index].productId, newQuantity);
-                    cartItems[index].price = wholesaleInfo.price;
+                    // Use the same wholesale calculation as product page
+                    if (typeof calculateWholesaleRate === 'function') {
+                        const wholesaleInfo = calculateWholesaleRate(cartItems[index].productId, newQuantity);
+                        cartItems[index].price = wholesaleInfo.price;
+                    }
                     
                     saveCart();
                     updateCartDisplay();
@@ -1631,16 +1634,18 @@
             }
         }
 
-        // Set quantity - FIXED VERSION
+        // Set quantity - MINIMAL FIX
         function setQuantity(index, value) {
             try {
                 if (cartItems[index]) {
                     const newQuantity = Math.max(1, Math.min(999, parseInt(value) || 1));
                     cartItems[index].quantity = newQuantity;
                     
-                    // Force recalculation of wholesale pricing
-                    const wholesaleInfo = safeCalculateWholesaleRate(cartItems[index].productId, newQuantity);
-                    cartItems[index].price = wholesaleInfo.price;
+                    // Use the same wholesale calculation as product page
+                    if (typeof calculateWholesaleRate === 'function') {
+                        const wholesaleInfo = calculateWholesaleRate(cartItems[index].productId, newQuantity);
+                        cartItems[index].price = wholesaleInfo.price;
+                    }
                     
                     saveCart();
                     updateCartDisplay();
@@ -1813,8 +1818,11 @@
                 const existingIndex = cartItems.findIndex(item => item.productId === product.id);
                 if (existingIndex >= 0) {
                     cartItems[existingIndex].quantity += 1;
-                    const wholesaleInfo = safeCalculateWholesaleRate(product.id, cartItems[existingIndex].quantity);
-                    cartItems[existingIndex].price = wholesaleInfo.price;
+                    // Use same calculation as product page
+                    if (typeof calculateWholesaleRate === 'function') {
+                        const wholesaleInfo = calculateWholesaleRate(product.id, cartItems[existingIndex].quantity);
+                        cartItems[existingIndex].price = wholesaleInfo.price;
+                    }
                 } else {
                     cartItems.push(validateAndNormalizeCartItem(cartItem));
                 }
