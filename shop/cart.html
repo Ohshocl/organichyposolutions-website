@@ -700,12 +700,15 @@
                 width: 35px;
                 height: 35px;
                 font-size: 0.9rem;
+                touch-action: manipulation;
+                -webkit-tap-highlight-color: transparent;
             }
 
             .quantity-input {
                 width: 50px;
                 height: 35px;
-                font-size: 1rem;
+                font-size: 16px; /* Prevent iOS zoom */
+                touch-action: manipulation;
             }
 
             .price-display {
@@ -1190,6 +1193,7 @@
         // Global variables
         let cartItems = [];
         let isCartSystemReady = false;
+        let mobileQuantityTimer = null;
         const SHOPIFY_DOMAIN = 'organichyposolutions.myshopify.com';
 
         // Sample recommendations data
@@ -1532,7 +1536,8 @@
                                     <i class="fas fa-minus"></i>
                                 </button>
                                 <input type="number" class="quantity-input" value="${item.quantity}" 
-                                       min="1" max="999" onchange="setQuantity(${index}, this.value)">
+                                       min="1" max="999" onchange="setQuantity(${index}, this.value)"
+                                       oninput="handleMobileQuantityInput(${index}, this.value)">
                                 <button class="quantity-btn" onclick="updateQuantity(${index}, 1)">
                                     <i class="fas fa-plus"></i>
                                 </button>
@@ -1540,9 +1545,9 @@
                         </div>
                         <div class="col-2 text-center">
                             <div class="price-display">
-                                ${(wholesaleInfo.price || 0).toFixed(2)}
+                                $${(wholesaleInfo.price || 0).toFixed(2)}
                                 ${wholesaleInfo.isWholesale && wholesaleInfo.retailPrice && wholesaleInfo.retailPrice !== wholesaleInfo.price ? `
-                                    <span class="original-price">${(wholesaleInfo.retailPrice || 0).toFixed(2)}</span>
+                                    <span class="original-price">$${(wholesaleInfo.retailPrice || 0).toFixed(2)}</span>
                                 ` : ''}
                             </div>
                             <small class="text-muted">each</small>
@@ -1613,21 +1618,44 @@
             }
         }
 
-        // Update quantity - MINIMAL FIX
+        // Mobile-optimized quantity input handler
+        function handleMobileQuantityInput(index, value) {
+            // Clear any existing timer
+            if (mobileQuantityTimer) {
+                clearTimeout(mobileQuantityTimer);
+            }
+            
+            // Set a delay for mobile input - gives time for user to finish typing
+            mobileQuantityTimer = setTimeout(() => {
+                setQuantity(index, value);
+            }, 500); // 500ms delay for mobile
+        }
+
+        // Update quantity - Enhanced for mobile
         function updateQuantity(index, change) {
             try {
                 if (cartItems[index]) {
                     const newQuantity = Math.max(1, cartItems[index].quantity + change);
                     cartItems[index].quantity = newQuantity;
                     
-                    // Use the same wholesale calculation as product page
-                    if (typeof calculateWholesaleRate === 'function') {
-                        const wholesaleInfo = calculateWholesaleRate(cartItems[index].productId, newQuantity);
-                        cartItems[index].price = wholesaleInfo.price;
-                    }
+                    // Add mobile-specific delay for wholesale calculation
+                    const isMobile = window.innerWidth <= 768;
+                    const delay = isMobile ? 200 : 0;
                     
-                    saveCart();
-                    updateCartDisplay();
+                    setTimeout(() => {
+                        // Use the same wholesale calculation as product page
+                        if (typeof calculateWholesaleRate === 'function') {
+                            const wholesaleInfo = calculateWholesaleRate(cartItems[index].productId, newQuantity);
+                            cartItems[index].price = wholesaleInfo.price;
+                            
+                            if (isMobile) {
+                                console.log(`📱 Mobile quantity updated: ${cartItems[index].name} - ${newQuantity} @ $${wholesaleInfo.price}`);
+                            }
+                        }
+                        
+                        saveCart();
+                        updateCartDisplay();
+                    }, delay);
                 }
             } catch (error) {
                 console.error('Error updating quantity:', error);
@@ -1635,21 +1663,31 @@
             }
         }
 
-        // Set quantity - MINIMAL FIX
+        // Set quantity - Enhanced for mobile
         function setQuantity(index, value) {
             try {
                 if (cartItems[index]) {
                     const newQuantity = Math.max(1, Math.min(999, parseInt(value) || 1));
                     cartItems[index].quantity = newQuantity;
                     
-                    // Use the same wholesale calculation as product page
-                    if (typeof calculateWholesaleRate === 'function') {
-                        const wholesaleInfo = calculateWholesaleRate(cartItems[index].productId, newQuantity);
-                        cartItems[index].price = wholesaleInfo.price;
-                    }
+                    // Add mobile-specific delay for wholesale calculation
+                    const isMobile = window.innerWidth <= 768;
+                    const delay = isMobile ? 300 : 0;
                     
-                    saveCart();
-                    updateCartDisplay();
+                    setTimeout(() => {
+                        // Use the same wholesale calculation as product page
+                        if (typeof calculateWholesaleRate === 'function') {
+                            const wholesaleInfo = calculateWholesaleRate(cartItems[index].productId, newQuantity);
+                            cartItems[index].price = wholesaleInfo.price;
+                            
+                            if (isMobile) {
+                                console.log(`📱 Mobile quantity set: ${cartItems[index].name} - ${newQuantity} @ $${wholesaleInfo.price}`);
+                            }
+                        }
+                        
+                        saveCart();
+                        updateCartDisplay();
+                    }, delay);
                 }
             } catch (error) {
                 console.error('Error setting quantity:', error);
