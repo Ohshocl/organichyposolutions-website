@@ -1153,9 +1153,10 @@
             });
         }
 
-        // Load section-specific content
-        function loadSectionContent(section) {
+        // Load section-specific content with API integration
+        async function loadSectionContent(section) {
             const contentDiv = document.getElementById(section + 'Section');
+            const accessToken = localStorage.getItem('shopifyAccessToken');
             
             switch(section) {
                 case 'orders':
@@ -1165,10 +1166,35 @@
                         </h4>
                         <div class="dashboard-card">
                             <p class="text-muted">Loading order history...</p>
-                            <!-- TODO: Integrate with Shopify order API -->
                         </div>
                     `;
-                    // TODO: Load actual orders from Shopify
+                    
+                    // Load real orders from Shopify if authenticated
+                    if (accessToken && window.currentCustomer) {
+                        try {
+                            const orders = window.currentCustomer.orders.edges;
+                            let ordersHTML = '<div class="table-responsive"><table class="table"><thead><tr><th>Order #</th><th>Date</th><th>Status</th><th>Total</th><th>Action</th></tr></thead><tbody>';
+                            
+                            orders.forEach(({ node: order }) => {
+                                const date = new Date(order.createdAt).toLocaleDateString();
+                                const status = getOrderStatusClass(order.fulfillmentStatus);
+                                ordersHTML += `
+                                    <tr>
+                                        <td><strong>#${order.orderNumber}</strong></td>
+                                        <td>${date}</td>
+                                        <td><span class="order-status ${status.class}">${status.text}</span></td>
+                                        <td>${order.totalPrice.amount}</td>
+                                        <td><button class="btn btn-sm btn-outline-primary">View Details</button></td>
+                                    </tr>
+                                `;
+                            });
+                            
+                            ordersHTML += '</tbody></table></div>';
+                            contentDiv.querySelector('.dashboard-card').innerHTML = ordersHTML;
+                        } catch (error) {
+                            console.error('Error loading orders:', error);
+                        }
+                    }
                     break;
                     
                 case 'addresses':
@@ -1177,40 +1203,57 @@
                             <i class="fas fa-map-marker-alt me-2"></i>Saved Addresses
                         </h4>
                         <div class="dashboard-card">
-                            <button class="btn btn-primary mb-3">
+                            <button class="btn btn-primary mb-3" onclick="addNewAddress()">
                                 <i class="fas fa-plus me-2"></i>Add New Address
                             </button>
-                            <p class="text-muted">No saved addresses yet.</p>
-                            <!-- TODO: Integrate with Shopify customer addresses -->
+                            <div id="addressList">
+                                <p class="text-muted">Loading addresses...</p>
+                            </div>
                         </div>
                     `;
+                    
+                    // Load addresses from Shopify if authenticated
+                    if (accessToken) {
+                        loadCustomerAddresses(accessToken);
+                    }
                     break;
                     
                 case 'profile':
-                    const user = JSON.parse(localStorage.getItem('ohsUser') || '{}');
+                    const customer = window.currentCustomer || {};
+                    const legacyUser = JSON.parse(localStorage.getItem('ohsUser') || '{}');
+                    const email = customer.email || legacyUser.email || '';
+                    
                     contentDiv.innerHTML = `
                         <h4 class="mb-4">
                             <i class="fas fa-user-edit me-2"></i>Profile Settings
                         </h4>
                         <div class="dashboard-card">
-                            <form>
+                            <form id="profileForm">
                                 <div class="mb-3">
                                     <label class="form-label">Email Address</label>
-                                    <input type="email" class="form-control" value="${user.email || ''}" readonly>
+                                    <input type="email" class="form-control" value="${email}" readonly>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">First Name</label>
-                                        <input type="text" class="form-control" placeholder="Enter first name">
+                                        <input type="text" class="form-control" id="firstName" value="${customer.firstName || ''}" placeholder="Enter first name">
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Last Name</label>
-                                        <input type="text" class="form-control" placeholder="Enter last name">
+                                        <input type="text" class="form-control" id="lastName" value="${customer.lastName || ''}" placeholder="Enter last name">
                                     </div>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Phone Number</label>
-                                    <input type="tel" class="form-control" placeholder="(801) 555-0123">
+                                    <input type="tel" class="form-control" id="phone" value="${customer.phone || ''}" placeholder="(801) 555-0123">
+                                </div>
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="acceptsMarketing" ${customer.acceptsMarketing ? 'checked' : ''}>
+                                        <label class="form-check-label" for="acceptsMarketing">
+                                            Receive marketing emails and promotions
+                                        </label>
+                                    </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-save me-2"></i>Save Changes
@@ -1218,6 +1261,9 @@
                             </form>
                         </div>
                     `;
+                    
+                    // Add form submission handler
+                    document.getElementById('profileForm').addEventListener('submit', updateProfile);
                     break;
                     
                 case 'security':
@@ -1228,20 +1274,29 @@
                         <div class="dashboard-card">
                             <h6>Password</h6>
                             <p class="text-muted">Password management is handled through Shopify's secure authentication system.</p>
-                            <button class="btn btn-outline-primary mb-4">
+                            <button class="btn btn-outline-primary mb-4" onclick="initiatePasswordReset()">
                                 <i class="fas fa-key me-2"></i>Change Password
                             </button>
                             
                             <h6>Two-Factor Authentication</h6>
                             <p class="text-muted">Add an extra layer of security to your account.</p>
-                            <button class="btn btn-outline-success">
+                            <button class="btn btn-outline-success" onclick="enable2FA()">
                                 <i class="fas fa-mobile-alt me-2"></i>Enable 2FA
+                            </button>
+                            
+                            <hr class="my-4">
+                            
+                            <h6>Active Sessions</h6>
+                            <p class="text-muted">Manage your active login sessions across devices.</p>
+                            <button class="btn btn-outline-danger btn-sm" onclick="logoutAllDevices()">
+                                <i class="fas fa-sign-out-alt me-2"></i>Logout All Other Devices
                             </button>
                         </div>
                     `;
                     break;
                     
                 case 'preferences':
+                    const prefs = window.currentCustomer || {};
                     contentDiv.innerHTML = `
                         <h4 class="mb-4">
                             <i class="fas fa-cog me-2"></i>Account Preferences
@@ -1255,17 +1310,21 @@
                                 </label>
                             </div>
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="productNews" checked>
+                                <input class="form-check-input" type="checkbox" id="productNews" ${prefs.acceptsMarketing ? 'checked' : ''}>
                                 <label class="form-check-label" for="productNews">
                                     New products and safety updates
                                 </label>
                             </div>
                             <div class="form-check mb-4">
-                                <input class="form-check-input" type="checkbox" id="promotions">
+                                <input class="form-check-input" type="checkbox" id="promotions" ${prefs.acceptsMarketing ? 'checked' : ''}>
                                 <label class="form-check-label" for="promotions">
                                     Promotional offers and discounts
                                 </label>
                             </div>
+                            
+                            <button class="btn btn-primary mb-4" onclick="savePreferences()">
+                                <i class="fas fa-save me-2"></i>Save Preferences
+                            </button>
                             
                             <h6 class="mb-3">Account Type</h6>
                             <p class="text-muted">You currently have a Consumer account.</p>
@@ -1278,31 +1337,141 @@
             }
         }
 
-        // Logout function
-        function logout() {
+        // Enhanced logout function with Shopify integration
+        async function logout() {
             if (confirm('Are you sure you want to logout?')) {
-                // Clear user session
+                const shopifyToken = localStorage.getItem('shopifyAccessToken');
+                const idToken = localStorage.getItem('shopifyIdToken');
+                
+                // Clear all authentication data
                 localStorage.removeItem('ohsUser');
+                localStorage.removeItem('shopifyAccessToken');
+                localStorage.removeItem('shopifyRefreshToken');
+                localStorage.removeItem('shopifyIdToken');
                 
                 // Track logout event
                 if (typeof gtag !== 'undefined') {
                     gtag('event', 'logout');
                 }
                 
-                // Redirect to login
-                window.location.href = '../auth/login.html';
+                // If Shopify authenticated, logout from Shopify too
+                if (shopifyToken && idToken) {
+                    const logoutUrl = `https://shopify.com/authentication/${SHOP_ID}/logout?` +
+                        `id_token_hint=${idToken}&` +
+                        `post_logout_redirect_uri=${encodeURIComponent('https://organichyposolutions.com/auth/login.html')}`;
+                    
+                    window.location.href = logoutUrl;
+                } else {
+                    // Redirect to login for legacy accounts
+                    window.location.href = '../auth/login.html';
+                }
             }
+        }
+        
+        // Additional API integration functions
+        async function loadCustomerAddresses(accessToken) {
+            try {
+                const response = await fetch(`${API_BASE}/customer/addresses`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify({
+                        query: `
+                            query {
+                                customer {
+                                    addresses(first: 10) {
+                                        edges {
+                                            node {
+                                                id
+                                                address1
+                                                address2
+                                                city
+                                                province
+                                                zip
+                                                country
+                                                isDefault
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        `
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    displayAddresses(data.data.customer.addresses.edges);
+                }
+            } catch (error) {
+                console.error('Error loading addresses:', error);
+            }
+        }
+        
+        function displayAddresses(addresses) {
+            const addressList = document.getElementById('addressList');
+            if (addresses.length === 0) {
+                addressList.innerHTML = '<p class="text-muted">No saved addresses yet.</p>';
+                return;
+            }
+            
+            let html = '<div class="row">';
+            addresses.forEach(({ node: address }) => {
+                html += `
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                ${address.isDefault ? '<span class="badge bg-primary mb-2">Default</span>' : ''}
+                                <p class="mb-1">${address.address1}</p>
+                                ${address.address2 ? `<p class="mb-1">${address.address2}</p>` : ''}
+                                <p class="mb-1">${address.city}, ${address.province} ${address.zip}</p>
+                                <p class="mb-2">${address.country}</p>
+                                <button class="btn btn-sm btn-outline-primary me-2">Edit</button>
+                                <button class="btn btn-sm btn-outline-danger">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            addressList.innerHTML = html;
+        }
+        
+        async function updateProfile(e) {
+            e.preventDefault();
+            // TODO: Implement profile update via Shopify Customer Account API
+            alert('Profile update will be implemented with Shopify Customer Account API');
+        }
+        
+        function initiatePasswordReset() {
+            // TODO: Implement password reset flow
+            alert('Password reset will redirect to Shopify secure password reset');
+        }
+        
+        function enable2FA() {
+            // TODO: Implement 2FA setup
+            alert('2FA setup will be implemented through Shopify security settings');
+        }
+        
+        function savePreferences() {
+            // TODO: Save preferences via API
+            alert('Preferences will be saved via Shopify Customer Account API');
         }
 
         // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Initialize cart and Shopify systems first
+            initializeEcommerce();
+            
             // Check authentication
-            if (!checkAuth()) {
+            const isAuthenticated = await checkAuth();
+            if (!isAuthenticated) {
                 return;
             }
             
             checkBanner();
-            updateCartBadge();
             
             // Set up sidebar navigation
             document.querySelectorAll('.sidebar-menu .nav-link[data-section]').forEach(link => {
@@ -1323,12 +1492,26 @@
                     page_location: window.location.href
                 });
             }
+            
+            // Listen for cart updates
+            if (cart) {
+                cart.on('update', updateCartBadgeFromCart);
+            }
         });
 
         // Make functions globally available
         window.closeBanner = closeBanner;
         window.loadSection = loadSection;
         window.logout = logout;
+        window.migrateAccount = migrateAccount;
+        window.addNewAddress = function() {
+            alert('Address management will open Shopify address editor');
+        };
+        window.logoutAllDevices = function() {
+            if (confirm('This will log you out from all devices. Continue?')) {
+                logout();
+            }
+        };
     </script>
 </body>
 </html>
