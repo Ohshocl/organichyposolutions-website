@@ -1357,25 +1357,30 @@
             return `temp-${name}-${price}`;
         }
 
-        // Safe wholesale calculation - FIXED VERSION
+        // Safe wholesale calculation - FIXED VERSION  
         function safeCalculateWholesaleRate(productId, quantity) {
             try {
+                // Use the main calculateWholesaleRate function but add safety and savings calculation
                 if (typeof calculateWholesaleRate === 'function' && 
                     typeof PRODUCT_CATALOG !== 'undefined' && 
                     PRODUCT_CATALOG[productId]) {
+                    
                     const result = calculateWholesaleRate(productId, quantity);
                     
                     if (result && typeof result.price === 'number' && !isNaN(result.price)) {
-                        // Calculate proper savings if wholesale pricing is active
-                        const retailPrice = result.retailPrice || PRODUCT_CATALOG[productId].pricing?.retail || result.price;
-                        const wholesalePrice = result.wholesalePrice || PRODUCT_CATALOG[productId].pricing?.wholesale || result.price;
+                        const product = PRODUCT_CATALOG[productId];
+                        const retailPrice = result.retailPrice || product.pricing?.retail || result.price;
+                        const wholesalePrice = result.wholesalePrice || product.pricing?.wholesale || result.price;
+                        const threshold = result.threshold || product.wholesaleThreshold || 6;
                         const isWholesale = result.isWholesale || false;
+                        
+                        // Calculate actual savings: difference between what customer would pay at retail vs wholesale
                         const savings = isWholesale ? (retailPrice - wholesalePrice) * quantity : 0;
                         
                         return {
                             price: result.price,
                             isWholesale: isWholesale,
-                            threshold: result.threshold || 6,
+                            threshold: threshold,
                             retailPrice: retailPrice,
                             wholesalePrice: wholesalePrice,
                             savings: savings
@@ -1383,9 +1388,9 @@
                     }
                 }
                 
+                // Fallback if main function fails
                 const item = cartItems.find(item => item.productId === productId);
                 if (!item) {
-                    console.warn(`❌ Item not found for productId: ${productId}`);
                     return {
                         isWholesale: false,
                         price: 0,
@@ -1396,39 +1401,22 @@
                     };
                 }
                 
-                const product = (typeof PRODUCT_CATALOG !== 'undefined') ? PRODUCT_CATALOG[productId] : null;
+                const product = PRODUCT_CATALOG[productId];
+                const threshold = product?.wholesaleThreshold || 6;
+                const isWholesale = quantity >= threshold;
+                const retailPrice = product?.pricing?.retail || parseFloat(item.price) || 0;
+                const wholesalePrice = product?.pricing?.wholesale || (retailPrice * 0.8);
+                const currentPrice = isWholesale ? wholesalePrice : retailPrice;
+                const savings = isWholesale ? (retailPrice - wholesalePrice) * quantity : 0;
                 
-                if (product && product.pricing) {
-                    const threshold = product.wholesaleThreshold || 6;
-                    const isWholesale = quantity >= threshold;
-                    const retailPrice = product.pricing.retail || item.price || 0;
-                    const wholesalePrice = product.pricing.wholesale || (retailPrice * 0.7);
-                    const savings = isWholesale ? (retailPrice - wholesalePrice) * quantity : 0;
-                    
-                    return {
-                        isWholesale: isWholesale,
-                        threshold: threshold,
-                        price: isWholesale ? wholesalePrice : retailPrice,
-                        retailPrice: retailPrice,
-                        wholesalePrice: wholesalePrice,
-                        savings: savings
-                    };
-                } else {
-                    const threshold = 6;
-                    const isWholesale = quantity >= threshold;
-                    const retailPrice = parseFloat(item.price) || 0;
-                    const wholesalePrice = retailPrice * 0.8;
-                    const savings = isWholesale ? (retailPrice - wholesalePrice) * quantity : 0;
-                    
-                    return {
-                        isWholesale: isWholesale,
-                        threshold: threshold,
-                        price: isWholesale ? wholesalePrice : retailPrice,
-                        retailPrice: retailPrice,
-                        wholesalePrice: wholesalePrice,
-                        savings: savings
-                    };
-                }
+                return {
+                    isWholesale: isWholesale,
+                    threshold: threshold,
+                    price: currentPrice,
+                    retailPrice: retailPrice,
+                    wholesalePrice: wholesalePrice,
+                    savings: savings
+                };
                 
             } catch (error) {
                 console.error('Error calculating wholesale rate:', error);
@@ -1472,8 +1460,8 @@
                 
                 cartItems.forEach((item, index) => {
                     try {
-                        // Use the same wholesale calculation as product page
-                        const wholesaleInfo = calculateWholesaleRate(item.productId, item.quantity);
+                        // Use safe function for display calculations
+                        const wholesaleInfo = safeCalculateWholesaleRate(item.productId, item.quantity);
                         const itemTotal = wholesaleInfo.price * item.quantity;
                         subtotal += itemTotal;
                         totalWholesaleSavings += wholesaleInfo.savings || 0;
@@ -1500,6 +1488,19 @@
         function createCartItemHTML(item, wholesaleInfo, index) {
             const itemTotal = (wholesaleInfo.price || 0) * item.quantity;
             
+            // Ensure threshold is a valid number
+            const threshold = typeof wholesaleInfo.threshold === 'number' && !isNaN(wholesaleInfo.threshold) 
+                ? wholesaleInfo.threshold 
+                : 6;
+            
+            // Calculate how many more needed for wholesale
+            const moreNeeded = Math.max(0, threshold - item.quantity);
+            
+            // Calculate savings percentage
+            const savingsPercent = wholesaleInfo.retailPrice > 0 && wholesaleInfo.wholesalePrice > 0 
+                ? Math.round(((wholesaleInfo.retailPrice - wholesaleInfo.wholesalePrice) / wholesaleInfo.retailPrice) * 100)
+                : 0;
+            
             return `
                 <div class="cart-item" data-product-id="${item.productId}" data-index="${index}">
                     <div class="row align-items-center">
@@ -1516,11 +1517,11 @@
                             ${wholesaleInfo.isWholesale ? `
                                 <div class="mt-2">
                                     <span class="badge bg-info">Wholesale Active!</span>
-                                    <small class="text-success d-block">Saving ${Math.round(((wholesaleInfo.retailPrice - wholesaleInfo.wholesalePrice) / wholesaleInfo.retailPrice) * 100) || 0}%</small>
+                                    <small class="text-success d-block">Saving ${savingsPercent}%</small>
                                 </div>
                             ` : `
                                 <small class="text-muted d-block mt-1">
-                                    Need ${Math.max(0, wholesaleInfo.threshold - item.quantity)} more for wholesale
+                                    Need ${moreNeeded} more for wholesale
                                 </small>
                             `}
                         </div>
@@ -1539,9 +1540,9 @@
                         </div>
                         <div class="col-2 text-center">
                             <div class="price-display">
-                                $${(wholesaleInfo.price || 0).toFixed(2)}
-                                ${wholesaleInfo.isWholesale && wholesaleInfo.retailPrice !== wholesaleInfo.price ? `
-                                    <span class="original-price">$${(wholesaleInfo.retailPrice || 0).toFixed(2)}</span>
+                                ${(wholesaleInfo.price || 0).toFixed(2)}
+                                ${wholesaleInfo.isWholesale && wholesaleInfo.retailPrice && wholesaleInfo.retailPrice !== wholesaleInfo.price ? `
+                                    <span class="original-price">${(wholesaleInfo.retailPrice || 0).toFixed(2)}</span>
                                 ` : ''}
                             </div>
                             <small class="text-muted">each</small>
@@ -1818,7 +1819,7 @@
                 const existingIndex = cartItems.findIndex(item => item.productId === product.id);
                 if (existingIndex >= 0) {
                     cartItems[existingIndex].quantity += 1;
-                    // Use same calculation as product page
+                    // Use same calculation as product page for pricing
                     if (typeof calculateWholesaleRate === 'function') {
                         const wholesaleInfo = calculateWholesaleRate(product.id, cartItems[existingIndex].quantity);
                         cartItems[existingIndex].price = wholesaleInfo.price;
