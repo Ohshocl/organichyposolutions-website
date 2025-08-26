@@ -143,46 +143,6 @@
             box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
         }
         
-        /* Hide web elements when printing */
-        @media print {
-            .web-header,
-            .print-controls,
-            .web-footer {
-                display: none !important;
-            }
-            
-            body {
-                background: white;
-                margin: 0;
-                padding: 0;
-            }
-            
-            .main-content {
-                max-width: none;
-                margin: 0;
-                padding: 0;
-            }
-            
-            .product-section {
-                page-break-before: always;
-                margin: 0;
-                padding: 20px;
-            }
-            
-            .product-section:first-child {
-                page-break-before: auto;
-            }
-            
-            .label {
-                box-shadow: none;
-                border: 2px solid #000;
-            }
-            
-            .print-guide {
-                display: none;
-            }
-        }
-        
         .product-section {
             margin-bottom: 40px;
             page-break-after: always;
@@ -236,7 +196,7 @@
             padding: 15px;
         }
         
-        .main-content {
+        .label .main-content {
             padding: 20px;
             text-align: center;
             height: calc(100% - 140px);
@@ -302,6 +262,11 @@
             box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
         }
         
+        .professional-strength {
+            background: linear-gradient(45deg, #dc2626, #ef4444);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+        }
+        
         .certification-area {
             display: flex;
             justify-content: center;
@@ -322,6 +287,18 @@
             background: linear-gradient(45deg, #2E5EAA, #1e3d72);
             color: white;
             box-shadow: 0 3px 8px rgba(46, 94, 170, 0.3);
+        }
+        
+        .save-badge {
+            background: linear-gradient(45deg, #dc2626, #ef4444);
+            color: white;
+            box-shadow: 0 3px 8px rgba(220, 38, 38, 0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
         
         .key-benefits {
@@ -631,7 +608,7 @@
             }
         }
 
-        /* Enhanced print-specific styles */
+        /* CRITICAL FIX: Enhanced print-specific styles */
         @media print {
             * {
                 -webkit-print-color-adjust: exact !important;
@@ -643,10 +620,11 @@
                 background: white !important;
                 margin: 0 !important;
                 padding: 0 !important;
-                font-size: 12pt;
-                line-height: 1.2;
+                font-size: 12pt !important;
+                line-height: 1.2 !important;
             }
             
+            /* Hide web elements when printing */
             .web-header,
             .print-controls,
             .web-footer,
@@ -660,15 +638,17 @@
                 padding: 0 !important;
             }
             
-            /* Ensure each product section starts on a new page */
+            /* CRITICAL: Each product section gets its own page */
             .product-section {
                 page-break-before: always !important;
                 page-break-after: avoid !important;
                 page-break-inside: avoid !important;
                 margin: 0 !important;
                 padding: 0.25in !important;
-                min-height: 0 !important;
-                height: auto !important;
+                min-height: 10in !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: flex-start !important;
             }
             
             .product-section:first-child {
@@ -677,11 +657,13 @@
             
             .product-title {
                 page-break-after: avoid !important;
-                margin: 0 0 0.2in 0 !important;
+                margin: 0 0 0.25in 0 !important;
                 font-size: 14pt !important;
+                font-weight: bold !important;
+                text-align: center !important;
             }
             
-            /* Label container for side-by-side printing */
+            /* CRITICAL: Side-by-side label layout */
             .label-container {
                 display: flex !important;
                 justify-content: center !important;
@@ -690,7 +672,7 @@
                 margin: 0 !important;
             }
             
-            /* Fixed label dimensions for consistent printing */
+            /* CRITICAL: Fixed dimensions for consistent printing */
             .label {
                 width: 4in !important;
                 height: 6in !important;
@@ -709,34 +691,37 @@
                 padding: 0 !important;
                 display: flex !important;
                 flex-direction: column !important;
+                position: relative !important;
             }
             
-            /* Ensure header section maintains proportions */
+            /* Header section proportions for print */
             .header-section {
-                height: 1.2in !important;
+                height: 1.25in !important;
                 flex-shrink: 0 !important;
                 page-break-inside: avoid !important;
             }
             
-            .main-content {
-                height: calc(6in - 1.2in) !important;
+            .label .main-content {
+                height: calc(6in - 1.25in) !important;
                 flex: 1 !important;
                 page-break-inside: avoid !important;
                 overflow: hidden !important;
+                padding: 12pt !important;
             }
             
             .back-header {
-                height: 0.8in !important;
+                height: 0.75in !important;
                 flex-shrink: 0 !important;
                 page-break-inside: avoid !important;
             }
             
             .back-content {
-                height: calc(6in - 0.8in) !important;
+                height: calc(6in - 0.75in) !important;
                 flex: 1 !important;
                 page-break-inside: avoid !important;
                 overflow: hidden !important;
-                font-size: 9pt !important;
+                font-size: 8pt !important;
+                padding: 10pt !important;
             }
             
             /* Logo sizing for print */
@@ -747,79 +732,44 @@
             
             /* Font sizing for print readability */
             .product-name {
-                font-size: 16pt !important;
+                font-size: 14pt !important;
                 line-height: 1.1 !important;
             }
             
             .product-subtitle {
-                font-size: 11pt !important;
-            }
-            
-            .size-indicator {
-                font-size: 14pt !important;
-                padding: 8pt 20pt !important;
-            }
-            
-            .ppm-indicator {
-                font-size: 10pt !important;
-                padding: 6pt 12pt !important;
-            }
-            
-            .key-benefits h4 {
-                font-size: 10pt !important;
-            }
-            
-            .key-benefits p {
                 font-size: 9pt !important;
             }
             
-            .warning-strip {
+            .size-indicator {
+                font-size: 12pt !important;
+                padding: 6pt 16pt !important;
+            }
+            
+            .ppm-indicator {
+                font-size: 8pt !important;
+                padding: 4pt 8pt !important;
+            }
+            
+            .key-benefits h4 {
                 font-size: 8pt !important;
             }
             
+            .key-benefits p {
+                font-size: 7pt !important;
+            }
+            
+            .warning-strip {
+                font-size: 7pt !important;
+            }
+            
             .label-title {
-                font-size: 10pt !important;
+                font-size: 9pt !important;
             }
             
             /* Print page setup */
             @page {
                 size: 8.5in 11in;
                 margin: 0.5in;
-                margin-top: 0.3in;
-                margin-bottom: 0.3in;
-            }
-            
-            /* Avoid widows and orphans */
-            h1, h2, h3, h4, h5, h6 {
-                page-break-after: avoid !important;
-                page-break-inside: avoid !important;
-            }
-            
-            p {
-                orphans: 3;
-                widows: 3;
-            }
-        }
-        
-        /* Print preview styles */
-        @media screen and (max-width: 1024px) {
-            .label {
-                transform: scale(0.8);
-                transform-origin: top center;
-                margin-bottom: 20px;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .label-container {
-                flex-direction: column;
-                align-items: center;
-                gap: 15px;
-            }
-            
-            .label {
-                width: 90%;
-                max-width: 384px;
             }
         }
     </style>
@@ -846,17 +796,26 @@
             
             <div class="print-controls">
                 <button onclick="window.print()">Print All Labels</button>
-                <button onclick="printSection('baby-care')">Print Baby Care</button>
-                <button onclick="printSection('veterinary')">Print Veterinary</button>
-                <button onclick="printSection('skin-care')">Print Skin Care</button>
-                <button onclick="printSection('bundle')">Print Bundles</button>
+                <button onclick="printSection('bundle')">Print Best Value Bundles</button>
+                <button onclick="printSection('ready-to-use')">Print Ready-to-Use Products</button>
+                <button onclick="printSection('travel-size')">Print Travel Size Products</button>
             </div>
         </div>
 
     <script>
         function printSection(category) {
-            // Create a new window with only the selected category
-            const sections = document.querySelectorAll(`.${category}`);
+            let sections = [];
+            
+            if (category === 'bundle') {
+                sections = document.querySelectorAll('.bundle');
+            } else if (category === 'ready-to-use') {
+                sections = document.querySelectorAll('[data-category="ready-to-use"]');
+            } else if (category === 'travel-size') {
+                sections = document.querySelectorAll('[data-category="travel-size"]');
+            } else {
+                sections = document.querySelectorAll(`.${category}`);
+            }
+            
             if (sections.length === 0) {
                 alert('No products found in this category');
                 return;
@@ -870,9 +829,10 @@
                 <html>
                 <head>
                     <title>OHS ${category} Labels</title>
+                    <meta charset="UTF-8">
                     ${css}
                 </head>
-                <body style="padding: 20px;">
+                <body>
             `;
             
             sections.forEach(section => {
@@ -890,1050 +850,13 @@
             
             setTimeout(() => {
                 printWindow.print();
-            }, 500);
+            }, 1000);
         }
     </script>
     
-    <!-- 1. 100ml Organic Baby Diaper Rash Gel -->
+    <!-- 1. OHS Organic Complete Care Bundle - BEST VALUE -->
     <div class="product-section">
-        <div class="product-title">1. 100ml Organic Baby Diaper Rash Gel</div>
-        <div class="label-container">
-            <div class="label front-label baby-care">
-                <div class="header-section">
-                    <svg class="ohs-logo-header" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="200" height="80" fill="#2E5EAA" rx="4"/>
-                        <text x="100" y="45" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="28" font-weight="bold">OHS</text>
-                        <text x="100" y="62" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="8" opacity="0.9">Organic HypoSolutions</text>
-                        <path d="M 160 20 Q 170 10 180 20 Q 170 30 160 20" fill="#4ADE80"/>
-                        <path d="M 165 15 Q 175 5 185 15 Q 175 25 165 15" fill="#22C55E"/>
-                        <path d="M 25 25 Q 20 30 20 35 Q 20 40 25 40 Q 30 40 30 35 Q 30 30 25 25" fill="#7DD3FC" opacity="0.8"/>
-                    </svg>
-                    <div class="ppm-indicator">200 PPM</div>
-                </div>
-                <div class="main-content">
-                    <div>
-                        <div class="product-name">100ml Organic Baby Diaper Rash Gel</div>
-                        <div class="product-subtitle">USDA Certified therapeutic skin health formula</div>
-                        <div class="size-indicator">100ml</div>
-                        <div class="certification-area">
-                            <div class="badge organic-badge">USDA Organic</div>
-                        </div>
-                        <div class="key-benefits">
-                            <h4>Food & Kid Safe</h4>
-                            <p>Promotes healing • Reduces inflammation • Antimicrobial protection • Baby safe formula</p>
-                        </div>
-                    </div>
-                    <div class="warning-strip">
-                        ✓ Food & kid safe • EPA registered • Do not mix with other chemicals
-                    </div>
-                </div>
-            </div>
-            
-            <div class="label back-label baby-care">
-                <div class="back-header">
-                    <div class="label-title">100ml Organic Baby Diaper Rash Gel - USDA Certified</div>
-                </div>
-                <div class="back-content">
-                    <h3>Directions for Use</h3>
-                    <p><strong>Baby Care:</strong> Apply thin layer to clean, dry skin. Gentle enough for daily use on sensitive skin. Safe for babies and children.</p>
-                    
-                    <h3>Food & Kid Safe Formula</h3>
-                    <p>USDA Organic therapeutic formula promotes healing, reduces inflammation, and provides antimicrobial protection. Safe around food and children when used as directed.</p>
-                    
-                    <h3>Active Ingredient</h3>
-                    <p>Pure Hypochlorous Acid (HOCl) 200 PPM - Therapeutic skin health formula</p>
-                    
-                    <div class="legal-warnings">
-                        <h4>✓ FOOD & KID SAFE</h4>
-                        <p>USDA Organic certified safe formula. EPA registered. Do not mix with other chemicals. For external use only. If irritation occurs, discontinue use.</p>
-                    </div>
-                    
-                    <div class="company-info">
-                        <strong>DISTRIBUTED BY:</strong><br>
-                        Organic HypoSolutions LLC<br>
-                        Salt Lake City, UT 84101<br>
-                        USDA Organic & EPA Registered<br>
-                        Made in Utah, USA
-                    </div>
-                    
-                    <h3>Storage</h3>
-                    <p>Store in cool, dry place. Loses efficacy after 100°F. Food and kid safe when used as directed. Completely biodegradable.</p>
-                    
-                    <div class="website-info">
-                        www.organichyposolutions.com<br>
-                        ohshocl@gmail.com
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 2. 16oz Organic Equine Healing & Udder Gel -->
-    <div class="product-section">
-        <div class="product-title">2. 16oz Organic Equine Healing & Udder Gel</div>
-        <div class="label-container">
-            <div class="label front-label veterinary">
-                <div class="header-section">
-                    <svg class="ohs-logo-header" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="200" height="80" fill="#2E5EAA" rx="4"/>
-                        <text x="100" y="45" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="28" font-weight="bold">OHS</text>
-                        <text x="100" y="62" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="8" opacity="0.9">Organic HypoSolutions</text>
-                        <path d="M 160 20 Q 170 10 180 20 Q 170 30 160 20" fill="#4ADE80"/>
-                        <path d="M 165 15 Q 175 5 185 15 Q 175 25 165 15" fill="#22C55E"/>
-                        <path d="M 25 25 Q 20 30 20 35 Q 20 40 25 40 Q 30 40 30 35 Q 30 30 25 25" fill="#7DD3FC" opacity="0.8"/>
-                    </svg>
-                    <div class="ppm-indicator">200 PPM</div>
-                </div>
-                <div class="main-content">
-                    <div>
-                        <div class="product-name">16oz Organic Equine Healing & Udder Gel</div>
-                        <div class="product-subtitle">USDA Certified veterinary therapeutic formula</div>
-                        <div class="size-indicator">16oz</div>
-                        <div class="certification-area">
-                            <div class="badge organic-badge">USDA Organic</div>
-                        </div>
-                        <div class="key-benefits">
-                            <h4>Veterinary Grade</h4>
-                            <p>Professional equine care • Udder health • Antimicrobial protection • Safe for animals</p>
-                        </div>
-                    </div>
-                    <div class="warning-strip">
-                        ✓ Animal safe • EPA registered • Do not mix with other chemicals
-                    </div>
-                </div>
-            </div>
-            
-            <div class="label back-label veterinary">
-                <div class="back-header">
-                    <div class="label-title">16oz Organic Equine Healing & Udder Gel - USDA Certified</div>
-                </div>
-                <div class="back-content">
-                    <h3>Veterinary Applications</h3>
-                    <p><strong>Equine & Livestock:</strong> Apply to affected areas for cuts, scrapes, and skin irritations. Safe for udder care and general veterinary use.</p>
-                    
-                    <h3>Professional Formulation</h3>
-                    <p>USDA Organic therapeutic formula promotes healing, reduces inflammation, and provides antimicrobial protection. Ideal for professional veterinary settings.</p>
-                    
-                    <h3>Active Ingredient</h3>
-                    <p>Pure Hypochlorous Acid (HOCl) 200 PPM - Veterinary-grade therapeutic formula</p>
-                    
-                    <div class="legal-warnings">
-                        <h4>✓ ANIMAL SAFE</h4>
-                        <p>USDA Organic certified safe for animals. EPA registered. Do not mix with other chemicals. Consult veterinarian for sensitive animals.</p>
-                    </div>
-                    
-                    <div class="company-info">
-                        <strong>DISTRIBUTED BY:</strong><br>
-                        Organic HypoSolutions LLC<br>
-                        Salt Lake City, UT 84101<br>
-                        USDA Organic & EPA Registered<br>
-                        Made in Utah, USA
-                    </div>
-                    
-                    <h3>Storage</h3>
-                    <p>Store in cool, dry area. Loses efficacy after 100°F. Safe for animals when used as directed. Completely biodegradable.</p>
-                    
-                    <div class="website-info">
-                        www.organichyposolutions.com<br>
-                        ohshocl@gmail.com
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 3. 1 Gallon Organic 500ppm Veterinary Solution -->
-    <div class="product-section">
-        <div class="product-title">3. 1 Gallon Organic 500ppm Veterinary Solution</div>
-        <div class="label-container">
-            <div class="label front-label veterinary">
-                <div class="header-section">
-                    <svg class="ohs-logo-header" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="200" height="80" fill="#2E5EAA" rx="4"/>
-                        <text x="100" y="45" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="28" font-weight="bold">OHS</text>
-                        <text x="100" y="62" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="8" opacity="0.9">Organic HypoSolutions</text>
-                        <path d="M 160 20 Q 170 10 180 20 Q 170 30 160 20" fill="#4ADE80"/>
-                        <path d="M 165 15 Q 175 5 185 15 Q 175 25 165 15" fill="#22C55E"/>
-                        <path d="M 25 25 Q 20 30 20 35 Q 20 40 25 40 Q 30 40 30 35 Q 30 30 25 25" fill="#7DD3FC" opacity="0.8"/>
-                    </svg>
-                    <div class="ppm-indicator ppm-500">500 PPM</div>
-                </div>
-                <div class="main-content">
-                    <div>
-                        <div class="product-name">1 Gallon Organic 500ppm Veterinary Solution</div>
-                        <div class="product-subtitle">USDA Certified professional veterinary strength</div>
-                        <div class="size-indicator">1 Gallon</div>
-                        <div class="certification-area">
-                            <div class="badge organic-badge">USDA Organic</div>
-                        </div>
-                        <div class="key-benefits">
-                            <h4>Professional Strength</h4>
-                            <p>500 PPM concentration • Veterinary grade • Professional formulation • Maximum effectiveness</p>
-                        </div>
-                    </div>
-                    <div class="warning-strip">
-                        ✓ Professional strength • EPA registered • Do not mix with other chemicals
-                    </div>
-                </div>
-            </div>
-            
-            <div class="label back-label veterinary">
-                <div class="back-header">
-                    <div class="label-title">1 Gallon Organic 500ppm Veterinary Solution - USDA Certified</div>
-                </div>
-                <div class="back-content">
-                    <h3>Professional Veterinary Use</h3>
-                    <p><strong>High Strength:</strong> 500 PPM formulation for professional veterinary applications. Suitable for large animal facilities and intensive care.</p>
-                    
-                    <h3>Premium Formulation</h3>
-                    <p>USDA Organic professional-grade solution with hypochlorous acid technology. Kills 99.9% of bacteria, viruses, and fungi. Safe for animal contact when properly diluted.</p>
-                    
-                    <h3>Active Ingredient</h3>
-                    <p>Hypochlorous Acid (HOCl) 500 PPM - Maximum strength veterinary formulation</p>
-                    
-                    <div class="legal-warnings">
-                        <h4>✓ PROFESSIONAL GRADE</h4>
-                        <p>USDA Organic certified professional formula. EPA registered. Do not mix with other chemicals. May require dilution for some applications.</p>
-                    </div>
-                    
-                    <div class="company-info">
-                        <strong>DISTRIBUTED BY:</strong><br>
-                        Organic HypoSolutions LLC<br>
-                        Salt Lake City, UT 84101<br>
-                        USDA Organic & EPA Registered<br>
-                        Made in Utah, USA
-                    </div>
-                    
-                    <h3>Storage & Disposal</h3>
-                    <p>Store in cool, dry location. Loses efficacy after 100°F. Professional grade formula. Completely biodegradable.</p>
-                    
-                    <div class="website-info">
-                        www.organichyposolutions.com<br>
-                        ohshocl@gmail.com
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 4. 1 Gallon Organic Laundry Booster -->
-    <div class="product-section">
-        <div class="product-title">4. 1 Gallon Organic Laundry Booster</div>
-        <div class="label-container">
-            <div class="label front-label laundry">
-                <div class="header-section">
-                    <svg class="ohs-logo-header" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="200" height="80" fill="#2E5EAA" rx="4"/>
-                        <text x="100" y="45" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="28" font-weight="bold">OHS</text>
-                        <text x="100" y="62" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="8" opacity="0.9">Organic HypoSolutions</text>
-                        <path d="M 160 20 Q 170 10 180 20 Q 170 30 160 20" fill="#4ADE80"/>
-                        <path d="M 165 15 Q 175 5 185 15 Q 175 25 165 15" fill="#22C55E"/>
-                        <path d="M 25 25 Q 20 30 20 35 Q 20 40 25 40 Q 30 40 30 35 Q 30 30 25 25" fill="#7DD3FC" opacity="0.8"/>
-                    </svg>
-                    <div class="ppm-indicator">200 PPM</div>
-                </div>
-                <div class="main-content">
-                    <div>
-                        <div class="product-name">1 Gallon Organic Laundry Booster</div>
-                        <div class="product-subtitle">USDA Certified laundry enhancement solution</div>
-                        <div class="size-indicator">1 Gallon</div>
-                        <div class="certification-area">
-                            <div class="badge organic-badge">USDA Organic</div>
-                        </div>
-                        <div class="key-benefits">
-                            <h4>Food & Kid Safe</h4>
-                            <p>Odor elimination • Stain removal • Fabric safe • Commercial grade volume</p>
-                        </div>
-                    </div>
-                    <div class="warning-strip">
-                        ✓ Food & kid safe • EPA registered • Do not mix with bleach
-                    </div>
-                </div>
-            </div>
-            
-            <div class="label back-label laundry">
-                <div class="back-header">
-                    <div class="label-title">1 Gallon Organic Laundry Booster - USDA Certified</div>
-                </div>
-                <div class="back-content">
-                    <h3>Laundry Applications</h3>
-                    <p><strong>Add to Wash:</strong> Add 1-2 oz per load for enhanced cleaning power. Safe for all fabrics and washing machines. Food and kid safe formula.</p>
-                    
-                    <h3>Premium Cleaning Solution</h3>
-                    <p>USDA Organic complete cleaning solution for large businesses and facilities. Cost-effective pricing with premium performance for comprehensive cleaning needs.</p>
-                    
-                    <h3>Active Ingredient</h3>
-                    <p>Hypochlorous Acid (HOCl) 200 PPM - Laundry-safe cleaning enhancement</p>
-                    
-                    <div class="legal-warnings">
-                        <h4>✓ FOOD & KID SAFE</h4>
-                        <p>USDA Organic certified safe formula. EPA registered. Do not mix with bleach or other laundry chemicals. Use only as directed.</p>
-                    </div>
-                    
-                    <div class="company-info">
-                        <strong>DISTRIBUTED BY:</strong><br>
-                        Organic HypoSolutions LLC<br>
-                        Salt Lake City, UT 84101<br>
-                        USDA Organic & EPA Registered<br>
-                        Made in Utah, USA
-                    </div>
-                    
-                    <h3>Storage</h3>
-                    <p>Store away from laundry detergents. Loses efficacy after 100°F. Food and kid safe when used as directed. Completely biodegradable.</p>
-                    
-                    <div class="website-info">
-                        www.organichyposolutions.com<br>
-                        ohshocl@gmail.com
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 5. 1 Gallon Organic Ready-to-Use Solution -->
-    <div class="product-section">
-        <div class="product-title">5. 1 Gallon Organic Ready-to-Use Solution</div>
-        <div class="label-container">
-            <div class="label front-label">
-                <div class="header-section">
-                    <svg class="ohs-logo-header" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="200" height="80" fill="#2E5EAA" rx="4"/>
-                        <text x="100" y="45" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="28" font-weight="bold">OHS</text>
-                        <text x="100" y="62" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="8" opacity="0.9">Organic HypoSolutions</text>
-                        <path d="M 160 20 Q 170 10 180 20 Q 170 30 160 20" fill="#4ADE80"/>
-                        <path d="M 165 15 Q 175 5 185 15 Q 175 25 165 15" fill="#22C55E"/>
-                        <path d="M 25 25 Q 20 30 20 35 Q 20 40 25 40 Q 30 40 30 35 Q 30 30 25 25" fill="#7DD3FC" opacity="0.8"/>
-                    </svg>
-                    <div class="ppm-indicator">200 PPM</div>
-                </div>
-                <div class="main-content">
-                    <div>
-                        <div class="product-name">1 Gallon Organic Ready-to-Use Solution</div>
-                        <div class="product-subtitle">USDA Certified multi-surface cleaner & disinfectant</div>
-                        <div class="size-indicator">1 Gallon</div>
-                        <div class="certification-area">
-                            <div class="badge organic-badge">USDA Organic</div>
-                        </div>
-                        <div class="key-benefits">
-                            <h4>Food & Kid Safe</h4>
-                            <p>Kills 99.9% of pathogens • Food contact safe • No rinse required • Commercial volume</p>
-                        </div>
-                    </div>
-                    <div class="warning-strip">
-                        ✓ Food & kid safe • EPA registered • Ready to use
-                    </div>
-                </div>
-            </div>
-            
-            <div class="label back-label">
-                <div class="back-header">
-                    <div class="label-title">1 Gallon Organic Ready-to-Use Solution - USDA Certified</div>
-                </div>
-                <div class="back-content">
-                    <h3>Directions for Use</h3>
-                    <p><strong>General Cleaning:</strong> Spray directly on surface. Wipe with clean cloth or let air dry. No rinse required for food contact surfaces.</p>
-                    
-                    <h3>Professional Formulation</h3>
-                    <p>USDA Organic ready-to-use hypochlorous acid cleaner and disinfectant. Kills 99.9% of pathogens including bacteria, viruses, and fungi.</p>
-                    
-                    <h3>Active Ingredient</h3>
-                    <p>Hypochlorous Acid (HOCl) 200 PPM - Ready-to-use concentration</p>
-                    
-                    <div class="legal-warnings">
-                        <h4>✓ FOOD & KID SAFE</h4>
-                        <p>USDA Organic certified safe formula. EPA registered (#97801-1). Safe for food contact surfaces, toys, and skin.</p>
-                    </div>
-                    
-                    <div class="company-info">
-                        <strong>DISTRIBUTED BY:</strong><br>
-                        Organic HypoSolutions LLC<br>
-                        Salt Lake City, UT 84101<br>
-                        USDA Organic (#Z-699995-2008)<br>
-                        EPA Registered (#97801-1)<br>
-                        Made in Utah, USA
-                    </div>
-                    
-                    <h3>Storage</h3>
-                    <p>Store in original container. Loses efficacy after 100°F. Food and kid safe. Completely biodegradable.</p>
-                    
-                    <div class="website-info">
-                        www.organichyposolutions.com<br>
-                        ohshocl@gmail.com
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 6. 32oz Organic 500ppm Pet+ & Equine Solution -->
-    <div class="product-section">
-        <div class="product-title">6. 32oz Organic 500ppm Pet+ & Equine Solution</div>
-        <div class="label-container">
-            <div class="label front-label veterinary">
-                <div class="header-section">
-                    <svg class="ohs-logo-header" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="200" height="80" fill="#2E5EAA" rx="4"/>
-                        <text x="100" y="45" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="28" font-weight="bold">OHS</text>
-                        <text x="100" y="62" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="8" opacity="0.9">Organic HypoSolutions</text>
-                        <path d="M 160 20 Q 170 10 180 20 Q 170 30 160 20" fill="#4ADE80"/>
-                        <path d="M 165 15 Q 175 5 185 15 Q 175 25 165 15" fill="#22C55E"/>
-                        <path d="M 25 25 Q 20 30 20 35 Q 20 40 25 40 Q 30 40 30 35 Q 30 30 25 25" fill="#7DD3FC" opacity="0.8"/>
-                    </svg>
-                    <div class="ppm-indicator ppm-500">500 PPM</div>
-                </div>
-                <div class="main-content">
-                    <div>
-                        <div class="product-name">32oz Organic 500ppm Pet+ & Equine Solution</div>
-                        <div class="product-subtitle">USDA Certified professional veterinary formula</div>
-                        <div class="size-indicator">32oz</div>
-                        <div class="certification-area">
-                            <div class="badge organic-badge">USDA Organic</div>
-                        </div>
-                        <div class="key-benefits">
-                            <h4>Veterinary Strength</h4>
-                            <p>500 PPM formula • Pet & equine care • Teat dip safe • Professional grade</p>
-                        </div>
-                    </div>
-                    <div class="warning-strip">
-                        ✓ Animal safe • EPA registered • Professional strength
-                    </div>
-                </div>
-            </div>
-            
-            <div class="label back-label veterinary">
-                <div class="back-header">
-                    <div class="label-title">32oz Organic 500ppm Pet+ & Equine Solution - USDA Certified</div>
-                </div>
-                <div class="back-content">
-                    <h3>Veterinary Applications</h3>
-                    <p><strong>Pet & Equine:</strong> Apply directly to affected areas. Safe for teat dips, wound care, and general veterinary use. 500 PPM professional strength.</p>
-                    
-                    <h3>Professional Formulation</h3>
-                    <p>USDA Organic high-strength veterinary solution. Safe for all animals while providing superior antimicrobial protection.</p>
-                    
-                    <h3>Active Ingredient</h3>
-                    <p>Hypochlorous Acid (HOCl) 500 PPM - Veterinary strength formula</p>
-                    
-                    <div class="legal-warnings">
-                        <h4>✓ ANIMAL SAFE</h4>
-                        <p>USDA Organic certified. EPA registered. Professional strength formula. May dilute for sensitive applications.</p>
-                    </div>
-                    
-                    <div class="company-info">
-                        <strong>DISTRIBUTED BY:</strong><br>
-                        Organic HypoSolutions LLC<br>
-                        Salt Lake City, UT 84101<br>
-                        USDA Organic & EPA Registered<br>
-                        Made in Utah, USA
-                    </div>
-                    
-                    <h3>Storage</h3>
-                    <p>Store in cool, dry place. Loses efficacy after 100°F. Safe for animals. Completely biodegradable.</p>
-                    
-                    <div class="website-info">
-                        www.organichyposolutions.com<br>
-                        ohshocl@gmail.com
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 7. 32oz Organic Laundry Booster -->
-    <div class="product-section">
-        <div class="product-title">7. 32oz Organic Laundry Booster</div>
-        <div class="label-container">
-            <div class="label front-label laundry">
-                <div class="header-section">
-                    <svg class="ohs-logo-header" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="200" height="80" fill="#2E5EAA" rx="4"/>
-                        <text x="100" y="45" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="28" font-weight="bold">OHS</text>
-                        <text x="100" y="62" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="8" opacity="0.9">Organic HypoSolutions</text>
-                        <path d="M 160 20 Q 170 10 180 20 Q 170 30 160 20" fill="#4ADE80"/>
-                        <path d="M 165 15 Q 175 5 185 15 Q 175 25 165 15" fill="#22C55E"/>
-                        <path d="M 25 25 Q 20 30 20 35 Q 20 40 25 40 Q 30 40 30 35 Q 30 30 25 25" fill="#7DD3FC" opacity="0.8"/>
-                    </svg>
-                    <div class="ppm-indicator">200 PPM</div>
-                </div>
-                <div class="main-content">
-                    <div>
-                        <div class="product-name">32oz Organic Laundry Booster</div>
-                        <div class="product-subtitle">USDA Certified laundry enhancement solution</div>
-                        <div class="size-indicator">32oz</div>
-                        <div class="certification-area">
-                            <div class="badge organic-badge">USDA Organic</div>
-                        </div>
-                        <div class="key-benefits">
-                            <h4>Food & Kid Safe</h4>
-                            <p>Odor elimination • Brightens whites • Fabric safe • Convenient size</p>
-                        </div>
-                    </div>
-                    <div class="warning-strip">
-                        ✓ Food & kid safe • EPA registered • Eco-friendly formula
-                    </div>
-                </div>
-            </div>
-            
-            <div class="label back-label laundry">
-                <div class="back-header">
-                    <div class="label-title">32oz Organic Laundry Booster - USDA Certified</div>
-                </div>
-                <div class="back-content">
-                    <h3>Laundry Applications</h3>
-                    <p><strong>Add to Wash:</strong> Add 1-2 oz per load. Safe for all fabrics, colors, and washing machines. Perfect for household use.</p>
-                    
-                    <h3>Eco-Friendly Formula</h3>
-                    <p>USDA Organic laundry booster eliminates odors, brightens whites, and provides antimicrobial protection to fabrics.</p>
-                    
-                    <h3>Active Ingredient</h3>
-                    <p>Hypochlorous Acid (HOCl) 200 PPM - Fabric-safe formula</p>
-                    
-                    <div class="legal-warnings">
-                        <h4>✓ FOOD & KID SAFE</h4>
-                        <p>USDA Organic certified. EPA registered. Do not mix with bleach. Safe for sensitive skin.</p>
-                    </div>
-                    
-                    <div class="company-info">
-                        <strong>DISTRIBUTED BY:</strong><br>
-                        Organic HypoSolutions LLC<br>
-                        Salt Lake City, UT 84101<br>
-                        USDA Organic & EPA Registered<br>
-                        Made in Utah, USA
-                    </div>
-                    
-                    <h3>Storage</h3>
-                    <p>Store in original container. Loses efficacy after 100°F. Completely biodegradable.</p>
-                    
-                    <div class="website-info">
-                        www.organichyposolutions.com<br>
-                        ohshocl@gmail.com
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 8. 32oz Organic Pet Safe Cleaner & Deodorizer -->
-    <div class="product-section">
-        <div class="product-title">8. 32oz Organic Pet Safe Cleaner & Deodorizer</div>
-        <div class="label-container">
-            <div class="label front-label pet-care">
-                <div class="header-section">
-                    <svg class="ohs-logo-header" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="200" height="80" fill="#2E5EAA" rx="4"/>
-                        <text x="100" y="45" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="28" font-weight="bold">OHS</text>
-                        <text x="100" y="62" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="8" opacity="0.9">Organic HypoSolutions</text>
-                        <path d="M 160 20 Q 170 10 180 20 Q 170 30 160 20" fill="#4ADE80"/>
-                        <path d="M 165 15 Q 175 5 185 15 Q 175 25 165 15" fill="#22C55E"/>
-                        <path d="M 25 25 Q 20 30 20 35 Q 20 40 25 40 Q 30 40 30 35 Q 30 30 25 25" fill="#7DD3FC" opacity="0.8"/>
-                    </svg>
-                    <div class="ppm-indicator">200 PPM</div>
-                </div>
-                <div class="main-content">
-                    <div>
-                        <div class="product-name">32oz Organic Pet Safe Cleaner & Deodorizer</div>
-                        <div class="product-subtitle">USDA Certified pet-safe cleaning solution</div>
-                        <div class="size-indicator">32oz</div>
-                        <div class="certification-area">
-                            <div class="badge organic-badge">USDA Organic</div>
-                        </div>
-                        <div class="key-benefits">
-                            <h4>Pet & Kid Safe</h4>
-                            <p>Eliminates pet odors • Cleans accidents • Safe around pets • Non-toxic formula</p>
-                        </div>
-                    </div>
-                    <div class="warning-strip">
-                        ✓ Pet & kid safe • EPA registered • Non-toxic
-                    </div>
-                </div>
-            </div>
-            
-            <div class="label back-label pet-care">
-                <div class="back-header">
-                    <div class="label-title">32oz Organic Pet Safe Cleaner & Deodorizer - USDA Certified</div>
-                </div>
-                <div class="back-content">
-                    <h3>Pet Care Applications</h3>
-                    <p><strong>Pet Areas:</strong> Spray directly on pet accidents, bedding, crates, and toys. Safe for use around pets and children.</p>
-                    
-                    <h3>Safe Formula</h3>
-                    <p>USDA Organic pet-safe cleaner eliminates odors at the source, not just masking them. Safe if licked by pets.</p>
-                    
-                    <h3>Active Ingredient</h3>
-                    <p>Hypochlorous Acid (HOCl) 200 PPM - Pet-safe concentration</p>
-                    
-                    <div class="legal-warnings">
-                        <h4>✓ PET & KID SAFE</h4>
-                        <p>USDA Organic certified. EPA registered. Safe for use around pets and children. Non-toxic, non-irritating formula.</p>
-                    </div>
-                    
-                    <div class="company-info">
-                        <strong>DISTRIBUTED BY:</strong><br>
-                        Organic HypoSolutions LLC<br>
-                        Salt Lake City, UT 84101<br>
-                        USDA Organic & EPA Registered<br>
-                        Made in Utah, USA
-                    </div>
-                    
-                    <h3>Storage</h3>
-                    <p>Store in cool, dry place. Loses efficacy after 100°F. Pet safe. Completely biodegradable.</p>
-                    
-                    <div class="website-info">
-                        www.organichyposolutions.com<br>
-                        ohshocl@gmail.com
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 9. 32oz Organic Ready-to-Use Cleaner -->
-    <div class="product-section">
-        <div class="product-title">9. 32oz Organic Ready-to-Use Cleaner</div>
-        <div class="label-container">
-            <div class="label front-label">
-                <div class="header-section">
-                    <svg class="ohs-logo-header" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="200" height="80" fill="#2E5EAA" rx="4"/>
-                        <text x="100" y="45" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="28" font-weight="bold">OHS</text>
-                        <text x="100" y="62" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="8" opacity="0.9">Organic HypoSolutions</text>
-                        <path d="M 160 20 Q 170 10 180 20 Q 170 30 160 20" fill="#4ADE80"/>
-                        <path d="M 165 15 Q 175 5 185 15 Q 175 25 165 15" fill="#22C55E"/>
-                        <path d="M 25 25 Q 20 30 20 35 Q 20 40 25 40 Q 30 40 30 35 Q 30 30 25 25" fill="#7DD3FC" opacity="0.8"/>
-                    </svg>
-                    <div class="ppm-indicator">200 PPM</div>
-                </div>
-                <div class="main-content">
-                    <div>
-                        <div class="product-name">32oz Organic Ready-to-Use Cleaner</div>
-                        <div class="product-subtitle">USDA Certified multi-surface cleaner & disinfectant</div>
-                        <div class="size-indicator">32oz</div>
-                        <div class="certification-area">
-                            <div class="badge organic-badge">USDA Organic</div>
-                        </div>
-                        <div class="key-benefits">
-                            <h4>Food & Kid Safe</h4>
-                            <p>Kills 99.9% of pathogens • Food contact safe • No rinse required • Convenient size</p>
-                        </div>
-                    </div>
-                    <div class="warning-strip">
-                        ✓ Food & kid safe • EPA registered • Ready to use
-                    </div>
-                </div>
-            </div>
-            
-            <div class="label back-label">
-                <div class="back-header">
-                    <div class="label-title">32oz Organic Ready-to-Use Cleaner - USDA Certified</div>
-                </div>
-                <div class="back-content">
-                    <h3>Directions for Use</h3>
-                    <p><strong>General Cleaning:</strong> Spray on surface and wipe clean. No rinse required for food surfaces. Safe for daily use.</p>
-                    
-                    <h3>Multi-Surface Formula</h3>
-                    <p>USDA Organic cleaner safe for countertops, cutting boards, toys, and all surfaces. Kills bacteria, viruses, and fungi.</p>
-                    
-                    <h3>Active Ingredient</h3>
-                    <p>Hypochlorous Acid (HOCl) 200 PPM - Ready-to-use concentration</p>
-                    
-                    <div class="legal-warnings">
-                        <h4>✓ FOOD & KID SAFE</h4>
-                        <p>USDA Organic certified. EPA registered. Safe for food contact surfaces. No harsh chemicals or toxic fumes.</p>
-                    </div>
-                    
-                    <div class="company-info">
-                        <strong>DISTRIBUTED BY:</strong><br>
-                        Organic HypoSolutions LLC<br>
-                        Salt Lake City, UT 84101<br>
-                        USDA Organic & EPA Registered<br>
-                        Made in Utah, USA
-                    </div>
-                    
-                    <h3>Storage</h3>
-                    <p>Store in original container. Loses efficacy after 100°F. Completely biodegradable.</p>
-                    
-                    <div class="website-info">
-                        www.organichyposolutions.com<br>
-                        ohshocl@gmail.com
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 10. 3oz Organic Multi-Surface Disinfectant -->
-    <div class="product-section">
-        <div class="product-title">10. 3oz Organic Multi-Surface Disinfectant</div>
-        <div class="label-container">
-            <div class="label front-label">
-                <div class="header-section">
-                    <svg class="ohs-logo-header" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="200" height="80" fill="#2E5EAA" rx="4"/>
-                        <text x="100" y="45" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="28" font-weight="bold">OHS</text>
-                        <text x="100" y="62" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="8" opacity="0.9">Organic HypoSolutions</text>
-                        <path d="M 160 20 Q 170 10 180 20 Q 170 30 160 20" fill="#4ADE80"/>
-                        <path d="M 165 15 Q 175 5 185 15 Q 175 25 165 15" fill="#22C55E"/>
-                        <path d="M 25 25 Q 20 30 20 35 Q 20 40 25 40 Q 30 40 30 35 Q 30 30 25 25" fill="#7DD3FC" opacity="0.8"/>
-                    </svg>
-                    <div class="ppm-indicator">200 PPM</div>
-                </div>
-                <div class="main-content">
-                    <div>
-                        <div class="product-name">3oz Organic Multi-Surface Disinfectant</div>
-                        <div class="product-subtitle">USDA Certified travel-size disinfectant</div>
-                        <div class="size-indicator">3oz</div>
-                        <div class="certification-area">
-                            <div class="badge organic-badge">USDA Organic</div>
-                        </div>
-                        <div class="key-benefits">
-                            <h4>Food & Kid Safe</h4>
-                            <p>Travel-friendly • TSA compliant • Kills 99.9% of pathogens • No rinse required</p>
-                        </div>
-                    </div>
-                    <div class="warning-strip">
-                        ✓ Food & kid safe • EPA registered • Travel size
-                    </div>
-                </div>
-            </div>
-            
-            <div class="label back-label">
-                <div class="back-header">
-                    <div class="label-title">3oz Organic Multi-Surface Disinfectant - USDA Certified</div>
-                </div>
-                <div class="back-content">
-                    <h3>Directions for Use</h3>
-                    <p><strong>On-the-Go:</strong> Spray on surfaces and let air dry. Perfect for travel, office, and personal use.</p>
-                    
-                    <h3>Travel-Friendly Formula</h3>
-                    <p>USDA Organic TSA-compliant disinfectant. Safe for airplane tray tables, hotel rooms, and public surfaces.</p>
-                    
-                    <h3>Active Ingredient</h3>
-                    <p>Hypochlorous Acid (HOCl) 200 PPM - Travel-safe concentration</p>
-                    
-                    <div class="legal-warnings">
-                        <h4>✓ FOOD & KID SAFE</h4>
-                        <p>USDA Organic certified. EPA registered. TSA compliant 3oz size. Safe for all surfaces.</p>
-                    </div>
-                    
-                    <div class="company-info">
-                        <strong>DISTRIBUTED BY:</strong><br>
-                        Organic HypoSolutions LLC<br>
-                        Salt Lake City, UT 84101<br>
-                        USDA Organic & EPA Registered<br>
-                        Made in Utah, USA
-                    </div>
-                    
-                    <h3>Storage</h3>
-                    <p>Store in cool, dry place. Perfect for travel bags and purses.</p>
-                    
-                    <div class="website-info">
-                        www.organichyposolutions.com<br>
-                        ohshocl@gmail.com
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 11. 3oz Organic Skin Health Mist -->
-    <div class="product-section">
-        <div class="product-title">11. 3oz Organic Skin Health Mist</div>
-        <div class="label-container">
-            <div class="label front-label skin-care">
-                <div class="header-section">
-                    <svg class="ohs-logo-header" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="200" height="80" fill="#2E5EAA" rx="4"/>
-                        <text x="100" y="45" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="28" font-weight="bold">OHS</text>
-                        <text x="100" y="62" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="8" opacity="0.9">Organic HypoSolutions</text>
-                        <path d="M 160 20 Q 170 10 180 20 Q 170 30 160 20" fill="#4ADE80"/>
-                        <path d="M 165 15 Q 175 5 185 15 Q 175 25 165 15" fill="#22C55E"/>
-                        <path d="M 25 25 Q 20 30 20 35 Q 20 40 25 40 Q 30 40 30 35 Q 30 30 25 25" fill="#7DD3FC" opacity="0.8"/>
-                    </svg>
-                    <div class="ppm-indicator">200 PPM</div>
-                </div>
-                <div class="main-content">
-                    <div>
-                        <div class="product-name">3oz Organic Skin Health Mist</div>
-                        <div class="product-subtitle">USDA Certified therapeutic skin care mist</div>
-                        <div class="size-indicator">3oz</div>
-                        <div class="certification-area">
-                            <div class="badge organic-badge">USDA Organic</div>
-                        </div>
-                        <div class="key-benefits">
-                            <h4>Therapeutic Care</h4>
-                            <p>Promotes healing • Reduces inflammation • Travel size • Sensitive skin safe</p>
-                        </div>
-                    </div>
-                    <div class="warning-strip">
-                        ✓ Skin safe • EPA registered • Travel friendly
-                    </div>
-                </div>
-            </div>
-            
-            <div class="label back-label skin-care">
-                <div class="back-header">
-                    <div class="label-title">3oz Organic Skin Health Mist - USDA Certified</div>
-                </div>
-                <div class="back-content">
-                    <h3>Skin Care Applications</h3>
-                    <p><strong>Therapeutic Use:</strong> Mist on clean skin for cuts, scrapes, irritations. Safe for face and sensitive areas.</p>
-                    
-                    <h3>Healing Formula</h3>
-                    <p>USDA Organic therapeutic mist promotes natural healing and reduces inflammation. Perfect for daily skin care.</p>
-                    
-                    <h3>Active Ingredient</h3>
-                    <p>Hypochlorous Acid (HOCl) 200 PPM - Therapeutic skin formula</p>
-                    
-                    <div class="legal-warnings">
-                        <h4>✓ SKIN SAFE</h4>
-                        <p>USDA Organic certified. EPA registered. For external use only. Safe for sensitive skin.</p>
-                    </div>
-                    
-                    <div class="company-info">
-                        <strong>DISTRIBUTED BY:</strong><br>
-                        Organic HypoSolutions LLC<br>
-                        Salt Lake City, UT 84101<br>
-                        USDA Organic & EPA Registered<br>
-                        Made in Utah, USA
-                    </div>
-                    
-                    <h3>Storage</h3>
-                    <p>Store in cool place. TSA compliant travel size.</p>
-                    
-                    <div class="website-info">
-                        www.organichyposolutions.com<br>
-                        ohshocl@gmail.com
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 12. 8oz Organic Skin Health Mist -->
-    <div class="product-section">
-        <div class="product-title">12. 8oz Organic Skin Health Mist</div>
-        <div class="label-container">
-            <div class="label front-label skin-care">
-                <div class="header-section">
-                    <svg class="ohs-logo-header" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="200" height="80" fill="#2E5EAA" rx="4"/>
-                        <text x="100" y="45" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="28" font-weight="bold">OHS</text>
-                        <text x="100" y="62" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="8" opacity="0.9">Organic HypoSolutions</text>
-                        <path d="M 160 20 Q 170 10 180 20 Q 170 30 160 20" fill="#4ADE80"/>
-                        <path d="M 165 15 Q 175 5 185 15 Q 175 25 165 15" fill="#22C55E"/>
-                        <path d="M 25 25 Q 20 30 20 35 Q 20 40 25 40 Q 30 40 30 35 Q 30 30 25 25" fill="#7DD3FC" opacity="0.8"/>
-                    </svg>
-                    <div class="ppm-indicator">200 PPM</div>
-                </div>
-                <div class="main-content">
-                    <div>
-                        <div class="product-name">8oz Organic Skin Health Mist</div>
-                        <div class="product-subtitle">USDA Certified therapeutic skin care mist - family size</div>
-                        <div class="size-indicator">8oz</div>
-                        <div class="certification-area">
-                            <div class="badge organic-badge">USDA Organic</div>
-                        </div>
-                        <div class="key-benefits">
-                            <h4>Family Size</h4>
-                            <p>Extended use • Promotes healing • Reduces inflammation • All skin types</p>
-                        </div>
-                    </div>
-                    <div class="warning-strip">
-                        ✓ Skin safe • EPA registered • Family size
-                    </div>
-                </div>
-            </div>
-            
-            <div class="label back-label skin-care">
-                <div class="back-header">
-                    <div class="label-title">8oz Organic Skin Health Mist - USDA Certified</div>
-                </div>
-                <div class="back-content">
-                    <h3>Skin Care Applications</h3>
-                    <p><strong>Family Use:</strong> Mist on clean skin for therapeutic care. Perfect for home, office, or gym use.</p>
-                    
-                    <h3>Extended Use Formula</h3>
-                    <p>USDA Organic therapeutic mist in family size. Ideal for regular use on cuts, scrapes, and skin irritations.</p>
-                    
-                    <h3>Active Ingredient</h3>
-                    <p>Hypochlorous Acid (HOCl) 200 PPM - Therapeutic skin formula</p>
-                    
-                    <div class="legal-warnings">
-                        <h4>✓ SKIN SAFE</h4>
-                        <p>USDA Organic certified. EPA registered. For external use only. Safe for all family members.</p>
-                    </div>
-                    
-                    <div class="company-info">
-                        <strong>DISTRIBUTED BY:</strong><br>
-                        Organic HypoSolutions LLC<br>
-                        Salt Lake City, UT 84101<br>
-                        USDA Organic & EPA Registered<br>
-                        Made in Utah, USA
-                    </div>
-                    
-                    <h3>Storage</h3>
-                    <p>Store in cool, dry place. Perfect for family medicine cabinet.</p>
-                    
-                    <div class="website-info">
-                        www.organichyposolutions.com<br>
-                        ohshocl@gmail.com
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 13. Organic Healing Skin Serum -->
-    <div class="product-section">
-        <div class="product-title">13. Organic Healing Skin Serum</div>
-        <div class="label-container">
-            <div class="label front-label skin-care">
-                <div class="header-section">
-                    <svg class="ohs-logo-header" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="200" height="80" fill="#2E5EAA" rx="4"/>
-                        <text x="100" y="45" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="28" font-weight="bold">OHS</text>
-                        <text x="100" y="62" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="8" opacity="0.9">Organic HypoSolutions</text>
-                        <path d="M 160 20 Q 170 10 180 20 Q 170 30 160 20" fill="#4ADE80"/>
-                        <path d="M 165 15 Q 175 5 185 15 Q 175 25 165 15" fill="#22C55E"/>
-                        <path d="M 25 25 Q 20 30 20 35 Q 20 40 25 40 Q 30 40 30 35 Q 30 30 25 25" fill="#7DD3FC" opacity="0.8"/>
-                    </svg>
-                    <div class="ppm-indicator">200 PPM</div>
-                </div>
-                <div class="main-content">
-                    <div>
-                        <div class="product-name">Organic Healing Skin Serum</div>
-                        <div class="product-subtitle">USDA Certified advanced therapeutic serum</div>
-                        <div class="size-indicator">4oz</div>
-                        <div class="certification-area">
-                            <div class="badge organic-badge">USDA Organic</div>
-                        </div>
-                        <div class="key-benefits">
-                            <h4>Advanced Healing</h4>
-                            <p>Rapid healing • Anti-inflammatory • Wound care • Professional grade</p>
-                        </div>
-                    </div>
-                    <div class="warning-strip">
-                        ✓ Therapeutic grade • EPA registered • Advanced formula
-                    </div>
-                </div>
-            </div>
-            
-            <div class="label back-label skin-care">
-                <div class="back-header">
-                    <div class="label-title">Organic Healing Skin Serum - USDA Certified</div>
-                </div>
-                <div class="back-content">
-                    <h3>Therapeutic Applications</h3>
-                    <p><strong>Advanced Care:</strong> Apply to wounds, cuts, and skin conditions. Professional-grade healing serum.</p>
-                    
-                    <h3>Advanced Formula</h3>
-                    <p>USDA Organic therapeutic serum promotes rapid healing and reduces inflammation for superior skin care.</p>
-                    
-                    <h3>Active Ingredient</h3>
-                    <p>Hypochlorous Acid (HOCl) 200 PPM - Advanced therapeutic formula</p>
-                    
-                    <div class="legal-warnings">
-                        <h4>✓ THERAPEUTIC GRADE</h4>
-                        <p>USDA Organic certified. EPA registered. For external use only. Professional-grade formula.</p>
-                    </div>
-                    
-                    <div class="company-info">
-                        <strong>DISTRIBUTED BY:</strong><br>
-                        Organic HypoSolutions LLC<br>
-                        Salt Lake City, UT 84101<br>
-                        USDA Organic & EPA Registered<br>
-                        Made in Utah, USA
-                    </div>
-                    
-                    <h3>Storage</h3>
-                    <p>Store in cool, dry place. Professional-grade therapeutic serum.</p>
-                    
-                    <div class="website-info">
-                        www.organichyposolutions.com<br>
-                        ohshocl@gmail.com
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 14. Organic All-in-One Disinfecting Wipes -->
-    <div class="product-section">
-        <div class="product-title">14. Organic All-in-One Disinfecting Wipes</div>
-        <div class="label-container">
-            <div class="label front-label">
-                <div class="header-section">
-                    <svg class="ohs-logo-header" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="200" height="80" fill="#2E5EAA" rx="4"/>
-                        <text x="100" y="45" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="28" font-weight="bold">OHS</text>
-                        <text x="100" y="62" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="8" opacity="0.9">Organic HypoSolutions</text>
-                        <path d="M 160 20 Q 170 10 180 20 Q 170 30 160 20" fill="#4ADE80"/>
-                        <path d="M 165 15 Q 175 5 185 15 Q 175 25 165 15" fill="#22C55E"/>
-                        <path d="M 25 25 Q 20 30 20 35 Q 20 40 25 40 Q 30 40 30 35 Q 30 30 25 25" fill="#7DD3FC" opacity="0.8"/>
-                    </svg>
-                    <div class="ppm-indicator">200 PPM</div>
-                </div>
-                <div class="main-content">
-                    <div>
-                        <div class="product-name">Organic All-in-One Disinfecting Wipes</div>
-                        <div class="product-subtitle">USDA Certified convenient cleaning wipes</div>
-                        <div class="size-indicator">50 Count</div>
-                        <div class="certification-area">
-                            <div class="badge organic-badge">USDA Organic</div>
-                        </div>
-                        <div class="key-benefits">
-                            <h4>Food & Kid Safe</h4>
-                            <p>One-step cleaning • Kills 99.9% of pathogens • Convenient • No rinse required</p>
-                        </div>
-                    </div>
-                    <div class="warning-strip">
-                        ✓ Food & kid safe • EPA registered • Convenient wipes
-                    </div>
-                </div>
-            </div>
-            
-            <div class="label back-label">
-                <div class="back-header">
-                    <div class="label-title">Organic All-in-One Disinfecting Wipes - USDA Certified</div>
-                </div>
-                <div class="back-content">
-                    <h3>Directions for Use</h3>
-                    <p><strong>Convenient Cleaning:</strong> Pull wipe and use on any surface. No rinse required. Reseal package after use.</p>
-                    
-                    <h3>One-Step Solution</h3>
-                    <p>USDA Organic disinfecting wipes provide convenient one-step cleaning and disinfecting. Safe for all surfaces.</p>
-                    
-                    <h3>Active Ingredient</h3>
-                    <p>Hypochlorous Acid (HOCl) 200 PPM - Pre-moistened wipes</p>
-                    
-                    <div class="legal-warnings">
-                        <h4>✓ FOOD & KID SAFE</h4>
-                        <p>USDA Organic certified. EPA registered. Safe for food contact surfaces, toys, and skin.</p>
-                    </div>
-                    
-                    <div class="company-info">
-                        <strong>DISTRIBUTED BY:</strong><br>
-                        Organic HypoSolutions LLC<br>
-                        Salt Lake City, UT 84101<br>
-                        USDA Organic & EPA Registered<br>
-                        Made in Utah, USA
-                    </div>
-                    
-                    <h3>Storage</h3>
-                    <p>Keep sealed. Store in cool, dry place. Biodegradable wipes.</p>
-                    
-                    <div class="website-info">
-                        www.organichyposolutions.com<br>
-                        ohshocl@gmail.com
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 15. OHS Organic Complete Care Bundle -->
-    <div class="product-section">
-        <div class="product-title">15. OHS Organic Complete Care Bundle</div>
+        <div class="product-title">1. OHS Organic Complete Care Bundle - BEST VALUE BUNDLE</div>
         <div class="label-container">
             <div class="label front-label bundle">
                 <div class="header-section">
@@ -1951,17 +874,18 @@
                     <div>
                         <div class="product-name">OHS Organic Complete Care Bundle</div>
                         <div class="product-subtitle">USDA Certified complete cleaning solution</div>
-                        <div class="size-indicator">Bundle</div>
+                        <div class="size-indicator">5-Piece Bundle</div>
                         <div class="certification-area">
                             <div class="badge organic-badge">USDA Organic</div>
+                            <div class="badge save-badge">Save 30%</div>
                         </div>
                         <div class="key-benefits">
                             <h4>Complete Solution</h4>
-                            <p>All essential products • Cost-effective • Comprehensive coverage • Premium quality</p>
+                            <p>All essential products • Maximum savings • Comprehensive coverage • Premium quality</p>
                         </div>
                     </div>
                     <div class="warning-strip">
-                        ✓ Food & kid safe • EPA registered • Best value
+                        ✓ Food & kid safe • EPA registered • Best value bundle
                     </div>
                 </div>
             </div>
@@ -1971,18 +895,18 @@
                     <div class="label-title">OHS Organic Complete Care Bundle - USDA Certified</div>
                 </div>
                 <div class="back-content">
-                    <h3>Bundle Contents</h3>
-                    <p><strong>Everything You Need:</strong> Complete bundle featuring all essential USDA Certified Organic products for comprehensive cleaning coverage.</p>
+                    <h3>Bundle Contents - Save 30%</h3>
+                    <p><strong>Everything You Need:</strong> Complete bundle featuring all essential USDA Certified Organic products.</p>
                     
-                    <h3>Included Products</h3>
+                    <h3>5-Piece Complete Set</h3>
                     <p>• 1 Gallon Ready-to-Use Solution<br>
                     • 32oz Multi-Surface Cleaner<br>
                     • 32oz Laundry Booster<br>
                     • 8oz Skin Health Mist<br>
-                    • Disinfecting Wipes</p>
+                    • 50-Count Disinfecting Wipes</p>
                     
                     <h3>Value Proposition</h3>
-                    <p>Perfect for customers wanting complete organic cleaning coverage with safe, effective products and significant cost savings.</p>
+                    <p>Perfect for customers wanting complete organic cleaning coverage with maximum savings.</p>
                     
                     <div class="legal-warnings">
                         <h4>✓ FOOD & KID SAFE</h4>
@@ -1997,9 +921,6 @@
                         Made in Utah, USA
                     </div>
                     
-                    <h3>Storage</h3>
-                    <p>Store individual products as directed. Keep bundle components together for easy access.</p>
-                    
                     <div class="website-info">
                         www.organichyposolutions.com<br>
                         ohshocl@gmail.com
@@ -2009,9 +930,9 @@
         </div>
     </div>
     
-    <!-- 16. OHS Organic Essential Family Bundle -->
+    <!-- 2. OHS Organic Essential Family Bundle -->
     <div class="product-section">
-        <div class="product-title">16. OHS Organic Essential Family Bundle</div>
+        <div class="product-title">2. OHS Organic Essential Family Bundle - FAMILY FAVORITE</div>
         <div class="label-container">
             <div class="label front-label bundle">
                 <div class="header-section">
@@ -2029,9 +950,10 @@
                     <div>
                         <div class="product-name">OHS Organic Essential Family Bundle</div>
                         <div class="product-subtitle">USDA Certified family cleaning essentials</div>
-                        <div class="size-indicator">Bundle</div>
+                        <div class="size-indicator">4-Piece Family Pack</div>
                         <div class="certification-area">
                             <div class="badge organic-badge">USDA Organic</div>
+                            <div class="badge save-badge">Save 25%</div>
                         </div>
                         <div class="key-benefits">
                             <h4>Family Essentials</h4>
@@ -2039,7 +961,7 @@
                         </div>
                     </div>
                     <div class="warning-strip">
-                        ✓ Food & kid safe • EPA registered • Family value
+                        ✓ Food & kid safe • EPA registered • Family value pack
                     </div>
                 </div>
             </div>
@@ -2049,21 +971,21 @@
                     <div class="label-title">OHS Organic Essential Family Bundle - USDA Certified</div>
                 </div>
                 <div class="back-content">
-                    <h3>Bundle Contents</h3>
-                    <p><strong>Family Essentials:</strong> Comprehensive bundle perfect for families requiring complete organic cleaning solutions.</p>
+                    <h3>Family Bundle - Save 25%</h3>
+                    <p><strong>Family Essentials:</strong> Perfect for families requiring complete organic cleaning solutions.</p>
                     
-                    <h3>Included Products</h3>
+                    <h3>4-Piece Family Set</h3>
                     <p>• 32oz Ready-to-Use Cleaner<br>
                     • 32oz Laundry Booster<br>
                     • 32oz Pet Safe Cleaner<br>
-                    • 3oz Skin Health Mist</p>
+                    • 3oz Travel Skin Health Mist</p>
                     
                     <h3>Family Benefits</h3>
-                    <p>Ideal for families wanting comprehensive organic cleaning coverage with safe, effective products.</p>
+                    <p>Ideal for families wanting comprehensive organic cleaning coverage at tremendous value.</p>
                     
                     <div class="legal-warnings">
                         <h4>✓ FOOD & KID SAFE</h4>
-                        <p>All products USDA Organic certified and EPA registered. Safe for entire family.</p>
+                        <p>All products USDA Organic certified and EPA registered. Safe for entire family including pets.</p>
                     </div>
                     
                     <div class="company-info">
@@ -2074,8 +996,76 @@
                         Made in Utah, USA
                     </div>
                     
-                    <h3>Storage</h3>
-                    <p>Store products as directed. Perfect family starter kit.</p>
+                    <div class="website-info">
+                        www.organichyposolutions.com<br>
+                        ohshocl@gmail.com
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 3. 32oz Organic Ready-to-Use Cleaner -->
+    <div class="product-section" data-category="ready-to-use">
+        <div class="product-title">3. 32oz Organic Ready-to-Use Cleaner - MOST POPULAR</div>
+        <div class="label-container">
+            <div class="label front-label">
+                <div class="header-section">
+                    <svg class="ohs-logo-header" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="200" height="80" fill="#2E5EAA" rx="4"/>
+                        <text x="100" y="45" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="28" font-weight="bold">OHS</text>
+                        <text x="100" y="62" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="8" opacity="0.9">Organic HypoSolutions</text>
+                        <path d="M 160 20 Q 170 10 180 20 Q 170 30 160 20" fill="#4ADE80"/>
+                        <path d="M 165 15 Q 175 5 185 15 Q 175 25 165 15" fill="#22C55E"/>
+                        <path d="M 25 25 Q 20 30 20 35 Q 20 40 25 40 Q 30 40 30 35 Q 30 30 25 25" fill="#7DD3FC" opacity="0.8"/>
+                    </svg>
+                    <div class="ppm-indicator">200 PPM</div>
+                </div>
+                <div class="main-content">
+                    <div>
+                        <div class="product-name">32oz Organic Ready-to-Use Cleaner</div>
+                        <div class="product-subtitle">USDA Certified multi-surface cleaner & disinfectant</div>
+                        <div class="size-indicator">32oz Perfect Size</div>
+                        <div class="certification-area">
+                            <div class="badge organic-badge">USDA Organic</div>
+                        </div>
+                        <div class="key-benefits">
+                            <h4>No Mixing Required</h4>
+                            <p>Kills 99.9% of pathogens • Food contact safe • No rinse required • Perfect household size</p>
+                        </div>
+                    </div>
+                    <div class="warning-strip">
+                        ✓ Food & kid safe • EPA registered • Ready to use immediately
+                    </div>
+                </div>
+            </div>
+            
+            <div class="label back-label">
+                <div class="back-header">
+                    <div class="label-title">32oz Organic Ready-to-Use Cleaner - USDA Certified</div>
+                </div>
+                <div class="back-content">
+                    <h3>Directions - No Mixing Required</h3>
+                    <p><strong>General Cleaning:</strong> Spray on surface and wipe clean. No rinse required for food surfaces. Safe for daily use.</p>
+                    
+                    <h3>Multi-Surface Formula</h3>
+                    <p>USDA Organic cleaner safe for countertops, cutting boards, toys, and all surfaces. Kills bacteria, viruses, and fungi.</p>
+                    
+                    <h3>Active Ingredient</h3>
+                    <p>Hypochlorous Acid (HOCl) 200 PPM - Ready-to-use concentration</p>
+                    
+                    <div class="legal-warnings">
+                        <h4>✓ FOOD & KID SAFE</h4>
+                        <p>USDA Organic certified. EPA registered. Safe for food contact surfaces. No harsh chemicals.</p>
+                    </div>
+                    
+                    <div class="company-info">
+                        <strong>DISTRIBUTED BY:</strong><br>
+                        Organic HypoSolutions LLC<br>
+                        Salt Lake City, UT 84101<br>
+                        USDA Organic & EPA Registered<br>
+                        Made in Utah, USA
+                    </div>
                     
                     <div class="website-info">
                         www.organichyposolutions.com<br>
@@ -2086,9 +1076,151 @@
         </div>
     </div>
     
-    <!-- 17. OHS Organic Pet Care Bundle -->
+    <!-- 4. 3oz Organic Multi-Surface Disinfectant -->
+    <div class="product-section" data-category="travel-size">
+        <div class="product-title">4. 3oz Organic Multi-Surface Disinfectant - TSA COMPLIANT</div>
+        <div class="label-container">
+            <div class="label front-label">
+                <div class="header-section">
+                    <svg class="ohs-logo-header" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="200" height="80" fill="#2E5EAA" rx="4"/>
+                        <text x="100" y="45" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="28" font-weight="bold">OHS</text>
+                        <text x="100" y="62" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="8" opacity="0.9">Organic HypoSolutions</text>
+                        <path d="M 160 20 Q 170 10 180 20 Q 170 30 160 20" fill="#4ADE80"/>
+                        <path d="M 165 15 Q 175 5 185 15 Q 175 25 165 15" fill="#22C55E"/>
+                        <path d="M 25 25 Q 20 30 20 35 Q 20 40 25 40 Q 30 40 30 35 Q 30 30 25 25" fill="#7DD3FC" opacity="0.8"/>
+                    </svg>
+                    <div class="ppm-indicator">200 PPM</div>
+                </div>
+                <div class="main-content">
+                    <div>
+                        <div class="product-name">3oz Organic Multi-Surface Disinfectant</div>
+                        <div class="product-subtitle">USDA Certified travel-size disinfectant</div>
+                        <div class="size-indicator">3oz TSA Compliant</div>
+                        <div class="certification-area">
+                            <div class="badge organic-badge">USDA Organic</div>
+                        </div>
+                        <div class="key-benefits">
+                            <h4>Travel Ready</h4>
+                            <p>TSA compliant • Perfect for travel • Kills 99.9% of pathogens • Fits in purse</p>
+                        </div>
+                    </div>
+                    <div class="warning-strip">
+                        ✓ Food & kid safe • EPA registered • TSA compliant size
+                    </div>
+                </div>
+            </div>
+            
+            <div class="label back-label">
+                <div class="back-header">
+                    <div class="label-title">3oz Organic Multi-Surface Disinfectant - USDA Certified</div>
+                </div>
+                <div class="back-content">
+                    <h3>Travel Applications</h3>
+                    <p><strong>On-the-Go:</strong> Spray on surfaces and let air dry. Perfect for airplane tray tables, hotel rooms, and personal use.</p>
+                    
+                    <h3>Travel-Friendly Formula</h3>
+                    <p>USDA Organic TSA-compliant disinfectant. Safe for public surfaces. Fits easily in purse or carry-on.</p>
+                    
+                    <h3>Active Ingredient</h3>
+                    <p>Hypochlorous Acid (HOCl) 200 PPM - Travel-safe concentration</p>
+                    
+                    <div class="legal-warnings">
+                        <h4>✓ FOOD & KID SAFE</h4>
+                        <p>USDA Organic certified. EPA registered. TSA compliant 3oz size. Safe for all surfaces.</p>
+                    </div>
+                    
+                    <div class="company-info">
+                        <strong>DISTRIBUTED BY:</strong><br>
+                        Organic HypoSolutions LLC<br>
+                        Salt Lake City, UT 84101<br>
+                        USDA Organic & EPA Registered<br>
+                        Made in Utah, USA
+                    </div>
+                    
+                    <div class="website-info">
+                        www.organichyposolutions.com<br>
+                        ohshocl@gmail.com
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 5. Organic All-in-One Disinfecting Wipes -->
     <div class="product-section">
-        <div class="product-title">17. OHS Organic Pet Care Bundle</div>
+        <div class="product-title">5. Organic All-in-One Disinfecting Wipes - ULTIMATE CONVENIENCE</div>
+        <div class="label-container">
+            <div class="label front-label">
+                <div class="header-section">
+                    <svg class="ohs-logo-header" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="200" height="80" fill="#2E5EAA" rx="4"/>
+                        <text x="100" y="45" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="28" font-weight="bold">OHS</text>
+                        <text x="100" y="62" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="8" opacity="0.9">Organic HypoSolutions</text>
+                        <path d="M 160 20 Q 170 10 180 20 Q 170 30 160 20" fill="#4ADE80"/>
+                        <path d="M 165 15 Q 175 5 185 15 Q 175 25 165 15" fill="#22C55E"/>
+                        <path d="M 25 25 Q 20 30 20 35 Q 20 40 25 40 Q 30 40 30 35 Q 30 30 25 25" fill="#7DD3FC" opacity="0.8"/>
+                    </svg>
+                    <div class="ppm-indicator">200 PPM</div>
+                </div>
+                <div class="main-content">
+                    <div>
+                        <div class="product-name">Organic All-in-One Disinfecting Wipes</div>
+                        <div class="product-subtitle">USDA Certified convenient cleaning wipes</div>
+                        <div class="size-indicator">50 Wipes</div>
+                        <div class="certification-area">
+                            <div class="badge organic-badge">USDA Organic</div>
+                        </div>
+                        <div class="key-benefits">
+                            <h4>Ultimate Convenience</h4>
+                            <p>One-step cleaning • Kills 99.9% of pathogens • Grab & go • No bottles needed</p>
+                        </div>
+                    </div>
+                    <div class="warning-strip">
+                        ✓ Food & kid safe • EPA registered • Biodegradable wipes
+                    </div>
+                </div>
+            </div>
+            
+            <div class="label back-label">
+                <div class="back-header">
+                    <div class="label-title">Organic All-in-One Disinfecting Wipes - USDA Certified</div>
+                </div>
+                <div class="back-content">
+                    <h3>One-Step Cleaning</h3>
+                    <p><strong>Ultimate Convenience:</strong> Pull wipe and use on any surface. No rinse required. Perfect for quick cleanups.</p>
+                    
+                    <h3>Convenience Formula</h3>
+                    <p>USDA Organic disinfecting wipes provide one-step cleaning and disinfecting. No bottles, no mess, no mixing.</p>
+                    
+                    <h3>Active Ingredient</h3>
+                    <p>Hypochlorous Acid (HOCl) 200 PPM - Pre-moistened wipes</p>
+                    
+                    <div class="legal-warnings">
+                        <h4>✓ FOOD & KID SAFE</h4>
+                        <p>USDA Organic certified. EPA registered. Safe for food contact surfaces. Biodegradable wipes.</p>
+                    </div>
+                    
+                    <div class="company-info">
+                        <strong>DISTRIBUTED BY:</strong><br>
+                        Organic HypoSolutions LLC<br>
+                        Salt Lake City, UT 84101<br>
+                        USDA Organic & EPA Registered<br>
+                        Made in Utah, USA
+                    </div>
+                    
+                    <div class="website-info">
+                        www.organichyposolutions.com<br>
+                        ohshocl@gmail.com
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 6. OHS Organic Pet Care Bundle -->
+    <div class="product-section">
+        <div class="product-title">6. OHS Organic Pet Care Bundle - PET OWNER FAVORITE</div>
         <div class="label-container">
             <div class="label front-label bundle pet-care">
                 <div class="header-section">
@@ -2106,17 +1238,18 @@
                     <div>
                         <div class="product-name">OHS Organic Pet Care Bundle</div>
                         <div class="product-subtitle">USDA Certified complete pet care solution</div>
-                        <div class="size-indicator">Bundle</div>
+                        <div class="size-indicator">4-Piece Pet Pack</div>
                         <div class="certification-area">
                             <div class="badge organic-badge">USDA Organic</div>
+                            <div class="badge save-badge">Save 25%</div>
                         </div>
                         <div class="key-benefits">
-                            <h4>Pet Complete</h4>
-                            <p>Pet-safe products • Odor control • Health care • Veterinary grade</p>
+                            <h4>Complete Pet Care</h4>
+                            <p>Pet-safe products • Odor elimination • Safe if licked • Everything for pets</p>
                         </div>
                     </div>
                     <div class="warning-strip">
-                        ✓ Pet & kid safe • EPA registered • Complete care
+                        ✓ Pet & kid safe • EPA registered • Safe if licked by pets
                     </div>
                 </div>
             </div>
@@ -2126,21 +1259,21 @@
                     <div class="label-title">OHS Organic Pet Care Bundle - USDA Certified</div>
                 </div>
                 <div class="back-content">
-                    <h3>Bundle Contents</h3>
-                    <p><strong>Pet Care Complete:</strong> Comprehensive bundle designed specifically for pet owners requiring safe, effective cleaning solutions.</p>
+                    <h3>Pet Care Bundle - Save 25%</h3>
+                    <p><strong>Complete Pet Care:</strong> Everything pet owners need for safe, effective cleaning and care.</p>
                     
-                    <h3>Included Products</h3>
+                    <h3>4-Piece Pet Care Set</h3>
                     <p>• 32oz Pet Safe Cleaner & Deodorizer<br>
                     • 32oz Ready-to-Use Cleaner<br>
-                    • 3oz Skin Health Mist<br>
-                    • All-in-One Disinfecting Wipes</p>
+                    • 3oz Travel Skin Health Mist<br>
+                    • 50-Count Disinfecting Wipes</p>
                     
                     <h3>Pet Benefits</h3>
-                    <p>Complete pet care coverage with odor control, accident cleanup, and health maintenance all in one convenient bundle.</p>
+                    <p>Complete pet care coverage with odor control, accident cleanup, and health maintenance. Safe if licked by pets.</p>
                     
                     <div class="legal-warnings">
                         <h4>✓ PET & KID SAFE</h4>
-                        <p>All products USDA Organic certified and EPA registered. Safe for use around pets and children.</p>
+                        <p>All products USDA Organic certified and EPA registered. Non-toxic if licked by pets.</p>
                     </div>
                     
                     <div class="company-info">
@@ -2151,9 +1284,6 @@
                         Made in Utah, USA
                     </div>
                     
-                    <h3>Storage</h3>
-                    <p>Store products as directed. Perfect for pet owners.</p>
-                    
                     <div class="website-info">
                         www.organichyposolutions.com<br>
                         ohshocl@gmail.com
@@ -2162,12 +1292,12 @@
             </div>
         </div>
     </div>
-
-    <!-- 18. OHS Organic Ready-to-Use Value Bundle -->
+    
+    <!-- 7. 32oz Organic Pet Safe Cleaner & Deodorizer -->
     <div class="product-section">
-        <div class="product-title">18. OHS Organic Ready-to-Use Value Bundle</div>
+        <div class="product-title">7. 32oz Organic Pet Safe Cleaner & Deodorizer</div>
         <div class="label-container">
-            <div class="label front-label bundle">
+            <div class="label front-label pet-care">
                 <div class="header-section">
                     <svg class="ohs-logo-header" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
                         <rect width="200" height="80" fill="#2E5EAA" rx="4"/>
@@ -2181,43 +1311,40 @@
                 </div>
                 <div class="main-content">
                     <div>
-                        <div class="product-name">OHS Organic Ready-to-Use Value Bundle</div>
-                        <div class="product-subtitle">USDA Certified convenient cleaning bundle</div>
-                        <div class="size-indicator">Bundle</div>
+                        <div class="product-name">32oz Organic Pet Safe Cleaner & Deodorizer</div>
+                        <div class="product-subtitle">USDA Certified pet-safe cleaning solution</div>
+                        <div class="size-indicator">32oz Pet Size</div>
                         <div class="certification-area">
                             <div class="badge organic-badge">USDA Organic</div>
                         </div>
                         <div class="key-benefits">
-                            <h4>Ready-to-Use</h4>
-                            <p>No mixing required • Immediate use • Multiple sizes • Value pricing</p>
+                            <h4>Pet & Kid Safe</h4>
+                            <p>Eliminates pet odors • Cleans accidents • Safe around pets • Safe if licked</p>
                         </div>
                     </div>
                     <div class="warning-strip">
-                        ✓ Food & kid safe • EPA registered • Great value
+                        ✓ Pet & kid safe • EPA registered • Safe if licked by pets
                     </div>
                 </div>
             </div>
             
-            <div class="label back-label bundle">
+            <div class="label back-label pet-care">
                 <div class="back-header">
-                    <div class="label-title">OHS Organic Ready-to-Use Value Bundle - USDA Certified</div>
+                    <div class="label-title">32oz Organic Pet Safe Cleaner & Deodorizer - USDA Certified</div>
                 </div>
                 <div class="back-content">
-                    <h3>Bundle Contents</h3>
-                    <p><strong>Ready-to-Use Convenience:</strong> Value bundle featuring ready-to-use USDA Certified Organic products for immediate application.</p>
+                    <h3>Pet Care Applications</h3>
+                    <p><strong>Pet Areas:</strong> Spray directly on pet accidents, bedding, crates, and toys. Safe for use around pets and children.</p>
                     
-                    <h3>Included Products</h3>
-                    <p>• 1 Gallon Ready-to-Use Solution<br>
-                    • 32oz Ready-to-Use Cleaner<br>
-                    • 3oz Multi-Surface Disinfectant<br>
-                    • Disinfecting Wipes</p>
+                    <h3>Safe Pet Formula</h3>
+                    <p>USDA Organic pet-safe cleaner eliminates odors at the source. Safe if licked by pets. Non-toxic formula.</p>
                     
-                    <h3>Value Benefits</h3>
-                    <p>Perfect for customers wanting immediate use convenience with organic quality and value pricing.</p>
+                    <h3>Active Ingredient</h3>
+                    <p>Hypochlorous Acid (HOCl) 200 PPM - Pet-safe concentration</p>
                     
                     <div class="legal-warnings">
-                        <h4>✓ FOOD & KID SAFE</h4>
-                        <p>All products USDA Organic certified and EPA registered. Ready for immediate use.</p>
+                        <h4>✓ PET & KID SAFE</h4>
+                        <p>USDA Organic certified. EPA registered. Non-toxic, non-irritating formula. Safe if licked.</p>
                     </div>
                     
                     <div class="company-info">
@@ -2228,9 +1355,6 @@
                         Made in Utah, USA
                     </div>
                     
-                    <h3>Storage</h3>
-                    <p>Store products as directed. Ready-to-use convenience.</p>
-                    
                     <div class="website-info">
                         www.organichyposolutions.com<br>
                         ohshocl@gmail.com
@@ -2239,12 +1363,12 @@
             </div>
         </div>
     </div>
-
-    <!-- 18. OHS Organic Starter Home Bundle -->
+    
+    <!-- 8. 100ml Organic Baby Diaper Rash Gel -->
     <div class="product-section">
-        <div class="product-title">18. OHS Organic Starter Home Bundle</div>
+        <div class="product-title">8. 100ml Organic Baby Diaper Rash Gel - GENTLE FORMULA</div>
         <div class="label-container">
-            <div class="label front-label bundle">
+            <div class="label front-label baby-care">
                 <div class="header-section">
                     <svg class="ohs-logo-header" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
                         <rect width="200" height="80" fill="#2E5EAA" rx="4"/>
@@ -2258,43 +1382,40 @@
                 </div>
                 <div class="main-content">
                     <div>
-                        <div class="product-name">OHS Organic Starter Home Bundle</div>
-                        <div class="product-subtitle">USDA Certified home cleaning starter kit</div>
-                        <div class="size-indicator">Bundle</div>
+                        <div class="product-name">100ml Organic Baby Diaper Rash Gel</div>
+                        <div class="product-subtitle">USDA Certified gentle therapeutic formula</div>
+                        <div class="size-indicator">100ml Baby Size</div>
                         <div class="certification-area">
                             <div class="badge organic-badge">USDA Organic</div>
                         </div>
                         <div class="key-benefits">
-                            <h4>Home Starter</h4>
-                            <p>Essential products • Perfect introduction • Budget-friendly • Quality assured</p>
+                            <h4>Gentle Baby Formula</h4>
+                            <p>Promotes healing • Reduces inflammation • Gentle for daily use • Baby safe</p>
                         </div>
                     </div>
                     <div class="warning-strip">
-                        ✓ Food & kid safe • EPA registered • Starter kit
+                        ✓ Food & kid safe • EPA registered • Gentle baby formula
                     </div>
                 </div>
             </div>
             
-            <div class="label back-label bundle">
+            <div class="label back-label baby-care">
                 <div class="back-header">
-                    <div class="label-title">OHS Organic Starter Home Bundle - USDA Certified</div>
+                    <div class="label-title">100ml Organic Baby Diaper Rash Gel - USDA Certified</div>
                 </div>
                 <div class="back-content">
-                    <h3>Bundle Contents</h3>
-                    <p><strong>Home Starter Kit:</strong> Perfect introduction bundle for families beginning their organic cleaning journey with essential products.</p>
+                    <h3>Baby Care Directions</h3>
+                    <p><strong>Baby Care:</strong> Apply thin layer to clean, dry skin. Gentle enough for daily use on sensitive skin.</p>
                     
-                    <h3>Included Products</h3>
-                    <p>• 32oz Ready-to-Use Cleaner<br>
-                    • 3oz Multi-Surface Disinfectant<br>
-                    • 3oz Skin Health Mist<br>
-                    • Disinfecting Wipes</p>
+                    <h3>Gentle Baby Formula</h3>
+                    <p>USDA Organic therapeutic formula promotes healing and provides antimicrobial protection. Safe around food and children.</p>
                     
-                    <h3>Starter Benefits</h3>
-                    <p>Budget-friendly introduction to organic cleaning with essential products for comprehensive home care.</p>
+                    <h3>Active Ingredient</h3>
+                    <p>Pure Hypochlorous Acid (HOCl) 200 PPM - Therapeutic skin formula</p>
                     
                     <div class="legal-warnings">
                         <h4>✓ FOOD & KID SAFE</h4>
-                        <p>All products USDA Organic certified and EPA registered. Perfect for new customers.</p>
+                        <p>USDA Organic certified safe formula. EPA registered. For external use only.</p>
                     </div>
                     
                     <div class="company-info">
@@ -2304,86 +1425,6 @@
                         USDA Organic & EPA Registered<br>
                         Made in Utah, USA
                     </div>
-                    
-                    <h3>Storage</h3>
-                    <p>Store products as directed. Perfect starter kit for organic cleaning.</p>
-                    
-                    <div class="website-info">
-                        www.organichyposolutions.com<br>
-                        ohshocl@gmail.com
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 19. OHS Organic Ready-to-Use Value Bundle -->
-    <div class="product-section">
-        <div class="product-title">19. OHS Organic Ready-to-Use Value Bundle</div>
-        <div class="label-container">
-            <div class="label front-label bundle">
-                <div class="header-section">
-                    <svg class="ohs-logo-header" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="200" height="80" fill="#2E5EAA" rx="4"/>
-                        <text x="100" y="45" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="28" font-weight="bold">OHS</text>
-                        <text x="100" y="62" text-anchor="middle" fill="#7DD3FC" font-family="Arial, sans-serif" font-size="8" opacity="0.9">Organic HypoSolutions</text>
-                        <path d="M 160 20 Q 170 10 180 20 Q 170 30 160 20" fill="#4ADE80"/>
-                        <path d="M 165 15 Q 175 5 185 15 Q 175 25 165 15" fill="#22C55E"/>
-                        <path d="M 25 25 Q 20 30 20 35 Q 20 40 25 40 Q 30 40 30 35 Q 30 30 25 25" fill="#7DD3FC" opacity="0.8"/>
-                    </svg>
-                    <div class="ppm-indicator">200 PPM</div>
-                </div>
-                <div class="main-content">
-                    <div>
-                        <div class="product-name">OHS Organic Ready-to-Use Value Bundle</div>
-                        <div class="product-subtitle">USDA Certified convenient cleaning bundle</div>
-                        <div class="size-indicator">Bundle</div>
-                        <div class="certification-area">
-                            <div class="badge organic-badge">USDA Organic</div>
-                        </div>
-                        <div class="key-benefits">
-                            <h4>Ready-to-Use</h4>
-                            <p>No mixing required • Immediate use • Multiple sizes • Value pricing</p>
-                        </div>
-                    </div>
-                    <div class="warning-strip">
-                        ✓ Food & kid safe • EPA registered • Great value
-                    </div>
-                </div>
-            </div>
-            
-            <div class="label back-label bundle">
-                <div class="back-header">
-                    <div class="label-title">OHS Organic Ready-to-Use Value Bundle - USDA Certified</div>
-                </div>
-                <div class="back-content">
-                    <h3>Bundle Contents</h3>
-                    <p><strong>Ready-to-Use Convenience:</strong> Value bundle featuring ready-to-use USDA Certified Organic products for immediate application.</p>
-                    
-                    <h3>Included Products</h3>
-                    <p>• 1 Gallon Ready-to-Use Solution<br>
-                    • 32oz Ready-to-Use Cleaner<br>
-                    • 3oz Multi-Surface Disinfectant<br>
-                    • Disinfecting Wipes</p>
-                    
-                    <h3>Value Benefits</h3>
-                    <p>Perfect for customers wanting immediate use convenience with organic quality and value pricing.</p>
-                    
-                    <div class="legal-warnings">
-                        <h4>✓ FOOD & KID SAFE</h4>
-                        <p>All products USDA Organic certified and EPA registered. Ready for immediate use.</p>
-                    </div>
-                    
-                    <div class="company-info">
-                        <strong>DISTRIBUTED BY:</strong><br>
-                        Organic HypoSolutions LLC<br>
-                        Salt Lake City, UT 84101<br>
-                        USDA Organic & EPA Registered<br>
-                        Made in Utah, USA
-                    </div>
-                    
-                    <h3>Storage</h3>
-                    <p>Store products as directed. Ready-to-use convenience.</p>
                     
                     <div class="website-info">
                         www.organichyposolutions.com<br>
@@ -2434,7 +1475,7 @@
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmin(250px, 1fr));
             gap: 30px;
         }
         
