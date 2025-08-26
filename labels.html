@@ -158,6 +158,26 @@
             background: white;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .individual-print-btn {
+            background: #4ADE80;
+            color: #1e3d72;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+        
+        .individual-print-btn:hover {
+            background: #22C55E;
+            transform: translateY(-1px);
         }
         
         .label-container {
@@ -638,14 +658,14 @@
                 padding: 0 !important;
             }
             
-            /* CRITICAL: Each product section gets its own page */
+            /* OPTIMIZED: Better page breaks to reduce blank pages */
             .product-section {
                 page-break-before: always !important;
                 page-break-after: avoid !important;
                 page-break-inside: avoid !important;
                 margin: 0 !important;
                 padding: 0.25in !important;
-                min-height: 10in !important;
+                min-height: 7in !important;
                 display: flex !important;
                 flex-direction: column !important;
                 justify-content: flex-start !important;
@@ -653,6 +673,11 @@
             
             .product-section:first-child {
                 page-break-before: auto !important;
+            }
+            
+            /* Hide individual print buttons when printing */
+            .individual-print-btn {
+                display: none !important;
             }
             
             .product-title {
@@ -821,6 +846,20 @@
                 return;
             }
             
+            printProducts(sections);
+        }
+        
+        function printSingleProduct(productId) {
+            const productSection = document.getElementById(productId);
+            if (!productSection) {
+                alert('Product not found');
+                return;
+            }
+            
+            printProducts([productSection]);
+        }
+        
+        function printProducts(sections) {
             const printWindow = window.open('', '_blank');
             const css = document.querySelector('style').outerHTML;
             
@@ -828,15 +867,15 @@
                 <!DOCTYPE html>
                 <html>
                 <head>
-                    <title>OHS ${category} Labels</title>
+                    <title>OHS Product Labels</title>
                     <meta charset="UTF-8">
                     ${css}
                 </head>
                 <body>
             `;
             
-            sections.forEach(section => {
-                const productSection = section.closest('.product-section');
+            sections.forEach((section, index) => {
+                const productSection = section.closest('.product-section') || section;
                 if (productSection) {
                     content += productSection.outerHTML;
                 }
@@ -855,8 +894,11 @@
     </script>
     
     <!-- 1. OHS Organic Complete Care Bundle - BEST VALUE -->
-    <div class="product-section">
-        <div class="product-title">1. OHS Organic Complete Care Bundle - BEST VALUE BUNDLE</div>
+    <div class="product-section" id="product-1">
+        <div class="product-title">
+            <span>1. OHS Organic Complete Care Bundle - BEST VALUE BUNDLE</span>
+            <button class="individual-print-btn" onclick="printSingleProduct('product-1')">Print This Label</button>
+        </div>
         <div class="label-container">
             <div class="label front-label bundle">
                 <div class="header-section">
@@ -931,8 +973,11 @@
     </div>
     
     <!-- 2. OHS Organic Essential Family Bundle -->
-    <div class="product-section">
-        <div class="product-title">2. OHS Organic Essential Family Bundle - FAMILY FAVORITE</div>
+    <div class="product-section" id="product-2">
+        <div class="product-title">
+            <span>2. OHS Organic Essential Family Bundle - FAMILY FAVORITE</span>
+            <button class="individual-print-btn" onclick="printSingleProduct('product-2')">Print This Label</button>
+        </div>
         <div class="label-container">
             <div class="label front-label bundle">
                 <div class="header-section">
@@ -1006,8 +1051,11 @@
     </div>
     
     <!-- 3. 32oz Organic Ready-to-Use Cleaner -->
-    <div class="product-section" data-category="ready-to-use">
-        <div class="product-title">3. 32oz Organic Ready-to-Use Cleaner - MOST POPULAR</div>
+    <div class="product-section" data-category="ready-to-use" id="product-3">
+        <div class="product-title">
+            <span>3. 32oz Organic Ready-to-Use Cleaner - MOST POPULAR</span>
+            <button class="individual-print-btn" onclick="printSingleProduct('product-3')">Print This Label</button>
+        </div>
         <div class="label-container">
             <div class="label front-label">
                 <div class="header-section">
@@ -1077,8 +1125,11 @@
     </div>
     
     <!-- 4. 3oz Organic Multi-Surface Disinfectant -->
-    <div class="product-section" data-category="travel-size">
-        <div class="product-title">4. 3oz Organic Multi-Surface Disinfectant - TSA COMPLIANT</div>
+    <div class="product-section" data-category="travel-size" id="product-4">
+        <div class="product-title">
+            <span>4. 3oz Organic Multi-Surface Disinfectant - TSA COMPLIANT</span>
+            <button class="individual-print-btn" onclick="printSingleProduct('product-4')">Print This Label</button>
+        </div>
         <div class="label-container">
             <div class="label front-label">
                 <div class="header-section">
@@ -1148,8 +1199,11 @@
     </div>
     
     <!-- 5. Organic All-in-One Disinfecting Wipes -->
-    <div class="product-section">
-        <div class="product-title">5. Organic All-in-One Disinfecting Wipes - ULTIMATE CONVENIENCE</div>
+    <div class="product-section" id="product-5">
+        <div class="product-title">
+            <span>5. Organic All-in-One Disinfecting Wipes - ULTIMATE CONVENIENCE</span>
+            <button class="individual-print-btn" onclick="printSingleProduct('product-5')">Print This Label</button>
+        </div>
         <div class="label-container">
             <div class="label front-label">
                 <div class="header-section">
@@ -1219,8 +1273,11 @@
     </div>
     
     <!-- 6. OHS Organic Pet Care Bundle -->
-    <div class="product-section">
-        <div class="product-title">6. OHS Organic Pet Care Bundle - PET OWNER FAVORITE</div>
+    <div class="product-section" id="product-6">
+        <div class="product-title">
+            <span>6. OHS Organic Pet Care Bundle - PET OWNER FAVORITE</span>
+            <button class="individual-print-btn" onclick="printSingleProduct('product-6')">Print This Label</button>
+        </div>
         <div class="label-container">
             <div class="label front-label bundle pet-care">
                 <div class="header-section">
@@ -1294,8 +1351,11 @@
     </div>
     
     <!-- 7. 32oz Organic Pet Safe Cleaner & Deodorizer -->
-    <div class="product-section">
-        <div class="product-title">7. 32oz Organic Pet Safe Cleaner & Deodorizer</div>
+    <div class="product-section" id="product-7">
+        <div class="product-title">
+            <span>7. 32oz Organic Pet Safe Cleaner & Deodorizer</span>
+            <button class="individual-print-btn" onclick="printSingleProduct('product-7')">Print This Label</button>
+        </div>
         <div class="label-container">
             <div class="label front-label pet-care">
                 <div class="header-section">
@@ -1365,8 +1425,11 @@
     </div>
     
     <!-- 8. 100ml Organic Baby Diaper Rash Gel -->
-    <div class="product-section">
-        <div class="product-title">8. 100ml Organic Baby Diaper Rash Gel - GENTLE FORMULA</div>
+    <div class="product-section" id="product-8">
+        <div class="product-title">
+            <span>8. 100ml Organic Baby Diaper Rash Gel - GENTLE FORMULA</span>
+            <button class="individual-print-btn" onclick="printSingleProduct('product-8')">Print This Label</button>
+        </div>
         <div class="label-container">
             <div class="label front-label baby-care">
                 <div class="header-section">
