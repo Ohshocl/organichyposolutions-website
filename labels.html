@@ -571,31 +571,242 @@
             background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
         }
 
-        /* Print-specific styles */
-        @media print {
-            body {
-                background: white;
-                margin: 0;
-                padding: 0;
+        /* Mobile responsive improvements */
+        @media (max-width: 768px) {
+            .web-header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
             }
             
-            .product-section {
-                page-break-before: always;
-                margin: 0;
-                padding: 20px;
+            .web-header-links {
+                flex-wrap: wrap;
+                justify-content: center;
             }
             
-            .product-section:first-child {
-                page-break-before: auto;
+            .main-content {
+                padding: 15px;
+            }
+            
+            .label-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
             }
             
             .label {
-                box-shadow: none;
-                border: 2px solid #000;
+                width: 95%;
+                max-width: 400px;
             }
             
+            .print-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .print-controls button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .web-header h1 {
+                font-size: 1.2rem;
+            }
+            
+            .print-guide h2 {
+                font-size: 1.4rem;
+            }
+            
+            .product-name {
+                font-size: 18px;
+            }
+            
+            .label {
+                width: 100%;
+                max-width: 350px;
+                height: auto;
+                min-height: 500px;
+            }
+        }
+
+        /* Enhanced print-specific styles */
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            
+            body {
+                background: white !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                font-size: 12pt;
+                line-height: 1.2;
+            }
+            
+            .web-header,
+            .print-controls,
+            .web-footer,
             .print-guide {
-                display: none;
+                display: none !important;
+            }
+            
+            .main-content {
+                max-width: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            /* Ensure each product section starts on a new page */
+            .product-section {
+                page-break-before: always !important;
+                page-break-after: avoid !important;
+                page-break-inside: avoid !important;
+                margin: 0 !important;
+                padding: 0.25in !important;
+                min-height: 0 !important;
+                height: auto !important;
+            }
+            
+            .product-section:first-child {
+                page-break-before: auto !important;
+            }
+            
+            .product-title {
+                page-break-after: avoid !important;
+                margin: 0 0 0.2in 0 !important;
+                font-size: 14pt !important;
+            }
+            
+            /* Label container for side-by-side printing */
+            .label-container {
+                display: flex !important;
+                justify-content: center !important;
+                gap: 0.25in !important;
+                page-break-inside: avoid !important;
+                margin: 0 !important;
+            }
+            
+            /* Fixed label dimensions for consistent printing */
+            .label {
+                width: 4in !important;
+                height: 6in !important;
+                max-width: 4in !important;
+                max-height: 6in !important;
+                min-width: 4in !important;
+                min-height: 6in !important;
+                box-shadow: none !important;
+                border: 2pt solid #000 !important;
+                border-radius: 8pt !important;
+                overflow: hidden !important;
+                page-break-inside: avoid !important;
+                box-sizing: border-box !important;
+                background: white !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            
+            /* Ensure header section maintains proportions */
+            .header-section {
+                height: 1.2in !important;
+                flex-shrink: 0 !important;
+                page-break-inside: avoid !important;
+            }
+            
+            .main-content {
+                height: calc(6in - 1.2in) !important;
+                flex: 1 !important;
+                page-break-inside: avoid !important;
+                overflow: hidden !important;
+            }
+            
+            .back-header {
+                height: 0.8in !important;
+                flex-shrink: 0 !important;
+                page-break-inside: avoid !important;
+            }
+            
+            .back-content {
+                height: calc(6in - 0.8in) !important;
+                flex: 1 !important;
+                page-break-inside: avoid !important;
+                overflow: hidden !important;
+                font-size: 9pt !important;
+            }
+            
+            /* Logo sizing for print */
+            .ohs-logo-header {
+                width: 2.8in !important;
+                height: 0.9in !important;
+            }
+            
+            /* Font sizing for print readability */
+            .product-name {
+                font-size: 16pt !important;
+                line-height: 1.1 !important;
+            }
+            
+            .product-subtitle {
+                font-size: 11pt !important;
+            }
+            
+            .size-indicator {
+                font-size: 14pt !important;
+                padding: 8pt 20pt !important;
+            }
+            
+            .ppm-indicator {
+                font-size: 10pt !important;
+                padding: 6pt 12pt !important;
+            }
+            
+            .key-benefits h4 {
+                font-size: 10pt !important;
+            }
+            
+            .key-benefits p {
+                font-size: 9pt !important;
+            }
+            
+            .warning-strip {
+                font-size: 8pt !important;
+            }
+            
+            .label-title {
+                font-size: 10pt !important;
+            }
+            
+            /* Print page setup */
+            @page {
+                size: 8.5in 11in;
+                margin: 0.5in;
+                margin-top: 0.3in;
+                margin-bottom: 0.3in;
+            }
+            
+            /* Avoid widows and orphans */
+            h1, h2, h3, h4, h5, h6 {
+                page-break-after: avoid !important;
+                page-break-inside: avoid !important;
+            }
+            
+            p {
+                orphans: 3;
+                widows: 3;
+            }
+        }
+        
+        /* Print preview styles */
+        @media screen and (max-width: 1024px) {
+            .label {
+                transform: scale(0.8);
+                transform-origin: top center;
+                margin-bottom: 20px;
             }
         }
         
