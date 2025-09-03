@@ -2,14 +2,766 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OHS Sales Process Guide - Enhanced</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>OHS Sales Process Guide - Mobile Optimized</title>
     <style>
+        /* Base styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        /* Mobile-first approach */
+        .print-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.3s ease;
+        }
+        
+        .print-button:active {
+            transform: scale(0.95);
+        }
+        
+        .header {
+            text-align: center;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 20px 15px;
+            margin: 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        
+        .header .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+        
+        .flowchart {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 100%;
+        }
+        
+        .container {
+            border: 3px solid #ddd;
+            border-radius: 12px;
+            padding: 16px;
+            background: white;
+            position: relative;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .container.active {
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            transform: translateY(-2px);
+        }
+        
+        /* Phase colors */
+        .container.phase-1 { 
+            border-color: #e74c3c; 
+            background: linear-gradient(135deg, #fdf2f2 0%, #fce4ec 100%);
+        }
+        .container.phase-2 { 
+            border-color: #f39c12; 
+            background: linear-gradient(135deg, #fef9e7 0%, #fff3e0 100%);
+        }
+        .container.phase-3 { 
+            border-color: #3498db; 
+            background: linear-gradient(135deg, #ebf3fd 0%, #e3f2fd 100%);
+        }
+        .container.phase-4 { 
+            border-color: #9b59b6; 
+            background: linear-gradient(135deg, #f4ecf7 0%, #f3e5f5 100%);
+        }
+        .container.phase-5 { 
+            border-color: #2ecc71; 
+            background: linear-gradient(135deg, #eafaf1 0%, #e8f5e8 100%);
+        }
+        .container.phase-6 { 
+            border-color: #34495e; 
+            background: linear-gradient(135deg, #eaecee 0%, #eceff1 100%);
+        }
+        .container.tips { 
+            border-color: #ff9800; 
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+        }
+        .container.success { 
+            border-color: #4caf50; 
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            min-width: 40px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-right: 12px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+            flex-shrink: 0;
+        }
+        
+        .step-title {
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.3;
+            flex: 1;
+        }
+        
+        .expand-icon {
+            font-size: 20px;
+            color: #666;
+            transition: transform 0.3s ease;
+            margin-left: 10px;
+        }
+        
+        .container.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+        
+        /* Phase-specific step numbers */
+        .phase-1 .step-number { background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%); }
+        .phase-2 .step-number { background: linear-gradient(135deg, #d68910 0%, #f39c12 100%); }
+        .phase-3 .step-number { background: linear-gradient(135deg, #2980b9 0%, #3498db 100%); }
+        .phase-4 .step-number { background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%); }
+        .phase-5 .step-number { background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); }
+        .phase-6 .step-number { background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); }
+        
+        .timer {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .why-section {
+            background: rgba(52, 152, 219, 0.1);
+            border-left: 4px solid #3498db;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        
+        .why-section .why-title {
+            font-weight: bold;
+            color: #2980b9;
+            font-size: 13px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        
+        .why-section .why-text {
+            font-size: 14px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+        
+        .script-box {
+            background: rgba(255,255,255,0.9);
+            border: 2px solid rgba(0,0,0,0.2);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-style: italic;
+            font-size: 14px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+            line-height: 1.5;
+        }
+        
+        .action-tag {
+            background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 12px;
+            margin: 4px 4px 4px 0;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .must-say {
+            background: linear-gradient(135deg, #ff5722 0%, #f4511e 100%);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            margin: 12px 0;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(255, 87, 34, 0.3);
+            line-height: 1.4;
+        }
+        
+        .bullet-points {
+            list-style: none;
+            padding: 0;
+            margin: 12px 0;
+            font-size: 14px;
+        }
+        
+        .bullet-points li {
+            padding: 6px 0 6px 24px;
+            position: relative;
+            line-height: 1.5;
+        }
+        
+        .bullet-points li:before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+            color: currentColor;
+            font-size: 12px;
+        }
+        
+        .objection-response {
+            background: rgba(255,255,255,0.95);
+            border: 2px solid #ffc107;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        
+        .objection-response .objection {
+            color: #d63031;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+        
+        .objection-response .response {
+            color: #155724;
+            font-style: italic;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .close-technique {
+            background: rgba(255,255,255,0.95);
+            border: 2px solid #17a2b8;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 8px 0;
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.4;
+        }
+        
+        .tip-box, .success-box {
+            background: rgba(255,255,255,0.95);
+            border: 2px solid currentColor;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .quality-target {
+            background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            margin: 8px 0;
+            display: block;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
+        }
+        
+        .example-highlight {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 10%);
+            border-left: 4px solid #2196f3;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 14px;
+            border-radius: 0 6px 6px 0;
+            line-height: 1.5;
+        }
+        
+        /* Mobile detail panel */
+        .mobile-detail {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            margin-top: 12px;
+        }
+        
+        .container.expanded .mobile-detail {
+            max-height: 2000px;
+            transition: max-height 0.6s ease-in;
+        }
+        
+        .mobile-detail-content {
+            padding: 16px;
+            background: rgba(255,255,255,0.95);
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            margin-top: 12px;
+        }
+        
+        .mobile-detail h3 {
+            margin: 0 0 12px 0;
+            color: #2c3e50;
+            font-size: 18px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+        }
+        
+        .detail-section {
+            margin: 12px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .detail-title {
+            font-weight: bold;
+            color: #2980b9;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+        
+        .detail-content {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .script-examples {
+            background: #e8f5e8;
+            border-left: 4px solid #27ae60;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 0 6px 6px 0;
+        }
+        
+        .tips-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .tips-list li {
+            padding: 6px 0 6px 20px;
+            font-size: 14px;
+            position: relative;
+            line-height: 1.5;
+        }
+        
+        .tips-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .footer-info {
+            text-align: center;
+            padding: 20px 15px 80px;
+            color: #2c3e50;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .footer-info p {
+            margin: 8px 0;
+        }
+        
+        .footer-info strong {
+            font-weight: bold;
+        }
+        
+        /* Hide elements on mobile */
+        .flow-arrow,
+        .hover-detail {
+            display: none;
+        }
+        
+        /* Tablet styles */
+        @media (min-width: 768px) {
+            .header h1 {
+                font-size: 28px;
+            }
+            
+            .header .subtitle {
+                font-size: 16px;
+            }
+            
+            .flowchart {
+                padding: 20px;
+                gap: 20px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .step-number {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+            
+            .step-title {
+                font-size: 18px;
+            }
+        }
+        
+        /* Desktop styles */
+        @media (min-width: 1024px) {
+            body {
+                font-size: 11px;
+                padding: 8px;
+            }
+            
+            .print-button {
+                top: 20px;
+                right: 20px;
+                bottom: auto;
+                padding: 12px 24px;
+                font-size: 14px;
+            }
+            
+            .print-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+            }
+            
+            .print-button:active {
+                transform: translateY(0);
+            }
+            
+            .header {
+                padding: 15px;
+                border-radius: 8px;
+                margin-bottom: 12px;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .header .subtitle {
+                font-size: 13px;
+                margin-top: 4px;
+            }
+            
+            .flowchart {
+                max-width: 1400px;
+                margin: 0 auto;
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+                background: white;
+                padding: 12px;
+                box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+                border-radius: 8px;
+            }
+            
+            .container {
+                padding: 12px;
+                cursor: pointer;
+            }
+            
+            .container:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            }
+            
+            .step-header {
+                justify-content: center;
+                margin-bottom: 8px;
+            }
+            
+            .step-number {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+                margin-right: 12px;
+            }
+            
+            .step-title {
+                font-size: 13px;
+            }
+            
+            .expand-icon {
+                display: none;
+            }
+            
+            .why-section {
+                padding: 8px;
+                margin: 6px 0;
+            }
+            
+            .why-section .why-title {
+                font-size: 9px;
+                margin-bottom: 3px;
+            }
+            
+            .why-section .why-text {
+                font-size: 9px;
+                line-height: 1.3;
+            }
+            
+            .timer {
+                top: 8px;
+                right: 10px;
+                padding: 4px 8px;
+                font-size: 9px;
+            }
+            
+            .script-box {
+                padding: 8px;
+                border-radius: 6px;
+                margin: 6px 0;
+                font-size: 10px;
+            }
+            
+            .action-tag {
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 9px;
+                margin: 3px;
+            }
+            
+            .must-say {
+                padding: 8px 10px;
+                border-radius: 6px;
+                font-size: 10px;
+                margin: 6px 0;
+            }
+            
+            .bullet-points {
+                margin: 6px 0;
+                font-size: 10px;
+            }
+            
+            .bullet-points li {
+                padding: 4px 0 4px 15px;
+            }
+            
+            .bullet-points li:before {
+                font-size: 9px;
+            }
+            
+            .objection-response {
+                padding: 8px;
+                border-radius: 5px;
+                margin: 4px 0;
+                font-size: 10px;
+            }
+            
+            .objection-response .objection,
+            .objection-response .response {
+                font-size: 10px;
+            }
+            
+            .close-technique {
+                padding: 6px;
+                border-radius: 4px;
+                margin: 4px 0;
+                font-size: 10px;
+            }
+            
+            .tip-box, .success-box {
+                padding: 8px;
+                border-radius: 5px;
+                margin: 6px 0;
+                font-size: 10px;
+            }
+            
+            .quality-target {
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 9px;
+                margin: 4px 0;
+            }
+            
+            .example-highlight {
+                padding: 8px;
+                margin: 6px 0;
+                font-size: 10px;
+            }
+            
+            .mobile-detail {
+                display: none;
+            }
+            
+            .span-2 { grid-column: span 2; }
+            .span-4 { grid-column: span 4; }
+            
+            .grid-2 {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            
+            .flow-arrow {
+                display: block;
+                position: absolute;
+                right: -18px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 24px;
+                color: #3498db;
+                font-weight: bold;
+            }
+            
+            /* Desktop hover details */
+            .hover-detail {
+                display: block;
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(255,255,255,0.98);
+                border: 3px solid #3498db;
+                border-radius: 10px;
+                padding: 12px;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+                z-index: 100;
+                overflow-y: auto;
+                max-height: 100%;
+            }
+            
+            .container:hover .hover-detail {
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .hover-detail h3 {
+                margin: 0 0 10px 0;
+                color: #2c3e50;
+                font-size: 14px;
+                border-bottom: 2px solid #3498db;
+                padding-bottom: 5px;
+            }
+            
+            .hover-detail .detail-section {
+                margin: 8px 0;
+                padding: 6px;
+                background: #f8f9fa;
+                border-radius: 4px;
+            }
+            
+            .hover-detail .detail-title {
+                font-weight: bold;
+                color: #2980b9;
+                font-size: 11px;
+                margin-bottom: 4px;
+            }
+            
+            .hover-detail .detail-content {
+                font-size: 10px;
+                line-height: 1.4;
+            }
+            
+            .hover-detail .script-examples {
+                background: #e8f5e8;
+                border-left: 4px solid #27ae60;
+                padding: 8px;
+                margin: 6px 0;
+                border-radius: 0 4px 4px 0;
+            }
+            
+            .hover-detail .tips-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .hover-detail .tips-list li {
+                padding: 3px 0 3px 15px;
+                font-size: 10px;
+                position: relative;
+            }
+            
+            .hover-detail .tips-list li:before {
+                content: "✓";
+                position: absolute;
+                left: 0;
+                color: #27ae60;
+                font-weight: bold;
+            }
+            
+            .footer-info {
+                padding: 12px;
+                font-size: 10px;
+            }
+        }
+        
+        /* Print styles */
         @media print {
             * { 
                 box-sizing: border-box;
                 -webkit-print-color-adjust: exact !important;
                 color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
             
             @page {
@@ -28,12 +780,15 @@
             
             .no-print { display: none !important; }
             .print-button { display: none !important; }
+            .mobile-detail { display: none !important; }
+            .expand-icon { display: none !important; }
             .hover-detail { display: none !important; }
             .flow-arrow { display: none !important; }
             
             .header {
                 margin-bottom: 8px !important;
                 padding: 8px !important;
+                border-radius: 0 !important;
             }
             
             .header h1 { 
@@ -140,418 +895,22 @@
             
             .grid-2 {
                 gap: 4px !important;
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
             }
             
             .span-2 { grid-column: span 2 !important; }
             .span-4 { grid-column: span 4 !important; }
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 11px; /* Increased from 8px */
-            line-height: 1.4;
-            margin: 0;
-            padding: 8px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        }
-        
-        .print-button {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            z-index: 1000;
-        }
-        
-        .print-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
-        }
-        
-        .header {
-            text-align: center;
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        
-        .header h1 {
-            margin: 0;
-            font-size: 20px; /* Increased from 16px */
-            font-weight: bold;
-        }
-        
-        .header .subtitle {
-            font-size: 13px; /* Increased from 10px */
-            opacity: 0.9;
-            margin-top: 4px;
-        }
-        
-        .flowchart {
-            max-width: 12in;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: auto;
-            gap: 10px; /* Increased from 6px */
-            background: white;
-            padding: 12px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-            border-radius: 8px;
-        }
-        
-        .container {
-            border: 3px solid #ddd;
-            border-radius: 10px;
-            padding: 12px; /* Increased from 8px */
-            background: white;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .container:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-        }
-        
-        .container.phase-1 { 
-            border-color: #e74c3c; 
-            background: linear-gradient(135deg, #fdf2f2 0%, #fce4ec 100%);
-        }
-        .container.phase-2 { 
-            border-color: #f39c12; 
-            background: linear-gradient(135deg, #fef9e7 0%, #fff3e0 100%);
-        }
-        .container.phase-3 { 
-            border-color: #3498db; 
-            background: linear-gradient(135deg, #ebf3fd 0%, #e3f2fd 100%);
-        }
-        .container.phase-4 { 
-            border-color: #9b59b6; 
-            background: linear-gradient(135deg, #f4ecf7 0%, #f3e5f5 100%);
-        }
-        .container.phase-5 { 
-            border-color: #2ecc71; 
-            background: linear-gradient(135deg, #eafaf1 0%, #e8f5e8 100%);
-        }
-        .container.phase-6 { 
-            border-color: #34495e; 
-            background: linear-gradient(135deg, #eaecee 0%, #eceff1 100%);
-        }
-        .container.tips { 
-            border-color: #ff9800; 
-            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
-        }
-        .container.success { 
-            border-color: #4caf50; 
-            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
-        }
-        
-        .step-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 8px;
-        }
-        
-        .step-number {
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-            color: white;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            font-weight: bold;
-            margin-right: 12px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
-        }
-        
-        .step-title {
-            font-size: 13px; /* Increased from 11px */
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .phase-1 .step-number { background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%); }
-        .phase-2 .step-number { background: linear-gradient(135deg, #d68910 0%, #f39c12 100%); }
-        .phase-3 .step-number { background: linear-gradient(135deg, #2980b9 0%, #3498db 100%); }
-        .phase-4 .step-number { background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%); }
-        .phase-5 .step-number { background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); }
-        .phase-6 .step-number { background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); }
-        
-        .why-section {
-            background: rgba(52, 152, 219, 0.1);
-            border-left: 4px solid #3498db;
-            padding: 8px;
-            margin: 6px 0;
-            border-radius: 4px;
-        }
-        
-        .why-section .why-title {
-            font-weight: bold;
-            color: #2980b9;
-            font-size: 9px; /* Increased from 7px */
-            margin-bottom: 3px;
-            text-transform: uppercase;
-        }
-        
-        .why-section .why-text {
-            font-size: 9px; /* Increased from 7px */
-            color: #2c3e50;
-            line-height: 1.3;
-        }
-        
-        .timer {
-            position: absolute;
-            top: 8px;
-            right: 10px;
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 9px; /* Increased from 7px */
-            font-weight: bold;
-        }
-        
-        .script-box {
-            background: rgba(255,255,255,0.9);
-            border: 2px solid rgba(0,0,0,0.2);
-            padding: 8px;
-            border-radius: 6px;
-            margin: 6px 0;
-            font-style: italic;
-            font-size: 10px; /* Increased from 8px */
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-        }
-        
-        .action-tag {
-            background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 9px; /* Increased from 7px */
-            margin: 3px;
-            display: inline-block;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        
-        .must-say {
-            background: linear-gradient(135deg, #ff5722 0%, #f4511e 100%);
-            color: white;
-            padding: 8px 10px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 10px; /* Increased from 8px */
-            margin: 6px 0;
-            text-align: center;
-            box-shadow: 0 2px 6px rgba(255, 87, 34, 0.3);
-        }
-        
-        .bullet-points {
-            list-style: none;
-            padding: 0;
-            margin: 6px 0;
-            font-size: 10px; /* Increased from 8px */
-        }
-        
-        .bullet-points li {
-            padding: 4px 0;
-            padding-left: 15px;
-            position: relative;
-        }
-        
-        .bullet-points li:before {
-            content: "▶";
-            position: absolute;
-            left: 0;
-            color: currentColor;
-            font-size: 9px;
-        }
-        
-        .objection-response {
-            background: rgba(255,255,255,0.95);
-            border: 2px solid #ffc107;
-            padding: 8px;
-            border-radius: 5px;
-            margin: 4px 0;
-            font-size: 10px; /* Increased from 8px */
-        }
-        
-        .objection-response .objection {
-            color: #d63031;
-            font-weight: bold;
-            font-size: 10px;
-        }
-        
-        .objection-response .response {
-            color: #155724;
-            font-style: italic;
-            font-size: 10px;
-        }
-        
-        .close-technique {
-            background: rgba(255,255,255,0.95);
-            border: 2px solid #17a2b8;
-            padding: 6px;
-            border-radius: 4px;
-            margin: 4px 0;
-            font-size: 10px; /* Increased from 8px */
-            text-align: center;
-        }
-        
-        .span-2 { grid-column: span 2; }
-        .span-4 { grid-column: span 4; }
-        
-        .tip-box, .success-box {
-            background: rgba(255,255,255,0.95);
-            border: 2px solid currentColor;
-            padding: 8px;
-            border-radius: 5px;
-            margin: 6px 0;
-            font-size: 10px; /* Increased from 8px */
-        }
-        
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-        
-        .quality-target {
-            background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 9px; /* Increased from 7px */
-            font-weight: bold;
-            margin: 4px 0;
-            display: block;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
-        }
-        
-        .example-highlight {
-            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 10%);
-            border-left: 4px solid #2196f3;
-            padding: 8px;
-            margin: 6px 0;
-            font-size: 10px; /* Increased from 8px */
-            border-radius: 0 4px 4px 0;
-        }
-        
-        .flow-arrow {
-            position: absolute;
-            right: -18px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 24px;
-            color: #3498db;
-            font-weight: bold;
-        }
-        
-        /* Hover Detail Styles */
-        .hover-detail {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255,255,255,0.98);
-            border: 3px solid #3498db;
-            border-radius: 10px;
-            padding: 12px;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            z-index: 100;
-            overflow-y: auto;
-            max-height: 100%;
-        }
-        
-        .container:hover .hover-detail {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .hover-detail h3 {
-            margin: 0 0 10px 0;
-            color: #2c3e50;
-            font-size: 14px;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 5px;
-        }
-        
-        .hover-detail .detail-section {
-            margin: 8px 0;
-            padding: 6px;
-            background: #f8f9fa;
-            border-radius: 4px;
-        }
-        
-        .hover-detail .detail-title {
-            font-weight: bold;
-            color: #2980b9;
-            font-size: 11px;
-            margin-bottom: 4px;
-        }
-        
-        .hover-detail .detail-content {
-            font-size: 10px;
-            line-height: 1.4;
-        }
-        
-        .hover-detail .script-examples {
-            background: #e8f5e8;
-            border-left: 4px solid #27ae60;
-            padding: 8px;
-            margin: 6px 0;
-            border-radius: 0 4px 4px 0;
-        }
-        
-        .hover-detail .tips-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .hover-detail .tips-list li {
-            padding: 3px 0;
-            font-size: 10px;
-            position: relative;
-            padding-left: 15px;
-        }
-        
-        .hover-detail .tips-list li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #27ae60;
-            font-weight: bold;
+            
+            .footer-info { display: none !important; }
         }
     </style>
 </head>
 <body>
-    <button class="print-button no-print" onclick="window.print()">🖨️ PRINT GUIDE</button>
+    <button class="print-button no-print" onclick="window.print()">
+        <span>🖨️</span>
+        <span>PRINT</span>
+    </button>
     
     <div class="header">
         <h1>🎯 OHS SALES PROCESS GUIDE</h1>
@@ -561,11 +920,12 @@
     <div class="flowchart">
         
         <!-- STEP 1: Door Approach -->
-        <div class="container phase-1">
+        <div class="container phase-1" onclick="toggleExpand(this)">
             <div class="timer">30 sec</div>
             <div class="step-header">
                 <div class="step-number">1</div>
                 <div class="step-title">Door Approach</div>
+                <span class="expand-icon">▼</span>
             </div>
             
             <div class="why-section">
@@ -587,6 +947,46 @@
                 <li>Ask for small time commitment</li>
             </ul>
             <div class="flow-arrow">→</div>
+            
+            <div class="mobile-detail">
+                <div class="mobile-detail-content">
+                    <h3>🚪 DOOR APPROACH MASTERY</h3>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">📋 Pre-Approach Checklist</div>
+                        <div class="detail-content">
+                            <ul class="tips-list">
+                                <li>Professional attire (business casual minimum)</li>
+                                <li>Business cards ready</li>
+                                <li>EPA documentation visible</li>
+                                <li>Confident posture and smile</li>
+                                <li>Phone on silent</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="script-examples">
+                        <div class="detail-title">🗣️ Script Variations</div>
+                        <div class="detail-content">
+                            <strong>For Restaurants:</strong> "Hi! I'm [Name] with OHS. Great looking menu board! I help restaurants with EPA-approved safer sanitization that keeps customers and staff healthier. Got 5 minutes?"<br><br>
+                            <strong>For Salons:</strong> "Hi! I'm [Name] with OHS. Love the atmosphere here! I help beauty businesses with EPA-approved sanitization that's safer for clients and staff. Got 5 minutes?"
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">⚠️ Common Mistakes to Avoid</div>
+                        <div class="detail-content">
+                            <ul class="tips-list">
+                                <li>Don't lead with price</li>
+                                <li>Don't use generic compliments</li>
+                                <li>Don't ask "Are you the owner?"</li>
+                                <li>Don't look at your phone</li>
+                                <li>Don't be pushy if they're clearly busy</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
             <div class="hover-detail">
                 <h3>🚪 STEP 1: DOOR APPROACH MASTERY</h3>
@@ -633,11 +1033,12 @@
         </div>
 
         <!-- STEP 2: Build Rapport -->
-        <div class="container phase-2">
+        <div class="container phase-2" onclick="toggleExpand(this)">
             <div class="timer">1-2 min</div>
             <div class="step-header">
                 <div class="step-number">2</div>
                 <div class="step-title">Connect With Them</div>
+                <span class="expand-icon">▼</span>
             </div>
             
             <div class="why-section">
@@ -659,6 +1060,45 @@
                 <li>Be genuinely interested</li>
             </ul>
             <div class="flow-arrow">→</div>
+            
+            <div class="mobile-detail">
+                <div class="mobile-detail-content">
+                    <h3>🤝 RAPPORT BUILDING TECHNIQUES</h3>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">💬 Conversation Starters</div>
+                        <div class="detail-content">
+                            <ul class="tips-list">
+                                <li>"How did you get into this business?"</li>
+                                <li>"What's the best part about running this place?"</li>
+                                <li>"How long have you been at this location?"</li>
+                                <li>"What makes your business unique?"</li>
+                                <li>"How's business been lately?"</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="script-examples">
+                        <div class="detail-title">🎯 Finding Common Ground</div>
+                        <div class="detail-content">
+                            Look for: Family photos, awards, local sports teams, community involvement, shared business challenges, similar backgrounds, mutual connections.
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">👂 Active Listening Tips</div>
+                        <div class="detail-content">
+                            <ul class="tips-list">
+                                <li>Maintain eye contact</li>
+                                <li>Nod and use "mmm-hmm"</li>
+                                <li>Ask follow-up questions</li>
+                                <li>Remember details they share</li>
+                                <li>Mirror their communication style</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
             <div class="hover-detail">
                 <h3>🤝 STEP 2: RAPPORT BUILDING TECHNIQUES</h3>
@@ -704,11 +1144,12 @@
         </div>
 
         <!-- STEP 3: Find Problems -->
-        <div class="container phase-3">
+        <div class="container phase-3" onclick="toggleExpand(this)">
             <div class="timer">3-4 min</div>
             <div class="step-header">
                 <div class="step-number">3</div>
                 <div class="step-title">Find Their Problems</div>
+                <span class="expand-icon">▼</span>
             </div>
             
             <div class="why-section">
@@ -731,6 +1172,47 @@
                 <li>Cost of current products</li>
             </ul>
             <div class="flow-arrow">→</div>
+            
+            <div class="mobile-detail">
+                <div class="mobile-detail-content">
+                    <h3>🔍 PROBLEM DISCOVERY MASTERY</h3>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">❓ Key Discovery Questions</div>
+                        <div class="detail-content">
+                            <ul class="tips-list">
+                                <li>"What cleaning products do you currently use?"</li>
+                                <li>"How much time do you spend on sanitization daily?"</li>
+                                <li>"Any concerns about chemical residues?"</li>
+                                <li>"Ever had customers comment on chemical smells?"</li>
+                                <li>"What's your biggest cleaning challenge?"</li>
+                                <li>"How much do you spend monthly on cleaning supplies?"</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="script-examples">
+                        <div class="detail-title">🎯 Industry-Specific Pain Points</div>
+                        <div class="detail-content">
+                            <strong>Restaurants:</strong> Grease buildup, food safety regulations, customer complaints about chemical odors<br><br>
+                            <strong>Medical:</strong> Infection control, patient safety, regulatory compliance<br><br>
+                            <strong>Salons:</strong> Client sensitivity to chemicals, skin reactions, ventilation issues
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">🚩 Red Flag Responses</div>
+                        <div class="detail-content">
+                            <ul class="tips-list">
+                                <li>"Everything's fine" - Dig deeper with specific questions</li>
+                                <li>"We don't have problems" - Ask about improvement opportunities</li>
+                                <li>"It's cheap" - Focus on hidden costs (time, health, effectiveness)</li>
+                                <li>"We're required to use this" - Explore if they're happy with requirements</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
             <div class="hover-detail">
                 <h3>🔍 STEP 3: PROBLEM DISCOVERY MASTERY</h3>
@@ -778,11 +1260,12 @@
         </div>
 
         <!-- STEP 4: Present Solution -->
-        <div class="container phase-4">
+        <div class="container phase-4" onclick="toggleExpand(this)">
             <div class="timer">5-7 min</div>
             <div class="step-header">
                 <div class="step-number">4</div>
                 <div class="step-title">Show Our Solution</div>
+                <span class="expand-icon">▼</span>
             </div>
             
             <div class="why-section">
@@ -804,6 +1287,47 @@
                 <strong>Kidstopia story:</strong> "Kidstopia daycare has 4 locations using our service. Parents love that it's organic and staff save 2 hours daily on cleaning."
             </div>
             <div class="flow-arrow">→</div>
+            
+            <div class="mobile-detail">
+                <div class="mobile-detail-content">
+                    <h3>💡 SOLUTION PRESENTATION MASTERY</h3>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">🔬 Scientific Credibility Points</div>
+                        <div class="detail-content">
+                            <ul class="tips-list">
+                                <li>EPA registered for surface disinfection</li>
+                                <li>FDA approved for wound care</li>
+                                <li>Used in hospitals for 30+ years</li>
+                                <li>Your immune system produces this naturally</li>
+                                <li>Same molecule as in your white blood cells</li>
+                                <li>Breaks down to salt and water</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="script-examples">
+                        <div class="detail-title">📊 Benefits vs Features</div>
+                        <div class="detail-content">
+                            <strong>Feature:</strong> Kills 99.9% of germs<br>
+                            <strong>Benefit:</strong> Your customers stay healthier<br><br>
+                            <strong>Feature:</strong> No toxic residue<br>
+                            <strong>Benefit:</strong> Safe for your staff to breathe and touch<br><br>
+                            <strong>Feature:</strong> Works 100x faster than bleach<br>
+                            <strong>Benefit:</strong> You save 2+ hours daily on cleaning
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">🏆 Success Stories to Use</div>
+                        <div class="detail-content">
+                            <strong>Kidstopia Daycare:</strong> 4 locations, parents love organic approach, staff saves 2 hours daily<br><br>
+                            <strong>Local Restaurant:</strong> No more customer complaints about chemical smells, health inspector impressed<br><br>
+                            <strong>Medical Office:</strong> Reduced sick days among staff, patients appreciate safer environment
+                        </div>
+                    </div>
+                </div>
+            </div>
             
             <div class="hover-detail">
                 <h3>💡 STEP 4: SOLUTION PRESENTATION MASTERY</h3>
@@ -858,11 +1382,12 @@
         </div>
 
         <!-- STEP 5: Handle Objections -->
-        <div class="container phase-5 span-2">
+        <div class="container phase-5 span-2" onclick="toggleExpand(this)">
             <div class="timer">As needed</div>
             <div class="step-header">
                 <div class="step-number">5</div>
                 <div class="step-title">Handle Their Concerns</div>
+                <span class="expand-icon">▼</span>
             </div>
             
             <div class="why-section">
@@ -890,6 +1415,41 @@
             <div class="objection-response">
                 <div class="objection">"Need to think about it"</div>
                 <div class="response">Ask what specific part they need to consider - safety or investment? Address concerns right now</div>
+            </div>
+            
+            <div class="mobile-detail">
+                <div class="mobile-detail-content">
+                    <h3>🛡️ OBJECTION HANDLING MASTERY</h3>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">🎯 The FEEL-FELT-FOUND Method</div>
+                        <div class="detail-content">
+                            <strong>FEEL:</strong> "I understand how you feel..."<br>
+                            <strong>FELT:</strong> "Other business owners felt the same way..."<br>
+                            <strong>FOUND:</strong> "But they found that..."<br><br>
+                            This validates their concern while providing social proof.
+                        </div>
+                    </div>
+                    
+                    <div class="script-examples">
+                        <div class="detail-title">💰 Price Objection Responses</div>
+                        <div class="detail-content">
+                            "I understand cost is important. Let me show you something - you're spending $X on chemicals plus 3 hours daily cleaning. That's actually $Y per month. We'll reduce that to $Z and save you 2 hours daily. You're actually saving money while getting better results."
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">🔄 Advanced Objection Techniques</div>
+                        <div class="detail-content">
+                            <ul class="tips-list">
+                                <li><strong>Isolate:</strong> "Is price the only concern?"</li>
+                                <li><strong>Clarify:</strong> "What exactly concerns you about the investment?"</li>
+                                <li><strong>Reframe:</strong> "Think of it as health insurance for your business"</li>
+                                <li><strong>Evidence:</strong> Always have proof ready</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <div class="hover-detail">
@@ -933,12 +1493,16 @@
             </div>
         </div>
 
+        <!-- Remaining steps follow the same pattern... -->
+        <!-- I'll continue with the rest of the document -->
+
         <!-- STEP 6: Test Interest -->
-        <div class="container phase-6 span-2">
+        <div class="container phase-6 span-2" onclick="toggleExpand(this)">
             <div class="timer">Throughout</div>
             <div class="step-header">
                 <div class="step-number">6</div>
                 <div class="step-title">Test If They're Ready</div>
+                <span class="expand-icon">▼</span>
             </div>
             
             <div class="why-section">
@@ -972,6 +1536,35 @@
                     </div>
                     <div class="close-technique">
                         "This addresses your concern, right?"
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mobile-detail">
+                <div class="mobile-detail-content">
+                    <h3>🎯 TRIAL CLOSING TECHNIQUES</h3>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">📊 Reading Buying Signals</div>
+                        <div class="detail-content">
+                            <strong>Positive signals:</strong>
+                            <ul class="tips-list">
+                                <li>Asking detailed questions about service</li>
+                                <li>Discussing logistics or timing</li>
+                                <li>Body language opening up</li>
+                                <li>Asking about pricing or payment</li>
+                                <li>Mentioning other decision makers</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="script-examples">
+                        <div class="detail-title">🎪 Assumptive Language Examples</div>
+                        <div class="detail-content">
+                            Instead of "IF we work together..." say "WHEN we start working together..."<br><br>
+                            Instead of "Would you be interested..." say "How would this work with your schedule..."<br><br>
+                            Instead of "Do you want to try..." say "Should we start with your main area or..."
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1028,11 +1621,12 @@
         </div>
 
         <!-- STEP 7: Ask for Sale -->
-        <div class="container phase-1">
+        <div class="container phase-1" onclick="toggleExpand(this)">
             <div class="timer">2-3 min</div>
             <div class="step-header">
                 <div class="step-number">7</div>
                 <div class="step-title">Ask for the Sale</div>
+                <span class="expand-icon">▼</span>
             </div>
             
             <div class="why-section">
@@ -1057,6 +1651,45 @@
                 <strong>Assume Close:</strong> "Let me get your info and schedule you"
             </div>
             <div class="flow-arrow">→</div>
+            
+            <div class="mobile-detail">
+                <div class="mobile-detail-content">
+                    <h3>🎯 CLOSING THE SALE</h3>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">💪 Confidence Builders</div>
+                        <div class="detail-content">
+                            <ul class="tips-list">
+                                <li>Straighten your posture</li>
+                                <li>Make direct eye contact</li>
+                                <li>Speak slowly and clearly</li>
+                                <li>Use assumptive language</li>
+                                <li>Don't apologize for asking</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">⚠️ After You Ask - SHUT UP!</div>
+                        <div class="detail-content">
+                            The first person to speak after you ask for the sale loses. Stay quiet, maintain eye contact, and wait for their response. This is crucial!
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">🔄 If They Say No</div>
+                        <div class="detail-content">
+                            <ul class="tips-list">
+                                <li>Ask why specifically</li>
+                                <li>Address the real concern</li>
+                                <li>Try a different closing approach</li>
+                                <li>Don't give up after first no</li>
+                                <li>Leave door open for future</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
             <div class="hover-detail">
                 <h3>🎯 STEP 7: CLOSING THE SALE</h3>
@@ -1106,11 +1739,12 @@
         </div>
 
         <!-- STEP 8: Complete Sale -->
-        <div class="container phase-2">
+        <div class="container phase-2" onclick="toggleExpand(this)">
             <div class="timer">3-5 min</div>
             <div class="step-header">
                 <div class="step-number">8</div>
                 <div class="step-title">Get Their Information</div>
+                <span class="expand-icon">▼</span>
             </div>
             
             <div class="why-section">
@@ -1130,6 +1764,42 @@
                 <li>Leave business card</li>
                 <li>Ask "Who else would benefit?"</li>
             </ul>
+            
+            <div class="mobile-detail">
+                <div class="mobile-detail-content">
+                    <h3>✅ SALE COMPLETION CHECKLIST</h3>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">📋 Required Information</div>
+                        <div class="detail-content">
+                            <ul class="tips-list">
+                                <li>Business name and address</li>
+                                <li>Contact person and title</li>
+                                <li>Phone number (mobile preferred)</li>
+                                <li>Email address</li>
+                                <li>Best days/times for service</li>
+                                <li>Special access instructions</li>
+                                <li>Payment method preference</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="script-examples">
+                        <div class="detail-title">🏆 Congratulatory Language</div>
+                        <div class="detail-content">
+                            "Excellent choice! You're going to love how much safer and cleaner this makes your business. Your staff and customers will definitely notice the difference."
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">🤝 Referral Scripts</div>
+                        <div class="detail-content">
+                            <strong>Natural approach:</strong> "Who else do you know that would benefit from safer sanitization like this?"<br><br>
+                            <strong>Specific approach:</strong> "Any other business owners in your network who care about their staff's health?"
+                        </div>
+                    </div>
+                </div>
+            </div>
             
             <div class="hover-detail">
                 <h3>✅ STEP 8: SALE COMPLETION CHECKLIST</h3>
@@ -1180,10 +1850,11 @@
         </div>
 
         <!-- What to Expect -->
-        <div class="container tips span-2">
+        <div class="container tips span-2" onclick="toggleExpand(this)">
             <div class="step-header">
                 <div class="step-number">📊</div>
                 <div class="step-title">What to Expect</div>
+                <span class="expand-icon">▼</span>
             </div>
             
             <div class="why-section">
@@ -1205,6 +1876,47 @@
                 • Their body language opens up (uncross arms)<br>
                 • They mention problems with current cleaning<br>
                 • They ask about pricing or scheduling
+            </div>
+            
+            <div class="mobile-detail">
+                <div class="mobile-detail-content">
+                    <h3>📈 EXPECTATIONS & MINDSET MANAGEMENT</h3>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">📊 Success Rate Reality</div>
+                        <div class="detail-content">
+                            <ul class="tips-list">
+                                <li>Expect 1-3 sales per 100 doors</li>
+                                <li>30% will listen to full presentation</li>
+                                <li>10% will show genuine interest</li>
+                                <li>3% will buy immediately</li>
+                                <li>5% will buy with follow-up</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="script-examples">
+                        <div class="detail-title">🚦 Traffic Light System</div>
+                        <div class="detail-content">
+                            <strong>🔴 Red (Move On):</strong> Hostile, rude, or clearly not interested<br><br>
+                            <strong>🟡 Yellow (Quick Pitch):</strong> Polite but busy, give 30-second version<br><br>
+                            <strong>🟢 Green (Full Presentation):</strong> Engaged, asking questions, has time
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">🧠 Mental Resilience Tips</div>
+                        <div class="detail-content">
+                            <ul class="tips-list">
+                                <li>Every "no" gets you closer to "yes"</li>
+                                <li>Rejection isn't personal - it's statistical</li>
+                                <li>Focus on helping, not selling</li>
+                                <li>Celebrate small wins throughout the day</li>
+                                <li>Track your improvement weekly</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <div class="hover-detail">
@@ -1247,18 +1959,17 @@
                 
                 <div class="detail-section">
                     <div class="detail-title">⏰ Time Management</div>
-                    <div class="detail-content">
-                        Don't spend more than 10 minutes total unless they're clearly buying. Time is your most valuable resource - invest it wisely.
-                    </div>
+                    <div class="detail-content">Don't spend more than 10 minutes total unless they're clearly buying. Time is your most valuable resource - invest it wisely.</div>
                 </div>
             </div>
         </div>
 
         <!-- Success Standards -->
-        <div class="container success span-4">
+        <div class="container success span-4" onclick="toggleExpand(this)">
             <div class="step-header">
                 <div class="step-number">🎯</div>
                 <div class="step-title">QUALITY STANDARDS - DO THIS EVERY TIME</div>
+                <span class="expand-icon">▼</span>
             </div>
             
             <div class="why-section">
@@ -1284,6 +1995,45 @@
                     ✓ Thank them for their time<br>
                     ✓ Follow up when you promise to<br>
                     ✓ Keep notes on every interaction
+                </div>
+            </div>
+            
+            <div class="mobile-detail">
+                <div class="mobile-detail-content">
+                    <h3>🏆 QUALITY STANDARDS & BEST PRACTICES</h3>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">👔 Professional Appearance Checklist</div>
+                        <div class="detail-content">
+                            <ul class="tips-list">
+                                <li>Clean, pressed business attire</li>
+                                <li>Professional hairstyle and grooming</li>
+                                <li>Clean, appropriate shoes</li>
+                                <li>Minimal, professional jewelry</li>
+                                <li>Fresh breath and good hygiene</li>
+                                <li>Company badge/identification visible</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="script-examples">
+                        <div class="detail-title">📞 Follow-Up Excellence</div>
+                        <div class="detail-content">
+                            <strong>Within 2 hours:</strong> Send confirmation text<br>
+                            <strong>Within 24 hours:</strong> Email with service details<br>
+                            <strong>Day before service:</strong> Reminder call<br>
+                            <strong>After service:</strong> Satisfaction check-in<br>
+                            <strong>Monthly:</strong> Relationship maintenance call
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">🎯 Daily Success Metrics</div>
+                        <div class="detail-content">
+                            <strong>Track daily:</strong> Doors knocked, presentations given, objections handled, sales closed, referrals received, follow-ups scheduled.<br><br>
+                            <strong>Weekly goals:</strong> 100+ doors, 30+ presentations, 5+ sales, 10+ referrals, 100% follow-up completion.
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -1356,10 +2106,30 @@
 
     </div>
 
-    <div class="no-print" style="text-align: center; margin-top: 12px; color: #2c3e50; font-size: 10px; font-weight: bold;">
-        <p>🏆 <strong>Success Formula:</strong> Follow Steps 1-8 in exact order • Focus on solving their problems, not just selling products • Every "no" gets you closer to "yes"</p>
-        <p>📞 Questions? Contact: (801) 712-5663 | ohshocl@gmail.com</p>
-        <p style="font-size: 9px; margin-top: 8px; font-style: italic;">💡 Hover over each step for detailed guidance and advanced techniques</p>
+    <div class="footer-info no-print">
+        <p><strong>🏆 Success Formula:</strong> Follow Steps 1-8 in exact order • Focus on solving their problems, not just selling products • Every "no" gets you closer to "yes"</p>
+        <p><strong>📞 Questions?</strong> Contact: (801) 712-5663 | ohshocl@gmail.com</p>
+        <p><strong>💡 Tip:</strong> Tap on each step for detailed guidance and advanced techniques</p>
     </div>
+
+    <script>
+        function toggleExpand(element) {
+            // Only work on mobile/tablet
+            if (window.innerWidth > 1023) {
+                return;
+            }
+            
+            // Toggle expanded class
+            element.classList.toggle('expanded');
+            
+            // Optional: Close other expanded items
+            const allContainers = document.querySelectorAll('.container');
+            allContainers.forEach(container => {
+                if (container !== element && container.classList.contains('expanded')) {
+                    container.classList.remove('expanded');
+                }
+            });
+        }
+    </script>
 </body>
 </html>
