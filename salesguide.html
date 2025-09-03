@@ -22,17 +22,59 @@
             min-height: 100vh;
         }
         
+        /* Tab controls */
+        .tab-controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .tab-button {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+        }
+        
+        .tab-button.active {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+        
+        .tab-button:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+        
+        .tab-button:active {
+            transform: scale(0.95);
+        }
+        
         /* Mobile-first approach */
         .print-button {
             position: fixed;
-            bottom: 20px;
+            top: 20px;
             right: 20px;
             background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
             color: white;
             border: none;
-            padding: 14px 20px;
-            border-radius: 50px;
-            font-size: 16px;
+            padding: 12px 18px;
+            border-radius: 25px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
@@ -792,6 +834,7 @@
             .expand-icon { display: none !important; }
             .hover-detail { display: none !important; }
             .flow-arrow { display: none !important; }
+            .tab-controls { display: none !important; }
             
             .header {
                 margin-bottom: 8px !important;
@@ -915,50 +958,101 @@
     </style>
 </head>
 <body>
+    <div class="tab-controls no-print">
+        <button class="tab-button active" onclick="showTab('process')">
+            <span>📋</span>
+            <span>SALES PROCESS</span>
+        </button>
+        <button class="tab-button" onclick="showTab('psychology')">
+            <span>🧠</span>
+            <span>PSYCHOLOGY</span>
+        </button>
+    </div>
+    
     <button class="print-button no-print" onclick="window.print()">
         <span>🖨️</span>
         <span>PRINT</span>
     </button>
     
-    <div class="header">
-        <h1>🎯 OHS SALES PROCESS GUIDE</h1>
-        <div class="subtitle">Complete 8-Step Door-to-Door Sales System | Organic HypoSolutions</div>
-    </div>
+    <div class="tab-content" id="process-content">
+        <div class="header">
+            <h1>🎯 OHS SALES PROCESS GUIDE</h1>
+            <div class="subtitle">Complete 8-Step Sales System | Organic HypoSolutions</div>
+        </div>
 
-    <div class="flowchart">
-        
-        <!-- STEP 1: Door Approach -->
-        <div class="container phase-1" onclick="toggleExpand(this)">
-            <div class="timer">30 sec</div>
-            <div class="step-header">
-                <div class="step-number">1</div>
-                <div class="step-title">Door Approach</div>
-                <span class="expand-icon">▼</span>
-            </div>
+        <div class="flowchart">
             
-            <div class="why-section">
-                <div class="why-title">🧠 WHY THIS STEP:</div>
-                <div class="why-text">First impression determines if you get inside. Professional appearance + EPA credibility + time limit = permission to present.</div>
-            </div>
-            
-            <div class="action-tag">SHOW CREDENTIALS</div> <div class="action-tag">GIVE COMPLIMENT</div>
-            <div class="script-box">
-                <strong>Script:</strong> "Hi! I'm [Name] with Organic HypoSolutions. Nice [specific compliment]! I help businesses with EPA-approved safer sanitization. Got 5 minutes?"
-            </div>
-            <div class="example-highlight">
-                <strong>Example:</strong> "Hi! I'm Sarah with Organic HypoSolutions. Nice place you have here! I help businesses like yours with EPA-approved safer sanitization. Got 5 minutes?"
-            </div>
-            <ul class="bullet-points">
-                <li>Professional appearance first</li>
-                <li>Lead with EPA credibility</li>
-                <li>Compliment something specific</li>
-                <li>Ask for small time commitment</li>
-            </ul>
-            <div class="flow-arrow">→</div>
-            
-            <div class="mobile-detail">
-                <div class="mobile-detail-content">
-                    <h3>🚪 DOOR APPROACH MASTERY</h3>
+            <!-- STEP 1: Door Approach -->
+            <div class="container phase-1" onclick="toggleExpand(this)">
+                <div class="timer">30 sec</div>
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Initial Approach</div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                
+                <div class="why-section">
+                    <div class="why-title">🧠 WHY THIS STEP:</div>
+                    <div class="why-text">First impression determines if you get permission to present. Professional appearance + EPA credibility + time limit = opportunity to showcase value.</div>
+                </div>
+                
+                <div class="action-tag">SHOW CREDENTIALS</div> <div class="action-tag">GIVE COMPLIMENT</div>
+                <div class="script-box">
+                    <strong>Script:</strong> "Hi! I'm [Name] with Organic HypoSolutions. Nice [specific compliment]! I help businesses with EPA-approved safer sanitization. Got 5 minutes?"
+                </div>
+                <div class="example-highlight">
+                    <strong>Example:</strong> "Hi! I'm Sarah with Organic HypoSolutions. Nice place you have here! I help businesses like yours with EPA-approved safer sanitization. Got 5 minutes?"
+                </div>
+                <ul class="bullet-points">
+                    <li>Professional appearance first</li>
+                    <li>Lead with EPA credibility</li>
+                    <li>Compliment something specific</li>
+                    <li>Ask for small time commitment</li>
+                </ul>
+                <div class="flow-arrow">→</div>
+                
+                <div class="mobile-detail">
+                    <div class="mobile-detail-content">
+                        <h3>🚪 INITIAL APPROACH MASTERY</h3>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">📋 Pre-Approach Checklist</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li>Professional attire (business casual minimum)</li>
+                                    <li>Business cards ready</li>
+                                    <li>EPA documentation visible</li>
+                                    <li>Confident posture and smile</li>
+                                    <li>Phone on silent</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="script-examples">
+                            <div class="detail-title">🗣️ Script Variations</div>
+                            <div class="detail-content">
+                                <strong>For Restaurants:</strong> "Hi! I'm [Name] with OHS. Great looking menu board! I help restaurants with EPA-approved safer sanitization that keeps customers and staff healthier. Got 5 minutes?"<br><br>
+                                <strong>For Salons:</strong> "Hi! I'm [Name] with OHS. Love the atmosphere here! I help beauty businesses with EPA-approved sanitization that's safer for clients and staff. Got 5 minutes?"
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">⚠️ Common Mistakes to Avoid</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li>Don't lead with price</li>
+                                    <li>Don't use generic compliments</li>
+                                    <li>Don't ask "Are you the owner?"</li>
+                                    <li>Don't look at your phone</li>
+                                    <li>Don't be pushy if they're clearly busy</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hover-detail">
+                    <h3>🚪 STEP 1: INITIAL APPROACH MASTERY</h3>
                     
                     <div class="detail-section">
                         <div class="detail-title">📋 Pre-Approach Checklist</div>
@@ -993,85 +1087,84 @@
                             </ul>
                         </div>
                     </div>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">🎯 Success Indicators</div>
+                        <div class="detail-content">You know it's working when they: Stop what they're doing, make eye contact, ask a question, or invite you in/give you their attention.</div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="hover-detail">
-                <h3>🚪 STEP 1: DOOR APPROACH MASTERY</h3>
-                
-                <div class="detail-section">
-                    <div class="detail-title">📋 Pre-Approach Checklist</div>
-                    <div class="detail-content">
-                        <ul class="tips-list">
-                            <li>Professional attire (business casual minimum)</li>
-                            <li>Business cards ready</li>
-                            <li>EPA documentation visible</li>
-                            <li>Confident posture and smile</li>
-                            <li>Phone on silent</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="script-examples">
-                    <div class="detail-title">🗣️ Script Variations</div>
-                    <div class="detail-content">
-                        <strong>For Restaurants:</strong> "Hi! I'm [Name] with OHS. Great looking menu board! I help restaurants with EPA-approved safer sanitization that keeps customers and staff healthier. Got 5 minutes?"<br><br>
-                        <strong>For Salons:</strong> "Hi! I'm [Name] with OHS. Love the atmosphere here! I help beauty businesses with EPA-approved sanitization that's safer for clients and staff. Got 5 minutes?"
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">⚠️ Common Mistakes to Avoid</div>
-                    <div class="detail-content">
-                        <ul class="tips-list">
-                            <li>Don't lead with price</li>
-                            <li>Don't use generic compliments</li>
-                            <li>Don't ask "Are you the owner?"</li>
-                            <li>Don't look at your phone</li>
-                            <li>Don't be pushy if they're clearly busy</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">🎯 Success Indicators</div>
-                    <div class="detail-content">You know it's working when they: Stop what they're doing, make eye contact, ask a question, or invite you in/give you their attention.</div>
-                </div>
-            </div>
-        </div>
 
-        <!-- STEP 2: Build Rapport -->
-        <div class="container phase-2" onclick="toggleExpand(this)">
-            <div class="timer">1-2 min</div>
-            <div class="step-header">
-                <div class="step-number">2</div>
-                <div class="step-title">Connect With Them</div>
-                <span class="expand-icon">▼</span>
-            </div>
-            
-            <div class="why-section">
-                <div class="why-title">🧠 WHY THIS STEP:</div>
-                <div class="why-text">People buy from people they like and trust. Building rapport creates emotional connection before logical presentation.</div>
-            </div>
-            
-            <div class="action-tag">ASK ABOUT THEM</div> <div class="action-tag">FIND COMMON GROUND</div>
-            <div class="script-box">
-                <strong>Script:</strong> "How's your day going? This place has great energy - how long have you been here? What got you started in this business?"
-            </div>
-            <div class="example-highlight">
-                <strong>Questions to ask:</strong> "How's business? What's your background? What do you love about this work?"
-            </div>
-            <ul class="bullet-points">
-                <li>Ask about their business story</li>
-                <li>Listen more than you talk</li>
-                <li>Find something in common</li>
-                <li>Be genuinely interested</li>
-            </ul>
-            <div class="flow-arrow">→</div>
-            
-            <div class="mobile-detail">
-                <div class="mobile-detail-content">
-                    <h3>🤝 RAPPORT BUILDING TECHNIQUES</h3>
+            <!-- STEP 2: Build Rapport -->
+            <div class="container phase-2" onclick="toggleExpand(this)">
+                <div class="timer">1-2 min</div>
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Connect With Them</div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                
+                <div class="why-section">
+                    <div class="why-title">🧠 WHY THIS STEP:</div>
+                    <div class="why-text">People buy from people they like and trust. Building rapport creates emotional connection before logical presentation.</div>
+                </div>
+                
+                <div class="action-tag">ASK ABOUT THEM</div> <div class="action-tag">FIND COMMON GROUND</div>
+                <div class="script-box">
+                    <strong>Script:</strong> "How's your day going? This place has great energy - how long have you been here? What got you started in this business?"
+                </div>
+                <div class="example-highlight">
+                    <strong>Questions to ask:</strong> "How's business? What's your background? What do you love about this work?"
+                </div>
+                <ul class="bullet-points">
+                    <li>Ask about their business story</li>
+                    <li>Listen more than you talk</li>
+                    <li>Find something in common</li>
+                    <li>Be genuinely interested</li>
+                </ul>
+                <div class="flow-arrow">→</div>
+                
+                <div class="mobile-detail">
+                    <div class="mobile-detail-content">
+                        <h3>🤝 RAPPORT BUILDING TECHNIQUES</h3>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">💬 Conversation Starters</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li>"How did you get into this business?"</li>
+                                    <li>"What's the best part about running this place?"</li>
+                                    <li>"How long have you been at this location?"</li>
+                                    <li>"What makes your business unique?"</li>
+                                    <li>"How's business been lately?"</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="script-examples">
+                            <div class="detail-title">🎯 Finding Common Ground</div>
+                            <div class="detail-content">
+                                Look for: Family photos, awards, local sports teams, community involvement, shared business challenges, similar backgrounds, mutual connections.
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">👂 Active Listening Tips</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li>Maintain eye contact</li>
+                                    <li>Nod and use "mmm-hmm"</li>
+                                    <li>Ask follow-up questions</li>
+                                    <li>Remember details they share</li>
+                                    <li>Mirror their communication style</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hover-detail">
+                    <h3>🤝 STEP 2: RAPPORT BUILDING TECHNIQUES</h3>
                     
                     <div class="detail-section">
                         <div class="detail-title">💬 Conversation Starters</div>
@@ -1105,85 +1198,87 @@
                             </ul>
                         </div>
                     </div>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">⏰ Time Management</div>
+                        <div class="detail-content">Don't spend more than 2 minutes here unless they're really engaged. Watch for buying signals and transition smoothly to problem discovery.</div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="hover-detail">
-                <h3>🤝 STEP 2: RAPPORT BUILDING TECHNIQUES</h3>
-                
-                <div class="detail-section">
-                    <div class="detail-title">💬 Conversation Starters</div>
-                    <div class="detail-content">
-                        <ul class="tips-list">
-                            <li>"How did you get into this business?"</li>
-                            <li>"What's the best part about running this place?"</li>
-                            <li>"How long have you been at this location?"</li>
-                            <li>"What makes your business unique?"</li>
-                            <li>"How's business been lately?"</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="script-examples">
-                    <div class="detail-title">🎯 Finding Common Ground</div>
-                    <div class="detail-content">
-                        Look for: Family photos, awards, local sports teams, community involvement, shared business challenges, similar backgrounds, mutual connections.
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">👂 Active Listening Tips</div>
-                    <div class="detail-content">
-                        <ul class="tips-list">
-                            <li>Maintain eye contact</li>
-                            <li>Nod and use "mmm-hmm"</li>
-                            <li>Ask follow-up questions</li>
-                            <li>Remember details they share</li>
-                            <li>Mirror their communication style</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">⏰ Time Management</div>
-                    <div class="detail-content">Don't spend more than 2 minutes here unless they're really engaged. Watch for buying signals and transition smoothly to problem discovery.</div>
-                </div>
-            </div>
-        </div>
 
-        <!-- STEP 3: Find Problems -->
-        <div class="container phase-3" onclick="toggleExpand(this)">
-            <div class="timer">3-4 min</div>
-            <div class="step-header">
-                <div class="step-number">3</div>
-                <div class="step-title">Find Their Problems</div>
-                <span class="expand-icon">▼</span>
-            </div>
-            
-            <div class="why-section">
-                <div class="why-title">🧠 WHY THIS STEP:</div>
-                <div class="why-text">No problem = No sale. You must identify pain points before presenting solutions. People buy solutions to problems they admit they have.</div>
-            </div>
-            
-            <div class="action-tag">ASK ABOUT CLEANING</div> <div class="action-tag">FIND PAIN POINTS</div>
-            <div class="script-box">
-                <strong>Script:</strong> "Walk me through your cleaning routine. What products do you use? Any issues with chemical smells or residue? How much time does it take?"
-            </div>
-            <div class="example-highlight">
-                <strong>Pain points to discover:</strong> Chemical odors, time consuming, expensive, safety concerns, ineffective cleaning
-            </div>
-            <ul class="bullet-points">
-                <li>Current cleaning method</li>
-                <li>Problems they're having</li>
-                <li>Safety concerns</li>
-                <li>Time spent cleaning</li>
-                <li>Cost of current products</li>
-            </ul>
-            <div class="flow-arrow">→</div>
-            
-            <div class="mobile-detail">
-                <div class="mobile-detail-content">
-                    <h3>🔍 PROBLEM DISCOVERY MASTERY</h3>
+            <!-- STEP 3: Find Problems -->
+            <div class="container phase-3" onclick="toggleExpand(this)">
+                <div class="timer">3-4 min</div>
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Find Their Problems</div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                
+                <div class="why-section">
+                    <div class="why-title">🧠 WHY THIS STEP:</div>
+                    <div class="why-text">No problem = No sale. You must identify pain points before presenting solutions. People buy solutions to problems they admit they have.</div>
+                </div>
+                
+                <div class="action-tag">ASK ABOUT CLEANING</div> <div class="action-tag">FIND PAIN POINTS</div>
+                <div class="script-box">
+                    <strong>Script:</strong> "Walk me through your cleaning routine. What products do you use? Any issues with chemical smells or residue? How much time does it take?"
+                </div>
+                <div class="example-highlight">
+                    <strong>Pain points to discover:</strong> Chemical odors, time consuming, expensive, safety concerns, ineffective cleaning
+                </div>
+                <ul class="bullet-points">
+                    <li>Current cleaning method</li>
+                    <li>Problems they're having</li>
+                    <li>Safety concerns</li>
+                    <li>Time spent cleaning</li>
+                    <li>Cost of current products</li>
+                </ul>
+                <div class="flow-arrow">→</div>
+                
+                <div class="mobile-detail">
+                    <div class="mobile-detail-content">
+                        <h3>🔍 PROBLEM DISCOVERY MASTERY</h3>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">❓ Key Discovery Questions</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li>"What cleaning products do you currently use?"</li>
+                                    <li>"How much time do you spend on sanitization daily?"</li>
+                                    <li>"Any concerns about chemical residues?"</li>
+                                    <li>"Ever had customers comment on chemical smells?"</li>
+                                    <li>"What's your biggest cleaning challenge?"</li>
+                                    <li>"How much do you spend monthly on cleaning supplies?"</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="script-examples">
+                            <div class="detail-title">🎯 Industry-Specific Pain Points</div>
+                            <div class="detail-content">
+                                <strong>Restaurants:</strong> Grease buildup, food safety regulations, customer complaints about chemical odors<br><br>
+                                <strong>Medical:</strong> Infection control, patient safety, regulatory compliance<br><br>
+                                <strong>Salons:</strong> Client sensitivity to chemicals, skin reactions, ventilation issues
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">🚩 Red Flag Responses</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li>"Everything's fine" - Dig deeper with specific questions</li>
+                                    <li>"We don't have problems" - Ask about improvement opportunities</li>
+                                    <li>"It's cheap" - Focus on hidden costs (time, health, effectiveness)</li>
+                                    <li>"We're required to use this" - Explore if they're happy with requirements</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hover-detail">
+                    <h3>🔍 STEP 3: PROBLEM DISCOVERY MASTERY</h3>
                     
                     <div class="detail-section">
                         <div class="detail-title">❓ Key Discovery Questions</div>
@@ -1219,86 +1314,86 @@
                             </ul>
                         </div>
                     </div>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">📝 Problem Documentation</div>
+                        <div class="detail-content">Write down their exact words about problems - you'll use these later when presenting your solution. Their words = their values.</div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="hover-detail">
-                <h3>🔍 STEP 3: PROBLEM DISCOVERY MASTERY</h3>
-                
-                <div class="detail-section">
-                    <div class="detail-title">❓ Key Discovery Questions</div>
-                    <div class="detail-content">
-                        <ul class="tips-list">
-                            <li>"What cleaning products do you currently use?"</li>
-                            <li>"How much time do you spend on sanitization daily?"</li>
-                            <li>"Any concerns about chemical residues?"</li>
-                            <li>"Ever had customers comment on chemical smells?"</li>
-                            <li>"What's your biggest cleaning challenge?"</li>
-                            <li>"How much do you spend monthly on cleaning supplies?"</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="script-examples">
-                    <div class="detail-title">🎯 Industry-Specific Pain Points</div>
-                    <div class="detail-content">
-                        <strong>Restaurants:</strong> Grease buildup, food safety regulations, customer complaints about chemical odors<br><br>
-                        <strong>Medical:</strong> Infection control, patient safety, regulatory compliance<br><br>
-                        <strong>Salons:</strong> Client sensitivity to chemicals, skin reactions, ventilation issues
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">🚩 Red Flag Responses</div>
-                    <div class="detail-content">
-                        <ul class="tips-list">
-                            <li>"Everything's fine" - Dig deeper with specific questions</li>
-                            <li>"We don't have problems" - Ask about improvement opportunities</li>
-                            <li>"It's cheap" - Focus on hidden costs (time, health, effectiveness)</li>
-                            <li>"We're required to use this" - Explore if they're happy with requirements</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">📝 Problem Documentation</div>
-                    <div class="detail-content">Write down their exact words about problems - you'll use these later when presenting your solution. Their words = their values.</div>
-                </div>
-            </div>
-        </div>
 
-        <!-- STEP 4: Present Solution -->
-        <div class="container phase-4" onclick="toggleExpand(this)">
-            <div class="timer">5-7 min</div>
-            <div class="step-header">
-                <div class="step-number">4</div>
-                <div class="step-title">Show Our Solution</div>
-                <span class="expand-icon">▼</span>
-            </div>
-            
-            <div class="why-section">
-                <div class="why-title">🧠 WHY THIS STEP:</div>
-                <div class="why-text">Now that you know their problems, present HOCl as the perfect solution. Use proof (EPA, body makes it) + social proof (Kidstopia) = credibility.</div>
-            </div>
-            
-            <div class="action-tag">TELL SUCCESS STORY</div> <div class="action-tag">PROVE EFFECTIVENESS</div>
-            <div class="must-say">
-                MUST SAY: "Your body makes this same solution naturally to fight germs"
-            </div>
-            <div class="script-box">
-                <strong>Script:</strong> Connect their problem to your solution. Explain it's natural (body makes it), EPA approved, and share Kidstopia success
-            </div>
-            <div class="example-highlight">
-                <strong>Key points:</strong> Family safe, EPA registered, natural (body makes it), kills 99.9% germs, no toxic residue, 5x faster than current method
-            </div>
-            <div class="example-highlight">
-                <strong>Kidstopia story:</strong> "Kidstopia daycare has 4 locations using our service. Parents love that it's organic and staff save 2 hours daily on cleaning."
-            </div>
-            <div class="flow-arrow">→</div>
-            
-            <div class="mobile-detail">
-                <div class="mobile-detail-content">
-                    <h3>💡 SOLUTION PRESENTATION MASTERY</h3>
+            <!-- STEP 4: Present Solution -->
+            <div class="container phase-4" onclick="toggleExpand(this)">
+                <div class="timer">5-7 min</div>
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Show Our Solution</div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                
+                <div class="why-section">
+                    <div class="why-title">🧠 WHY THIS STEP:</div>
+                    <div class="why-text">Now that you know their problems, present HOCl as the perfect solution. Use proof (EPA, body makes it) + social proof (Kidstopia) = credibility.</div>
+                </div>
+                
+                <div class="action-tag">TELL SUCCESS STORY</div> <div class="action-tag">PROVE EFFECTIVENESS</div>
+                <div class="must-say">
+                    MUST SAY: "Your body makes this same solution naturally to fight germs"
+                </div>
+                <div class="script-box">
+                    <strong>Script:</strong> Connect their problem to your solution. Explain it's natural (body makes it), EPA approved, and share Kidstopia success
+                </div>
+                <div class="example-highlight">
+                    <strong>Key points:</strong> Family safe, EPA registered, natural (body makes it), kills 99.9% germs, no toxic residue, 5x faster than current method
+                </div>
+                <div class="example-highlight">
+                    <strong>Kidstopia story:</strong> "Kidstopia daycare has 4 locations using our service. Parents love that it's organic and staff save 2 hours daily on cleaning."
+                </div>
+                <div class="flow-arrow">→</div>
+                
+                <div class="mobile-detail">
+                    <div class="mobile-detail-content">
+                        <h3>💡 SOLUTION PRESENTATION MASTERY</h3>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">🔬 Scientific Credibility Points</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li>EPA registered for surface disinfection</li>
+                                    <li>FDA approved for wound care</li>
+                                    <li>Used in hospitals for 30+ years</li>
+                                    <li>Your immune system produces this naturally</li>
+                                    <li>Same molecule as in your white blood cells</li>
+                                    <li>Breaks down to salt and water</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="script-examples">
+                            <div class="detail-title">📊 Benefits vs Features</div>
+                            <div class="detail-content">
+                                <strong>Feature:</strong> Kills 99.9% of germs<br>
+                                <strong>Benefit:</strong> Your customers stay healthier<br><br>
+                                <strong>Feature:</strong> No toxic residue<br>
+                                <strong>Benefit:</strong> Safe for your staff to breathe and touch<br><br>
+                                <strong>Feature:</strong> Works 100x faster than bleach<br>
+                                <strong>Benefit:</strong> You save 2+ hours daily on cleaning
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">🏆 Success Stories to Use</div>
+                            <div class="detail-content">
+                                <strong>Kidstopia Daycare:</strong> 4 locations, parents love organic approach, staff saves 2 hours daily<br><br>
+                                <strong>Local Restaurant:</strong> No more customer complaints about chemical smells, health inspector impressed<br><br>
+                                <strong>Medical Office:</strong> Reduced sick days among staff, patients appreciate safer environment
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hover-detail">
+                    <h3>💡 STEP 4: SOLUTION PRESENTATION MASTERY</h3>
                     
                     <div class="detail-section">
                         <div class="detail-title">🔬 Scientific Credibility Points</div>
@@ -1334,100 +1429,94 @@
                             <strong>Medical Office:</strong> Reduced sick days among staff, patients appreciate safer environment
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <div class="hover-detail">
-                <h3>💡 STEP 4: SOLUTION PRESENTATION MASTERY</h3>
-                
-                <div class="detail-section">
-                    <div class="detail-title">🔬 Scientific Credibility Points</div>
-                    <div class="detail-content">
-                        <ul class="tips-list">
-                            <li>EPA registered for surface disinfection</li>
-                            <li>FDA approved for wound care</li>
-                            <li>Used in hospitals for 30+ years</li>
-                            <li>Your immune system produces this naturally</li>
-                            <li>Same molecule as in your white blood cells</li>
-                            <li>Breaks down to salt and water</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="script-examples">
-                    <div class="detail-title">📊 Benefits vs Features</div>
-                    <div class="detail-content">
-                        <strong>Feature:</strong> Kills 99.9% of germs<br>
-                        <strong>Benefit:</strong> Your customers stay healthier<br><br>
-                        <strong>Feature:</strong> No toxic residue<br>
-                        <strong>Benefit:</strong> Safe for your staff to breathe and touch<br><br>
-                        <strong>Feature:</strong> Works 100x faster than bleach<br>
-                        <strong>Benefit:</strong> You save 2+ hours daily on cleaning
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">🏆 Success Stories to Use</div>
-                    <div class="detail-content">
-                        <strong>Kidstopia Daycare:</strong> 4 locations, parents love organic approach, staff saves 2 hours daily<br><br>
-                        <strong>Local Restaurant:</strong> No more customer complaints about chemical smells, health inspector impressed<br><br>
-                        <strong>Medical Office:</strong> Reduced sick days among staff, patients appreciate safer environment
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">🎯 Presentation Flow</div>
-                    <div class="detail-content">
-                        1. Reference their specific problem<br>
-                        2. Introduce HOCl as the solution<br>
-                        3. Explain the science simply<br>
-                        4. Give proof/credentials<br>
-                        5. Share relevant success story<br>
-                        6. Show time/cost savings
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">🎯 Presentation Flow</div>
+                        <div class="detail-content">
+                            1. Reference their specific problem<br>
+                            2. Introduce HOCl as the solution<br>
+                            3. Explain the science simply<br>
+                            4. Give proof/credentials<br>
+                            5. Share relevant success story<br>
+                            6. Show time/cost savings
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- STEP 5: Handle Objections -->
-        <div class="container phase-5 span-2" onclick="toggleExpand(this)">
-            <div class="timer">As needed</div>
-            <div class="step-header">
-                <div class="step-number">5</div>
-                <div class="step-title">Handle Their Concerns</div>
-                <span class="expand-icon">▼</span>
-            </div>
-            
-            <div class="why-section">
-                <div class="why-title">🧠 WHY THIS STEP:</div>
-                <div class="why-text">Objections are normal buying signals - they're interested but need reassurance. Address concerns with facts, not arguments. Objections handled = obstacles removed.</div>
-            </div>
-            
-            <div class="action-tag">SHOW PROOF</div> <div class="action-tag">COMPARE COSTS</div>
-            
-            <div class="objection-response">
-                <div class="objection">"It's too expensive"</div>
-                <div class="response">Show cost per square foot - they're spending more now with worse results, plus they save 2-3 hours weekly</div>
-            </div>
-            
-            <div class="objection-response">
-                <div class="objection">"Never heard of it"</div>
-                <div class="response">Hospitals use this for 30+ years, FDA approved for wounds, EPA registered for surfaces, your body makes this naturally</div>
-            </div>
-            
-            <div class="objection-response">
-                <div class="objection">"We're fine with current products"</div>
-                <div class="response">Ask if they're 100% comfortable with chemical residues around staff/customers when there's a safer option</div>
-            </div>
-            
-            <div class="objection-response">
-                <div class="objection">"Need to think about it"</div>
-                <div class="response">Ask what specific part they need to consider - safety or investment? Address concerns right now</div>
-            </div>
-            
-            <div class="mobile-detail">
-                <div class="mobile-detail-content">
-                    <h3>🛡️ OBJECTION HANDLING MASTERY</h3>
+            <!-- STEP 5: Handle Objections -->
+            <div class="container phase-5 span-2" onclick="toggleExpand(this)">
+                <div class="timer">As needed</div>
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <div class="step-title">Handle Their Concerns</div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                
+                <div class="why-section">
+                    <div class="why-title">🧠 WHY THIS STEP:</div>
+                    <div class="why-text">Objections are normal buying signals - they're interested but need reassurance. Address concerns with facts, not arguments. Objections handled = obstacles removed.</div>
+                </div>
+                
+                <div class="action-tag">SHOW PROOF</div> <div class="action-tag">COMPARE COSTS</div>
+                
+                <div class="objection-response">
+                    <div class="objection">"It's too expensive"</div>
+                    <div class="response">Show cost per square foot - they're spending more now with worse results, plus they save 2-3 hours weekly</div>
+                </div>
+                
+                <div class="objection-response">
+                    <div class="objection">"Never heard of it"</div>
+                    <div class="response">Hospitals use this for 30+ years, FDA approved for wounds, EPA registered for surfaces, your body makes this naturally</div>
+                </div>
+                
+                <div class="objection-response">
+                    <div class="objection">"We're fine with current products"</div>
+                    <div class="response">Ask if they're 100% comfortable with chemical residues around staff/customers when there's a safer option</div>
+                </div>
+                
+                <div class="objection-response">
+                    <div class="objection">"Need to think about it"</div>
+                    <div class="response">Ask what specific part they need to consider - safety or investment? Address concerns right now</div>
+                </div>
+                
+                <div class="mobile-detail">
+                    <div class="mobile-detail-content">
+                        <h3>🛡️ OBJECTION HANDLING MASTERY</h3>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">🎯 The FEEL-FELT-FOUND Method</div>
+                            <div class="detail-content">
+                                <strong>FEEL:</strong> "I understand how you feel..."<br>
+                                <strong>FELT:</strong> "Other business owners felt the same way..."<br>
+                                <strong>FOUND:</strong> "But they found that..."<br><br>
+                                This validates their concern while providing social proof.
+                            </div>
+                        </div>
+                        
+                        <div class="script-examples">
+                            <div class="detail-title">💰 Price Objection Responses</div>
+                            <div class="detail-content">
+                                "I understand cost is important. Let me show you something - you're spending $X on chemicals plus 3 hours daily cleaning. That's actually $Y per month. We'll reduce that to $Z and save you 2 hours daily. You're actually saving money while getting better results."
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">🔄 Advanced Objection Techniques</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li><strong>Isolate:</strong> "Is price the only concern?"</li>
+                                    <li><strong>Clarify:</strong> "What exactly concerns you about the investment?"</li>
+                                    <li><strong>Reframe:</strong> "Think of it as health insurance for your business"</li>
+                                    <li><strong>Evidence:</strong> Always have proof ready</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hover-detail">
+                    <h3>🛡️ STEP 5: OBJECTION HANDLING MASTERY</h3>
                     
                     <div class="detail-section">
                         <div class="detail-title">🎯 The FEEL-FELT-FOUND Method</div>
@@ -1457,100 +1546,91 @@
                             </ul>
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <div class="hover-detail">
-                <h3>🛡️ STEP 5: OBJECTION HANDLING MASTERY</h3>
-                
-                <div class="detail-section">
-                    <div class="detail-title">🎯 The FEEL-FELT-FOUND Method</div>
-                    <div class="detail-content">
-                        <strong>FEEL:</strong> "I understand how you feel..."<br>
-                        <strong>FELT:</strong> "Other business owners felt the same way..."<br>
-                        <strong>FOUND:</strong> "But they found that..."<br><br>
-                        This validates their concern while providing social proof.
-                    </div>
-                </div>
-                
-                <div class="script-examples">
-                    <div class="detail-title">💰 Price Objection Responses</div>
-                    <div class="detail-content">
-                        "I understand cost is important. Let me show you something - you're spending $X on chemicals plus 3 hours daily cleaning. That's actually $Y per month. We'll reduce that to $Z and save you 2 hours daily. You're actually saving money while getting better results."
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">🔄 Advanced Objection Techniques</div>
-                    <div class="detail-content">
-                        <ul class="tips-list">
-                            <li><strong>Isolate:</strong> "Is price the only concern?"</li>
-                            <li><strong>Clarify:</strong> "What exactly concerns you about the investment?"</li>
-                            <li><strong>Reframe:</strong> "Think of it as health insurance for your business"</li>
-                            <li><strong>Evidence:</strong> Always have proof ready</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">⚠️ Objection Signals</div>
-                    <div class="detail-content">
-                        Watch for: Crossed arms, stepping back, looking away, checking phone, fidgeting. These indicate concerns that need addressing before moving forward.
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">⚠️ Objection Signals</div>
+                        <div class="detail-content">
+                            Watch for: Crossed arms, stepping back, looking away, checking phone, fidgeting. These indicate concerns that need addressing before moving forward.
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Remaining steps follow the same pattern... -->
-        <!-- I'll continue with the rest of the document -->
-
-        <!-- STEP 6: Test Interest -->
-        <div class="container phase-6 span-2" onclick="toggleExpand(this)">
-            <div class="timer">Throughout</div>
-            <div class="step-header">
-                <div class="step-number">6</div>
-                <div class="step-title">Test If They're Ready</div>
-                <span class="expand-icon">▼</span>
-            </div>
-            
-            <div class="why-section">
-                <div class="why-title">🧠 WHY THIS STEP:</div>
-                <div class="why-text">Don't guess if they're ready to buy - test it! Trial closes throughout the presentation gauge interest and move them toward the final close.</div>
-            </div>
-            
-            <div class="action-tag">CREATE URGENCY</div> <div class="action-tag">GET SMALL YESES</div>
-            <div class="script-box">
-                <strong>Use these phrases throughout:</strong> Say "when we start" not "if we start" to assume the sale
-            </div>
-            
-            <div class="grid-2">
-                <div>
-                    <div class="close-technique">
-                        "How does this sound for protecting your staff?"
+            <!-- STEP 6: Test Interest -->
+            <div class="container phase-6 span-2" onclick="toggleExpand(this)">
+                <div class="timer">Throughout</div>
+                <div class="step-header">
+                    <div class="step-number">6</div>
+                    <div class="step-title">Test If They're Ready</div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                
+                <div class="why-section">
+                    <div class="why-title">🧠 WHY THIS STEP:</div>
+                    <div class="why-text">Don't guess if they're ready to buy - test it! Trial closes throughout the presentation gauge interest and move them toward the final close.</div>
+                </div>
+                
+                <div class="action-tag">CREATE URGENCY</div> <div class="action-tag">GET SMALL YESES</div>
+                <div class="script-box">
+                    <strong>Use these phrases throughout:</strong> Say "when we start" not "if we start" to assume the sale
+                </div>
+                
+                <div class="grid-2">
+                    <div>
+                        <div class="close-technique">
+                            "How does this sound for protecting your staff?"
+                        </div>
+                        <div class="close-technique">
+                            "Which area should we focus on first?"
+                        </div>
+                        <div class="close-technique">
+                            "Would weekly or monthly work better?"
+                        </div>
                     </div>
-                    <div class="close-technique">
-                        "Which area should we focus on first?"
-                    </div>
-                    <div class="close-technique">
-                        "Would weekly or monthly work better?"
+                    <div>
+                        <div class="close-technique">
+                            "Can you see this solving your [problem]?"
+                        </div>
+                        <div class="close-technique">
+                            "When we start, you'll notice the difference"
+                        </div>
+                        <div class="close-technique">
+                            "This addresses your concern, right?"
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <div class="close-technique">
-                        "Can you see this solving your [problem]?"
-                    </div>
-                    <div class="close-technique">
-                        "When we start, you'll notice the difference"
-                    </div>
-                    <div class="close-technique">
-                        "This addresses your concern, right?"
+                
+                <div class="mobile-detail">
+                    <div class="mobile-detail-content">
+                        <h3>🎯 TRIAL CLOSING TECHNIQUES</h3>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">📊 Reading Buying Signals</div>
+                            <div class="detail-content">
+                                <strong>Positive signals:</strong>
+                                <ul class="tips-list">
+                                    <li>Asking detailed questions about service</li>
+                                    <li>Discussing logistics or timing</li>
+                                    <li>Body language opening up</li>
+                                    <li>Asking about pricing or payment</li>
+                                    <li>Mentioning other decision makers</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="script-examples">
+                            <div class="detail-title">🎪 Assumptive Language Examples</div>
+                            <div class="detail-content">
+                                Instead of "IF we work together..." say "WHEN we start working together..."<br><br>
+                                Instead of "Would you be interested..." say "How would this work with your schedule..."<br><br>
+                                Instead of "Do you want to try..." say "Should we start with your main area or..."
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="mobile-detail">
-                <div class="mobile-detail-content">
-                    <h3>🎯 TRIAL CLOSING TECHNIQUES</h3>
+                
+                <div class="hover-detail">
+                    <h3>🎯 STEP 6: TRIAL CLOSING TECHNIQUES</h3>
                     
                     <div class="detail-section">
                         <div class="detail-title">📊 Reading Buying Signals</div>
@@ -1574,95 +1654,105 @@
                             Instead of "Do you want to try..." say "Should we start with your main area or..."
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <div class="hover-detail">
-                <h3>🎯 STEP 6: TRIAL CLOSING TECHNIQUES</h3>
-                
-                <div class="detail-section">
-                    <div class="detail-title">📊 Reading Buying Signals</div>
-                    <div class="detail-content">
-                        <strong>Positive signals:</strong>
-                        <ul class="tips-list">
-                            <li>Asking detailed questions about service</li>
-                            <li>Discussing logistics or timing</li>
-                            <li>Body language opening up</li>
-                            <li>Asking about pricing or payment</li>
-                            <li>Mentioning other decision makers</li>
-                        </ul>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">🔥 Creating Urgency</div>
+                        <div class="detail-content">
+                            <ul class="tips-list">
+                                <li>"I have one opening this week..."</li>
+                                <li>"Cold and flu season is starting..."</li>
+                                <li>"Health inspections are coming up..."</li>
+                                <li>"Other businesses are switching now..."</li>
+                                <li>"Limited capacity in your area..."</li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="script-examples">
-                    <div class="detail-title">🎪 Assumptive Language Examples</div>
-                    <div class="detail-content">
-                        Instead of "IF we work together..." say "WHEN we start working together..."<br><br>
-                        Instead of "Would you be interested..." say "How would this work with your schedule..."<br><br>
-                        Instead of "Do you want to try..." say "Should we start with your main area or..."
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">🔥 Creating Urgency</div>
-                    <div class="detail-content">
-                        <ul class="tips-list">
-                            <li>"I have one opening this week..."</li>
-                            <li>"Cold and flu season is starting..."</li>
-                            <li>"Health inspections are coming up..."</li>
-                            <li>"Other businesses are switching now..."</li>
-                            <li>"Limited capacity in your area..."</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">📈 Escalating Trial Closes</div>
-                    <div class="detail-content">
-                        Start soft → Build confidence → Get commitment:<br>
-                        1. "Does this make sense for your business?"<br>
-                        2. "Can you see the benefits here?"<br>
-                        3. "Which day works better for you?"
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">📈 Escalating Trial Closes</div>
+                        <div class="detail-content">
+                            Start soft → Build confidence → Get commitment:<br>
+                            1. "Does this make sense for your business?"<br>
+                            2. "Can you see the benefits here?"<br>
+                            3. "Which day works better for you?"
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- STEP 7: Ask for Sale -->
-        <div class="container phase-1" onclick="toggleExpand(this)">
-            <div class="timer">2-3 min</div>
-            <div class="step-header">
-                <div class="step-number">7</div>
-                <div class="step-title">Ask for the Sale</div>
-                <span class="expand-icon">▼</span>
-            </div>
-            
-            <div class="why-section">
-                <div class="why-title">🧠 WHY THIS STEP:</div>
-                <div class="why-text">If you don't ask, you don't get. Most sales are lost because the salesperson never directly asks for the business. Be confident and assumptive.</div>
-            </div>
-            
-            <div class="action-tag">ASSUME THEY'LL BUY</div> <div class="action-tag">CREATE URGENCY</div>
-            <div class="must-say">
-                "Perfect - let's get your business the safest sanitization available"
-            </div>
-            <div class="close-technique">
-                <strong>Safety Close:</strong> "Ready for the safest protection?"
-            </div>
-            <div class="close-technique">
-                <strong>Urgency Close:</strong> "I can schedule you this week"
-            </div>
-            <div class="close-technique">
-                <strong>Choice Close:</strong> "Monthly or weekly service?"
-            </div>
-            <div class="close-technique">
-                <strong>Assume Close:</strong> "Let me get your info and schedule you"
-            </div>
-            <div class="flow-arrow">→</div>
-            
-            <div class="mobile-detail">
-                <div class="mobile-detail-content">
-                    <h3>🎯 CLOSING THE SALE</h3>
+            <!-- STEP 7: Ask for Sale -->
+            <div class="container phase-1" onclick="toggleExpand(this)">
+                <div class="timer">2-3 min</div>
+                <div class="step-header">
+                    <div class="step-number">7</div>
+                    <div class="step-title">Ask for the Sale</div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                
+                <div class="why-section">
+                    <div class="why-title">🧠 WHY THIS STEP:</div>
+                    <div class="why-text">If you don't ask, you don't get. Most sales are lost because the salesperson never directly asks for the business. Be confident and assumptive.</div>
+                </div>
+                
+                <div class="action-tag">ASSUME THEY'LL BUY</div> <div class="action-tag">CREATE URGENCY</div>
+                <div class="must-say">
+                    "Perfect - let's get your business the safest sanitization available"
+                </div>
+                <div class="close-technique">
+                    <strong>Safety Close:</strong> "Ready for the safest protection?"
+                </div>
+                <div class="close-technique">
+                    <strong>Urgency Close:</strong> "I can schedule you this week"
+                </div>
+                <div class="close-technique">
+                    <strong>Choice Close:</strong> "Monthly or weekly service?"
+                </div>
+                <div class="close-technique">
+                    <strong>Assume Close:</strong> "Let me get your info and schedule you"
+                </div>
+                <div class="flow-arrow">→</div>
+                
+                <div class="mobile-detail">
+                    <div class="mobile-detail-content">
+                        <h3>🎯 CLOSING THE SALE</h3>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">💪 Confidence Builders</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li>Straighten your posture</li>
+                                    <li>Make direct eye contact</li>
+                                    <li>Speak slowly and clearly</li>
+                                    <li>Use assumptive language</li>
+                                    <li>Don't apologize for asking</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">⚠️ After You Ask - SHUT UP!</div>
+                            <div class="detail-content">
+                                The first person to speak after you ask for the sale loses. Stay quiet, maintain eye contact, and wait for their response. This is crucial!
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">🔄 If They Say No</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li>Ask why specifically</li>
+                                    <li>Address the real concern</li>
+                                    <li>Try a different closing approach</li>
+                                    <li>Don't give up after first no</li>
+                                    <li>Leave door open for future</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hover-detail">
+                    <h3>🎯 STEP 7: CLOSING THE SALE</h3>
                     
                     <div class="detail-section">
                         <div class="detail-title">💪 Confidence Builders</div>
@@ -1674,6 +1764,15 @@
                                 <li>Use assumptive language</li>
                                 <li>Don't apologize for asking</li>
                             </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="script-examples">
+                        <div class="detail-title">🎪 Advanced Closing Techniques</div>
+                        <div class="detail-content">
+                            <strong>Summary Close:</strong> "So you want safer cleaning, time savings, and cost reduction. Perfect - let's get you set up."<br><br>
+                            <strong>Benefit Close:</strong> "Your staff's health is worth protecting. Let's start this week."<br><br>
+                            <strong>Alternative Close:</strong> "Should we start with your main area or cover everything?"
                         </div>
                     </div>
                     
@@ -1698,84 +1797,72 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="hover-detail">
-                <h3>🎯 STEP 7: CLOSING THE SALE</h3>
-                
-                <div class="detail-section">
-                    <div class="detail-title">💪 Confidence Builders</div>
-                    <div class="detail-content">
-                        <ul class="tips-list">
-                            <li>Straighten your posture</li>
-                            <li>Make direct eye contact</li>
-                            <li>Speak slowly and clearly</li>
-                            <li>Use assumptive language</li>
-                            <li>Don't apologize for asking</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="script-examples">
-                    <div class="detail-title">🎪 Advanced Closing Techniques</div>
-                    <div class="detail-content">
-                        <strong>Summary Close:</strong> "So you want safer cleaning, time savings, and cost reduction. Perfect - let's get you set up."<br><br>
-                        <strong>Benefit Close:</strong> "Your staff's health is worth protecting. Let's start this week."<br><br>
-                        <strong>Alternative Close:</strong> "Should we start with your main area or cover everything?"
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">⚠️ After You Ask - SHUT UP!</div>
-                    <div class="detail-content">
-                        The first person to speak after you ask for the sale loses. Stay quiet, maintain eye contact, and wait for their response. This is crucial!
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">🔄 If They Say No</div>
-                    <div class="detail-content">
-                        <ul class="tips-list">
-                            <li>Ask why specifically</li>
-                            <li>Address the real concern</li>
-                            <li>Try a different closing approach</li>
-                            <li>Don't give up after first no</li>
-                            <li>Leave door open for future</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- STEP 8: Complete Sale -->
-        <div class="container phase-2" onclick="toggleExpand(this)">
-            <div class="timer">3-5 min</div>
-            <div class="step-header">
-                <div class="step-number">8</div>
-                <div class="step-title">Get Their Information</div>
-                <span class="expand-icon">▼</span>
-            </div>
-            
-            <div class="why-section">
-                <div class="why-title">🧠 WHY THIS STEP:</div>
-                <div class="why-text">Sale isn't complete until you have their information and commitment. Referrals multiply your success - satisfied customers are your best lead source.</div>
-            </div>
-            
-            <div class="action-tag">GET COMMITMENT</div> <div class="action-tag">ASK REFERRALS</div>
-            <div class="script-box">
-                <strong>Script:</strong> Congratulate their choice, collect contact info, schedule first service, ask for referrals
-            </div>
-            <ul class="bullet-points">
-                <li>Get name, phone, email, address</li>
-                <li>Set up payment method</li>
-                <li>Schedule first service date/time</li>
-                <li>Get any special instructions</li>
-                <li>Leave business card</li>
-                <li>Ask "Who else would benefit?"</li>
-            </ul>
-            
-            <div class="mobile-detail">
-                <div class="mobile-detail-content">
-                    <h3>✅ SALE COMPLETION CHECKLIST</h3>
+            <!-- STEP 8: Complete Sale -->
+            <div class="container phase-2" onclick="toggleExpand(this)">
+                <div class="timer">3-5 min</div>
+                <div class="step-header">
+                    <div class="step-number">8</div>
+                    <div class="step-title">Get Their Information</div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                
+                <div class="why-section">
+                    <div class="why-title">🧠 WHY THIS STEP:</div>
+                    <div class="why-text">Sale isn't complete until you have their information and commitment. Referrals multiply your success - satisfied customers are your best lead source.</div>
+                </div>
+                
+                <div class="action-tag">GET COMMITMENT</div> <div class="action-tag">ASK REFERRALS</div>
+                <div class="script-box">
+                    <strong>Script:</strong> Congratulate their choice, collect contact info, schedule first service, ask for referrals
+                </div>
+                <ul class="bullet-points">
+                    <li>Get name, phone, email, address</li>
+                    <li>Set up payment method</li>
+                    <li>Schedule first service date/time</li>
+                    <li>Get any special instructions</li>
+                    <li>Leave business card</li>
+                    <li>Ask "Who else would benefit?"</li>
+                </ul>
+                
+                <div class="mobile-detail">
+                    <div class="mobile-detail-content">
+                        <h3>✅ SALE COMPLETION CHECKLIST</h3>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">📋 Required Information</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li>Business name and address</li>
+                                    <li>Contact person and title</li>
+                                    <li>Phone number (mobile preferred)</li>
+                                    <li>Email address</li>
+                                    <li>Best days/times for service</li>
+                                    <li>Special access instructions</li>
+                                    <li>Payment method preference</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="script-examples">
+                            <div class="detail-title">🏆 Congratulatory Language</div>
+                            <div class="detail-content">
+                                "Excellent choice! You're going to love how much safer and cleaner this makes your business. Your staff and customers will definitely notice the difference."
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">🤝 Referral Scripts</div>
+                            <div class="detail-content">
+                                <strong>Natural approach:</strong> "Who else do you know that would benefit from safer sanitization like this?"<br><br>
+                                <strong>Specific approach:</strong> "Any other business owners in your network who care about their staff's health?"
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hover-detail">
+                    <h3>✅ STEP 8: SALE COMPLETION CHECKLIST</h3>
                     
                     <div class="detail-section">
                         <div class="detail-title">📋 Required Information</div>
@@ -1806,95 +1893,100 @@
                             <strong>Specific approach:</strong> "Any other business owners in your network who care about their staff's health?"
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <div class="hover-detail">
-                <h3>✅ STEP 8: SALE COMPLETION CHECKLIST</h3>
-                
-                <div class="detail-section">
-                    <div class="detail-title">📋 Required Information</div>
-                    <div class="detail-content">
-                        <ul class="tips-list">
-                            <li>Business name and address</li>
-                            <li>Contact person and title</li>
-                            <li>Phone number (mobile preferred)</li>
-                            <li>Email address</li>
-                            <li>Best days/times for service</li>
-                            <li>Special access instructions</li>
-                            <li>Payment method preference</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="script-examples">
-                    <div class="detail-title">🏆 Congratulatory Language</div>
-                    <div class="detail-content">
-                        "Excellent choice! You're going to love how much safer and cleaner this makes your business. Your staff and customers will definitely notice the difference."
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">🤝 Referral Scripts</div>
-                    <div class="detail-content">
-                        <strong>Natural approach:</strong> "Who else do you know that would benefit from safer sanitization like this?"<br><br>
-                        <strong>Specific approach:</strong> "Any other business owners in your network who care about their staff's health?"
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">📅 Scheduling Best Practices</div>
-                    <div class="detail-content">
-                        <ul class="tips-list">
-                            <li>Confirm date and time twice</li>
-                            <li>Get backup contact number</li>
-                            <li>Explain what to expect on first visit</li>
-                            <li>Send confirmation within 24 hours</li>
-                            <li>Set expectations for results</li>
-                        </ul>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">📅 Scheduling Best Practices</div>
+                        <div class="detail-content">
+                            <ul class="tips-list">
+                                <li>Confirm date and time twice</li>
+                                <li>Get backup contact number</li>
+                                <li>Explain what to expect on first visit</li>
+                                <li>Send confirmation within 24 hours</li>
+                                <li>Set expectations for results</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- What to Expect -->
-        <div class="container tips span-2" onclick="toggleExpand(this)">
-            <div class="step-header">
-                <div class="step-number">📊</div>
-                <div class="step-title">What to Expect</div>
-                <span class="expand-icon">▼</span>
-            </div>
-            
-            <div class="why-section">
-                <div class="why-title">🧠 WHY THIS SECTION:</div>
-                <div class="why-text">Understanding normal responses prevents discouragement. Most "no's" aren't personal - they're normal. Good signs help you identify hot prospects.</div>
-            </div>
-            
-            <div class="tip-box">
-                <strong>NORMAL RESPONSES (Don't Take Personal):</strong><br>
-                • "I'm busy" - Ask when's better time<br>
-                • "Not interested" - Ask what they currently use<br>
-                • "How much does it cost?" - Don't give price yet, show value first<br>
-                • Door closes quickly - Just move to next door, it's normal
-            </div>
-            <div class="tip-box">
-                <strong>GOOD SIGNS (Focus Your Energy Here):</strong><br>
-                • They ask questions about the product<br>
-                • They listen for more than 30 seconds<br>
-                • Their body language opens up (uncross arms)<br>
-                • They mention problems with current cleaning<br>
-                • They ask about pricing or scheduling
-            </div>
-            
-            <div class="mobile-detail">
-                <div class="mobile-detail-content">
+            <!-- What to Expect -->
+            <div class="container tips span-2" onclick="toggleExpand(this)">
+                <div class="step-header">
+                    <div class="step-number">📊</div>
+                    <div class="step-title">What to Expect</div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                
+                <div class="why-section">
+                    <div class="why-title">🧠 WHY THIS SECTION:</div>
+                    <div class="why-text">Understanding normal responses prevents discouragement. Most "no's" aren't personal - they're normal. Good signs help you identify hot prospects.</div>
+                </div>
+                
+                <div class="tip-box">
+                    <strong>NORMAL RESPONSES (Don't Take Personal):</strong><br>
+                    • "I'm busy" - Ask when's better time<br>
+                    • "Not interested" - Ask what they currently use<br>
+                    • "How much does it cost?" - Don't give price yet, show value first<br>
+                    • Initial rejection - Just move to next business, it's normal
+                </div>
+                <div class="tip-box">
+                    <strong>GOOD SIGNS (Focus Your Energy Here):</strong><br>
+                    • They ask questions about the product<br>
+                    • They listen for more than 30 seconds<br>
+                    • Their body language opens up (uncross arms)<br>
+                    • They mention problems with current cleaning<br>
+                    • They ask about pricing or scheduling
+                </div>
+                
+                <div class="mobile-detail">
+                    <div class="mobile-detail-content">
+                        <h3>📈 EXPECTATIONS & MINDSET MANAGEMENT</h3>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">📊 Success Rate Reality</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li>Expect 1-3 sales per 100 businesses visited</li>
+                                    <li>30% will listen to full presentation</li>
+                                    <li>10% will show genuine interest</li>
+                                    <li>3% will buy immediately</li>
+                                    <li>5% will buy with follow-up</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="script-examples">
+                            <div class="detail-title">🚦 Traffic Light System</div>
+                            <div class="detail-content">
+                                <strong>🔴 Red (Move On):</strong> Hostile, rude, or clearly not interested<br><br>
+                                <strong>🟡 Yellow (Quick Pitch):</strong> Polite but busy, give 30-second version<br><br>
+                                <strong>🟢 Green (Full Presentation):</strong> Engaged, asking questions, has time
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">🧠 Mental Resilience Tips</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li>Every "no" gets you closer to "yes"</li>
+                                    <li>Rejection isn't personal - it's statistical</li>
+                                    <li>Focus on helping, not selling</li>
+                                    <li>Celebrate small wins throughout the day</li>
+                                    <li>Track your improvement weekly</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hover-detail">
                     <h3>📈 EXPECTATIONS & MINDSET MANAGEMENT</h3>
                     
                     <div class="detail-section">
                         <div class="detail-title">📊 Success Rate Reality</div>
                         <div class="detail-content">
                             <ul class="tips-list">
-                                <li>Expect 1-3 sales per 100 doors</li>
+                                <li>Expect 1-3 sales per 100 businesses visited</li>
                                 <li>30% will listen to full presentation</li>
                                 <li>10% will show genuine interest</li>
                                 <li>3% will buy immediately</li>
@@ -1924,90 +2016,88 @@
                             </ul>
                         </div>
                     </div>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">⏰ Time Management</div>
+                        <div class="detail-content">Don't spend more than 10 minutes total unless they're clearly buying. Time is your most valuable resource - invest it wisely.</div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="hover-detail">
-                <h3>📈 EXPECTATIONS & MINDSET MANAGEMENT</h3>
-                
-                <div class="detail-section">
-                    <div class="detail-title">📊 Success Rate Reality</div>
-                    <div class="detail-content">
-                        <ul class="tips-list">
-                            <li>Expect 1-3 sales per 100 doors</li>
-                            <li>30% will listen to full presentation</li>
-                            <li>10% will show genuine interest</li>
-                            <li>3% will buy immediately</li>
-                            <li>5% will buy with follow-up</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="script-examples">
-                    <div class="detail-title">🚦 Traffic Light System</div>
-                    <div class="detail-content">
-                        <strong>🔴 Red (Move On):</strong> Hostile, rude, or clearly not interested<br><br>
-                        <strong>🟡 Yellow (Quick Pitch):</strong> Polite but busy, give 30-second version<br><br>
-                        <strong>🟢 Green (Full Presentation):</strong> Engaged, asking questions, has time
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">🧠 Mental Resilience Tips</div>
-                    <div class="detail-content">
-                        <ul class="tips-list">
-                            <li>Every "no" gets you closer to "yes"</li>
-                            <li>Rejection isn't personal - it's statistical</li>
-                            <li>Focus on helping, not selling</li>
-                            <li>Celebrate small wins throughout the day</li>
-                            <li>Track your improvement weekly</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">⏰ Time Management</div>
-                    <div class="detail-content">Don't spend more than 10 minutes total unless they're clearly buying. Time is your most valuable resource - invest it wisely.</div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Success Standards -->
-        <div class="container success span-4" onclick="toggleExpand(this)">
-            <div class="step-header">
-                <div class="step-number">🎯</div>
-                <div class="step-title">QUALITY STANDARDS - DO THIS EVERY TIME</div>
-                <span class="expand-icon">▼</span>
-            </div>
-            
-            <div class="why-section">
-                <div class="why-title">🧠 WHY THIS SECTION:</div>
-                <div class="why-text">Consistency builds your reputation and success rate. These standards ensure every interaction reflects OHS professionalism and effectiveness.</div>
-            </div>
-            
-            <div class="grid-2">
-                <div class="success-box">
-                    <div class="quality-target">MUST SAY EVERY TIME</div>
-                    ✓ Mention EPA registration for credibility<br>
-                    ✓ Emphasize family/staff safety<br>
-                    ✓ Say "your body makes this naturally"<br>
-                    ✓ Share Kidstopia success story<br>
-                    ✓ Show cost/time savings<br>
-                    ✓ Ask for referrals before leaving
+            <!-- Success Standards -->
+            <div class="container success span-4" onclick="toggleExpand(this)">
+                <div class="step-header">
+                    <div class="step-number">🎯</div>
+                    <div class="step-title">QUALITY STANDARDS - DO THIS EVERY TIME</div>
+                    <span class="expand-icon">▼</span>
                 </div>
-                <div class="success-box">
-                    <div class="quality-target">PROFESSIONAL BEHAVIOR</div>
-                    ✓ Always dress professionally<br>
-                    ✓ Be respectful even if they say no<br>
-                    ✓ Leave business card every time<br>
-                    ✓ Thank them for their time<br>
-                    ✓ Follow up when you promise to<br>
-                    ✓ Keep notes on every interaction
+                
+                <div class="why-section">
+                    <div class="why-title">🧠 WHY THIS SECTION:</div>
+                    <div class="why-text">Consistency builds your reputation and success rate. These standards ensure every interaction reflects OHS professionalism and effectiveness.</div>
                 </div>
-            </div>
-            
-            <div class="mobile-detail">
-                <div class="mobile-detail-content">
+                
+                <div class="grid-2">
+                    <div class="success-box">
+                        <div class="quality-target">MUST SAY EVERY TIME</div>
+                        ✓ Mention EPA registration for credibility<br>
+                        ✓ Emphasize family/staff safety<br>
+                        ✓ Say "your body makes this naturally"<br>
+                        ✓ Share Kidstopia success story<br>
+                        ✓ Show cost/time savings<br>
+                        ✓ Ask for referrals before leaving
+                    </div>
+                    <div class="success-box">
+                        <div class="quality-target">PROFESSIONAL BEHAVIOR</div>
+                        ✓ Always dress professionally<br>
+                        ✓ Be respectful even if they say no<br>
+                        ✓ Leave business card every time<br>
+                        ✓ Thank them for their time<br>
+                        ✓ Follow up when you promise to<br>
+                        ✓ Keep notes on every interaction
+                    </div>
+                </div>
+                
+                <div class="mobile-detail">
+                    <div class="mobile-detail-content">
+                        <h3>🏆 QUALITY STANDARDS & BEST PRACTICES</h3>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">👔 Professional Appearance Checklist</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li>Clean, pressed business attire</li>
+                                    <li>Professional hairstyle and grooming</li>
+                                    <li>Clean, appropriate shoes</li>
+                                    <li>Minimal, professional jewelry</li>
+                                    <li>Fresh breath and good hygiene</li>
+                                    <li>Company badge/identification visible</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="script-examples">
+                            <div class="detail-title">📞 Follow-Up Excellence</div>
+                            <div class="detail-content">
+                                <strong>Within 2 hours:</strong> Send confirmation text<br>
+                                <strong>Within 24 hours:</strong> Email with service details<br>
+                                <strong>Day before service:</strong> Reminder call<br>
+                                <strong>After service:</strong> Satisfaction check-in<br>
+                                <strong>Monthly:</strong> Relationship maintenance call
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">🎯 Daily Success Metrics</div>
+                            <div class="detail-content">
+                                <strong>Track daily:</strong> Businesses visited, presentations given, objections handled, sales closed, referrals received, follow-ups scheduled.<br><br>
+                                <strong>Weekly goals:</strong> 100+ businesses visited, 30+ presentations, 5+ sales, 10+ referrals, 100% follow-up completion.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hover-detail">
                     <h3>🏆 QUALITY STANDARDS & BEST PRACTICES</h3>
                     
                     <div class="detail-section">
@@ -2036,108 +2126,47 @@
                     </div>
                     
                     <div class="detail-section">
+                        <div class="detail-title">📝 Documentation Requirements</div>
+                        <div class="detail-content">
+                            <ul class="tips-list">
+                                <li>Date and time of visit</li>
+                                <li>Contact person and details</li>
+                                <li>Problems discussed</li>
+                                <li>Objections raised and responses</li>
+                                <li>Outcome and next steps</li>
+                                <li>Referrals provided</li>
+                                <li>Follow-up dates set</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
                         <div class="detail-title">🎯 Daily Success Metrics</div>
                         <div class="detail-content">
-                            <strong>Track daily:</strong> Doors knocked, presentations given, objections handled, sales closed, referrals received, follow-ups scheduled.<br><br>
-                            <strong>Weekly goals:</strong> 100+ doors, 30+ presentations, 5+ sales, 10+ referrals, 100% follow-up completion.
+                            <strong>Track daily:</strong> Businesses visited, presentations given, objections handled, sales closed, referrals received, follow-ups scheduled.<br><br>
+                            <strong>Weekly goals:</strong> 100+ businesses visited, 30+ presentations, 5+ sales, 10+ referrals, 100% follow-up completion.
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <div class="detail-title">🏅 Advanced Excellence Standards</div>
+                        <div class="detail-content">
+                            <ul class="tips-list">
+                                <li>Know all competitor products and prices</li>
+                                <li>Understand industry regulations (health dept, OSHA)</li>
+                                <li>Stay updated on HOCl research and applications</li>
+                                <li>Build relationships with industry influencers</li>
+                                <li>Continuously improve scripts based on results</li>
+                                <li>Mentor new team members</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="hover-detail">
-                <h3>🏆 QUALITY STANDARDS & BEST PRACTICES</h3>
-                
-                <div class="detail-section">
-                    <div class="detail-title">👔 Professional Appearance Checklist</div>
-                    <div class="detail-content">
-                        <ul class="tips-list">
-                            <li>Clean, pressed business attire</li>
-                            <li>Professional hairstyle and grooming</li>
-                            <li>Clean, appropriate shoes</li>
-                            <li>Minimal, professional jewelry</li>
-                            <li>Fresh breath and good hygiene</li>
-                            <li>Company badge/identification visible</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="script-examples">
-                    <div class="detail-title">📞 Follow-Up Excellence</div>
-                    <div class="detail-content">
-                        <strong>Within 2 hours:</strong> Send confirmation text<br>
-                        <strong>Within 24 hours:</strong> Email with service details<br>
-                        <strong>Day before service:</strong> Reminder call<br>
-                        <strong>After service:</strong> Satisfaction check-in<br>
-                        <strong>Monthly:</strong> Relationship maintenance call
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">📝 Documentation Requirements</div>
-                    <div class="detail-content">
-                        <ul class="tips-list">
-                            <li>Date and time of visit</li>
-                            <li>Contact person and details</li>
-                            <li>Problems discussed</li>
-                            <li>Objections raised and responses</li>
-                            <li>Outcome and next steps</li>
-                            <li>Referrals provided</li>
-                            <li>Follow-up dates set</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">🎯 Daily Success Metrics</div>
-                    <div class="detail-content">
-                        <strong>Track daily:</strong> Doors knocked, presentations given, objections handled, sales closed, referrals received, follow-ups scheduled.<br><br>
-                        <strong>Weekly goals:</strong> 100+ doors, 30+ presentations, 5+ sales, 10+ referrals, 100% follow-up completion.
-                    </div>
-                </div>
-                
-                <div class="detail-section">
-                    <div class="detail-title">🏅 Advanced Excellence Standards</div>
-                    <div class="detail-content">
-                        <ul class="tips-list">
-                            <li>Know all competitor products and prices</li>
-                            <li>Understand industry regulations (health dept, OSHA)</li>
-                            <li>Stay updated on HOCl research and applications</li>
-                            <li>Build relationships with industry influencers</li>
-                            <li>Continuously improve scripts based on results</li>
-                            <li>Mentor new team members</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+
         </div>
 
-    </div>
-
-    <div class="footer-info no-print">
-        <p><strong>🏆 Success Formula:</strong> Follow Steps 1-8 in exact order • Focus on solving their problems, not just selling products • Every "no" gets you closer to "yes"</p>
-        <p><strong>📞 Questions?</strong> Contact: (801) 712-5663 | ohshocl@gmail.com</p>
-        <p><strong>💡 Tip:</strong> Tap on each step for detailed guidance and advanced techniques</p>
-    </div>
-
-    <script>
-        function toggleExpand(element) {
-            // Only work on mobile/tablet
-            if (window.innerWidth > 1023) {
-                return;
-            }
-            
-            // Toggle expanded class
-            element.classList.toggle('expanded');
-            
-            // Optional: Close other expanded items
-            const allContainers = document.querySelectorAll('.container');
-            allContainers.forEach(container => {
-                if (container !== element && container.classList.contains('expanded')) {
-                    container.classList.remove('expanded');
-                }
-            });
-        }
-    </script>
-</body>
-</html>
+        <div class="footer-info no-print">
+            <p><strong>🏆 Success Formula:</strong> Follow Steps 1-8 in exact order • Focus on solving their problems, not just selling products • Every "no" gets you closer to "yes"</p>
+            <p><strong>📞 Questions?</strong> Contact: (801) 712-5663 | ohshocl@gmail.com</p>
+            <p><strong
