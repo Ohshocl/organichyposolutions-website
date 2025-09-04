@@ -22,7 +22,7 @@
             min-height: 100vh;
         }
         
-        /* Tab controls */
+        /* FIXED: Simple tab system with no conflicts */
         .tab-controls {
             position: fixed;
             top: 20px;
@@ -60,20 +60,16 @@
             transform: translateY(-2px);
         }
         
-        .tab-button:active {
-            transform: scale(0.95);
-        }
-        
-        /* Tab content */
+        /* FIXED: Simplified tab content system */
         .tab-content {
-            display: none;
+            display: none !important;
         }
         
-        .tab-content.active {
-            display: block;
+        .tab-content.show {
+            display: block !important;
         }
         
-        /* Mobile-first approach */
+        /* Print button */
         .print-button {
             position: fixed;
             top: 20px;
@@ -92,10 +88,6 @@
             align-items: center;
             gap: 8px;
             transition: transform 0.3s ease;
-        }
-        
-        .print-button:active {
-            transform: scale(0.95);
         }
         
         .header {
@@ -396,7 +388,6 @@
             line-height: 1.5;
         }
         
-        /* Mobile detail panel */
         .mobile-detail {
             max-height: 0;
             overflow: hidden;
@@ -489,495 +480,46 @@
             font-weight: bold;
         }
         
-        /* Hide elements on mobile */
-        .flow-arrow,
-        .hover-detail {
-            display: none;
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
         }
         
-        /* Tablet styles */
-        @media (min-width: 768px) {
-            .header h1 {
-                font-size: 28px;
-            }
-            
-            .header .subtitle {
-                font-size: 16px;
-            }
-            
-            .flowchart {
-                padding: 20px;
-                gap: 20px;
-            }
-            
-            .container {
-                padding: 20px;
-            }
-            
-            .step-number {
-                width: 45px;
-                height: 45px;
-                font-size: 20px;
-            }
-            
-            .step-title {
-                font-size: 18px;
-            }
-        }
+        .span-2 { grid-column: span 2; }
+        .span-4 { grid-column: span 4; }
         
         /* Desktop styles */
         @media (min-width: 1024px) {
-            body {
-                font-size: 11px;
-                padding: 8px;
-            }
-            
-            .print-button {
-                top: 20px;
-                right: 20px;
-                bottom: auto;
-                padding: 12px 24px;
-                font-size: 14px;
-            }
-            
-            .print-button:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 16px rgba(0,0,0,0.4);
-            }
-            
-            .print-button:active {
-                transform: translateY(0);
-            }
-            
-            .header {
-                padding: 15px;
-                border-radius: 8px;
-                margin-bottom: 12px;
-            }
-            
-            .header h1 {
-                font-size: 20px;
-            }
-            
-            .header .subtitle {
-                font-size: 13px;
-                margin-top: 4px;
-            }
-            
-            .flowchart {
-                max-width: 1400px;
-                margin: 0 auto;
-                display: grid;
-                grid-template-columns: repeat(4, 1fr);
-                gap: 10px;
-                background: white;
-                padding: 12px;
-                box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-                border-radius: 8px;
-            }
-            
-            .container {
-                padding: 12px;
-                cursor: pointer;
-            }
-            
-            .container:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            }
-            
-            .step-header {
-                justify-content: center;
-                margin-bottom: 8px;
-            }
-            
-            .step-number {
-                width: 35px;
-                height: 35px;
-                font-size: 16px;
-                margin-right: 12px;
-            }
-            
-            .step-title {
-                font-size: 13px;
-            }
-            
-            .expand-icon {
-                display: none;
-            }
-            
-            .why-section {
-                padding: 8px;
-                margin: 6px 0;
-            }
-            
-            .why-section .why-title {
-                font-size: 9px;
-                margin-bottom: 3px;
-            }
-            
-            .why-section .why-text {
-                font-size: 9px;
-                line-height: 1.3;
-            }
-            
-            .timer {
-                position: absolute;
-                top: 8px;
-                right: 10px;
-                padding: 4px 8px;
-                font-size: 9px;
-                margin-right: 0;
-            }
-            
-            .step-info {
-                display: flex;
-                align-items: center;
-                flex: 1;
-            }
-            
-            .script-box {
-                padding: 8px;
-                border-radius: 6px;
-                margin: 6px 0;
-                font-size: 10px;
-            }
-            
-            .action-tag {
-                padding: 4px 8px;
-                border-radius: 4px;
-                font-size: 9px;
-                margin: 3px;
-            }
-            
-            .must-say {
-                padding: 8px 10px;
-                border-radius: 6px;
-                font-size: 10px;
-                margin: 6px 0;
-            }
-            
-            .bullet-points {
-                margin: 6px 0;
-                font-size: 10px;
-            }
-            
-            .bullet-points li {
-                padding: 4px 0 4px 15px;
-            }
-            
-            .bullet-points li:before {
-                font-size: 9px;
-            }
-            
-            .objection-response {
-                padding: 8px;
-                border-radius: 5px;
-                margin: 4px 0;
-                font-size: 10px;
-            }
-            
-            .objection-response .objection,
-            .objection-response .response {
-                font-size: 10px;
-            }
-            
-            .close-technique {
-                padding: 6px;
-                border-radius: 4px;
-                margin: 4px 0;
-                font-size: 10px;
-            }
-            
-            .tip-box, .success-box {
-                padding: 8px;
-                border-radius: 5px;
-                margin: 6px 0;
-                font-size: 10px;
-            }
-            
-            .quality-target {
-                padding: 4px 8px;
-                border-radius: 4px;
-                font-size: 9px;
-                margin: 4px 0;
-            }
-            
-            .example-highlight {
-                padding: 8px;
-                margin: 6px 0;
-                font-size: 10px;
-            }
-            
-            .mobile-detail {
-                display: none;
-            }
-            
-            .span-2 { grid-column: span 2; }
-            .span-4 { grid-column: span 4; }
-            
-            .grid-2 {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
-            }
-            
-            .flow-arrow {
-                display: block;
-                position: absolute;
-                right: -18px;
-                top: 50%;
-                transform: translateY(-50%);
-                font-size: 24px;
-                color: #3498db;
-                font-weight: bold;
-            }
-            
-            /* Desktop hover details */
-            .hover-detail {
-                display: block;
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(255,255,255,0.98);
-                border: 3px solid #3498db;
-                border-radius: 10px;
-                padding: 12px;
-                opacity: 0;
-                visibility: hidden;
-                transition: all 0.3s ease;
-                z-index: 100;
-                overflow-y: auto;
-                max-height: 100%;
-            }
-            
-            .container:hover .hover-detail {
-                opacity: 1;
-                visibility: visible;
-            }
-            
-            .hover-detail h3 {
-                margin: 0 0 10px 0;
-                color: #2c3e50;
-                font-size: 14px;
-                border-bottom: 2px solid #3498db;
-                padding-bottom: 5px;
-            }
-            
-            .hover-detail .detail-section {
-                margin: 8px 0;
-                padding: 6px;
-                background: #f8f9fa;
-                border-radius: 4px;
-            }
-            
-            .hover-detail .detail-title {
-                font-weight: bold;
-                color: #2980b9;
-                font-size: 11px;
-                margin-bottom: 4px;
-            }
-            
-            .hover-detail .detail-content {
-                font-size: 10px;
-                line-height: 1.4;
-            }
-            
-            .hover-detail .script-examples {
-                background: #e8f5e8;
-                border-left: 4px solid #27ae60;
-                padding: 8px;
-                margin: 6px 0;
-                border-radius: 0 4px 4px 0;
-            }
-            
-            .hover-detail .tips-list {
-                list-style: none;
-                padding: 0;
-                margin: 0;
-            }
-            
-            .hover-detail .tips-list li {
-                padding: 3px 0 3px 15px;
-                font-size: 10px;
-                position: relative;
-            }
-            
-            .hover-detail .tips-list li:before {
-                content: "✓";
-                position: absolute;
-                left: 0;
-                color: #27ae60;
-                font-weight: bold;
-            }
-            
-            .footer-info {
-                padding: 12px;
-                font-size: 10px;
-            }
+            body { font-size: 11px; padding: 8px; }
+            .header { padding: 15px; border-radius: 8px; margin-bottom: 12px; }
+            .header h1 { font-size: 20px; }
+            .header .subtitle { font-size: 13px; margin-top: 4px; }
+            .flowchart { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; background: white; padding: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); border-radius: 8px; }
+            .container { padding: 12px; }
+            .container:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
+            .step-number { width: 35px; height: 35px; font-size: 16px; }
+            .step-title { font-size: 13px; }
+            .expand-icon { display: none; }
+            .mobile-detail { display: none; }
         }
         
-        /* Print styles */
-        @media print {
-            * { 
-                box-sizing: border-box;
-                -webkit-print-color-adjust: exact !important;
-                color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-            
-            @page {
-                size: 11in 8.5in landscape;
-                margin: 0.4in;
-            }
-            
-            body { 
-                margin: 0 !important;
-                padding: 0 !important;
-                font-size: 8pt !important;
-                background: white !important;
-                width: 100% !important;
-                height: 100% !important;
-            }
-            
-            .no-print { display: none !important; }
-            .print-button { display: none !important; }
-            .mobile-detail { display: none !important; }
-            .expand-icon { display: none !important; }
-            .hover-detail { display: none !important; }
-            .flow-arrow { display: none !important; }
-            .tab-controls { display: none !important; }
-            
-            .header {
-                margin-bottom: 8px !important;
-                padding: 8px !important;
-                border-radius: 0 !important;
-            }
-            
-            .header h1 { 
-                font-size: 16pt !important; 
-                margin: 0 !important;
-            }
-            
-            .header .subtitle { 
-                font-size: 10pt !important; 
-                margin-top: 2px !important;
-            }
-            
-            .flowchart {
-                max-width: 100% !important;
-                margin: 0 !important;
-                padding: 4px !important;
-                gap: 4px !important;
-                box-shadow: none !important;
-                background: white !important;
-                grid-template-columns: repeat(4, 1fr) !important;
-                display: grid !important;
-            }
-            
-            .container {
-                box-shadow: none !important;
-                page-break-inside: avoid !important;
-                break-inside: avoid !important;
-                padding: 6px !important;
-                margin: 0 !important;
-                font-size: 8pt !important;
-                border-width: 2px !important;
-            }
-            
-            .step-number {
-                width: 24px !important;
-                height: 24px !important;
-                font-size: 12pt !important;
-                margin-right: 6px !important;
-            }
-            
-            .step-title { 
-                font-size: 9pt !important;
-            }
-            
-            .script-box, .bullet-points, .objection-response, .tip-box, .success-box {
-                font-size: 8pt !important;
-                padding: 4px !important;
-                margin: 2px 0 !important;
-            }
-            
-            .bullet-points li {
-                padding: 1px 0 !important;
-                padding-left: 10px !important;
-                font-size: 8pt !important;
-            }
-            
-            .why-text, .action-tag, .timer {
-                font-size: 7pt !important;
-            }
-            
-            .why-section {
-                padding: 4px !important;
-                margin: 2px 0 !important;
-            }
-            
-            .why-title {
-                font-size: 7pt !important;
-            }
-            
-            .timer {
-                padding: 2px 4px !important;
-                font-size: 7pt !important;
-            }
-            
-            .action-tag {
-                padding: 2px 4px !important;
-                margin: 1px !important;
-                font-size: 7pt !important;
-            }
-            
-            .must-say {
-                padding: 4px 6px !important;
-                margin: 3px 0 !important;
-                font-size: 8pt !important;
-            }
-            
-            .example-highlight {
-                padding: 4px !important;
-                margin: 2px 0 !important;
-                font-size: 8pt !important;
-            }
-            
-            .close-technique {
-                padding: 3px !important;
-                margin: 2px 0 !important;
-                font-size: 8pt !important;
-            }
-            
-            .quality-target {
-                padding: 2px 4px !important;
-                margin: 2px 0 !important;
-                font-size: 8pt !important;
-            }
-            
-            .grid-2 {
-                gap: 4px !important;
-                display: grid !important;
-                grid-template-columns: 1fr 1fr !important;
-            }
-            
-            .span-2 { grid-column: span 2 !important; }
-            .span-4 { grid-column: span 4 !important; }
-            
-            .footer-info { display: none !important; }
-        }
+        /* Hide no-print elements */
+        .no-print { }
     </style>
 </head>
 <body>
+    <!-- Debug status -->
+    <div id="debug" style="position: fixed; top: 80px; left: 20px; background: red; color: white; padding: 5px; z-index: 9999; font-size: 12px; display: none;">
+        DEBUG: <span id="debug-text">Loading...</span>
+    </div>
+
     <div class="tab-controls no-print">
-        <button class="tab-button active" onclick="showTab('process', this)">
+        <button class="tab-button active" id="process-btn">
             <span>📋</span>
             <span>SALES PROCESS</span>
         </button>
-        <button class="tab-button" onclick="showTab('psychology', this)">
+        <button class="tab-button" id="psychology-btn">
             <span>🧠</span>
             <span>PSYCHOLOGY</span>
         </button>
@@ -988,7 +530,8 @@
         <span>PRINT</span>
     </button>
     
-    <div class="tab-content active" id="process-content">
+    <!-- SALES PROCESS TAB -->
+    <div class="tab-content show" id="process-content">
         <div class="header">
             <h1>🎯 OHS SALES PROCESS GUIDE</h1>
             <div class="subtitle">Complete 8-Step Sales System | Organic HypoSolutions</div>
@@ -1023,7 +566,6 @@
                     <li>Compliment something specific</li>
                     <li>Ask for small time commitment</li>
                 </ul>
-                <div class="flow-arrow">→</div>
                 
                 <div class="mobile-detail">
                     <div class="mobile-detail-content">
@@ -1064,49 +606,6 @@
                         </div>
                     </div>
                 </div>
-                
-                <div class="hover-detail">
-                    <h3>🚪 STEP 1: INITIAL APPROACH MASTERY</h3>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">📋 Pre-Approach Checklist</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>Professional attire (business casual minimum)</li>
-                                <li>Business cards ready</li>
-                                <li>EPA documentation visible</li>
-                                <li>Confident posture and smile</li>
-                                <li>Phone on silent</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="script-examples">
-                        <div class="detail-title">🗣️ Script Variations</div>
-                        <div class="detail-content">
-                            <strong>For Restaurants:</strong> "Hi! I'm [Name] with OHS. Great looking menu board! I help restaurants with EPA-approved safer sanitization that keeps customers and staff healthier. Got 5 minutes?"<br><br>
-                            <strong>For Salons:</strong> "Hi! I'm [Name] with OHS. Love the atmosphere here! I help beauty businesses with EPA-approved sanitization that's safer for clients and staff. Got 5 minutes?"
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">⚠️ Common Mistakes to Avoid</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>Don't lead with price</li>
-                                <li>Don't use generic compliments</li>
-                                <li>Don't ask "Are you the owner?"</li>
-                                <li>Don't look at your phone</li>
-                                <li>Don't be pushy if they're clearly busy</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">🎯 Success Indicators</div>
-                        <div class="detail-content">You know it's working when they: Stop what they're doing, make eye contact, ask a question, or invite you in/give you their attention.</div>
-                    </div>
-                </div>
             </div>
 
             <!-- STEP 2: Build Rapport -->
@@ -1136,7 +635,6 @@
                     <li>Find something in common</li>
                     <li>Be genuinely interested</li>
                 </ul>
-                <div class="flow-arrow">→</div>
                 
                 <div class="mobile-detail">
                     <div class="mobile-detail-content">
@@ -1176,48 +674,6 @@
                         </div>
                     </div>
                 </div>
-                
-                <div class="hover-detail">
-                    <h3>🤝 STEP 2: RAPPORT BUILDING TECHNIQUES</h3>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">💬 Conversation Starters</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>"How did you get into this business?"</li>
-                                <li>"What's the best part about running this place?"</li>
-                                <li>"How long have you been at this location?"</li>
-                                <li>"What makes your business unique?"</li>
-                                <li>"How's business been lately?"</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="script-examples">
-                        <div class="detail-title">🎯 Finding Common Ground</div>
-                        <div class="detail-content">
-                            Look for: Family photos, awards, local sports teams, community involvement, shared business challenges, similar backgrounds, mutual connections.
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">👂 Active Listening Tips</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>Maintain eye contact</li>
-                                <li>Nod and use "mmm-hmm"</li>
-                                <li>Ask follow-up questions</li>
-                                <li>Remember details they share</li>
-                                <li>Mirror their communication style</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">⏰ Time Management</div>
-                        <div class="detail-content">Don't spend more than 2 minutes here unless they're really engaged. Watch for buying signals and transition smoothly to problem discovery.</div>
-                    </div>
-                </div>
             </div>
 
             <!-- STEP 3: Find Problems -->
@@ -1248,7 +704,6 @@
                     <li>Time spent cleaning</li>
                     <li>Cost of current products</li>
                 </ul>
-                <div class="flow-arrow">→</div>
                 
                 <div class="mobile-detail">
                     <div class="mobile-detail-content">
@@ -1290,50 +745,6 @@
                         </div>
                     </div>
                 </div>
-                
-                <div class="hover-detail">
-                    <h3>🔍 STEP 3: PROBLEM DISCOVERY MASTERY</h3>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">❓ Key Discovery Questions</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>"What cleaning products do you currently use?"</li>
-                                <li>"How much time do you spend on sanitization daily?"</li>
-                                <li>"Any concerns about chemical residues?"</li>
-                                <li>"Ever had customers comment on chemical smells?"</li>
-                                <li>"What's your biggest cleaning challenge?"</li>
-                                <li>"How much do you spend monthly on cleaning supplies?"</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="script-examples">
-                        <div class="detail-title">🎯 Industry-Specific Pain Points</div>
-                        <div class="detail-content">
-                            <strong>Restaurants:</strong> Grease buildup, food safety regulations, customer complaints about chemical odors<br><br>
-                            <strong>Medical:</strong> Infection control, patient safety, regulatory compliance<br><br>
-                            <strong>Salons:</strong> Client sensitivity to chemicals, skin reactions, ventilation issues
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">🚩 Red Flag Responses</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>"Everything's fine" - Dig deeper with specific questions</li>
-                                <li>"We don't have problems" - Ask about improvement opportunities</li>
-                                <li>"It's cheap" - Focus on hidden costs (time, health, effectiveness)</li>
-                                <li>"We're required to use this" - Explore if they're happy with requirements</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">📝 Problem Documentation</div>
-                        <div class="detail-content">Write down their exact words about problems - you'll use these later when presenting your solution. Their words = their values.</div>
-                    </div>
-                </div>
             </div>
 
             <!-- STEP 4: Present Solution -->
@@ -1363,7 +774,6 @@
                 <div class="example-highlight">
                     <strong>Kidstopia story:</strong> "Kidstopia daycare has 4 locations using our service. Parents love that it's organic and staff save 2 hours daily on cleaning."
                 </div>
-                <div class="flow-arrow">→</div>
                 
                 <div class="mobile-detail">
                     <div class="mobile-detail-content">
@@ -1402,57 +812,6 @@
                                 <strong>Local Restaurant:</strong> No more customer complaints about chemical smells, health inspector impressed<br><br>
                                 <strong>Medical Office:</strong> Reduced sick days among staff, patients appreciate safer environment
                             </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="hover-detail">
-                    <h3>💡 STEP 4: SOLUTION PRESENTATION MASTERY</h3>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">🔬 Scientific Credibility Points</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>EPA registered for surface disinfection</li>
-                                <li>FDA approved for wound care</li>
-                                <li>Used in hospitals for 30+ years</li>
-                                <li>Your immune system produces this naturally</li>
-                                <li>Same molecule as in your white blood cells</li>
-                                <li>Breaks down to salt and water</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="script-examples">
-                        <div class="detail-title">📊 Benefits vs Features</div>
-                        <div class="detail-content">
-                            <strong>Feature:</strong> Kills 99.9% of germs<br>
-                            <strong>Benefit:</strong> Your customers stay healthier<br><br>
-                            <strong>Feature:</strong> No toxic residue<br>
-                            <strong>Benefit:</strong> Safe for your staff to breathe and touch<br><br>
-                            <strong>Feature:</strong> Works 100x faster than bleach<br>
-                            <strong>Benefit:</strong> You save 2+ hours daily on cleaning
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">🏆 Success Stories to Use</div>
-                        <div class="detail-content">
-                            <strong>Kidstopia Daycare:</strong> 4 locations, parents love organic approach, staff saves 2 hours daily<br><br>
-                            <strong>Local Restaurant:</strong> No more customer complaints about chemical smells, health inspector impressed<br><br>
-                            <strong>Medical Office:</strong> Reduced sick days among staff, patients appreciate safer environment
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">🎯 Presentation Flow</div>
-                        <div class="detail-content">
-                            1. Reference their specific problem<br>
-                            2. Introduce HOCl as the solution<br>
-                            3. Explain the science simply<br>
-                            4. Give proof/credentials<br>
-                            5. Share relevant success story<br>
-                            6. Show time/cost savings
                         </div>
                     </div>
                 </div>
@@ -1525,46 +884,6 @@
                                     <li><strong>Evidence:</strong> Always have proof ready</li>
                                 </ul>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="hover-detail">
-                    <h3>🛡️ STEP 5: OBJECTION HANDLING MASTERY</h3>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">🎯 The FEEL-FELT-FOUND Method</div>
-                        <div class="detail-content">
-                            <strong>FEEL:</strong> "I understand how you feel..."<br>
-                            <strong>FELT:</strong> "Other business owners felt the same way..."<br>
-                            <strong>FOUND:</strong> "But they found that..."<br><br>
-                            This validates their concern while providing social proof.
-                        </div>
-                    </div>
-                    
-                    <div class="script-examples">
-                        <div class="detail-title">💰 Price Objection Responses</div>
-                        <div class="detail-content">
-                            "I understand cost is important. Let me show you something - you're spending $X on chemicals plus 3 hours daily cleaning. That's actually $Y per month. We'll reduce that to $Z and save you 2 hours daily. You're actually saving money while getting better results."
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">🔄 Advanced Objection Techniques</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li><strong>Isolate:</strong> "Is price the only concern?"</li>
-                                <li><strong>Clarify:</strong> "What exactly concerns you about the investment?"</li>
-                                <li><strong>Reframe:</strong> "Think of it as health insurance for your business"</li>
-                                <li><strong>Evidence:</strong> Always have proof ready</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">⚠️ Objection Signals</div>
-                        <div class="detail-content">
-                            Watch for: Crossed arms, stepping back, looking away, checking phone, fidgeting. These indicate concerns that need addressing before moving forward.
                         </div>
                     </div>
                 </div>
@@ -1642,56 +961,6 @@
                         </div>
                     </div>
                 </div>
-                
-                <div class="hover-detail">
-                    <h3>🎯 STEP 6: TRIAL CLOSING TECHNIQUES</h3>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">📊 Reading Buying Signals</div>
-                        <div class="detail-content">
-                            <strong>Positive signals:</strong>
-                            <ul class="tips-list">
-                                <li>Asking detailed questions about service</li>
-                                <li>Discussing logistics or timing</li>
-                                <li>Body language opening up</li>
-                                <li>Asking about pricing or payment</li>
-                                <li>Mentioning other decision makers</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="script-examples">
-                        <div class="detail-title">🎪 Assumptive Language Examples</div>
-                        <div class="detail-content">
-                            Instead of "IF we work together..." say "WHEN we start working together..."<br><br>
-                            Instead of "Would you be interested..." say "How would this work with your schedule..."<br><br>
-                            Instead of "Do you want to try..." say "Should we start with your main area or..."
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">🔥 Creating Urgency</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>"I have one opening this week..."</li>
-                                <li>"Cold and flu season is starting..."</li>
-                                <li>"Health inspections are coming up..."</li>
-                                <li>"Other businesses are switching now..."</li>
-                                <li>"Limited capacity in your area..."</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">📈 Escalating Trial Closes</div>
-                        <div class="detail-content">
-                            Start soft → Build confidence → Get commitment:<br>
-                            1. "Does this make sense for your business?"<br>
-                            2. "Can you see the benefits here?"<br>
-                            3. "Which day works better for you?"
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <!-- STEP 7: Ask for Sale -->
@@ -1724,7 +993,6 @@
                 <div class="close-technique">
                     <strong>Assume Close:</strong> "Let me get your info and schedule you"
                 </div>
-                <div class="flow-arrow">→</div>
                 
                 <div class="mobile-detail">
                     <div class="mobile-detail-content">
@@ -1761,52 +1029,6 @@
                                     <li>Leave door open for future</li>
                                 </ul>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="hover-detail">
-                    <h3>🎯 STEP 7: CLOSING THE SALE</h3>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">💪 Confidence Builders</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>Straighten your posture</li>
-                                <li>Make direct eye contact</li>
-                                <li>Speak slowly and clearly</li>
-                                <li>Use assumptive language</li>
-                                <li>Don't apologize for asking</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="script-examples">
-                        <div class="detail-title">🎪 Advanced Closing Techniques</div>
-                        <div class="detail-content">
-                            <strong>Summary Close:</strong> "So you want safer cleaning, time savings, and cost reduction. Perfect - let's get you set up."<br><br>
-                            <strong>Benefit Close:</strong> "Your staff's health is worth protecting. Let's start this week."<br><br>
-                            <strong>Alternative Close:</strong> "Should we start with your main area or cover everything?"
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">⚠️ After You Ask - SHUT UP!</div>
-                        <div class="detail-content">
-                            The first person to speak after you ask for the sale loses. Stay quiet, maintain eye contact, and wait for their response. This is crucial!
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">🔄 If They Say No</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>Ask why specifically</li>
-                                <li>Address the real concern</li>
-                                <li>Try a different closing approach</li>
-                                <li>Don't give up after first no</li>
-                                <li>Leave door open for future</li>
-                            </ul>
                         </div>
                     </div>
                 </div>
@@ -1871,53 +1093,6 @@
                                 <strong>Natural approach:</strong> "Who else do you know that would benefit from safer sanitization like this?"<br><br>
                                 <strong>Specific approach:</strong> "Any other business owners in your network who care about their staff's health?"
                             </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="hover-detail">
-                    <h3>✅ STEP 8: SALE COMPLETION CHECKLIST</h3>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">📋 Required Information</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>Business name and address</li>
-                                <li>Contact person and title</li>
-                                <li>Phone number (mobile preferred)</li>
-                                <li>Email address</li>
-                                <li>Best days/times for service</li>
-                                <li>Special access instructions</li>
-                                <li>Payment method preference</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="script-examples">
-                        <div class="detail-title">🏆 Congratulatory Language</div>
-                        <div class="detail-content">
-                            "Excellent choice! You're going to love how much safer and cleaner this makes your business. Your staff and customers will definitely notice the difference."
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">🤝 Referral Scripts</div>
-                        <div class="detail-content">
-                            <strong>Natural approach:</strong> "Who else do you know that would benefit from safer sanitization like this?"<br><br>
-                            <strong>Specific approach:</strong> "Any other business owners in your network who care about their staff's health?"
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">📅 Scheduling Best Practices</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>Confirm date and time twice</li>
-                                <li>Get backup contact number</li>
-                                <li>Explain what to expect on first visit</li>
-                                <li>Send confirmation within 24 hours</li>
-                                <li>Set expectations for results</li>
-                            </ul>
                         </div>
                     </div>
                 </div>
@@ -1992,50 +1167,6 @@
                         </div>
                     </div>
                 </div>
-                
-                <div class="hover-detail">
-                    <h3>📈 EXPECTATIONS & MINDSET MANAGEMENT</h3>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">📊 Success Rate Reality</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>Expect 1-3 sales per 100 businesses visited</li>
-                                <li>30% will listen to full presentation</li>
-                                <li>10% will show genuine interest</li>
-                                <li>3% will buy immediately</li>
-                                <li>5% will buy with follow-up</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="script-examples">
-                        <div class="detail-title">🚦 Traffic Light System</div>
-                        <div class="detail-content">
-                            <strong>🔴 Red (Move On):</strong> Hostile, rude, or clearly not interested<br><br>
-                            <strong>🟡 Yellow (Quick Pitch):</strong> Polite but busy, give 30-second version<br><br>
-                            <strong>🟢 Green (Full Presentation):</strong> Engaged, asking questions, has time
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">🧠 Mental Resilience Tips</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>Every "no" gets you closer to "yes"</li>
-                                <li>Rejection isn't personal - it's statistical</li>
-                                <li>Focus on helping, not selling</li>
-                                <li>Celebrate small wins throughout the day</li>
-                                <li>Track your improvement weekly</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">⏰ Time Management</div>
-                        <div class="detail-content">Don't spend more than 10 minutes total unless they're clearly buying. Time is your most valuable resource - invest it wisely.</div>
-                    </div>
-                </div>
             </div>
 
             <!-- Success Standards -->
@@ -2106,20 +1237,7 @@
                             <div class="detail-content">
                                 <strong>Track daily:</strong> Businesses visited, presentations given, objections handled, sales closed, referrals received, follow-ups scheduled.<br><br>
                                 <strong>Weekly goals:</strong> 100+ businesses visited, 30+ presentations, 5+ sales, 10+ referrals, 100% follow-up completion.
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">🏅 Advanced Excellence Standards</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>Know all competitor products and prices</li>
-                                <li>Understand industry regulations (health dept, OSHA)</li>
-                                <li>Stay updated on HOCl research and applications</li>
-                                <li>Build relationships with industry influencers</li>
-                                <li>Continuously improve scripts based on results</li>
-                                <li>Mentor new team members</li>
-                            </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2133,6 +1251,7 @@
         </div>
     </div>
     
+    <!-- PSYCHOLOGY TAB -->
     <div class="tab-content" id="psychology-content">
         <div class="header">
             <h1>🧠 SALES PSYCHOLOGY GUIDE</h1>
@@ -2140,20 +1259,16 @@
         </div>
 
         <div class="flowchart">
-            
-            <!-- Psychology 1: Trust Building -->
-            <div class="container psychology" onclick="toggleExpand(this)">
+            <div class="container psychology">
                 <div class="step-header">
                     <div class="step-number">🤝</div>
                     <div class="step-title">Building Instant Trust</div>
                     <span class="expand-icon">▼</span>
                 </div>
-                
                 <div class="why-section">
                     <div class="why-title">🧠 PSYCHOLOGY PRINCIPLE:</div>
                     <div class="why-text">Trust is earned in seconds, lost in moments. People decide if they like you in 7 seconds. Authority + Credibility + Genuine Interest = Trust Foundation.</div>
                 </div>
-                
                 <div class="action-tag">AUTHORITY SIGNALS</div> <div class="action-tag">GENUINE INTEREST</div>
                 <div class="script-box">
                     <strong>Trust Formula:</strong> Professional appearance + EPA credentials + specific compliment + active listening = Instant credibility
@@ -2167,91 +1282,18 @@
                     <li>Show genuine curiosity</li>
                     <li>Find common ground quickly</li>
                 </ul>
-                
-                <div class="mobile-detail">
-                    <div class="mobile-detail-content">
-                        <h3>🤝 TRUST PSYCHOLOGY MASTERY</h3>
-                        
-                        <div class="detail-section">
-                            <div class="detail-title">⚡ 7-Second Rule</div>
-                            <div class="detail-content">
-                                <ul class="tips-list">
-                                    <li>Confident posture and eye contact</li>
-                                    <li>Firm handshake with warm smile</li>
-                                    <li>Clear, confident voice</li>
-                                    <li>Professional appearance</li>
-                                    <li>Immediate name introduction</li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <div class="script-examples">
-                            <div class="detail-title">🎯 Authority Signals</div>
-                            <div class="detail-content">
-                                <strong>Visual:</strong> EPA documentation, business cards, professional attire<br><br>
-                                <strong>Verbal:</strong> "EPA-approved," "body makes this naturally," specific industry knowledge<br><br>
-                                <strong>Social:</strong> Success stories, testimonials, client references
-                            </div>
-                        </div>
-                        
-                        <div class="detail-section">
-                            <div class="detail-title">🔍 Reading Trust Signals</div>
-                            <div class="detail-content">
-                                <strong>High Trust:</strong> Relaxed posture, maintains eye contact, asks questions, shares information<br><br>
-                                <strong>Low Trust:</strong> Crossed arms, looks away, short answers, defensive body language
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="hover-detail">
-                    <h3>🤝 TRUST PSYCHOLOGY MASTERY</h3>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">⚡ 7-Second Rule</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>Confident posture and eye contact</li>
-                                <li>Firm handshake with warm smile</li>
-                                <li>Clear, confident voice</li>
-                                <li>Professional appearance</li>
-                                <li>Immediate name introduction</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="script-examples">
-                        <div class="detail-title">🎯 Authority Signals</div>
-                        <div class="detail-content">
-                            <strong>Visual:</strong> EPA documentation, business cards, professional attire<br><br>
-                            <strong>Verbal:</strong> "EPA-approved," "body makes this naturally," specific industry knowledge<br><br>
-                            <strong>Social:</strong> Success stories, testimonials, client references
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">🔍 Reading Trust Signals</div>
-                        <div class="detail-content">
-                            <strong>High Trust:</strong> Relaxed posture, maintains eye contact, asks questions, shares information<br><br>
-                            <strong>Low Trust:</strong> Crossed arms, looks away, short answers, defensive body language
-                        </div>
-                    </div>
-                </div>
             </div>
 
-            <!-- Psychology 2: Pain vs Pleasure -->
-            <div class="container psychology" onclick="toggleExpand(this)">
+            <div class="container psychology">
                 <div class="step-header">
                     <div class="step-number">⚖️</div>
                     <div class="step-title">Pain vs Pleasure Motivation</div>
                     <span class="expand-icon">▼</span>
                 </div>
-                
                 <div class="why-section">
                     <div class="why-title">🧠 PSYCHOLOGY PRINCIPLE:</div>
                     <div class="why-text">People are 2x more motivated to avoid pain than gain pleasure. Identify current pain, amplify consequences, then present pleasure of solution.</div>
                 </div>
-                
                 <div class="action-tag">AMPLIFY PAIN</div> <div class="action-tag">SHOW PLEASURE</div>
                 <div class="script-box">
                     <strong>Pain Amplification:</strong> "So chemical residues are potentially harmful to your staff daily? And customers can smell it when they walk in?"
@@ -2265,89 +1307,18 @@
                     <li>Discuss safety concerns</li>
                     <li>Paint picture of ideal solution</li>
                 </ul>
-                
-                <div class="mobile-detail">
-                    <div class="mobile-detail-content">
-                        <h3>⚖️ PAIN/PLEASURE PSYCHOLOGY</h3>
-                        
-                        <div class="detail-section">
-                            <div class="detail-title">😣 Pain Amplification Technique</div>
-                            <div class="detail-content">
-                                <ul class="tips-list">
-                                    <li>Ask about current problems</li>
-                                    <li>Quantify the cost of problems</li>
-                                    <li>Explore emotional impact</li>
-                                    <li>Discuss future consequences</li>
-                                    <li>Get them to verbalize pain</li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <div class="script-examples">
-                            <div class="detail-title">🎯 Pain Amplification Scripts</div>
-                            <div class="detail-content">
-                                "How do you feel about your staff breathing those chemicals daily?"<br><br>
-                                "What would happen if a health inspector questioned your cleaning methods?"<br><br>
-                                "How much time do you lose each week on cleaning that could go to revenue?"
-                            </div>
-                        </div>
-                        
-                        <div class="detail-section">
-                            <div class="detail-title">😊 Pleasure Visualization</div>
-                            <div class="detail-content">
-                                <strong>Paint the picture:</strong> "Imagine walking into work knowing your space is the safest possible, your staff is protected, and you're saving 2 hours daily..."
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="hover-detail">
-                    <h3>⚖️ PAIN/PLEASURE PSYCHOLOGY</h3>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">😣 Pain Amplification Technique</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>Ask about current problems</li>
-                                <li>Quantify the cost of problems</li>
-                                <li>Explore emotional impact</li>
-                                <li>Discuss future consequences</li>
-                                <li>Get them to verbalize pain</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="script-examples">
-                        <div class="detail-title">🎯 Pain Amplification Scripts</div>
-                        <div class="detail-content">
-                            "How do you feel about your staff breathing those chemicals daily?"<br><br>
-                            "What would happen if a health inspector questioned your cleaning methods?"<br><br>
-                            "How much time do you lose each week on cleaning that could go to revenue?"
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">😊 Pleasure Visualization</div>
-                        <div class="detail-content">
-                            <strong>Paint the picture:</strong> "Imagine walking into work knowing your space is the safest possible, your staff is protected, and you're saving 2 hours daily..."
-                        </div>
-                    </div>
-                </div>
             </div>
 
-            <!-- Psychology 3: Social Proof -->
-            <div class="container psychology" onclick="toggleExpand(this)">
+            <div class="container psychology">
                 <div class="step-header">
                     <div class="step-number">👥</div>
                     <div class="step-title">Social Proof Power</div>
                     <span class="expand-icon">▼</span>
                 </div>
-                
                 <div class="why-section">
                     <div class="why-title">🧠 PSYCHOLOGY PRINCIPLE:</div>
                     <div class="why-text">People follow the crowd. If others like them are doing it, it must be right. Similar businesses + success stories = powerful influence.</div>
                 </div>
-                
                 <div class="action-tag">SUCCESS STORIES</div> <div class="action-tag">PEER PRESSURE</div>
                 <div class="script-box">
                     <strong>Social Proof Formula:</strong> "Other [their industry] owners like [Name] at [Business] chose this because [benefit they got]"
@@ -2361,99 +1332,18 @@
                     <li>Show credentials and awards</li>
                     <li>Reference industry experts</li>
                 </ul>
-                
-                <div class="mobile-detail">
-                    <div class="mobile-detail-content">
-                        <h3>👥 SOCIAL PROOF PSYCHOLOGY</h3>
-                        
-                        <div class="detail-section">
-                            <div class="detail-title">🏆 Types of Social Proof</div>
-                            <div class="detail-content">
-                                <ul class="tips-list">
-                                    <li><strong>Expert:</strong> EPA approval, FDA recognition</li>
-                                    <li><strong>User:</strong> Customer testimonials, reviews</li>
-                                    <li><strong>Peer:</strong> Similar business success stories</li>
-                                    <li><strong>Certification:</strong> Industry awards, credentials</li>
-                                    <li><strong>Volume:</strong> "Hundreds of businesses trust us"</li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <div class="script-examples">
-                            <div class="detail-title">🎯 Specific Social Proof Scripts</div>
-                            <div class="detail-content">
-                                <strong>For Restaurants:</strong> "The owner of [Local Restaurant] told me this was the best decision he made for his kitchen safety"<br><br>
-                                <strong>For Salons:</strong> "Three beauty shops on this street already use our service - they love how much safer it is for clients"
-                            </div>
-                        </div>
-                        
-                        <div class="detail-section">
-                            <div class="detail-title">📊 Maximizing Proof Impact</div>
-                            <div class="detail-content">
-                                <ul class="tips-list">
-                                    <li>Use specific names and businesses (with permission)</li>
-                                    <li>Match proof to their industry/size</li>
-                                    <li>Quantify results when possible</li>
-                                    <li>Show visual proof (credentials, photos)</li>
-                                    <li>Reference local/familiar businesses</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="hover-detail">
-                    <h3>👥 SOCIAL PROOF PSYCHOLOGY</h3>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">🏆 Types of Social Proof</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li><strong>Expert:</strong> EPA approval, FDA recognition</li>
-                                <li><strong>User:</strong> Customer testimonials, reviews</li>
-                                <li><strong>Peer:</strong> Similar business success stories</li>
-                                <li><strong>Certification:</strong> Industry awards, credentials</li>
-                                <li><strong>Volume:</strong> "Hundreds of businesses trust us"</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="script-examples">
-                        <div class="detail-title">🎯 Specific Social Proof Scripts</div>
-                        <div class="detail-content">
-                            <strong>For Restaurants:</strong> "The owner of [Local Restaurant] told me this was the best decision he made for his kitchen safety"<br><br>
-                            <strong>For Salons:</strong> "Three beauty shops on this street already use our service - they love how much safer it is for clients"
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">📊 Maximizing Proof Impact</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>Use specific names and businesses (with permission)</li>
-                                <li>Match proof to their industry/size</li>
-                                <li>Quantify results when possible</li>
-                                <li>Show visual proof (credentials, photos)</li>
-                                <li>Reference local/familiar businesses</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
             </div>
 
-            <!-- Psychology 4: Scarcity & Urgency -->
-            <div class="container psychology" onclick="toggleExpand(this)">
+            <div class="container psychology">
                 <div class="step-header">
                     <div class="step-number">⏰</div>
                     <div class="step-title">Scarcity & Urgency</div>
                     <span class="expand-icon">▼</span>
                 </div>
-                
                 <div class="why-section">
                     <div class="why-title">🧠 PSYCHOLOGY PRINCIPLE:</div>
                     <div class="why-text">People want what they can't have and act when time is limited. Scarcity increases perceived value. Urgency creates immediate action.</div>
                 </div>
-                
                 <div class="action-tag">LIMITED AVAILABILITY</div> <div class="action-tag">TIME PRESSURE</div>
                 <div class="script-box">
                     <strong>Scarcity Script:</strong> "I only have capacity for 2 new clients this month in your area. Cold season is coming - everyone wants safer sanitization now."
@@ -2467,345 +1357,46 @@
                     <li>Upcoming regulations</li>
                     <li>Competitor activity in area</li>
                 </ul>
-                
-                <div class="mobile-detail">
-                    <div class="mobile-detail-content">
-                        <h3>⏰ SCARCITY/URGENCY PSYCHOLOGY</h3>
-                        
-                        <div class="detail-section">
-                            <div class="detail-title">💎 Scarcity Principles</div>
-                            <div class="detail-content">
-                                <ul class="tips-list">
-                                    <li><strong>Time:</strong> "Limited appointments this week"</li>
-                                    <li><strong>Quantity:</strong> "Only taking 2 new clients"</li>
-                                    <li><strong>Access:</strong> "Exclusive to your area"</li>
-                                    <li><strong>Seasonal:</strong> "Before cold/flu season"</li>
-                                    <li><strong>Competitive:</strong> "Before competitors act"</li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <div class="script-examples">
-                            <div class="detail-title">🔥 Urgency Scripts</div>
-                            <div class="detail-content">
-                                "Health inspector visits are increasing - you want this protection before they visit"<br><br>
-                                "Other businesses are switching now - you don't want to be the last one still using harsh chemicals"<br><br>
-                                "Flu season starts next month - this is the perfect time to upgrade your protection"
-                            </div>
-                        </div>
-                        
-                        <div class="detail-section">
-                            <div class="detail-title">⚠️ Ethical Urgency Guidelines</div>
-                            <div class="detail-content">
-                                <ul class="tips-list">
-                                    <li>Use real limitations, not fake ones</li>
-                                    <li>Base urgency on genuine benefits</li>
-                                    <li>Don't pressure if they need time</li>
-                                    <li>Focus on helping, not manipulating</li>
-                                    <li>Respect their decision-making process</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="hover-detail">
-                    <h3>⏰ SCARCITY/URGENCY PSYCHOLOGY</h3>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">💎 Scarcity Principles</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li><strong>Time:</strong> "Limited appointments this week"</li>
-                                <li><strong>Quantity:</strong> "Only taking 2 new clients"</li>
-                                <li><strong>Access:</strong> "Exclusive to your area"</li>
-                                <li><strong>Seasonal:</strong> "Before cold/flu season"</li>
-                                <li><strong>Competitive:</strong> "Before competitors act"</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="script-examples">
-                        <div class="detail-title">🔥 Urgency Scripts</div>
-                        <div class="detail-content">
-                            "Health inspector visits are increasing - you want this protection before they visit"<br><br>
-                            "Other businesses are switching now - you don't want to be the last one still using harsh chemicals"<br><br>
-                            "Flu season starts next month - this is the perfect time to upgrade your protection"
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">⚠️ Ethical Urgency Guidelines</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>Use real limitations, not fake ones</li>
-                                <li>Base urgency on genuine benefits</li>
-                                <li>Don't pressure if they need time</li>
-                                <li>Focus on helping, not manipulating</li>
-                                <li>Respect their decision-making process</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
             </div>
 
-            <!-- Psychology 5: Commitment & Consistency -->
-            <div class="container psychology span-2" onclick="toggleExpand(this)">
+            <div class="container psychology span-2">
                 <div class="step-header">
                     <div class="step-number">🎯</div>
                     <div class="step-title">Commitment & Consistency</div>
                     <span class="expand-icon">▼</span>
                 </div>
-                
                 <div class="why-section">
                     <div class="why-title">🧠 PSYCHOLOGY PRINCIPLE:</div>
                     <div class="why-text">People act consistently with past commitments. Get small agreements first, then larger ones. Each "yes" makes the next "yes" easier.</div>
                 </div>
-                
                 <div class="action-tag">SMALL COMMITMENTS</div> <div class="action-tag">BUILD AGREEMENT</div>
                 <div class="script-box">
                     <strong>Commitment Ladder:</strong> Start with values they agree with, get small yeses, build to bigger commitment
                 </div>
-                
                 <div class="grid-2">
                     <div>
-                        <div class="close-technique">
-                            "You care about staff safety, right?"
-                        </div>
-                        <div class="close-technique">
-                            "Customers notice chemical smells?"
-                        </div>
-                        <div class="close-technique">
-                            "Saving time is valuable?"
-                        </div>
+                        <div class="close-technique">"You care about staff safety, right?"</div>
+                        <div class="close-technique">"Customers notice chemical smells?"</div>
+                        <div class="close-technique">"Saving time is valuable?"</div>
                     </div>
                     <div>
-                        <div class="close-technique">
-                            "Safer products are better?"
-                        </div>
-                        <div class="close-technique">
-                            "EPA approval matters?"
-                        </div>
-                        <div class="close-technique">
-                            "Ready to make the switch?"
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mobile-detail">
-                    <div class="mobile-detail-content">
-                        <h3>🎯 COMMITMENT/CONSISTENCY PSYCHOLOGY</h3>
-                        
-                        <div class="detail-section">
-                            <div class="detail-title">📈 The Commitment Ladder</div>
-                            <div class="detail-content">
-                                <ul class="tips-list">
-                                    <li><strong>Step 1:</strong> Values agreement ("Staff safety matters?")</li>
-                                    <li><strong>Step 2:</strong> Problem acknowledgment ("Chemical smells exist?")</li>
-                                    <li><strong>Step 3:</strong> Solution interest ("Safer sounds better?")</li>
-                                    <li><strong>Step 4:</strong> Benefit recognition ("Time savings valuable?")</li>
-                                    <li><strong>Step 5:</strong> Purchase commitment ("Ready to start?")</li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <div class="script-examples">
-                            <div class="detail-title">🔗 Consistency Triggers</div>
-                            <div class="detail-content">
-                                "You just said staff safety is your priority - this is the safest option available"<br><br>
-                                "Earlier you mentioned wanting to save time - this gives you 2 hours back daily"<br><br>
-                                "You agreed chemicals concern you - here's the chemical-free solution"
-                            </div>
-                        </div>
-                        
-                        <div class="detail-section">
-                            <div class="detail-title">✅ Small Yes Techniques</div>
-                            <div class="detail-content">
-                                <ul class="tips-list">
-                                    <li>Ask obvious questions they'll agree with</li>
-                                    <li>Get them nodding early and often</li>
-                                    <li>Reference their earlier agreements</li>
-                                    <li>Build momentum toward bigger decisions</li>
-                                    <li>Make the final ask feel natural</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="hover-detail">
-                    <h3>🎯 COMMITMENT/CONSISTENCY PSYCHOLOGY</h3>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">📈 The Commitment Ladder</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li><strong>Step 1:</strong> Values agreement ("Staff safety matters?")</li>
-                                <li><strong>Step 2:</strong> Problem acknowledgment ("Chemical smells exist?")</li>
-                                <li><strong>Step 3:</strong> Solution interest ("Safer sounds better?")</li>
-                                <li><strong>Step 4:</strong> Benefit recognition ("Time savings valuable?")</li>
-                                <li><strong>Step 5:</strong> Purchase commitment ("Ready to start?")</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="script-examples">
-                        <div class="detail-title">🔗 Consistency Triggers</div>
-                        <div class="detail-content">
-                            "You just said staff safety is your priority - this is the safest option available"<br><br>
-                            "Earlier you mentioned wanting to save time - this gives you 2 hours back daily"<br><br>
-                            "You agreed chemicals concern you - here's the chemical-free solution"
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">✅ Small Yes Techniques</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>Ask obvious questions they'll agree with</li>
-                                <li>Get them nodding early and often</li>
-                                <li>Reference their earlier agreements</li>
-                                <li>Build momentum toward bigger decisions</li>
-                                <li>Make the final ask feel natural</li>
-                            </ul>
-                        </div>
+                        <div class="close-technique">"Safer products are better?"</div>
+                        <div class="close-technique">"EPA approval matters?"</div>
+                        <div class="close-technique">"Ready to make the switch?"</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Psychology 6: Reciprocity -->
-            <div class="container psychology span-2" onclick="toggleExpand(this)">
-                <div class="step-header">
-                    <div class="step-number">🤲</div>
-                    <div class="step-title">Reciprocity Principle</div>
-                    <span class="expand-icon">▼</span>
-                </div>
-                
-                <div class="why-section">
-                    <div class="why-title">🧠 PSYCHOLOGY PRINCIPLE:</div>
-                    <div class="why-text">People feel obligated to return favors. Give value first, create psychological debt. Free information/advice = obligation to listen and consider.</div>
-                </div>
-                
-                <div class="action-tag">GIVE VALUE FIRST</div> <div class="action-tag">CREATE OBLIGATION</div>
-                <div class="script-box">
-                    <strong>Value-First Approach:</strong> Share free advice, insider information, or useful tips before asking for anything
-                </div>
-                
-                <div class="grid-2">
-                    <div class="success-box">
-                        <div class="quality-target">GIVE AWAY FREE</div>
-                        • Safety tips for their industry<br>
-                        • Health inspector insights<br>
-                        • Cleaning efficiency advice<br>
-                        • Regulatory updates<br>
-                        • Cost-saving suggestions<br>
-                        • Industry best practices
-                    </div>
-                    <div class="success-box">
-                        <div class="quality-target">CREATE RECIPROCITY</div>
-                        • "I've helped you save time..."<br>
-                        • "After sharing this valuable info..."<br>
-                        • "Since I've given you these tips..."<br>
-                        • "Now that you understand..."<br>
-                        • "Fair exchange would be..."<br>
-                        • "Can you help me by..."</div>
-                    </div>
-                </div>
-                
-                <div class="mobile-detail">
-                    <div class="mobile-detail-content">
-                        <h3>🤲 RECIPROCITY PSYCHOLOGY</h3>
-                        
-                        <div class="detail-section">
-                            <div class="detail-title">🎁 Value-First Strategies</div>
-                            <div class="detail-content">
-                                <ul class="tips-list">
-                                    <li>Share industry-specific cleaning tips</li>
-                                    <li>Explain health inspector requirements</li>
-                                    <li>Offer free safety assessments</li>
-                                    <li>Provide regulatory updates</li>
-                                    <li>Give competitor intelligence</li>
-                                    <li>Share cost-saving techniques</li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <div class="script-examples">
-                            <div class="detail-title">💡 Free Value Examples</div>
-                            <div class="detail-content">
-                                <strong>For Restaurants:</strong> "Health inspectors are focusing on these 3 areas this year - let me show you what they look for"<br><br>
-                                <strong>For Salons:</strong> "Here's how to prevent chemical buildup that causes client skin reactions - most salons don't know this"
-                            </div>
-                        </div>
-                        
-                        <div class="detail-section">
-                            <div class="detail-title">🔄 Activating Reciprocity</div>
-                            <div class="detail-content">
-                                <ul class="tips-list">
-                                    <li>Reference the value you've provided</li>
-                                    <li>Make the connection explicit</li>
-                                    <li>Ask for something reasonable in return</li>
-                                    <li>Frame it as mutual benefit</li>
-                                    <li>Don't be pushy or demanding</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="hover-detail">
-                    <h3>🤲 RECIPROCITY PSYCHOLOGY</h3>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">🎁 Value-First Strategies</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>Share industry-specific cleaning tips</li>
-                                <li>Explain health inspector requirements</li>
-                                <li>Offer free safety assessments</li>
-                                <li>Provide regulatory updates</li>
-                                <li>Give competitor intelligence</li>
-                                <li>Share cost-saving techniques</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="script-examples">
-                        <div class="detail-title">💡 Free Value Examples</div>
-                        <div class="detail-content">
-                            <strong>For Restaurants:</strong> "Health inspectors are focusing on these 3 areas this year - let me show you what they look for"<br><br>
-                            <strong>For Salons:</strong> "Here's how to prevent chemical buildup that causes client skin reactions - most salons don't know this"
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">🔄 Activating Reciprocity</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>Reference the value you've provided</li>
-                                <li>Make the connection explicit</li>
-                                <li>Ask for something reasonable in return</li>
-                                <li>Frame it as mutual benefit</li>
-                                <li>Don't be pushy or demanding</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Psychology 7: Decision Making -->
-            <div class="container psychology span-4" onclick="toggleExpand(this)">
+            <div class="container psychology span-2">
                 <div class="step-header">
                     <div class="step-number">🧠</div>
                     <div class="step-title">How People Actually Decide</div>
                     <span class="expand-icon">▼</span>
                 </div>
-                
                 <div class="why-section">
                     <div class="why-title">🧠 PSYCHOLOGY PRINCIPLE:</div>
                     <div class="why-text">People buy emotionally and justify logically. Logic supports emotion, not the other way around. Create emotional reasons, then provide logical justification.</div>
                 </div>
-                
                 <div class="grid-2">
                     <div class="success-box">
                         <div class="quality-target">EMOTIONAL TRIGGERS</div>
@@ -2823,105 +1414,10 @@
                         💵 ROI Calculations<br>
                         📈 Efficiency Improvements<br>
                         ⚖️ Regulatory Compliance<br>
-                        📋 Implementation Process</div>
-                    </div>
-                </div>
-                
-                <div class="mobile-detail">
-                    <div class="mobile-detail-content">
-                        <h3>🧠 DECISION PSYCHOLOGY MASTERY</h3>
-                        
-                        <div class="detail-section">
-                            <div class="detail-title">❤️ Emotional Decision Factors</div>
-                            <div class="detail-content">
-                                <ul class="tips-list">
-                                    <li><strong>Safety:</strong> "Protect your people" emotional appeal</li>
-                                    <li><strong>Pride:</strong> "Best decision for your business"</li>
-                                    <li><strong>Fear:</strong> "Don't risk staff/customer health"</li>
-                                    <li><strong>Status:</strong> "Join the smart business owners"</li>
-                                    <li><strong>Relief:</strong> "Finally, a better solution"</li>
-                                    <li><strong>Excitement:</strong> "You'll love the results"</li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <div class="script-examples">
-                            <div class="detail-title">🧮 Logic + Emotion Combinations</div>
-                            <div class="detail-content">
-                                <strong>Emotional:</strong> "Your staff deserves to work in the safest environment possible"<br>
-                                <strong>+ Logical:</strong> "EPA studies show this kills 99.9% of pathogens"<br><br>
-                                <strong>Emotional:</strong> "Imagine the peace of mind you'll have"<br>
-                                <strong>+ Logical:</strong> "Plus you save $200 monthly on chemicals"
-                            </div>
-                        </div>
-                        
-                        <div class="detail-section">
-                            <div class="detail-title">⚡ Decision Acceleration Techniques</div>
-                            <div class="detail-content">
-                                <ul class="tips-list">
-                                    <li>Address the real decision maker</li>
-                                    <li>Reduce perceived risk</li>
-                                    <li>Simplify the choice</li>
-                                    <li>Provide clear next steps</li>
-                                    <li>Remove decision fatigue</li>
-                                    <li>Make status quo uncomfortable</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="hover-detail">
-                    <h3>🧠 DECISION PSYCHOLOGY MASTERY</h3>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">❤️ Emotional Decision Factors</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li><strong>Safety:</strong> "Protect your people" emotional appeal</li>
-                                <li><strong>Pride:</strong> "Best decision for your business"</li>
-                                <li><strong>Fear:</strong> "Don't risk staff/customer health"</li>
-                                <li><strong>Status:</strong> "Join the smart business owners"</li>
-                                <li><strong>Relief:</strong> "Finally, a better solution"</li>
-                                <li><strong>Excitement:</strong> "You'll love the results"</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="script-examples">
-                        <div class="detail-title">🧮 Logic + Emotion Combinations</div>
-                        <div class="detail-content">
-                            <strong>Emotional:</strong> "Your staff deserves to work in the safest environment possible"<br>
-                            <strong>+ Logical:</strong> "EPA studies show this kills 99.9% of pathogens"<br><br>
-                            <strong>Emotional:</strong> "Imagine the peace of mind you'll have"<br>
-                            <strong>+ Logical:</strong> "Plus you save $200 monthly on chemicals"
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">⚡ Decision Acceleration Techniques</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>Address the real decision maker</li>
-                                <li>Reduce perceived risk</li>
-                                <li>Simplify the choice</li>
-                                <li>Provide clear next steps</li>
-                                <li>Remove decision fatigue</li>
-                                <li>Make status quo uncomfortable</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">🎯 The Perfect Close Formula</div>
-                        <div class="detail-content">
-                            <strong>Emotional Hook + Logical Proof + Urgency + Easy Next Step = Sale</strong><br><br>
-                            "Protecting your staff is priceless (emotion). EPA proves this works (logic). I can start this week (urgency). Let me get your info (easy step)."
-                        </div>
+                        📋 Implementation Process
                     </div>
                 </div>
             </div>
-
         </div>
 
         <div class="footer-info no-print">
@@ -2931,87 +1427,80 @@
     </div>
 
     <script>
-        // Simple tab switching function
-        function showTab(tabName) {
-            // Hide all tab contents
-            const allTabs = document.querySelectorAll('.tab-content');
-            allTabs.forEach(tab => {
-                tab.classList.remove('active');
-            });
+        // COMPLETELY REBUILT TAB SYSTEM - NO DEPENDENCIES
+        document.addEventListener('DOMContentLoaded', function() {
+            const debug = document.getElementById('debug');
+            const debugText = document.getElementById('debug-text');
             
-            // Remove active class from all buttons
-            const allButtons = document.querySelectorAll('.tab-button');
-            allButtons.forEach(button => {
-                button.classList.remove('active');
-            });
+            // Show debug for testing
+            debug.style.display = 'block';
+            debugText.textContent = 'DOM Loaded';
             
-            // Show selected tab
-            const selectedTab = document.getElementById(tabName + '-content');
-            if (selectedTab) {
-                selectedTab.classList.add('active');
+            const processBtn = document.getElementById('process-btn');
+            const psychologyBtn = document.getElementById('psychology-btn');
+            const processContent = document.getElementById('process-content');
+            const psychologyContent = document.getElementById('psychology-content');
+            
+            // Verify elements exist
+            if (!processBtn || !psychologyBtn || !processContent || !psychologyContent) {
+                debugText.textContent = 'ERROR: Elements not found';
+                return;
             }
             
-            // Add active class to clicked button
-            event.target.closest('.tab-button').classList.add('active');
-        }
+            debugText.textContent = 'Elements found - attaching events';
+            
+            // Process button click
+            processBtn.addEventListener('click', function() {
+                debugText.textContent = 'Process clicked';
+                
+                // Remove active from all buttons
+                processBtn.classList.remove('active');
+                psychologyBtn.classList.remove('active');
+                
+                // Add active to clicked button
+                processBtn.classList.add('active');
+                
+                // Hide all content
+                processContent.classList.remove('show');
+                psychologyContent.classList.remove('show');
+                
+                // Show selected content
+                processContent.classList.add('show');
+                
+                debugText.textContent = 'Process tab active';
+            });
+            
+            // Psychology button click
+            psychologyBtn.addEventListener('click', function() {
+                debugText.textContent = 'Psychology clicked';
+                
+                // Remove active from all buttons
+                processBtn.classList.remove('active');
+                psychologyBtn.classList.remove('active');
+                
+                // Add active to clicked button
+                psychologyBtn.classList.add('active');
+                
+                // Hide all content
+                processContent.classList.remove('show');
+                psychologyContent.classList.remove('show');
+                
+                // Show selected content
+                psychologyContent.classList.add('show');
+                
+                debugText.textContent = 'Psychology tab active';
+            });
+            
+            // Hide debug after 3 seconds if working
+            setTimeout(function() {
+                debug.style.display = 'none';
+            }, 3000);
+        });
         
-        // Expand/collapse function for mobile
+        // Expand function for mobile
         function toggleExpand(element) {
             element.classList.toggle('expanded');
         }
     </script>
 </body>
-</html> 100% follow-up completion.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="hover-detail">
-                    <h3>🏆 QUALITY STANDARDS & BEST PRACTICES</h3>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">👔 Professional Appearance Checklist</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>Clean, pressed business attire</li>
-                                <li>Professional hairstyle and grooming</li>
-                                <li>Clean, appropriate shoes</li>
-                                <li>Minimal, professional jewelry</li>
-                                <li>Fresh breath and good hygiene</li>
-                                <li>Company badge/identification visible</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="script-examples">
-                        <div class="detail-title">📞 Follow-Up Excellence</div>
-                        <div class="detail-content">
-                            <strong>Within 2 hours:</strong> Send confirmation text<br>
-                            <strong>Within 24 hours:</strong> Email with service details<br>
-                            <strong>Day before service:</strong> Reminder call<br>
-                            <strong>After service:</strong> Satisfaction check-in<br>
-                            <strong>Monthly:</strong> Relationship maintenance call
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">📝 Documentation Requirements</div>
-                        <div class="detail-content">
-                            <ul class="tips-list">
-                                <li>Date and time of visit</li>
-                                <li>Contact person and details</li>
-                                <li>Problems discussed</li>
-                                <li>Objections raised and responses</li>
-                                <li>Outcome and next steps</li>
-                                <li>Referrals provided</li>
-                                <li>Follow-up dates set</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-section">
-                        <div class="detail-title">🎯 Daily Success Metrics</div>
-                        <div class="detail-content">
-                            <strong>Track daily:</strong> Businesses visited, presentations given, objections handled, sales closed, referrals received, follow-ups scheduled.<br><br>
-                            <strong>Weekly goals:</strong> 100+ businesses visited, 30+ presentations, 5+ sales, 10+ referrals,
+</html>
