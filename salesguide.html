@@ -636,12 +636,32 @@
                 border-radius: 8px; 
                 margin-bottom: 20px;
             }
-            .container { padding: 12px; }
-            .container:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
+            .container { 
+                padding: 12px; 
+                cursor: pointer;
+            }
+            .container:hover { 
+                transform: translateY(-3px); 
+                box-shadow: 0 8px 25px rgba(0,0,0,0.2); 
+            }
             .step-number { width: 35px; height: 35px; font-size: 16px; }
             .step-title { font-size: 13px; }
-            .expand-icon { display: none; }
-            .mobile-detail { display: none; }
+            
+            /* Ensure expand functionality works on desktop */
+            .expand-icon { 
+                display: block !important; 
+                cursor: pointer;
+            }
+            .mobile-detail { 
+                display: block !important;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.4s ease-out;
+            }
+            .container.expanded .mobile-detail { 
+                max-height: 2000px !important;
+                transition: max-height 0.6s ease-in;
+            }
         }
         
         /* Hide elements when printing */
