@@ -20,74 +20,128 @@
             padding: 0;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
+            padding-top: 80px; /* Space for fixed header */
         }
         
-        /* FIXED: Simple tab system with no conflicts */
-        .tab-controls {
+        /* Mobile-first navigation */
+        .mobile-nav {
             position: fixed;
-            top: 20px;
-            left: 20px;
-            display: flex;
-            gap: 10px;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
             z-index: 1000;
+            padding: 10px 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
         
-        .tab-button {
-            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+        .nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-title {
             color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+        
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+        
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+        
+        .nav-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .nav-menu.active {
+            display: flex;
+        }
+        
+        .nav-item {
+            background: none;
             border: none;
-            padding: 12px 18px;
-            border-radius: 25px;
-            font-size: 14px;
+            color: white;
+            padding: 15px 20px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.2);
             display: flex;
             align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            opacity: 0.8;
+            gap: 10px;
+            transition: background-color 0.3s ease;
         }
         
-        .tab-button.active {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            opacity: 1;
-            transform: translateY(-2px);
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.2);
         }
         
-        .tab-button:hover {
-            opacity: 1;
-            transform: translateY(-2px);
+        .nav-item:last-child {
+            border-bottom: none;
         }
         
-        /* FIXED: Simplified tab content system */
-        .tab-content {
-            display: none !important;
+        /* Desktop navigation */
+        .desktop-nav {
+            display: none;
         }
         
-        .tab-content.show {
-            display: block !important;
-        }
-        
-        /* Print button */
+        /* Print button - mobile optimized */
         .print-button {
             position: fixed;
-            top: 20px;
+            bottom: 20px;
             right: 20px;
             background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
             color: white;
             border: none;
-            padding: 12px 18px;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: bold;
+            padding: 12px;
+            border-radius: 50%;
+            font-size: 20px;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             z-index: 1000;
+            width: 60px;
+            height: 60px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
             transition: transform 0.3s ease;
+        }
+        
+        .print-button:hover {
+            transform: scale(1.1);
         }
         
         .header {
@@ -95,7 +149,7 @@
             background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
             color: white;
             padding: 20px 15px;
-            margin: 0;
+            margin: 0 0 20px 0;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
         
@@ -119,6 +173,7 @@
             flex-direction: column;
             gap: 15px;
             max-width: 100%;
+            margin-bottom: 80px; /* Space for floating print button */
         }
         
         .container {
@@ -482,20 +537,105 @@
         
         .grid-2 {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 8px;
         }
         
-        .span-2 { grid-column: span 2; }
-        .span-4 { grid-column: span 4; }
+        .span-2 { grid-column: span 1; }
+        .span-4 { grid-column: span 1; }
+        
+        /* Tab content */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.show {
+            display: block;
+        }
         
         /* Desktop styles */
+        @media (min-width: 768px) {
+            body {
+                padding-top: 100px;
+            }
+            
+            .mobile-nav {
+                display: none;
+            }
+            
+            .desktop-nav {
+                display: flex;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                gap: 10px;
+                z-index: 1000;
+            }
+            
+            .tab-button {
+                background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+                color: white;
+                border: none;
+                padding: 12px 18px;
+                border-radius: 25px;
+                font-size: 14px;
+                font-weight: bold;
+                cursor: pointer;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.3s ease;
+                opacity: 0.8;
+            }
+            
+            .tab-button.active {
+                background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+                opacity: 1;
+                transform: translateY(-2px);
+            }
+            
+            .tab-button:hover {
+                opacity: 1;
+                transform: translateY(-2px);
+            }
+            
+            .print-button {
+                top: 20px;
+                right: 20px;
+                bottom: auto;
+                border-radius: 25px;
+                width: auto;
+                height: auto;
+                padding: 12px 18px;
+                font-size: 14px;
+            }
+            
+            .grid-2 {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .span-2 { grid-column: span 2; }
+            .span-4 { grid-column: span 4; }
+        }
+        
         @media (min-width: 1024px) {
-            body { font-size: 11px; padding: 8px; }
+            body { font-size: 11px; padding: 8px; padding-top: 80px; }
             .header { padding: 15px; border-radius: 8px; margin-bottom: 12px; }
             .header h1 { font-size: 20px; }
             .header .subtitle { font-size: 13px; margin-top: 4px; }
-            .flowchart { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; background: white; padding: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); border-radius: 8px; }
+            .flowchart { 
+                max-width: 1400px; 
+                margin: 0 auto; 
+                display: grid; 
+                grid-template-columns: repeat(4, 1fr); 
+                gap: 10px; 
+                background: white; 
+                padding: 12px; 
+                box-shadow: 0 6px 20px rgba(0,0,0,0.15); 
+                border-radius: 8px; 
+                margin-bottom: 20px;
+            }
             .container { padding: 12px; }
             .container:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
             .step-number { width: 35px; height: 35px; font-size: 16px; }
@@ -504,40 +644,65 @@
             .mobile-detail { display: none; }
         }
         
-        /* Hide no-print elements */
-        .no-print { }
+        /* Hide elements when printing */
+        @media print {
+            .mobile-nav, .desktop-nav, .print-button, .no-print {
+                display: none !important;
+            }
+            
+            body {
+                padding-top: 0;
+            }
+        }
     </style>
 </head>
 <body>
 
-<div class="tab-controls no-print">
-        <button class="tab-button active" id="process-btn">
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav">
+        <div class="nav-header">
+            <div class="nav-title">🎯 OHS Sales Guide</div>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-menu" id="navMenu">
+            <button class="nav-item active" onclick="showTab('process')">
+                <span>📋</span>
+                <span>SALES PROCESS</span>
+            </button>
+            <button class="nav-item" onclick="showTab('psychology')">
+                <span>🧠</span>
+                <span>PSYCHOLOGY</span>
+            </button>
+            <button class="nav-item" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSd7WN3wTUbui4HFCg2XD1rqAICzEsH4u2idqs2C_MWr_eTP0g/viewform', '_blank')">
+                <span>📝</span>
+                <span>NEW ACCOUNT FORM</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <div class="desktop-nav">
+        <button class="tab-button active" onclick="showTab('process')">
             <span>📋</span>
             <span>SALES PROCESS</span>
         </button>
-        <button class="tab-button" id="psychology-btn">
+        <button class="tab-button" onclick="showTab('psychology')">
             <span>🧠</span>
             <span>PSYCHOLOGY</span>
         </button>
-        <button class="tab-button" id="form-btn" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSd7WN3wTUbui4HFCg2XD1rqAICzEsH4u2idqs2C_MWr_eTP0g/viewform', '_blank')">
+        <button class="tab-button" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSd7WN3wTUbui4HFCg2XD1rqAICzEsH4u2idqs2C_MWr_eTP0g/viewform', '_blank')">
             <span>📝</span>
             <span>NEW ACCOUNT FORM</span>
         </button>
     </div>
-    <div class="tab-controls no-print">
-        <button class="tab-button active" id="process-btn">
-            <span>📋</span>
-            <span>SALES PROCESS</span>
-        </button>
-        <button class="tab-button" id="psychology-btn">
-            <span>🧠</span>
-            <span>PSYCHOLOGY</span>
-        </button>
-    </div>
     
-    <button class="print-button no-print" onclick="window.print()">
+    <button class="print-button" onclick="window.print()">
         <span>🖨️</span>
-        <span>PRINT</span>
+        <span class="desktop-only">PRINT</span>
     </button>
     
     <!-- SALES PROCESS TAB -->
@@ -1255,7 +1420,7 @@
 
         </div>
 
-        <div class="footer-info no-print">
+        <div class="footer-info">
             <p><strong>🏆 Success Formula:</strong> Follow Steps 1-8 in exact order • Focus on solving their problems, not just selling products • Every "no" gets you closer to "yes"</p>
             <p><strong>📞 Questions?</strong> Contact: (801) 712-5663 | ohshocl@gmail.com</p>
         </div>
@@ -1430,87 +1595,72 @@
             </div>
         </div>
 
-        <div class="footer-info no-print">
+        <div class="footer-info">
             <p><strong>🧠 Psychology Success:</strong> Understand the mind behind the decision • Emotion drives, logic supports • People buy from people they trust</p>
             <p><strong>📞 Questions?</strong> Contact: (801) 712-5663 | ohshocl@gmail.com</p>
         </div>
     </div>
 
     <script>
-        // COMPLETELY REBUILT TAB SYSTEM - NO DEPENDENCIES
-        document.addEventListener('DOMContentLoaded', function() {
-            const debug = document.getElementById('debug');
-            const debugText = document.getElementById('debug-text');
+        // Mobile menu toggle
+        function toggleMenu() {
+            const hamburger = document.querySelector('.hamburger');
+            const navMenu = document.getElementById('navMenu');
             
-            // Show debug for testing
-            debug.style.display = 'block';
-            debugText.textContent = 'DOM Loaded';
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        }
+
+        // Tab switching function
+        function showTab(tabName) {
+            // Hide all content
+            document.getElementById('process-content').classList.remove('show');
+            document.getElementById('psychology-content').classList.remove('show');
             
-            const processBtn = document.getElementById('process-btn');
-            const psychologyBtn = document.getElementById('psychology-btn');
-            const processContent = document.getElementById('process-content');
-            const psychologyContent = document.getElementById('psychology-content');
+            // Remove active from all buttons
+            const allButtons = document.querySelectorAll('.nav-item, .tab-button');
+            allButtons.forEach(btn => btn.classList.remove('active'));
             
-            // Verify elements exist
-            if (!processBtn || !psychologyBtn || !processContent || !psychologyContent) {
-                debugText.textContent = 'ERROR: Elements not found';
-                return;
+            // Show selected content
+            if (tabName === 'process') {
+                document.getElementById('process-content').classList.add('show');
+            } else if (tabName === 'psychology') {
+                document.getElementById('psychology-content').classList.add('show');
             }
             
-            debugText.textContent = 'Elements found - attaching events';
+            // Add active to clicked buttons
+            const processButtons = document.querySelectorAll('[onclick*="process"]');
+            const psychologyButtons = document.querySelectorAll('[onclick*="psychology"]');
             
-            // Process button click
-            processBtn.addEventListener('click', function() {
-                debugText.textContent = 'Process clicked';
-                
-                // Remove active from all buttons
-                processBtn.classList.remove('active');
-                psychologyBtn.classList.remove('active');
-                
-                // Add active to clicked button
-                processBtn.classList.add('active');
-                
-                // Hide all content
-                processContent.classList.remove('show');
-                psychologyContent.classList.remove('show');
-                
-                // Show selected content
-                processContent.classList.add('show');
-                
-                debugText.textContent = 'Process tab active';
-            });
+            if (tabName === 'process') {
+                processButtons.forEach(btn => btn.classList.add('active'));
+            } else if (tabName === 'psychology') {
+                psychologyButtons.forEach(btn => btn.classList.add('active'));
+            }
             
-            // Psychology button click
-            psychologyBtn.addEventListener('click', function() {
-                debugText.textContent = 'Psychology clicked';
-                
-                // Remove active from all buttons
-                processBtn.classList.remove('active');
-                psychologyBtn.classList.remove('active');
-                
-                // Add active to clicked button
-                psychologyBtn.classList.add('active');
-                
-                // Hide all content
-                processContent.classList.remove('show');
-                psychologyContent.classList.remove('show');
-                
-                // Show selected content
-                psychologyContent.classList.add('show');
-                
-                debugText.textContent = 'Psychology tab active';
-            });
-            
-            // Hide debug after 3 seconds if working
-            setTimeout(function() {
-                debug.style.display = 'none';
-            }, 3000);
-        });
+            // Close mobile menu after selection
+            const navMenu = document.getElementById('navMenu');
+            const hamburger = document.querySelector('.hamburger');
+            navMenu.classList.remove('active');
+            hamburger.classList.remove('active');
+        }
         
         // Expand function for mobile
         function toggleExpand(element) {
             element.classList.toggle('expanded');
         }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const navMenu = document.getElementById('navMenu');
+            const hamburger = document.querySelector('.hamburger');
+            const mobileNav = document.querySelector('.mobile-nav');
+            
+            if (!mobileNav.contains(event.target) && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+                hamburger.classList.remove('active');
+            }
+        });
     </script>
 </body>
 </html>
