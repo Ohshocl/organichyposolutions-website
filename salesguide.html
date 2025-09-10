@@ -664,7 +664,7 @@
             }
         }
         
-        /* Hide elements when printing */
+        /* Enhanced print styles */
         @media print {
             .mobile-nav, .desktop-nav, .print-button, .no-print {
                 display: none !important;
@@ -672,6 +672,35 @@
             
             body {
                 padding-top: 0;
+                background: white !important;
+                font-size: 12px !important;
+            }
+            
+            .header {
+                background: #2c3e50 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                page-break-inside: avoid;
+            }
+            
+            .container {
+                page-break-inside: avoid;
+                margin-bottom: 15px;
+            }
+            
+            /* Ensure expanded content is visible in print */
+            .mobile-detail {
+                max-height: none !important;
+                overflow: visible !important;
+            }
+            
+            .container.expanded .mobile-detail {
+                max-height: none !important;
+            }
+            
+            /* Force all expandable content to show when printing */
+            .mobile-detail-content {
+                display: block !important;
             }
         }
     </style>
@@ -808,7 +837,7 @@
                 <div class="timer">1-2 min</div>
                 <div class="step-header">
                     <div class="step-number">2</div>
-                    <div class="step-title">Connect With Them</div>
+                    <div class="step-title">Make an Emotional Connection</div>
                     <span class="expand-icon">▼</span>
                 </div>
                 
@@ -1454,7 +1483,7 @@
         </div>
 
         <div class="flowchart">
-            <div class="container psychology">
+            <div class="container psychology" onclick="toggleExpand(this)">
                 <div class="step-header">
                     <div class="step-number">🤝</div>
                     <div class="step-title">Building Instant Trust</div>
@@ -1477,9 +1506,53 @@
                     <li>Show genuine curiosity</li>
                     <li>Find common ground quickly</li>
                 </ul>
+                
+                <div class="mobile-detail">
+                    <div class="mobile-detail-content">
+                        <h3>🤝 BUILDING INSTANT TRUST MASTERY</h3>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">⚡ First 7 Seconds Checklist</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li>Confident posture and firm handshake</li>
+                                    <li>Genuine smile and direct eye contact</li>
+                                    <li>Professional attire that matches their environment</li>
+                                    <li>Clear, confident voice tone</li>
+                                    <li>Immediate value proposition</li>
+                                    <li>EPA credentials prominently displayed</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="script-examples">
+                            <div class="detail-title">🎯 Authority Building Scripts</div>
+                            <div class="detail-content">
+                                <strong>Credential Drop:</strong> "As an EPA-registered sanitization specialist..."<br><br>
+                                <strong>Social Proof:</strong> "I work with over 50 businesses in this area..."<br><br>
+                                <strong>Expert Status:</strong> "In my 5 years of sanitization consulting..."
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">🚫 Trust Destroyers to Avoid</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li>Checking phone during conversation</li>
+                                    <li>Using generic, obvious compliments</li>
+                                    <li>Being pushy or aggressive</li>
+                                    <li>Poor personal hygiene or grooming</li>
+                                    <li>Weak, limp handshake</li>
+                                    <li>Avoiding direct eye contact</li>
+                                    <li>Speaking too fast or mumbling</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="container psychology">
+            <div class="container psychology" onclick="toggleExpand(this)">
                 <div class="step-header">
                     <div class="step-number">⚖️</div>
                     <div class="step-title">Pain vs Pleasure Motivation</div>
@@ -1502,9 +1575,50 @@
                     <li>Discuss safety concerns</li>
                     <li>Paint picture of ideal solution</li>
                 </ul>
+                
+                <div class="mobile-detail">
+                    <div class="mobile-detail-content">
+                        <h3>⚖️ PAIN VS PLEASURE PSYCHOLOGY</h3>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">😰 Pain Point Discovery</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li><strong>Financial Pain:</strong> "How much are you spending on chemicals monthly?"</li>
+                                    <li><strong>Time Pain:</strong> "How many hours daily go to cleaning?"</li>
+                                    <li><strong>Safety Pain:</strong> "Any staff concerns about chemical exposure?"</li>
+                                    <li><strong>Customer Pain:</strong> "Ever had complaints about chemical odors?"</li>
+                                    <li><strong>Regulatory Pain:</strong> "Any issues with health inspections?"</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="script-examples">
+                            <div class="detail-title">🔥 Pain Amplification Techniques</div>
+                            <div class="detail-content">
+                                <strong>Consequence Questions:</strong> "What happens if a staff member has a reaction to these chemicals?"<br><br>
+                                <strong>Cost Stacking:</strong> "So you're spending $X on chemicals, plus Y hours of labor, plus potential liability..."<br><br>
+                                <strong>Future Pain:</strong> "How will this affect your business in 5 years?"
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">😊 Pleasure Vision Creation</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li>Paint picture of safer workplace</li>
+                                    <li>Show time savings benefits</li>
+                                    <li>Describe customer appreciation</li>
+                                    <li>Emphasize peace of mind</li>
+                                    <li>Highlight competitive advantage</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="container psychology">
+            <div class="container psychology" onclick="toggleExpand(this)">
                 <div class="step-header">
                     <div class="step-number">👥</div>
                     <div class="step-title">Social Proof Power</div>
@@ -1527,9 +1641,50 @@
                     <li>Show credentials and awards</li>
                     <li>Reference industry experts</li>
                 </ul>
+                
+                <div class="mobile-detail">
+                    <div class="mobile-detail-content">
+                        <h3>👥 SOCIAL PROOF MASTERY</h3>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">🏆 Types of Social Proof</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li><strong>Expert Proof:</strong> EPA registration, FDA approval</li>
+                                    <li><strong>User Proof:</strong> Customer testimonials and reviews</li>
+                                    <li><strong>Wisdom of Crowds:</strong> "50+ local businesses use this"</li>
+                                    <li><strong>Celebrity Proof:</strong> Hospital and medical facility use</li>
+                                    <li><strong>Peer Proof:</strong> Similar businesses in their industry</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="script-examples">
+                            <div class="detail-title">💬 Industry-Specific Social Proof</div>
+                            <div class="detail-content">
+                                <strong>For Restaurants:</strong> "The Italian Kitchen downtown switched last month and their health inspector was impressed..."<br><br>
+                                <strong>For Salons:</strong> "Bella Beauty Spa has used this for 2 years - no more client complaints about chemical smells..."<br><br>
+                                <strong>For Offices:</strong> "ABC Accounting reduced sick days by 30% after switching to our service..."
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">📱 Social Proof Tools</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li>Before/after photos on phone</li>
+                                    <li>Customer testimonial videos</li>
+                                    <li>List of local client businesses</li>
+                                    <li>EPA registration certificate</li>
+                                    <li>Industry certifications and awards</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="container psychology">
+            <div class="container psychology" onclick="toggleExpand(this)">
                 <div class="step-header">
                     <div class="step-number">⏰</div>
                     <div class="step-title">Scarcity & Urgency</div>
@@ -1552,9 +1707,50 @@
                     <li>Upcoming regulations</li>
                     <li>Competitor activity in area</li>
                 </ul>
+                
+                <div class="mobile-detail">
+                    <div class="mobile-detail-content">
+                        <h3>⏰ SCARCITY & URGENCY PSYCHOLOGY</h3>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">🎯 Scarcity Triggers</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li><strong>Limited Capacity:</strong> "Only 3 new clients this month"</li>
+                                    <li><strong>Geographic Limits:</strong> "First in this area to get this technology"</li>
+                                    <li><strong>Time Limits:</strong> "This pricing expires at month-end"</li>
+                                    <li><strong>Exclusive Access:</strong> "Not available to everyone yet"</li>
+                                    <li><strong>Growing Demand:</strong> "Waiting list is filling up"</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="script-examples">
+                            <div class="detail-title">⚡ Urgency Creation Scripts</div>
+                            <div class="detail-content">
+                                <strong>Seasonal Urgency:</strong> "With flu season starting, businesses are booking quickly..."<br><br>
+                                <strong>Regulatory Urgency:</strong> "New health codes take effect next month..."<br><br>
+                                <strong>Competitive Urgency:</strong> "Your competitor across the street just signed up..."
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">⚖️ Ethical Urgency Guidelines</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li>Base urgency on real constraints</li>
+                                    <li>Don't create false deadlines</li>
+                                    <li>Focus on benefits they'll miss</li>
+                                    <li>Use seasonal/natural urgency</li>
+                                    <li>Emphasize genuine scarcity</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="container psychology span-2">
+            <div class="container psychology span-2" onclick="toggleExpand(this)">
                 <div class="step-header">
                     <div class="step-number">🎯</div>
                     <div class="step-title">Commitment & Consistency</div>
@@ -1578,6 +1774,45 @@
                         <div class="close-technique">"Safer products are better?"</div>
                         <div class="close-technique">"EPA approval matters?"</div>
                         <div class="close-technique">"Ready to make the switch?"</div>
+                    </div>
+                </div>
+                
+                <div class="mobile-detail">
+                    <div class="mobile-detail-content">
+                        <h3>🎯 COMMITMENT & CONSISTENCY MASTERY</h3>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">🪜 The Commitment Ladder</div>
+                            <div class="detail-content">
+                                <strong>Step 1:</strong> Universal values ("Safety is important, right?")<br>
+                                <strong>Step 2:</strong> Their specific situation ("Your staff's health matters to you?")<br>
+                                <strong>Step 3:</strong> Problem recognition ("Chemical odors are concerning?")<br>
+                                <strong>Step 4:</strong> Solution desire ("You'd prefer safer alternatives?")<br>
+                                <strong>Step 5:</strong> Purchase commitment ("Ready to protect your business?")
+                            </div>
+                        </div>
+                        
+                        <div class="script-examples">
+                            <div class="detail-title">✅ Small Agreement Scripts</div>
+                            <div class="detail-content">
+                                <strong>Value Questions:</strong> "Would you agree that protecting your employees is a priority?"<br><br>
+                                <strong>Assumption Questions:</strong> "I'm sure you want the safest possible environment for your customers?"<br><br>
+                                <strong>Choice Questions:</strong> "If you could choose between safer and more toxic, you'd choose safer, right?"
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="detail-title">🔗 Consistency Triggers</div>
+                            <div class="detail-content">
+                                <ul class="tips-list">
+                                    <li>"Earlier you mentioned caring about staff safety..."</li>
+                                    <li>"You said time savings was important..."</li>
+                                    <li>"Since you value natural solutions..."</li>
+                                    <li>"You agreed EPA approval matters..."</li>
+                                    <li>"Based on what you told me about..."</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1733,6 +1968,25 @@
                 hamburger.classList.remove('active');
             }
         });
+
+        // Enhanced print functionality to show all expanded content
+        function expandAllForPrint() {
+            const containers = document.querySelectorAll('.container');
+            containers.forEach(container => {
+                container.classList.add('expanded');
+            });
+        }
+
+        // Listen for print events
+        window.addEventListener('beforeprint', expandAllForPrint);
+        
+        // Optional: Collapse after printing (if desired)
+        // window.addEventListener('afterprint', function() {
+        //     const containers = document.querySelectorAll('.container');
+        //     containers.forEach(container => {
+        //         container.classList.remove('expanded');
+        //     });
+        // });
     </script>
 </body>
 </html>
