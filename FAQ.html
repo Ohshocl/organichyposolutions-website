@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Disinfectant Comparison Guide | Organic HypoSolutions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -329,6 +330,86 @@
             margin-top: 1rem;
         }
 
+        .social-media-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .social-media-section h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            text-decoration: none;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .social-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .social-link i {
+            font-size: 1.3rem;
+        }
+
+        .social-link.facebook {
+            background: linear-gradient(135deg, #1877f2 0%, #166fe5 100%);
+            box-shadow: 0 4px 15px rgba(24, 119, 242, 0.3);
+        }
+
+        .social-link.facebook:hover {
+            box-shadow: 0 8px 25px rgba(24, 119, 242, 0.4);
+        }
+
+        .social-link.instagram {
+            background: linear-gradient(135deg, #E4405F 0%, #C13584 50%, #833AB4 100%);
+            box-shadow: 0 4px 15px rgba(228, 64, 95, 0.3);
+        }
+
+        .social-link.instagram:hover {
+            box-shadow: 0 8px 25px rgba(228, 64, 95, 0.4);
+        }
+
+        .social-link.linkedin {
+            background: linear-gradient(135deg, #0077b5 0%, #005885 100%);
+            box-shadow: 0 4px 15px rgba(0, 119, 181, 0.3);
+        }
+
+        .social-link.linkedin:hover {
+            box-shadow: 0 8px 25px rgba(0, 119, 181, 0.4);
+        }
+
+        .social-link.tiktok {
+            background: linear-gradient(135deg, #000000 0%, #333333 100%);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .social-link.tiktok:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
         /* Science Section Styles */
         .science-grid {
             display: grid;
@@ -346,6 +427,7 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
         }
 
         .science-card::before {
@@ -386,6 +468,71 @@
             color: #34495e;
             line-height: 1.7;
             font-size: 1rem;
+        }
+
+        .science-expand-icon {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 1.2rem;
+            color: #3498db;
+            transition: transform 0.3s ease;
+        }
+
+        .science-expanded .science-expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .science-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            margin-top: 1.5rem;
+            text-align: left;
+        }
+
+        .science-expanded .science-details {
+            max-height: 800px;
+        }
+
+        .science-detail-content {
+            background: rgba(255,255,255,0.8);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .science-detail-item {
+            margin-bottom: 1rem;
+        }
+
+        .science-detail-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .science-detail-label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .science-detail-value {
+            color: #34495e;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .patent-highlight {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
         }
 
         /* Comparison Table Styles */
@@ -638,11 +785,17 @@
                 print-color-adjust: exact;
             }
 
+            .social-media-section {
+                display: none;
+            }
+
             @page {
                 size: 8.5in 11in;
                 margin: 0.75in;
             }
         }
+
+        /* Hidden wisdom: "Human strength lies in the ability to change yourself." - Saitama */
     </style>
 </head>
 <body>
@@ -661,27 +814,87 @@
         <div class="content-section">
             <div class="section-header">The Science Behind Effective Sanitization</div>
             <div class="section-content">
+                <div class="patent-highlight">
+                    🌟 Exclusive Distribution: World's Only Patent Pending Organic Hypochlorous Solution 🌟
+                </div>
+                
                 <div class="science-grid">
-                    <div class="science-card">
+                    <div class="science-card" onclick="toggleScienceCard(this)">
+                        <div class="science-expand-icon">▼</div>
                         <div class="science-icon">🧬</div>
                         <h3>Your Body's Natural Defense</h3>
-                        <p>When your immune system detects harmful pathogens, white blood cells produce hypochlorous acid (HOCl) as your body's first line of defense. This same molecule, perfected by millions of years of evolution, can now be harnessed to protect your business with unparalleled safety and effectiveness.</p>
+                        <p>When your immune system detects harmful pathogens, white blood cells produce hypochlorous acid (HOCl) as your body's first line of defense. This same molecule, perfected by millions of years of evolution, can now be harnessed to protect your business.</p>
+                        
+                        <div class="science-details">
+                            <div class="science-detail-content">
+                                <div class="science-detail-item">
+                                    <div class="science-detail-label">Evolutionary Advantage:</div>
+                                    <div class="science-detail-value">HOCl has been optimized through millions of years of evolution as nature's perfect antimicrobial. Your white blood cells produce this exact molecule when fighting infections, making it inherently biocompatible and safe.</div>
+                                </div>
+                                <div class="science-detail-item">
+                                    <div class="science-detail-label">Molecular Precision:</div>
+                                    <div class="science-detail-value">Unlike harsh chemicals that destroy everything in their path, HOCl selectively targets harmful pathogens while leaving beneficial microorganisms and human tissue unharmed.</div>
+                                </div>
+                                <div class="science-detail-item">
+                                    <div class="science-detail-label">Patent Pending Innovation:</div>
+                                    <div class="science-detail-value">Our organic formulation represents breakthrough technology - the world's first and only patent pending organic hypochlorous solution, combining nature's intelligence with modern innovation.</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="science-card">
+                    
+                    <div class="science-card" onclick="toggleScienceCard(this)">
+                        <div class="science-expand-icon">▼</div>
                         <div class="science-icon">⚡</div>
                         <h3>Superior Speed & Efficacy</h3>
-                        <p>HOCl disrupts pathogen cell walls in seconds, not minutes. While traditional disinfectants work through harsh chemical reactions that take time, HOCl's molecular structure allows it to penetrate and eliminate threats 100 times faster than bleach, with zero toxic residue.</p>
+                        <p>HOCl disrupts pathogen cell walls in seconds, not minutes. While traditional disinfectants work through harsh chemical reactions that take time, HOCl's molecular structure allows it to penetrate and eliminate threats 100 times faster than bleach.</p>
+                        
+                        <div class="science-details">
+                            <div class="science-detail-content">
+                                <div class="science-detail-item">
+                                    <div class="science-detail-label">Rapid Kill Mechanism:</div>
+                                    <div class="science-detail-value">HOCl's neutral charge and small molecular size allow instant penetration of pathogen cell walls, disrupting cellular functions in 15-30 seconds versus 5-10 minutes for traditional disinfectants.</div>
+                                </div>
+                                <div class="science-detail-item">
+                                    <div class="science-detail-label">Broad Spectrum Efficacy:</div>
+                                    <div class="science-detail-value">Effective against bacteria, viruses, fungi, and spores - including COVID-19, MRSA, norovirus, and C. difficile. EPA testing confirms 99.9% kill rates across all pathogen categories.</div>
+                                </div>
+                                <div class="science-detail-item">
+                                    <div class="science-detail-label">No Resistance Development:</div>
+                                    <div class="science-detail-value">Unlike antibiotics and some chemical disinfectants, pathogens cannot develop resistance to HOCl because it attacks multiple cellular targets simultaneously.</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="science-card">
+                    
+                    <div class="science-card" onclick="toggleScienceCard(this)">
+                        <div class="science-expand-icon">▼</div>
                         <div class="science-icon">🛡️</div>
                         <h3>Triple Certification Standard</h3>
-                        <p>The only sanitization technology that holds EPA registration for surface disinfection, FDA approval for wound care, and USDA organic certification. This unprecedented triple approval demonstrates a level of safety and effectiveness that no traditional chemical can match.</p>
+                        <p>The only sanitization technology that holds EPA registration for surface disinfection, FDA approval for wound care, and USDA organic certification. This unprecedented triple approval demonstrates unmatched safety and effectiveness.</p>
+                        
+                        <div class="science-details">
+                            <div class="science-detail-content">
+                                <div class="science-detail-item">
+                                    <div class="science-detail-label">EPA Registration:</div>
+                                    <div class="science-detail-value">Officially approved for surface disinfection in commercial and residential settings. Meet all federal requirements for pathogen elimination while exceeding safety standards.</div>
+                                </div>
+                                <div class="science-detail-item">
+                                    <div class="science-detail-label">FDA Approval:</div>
+                                    <div class="science-detail-value">Cleared for direct wound care, eye irrigation, and medical device disinfection - the highest safety standard possible. No traditional chemical disinfectant can claim this level of human safety approval.</div>
+                                </div>
+                                <div class="science-detail-item">
+                                    <div class="science-detail-label">USDA Organic Certification:</div>
+                                    <div class="science-detail-value">Our patent pending organic formulation is certified by Oregon Tilth for use in organic food production, demonstrating environmental safety and natural compatibility.</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="highlight-box">
                     <h4>Why Leading Businesses Choose Advanced Sanitization</h4>
-                    <p>Progressive business owners recognize that traditional disinfectants were designed for a different era. Today's customers and employees expect environments that prioritize both safety and effectiveness. The science is clear: hypochlorous acid represents the evolution of sanitization technology, offering hospital-grade protection without the compromises of yesterday's chemicals.</p>
+                    <p>Progressive business owners recognize that traditional disinfectants were designed for a different era. Today's customers and employees expect environments that prioritize both safety and effectiveness. The science is clear: our patent pending organic hypochlorous acid represents the evolution of sanitization technology, offering hospital-grade protection without the compromises of yesterday's chemicals.</p>
                 </div>
             </div>
         </div>
@@ -1246,6 +1459,28 @@
                         <p>Salt Lake City, UT 84118</p>
                     </div>
                 </div>
+                
+                <div class="social-media-section">
+                    <h3>Connect With Us</h3>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/organichyposolutions" target="_blank" class="social-link facebook">
+                            <i class="fab fa-facebook-f"></i>
+                            <span>Facebook</span>
+                        </a>
+                        <a href="https://www.instagram.com/organichyposolutions" target="_blank" class="social-link instagram">
+                            <i class="fab fa-instagram"></i>
+                            <span>Instagram</span>
+                        </a>
+                        <a href="https://www.linkedin.com/company/organic-hyposolutions" target="_blank" class="social-link linkedin">
+                            <i class="fab fa-linkedin-in"></i>
+                            <span>LinkedIn</span>
+                        </a>
+                        <a href="https://www.tiktok.com/@organichyposolutions" target="_blank" class="social-link tiktok">
+                            <i class="fab fa-tiktok"></i>
+                            <span>TikTok</span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1259,6 +1494,10 @@
             item.classList.toggle('expanded');
         }
 
+        function toggleScienceCard(card) {
+            card.classList.toggle('science-expanded');
+        }
+
         // Mobile-friendly touch events
         if ('ontouchstart' in window) {
             document.addEventListener('touchstart', function() {}, false);
@@ -1270,12 +1509,18 @@
             document.querySelectorAll('.cleaner-card, .faq-item').forEach(item => {
                 item.classList.add('expanded');
             });
+            document.querySelectorAll('.science-card').forEach(item => {
+                item.classList.add('science-expanded');
+            });
         });
 
         // Optional: Collapse after printing (uncomment if desired)
         // window.addEventListener('afterprint', function() {
         //     document.querySelectorAll('.cleaner-card, .faq-item').forEach(item => {
         //         item.classList.remove('expanded');
+        //     });
+        //     document.querySelectorAll('.science-card').forEach(item => {
+        //         item.classList.remove('science-expanded');
         //     });
         // });
     </script>
