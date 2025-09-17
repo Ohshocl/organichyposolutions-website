@@ -720,78 +720,256 @@
             }
         }
 
-        /* Print Styles */
+        /* Print Styles - Condensed 2-Page Guide */
         @media print {
-            body {
-                background: white !important;
-                font-size: 12px;
-                line-height: 1.4;
-                color: black !important;
+            * {
+                box-shadow: none !important;
+                text-shadow: none !important;
             }
 
-            .header {
-                background: #2c3e50 !important;
-                color: white !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-                page-break-inside: avoid;
+            body {
+                background: white !important;
+                font-size: 10px !important;
+                line-height: 1.3 !important;
+                color: black !important;
+                margin: 0;
+                padding: 0;
+            }
+
+            .container {
+                max-width: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
             }
 
             .print-button {
                 display: none !important;
             }
 
+            /* Header - Compact */
+            .header {
+                background: #2c3e50 !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                padding: 0.5rem !important;
+                margin: 0 !important;
+                text-align: center;
+            }
+
+            .header h1 {
+                font-size: 18px !important;
+                margin: 0 !important;
+            }
+
+            .header p {
+                font-size: 12px !important;
+                margin: 0 !important;
+            }
+
+            /* Hide less critical sections for print */
+            .content-section:nth-of-type(1) .science-grid,
+            .content-section:nth-of-type(4),
+            .competitive-advantage,
+            .cta-inline,
+            .social-media-section {
+                display: none !important;
+            }
+
+            /* Compact Science Section */
+            .patent-highlight {
+                background: #f39c12 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                padding: 0.3rem !important;
+                margin: 0.3rem 0 !important;
+                font-size: 9px !important;
+                text-align: center;
+            }
+
             .content-section {
-                page-break-inside: avoid;
-                margin: 1rem 0;
-                box-shadow: none;
-                border: 1px solid #ddd;
-            }
-
-            .cleaner-card {
-                page-break-inside: avoid;
-                margin-bottom: 1rem;
-                border: 1px solid #ddd;
-            }
-
-            .cleaner-details {
-                max-height: none !important;
-                overflow: visible !important;
-            }
-
-            .faq-answer {
-                max-height: none !important;
-                overflow: visible !important;
-            }
-
-            .expand-icon {
-                display: none;
+                margin: 0.3rem 0 !important;
+                border-radius: 0 !important;
+                border: 1px solid #ddd !important;
             }
 
             .section-header {
                 background: #34495e !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                padding: 0.4rem 0.5rem !important;
+                font-size: 12px !important;
+                margin: 0 !important;
+            }
+
+            .section-content {
+                padding: 0.5rem !important;
+            }
+
+            /* Compact Comparison Table */
+            .comparison-table-container {
+                margin: 0.3rem 0 !important;
+                overflow: visible !important;
+            }
+
+            .comparison-table {
+                font-size: 8px !important;
+                width: 100% !important;
+            }
+
+            .comparison-table th,
+            .comparison-table td {
+                padding: 0.2rem 0.1rem !important;
+                border: 1px solid #ddd !important;
+            }
+
+            .comparison-table th {
+                background: #34495e !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                font-size: 8px !important;
+            }
+
+            .hocl-row {
+                background: #e8f5e8 !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
 
-            .highlight-box, .pros, .cons, .detail-item {
+            .table-note {
+                background: #f0f8ff !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+                padding: 0.3rem !important;
+                margin: 0.2rem 0 !important;
+                font-size: 8px !important;
             }
 
+            /* Hide detailed comparisons, keep only summary */
+            .comparison-grid {
+                display: none !important;
+            }
+
+            /* Compact FAQ - Only show first 3 questions */
+            .faq-item:nth-child(n+4) {
+                display: none !important;
+            }
+
+            .faq-item {
+                margin: 0.3rem 0 !important;
+                padding: 0.3rem 0 !important;
+                border-bottom: 1px solid #ddd !important;
+                page-break-inside: avoid;
+            }
+
+            .faq-question {
+                font-size: 10px !important;
+                font-weight: bold !important;
+                margin-bottom: 0.2rem !important;
+            }
+
+            .faq-question::before {
+                content: "Q: " !important;
+                font-size: 10px !important;
+            }
+
+            .faq-answer {
+                font-size: 9px !important;
+                line-height: 1.3 !important;
+                max-height: none !important;
+                overflow: visible !important;
+                padding-left: 0 !important;
+                margin-top: 0.2rem !important;
+            }
+
+            .expand-icon,
+            .science-expand-icon {
+                display: none !important;
+            }
+
+            /* Compact Contact Info */
             .contact-info {
                 background: #34495e !important;
+                color: white !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+                padding: 0.5rem !important;
+                page-break-inside: avoid;
             }
 
-            .social-media-section {
-                display: none;
+            .contact-info h2 {
+                font-size: 12px !important;
+                margin: 0 0 0.3rem 0 !important;
             }
 
+            .contact-grid {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 0.3rem !important;
+                margin: 0 !important;
+            }
+
+            .contact-grid h4 {
+                font-size: 9px !important;
+                margin: 0 0 0.2rem 0 !important;
+            }
+
+            .contact-grid p {
+                font-size: 8px !important;
+                margin: 0 0 0.1rem 0 !important;
+            }
+
+            /* Key Benefits Summary Box */
+            .highlight-box {
+                background: #f0f8ff !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                border-left: 3px solid #3498db !important;
+                padding: 0.4rem !important;
+                margin: 0.3rem 0 !important;
+                page-break-inside: avoid;
+            }
+
+            .highlight-box h4 {
+                font-size: 10px !important;
+                margin: 0 0 0.2rem 0 !important;
+                color: #2980b9 !important;
+            }
+
+            .highlight-box p {
+                font-size: 9px !important;
+                margin: 0 !important;
+            }
+
+            /* Force page breaks */
+            .content-section:nth-of-type(3) {
+                page-break-before: always !important;
+            }
+
+            /* Page setup */
             @page {
                 size: 8.5in 11in;
-                margin: 0.75in;
+                margin: 0.5in;
+            }
+
+            @page :first {
+                margin-top: 0.5in;
+            }
+
+            /* Print-specific science summary */
+            .content-section:first-of-type::after {
+                content: "🧬 Natural Defense: Your immune system produces HOCl naturally | ⚡ 100x Faster: 15-30 seconds vs 5-10 minutes for bleach | 🛡️ Triple Certified: EPA registered, FDA approved, USDA organic" !important;
+                display: block !important;
+                background: #e8f5e8 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                padding: 0.3rem !important;
+                margin: 0.3rem 0 !important;
+                font-size: 8px !important;
+                border: 1px solid #27ae60 !important;
+                border-radius: 3px !important;
             }
         }
 
