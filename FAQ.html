@@ -329,6 +329,190 @@
             margin-top: 1rem;
         }
 
+        /* Science Section Styles */
+        .science-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .science-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px solid #dee2e6;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .science-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .science-card:hover {
+            border-color: #3498db;
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(52, 152, 219, 0.2);
+        }
+
+        .science-card:hover::before {
+            left: 100%;
+        }
+
+        .science-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+        }
+
+        .science-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .science-card p {
+            color: #34495e;
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        /* Comparison Table Styles */
+        .comparison-table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-size: 0.9rem;
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            padding: 1rem 0.8rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .comparison-table td {
+            padding: 1rem 0.8rem;
+            text-align: center;
+            border-bottom: 1px solid #ecf0f1;
+            vertical-align: middle;
+        }
+
+        .comparison-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .hocl-row {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 100%);
+            border-left: 4px solid #27ae60;
+            font-weight: 500;
+        }
+
+        .hocl-row:hover {
+            background: linear-gradient(135deg, #dcedc8 0%, #e8f5e8 100%);
+        }
+
+        .excellent {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .good {
+            color: #2ecc71;
+            font-weight: 500;
+        }
+
+        .fair {
+            color: #f39c12;
+            font-weight: 500;
+        }
+
+        .poor {
+            color: #e74c3c;
+            font-weight: 500;
+        }
+
+        .table-note {
+            background: linear-gradient(135deg, #ebf3fd 0%, #e3f2fd 100%);
+            border-left: 4px solid #3498db;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+            color: #2c3e50;
+        }
+
+        .competitive-advantage {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .competitive-advantage::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .cta-inline {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            margin: 1.5rem 0;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+            font-weight: 600;
+        }
+
+        .cta-inline:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
         /* Mobile Optimizations */
         @media (max-width: 768px) {
             .header h1 {
@@ -351,6 +535,24 @@
                 padding: 1rem;
             }
 
+            .science-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .science-card {
+                padding: 1.5rem;
+            }
+
+            .comparison-table {
+                font-size: 0.8rem;
+            }
+
+            .comparison-table th,
+            .comparison-table td {
+                padding: 0.5rem 0.3rem;
+            }
+
             .print-button {
                 position: relative;
                 top: auto;
@@ -358,6 +560,16 @@
                 margin: 1rem auto;
                 display: block;
                 width: fit-content;
+            }
+
+            .competitive-advantage {
+                padding: 1.5rem;
+                margin: 1rem 0;
+            }
+
+            .competitive-advantage h3 {
+                font-size: 1.3rem;
+                margin-bottom: 1rem;
             }
         }
 
@@ -445,6 +657,116 @@
     </div>
 
     <div class="container">
+        <!-- Science Section -->
+        <div class="content-section">
+            <div class="section-header">The Science Behind Effective Sanitization</div>
+            <div class="section-content">
+                <div class="science-grid">
+                    <div class="science-card">
+                        <div class="science-icon">🧬</div>
+                        <h3>Your Body's Natural Defense</h3>
+                        <p>When your immune system detects harmful pathogens, white blood cells produce hypochlorous acid (HOCl) as your body's first line of defense. This same molecule, perfected by millions of years of evolution, can now be harnessed to protect your business with unparalleled safety and effectiveness.</p>
+                    </div>
+                    <div class="science-card">
+                        <div class="science-icon">⚡</div>
+                        <h3>Superior Speed & Efficacy</h3>
+                        <p>HOCl disrupts pathogen cell walls in seconds, not minutes. While traditional disinfectants work through harsh chemical reactions that take time, HOCl's molecular structure allows it to penetrate and eliminate threats 100 times faster than bleach, with zero toxic residue.</p>
+                    </div>
+                    <div class="science-card">
+                        <div class="science-icon">🛡️</div>
+                        <h3>Triple Certification Standard</h3>
+                        <p>The only sanitization technology that holds EPA registration for surface disinfection, FDA approval for wound care, and USDA organic certification. This unprecedented triple approval demonstrates a level of safety and effectiveness that no traditional chemical can match.</p>
+                    </div>
+                </div>
+                
+                <div class="highlight-box">
+                    <h4>Why Leading Businesses Choose Advanced Sanitization</h4>
+                    <p>Progressive business owners recognize that traditional disinfectants were designed for a different era. Today's customers and employees expect environments that prioritize both safety and effectiveness. The science is clear: hypochlorous acid represents the evolution of sanitization technology, offering hospital-grade protection without the compromises of yesterday's chemicals.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Comparison Table -->
+        <div class="content-section">
+            <div class="section-header">At-A-Glance Comparison</div>
+            <div class="section-content">
+                <div class="comparison-table-container">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Disinfectant</th>
+                                <th>Kill Time</th>
+                                <th>Safety Rating</th>
+                                <th>Residue</th>
+                                <th>Odor</th>
+                                <th>Food Safe</th>
+                                <th>PPE Required</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="hocl-row">
+                                <td><strong>Hypochlorous Acid</strong></td>
+                                <td class="excellent">15-30 sec</td>
+                                <td class="excellent">★★★★★</td>
+                                <td class="excellent">None</td>
+                                <td class="excellent">None</td>
+                                <td class="excellent">✓</td>
+                                <td class="excellent">✗</td>
+                            </tr>
+                            <tr>
+                                <td>Bleach</td>
+                                <td class="poor">5-10 min</td>
+                                <td class="poor">★★☆☆☆</td>
+                                <td class="poor">Chlorine</td>
+                                <td class="poor">Strong</td>
+                                <td class="poor">✗</td>
+                                <td class="poor">✓</td>
+                            </tr>
+                            <tr>
+                                <td>CaviCide</td>
+                                <td class="fair">1-3 min</td>
+                                <td class="fair">★★★☆☆</td>
+                                <td class="poor">Sticky</td>
+                                <td class="fair">Mild</td>
+                                <td class="poor">✗</td>
+                                <td class="fair">Gloves</td>
+                            </tr>
+                            <tr>
+                                <td>Isopropyl Alcohol</td>
+                                <td class="good">30-60 sec</td>
+                                <td class="fair">★★★☆☆</td>
+                                <td class="good">Minimal</td>
+                                <td class="poor">Strong</td>
+                                <td class="fair">Limited</td>
+                                <td class="fair">Ventilation</td>
+                            </tr>
+                            <tr>
+                                <td>Hydrogen Peroxide</td>
+                                <td class="fair">1-5 min</td>
+                                <td class="good">★★★★☆</td>
+                                <td class="good">None</td>
+                                <td class="good">Slight</td>
+                                <td class="good">✓</td>
+                                <td class="fair">Gloves</td>
+                            </tr>
+                            <tr>
+                                <td>Phenolic</td>
+                                <td class="fair">2-10 min</td>
+                                <td class="poor">★★☆☆☆</td>
+                                <td class="poor">Persistent</td>
+                                <td class="poor">Medical</td>
+                                <td class="poor">✗</td>
+                                <td class="poor">✓</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-note">
+                    <p><strong>Industry Analysis:</strong> Data compiled from EPA registrations, manufacturer specifications, and peer-reviewed studies. Hypochlorous acid consistently outperforms traditional alternatives across all critical metrics.</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Introduction -->
         <div class="content-section">
             <div class="section-header">Understanding Your Sanitization Options</div>
@@ -839,51 +1161,60 @@
 
         <!-- FAQ Section -->
         <div class="content-section">
-            <div class="section-header">Frequently Asked Questions</div>
+            <div class="section-header">Business Owner Questions & Expert Answers</div>
             <div class="section-content">
                 <div class="faq-section">
                     <div class="faq-item" onclick="toggleFAQ(this)">
-                        <div class="faq-question">Which disinfectant is most effective against COVID-19 and other viruses?</div>
+                        <div class="faq-question">How does switching to hypochlorous acid impact my bottom line?</div>
                         <div class="faq-answer">
-                            Hypochlorous acid (HOCl) has demonstrated superior efficacy against enveloped viruses like COVID-19, working in 15-30 seconds compared to several minutes for other disinfectants. EPA testing shows it's effective against a broader spectrum of pathogens than most alternatives, while being significantly safer for users and the environment.
+                            Beyond the obvious safety improvements, businesses typically see immediate operational benefits: 60-70% reduction in cleaning time, elimination of multiple chemical product purchases, reduced sick days among staff, and enhanced customer perception. Many clients report the time savings alone justify the investment within the first month, while the improved business reputation provides long-term value that's difficult to quantify but impossible to ignore.
                         </div>
                     </div>
 
                     <div class="faq-item" onclick="toggleFAQ(this)">
-                        <div class="faq-question">Why do some disinfectants require longer contact times?</div>
+                        <div class="faq-question">What gives me confidence that this actually works better than what I'm using now?</div>
                         <div class="faq-answer">
-                            Contact time reflects how long a disinfectant needs to remain on a surface to kill pathogens effectively. Bleach requires 5-10 minutes because it works through a slower chemical process. HOCl works faster because it's the same molecule your immune system uses - optimized by evolution for rapid pathogen elimination.
+                            The evidence is overwhelming: EPA kill-time studies show 15-30 second efficacy versus 5-10 minutes for bleach, FDA approval for direct wound contact (impossible with traditional disinfectants), and 30+ years of hospital use. But the real proof comes from businesses like yours - Kidstopia Daycare, local restaurants, and medical offices report dramatic improvements in inspection scores, customer feedback, and staff satisfaction after switching.
                         </div>
                     </div>
 
                     <div class="faq-item" onclick="toggleFAQ(this)">
-                        <div class="faq-question">What are the health concerns with traditional disinfectants?</div>
+                        <div class="faq-question">My customers and staff seem fine with our current cleaning - why change?</div>
                         <div class="faq-answer">
-                            Many conventional disinfectants contain quaternary ammonium compounds, chlorine compounds, or other chemicals that can cause respiratory irritation, skin sensitization, and other health issues with repeated exposure. Some studies link these chemicals to asthma, reproductive issues, and antimicrobial resistance when overused.
+                            "Fine" is yesterday's standard. Today's discerning customers notice everything - the absence of chemical odors, the fresh environment, the attention to their wellbeing. More importantly, you're protecting yourself from liability while positioning your business as forward-thinking and health-conscious. Smart business owners don't wait for problems; they prevent them while gaining competitive advantages.
                         </div>
                     </div>
 
                     <div class="faq-item" onclick="toggleFAQ(this)">
-                        <div class="faq-question">How do I choose the right disinfectant for my business?</div>
+                        <div class="faq-question">How quickly will I see results, and what should I expect?</div>
                         <div class="faq-answer">
-                            Consider your primary concerns: staff safety, customer comfort, environmental impact, effectiveness, and regulatory compliance. Food service operations need food-safe options, healthcare requires broad-spectrum efficacy, and public spaces benefit from odorless solutions. The ideal choice balances maximum protection with minimum risk.
+                            Results are immediate and noticeable. Day one: elimination of chemical odors and faster cleaning processes. Week one: staff report easier, more pleasant cleaning routines. Month one: visible time savings and often improved customer comments. Many businesses describe it as "finally having the clean environment they always wanted but didn't know was possible."
                         </div>
                     </div>
 
                     <div class="faq-item" onclick="toggleFAQ(this)">
-                        <div class="faq-question">What about cost considerations between different disinfectants?</div>
+                        <div class="faq-question">What happens if health inspectors or regulatory bodies have questions?</div>
                         <div class="faq-answer">
-                            While some traditional disinfectants appear less expensive per gallon, total cost includes application time, protective equipment, ventilation requirements, potential health impacts, and productivity losses. Faster-acting, safer solutions often prove more economical when all factors are considered.
+                            Inspectors consistently react positively to hypochlorous acid because it exceeds all requirements while demonstrating your commitment to cutting-edge safety. We provide complete EPA documentation, and many clients report their best inspection scores ever. Some inspectors even ask for our contact information to recommend to other businesses - a testament to both the technology and our professional approach.
                         </div>
                     </div>
 
                     <div class="faq-item" onclick="toggleFAQ(this)">
-                        <div class="faq-question">Are there regulatory differences between disinfectants?</div>
+                        <div class="faq-question">I've never heard of this technology - how do I know it's legitimate?</div>
                         <div class="faq-answer">
-                            Yes, EPA registration varies by product and intended use. Some disinfectants have restrictions in food preparation areas, around medical devices, or in specific industries. FDA approval for wound care (like HOCl has) indicates an even higher safety standard than basic EPA registration for surface disinfection.
+                            That's exactly why it represents such a competitive advantage. While others continue using century-old technology, you'll be implementing the same advanced sanitization used in leading hospitals worldwide. The triple certification (EPA/FDA/USDA Organic) provides unprecedented validation, and the growing adoption by premium brands and health-conscious businesses signals where the industry is heading.
                         </div>
                     </div>
                 </div>
+
+                <div class="competitive-advantage">
+                    <h3>The Smart Business Owner's Advantage</h3>
+                    <p>While your competitors deal with chemical complaints, safety concerns, and time-consuming cleaning routines, you'll offer customers a demonstrably superior experience. Position your business at the forefront of the health-conscious movement sweeping through every industry.</p>
+                </div>
+
+                <a href="tel:8017125663" class="cta-inline">
+                    📞 Discover Your Competitive Advantage - Call (801) 712-5663
+                </a>
             </div>
         </div>
 
