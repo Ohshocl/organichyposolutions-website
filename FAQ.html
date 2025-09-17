@@ -1,1 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disinfectant Comparison Guide | Organic HypoSolutions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .print-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .content-section {
+            background: white;
+            margin: 2rem 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            font-size: 1.5rem;
+            font-weight: 300;
+        }
+
+        .section-content {
+            padding: 2rem;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .cleaner-card {
+            border: 2px solid #ecf0f1;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .cleaner-card:hover {
+            border-color: #3498db;
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .cleaner-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .cleaner-icon {
+            font-size: 2.5rem;
+            margin-right: 1rem;
+            width: 60px;
+            text-align: center;
+        }
+
+        .cleaner-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .cleaner-subtitle {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .expand-icon {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.2rem;
+            color: #3498db;
+            transition: transform 0.3s ease;
+        }
+
+        .cleaner-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            margin-top: 1rem;
+        }
+
+        .cleaner-card.expanded .cleaner-details {
+            max-height: 1000px;
+        }
+
+        .cleaner-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .detail-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-value {
+            color: #34495e;
+            font-size: 0.9rem;
+        }
+
+        .safety-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .rating-stars {
+            color: #f39c12;
+        }
+
+        .rating-low { color: #e74c3c; }
+        .rating-medium { color: #f39c12; }
+        .rating-high { color: #27ae60; }
+
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .pros, .cons {
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .pros {
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+            border-left: 4px solid #27ae60;
+        }
+
+        .cons {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            border-left: 4px solid #e74c3c;
+        }
+
+        .pros h4, .cons h4 {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .pros h4 { color: #27ae60; }
+        .cons h4 { color: #e74c3c; }
+
+        .list-items {
+            list-style: none;
+            padding: 0;
+        }
+
+        .list-items li {
+            padding: 0.25rem 0;
+            position: relative;
+            padding-left: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .pros .list-items li::before {
+            content: "✓";
+            color: #27ae60;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .cons .list-items li::before {
+            content: "✗";
+            color: #e74c3c;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .faq-section {
+            margin-top: 2rem;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #ecf0f1;
+            padding: 1.5rem 0;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .faq-question:hover {
+            color: #3498db;
+        }
+
+        .faq-question::before {
+            content: "❓";
+            font-size: 1.2rem;
+        }
+
+        .faq-answer {
+            color: #34495e;
+            line-height: 1.7;
+            padding-left: 2.2rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .faq-item.expanded .faq-answer {
+            max-height: 500px;
+            margin-top: 1rem;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+            border-left: 4px solid #27ae60;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .highlight-box h4 {
+            color: #27ae60;
+            margin-bottom: 1rem;
+        }
+
+        .contact-info {
+            background: #34495e;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pros-cons {
+                grid-template-columns: 1fr;
+            }
+
+            .section-content {
+                padding: 1rem;
+            }
+
+            .print-button {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 1rem auto;
+                display: block;
+                width: fit-content;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white !important;
+                font-size: 12px;
+                line-height: 1.4;
+                color: black !important;
+            }
+
+            .header {
+                background: #2c3e50 !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                page-break-inside: avoid;
+            }
+
+            .print-button {
+                display: none !important;
+            }
+
+            .content-section {
+                page-break-inside: avoid;
+                margin: 1rem 0;
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+
+            .cleaner-card {
+                page-break-inside: avoid;
+                margin-bottom: 1rem;
+                border: 1px solid #ddd;
+            }
+
+            .cleaner-details {
+                max-height: none !important;
+                overflow: visible !important;
+            }
+
+            .faq-answer {
+                max-height: none !important;
+                overflow: visible !important;
+            }
+
+            .expand-icon {
+                display: none;
+            }
+
+            .section-header {
+                background: #34495e !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .highlight-box, .pros, .cons, .detail-item {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .contact-info {
+                background: #34495e !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            @page {
+                size: 8.5in 11in;
+                margin: 0.75in;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">🖨️ Print Guide</button>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="container">
+            <h1>Disinfectant Comparison Guide</h1>
+            <p>A comprehensive analysis of cleaning and sanitization methods</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Introduction -->
+        <div class="content-section">
+            <div class="section-header">Understanding Your Sanitization Options</div>
+            <div class="section-content">
+                <div class="highlight-box">
+                    <h4>🔬 The Science of Disinfection</h4>
+                    <p>Not all disinfectants are created equal. This guide compares the most common sanitization methods used in commercial settings, examining their effectiveness, safety profiles, and practical applications. Understanding these differences helps you make informed decisions about protecting your business, staff, and customers.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Cards -->
+        <div class="content-section">
+            <div class="section-header">Disinfectant Comparison</div>
+            <div class="section-content">
+                <div class="comparison-grid">
+                    <!-- Hypochlorous Acid -->
+                    <div class="cleaner-card" onclick="toggleDetails(this)">
+                        <div class="expand-icon">▼</div>
+                        <div class="cleaner-header">
+                            <div class="cleaner-icon">🛡️</div>
+                            <div>
+                                <div class="cleaner-title">Hypochlorous Acid (HOCl)</div>
+                                <div class="cleaner-subtitle">Natural immune system molecule</div>
+                            </div>
+                        </div>
+                        <div class="safety-rating">
+                            <span>Safety Rating:</span>
+                            <span class="rating-stars rating-high">★★★★★</span>
+                            <span class="rating-high">Excellent</span>
+                        </div>
+
+                        <div class="cleaner-details">
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <div class="detail-label">Kill Time</div>
+                                    <div class="detail-value">15-30 seconds</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Efficacy</div>
+                                    <div class="detail-value">99.9% kill rate</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Contact Time</div>
+                                    <div class="detail-value">No rinsing required</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Residue</div>
+                                    <div class="detail-value">None - breaks down to salt and water</div>
+                                </div>
+                            </div>
+
+                            <div class="pros-cons">
+                                <div class="pros">
+                                    <h4>Advantages</h4>
+                                    <ul class="list-items">
+                                        <li>EPA registered, FDA approved</li>
+                                        <li>Your body produces this naturally</li>
+                                        <li>100x faster than bleach</li>
+                                        <li>Safe around food and people</li>
+                                        <li>No toxic fumes or residue</li>
+                                        <li>Effective against all pathogens</li>
+                                        <li>No personal protective equipment needed</li>
+                                    </ul>
+                                </div>
+                                <div class="cons">
+                                    <h4>Considerations</h4>
+                                    <ul class="list-items">
+                                        <li>Must be generated fresh for optimal potency</li>
+                                        <li>Professional equipment recommended</li>
+                                        <li>Less familiar to general public</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bleach -->
+                    <div class="cleaner-card" onclick="toggleDetails(this)">
+                        <div class="expand-icon">▼</div>
+                        <div class="cleaner-header">
+                            <div class="cleaner-icon">⚠️</div>
+                            <div>
+                                <div class="cleaner-title">Sodium Hypochlorite (Bleach)</div>
+                                <div class="cleaner-subtitle">Traditional chlorine-based disinfectant</div>
+                            </div>
+                        </div>
+                        <div class="safety-rating">
+                            <span>Safety Rating:</span>
+                            <span class="rating-stars rating-low">★★☆☆☆</span>
+                            <span class="rating-low">Caution Required</span>
+                        </div>
+
+                        <div class="cleaner-details">
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <div class="detail-label">Kill Time</div>
+                                    <div class="detail-value">5-10 minutes</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Efficacy</div>
+                                    <div class="detail-value">Effective when properly diluted</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Contact Time</div>
+                                    <div class="detail-value">Often requires rinsing</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Residue</div>
+                                    <div class="detail-value">Chlorine residue and byproducts</div>
+                                </div>
+                            </div>
+
+                            <div class="pros-cons">
+                                <div class="pros">
+                                    <h4>Advantages</h4>
+                                    <ul class="list-items">
+                                        <li>Widely available and familiar</li>
+                                        <li>Low cost per gallon</li>
+                                        <li>Effective against most pathogens</li>
+                                        <li>Long shelf life when stored properly</li>
+                                    </ul>
+                                </div>
+                                <div class="cons">
+                                    <h4>Disadvantages</h4>
+                                    <ul class="list-items">
+                                        <li>Toxic fumes and vapors</li>
+                                        <li>Skin and respiratory irritation</li>
+                                        <li>Corrosive to surfaces and equipment</li>
+                                        <li>Creates harmful byproducts</li>
+                                        <li>Requires proper dilution and mixing</li>
+                                        <li>Cannot mix with other chemicals</li>
+                                        <li>Strong, unpleasant odor</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CaviCide -->
+                    <div class="cleaner-card" onclick="toggleDetails(this)">
+                        <div class="expand-icon">▼</div>
+                        <div class="cleaner-header">
+                            <div class="cleaner-icon">🧪</div>
+                            <div>
+                                <div class="cleaner-title">CaviCide</div>
+                                <div class="cleaner-subtitle">Quaternary ammonium compound</div>
+                            </div>
+                        </div>
+                        <div class="safety-rating">
+                            <span>Safety Rating:</span>
+                            <span class="rating-stars rating-medium">★★★☆☆</span>
+                            <span class="rating-medium">Moderate</span>
+                        </div>
+
+                        <div class="cleaner-details">
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <div class="detail-label">Kill Time</div>
+                                    <div class="detail-value">1-3 minutes</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Efficacy</div>
+                                    <div class="detail-value">Broad spectrum antimicrobial</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Contact Time</div>
+                                    <div class="detail-value">Surface must remain wet</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Residue</div>
+                                    <div class="detail-value">Leaves surfactant residue</div>
+                                </div>
+                            </div>
+
+                            <div class="pros-cons">
+                                <div class="pros">
+                                    <h4>Advantages</h4>
+                                    <ul class="list-items">
+                                        <li>Ready-to-use formulation</li>
+                                        <li>Popular in medical settings</li>
+                                        <li>Effective against many pathogens</li>
+                                        <li>No mixing required</li>
+                                        <li>Relatively stable</li>
+                                    </ul>
+                                </div>
+                                <div class="cons">
+                                    <h4>Disadvantages</h4>
+                                    <ul class="list-items">
+                                        <li>Contains toxic quaternary ammonium</li>
+                                        <li>Can cause skin sensitization</li>
+                                        <li>Respiratory irritant</li>
+                                        <li>Leaves sticky residue</li>
+                                        <li>Not effective against all viruses</li>
+                                        <li>Environmental persistence concerns</li>
+                                        <li>Higher cost per application</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Isopropyl Alcohol -->
+                    <div class="cleaner-card" onclick="toggleDetails(this)">
+                        <div class="expand-icon">▼</div>
+                        <div class="cleaner-header">
+                            <div class="cleaner-icon">🍷</div>
+                            <div>
+                                <div class="cleaner-title">Isopropyl Alcohol</div>
+                                <div class="cleaner-subtitle">70% alcohol solution</div>
+                            </div>
+                        </div>
+                        <div class="safety-rating">
+                            <span>Safety Rating:</span>
+                            <span class="rating-stars rating-medium">★★★☆☆</span>
+                            <span class="rating-medium">Moderate</span>
+                        </div>
+
+                        <div class="cleaner-details">
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <div class="detail-label">Kill Time</div>
+                                    <div class="detail-value">30 seconds to 1 minute</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Efficacy</div>
+                                    <div class="detail-value">Good against bacteria and viruses</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Contact Time</div>
+                                    <div class="detail-value">Evaporates quickly</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Residue</div>
+                                    <div class="detail-value">Minimal, evaporates</div>
+                                </div>
+                            </div>
+
+                            <div class="pros-cons">
+                                <div class="pros">
+                                    <h4>Advantages</h4>
+                                    <ul class="list-items">
+                                        <li>Fast acting</li>
+                                        <li>Evaporates without residue</li>
+                                        <li>Readily available</li>
+                                        <li>Good for small surface areas</li>
+                                        <li>Non-corrosive to most materials</li>
+                                    </ul>
+                                </div>
+                                <div class="cons">
+                                    <h4>Disadvantages</h4>
+                                    <ul class="list-items">
+                                        <li>Flammable and volatile</li>
+                                        <li>Can dry out skin</li>
+                                        <li>Strong vapors</li>
+                                        <li>Not effective against all spores</li>
+                                        <li>Evaporates too quickly on large surfaces</li>
+                                        <li>Can damage some plastics</li>
+                                        <li>Fire hazard during application</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hydrogen Peroxide -->
+                    <div class="cleaner-card" onclick="toggleDetails(this)">
+                        <div class="expand-icon">▼</div>
+                        <div class="cleaner-header">
+                            <div class="cleaner-icon">💨</div>
+                            <div>
+                                <div class="cleaner-title">Hydrogen Peroxide</div>
+                                <div class="cleaner-subtitle">Oxidizing disinfectant</div>
+                            </div>
+                        </div>
+                        <div class="safety-rating">
+                            <span>Safety Rating:</span>
+                            <span class="rating-stars rating-medium">★★★★☆</span>
+                            <span class="rating-medium">Good</span>
+                        </div>
+
+                        <div class="cleaner-details">
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <div class="detail-label">Kill Time</div>
+                                    <div class="detail-value">1-5 minutes</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Efficacy</div>
+                                    <div class="detail-value">Broad spectrum, including spores</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Contact Time</div>
+                                    <div class="detail-value">Requires wet contact time</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Residue</div>
+                                    <div class="detail-value">Breaks down to water and oxygen</div>
+                                </div>
+                            </div>
+
+                            <div class="pros-cons">
+                                <div class="pros">
+                                    <h4>Advantages</h4>
+                                    <ul class="list-items">
+                                        <li>Environmentally friendly breakdown</li>
+                                        <li>Effective against spores</li>
+                                        <li>No toxic residue</li>
+                                        <li>Good whitening action</li>
+                                        <li>Stable in proper concentrations</li>
+                                    </ul>
+                                </div>
+                                <div class="cons">
+                                    <h4>Disadvantages</h4>
+                                    <ul class="list-items">
+                                        <li>Can be corrosive at higher concentrations</li>
+                                        <li>Unstable in light and heat</li>
+                                        <li>Can bleach fabrics and surfaces</li>
+                                        <li>Eye and skin irritant</li>
+                                        <li>Requires careful storage</li>
+                                        <li>Can damage certain materials</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phenolic Compounds -->
+                    <div class="cleaner-card" onclick="toggleDetails(this)">
+                        <div class="expand-icon">▼</div>
+                        <div class="cleaner-header">
+                            <div class="cleaner-icon">☠️</div>
+                            <div>
+                                <div class="cleaner-title">Phenolic Compounds</div>
+                                <div class="cleaner-subtitle">Carbolic acid derivatives</div>
+                            </div>
+                        </div>
+                        <div class="safety-rating">
+                            <span>Safety Rating:</span>
+                            <span class="rating-stars rating-low">★★☆☆☆</span>
+                            <span class="rating-low">Use with Caution</span>
+                        </div>
+
+                        <div class="cleaner-details">
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <div class="detail-label">Kill Time</div>
+                                    <div class="detail-value">2-10 minutes</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Efficacy</div>
+                                    <div class="detail-value">Good against bacteria and viruses</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Contact Time</div>
+                                    <div class="detail-value">Requires extended contact</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Residue</div>
+                                    <div class="detail-value">Persistent chemical residue</div>
+                                </div>
+                            </div>
+
+                            <div class="pros-cons">
+                                <div class="pros">
+                                    <h4>Advantages</h4>
+                                    <ul class="list-items">
+                                        <li>Remains active in organic matter</li>
+                                        <li>Long-lasting antimicrobial effect</li>
+                                        <li>Effective against TB bacteria</li>
+                                        <li>Stable in storage</li>
+                                    </ul>
+                                </div>
+                                <div class="cons">
+                                    <h4>Disadvantages</h4>
+                                    <ul class="list-items">
+                                        <li>Highly toxic to humans and animals</li>
+                                        <li>Strong, medicinal odor</li>
+                                        <li>Skin absorption concerns</li>
+                                        <li>Environmental persistence</li>
+                                        <li>Can cause tissue damage</li>
+                                        <li>Restricted use in many settings</li>
+                                        <li>Requires special disposal</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="content-section">
+            <div class="section-header">Frequently Asked Questions</div>
+            <div class="section-content">
+                <div class="faq-section">
+                    <div class="faq-item" onclick="toggleFAQ(this)">
+                        <div class="faq-question">Which disinfectant is most effective against COVID-19 and other viruses?</div>
+                        <div class="faq-answer">
+                            Hypochlorous acid (HOCl) has demonstrated superior efficacy against enveloped viruses like COVID-19, working in 15-30 seconds compared to several minutes for other disinfectants. EPA testing shows it's effective against a broader spectrum of pathogens than most alternatives, while being significantly safer for users and the environment.
+                        </div>
+                    </div>
+
+                    <div class="faq-item" onclick="toggleFAQ(this)">
+                        <div class="faq-question">Why do some disinfectants require longer contact times?</div>
+                        <div class="faq-answer">
+                            Contact time reflects how long a disinfectant needs to remain on a surface to kill pathogens effectively. Bleach requires 5-10 minutes because it works through a slower chemical process. HOCl works faster because it's the same molecule your immune system uses - optimized by evolution for rapid pathogen elimination.
+                        </div>
+                    </div>
+
+                    <div class="faq-item" onclick="toggleFAQ(this)">
+                        <div class="faq-question">What are the health concerns with traditional disinfectants?</div>
+                        <div class="faq-answer">
+                            Many conventional disinfectants contain quaternary ammonium compounds, chlorine compounds, or other chemicals that can cause respiratory irritation, skin sensitization, and other health issues with repeated exposure. Some studies link these chemicals to asthma, reproductive issues, and antimicrobial resistance when overused.
+                        </div>
+                    </div>
+
+                    <div class="faq-item" onclick="toggleFAQ(this)">
+                        <div class="faq-question">How do I choose the right disinfectant for my business?</div>
+                        <div class="faq-answer">
+                            Consider your primary concerns: staff safety, customer comfort, environmental impact, effectiveness, and regulatory compliance. Food service operations need food-safe options, healthcare requires broad-spectrum efficacy, and public spaces benefit from odorless solutions. The ideal choice balances maximum protection with minimum risk.
+                        </div>
+                    </div>
+
+                    <div class="faq-item" onclick="toggleFAQ(this)">
+                        <div class="faq-question">What about cost considerations between different disinfectants?</div>
+                        <div class="faq-answer">
+                            While some traditional disinfectants appear less expensive per gallon, total cost includes application time, protective equipment, ventilation requirements, potential health impacts, and productivity losses. Faster-acting, safer solutions often prove more economical when all factors are considered.
+                        </div>
+                    </div>
+
+                    <div class="faq-item" onclick="toggleFAQ(this)">
+                        <div class="faq-question">Are there regulatory differences between disinfectants?</div>
+                        <div class="faq-answer">
+                            Yes, EPA registration varies by product and intended use. Some disinfectants have restrictions in food preparation areas, around medical devices, or in specific industries. FDA approval for wound care (like HOCl has) indicates an even higher safety standard than basic EPA registration for surface disinfection.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="contact-info">
+            <div class="container">
+                <h2>Learn More About Safer Sanitization</h2>
+                <div class="contact-grid">
+                    <div>
+                        <h4>📞 Phone</h4>
+                        <p>(801) 712-5663</p>
+                        <p>Monday-Friday: 8AM-6PM</p>
+                        <p>Saturday: 9AM-5PM</p>
+                    </div>
+                    <div>
+                        <h4>✉️ Email</h4>
+                        <p>ohshocl@gmail.com</p>
+                        <p>Response within 2 hours during business hours</p>
+                    </div>
+                    <div>
+                        <h4>📍 Service Area</h4>
+                        <p>Salt Lake City & surrounding areas</p>
+                        <p>25-mile primary radius</p>
+                        <p>Extended service to 60 miles</p>
+                    </div>
+                    <div>
+                        <h4>🏢 Address</h4>
+                        <p>5842 Crest Flower Way</p>
+                        <p>Salt Lake City, UT 84118</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleDetails(card) {
+            card.classList.toggle('expanded');
+        }
+
+        function toggleFAQ(item) {
+            item.classList.toggle('expanded');
+        }
+
+        // Mobile-friendly touch events
+        if ('ontouchstart' in window) {
+            document.addEventListener('touchstart', function() {}, false);
+        }
+
+        // Print preparation
+        window.addEventListener('beforeprint', function() {
+            // Expand all details for printing
+            document.querySelectorAll('.cleaner-card, .faq-item').forEach(item => {
+                item.classList.add('expanded');
+            });
+        });
+
+        // Optional: Collapse after printing (uncomment if desired)
+        // window.addEventListener('afterprint', function() {
+        //     document.querySelectorAll('.cleaner-card, .faq-item').forEach(item => {
+        //         item.classList.remove('expanded');
+        //     });
+        // });
+    </script>
+</body>
+</html>
