@@ -94,100 +94,6 @@
             }
         }
 
-        /* Expandable Service Cards */
-        .expandable-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-            margin-bottom: 2rem;
-        }
-
-        .expandable-card .card-header {
-            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
-            border-bottom: 3px solid var(--primary-blue);
-            position: relative;
-        }
-
-        .expandable-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
-        }
-
-        .expand-icon {
-            position: absolute;
-            right: 1.5rem;
-            top: 50%;
-            transform: translateY(-50%);
-            transition: transform 0.3s ease;
-            color: var(--primary-blue);
-            font-size: 1.2rem;
-        }
-
-        .expand-icon.rotated {
-            transform: translateY(-50%) rotate(180deg);
-        }
-
-        .expandable-content {
-            display: none;
-        }
-
-        .expandable-content.expanded {
-            display: block;
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                max-height: 0;
-            }
-            to {
-                opacity: 1;
-                max-height: 2000px;
-            }
-        }
-
-        /* SDS Comparison Styling */
-        .sds-comparison {
-            background: linear-gradient(135deg, #fff5f5, #fef2f2);
-            border: 2px solid #fca5a5;
-            border-radius: 15px;
-            padding: 2rem;
-            margin: 2rem 0;
-        }
-
-        .sds-safe {
-            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
-            border: 2px solid #86efac;
-        }
-
-        .hazard-symbol {
-            width: 60px;
-            height: 60px;
-            margin: 0.5rem;
-            border: 2px solid #dc2626;
-            border-radius: 10px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: #dc2626;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .safety-symbol {
-            width: 60px;
-            height: 60px;
-            margin: 0.5rem;
-            border: 2px solid #16a34a;
-            border-radius: 10px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: #16a34a;
-            font-weight: bold;
-            font-size: 1.5rem;
-        }
-
         /* PROMOTIONAL BANNER STYLING */
         .promo-banner {
             background: linear-gradient(45deg, #4ADE80, #22C55E);
@@ -339,20 +245,73 @@
             z-index: 2;
         }
 
-        /* SERVICE CARDS */
+        /* SERVICE CARDS WITH HOVER EXPANSION */
         .service-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            height: 100%;
+            transition: all 0.3s ease;
+            height: auto;
             border: none;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             border-radius: 15px;
             overflow: hidden;
             background: white;
+            cursor: pointer;
+            position: relative;
         }
 
         .service-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .service-card .card-body {
+            position: relative;
+            padding: 2rem !important;
+        }
+
+        .expand-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .service-card:hover .expand-content,
+        .service-card.mobile-expanded .expand-content {
+            max-height: 500px;
+            opacity: 1;
+            margin-top: 1rem;
+        }
+
+        .expand-indicator {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            background: var(--primary-blue);
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover .expand-indicator {
+            transform: rotate(180deg);
+            background: var(--primary-green);
+        }
+
+        /* Mobile tap functionality */
+        @media (max-width: 768px) {
+            .service-card {
+                cursor: pointer;
+            }
+            
+            .expand-indicator {
+                display: flex;
+            }
         }
 
         .price-highlight {
@@ -435,6 +394,48 @@
             font-size: 0.85rem;
             margin: 0.2rem;
             display: inline-block;
+        }
+
+        /* SDS Comparison Styling */
+        .sds-comparison {
+            background: linear-gradient(135deg, #fff5f5, #fef2f2);
+            border: 2px solid #fca5a5;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .sds-safe {
+            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+            border: 2px solid #86efac;
+        }
+
+        .hazard-symbol {
+            width: 60px;
+            height: 60px;
+            margin: 0.5rem;
+            border: 2px solid #dc2626;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #dc2626;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .safety-symbol {
+            width: 60px;
+            height: 60px;
+            margin: 0.5rem;
+            border: 2px solid #16a34a;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #16a34a;
+            font-weight: bold;
+            font-size: 1.5rem;
         }
 
         /* FOOTER STYLING FROM STANDARD TEMPLATE */
@@ -611,6 +612,10 @@
                 margin: 0.5rem 0;
                 padding: 1.5rem;
             }
+
+            .service-card .card-body {
+                padding: 1.5rem !important;
+            }
         }
 
         @media (max-width: 991.98px) {
@@ -625,11 +630,13 @@
     <div class="floating-toc">
         <h6><i class="fas fa-list"></i> Quick Navigation</h6>
         <ul>
-            <li><a href="#food-processing"><i class="fas fa-industry"></i> Food Processing</a></li>
+            <li><a href="#services-overview"><i class="fas fa-spray-can"></i> Our Services</a></li>
             <li><a href="#sds-comparison"><i class="fas fa-shield-alt"></i> Safety Comparison</a></li>
-            <li><a href="#services-overview"><i class="fas fa-spray-can"></i> Services Overview</a></li>
+            <li><a href="#business-hours"><i class="fas fa-clock"></i> Business Hours</a></li>
             <li><a href="#subscription-programs"><i class="fas fa-calendar-alt"></i> Subscriptions</a></li>
+            <li><a href="#service-area"><i class="fas fa-map-marker-alt"></i> Service Area</a></li>
             <li><a href="#service-process"><i class="fas fa-cogs"></i> Our Process</a></li>
+            <li><a href="#equipment-standards"><i class="fas fa-tools"></i> Equipment</a></li>
             <li><a href="#certifications"><i class="fas fa-certificate"></i> Certifications</a></li>
         </ul>
     </div>
@@ -763,163 +770,221 @@
         </div>
     </section>
 
-    <!-- Food Processing Services Section -->
-    <section id="food-processing" class="py-5 bg-light">
+    <!-- Services Overview - Reorganized with 3 Main Categories -->
+    <section id="services-overview" class="py-5">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="display-5 fw-bold">Food Processing & Manufacturing Sanitization</h2>
-                <p class="lead">SSOP-compliant solutions that enhance your existing procedures without disruption</p>
+                <h2 class="display-5 fw-bold">Our Professional Sanitization Services</h2>
+                <p class="lead">Three specialized service categories covering all sanitization needs throughout Utah</p>
             </div>
+            
+            <div class="row">
+                <!-- Food Processing & Manufacturing -->
+                <div class="col-lg-4 mb-4">
+                    <div class="service-card" onclick="toggleMobileExpand(this)">
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <div class="display-4 text-warning">🏭</div>
+                                <h3 class="card-title fw-bold">Food Processing & Manufacturing</h3>
+                            </div>
+                            <p class="card-text">SSOP-compliant solutions that enhance your existing procedures. Replace KC-644 and harsh chemicals with USDA Organic HOCl.</p>
+                            
+                            <h6 class="fw-bold mt-3">Specialized For:</h6>
+                            <ul class="list-unstyled">
+                                <li>✅ Meat Packing Plants</li>
+                                <li>✅ Poultry Processing</li>
+                                <li>✅ Ready-to-Eat Facilities</li>
+                                <li>✅ Produce Packing</li>
+                            </ul>
 
-            <!-- SSOP Integration Card -->
-            <div class="card expandable-card" onclick="toggleContent('ssop-integration')">
-                <div class="card-header">
-                    <h3 class="mb-2"><i class="fas fa-clipboard-check text-primary"></i> SSOP Enhancement Program</h3>
-                    <p class="mb-0 text-muted">Replace KC-644 and harsh chemicals with USDA Organic HOCl - We enhance your procedures, not change them</p>
-                    <i class="fas fa-chevron-down expand-icon" id="ssop-integration-icon"></i>
-                </div>
-                <div class="card-body expandable-content" id="ssop-integration-content">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <h5 class="fw-bold text-primary">Pre-Operational Procedures</h5>
-                            <ul class="list-unstyled">
-                                <li>✅ Food contact surface preparation at 250+ PPM</li>
-                                <li>✅ No-rinse required - FDA FCN 1811 approved</li>
-                                <li>✅ ATP testing targets: <50 RLU high-risk surfaces</li>
-                                <li>✅ Replace harsh chemicals with organic solutions</li>
-                                <li>✅ Reduced PPE requirements</li>
-                                <li>✅ Eliminate chemical exposure risks</li>
-                            </ul>
-                            
-                            <h5 class="fw-bold text-primary mt-4">Operational Procedures</h5>
-                            <ul class="list-unstyled">
-                                <li>✅ Real-time sanitization during production</li>
-                                <li>✅ Cross-contamination prevention</li>
-                                <li>✅ Equipment changeover sanitization</li>
-                                <li>✅ Safe for workers - no evacuation needed</li>
-                                <li>✅ Reduce sick time and recovery periods</li>
-                            </ul>
-                        </div>
-                        <div class="col-lg-6">
-                            <h5 class="fw-bold text-primary">Post-Operational Procedures</h5>
-                            <ul class="list-unstyled">
-                                <li>✅ Deep cleaning enhancement</li>
-                                <li>✅ 5-log reduction (99.999% kill rate)</li>
-                                <li>✅ Complete pathogen elimination</li>
-                                <li>✅ Environmental monitoring support</li>
-                                <li>✅ Validation testing included</li>
-                            </ul>
-                            
-                            <div class="quality-standard mt-4">
-                                <h6 class="fw-bold">Regulatory Compliance</h6>
-                                <div class="row">
+                            <div class="expand-content">
+                                <h6 class="fw-bold text-primary">Enhanced SSOP Process:</h6>
+                                <ul class="list-unstyled">
+                                    <li>✅ Rinse → Clean → Rinse → HOCl Sanitize</li>
+                                    <li>✅ No-rinse required - FDA FCN 1811 approved</li>
+                                    <li>✅ Reduced PPE requirements</li>
+                                    <li>✅ Eliminate chemical exposure risks</li>
+                                    <li>✅ Reduce sick time and recovery periods</li>
+                                    <li>✅ ATP testing targets: <50 RLU high-risk surfaces</li>
+                                </ul>
+                                
+                                <h6 class="fw-bold text-primary">Regulatory Compliance:</h6>
+                                <div class="mb-3">
+                                    <span class="certification-badge">USDA FSIS 9 CFR 416</span>
+                                    <span class="certification-badge">FDA 21 CFR 117</span>
+                                    <span class="certification-badge">FSMA Compliant</span>
+                                    <span class="certification-badge">HACCP Ready</span>
+                                </div>
+                                
+                                <h6 class="fw-bold">Service Pricing:</h6>
+                                <div class="row g-2 mb-3">
                                     <div class="col-6">
-                                        <span class="certification-badge">USDA FSIS 9 CFR 416</span>
-                                        <span class="certification-badge">FDA 21 CFR 117</span>
+                                        <div class="price-highlight">$0.06-$0.12/sq ft*</div>
+                                        <small class="text-muted">Processing facilities</small>
                                     </div>
                                     <div class="col-6">
-                                        <span class="certification-badge">FSMA Compliant</span>
-                                        <span class="certification-badge">HACCP Ready</span>
+                                        <div class="price-highlight">Volume Discounts*</div>
+                                        <small class="text-muted">50,000+ sq ft</small>
                                     </div>
                                 </div>
+                                
+                                <div class="text-center">
+                                    <a href="calculator.html" class="btn btn-warning">Get Processing Quote</a>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-4 p-3 bg-light rounded">
-                        <h6 class="fw-bold">Service Pricing - Food Processing Facilities</h6>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="price-highlight">$0.06-$0.10/sq ft</div>
-                                <small>Standard processing</small>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="price-highlight">$0.08-$0.12/sq ft</div>
-                                <small>High-risk areas</small>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="price-highlight">$0.05/sq ft</div>
-                                <small>Volume 50,000+ sq ft</small>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="price-highlight">Custom Quotes</div>
-                                <small>24/7 operations</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Facility-Specific Services -->
-            <div class="card expandable-card" onclick="toggleContent('facility-specific')">
-                <div class="card-header">
-                    <h3 class="mb-2"><i class="fas fa-industry text-success"></i> Facility-Specific Protocols</h3>
-                    <p class="mb-0 text-muted">Tailored sanitization for meat packing, poultry, ready-to-eat, and produce facilities</p>
-                    <i class="fas fa-chevron-down expand-icon" id="facility-specific-icon"></i>
+                            <div class="expand-indicator">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body expandable-content" id="facility-specific-content">
-                    <div class="row">
-                        <div class="col-lg-6 mb-4">
-                            <div class="quality-standard">
-                                <h5 class="fw-bold text-danger">🥩 Meat Packing Plants</h5>
-                                <p><strong>Challenge:</strong> E. coli O157:H7 zero-tolerance, heavy organic soil loads</p>
-                                <p><strong>Our Enhanced Process:</strong></p>
-                                <ul>
-                                    <li>Rinse → Clean → Rinse → HOCl Sanitize sequence</li>
-                                    <li>Carcass splitting station protocols</li>
-                                    <li>Chiller system sanitization (32-40°F)</li>
-                                    <li>Blood collection system treatment</li>
-                                    <li>USDA daily inspection compliance</li>
+
+                <!-- Commercial & Healthcare -->
+                <div class="col-lg-4 mb-4">
+                    <div class="service-card" onclick="toggleMobileExpand(this)">
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <div class="display-4 text-primary">🏢</div>
+                                <h3 class="card-title fw-bold">Commercial & Healthcare</h3>
+                            </div>
+                            <p class="card-text">Professional sanitization for businesses using EPA registered and USDA Organic certified products for maximum efficacy and compliance.</p>
+                            
+                            <h6 class="fw-bold mt-3">Target Industries:</h6>
+                            <ul class="list-unstyled">
+                                <li>✅ Healthcare Facilities</li>
+                                <li>✅ Schools & Daycare Centers</li>
+                                <li>✅ Restaurants & Food Service</li>
+                                <li>✅ Gyms & Fitness Centers</li>
+                            </ul>
+
+                            <div class="expand-content">
+                                <h6 class="fw-bold">Additional Industries:</h6>
+                                <ul class="list-unstyled">
+                                    <li>✅ Offices & Workplaces</li>
+                                    <li>✅ Hotels & Hospitality</li>
+                                    <li>✅ Retail Establishments</li>
+                                    <li>✅ Transportation Facilities</li>
+                                    <li>✅ Event Venues</li>
+                                    <li>✅ Religious Facilities</li>
                                 </ul>
-                                <span class="price-highlight">$0.08-$0.12/sq ft</span>
+                                
+                                <h6 class="fw-bold">Service Options:</h6>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-4">
+                                        <div class="text-center">
+                                            <span class="subscription-highlight d-block">Same-Day</span>
+                                            <strong>+25%*</strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="text-center">
+                                            <span class="subscription-highlight d-block">Weekend</span>
+                                            <strong>+30%*</strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="text-center">
+                                            <span class="subscription-highlight d-block">After Hours</span>
+                                            <strong>Available</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <h6 class="fw-bold">Service Pricing:</h6>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <div class="price-highlight">$0.08-$0.13/sq ft*</div>
+                                        <small class="text-muted">Base commercial rate</small>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="price-highlight">$150 Minimum*</div>
+                                        <small class="text-muted">Per service</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <a href="calculator.html" class="btn btn-primary">Calculate Quote</a>
+                                </div>
+                            </div>
+
+                            <div class="expand-indicator">
+                                <i class="fas fa-plus"></i>
                             </div>
                         </div>
-                        
-                        <div class="col-lg-6 mb-4">
-                            <div class="quality-standard">
-                                <h5 class="fw-bold text-warning">🐔 Poultry Facilities</h5>
-                                <p><strong>Challenge:</strong> Salmonella and Campylobacter management</p>
-                                <p><strong>Our Enhanced Process:</strong></p>
-                                <ul>
-                                    <li>Scalding tank water treatment integration</li>
-                                    <li>Defeathering equipment sanitization</li>
-                                    <li>Evisceration line protocols</li>
-                                    <li>Chiller water enhancement with HOCl</li>
-                                    <li>Condensation control systems</li>
-                                </ul>
-                                <span class="price-highlight">$0.07-$0.11/sq ft</span>
+                    </div>
+                </div>
+
+                <!-- Residential Services -->
+                <div class="col-lg-4 mb-4">
+                    <div class="service-card" onclick="toggleMobileExpand(this)">
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <div class="display-4 text-success">🏠</div>
+                                <h3 class="card-title fw-bold">Residential Sanitization</h3>
                             </div>
-                        </div>
-                        
-                        <div class="col-lg-6 mb-4">
-                            <div class="quality-standard">
-                                <h5 class="fw-bold text-info">🍖 Ready-to-Eat Facilities</h5>
-                                <p><strong>Challenge:</strong> Zero-tolerance Listeria monocytogenes</p>
-                                <p><strong>Our Enhanced Process:</strong></p>
-                                <ul>
-                                    <li>Zone concept implementation with HOCl</li>
-                                    <li>Environmental monitoring support</li>
-                                    <li>Sanitizer rotation with organic solutions</li>
-                                    <li>Positive air pressure maintenance</li>
-                                    <li>Hygienic zoning compliance</li>
+                            <p class="card-text">Safe, effective home sanitization using USDA Certified Organic hypochlorous acid for families who prioritize health and wellness.</p>
+                            
+                            <h6 class="fw-bold mt-3">Home Applications:</h6>
+                            <ul class="list-unstyled">
+                                <li>✅ Whole Home Sanitization</li>
+                                <li>✅ Post-Illness Deep Clean</li>
+                                <li>✅ Move-in/Move-out Service</li>
+                                <li>✅ Allergy Reduction Treatment</li>
+                            </ul>
+
+                            <div class="expand-content">
+                                <h6 class="fw-bold">Additional Services:</h6>
+                                <ul class="list-unstyled">
+                                    <li>✅ Pet-Safe Environment</li>
+                                    <li>✅ Odor Elimination</li>
+                                    <li>✅ Seasonal Allergen Control</li>
+                                    <li>✅ Pre-Event Sanitization</li>
+                                    <li>✅ Elder Care Facilities</li>
+                                    <li>✅ Nursery & Play Areas</li>
                                 </ul>
-                                <span class="price-highlight">$0.09-$0.14/sq ft</span>
+                                
+                                <h6 class="fw-bold">Service Options:</h6>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-4">
+                                        <div class="text-center">
+                                            <span class="subscription-highlight d-block">Same-Day</span>
+                                            <strong>+25%*</strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="text-center">
+                                            <span class="subscription-highlight d-block">Weekend</span>
+                                            <strong>+30%*</strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="text-center">
+                                            <span class="subscription-highlight d-block">Flexible Hours</span>
+                                            <strong>Available</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <h6 class="fw-bold">Service Pricing:</h6>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <div class="price-highlight">$150-$400*</div>
+                                        <small class="text-muted">Based on home size</small>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="price-highlight">$200 Minimum*</div>
+                                        <small class="text-muted">Standard service</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <a href="calculator.html" class="btn btn-success">Get Home Quote</a>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="col-lg-6 mb-4">
-                            <div class="quality-standard">
-                                <h5 class="fw-bold text-success">🥬 Produce Packing</h5>
-                                <p><strong>Challenge:</strong> No kill steps, living products</p>
-                                <p><strong>Our Enhanced Process:</strong></p>
-                                <ul>
-                                    <li>Agricultural water enhancement with HOCl</li>
-                                    <li>Wash system optimization</li>
-                                    <li>Cold chain sanitization protocols</li>
-                                    <li>FSMA 204 traceability support</li>
-                                    <li>Environmental Listeria monitoring</li>
-                                </ul>
-                                <span class="price-highlight">$0.06-$0.10/sq ft</span>
+
+                            <div class="expand-indicator">
+                                <i class="fas fa-plus"></i>
                             </div>
                         </div>
                     </div>
@@ -929,28 +994,39 @@
     </section>
 
     <!-- SDS Safety Comparison -->
-    <section id="sds-comparison" class="py-5">
+    <section id="sds-comparison" class="py-5 bg-light">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="display-5 fw-bold">Safety Data Comparison: Why Switch from KC-644?</h2>
-                <p class="lead">Replace dangerous chemicals with USDA Organic hypochlorous acid</p>
+                <h2 class="display-5 fw-bold">Safety Comparison: Industry Standard vs. USDA Organic HOCl</h2>
+                <p class="lead">Replace dangerous industry standard sanitizers with safer, more effective USDA Organic hypochlorous acid</p>
             </div>
             
             <div class="row">
-                <!-- Dangerous Chemical Example -->
+                <!-- Industry Standard Sanitizers -->
                 <div class="col-lg-6 mb-4">
                     <div class="sds-comparison">
-                        <h4 class="text-danger mb-3"><i class="fas fa-exclamation-triangle"></i> KC-644 (Quaternary Ammonium)</h4>
+                        <h4 class="text-danger mb-3"><i class="fas fa-exclamation-triangle"></i> Industry Standard Sanitizers</h4>
                         <div class="mb-3">
                             <div class="hazard-symbol">⚠️</div>
                             <div class="hazard-symbol">🔥</div>
                             <div class="hazard-symbol">☠️</div>
                         </div>
-                        <h6 class="text-danger">HAZARD WARNINGS:</h6>
+                        
+                        <h6 class="text-danger">Common Industry Sanitizers:</h6>
+                        <ul class="text-muted small">
+                            <li><strong>Quaternary Ammonium:</strong> KC-644, Stepan BTC, others</li>
+                            <li><strong>Sodium Hypochlorite:</strong> Chlorine bleach solutions</li>
+                            <li><strong>Peroxyacetic Acid:</strong> Peracetic acid (PAA)</li>
+                            <li><strong>Iodine-based:</strong> Iodophors</li>
+                            <li><strong>Alcohol-based:</strong> Isopropanol/ethanol</li>
+                        </ul>
+                        
+                        <h6 class="text-danger">TYPICAL HAZARD WARNINGS:</h6>
                         <ul class="text-danger">
                             <li><strong>DANGER:</strong> Causes serious eye damage</li>
                             <li><strong>WARNING:</strong> Causes skin irritation</li>
                             <li><strong>HARMFUL:</strong> If swallowed</li>
+                            <li><strong>CORROSIVE:</strong> To metals and surfaces</li>
                             <li><strong>TOXIC:</strong> To aquatic life</li>
                         </ul>
                         
@@ -958,9 +1034,10 @@
                         <ul>
                             <li>Splash-proof chemical goggles</li>
                             <li>Face shield required</li>
-                            <li>Protective Neoprene gloves</li>
+                            <li>Chemical-resistant gloves</li>
                             <li>Rubber boots and clothing</li>
                             <li>NIOSH/MSHA respirator</li>
+                            <li>Emergency eyewash stations</li>
                         </ul>
                         
                         <h6 class="text-danger mt-3">Workplace Impact:</h6>
@@ -968,8 +1045,9 @@
                             <li>Increased sick time from exposure</li>
                             <li>Extended recovery periods</li>
                             <li>Worker evacuation required</li>
-                            <li>Emergency shower stations needed</li>
+                            <li>Emergency procedures needed</li>
                             <li>Hazardous waste disposal costs</li>
+                            <li>Corrosion of equipment</li>
                         </ul>
                     </div>
                 </div>
@@ -1041,167 +1119,13 @@
     <section class="py-3">
         <div class="container">
             <div class="pricing-disclaimer text-center">
-                <p class="mb-0"><strong>*Pricing subject to change. Final costs determined by site assessment.</strong> <a href="legal-information.html" class="text-decoration-none">See Legal Information for terms and conditions</a></p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Services Overview -->
-    <section id="services-overview" class="py-5">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="display-5 fw-bold">Our Services</h2>
-                <p class="lead">Professional sanitization solutions with subscription options throughout Utah</p>
-            </div>
-            
-            <div class="row">
-                <!-- Residential Services -->
-                <div class="col-lg-6 mb-4">
-                    <div class="service-card">
-                        <div class="card-body p-4">
-                            <div class="text-center mb-3">
-                                <div class="display-4 text-success">🏠</div>
-                                <h3 class="card-title fw-bold">Residential Sanitization</h3>
-                            </div>
-                            <p class="card-text">Safe, effective home sanitization using USDA Certified Organic hypochlorous acid for families who prioritize health and wellness.</p>
-                            
-                            <h6 class="fw-bold mt-4">Home Applications:</h6>
-                            <ul class="list-unstyled">
-                                <li>✅ Whole Home Sanitization</li>
-                                <li>✅ Post-Illness Deep Clean</li>
-                                <li>✅ Move-in/Move-out Service</li>
-                                <li>✅ Allergy Reduction Treatment</li>
-                                <li>✅ Pet-Safe Environment</li>
-                                <li>✅ Odor Elimination</li>
-                            </ul>
-                            
-                            <h6 class="fw-bold mt-4">Service Pricing:</h6>
-                            <div class="row g-2 mb-3">
-                                <div class="col-6">
-                                    <div class="text-center">
-                                        <div class="price-highlight">$150-$400</div>
-                                        <small class="text-muted">Based on home size</small>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="text-center">
-                                        <div class="price-highlight">$200 Minimum</div>
-                                        <small class="text-muted">Standard service</small>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <h6 class="fw-bold mt-3">Service Options:</h6>
-                            <div class="row g-2 mb-3">
-                                <div class="col-4">
-                                    <div class="text-center">
-                                        <span class="subscription-highlight d-block">Same-Day</span>
-                                        <strong>+25%</strong>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="text-center">
-                                        <span class="subscription-highlight d-block">Weekend</span>
-                                        <strong>+30%</strong>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="text-center">
-                                        <span class="subscription-highlight d-block">Flexible Hours</span>
-                                        <strong>Available</strong>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="text-center mt-4">
-                                <a href="calculator.html" class="btn btn-success btn-lg">Get Home Quote</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Commercial Services -->
-                <div class="col-lg-6 mb-4">
-                    <div class="service-card">
-                        <div class="card-body p-4">
-                            <div class="text-center mb-3">
-                                <div class="display-4 text-primary">🏢</div>
-                                <h3 class="card-title fw-bold">Commercial Fogging</h3>
-                            </div>
-                            <p class="card-text">Professional sanitization for businesses using EPA registered and USDA Organic certified products for maximum efficacy and compliance.</p>
-                            
-                            <h6 class="fw-bold mt-4">Target Industries:</h6>
-                            <ul class="list-unstyled">
-                                <li>✅ Healthcare Facilities</li>
-                                <li>✅ Schools & Daycare Centers</li>
-                                <li>✅ Restaurants & Food Service</li>
-                                <li>✅ Gyms & Fitness Centers</li>
-                                <li>✅ Offices & Workplaces</li>
-                                <li>✅ Hotels & Hospitality</li>
-                            </ul>
-                            
-                            <h6 class="fw-bold mt-4">Service Pricing:</h6>
-                            <div class="row g-2 mb-3">
-                                <div class="col-6">
-                                    <div class="text-center">
-                                        <div class="price-highlight">$0.08-$0.13/sq ft</div>
-                                        <small class="text-muted">Base commercial rate</small>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="text-center">
-                                        <div class="price-highlight">$150 Minimum</div>
-                                        <small class="text-muted">Per service</small>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="text-center">
-                                        <div class="price-highlight">$0.08/sq ft</div>
-                                        <small class="text-muted">20,000+ sq ft volume</small>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="text-center">
-                                        <div class="price-highlight">Healthcare+</div>
-                                        <small class="text-muted">Specialized protocols</small>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <h6 class="fw-bold mt-3">Service Options:</h6>
-                            <div class="row g-2 mb-3">
-                                <div class="col-4">
-                                    <div class="text-center">
-                                        <span class="subscription-highlight d-block">Same-Day</span>
-                                        <strong>+25%</strong>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="text-center">
-                                        <span class="subscription-highlight d-block">Weekend</span>
-                                        <strong>+30%</strong>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="text-center">
-                                        <span class="subscription-highlight d-block">After Hours</span>
-                                        <strong>Available</strong>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="text-center mt-4">
-                                <a href="calculator.html" class="btn btn-primary btn-lg">Calculate Quote</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <p class="mb-0"><strong>*All pricing subject to final evaluation and contract negotiations. Final costs determined by site assessment.</strong> <a href="legal-information.html" class="text-decoration-none">See Legal Information for terms and conditions</a></p>
             </div>
         </div>
     </section>
 
     <!-- Business Hours Section -->
-    <section class="py-4 bg-light">
+    <section id="business-hours" class="py-4 bg-light">
         <div class="container text-center">
             <h4 class="fw-bold mb-3">🕒 Business Hours & Scheduling</h4>
             <div class="row">
@@ -1244,12 +1168,12 @@
                         <div class="card-body text-center">
                             <div class="mb-3">
                                 <div class="subscription-highlight mb-2">Monthly Plan</div>
-                                <h3 class="text-success">$399/month</h3>
+                                <h3 class="text-success">$399/month*</h3>
                                 <p class="text-muted">Monthly service</p>
                             </div>
                             <div class="mb-3">
                                 <div class="subscription-highlight mb-2">Quarterly Plan</div>
-                                <h3 class="text-success">$699/quarter</h3>
+                                <h3 class="text-success">$699/quarter*</h3>
                                 <p class="text-muted">Every 3 months - Save $498/year</p>
                             </div>
                             <ul class="list-unstyled text-start">
@@ -1271,12 +1195,12 @@
                         <div class="card-body text-center">
                             <div class="mb-3">
                                 <div class="subscription-highlight mb-2">Business Basic</div>
-                                <h3 class="text-primary">$699/month</h3>
+                                <h3 class="text-primary">$699/month*</h3>
                                 <p class="text-muted">Monthly service</p>
                             </div>
                             <div class="mb-3">
                                 <div class="subscription-highlight mb-2">Business Premium</div>
-                                <h3 class="text-primary">$1,299/month</h3>
+                                <h3 class="text-primary">$1,299/month*</h3>
                                 <p class="text-muted">Bi-weekly service</p>
                             </div>
                             <ul class="list-unstyled text-start">
@@ -1293,21 +1217,21 @@
                 <div class="col-lg-4 col-md-12 mb-4">
                     <div class="card border-warning h-100">
                         <div class="card-header bg-warning text-white text-center">
-                            <h5 class="mb-0">🏥 Healthcare Plans</h5>
+                            <h5 class="mb-0">🏥 Healthcare & Food Processing</h5>
                         </div>
                         <div class="card-body text-center">
                             <div class="mb-3">
                                 <div class="subscription-highlight mb-2">Healthcare Premium</div>
-                                <h3 class="text-warning">Custom Pricing</h3>
+                                <h3 class="text-warning">Custom Pricing*</h3>
                                 <p class="text-muted">Weekly/bi-weekly service</p>
                             </div>
                             <div class="mb-3">
-                                <div class="subscription-highlight mb-2">Priority Response</div>
-                                <h3 class="text-warning">Same-Day Available</h3>
-                                <p class="text-muted">Rapid response service</p>
+                                <div class="subscription-highlight mb-2">Food Processing</div>
+                                <h3 class="text-warning">SSOP Integration*</h3>
+                                <p class="text-muted">Custom schedules</p>
                             </div>
                             <ul class="list-unstyled text-start">
-                                <li>✓ Medical-grade protocols</li>
+                                <li>✓ Medical-grade/SSOP protocols</li>
                                 <li>✓ EPA compliance documentation</li>
                                 <li>✓ Infection control certification</li>
                                 <li>✓ Priority scheduling</li>
@@ -1327,7 +1251,7 @@
     </section>
 
     <!-- Service Area Coverage -->
-    <section class="py-5 bg-light">
+    <section id="service-area" class="py-5 bg-light">
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="display-5 fw-bold">Utah Service Area Coverage</h2>
@@ -1364,7 +1288,7 @@
                             
                             <div class="text-center mt-4">
                                 <div class="price-highlight mb-3">25-Mile Radius from Salt Lake City</div>
-                                <p class="text-muted">Extended coverage available with travel charges: $0.70/mile beyond 25-mile radius</p>
+                                <p class="text-muted">Extended coverage available with travel charges: $0.70/mile beyond 25-mile radius*</p>
                             </div>
                         </div>
                     </div>
@@ -1419,7 +1343,7 @@
     </section>
 
     <!-- Professional Equipment -->
-    <section class="py-5 bg-light">
+    <section id="equipment-standards" class="py-5 bg-light">
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="display-5 fw-bold">Professional Equipment & Standards</h2>
@@ -1706,36 +1630,26 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // Toggle expandable content
-        function toggleContent(sectionId) {
-            const content = document.getElementById(sectionId + '-content');
-            const icon = document.getElementById(sectionId + '-icon');
-            
-            if (content.classList.contains('expanded')) {
-                content.classList.remove('expanded');
-                icon.classList.remove('rotated');
-            } else {
-                content.classList.add('expanded');
-                icon.classList.add('rotated');
+        // Mobile-friendly expand functionality - make it global
+        window.toggleMobileExpand = function(card) {
+            // Only trigger on mobile or when specifically clicked
+            if (window.innerWidth <= 768) {
+                card.classList.toggle('mobile-expanded');
+                
+                // Update icon
+                const icon = card.querySelector('.expand-indicator i');
+                if (card.classList.contains('mobile-expanded')) {
+                    icon.className = 'fas fa-minus';
+                } else {
+                    icon.className = 'fas fa-plus';
+                }
             }
-        }
+        };
 
         // Close promotional banner
         function closeBanner() {
             document.getElementById('promoBanner').style.display = 'none';
         }
-
-        // Smooth scrolling for TOC links
-        document.querySelectorAll('.floating-toc a').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            });
-        });
 
         // SDS Download functionality
         function downloadSDS(type) {
@@ -1750,6 +1664,20 @@
 
         // Initialize everything after DOM loads
         document.addEventListener('DOMContentLoaded', function() {
+            
+            // Smooth scrolling for TOC links
+            document.querySelectorAll('.floating-toc a').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
             
             // Cart badge functionality
             function updateCartBadge() {
@@ -1771,6 +1699,20 @@
             
             // Initialize cart badge
             updateCartBadge();
+
+            // Handle window resize for mobile functionality
+            window.addEventListener('resize', function() {
+                // Remove mobile-expanded class on desktop
+                if (window.innerWidth > 768) {
+                    document.querySelectorAll('.service-card.mobile-expanded').forEach(card => {
+                        card.classList.remove('mobile-expanded');
+                        const icon = card.querySelector('.expand-indicator i');
+                        if (icon) {
+                            icon.className = 'fas fa-plus';
+                        }
+                    });
+                }
+            });
         });
 
         // Listen for cart updates from other pages
