@@ -718,7 +718,7 @@
                             
                             <div class="warning-box">
                                 <h6>✓ FOOD & KID SAFE</h6>
-                                <p>All products USDA Organic certified and made with food-grade ingredients.</p>
+                                <p>All products USDA Organic certified. EPA registration pending.</p>
                             </div>
                             
                             <div class="company-box">
@@ -730,182 +730,7 @@
                             
                             <div class="website">
                                 www.organichyposolutions.com<br>
-                                ohshocl@gmail.com
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Product 19: Organic Wipes -->
-            <section class="product-section household" data-category="household" id="product-19">
-                <div class="product-header">
-                    <h3>19. Organic All-in-One Cleaning Wipes - USDA Certified</h3>
-                    <button class="print-product-btn" onclick="printSingle('product-19')">Print This Label</button>
-                </div>
-                <div class="labels-container">
-                    <div class="label label-front household">
-                        <div class="label-header">
-                            <svg class="logo-svg" viewBox="0 0 280 90">
-                                <rect width="280" height="90" fill="#2E5EAA" rx="8"/>
-                                <text x="140" y="50" text-anchor="middle" fill="#7DD3FC" font-family="Arial" font-size="36" font-weight="300">OHS</text>
-                                <text x="140" y="72" text-anchor="middle" fill="#7DD3FC" font-family="Arial" font-size="11" opacity="0.9">Organic HypoSolutions</text>
-                                <path d="M 210 35 Q 215 25 225 30 Q 225 40 215 40 Q 210 40 210 35" fill="#22C55E" opacity="0.9"/>
-                            </svg>
-                            <div class="ppm-badge">200 PPM</div>
-                        </div>
-                        <div class="label-body">
-                            <div class="product-info">
-                                <h4>Organic Wipes</h4>
-                                <p>USDA Certified convenient cleaning wipes</p>
-                                <div class="size-badge">50 Count</div>
-                                <div class="cert-badges">
-                                    <span class="cert-badge organic">USDA Organic</span>
-                                </div>
-                                <div class="benefits-box">
-                                    <h5>Ultimate Convenience</h5>
-                                    <p>One-step cleaning • Professional results • Biodegradable</p>
-                                </div>
-                            </div>
-                            <div class="safety-strip">✓ Food & kid safe • Made with food-grade ingredients • Biodegradable</div>
-                        </div>
-                    </div>
-                    <div class="label label-back">
-                        <div class="back-header">
-                            <h4>Organic Wipes - USDA Certified</h4>
-                        </div>
-                        <div class="back-body">
-                            <h5>One-Step Cleaning</h5>
-                            <p>Pull wipe and use on any surface. No rinse required. Perfect for quick cleanup.</p>
-                            
-                            <h5>Convenience Formula</h5>
-                            <p>One-step cleaning and maintenance. No bottles, no mess, no mixing. Eco-friendly and biodegradable.</p>
-                            
-                            <h5>Active Ingredient</h5>
-                            <p>Hypochlorous Acid (HOCl) 200 PPM - Pre-moistened</p>
-                            
-                            <div class="warning-box">
-                                <h6>✓ FOOD & KID SAFE</h6>
-                                <p>Safe for food contact. Biodegradable wipes.</p>
-                            </div>
-                            
-                            <div class="company-box">
-                                <strong>DISTRIBUTED BY:</strong><br>
-                                Organic HypoSolutions LLC<br>
-                                Salt Lake City, UT 84101<br>
-                                Made in Utah, USA
-                            </div>
-                            
-                            <div class="website">
-                                www.organichyposolutions.com<br>
-                                ohshocl@gmail.com
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </section>
-        
-    </main>
-    
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Organic HypoSolutions</h3>
-                <p>USDA Certified Organic</p>
-                <p>Salt Lake City, UT 84101</p>
-                <p>Made in Utah, USA</p>
-            </div>
-            <div class="footer-section">
-                <h3>Contact Information</h3>
-                <p>Phone: (801) 712-5663</p>
-                <p>Email: ohshocl@gmail.com</p>
-                <p>Web: organichyposolutions.com</p>
-            </div>
-            <div class="footer-section">
-                <h3>Certifications</h3>
-                <p>USDA Organic Certified</p>
-                <p>Made with Food-Grade Ingredients</p>
-                <p>Made in USA</p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 Organic HypoSolutions LLC. All rights reserved.</p>
-        </div>
-    </footer>
-    
-    <!-- JavaScript -->
-    <script>
-        function printSingle(productId) {
-            const product = document.getElementById(productId);
-            if (!product) {
-                alert('Product not found');
-                return;
-            }
-            
-            const printWindow = window.open('', '_blank');
-            const styles = document.querySelector('style').outerHTML;
-            
-            printWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>OHS Product Label</title>
-                    ${styles}
-                </head>
-                <body>${product.outerHTML}</body>
-                </html>
-            `);
-            
-            printWindow.document.close();
-            setTimeout(() => {
-                printWindow.print();
-            }, 500);
-        }
-        
-        function printCategory(category) {
-            const products = document.querySelectorAll(`[data-category="${category}"]`);
-            if (products.length === 0) {
-                alert('No products found in this category');
-                return;
-            }
-            
-            const printWindow = window.open('', '_blank');
-            const styles = document.querySelector('style').outerHTML;
-            let content = '';
-            
-            products.forEach(product => {
-                content += product.outerHTML;
-            });
-            
-            printWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>OHS Product Labels - ${category}</title>
-                    ${styles}
-                </head>
-                <body>${content}</body>
-                </html>
-            `);
-            
-            printWindow.document.close();
-            setTimeout(() => {
-                printWindow.print();
-            }, 500);
-        }
-    </script>
-</body>
-</html>>DISTRIBUTED BY:</strong><br>
-                                Organic HypoSolutions LLC<br>
-                                Salt Lake City, UT 84101<br>
-                                Made in Utah, USA
-                            </div>
-                            
-                            <div class="website">
-                                www.organichyposolutions.com<br>
-                                ohshocl@gmail.com
+                                ohs@organichyposolutions.com
                             </div>
                         </div>
                     </div>
@@ -965,7 +790,7 @@
                             
                             <div class="warning-box">
                                 <h6>✓ FOOD & KID SAFE</h6>
-                                <p>USDA Organic certified and made with food-grade ingredients.</p>
+                                <p>USDA Organic certified. EPA registration pending.</p>
                             </div>
                             
                             <div class="company-box">
@@ -977,7 +802,7 @@
                             
                             <div class="website">
                                 www.organichyposolutions.com<br>
-                                ohshocl@gmail.com
+                                ohs@organichyposolutions.com
                             </div>
                         </div>
                     </div>
@@ -2077,28 +1902,3 @@
                                     <h5>Gentle Baby Formula</h5>
                                     <p>Promotes healing • Baby safe • Daily use • Gentle care</p>
                                 </div>
-                            </div>
-                            <div class="safety-strip">✓ Baby safe • Made with food-grade ingredients • Gentle formula</div>
-                        </div>
-                    </div>
-                    <div class="label label-back">
-                        <div class="back-header">
-                            <h4>100ml Diaper Gel - USDA Certified</h4>
-                        </div>
-                        <div class="back-body">
-                            <h5>Baby Care Directions</h5>
-                            <p>Apply thin layer to clean, dry skin. Gentle enough for daily use on babies.</p>
-                            
-                            <h5>Gentle Baby Formula</h5>
-                            <p>Promotes healing and provides antimicrobial protection. Specially formulated for babies' sensitive skin.</p>
-                            
-                            <h5>Active Ingredient</h5>
-                            <p>Pure Hypochlorous Acid (HOCl) 200 PPM</p>
-                            
-                            <div class="warning-box">
-                                <h6>✓ BABY SAFE</h6>
-                                <p>For external use only. Gentle for daily care.</p>
-                            </div>
-                            
-                            <div class="company-box">
-                                <strong
