@@ -1862,3 +1862,167 @@
                         <li><a href="contact.html">Contact</a></li>
                     </ul>
                 </div>
+                
+                <div class="col-md-3 mb-4">
+                    <h6 class="footer-heading">Contact</h6>
+                    <div class="footer-contact">
+                        <p class="mb-2">
+                            <i class="fas fa-phone"></i>
+                            <a href="tel:+18017125663">(801) 712-5663</a>
+                        </p>
+                        <p class="mb-2">
+                            <i class="fas fa-envelope"></i>
+                            <a href="mailto:ohshocl@gmail.com">ohshocl@gmail.com</a>
+                        </p>
+                        <p class="mb-3">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Salt Lake City, UT, USA
+                        </p>
+                    </div>
+                    
+                    <!-- Social Media Links -->
+                    <div class="social-icons">
+                        <a href="https://www.linkedin.com/company/organic-hyposolutions" target="_blank" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="https://www.facebook.com/organichyposolutions" target="_blank" aria-label="Facebook">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="https://www.instagram.com/organichyposolutions" target="_blank" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.tiktok.com/@organichyposolutions" target="_blank" aria-label="TikTok">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <p class="mb-0">&copy; 2025 Organic HypoSolutions. All rights reserved.</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <div class="footer-badges">
+                            <span class="footer-badge">57 Products</span>
+                            <span class="footer-badge">Family Owned & Operated Since 2025</span>
+                            <span class="footer-badge">Cart Ready</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Mobile-friendly expand functionality - make it global
+        window.toggleMobileExpand = function(card) {
+            // Only trigger on mobile or when specifically clicked
+            if (window.innerWidth <= 768) {
+                card.classList.toggle('mobile-expanded');
+                
+                // Update icon
+                const icon = card.querySelector('.expand-indicator i');
+                if (card.classList.contains('mobile-expanded')) {
+                    icon.className = 'fas fa-minus';
+                } else {
+                    icon.className = 'fas fa-plus';
+                }
+            }
+        };
+
+        // Close promotional banner
+        function closeBanner() {
+            document.getElementById('promoBanner').style.display = 'none';
+        }
+
+        // SDS Download functionality
+        function downloadSDS(type) {
+            if (type === 'hocl') {
+                // Trigger download of HOCl SDS
+                alert('HOCl Safety Data Sheet download would be triggered here');
+            } else if (type === 'kc644') {
+                // Trigger download of KC-644 SDS
+                alert('KC-644 Safety Data Sheet download would be triggered here');
+            }
+        }
+
+        // Initialize everything after DOM loads
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Smooth scrolling for TOC links
+            document.querySelectorAll('.floating-toc a').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+            
+            // Cart badge functionality
+            function updateCartBadge() {
+                const cartBadge = document.getElementById('cartBadge');
+                if (cartBadge) {
+                    try {
+                        const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+                        if (cartItems.length > 0) {
+                            cartBadge.textContent = cartItems.length;
+                            cartBadge.style.display = 'inline-block';
+                        } else {
+                            cartBadge.style.display = 'none';
+                        }
+                    } catch (e) {
+                        cartBadge.style.display = 'none';
+                    }
+                }
+            }
+            
+            // Initialize cart badge
+            updateCartBadge();
+
+            // Handle window resize for mobile functionality
+            window.addEventListener('resize', function() {
+                // Remove mobile-expanded class on desktop
+                if (window.innerWidth > 768) {
+                    document.querySelectorAll('.service-card.mobile-expanded').forEach(card => {
+                        card.classList.remove('mobile-expanded');
+                        const icon = card.querySelector('.expand-indicator i');
+                        if (icon) {
+                            icon.className = 'fas fa-plus';
+                        }
+                    });
+                }
+            });
+        });
+
+        // Listen for cart updates from other pages
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'cartItems') {
+                const cartBadge = document.getElementById('cartBadge');
+                if (cartBadge) {
+                    try {
+                        const cartItems = JSON.parse(e.newValue) || [];
+                        if (cartItems.length > 0) {
+                            cartBadge.textContent = cartItems.length;
+                            cartBadge.style.display = 'inline-block';
+                        } else {
+                            cartBadge.style.display = 'none';
+                        }
+                    } catch (err) {
+                        cartBadge.style.display = 'none';
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
