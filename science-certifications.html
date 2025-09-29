@@ -77,6 +77,67 @@
             --ohs-dark-gray: #6c757d;
         }
 
+        /* Floating Table of Contents */
+        .floating-toc {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            padding: 1rem;
+            z-index: 1000;
+            max-width: 250px;
+            transition: all 0.3s ease;
+            opacity: 0.9;
+        }
+
+        .floating-toc:hover {
+            opacity: 1;
+            transform: translateY(-50%) scale(1.02);
+        }
+
+        .floating-toc h6 {
+            color: var(--ohs-primary-blue);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .floating-toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .floating-toc li {
+            margin-bottom: 0.3rem;
+        }
+
+        .floating-toc a {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.8rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 8px;
+            display: block;
+            transition: all 0.2s ease;
+        }
+
+        .floating-toc a:hover {
+            background: var(--ohs-accent-blue);
+            color: var(--ohs-primary-blue);
+            transform: translateX(5px);
+        }
+
+        /* Mobile hide TOC */
+        @media (max-width: 768px) {
+            .floating-toc {
+                display: none;
+            }
+        }
+
         /* EXACT NAVBAR STYLING FROM INDEX.HTML */
         .navbar {
             background-color: #2E5EAA !important;
@@ -362,6 +423,27 @@
             box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3);
         }
 
+        /* Technical Specs Card */
+        .tech-specs-card {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-left: 4px solid var(--ohs-primary-blue);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+
+        /* FSIS Compliance Styling */
+        .fsis-badge {
+            background: linear-gradient(135deg, var(--ohs-premium-gold), #fbbf24);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-block;
+            margin: 0.2rem;
+        }
+
         /* PROFESSIONAL FOOTER STYLING - MATCHING INDEX.HTML */
         .footer-section {
             background: #000000;
@@ -540,6 +622,21 @@
     </style>
 </head>
 <body>
+    <!-- Floating Table of Contents -->
+    <div class="floating-toc">
+        <h6><i class="fas fa-list"></i> Quick Navigation</h6>
+        <ul>
+            <li><a href="#key-facts"><i class="fas fa-bolt"></i> Key Facts</a></li>
+            <li><a href="#certifications"><i class="fas fa-certificate"></i> Certifications</a></li>
+            <li><a href="#technical-specs"><i class="fas fa-flask"></i> Technical Specs</a></li>
+            <li><a href="#fsis-compliance"><i class="fas fa-check-circle"></i> FSIS Compliance</a></li>
+            <li><a href="#research"><i class="fas fa-microscope"></i> Research</a></li>
+            <li><a href="#allergen-info"><i class="fas fa-lungs"></i> Allergen Info</a></li>
+            <li><a href="#comparison"><i class="fas fa-balance-scale"></i> Comparison</a></li>
+            <li><a href="#downloads"><i class="fas fa-download"></i> Downloads</a></li>
+        </ul>
+    </div>
+
     <!-- GREEN Promotional Banner with Science Focus -->
     <div class="promo-banner text-center" id="promoBanner">
         <div class="container">
@@ -677,7 +774,7 @@
     </section>
 
     <!-- Key Scientific Facts -->
-    <section class="py-5">
+    <section id="key-facts" class="py-5">
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="fw-bold">Key Scientific Facts</h2>
@@ -727,7 +824,7 @@
     </section>
 
     <!-- Official Certifications -->
-    <section class="py-5 bg-light">
+    <section id="certifications" class="py-5 bg-light">
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="fw-bold">Official Certifications & Approvals</h2>
@@ -745,7 +842,10 @@
                             <h5 class="fw-bold">EPA Registration</h5>
                             <p class="text-muted mb-3">Registration #97801-1</p>
                             <p>Unconditional registration under the Federal Insecticide, Fungicide and Rodenticide Act. Proven 99.9% efficacy against bacteria, viruses, and fungi including MRSA, C. difficile spores, and norovirus.*</p>
-                            <small class="text-muted">Accepted: July 29, 2022 | <a href="https://www.epa.gov/pesticide-registration" target="_blank" rel="noopener">Verify at EPA.gov</a></small>
+                            <a href="documents/certifications/HOCL EPA Registration.pdf" class="btn btn-sm btn-outline-success mt-2" download>
+                                <i class="fas fa-download me-2"></i>Download EPA Certificate
+                            </a>
+                            <br><small class="text-muted mt-2 d-block">Accepted: July 29, 2022 | <a href="https://www.epa.gov/pesticide-registration" target="_blank" rel="noopener">Verify at EPA.gov</a></small>
                         </div>
                     </div>
                 </div>
@@ -759,7 +859,10 @@
                             <h5 class="fw-bold">USDA Certified Organic</h5>
                             <p class="text-muted mb-3">Certificate #8150019050</p>
                             <p>Certified under the USDA National Organic Program by Oregon Tilth Certified Organic. Meets all requirements for organic production, handling, and labeling. Only disinfectant with both EPA registration AND USDA organic certification.*</p>
-                            <small class="text-muted">Certified: April 26, 2022 | <a href="https://www.ams.usda.gov/services/organic-certification" target="_blank" rel="noopener">Verify at USDA.gov</a></small>
+                            <a href="documents/certifications/usda organic.pdf" class="btn btn-sm btn-outline-success mt-2" download>
+                                <i class="fas fa-download me-2"></i>Download USDA Certificate
+                            </a>
+                            <br><small class="text-muted mt-2 d-block">Certified: April 26, 2022 | Valid through: January 1, 2026 | <a href="https://organic.ams.usda.gov/Integrity/CP/OPP?nopid=8150019050" target="_blank" rel="noopener">Verify at USDA.gov</a></small>
                         </div>
                     </div>
                 </div>
@@ -795,8 +898,239 @@
         </div>
     </section>
 
+    <!-- Technical Specifications from SDS -->
+    <section id="technical-specs" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Technical Specifications</h2>
+                <div class="section-divider"></div>
+                <p class="text-muted">Detailed product specifications from our Safety Data Sheet</p>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="tech-specs-card">
+                        <h5 class="fw-bold text-primary mb-4">
+                            <i class="fas fa-flask me-2"></i>Hypochlorous Acid Solution Specifications
+                        </h5>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Chemical Formula:</strong> HOCl</p>
+                                <p class="mb-2"><strong>CAS Number:</strong> 7790-92-3</p>
+                                <p class="mb-2"><strong>Product Name:</strong> Hypochlorous Solution</p>
+                                <p class="mb-2"><strong>Common Names:</strong> Hypochlorous Acid, Electrolyzed Water</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Concentration:</strong> 163-200 ppm Free Available Chlorine</p>
+                                <p class="mb-2"><strong>EPA Registration:</strong> #97801-1</p>
+                                <p class="mb-2"><strong>Physical State:</strong> Clear, colorless liquid</p>
+                                <p class="mb-2"><strong>Odor:</strong> Slight hypochlorous</p>
+                            </div>
+                        </div>
+
+                        <h6 class="fw-bold text-success mt-4 mb-3">Safety Profile (NFPA Rating)</h6>
+                        <div class="row mb-3">
+                            <div class="col-md-3 text-center">
+                                <div class="border rounded p-3 mb-2">
+                                    <h3 class="text-primary mb-0">0</h3>
+                                    <small>Health</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <div class="border rounded p-3 mb-2">
+                                    <h3 class="text-primary mb-0">0</h3>
+                                    <small>Flammability</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <div class="border rounded p-3 mb-2">
+                                    <h3 class="text-primary mb-0">0</h3>
+                                    <small>Instability</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <div class="border rounded p-3 mb-2">
+                                    <h3 class="text-success mb-0">✓</h3>
+                                    <small>Non-Hazardous</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-success mb-3">
+                            <h6 class="fw-bold">
+                                <i class="fas fa-check-circle me-2"></i>OSHA Classification
+                            </h6>
+                            <p class="mb-0 small">This chemical is NOT identified as hazardous by the 2012 OSHA Hazard Communication Standard (29 CFR 1910.1200). This product contains no substances which, at their given concentration, are considered hazardous to health.</p>
+                        </div>
+
+                        <h6 class="fw-bold text-primary mt-4 mb-3">Precautionary Statements</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i><strong>Prevention:</strong> None required</li>
+                            <li><i class="fas fa-check text-success me-2"></i><strong>Response:</strong> None required</li>
+                            <li><i class="fas fa-check text-success me-2"></i><strong>Storage:</strong> None required</li>
+                            <li><i class="fas fa-check text-success me-2"></i><strong>Disposal:</strong> None required</li>
+                        </ul>
+
+                        <h6 class="fw-bold text-primary mt-4 mb-3">Recommended Use</h6>
+                        <p class="mb-2">Cleaner, Deodorizer, Disinfectant for:</p>
+                        <ul>
+                            <li>Food processing and meat/poultry facilities</li>
+                            <li>Healthcare and commercial environments</li>
+                            <li>Residential and agricultural applications</li>
+                        </ul>
+
+                        <div class="alert alert-warning mt-3">
+                            <p class="mb-0 small"><strong>Restrictions on Use:</strong> Do not mix with other chemicals. Do not ingest.</p>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <a href="documents/sds/HOCL - Safety Data Sheet.pdf" class="btn btn-primary" download>
+                                <i class="fas fa-download me-2"></i>Download Complete Safety Data Sheet
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FSIS Compliance Section -->
+    <section id="fsis-compliance" class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">FSIS Compliance & Food Processing Applications</h2>
+                <div class="section-divider"></div>
+                <p class="text-muted">Approved for meat and poultry processing facilities under FSIS Directive 7120</p>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-md-4 text-center">
+                    <div class="certification-card">
+                        <div class="card-body p-4">
+                            <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                            <h5 class="fw-bold">FSIS Approved</h5>
+                            <p class="text-muted">Electrolytically generated hypochlorous acid approved for multiple meat and poultry processing applications</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="certification-card">
+                        <div class="card-body p-4">
+                            <i class="fas fa-book fa-3x text-warning mb-3"></i>
+                            <h5 class="fw-bold">9 CFR 416</h5>
+                            <p class="text-muted">Meeting FSIS requirements for SSOP (Sanitation Standard Operating Procedures) programs</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="certification-card">
+                        <div class="card-body p-4">
+                            <i class="fas fa-clipboard-check fa-3x text-primary mb-3"></i>
+                            <h5 class="fw-bold">Directive 7120</h5>
+                            <p class="text-muted">Listed in FSIS Safe and Suitable Ingredients tables for antimicrobial applications</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="fw-bold mb-4">
+                                <i class="fas fa-table me-2"></i>FSIS Approved HOCl Applications
+                            </h5>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-success">
+                                        <tr>
+                                            <th>Application</th>
+                                            <th>Maximum Concentration</th>
+                                            <th>Reference</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Red Meat Carcasses (spray)</td>
+                                            <td>≤50 ppm FAC</td>
+                                            <td>FSIS Directive 7120</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Poultry Carcasses (spray)</td>
+                                            <td>≤50 ppm FAC</td>
+                                            <td>FSIS Directive 7120</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Meat Processing Water</td>
+                                            <td>≤5 ppm FAC</td>
+                                            <td>FSIS Directive 7120</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Poultry Processing Water</td>
+                                            <td>≤50 ppm FAC</td>
+                                            <td>FSIS Directive 7120</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Poultry Chiller Water</td>
+                                            <td>≤50 ppm FAC</td>
+                                            <td>FSIS Directive 7120</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Poultry Chiller Red Water</td>
+                                            <td>≤5 ppm FAC</td>
+                                            <td>FSIS Directive 7120</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Giblets and Salvage Parts</td>
+                                            <td>≤50 ppm FAC</td>
+                                            <td>FSIS Directive 7120</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <p class="small text-muted mt-3">
+                                <strong>Note:</strong> FAC = Free Available Chlorine. Our product at 163-200 ppm concentration must be diluted appropriately for specific FSIS-approved applications as shown above.
+                            </p>
+
+                            <div class="alert alert-info mt-4">
+                                <h6 class="fw-bold">
+                                    <i class="fas fa-info-circle me-2"></i>Regulatory Compliance
+                                </h6>
+                                <p class="mb-2">Our hypochlorous acid solution complies with:</p>
+                                <ul class="mb-0">
+                                    <li>FSIS Directive 7120 - Safe and Suitable Ingredients</li>
+                                    <li>21 CFR (Code of Federal Regulations) food contact requirements</li>
+                                    <li>OSHA Hazard Communication Standard (29 CFR 1910.1200)</li>
+                                    <li>EPA antimicrobial registration requirements (EPA #97801-1)</li>
+                                </ul>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <div class="btn-group" role="group">
+                                    <a href="documents/fsis/FSIS Directive 7120.table_1.pdf" class="btn btn-outline-primary" download>
+                                        <i class="fas fa-download me-2"></i>Download FSIS Table 1
+                                    </a>
+                                    <a href="documents/fsis/FSIS Directive 7120.table_2.pdf" class="btn btn-outline-primary" download>
+                                        <i class="fas fa-download me-2"></i>Download FSIS Table 2
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="text-center mt-3">
+                                <p class="small text-muted">For questions regarding FSIS compliance, contact FSIS at 1-800-233-3935 or visit <a href="https://www.fsis.usda.gov" target="_blank">www.fsis.usda.gov</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Scientific Research -->
-    <section class="py-5">
+    <section id="research" class="py-5">
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="fw-bold">Scientific Research & Studies</h2>
@@ -899,7 +1233,7 @@
     </section>
 
     <!-- Allergen Information Section -->
-    <section class="py-5 bg-light">
+    <section id="allergen-info" class="py-5 bg-light">
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="fw-bold">Allergen Reduction & Safety Information</h2>
@@ -950,7 +1284,7 @@
     </section>
 
     <!-- Comparison Chart -->
-    <section class="py-5">
+    <section id="comparison" class="py-5">
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="fw-bold">Scientific Efficacy Comparison</h2>
@@ -1021,12 +1355,12 @@
     </section>
 
     <!-- Safety Data Downloads -->
-    <section class="py-5 bg-light">
+    <section id="downloads" class="py-5 bg-light">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="fw-bold">Safety Data & Documentation</h2>
+                <h2 class="fw-bold">Safety Data & Documentation Downloads</h2>
                 <div class="section-divider"></div>
-                <p class="text-muted">Complete safety documentation and certification downloads</p>
+                <p class="text-muted">Complete safety documentation and certification downloads for compliance and reference</p>
             </div>
 
             <div class="row g-4">
@@ -1035,9 +1369,11 @@
                         <div class="card-body text-center">
                             <i class="fas fa-file-medical fa-3x text-success mb-3"></i>
                             <h5 class="fw-bold">Safety Data Sheet</h5>
-                            <p class="text-muted">Complete SDS documentation including handling, storage, and emergency procedures for professional use.</p>
-                            <a href="#" class="btn btn-outline-primary">Download SDS</a>
-                            <p class="mt-2"><small class="text-muted">Professional safety documentation available</small></p>
+                            <p class="text-muted">Complete SDS documentation including handling, storage, emergency procedures, and NFPA 0-0-0-0 safety rating.</p>
+                            <a href="documents/sds/HOCL - Safety Data Sheet.pdf" class="btn btn-outline-primary" download>
+                                <i class="fas fa-download me-2"></i>Download SDS
+                            </a>
+                            <p class="mt-3"><small class="text-muted">163-200 ppm FAC concentration<br>Non-hazardous OSHA classification</small></p>
                         </div>
                     </div>
                 </div>
@@ -1045,11 +1381,13 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="card certification-card h-100">
                         <div class="card-body text-center">
-                            <i class="fas fa-microscope fa-3x text-success mb-3"></i>
-                            <h5 class="fw-bold">Third-Party Testing</h5>
-                            <p class="text-muted">Independent laboratory verification of efficacy claims and safety profiles from accredited facilities.</p>
-                            <a href="#" class="btn btn-outline-primary">View Reports</a>
-                            <p class="mt-2"><small class="text-muted">EPA protocol testing results available</small></p>
+                            <i class="fas fa-shield-alt fa-3x text-success mb-3"></i>
+                            <h5 class="fw-bold">EPA Registration</h5>
+                            <p class="text-muted">Official EPA Registration Certificate #97801-1 proving 99.9% antimicrobial efficacy.</p>
+                            <a href="documents/certifications/HOCL EPA Registration.pdf" class="btn btn-outline-primary" download>
+                                <i class="fas fa-download me-2"></i>Download EPA Certificate
+                            </a>
+                            <p class="mt-3"><small class="text-muted">Accepted: July 29, 2022<br><a href="https://www.epa.gov/pesticide-registration" target="_blank">Verify at EPA.gov</a></small></p>
                         </div>
                     </div>
                 </div>
@@ -1057,13 +1395,58 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="card certification-card h-100">
                         <div class="card-body text-center">
-                            <i class="fas fa-certificate fa-3x text-success mb-3"></i>
-                            <h5 class="fw-bold">Certificate Downloads</h5>
-                            <p class="text-muted">Official certification documents from EPA, USDA, FDA, and WHO for your business records.</p>
-                            <a href="#" class="btn btn-outline-primary">Download All</a>
-                            <p class="mt-2"><small class="text-muted">Professional certification package</small></p>
+                            <i class="fas fa-seedling fa-3x text-success mb-3"></i>
+                            <h5 class="fw-bold">USDA Organic Certificate</h5>
+                            <p class="text-muted">Oregon Tilth USDA Certified Organic Certificate #8150019050 valid through January 1, 2026.</p>
+                            <a href="documents/certifications/usda organic.pdf" class="btn btn-outline-primary" download>
+                                <i class="fas fa-download me-2"></i>Download USDA Certificate
+                            </a>
+                            <p class="mt-3"><small class="text-muted">Certified: April 26, 2022<br><a href="https://organic.ams.usda.gov/Integrity/CP/OPP?nopid=8150019050" target="_blank">Verify at USDA.gov</a></small></p>
                         </div>
                     </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6">
+                    <div class="card certification-card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-file-alt fa-3x text-warning mb-3"></i>
+                            <h5 class="fw-bold">FSIS Directive 7120 - Table 1</h5>
+                            <p class="text-muted">FSIS antimicrobial substances approved for meat and poultry processing including application methods and concentrations.</p>
+                            <a href="documents/fsis/FSIS Directive 7120.table_1.pdf" class="btn btn-outline-primary" download>
+                                <i class="fas fa-download me-2"></i>Download FSIS Table 1
+                            </a>
+                            <p class="mt-3"><small class="text-muted">Safe and Suitable Ingredients<br>Meat & Poultry Processing</small></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6">
+                    <div class="card certification-card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-clipboard-list fa-3x text-warning mb-3"></i>
+                            <h5 class="fw-bold">FSIS Directive 7120 - Table 2</h5>
+                            <p class="text-muted">Complete listing of safe and suitable ingredients for use in FSIS-regulated establishments with concentration limits.</p>
+                            <a href="documents/fsis/FSIS Directive 7120.table_2.pdf" class="btn btn-outline-primary" download>
+                                <i class="fas fa-download me-2"></i>Download FSIS Table 2
+                            </a>
+                            <p class="mt-3"><small class="text-muted">Antimicrobials & Applications<br>9 CFR 416 Compliance</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-5">
+                <div class="alert alert-info d-inline-block">
+                    <h6 class="fw-bold mb-2">
+                        <i class="fas fa-info-circle me-2"></i>Need Additional Documentation?
+                    </h6>
+                    <p class="mb-2">For additional certifications, third-party testing reports, or compliance documentation, please contact us:</p>
+                    <a href="contact.html" class="btn btn-primary btn-sm me-2">
+                        <i class="fas fa-envelope me-2"></i>Contact Us
+                    </a>
+                    <a href="tel:+18017125663" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-phone me-2"></i>(801) 712-5663
+                    </a>
                 </div>
             </div>
         </div>
