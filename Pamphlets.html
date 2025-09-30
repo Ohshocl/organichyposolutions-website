@@ -1,1 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organic HypoSolutions - Sales Pamphlet</title>
+    <style>
+        :root {
+            --primary-blue: #2E5EAA;
+            --light-blue: #7DD3FC;
+            --primary-green: #4ADE80;
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #e5e5e5;
+            padding: 20px;
+        }
+
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        .print-button:hover {
+            background: #1e4a8a;
+        }
+
+        .instructions {
+            max-width: 11in;
+            margin: 0 auto 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .instructions h3 {
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        .page {
+            width: 11in;
+            height: 8.5in;
+            background: white;
+            margin: 20px auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        }
+
+        .panel {
+            padding: 35px 30px;
+            border-right: 1px dashed #ddd;
+            position: relative;
+        }
+
+        .panel:last-child {
+            border-right: none;
+        }
+
+        /* Logo styling */
+        .logo-img {
+            width: 200px;
+            height: auto;
+            display: block;
+            margin: 0 auto 15px;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 28px;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: 20px;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary-green);
+        }
+
+        h3 {
+            font-size: 15px;
+            color: var(--primary-blue);
+            margin: 15px 0 8px;
+            font-weight: 600;
+        }
+
+        h4 {
+            font-size: 13px;
+            color: var(--primary-blue);
+            margin: 10px 0 5px;
+            font-weight: 600;
+        }
+
+        p, li {
+            font-size: 11px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Front Cover (Right Panel) */
+        .front-cover {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-align: center;
+            border: 3px solid var(--primary-blue);
+        }
+
+        .tagline {
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .badge {
+            display: inline-block;
+            border: 2px solid var(--primary-green);
+            color: var(--primary-green);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 10px;
+            font-weight: bold;
+            margin: 3px;
+        }
+
+        .hero-icon {
+            font-size: 80px;
+            margin: 15px 0;
+        }
+
+        .cover-cta {
+            border-top: 2px solid var(--primary-blue);
+            padding-top: 15px;
+        }
+
+        .phone-large {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin: 8px 0;
+        }
+
+        /* Service Category */
+        .service-category {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-left: 3px solid var(--primary-blue);
+            background: #f8fafc;
+        }
+
+        .service-category h3 {
+            margin-top: 0;
+            font-size: 14px;
+        }
+
+        .service-category p {
+            font-size: 10px;
+            line-height: 1.5;
+            margin-top: 5px;
+        }
+
+        /* Benefits list */
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .benefit-icon {
+            font-size: 18px;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .benefit-text h4 {
+            margin: 0 0 3px 0;
+            font-size: 12px;
+        }
+
+        .benefit-text p {
+            font-size: 10px;
+            line-height: 1.4;
+            color: #555;
+        }
+
+        /* Pricing boxes */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .price-box {
+            border: 2px solid var(--light-blue);
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+            background: white;
+        }
+
+        .price-label {
+            font-size: 10px;
+            color: #666;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .price-main {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: 3px;
+        }
+
+        .price-detail {
+            font-size: 9px;
+            color: #666;
+        }
+
+        /* Back panel */
+        .back-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-align: center;
+        }
+
+        .contact-box {
+            border: 2px solid var(--primary-blue);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        .cta-box {
+            background: var(--primary-blue);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .cta-box h3 {
+            color: white;
+            margin: 0 0 10px 0;
+            font-size: 16px;
+        }
+
+        .small-text {
+            font-size: 9px;
+            color: #666;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        .license-text {
+            font-size: 8px;
+            color: #999;
+            margin-top: 15px;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .print-button,
+            .instructions {
+                display: none;
+            }
+            
+            .page {
+                margin: 0;
+                box-shadow: none;
+            }
+
+            .panel {
+                border-right: 1px dashed #ccc;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">🖨️ PRINT PAMPHLET</button>
+
+    <div class="instructions">
+        <h3>📋 Printing Instructions</h3>
+        <ol>
+            <li><strong>Click the PRINT button</strong> above</li>
+            <li>Print at <strong>100% scale</strong> on 8.5" x 11" paper (landscape orientation)</li>
+            <li>After printing, <strong>fold into three equal panels</strong> (tri-fold)</li>
+            <li>The right panel becomes your front cover</li>
+        </ol>
+    </div>
+
+    <div class="page">
+        <!-- Left Panel - Back Cover -->
+        <div class="panel back-panel">
+            <div>
+                <img src="assets/images/logos/OHS Brand Image.jpg" class="logo-img" alt="OHS Logo" style="margin: 0 auto 20px; display: block;">
+                <h2 style="border: none; padding: 0;">GET STARTED</h2>
+                
+                <div class="contact-box">
+                    <h3 style="margin: 0 0 8px 0;">📞 Call or Text</h3>
+                    <div class="phone-large">(801) 712-5663</div>
+                </div>
+
+                <div class="contact-box">
+                    <h3 style="margin: 0 0 8px 0;">🌐 Book Online</h3>
+                    <p style="font-size: 12px; font-weight: bold; color: var(--primary-blue);">
+                        organichyposolutions.com
+                    </p>
+                </div>
+
+                <p style="font-size: 11px; margin: 15px 0; line-height: 1.6;">
+                    <strong>Serving All of Utah</strong><br>
+                    Same-Day Available (+25%)<br>
+                    Weekend Service (+30%)<br>
+                    Free Quotes & Consultations
+                </p>
+            </div>
+
+            <div>
+                <div class="cta-box">
+                    <h3>Why Wait?</h3>
+                    <p style="font-size: 11px; line-height: 1.5; margin: 0;">
+                        Professional sanitization that's safe for your family, pets, and the environment. Call today!
+                    </p>
+                </div>
+                <div class="license-text">
+                    Business License #14565171-0160
+                </div>
+            </div>
+        </div>
+
+        <!-- Middle Panel - Inside Content -->
+        <div class="panel">
+            <h2>Our Services & Pricing</h2>
+
+            <div class="service-category">
+                <h3>🏭 Food Processing</h3>
+                <p>FSIS compliant for meat, poultry, dairy, and produce facilities. USDA organic, food-contact safe.</p>
+            </div>
+
+            <div class="service-category">
+                <h3>🏢 Commercial & Healthcare</h3>
+                <p>Healthcare facilities, schools, restaurants, gyms, offices. EPA registered, patient-safe protocols.</p>
+            </div>
+
+            <div class="service-category">
+                <h3>🚜 Agricultural & Livestock</h3>
+                <p>Barns, dairies, poultry houses, greenhouses. Animal-safe, no withdrawal periods, organic approved.</p>
+            </div>
+
+            <div class="service-category">
+                <h3>🏠 Residential</h3>
+                <p>Whole home sanitization, post-illness deep clean, allergy reduction. Child & pet safe, no toxic residue.</p>
+            </div>
+
+            <h3 style="margin-top: 20px;">Transparent Pricing</h3>
+            <div class="pricing-grid">
+                <div class="price-box">
+                    <div class="price-label">COMMERCIAL</div>
+                    <div class="price-main">$150</div>
+                    <div class="price-detail">minimum service</div>
+                </div>
+                <div class="price-box">
+                    <div class="price-label">VOLUME</div>
+                    <div class="price-main">$0.08/sq ft</div>
+                    <div class="price-detail">20,000+ sq ft</div>
+                </div>
+                <div class="price-box">
+                    <div class="price-label">RESIDENTIAL</div>
+                    <div class="price-main">$150-$400</div>
+                    <div class="price-detail">based on size</div>
+                </div>
+                <div class="price-box">
+                    <div class="price-label">MINIMUM</div>
+                    <div class="price-main">$200</div>
+                    <div class="price-detail">standard service</div>
+                </div>
+            </div>
+
+            <p class="small-text" style="text-align: center;">
+                *Custom quotes for healthcare & large facilities
+            </p>
+        </div>
+
+        <!-- Right Panel - Front Cover -->
+        <div class="panel front-cover">
+            <div>
+                <img src="assets/images/logos/OHS Brand Image.jpg" class="logo-img" alt="OHS Logo">
+                <div class="tagline">Professional Sanitization<br>& Disinfection Services</div>
+                <span class="badge">USDA ORGANIC</span>
+                <span class="badge">EPA PREMIUM</span>
+            </div>
+
+            <div>
+                <h2 style="font-size: 18px; margin-bottom: 12px;">Why Choose OHS?</h2>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">🌿</div>
+                    <div class="benefit-text">
+                        <h4>USDA Certified Organic</h4>
+                        <p>Safe for food, people, pets. No toxic residues or harsh chemicals.</p>
+                    </div>
+                </div>
+
+                <div class="benefit-item">
+                    <div class="benefit-icon">🛡️</div>
+                    <div class="benefit-text">
+                        <h4>99.9% Pathogen Kill Rate</h4>
+                        <p>Eliminates bacteria, viruses, mold, spores, and biofilms effectively.</p>
+                    </div>
+                </div>
+
+                <div class="benefit-item">
+                    <div class="benefit-icon">⚡</div>
+                    <div class="benefit-text">
+                        <h4>Immediate Re-Entry</h4>
+                        <p>No downtime. No rinsing. No toxic fumes. Back to work instantly.</p>
+                    </div>
+                </div>
+
+                <div class="benefit-item">
+                    <div class="benefit-icon">🏪</div>
+                    <div class="benefit-text">
+                        <h4>Local Utah Business</h4>
+                        <p>Community-focused with rapid response and flexible scheduling.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cover-cta">
+                <div class="phone-large">(801) 712-5663</div>
+                <p style="font-size: 11px; margin-top: 5px; color: #666;">
+                    organichyposolutions.com
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
