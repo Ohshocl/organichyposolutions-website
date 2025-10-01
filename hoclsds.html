@@ -3,26 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hypochlorous Solution - Safety Data Sheet</title>
+    <title>Hypochlorous Acid - Safety Data Sheet</title>
     <style>
-        @page {
-            size: 8.5in 11in;
-            margin: 0.5in;
+        * {
+            box-sizing: border-box;
         }
         
         body {
             font-family: 'Arial', sans-serif;
-            font-size: 9pt;
-            line-height: 1.3;
             margin: 0;
-            padding: 20px;
-            color: #000;
+            padding: 0;
+            background-color: #f5f5f5;
         }
         
-        .page {
-            page-break-after: always;
-            position: relative;
-            min-height: 10in;
+        .no-print {
+            background-color: #fff;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .print-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+            width: auto;
+            max-width: 100%;
+        }
+        
+        .print-btn:hover {
+            background-color: #0056b3;
+        }
+        
+        .print-btn:active {
+            background-color: #004085;
+        }
+        
+        .sds-container {
+            max-width: 8.5in;
+            margin: 10px auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 768px) {
+            .sds-container {
+                padding: 15px;
+                margin: 5px;
+                font-size: 8pt;
+            }
+            
+            .header {
+                font-size: 14pt !important;
+            }
+            
+            h1 {
+                font-size: 9pt !important;
+                padding: 2px 4px !important;
+            }
+            
+            .info-row {
+                grid-template-columns: 1fr !important;
+                gap: 2px;
+            }
+            
+            .info-row .label {
+                margin-bottom: 2px;
+            }
+            
+            table {
+                font-size: 7pt !important;
+                overflow-x: auto;
+                display: block;
+            }
+            
+            .print-btn {
+                width: 90%;
+                padding: 14px 20px;
+            }
+            
+            .no-print p {
+                font-size: 12px;
+            }
+            
+            .nfpa-diamond {
+                transform: scale(0.8);
+            }
+        }
+        
+        @media screen and (max-width: 480px) {
+            .sds-container {
+                padding: 10px;
+                font-size: 7pt;
+            }
+            
+            .header {
+                font-size: 12pt !important;
+            }
+            
+            table {
+                font-size: 6pt !important;
+            }
+        }
+        
+        @media print {
+            @page {
+                size: 8.5in 11in;
+                margin: 0.5in;
+            }
+            
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            body {
+                background-color: white;
+                margin: 0;
+                padding: 0;
+                font-size: 9pt;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            .sds-container {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+            }
+            
+            .page {
+                page-break-after: always;
+                break-after: page;
+                position: relative;
+                min-height: 9.5in;
+                padding-bottom: 0.5in;
+            }
+            
+            .page:last-child {
+                page-break-after: auto;
+                break-after: auto;
+            }
+            
+            .section-wrapper {
+                page-break-inside: avoid;
+                break-inside: avoid;
+                margin-bottom: 10px;
+            }
+            
+            h1 {
+                page-break-after: avoid !important;
+                page-break-inside: avoid !important;
+                break-after: avoid !important;
+                break-inside: avoid !important;
+                orphans: 3;
+                widows: 3;
+                margin-top: 15px !important;
+                margin-bottom: 10px !important;
+            }
+            
+            h1 + .section-content,
+            h1 + div,
+            h1 + p,
+            h1 + table {
+                page-break-before: avoid !important;
+                break-before: avoid !important;
+            }
+            
+            .section-content {
+                page-break-inside: auto;
+                break-inside: auto;
+            }
+            
+            .info-row {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            
+            table {
+                page-break-inside: avoid;
+                break-inside: avoid;
+                width: 100%;
+            }
+            
+            tr {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            
+            .emergency-box {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            
+            .nfpa-diamond {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            
+            p {
+                orphans: 3;
+                widows: 3;
+            }
+            
+            /* Ensure proper spacing */
+            .header {
+                margin-bottom: 15px;
+            }
+            
+            .revision-info {
+                margin-bottom: 3px;
+            }
+            
+            .divider {
+                margin: 3px 0;
+            }
+            
+            /* Force black text for all content */
+            body, .section-content, p, span, td, th, div {
+                color: #000 !important;
+            }
+            
+            /* Ensure backgrounds print */
+            h1 {
+                background-color: #000 !important;
+                color: #fff !important;
+            }
+            
+            th {
+                background-color: #f0f0f0 !important;
+            }
+        }
+        
+        @media screen {
+            .page {
+                margin-bottom: 40px;
+                border-bottom: 2px solid #ddd;
+                padding-bottom: 20px;
+            }
         }
         
         .header {
@@ -47,6 +278,7 @@
         .page-number {
             text-align: center;
             margin-top: 10px;
+            font-size: 9pt;
         }
         
         h1 {
@@ -60,6 +292,8 @@
         
         .section-content {
             margin-left: 0px;
+            font-size: 9pt;
+            line-height: 1.3;
         }
         
         .info-row {
@@ -183,927 +417,976 @@
             font-size: 8pt;
             margin-top: 20px;
         }
+        
+        p {
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
-    <!-- PAGE 1 -->
-    <div class="page">
-        <div class="header">SAFETY DATA SHEET</div>
-        
-        <div class="revision-info">
-            <span>Revision Date  29-Sep-2025</span>
-            <span>Version  1</span>
-        </div>
-        <div class="divider"></div>
-        <div class="divider"></div>
-        <div class="page-number">Page  1 / 6</div>
-        
-        <h1>1. IDENTIFICATION OF THE SUBSTANCE/PREPARATION AND OF THE COMPANY/UNDERTAKING</h1>
-        <div class="section-content">
-            <div class="info-row">
-                <span class="label">Product identifier</span>
-                <span></span>
-            </div>
-            <div class="info-row">
-                <span class="label">Product Name</span>
-                <span>Hypochlorous Solution</span>
-            </div>
-            <div class="info-row">
-                <span class="label">Other means of identification</span>
-                <span></span>
-            </div>
-            <div class="info-row">
-                <span class="label">Product Code</span>
-                <span>HOCl-200</span>
-            </div>
-            <div class="info-row">
-                <span class="label">Common Name/Trade Name</span>
-                <span>Hypochlorous Acid, Electrolyzed Water</span>
-            </div>
-            <div class="info-row">
-                <span class="label">Chemical Name</span>
-                <span>Hypochlorous Acid</span>
-            </div>
-            <div class="info-row">
-                <span class="label">Chemical Formula</span>
-                <span>HOCl</span>
-            </div>
-            <div class="info-row">
-                <span class="label">CAS#</span>
-                <span>7790-92-3</span>
-            </div>
-            <div class="info-row">
-                <span class="label">Recommended use of the chemical and restrictions on use</span>
-                <span></span>
-            </div>
-            <div class="info-row">
-                <span class="label">Recommended Use</span>
-                <span>Cleaner, Deodorizer, Disinfectant</span>
-            </div>
-            <div class="info-row">
-                <span class="label">Uses advised against</span>
-                <span>Do not mix with other chemicals, do not ingest</span>
-            </div>
-            <div class="info-row">
-                <span class="label">Details of the supplier of the safety data sheet</span>
-                <span></span>
-            </div>
-            <div class="info-row">
-                <span class="label">Manufacturer Address</span>
-                <span></span>
-            </div>
-        </div>
-        <div style="margin-left: 0px;">
-            Sani-TEST LLC<br>
-            PO Box 361<br>
-            Perkasie, PA 18977
-        </div>
-        <div class="section-content">
-            <div class="info-row">
-                <span class="label">Emergency telephone number</span>
-                <span></span>
-            </div>
-            <div class="info-row">
-                <span class="label">Company Phone Number</span>
-                <span>800-732-7103</span>
-            </div>
-            <div class="info-row">
-                <span class="label">Emergency Telephone</span>
-                <span>Chemtrec 1-800-424-9300</span>
-            </div>
-        </div>
-        
-        <h1>2. HAZARDS IDENTIFICATION</h1>
-        <div class="section-content">
-            <div class="info-row">
-                <span class="label">Classification</span>
-                <span></span>
-            </div>
-            <div class="info-row">
-                <span class="label">OSHA Regulatory Status</span>
-                <span></span>
-            </div>
-        </div>
-        <p style="margin-left: 0;">This chemical is not identified as hazardous by the 2012 OSHA Hazard Communication Standard (29 CFR 1910.1200)</p>
-        
-        <div class="section-content">
-            <div class="info-row">
-                <span class="label">Label elements</span>
-                <span></span>
-            </div>
-        </div>
-        
-        <div class="emergency-box">
-            <div class="emergency-header">Emergency Overview</div>
-            <p><strong>This product contains no substances which, at their given concentration, are considered hazardous to health. This product is safe for contact with skin, eyes, and for use around children and pets.</strong></p>
+    <div class="no-print">
+        <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+        <p style="margin-top: 10px; color: #666; font-size: 14px;">Click the button above to print or save this document as a PDF</p>
+    </div>
+    
+    <div class="sds-container">
+        <!-- PAGE 1 -->
+        <div class="page">
+            <div class="header">SAFETY DATA SHEET</div>
             
-            <div class="nfpa-diamond">
-                <div class="diamond">
-                    <div class="diamond-section health">0</div>
-                    <div class="diamond-section fire">0</div>
-                    <div class="diamond-section reactivity">0</div>
-                    <div class="diamond-section specific">0</div>
+            <div class="revision-info">
+                <span>Revision Date  29-Sep-2025</span>
+                <span>Version  1</span>
+            </div>
+            <div class="divider"></div>
+            <div class="divider"></div>
+            <div class="page-number">Page  1 / 6</div>
+            
+            <div class="section-wrapper">
+                <h1>1. IDENTIFICATION OF THE SUBSTANCE/PREPARATION AND OF THE COMPANY/UNDERTAKING</h1>
+                <div class="section-content">
+                    <div class="info-row">
+                        <span class="label">Product identifier</span>
+                        <span></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Product Name</span>
+                        <span>Hypochlorous Acid</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Other means of identification</span>
+                        <span></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Product Code</span>
+                        <span>HOCl-200</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Common Name/Trade Name</span>
+                        <span>Hypochlorous Acid, Electrolyzed Water</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Chemical Name</span>
+                        <span>Hypochlorous Acid</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Chemical Formula</span>
+                        <span>HOCl</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">CAS#</span>
+                        <span>7790-92-3</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Recommended use of the chemical and restrictions on use</span>
+                        <span></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Recommended Use</span>
+                        <span>Cleaner, Deodorizer, Disinfectant</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Uses advised against</span>
+                        <span>Do not mix with other chemicals, do not ingest</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Details of the supplier of the safety data sheet</span>
+                        <span></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Manufacturer Address</span>
+                        <span></span>
+                    </div>
+                </div>
+                <div style="margin-left: 0px;">
+                    Sani-TEST LLC<br>
+                    PO Box 361<br>
+                    Perkasie, PA 18977
+                </div>
+                <div class="section-content">
+                    <div class="info-row">
+                        <span class="label">Emergency telephone number</span>
+                        <span></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Company Phone Number</span>
+                        <span>800-732-7103</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Emergency Telephone</span>
+                        <span>Chemtrec 1-800-424-9300</span>
+                    </div>
                 </div>
             </div>
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
-                <div><strong>Appearance</strong> Clear, colorless solution</div>
-                <div><strong>Physical state</strong> Liquid</div>
-                <div><strong>Odor</strong> Slight hypochlorous</div>
+            <div class="section-wrapper">
+                <h1>2. HAZARDS IDENTIFICATION</h1>
+                <div class="section-content">
+                    <div class="info-row">
+                        <span class="label">Classification</span>
+                        <span></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">OSHA Regulatory Status</span>
+                        <span></span>
+                    </div>
+                </div>
+                <p style="margin-left: 0;">This chemical is not identified as hazardous by the 2012 OSHA Hazard Communication Standard (29 CFR 1910.1200)</p>
+                
+                <div class="section-content">
+                    <div class="info-row">
+                        <span class="label">Label elements</span>
+                        <span></span>
+                    </div>
+                </div>
+                
+                <div class="emergency-box">
+                    <div class="emergency-header">Emergency Overview</div>
+                    <p><strong>This product contains no substances which, at their given concentration, are considered hazardous to health. This product is safe for contact with skin, eyes, and for use around children and pets.</strong></p>
+                    
+                    <div class="nfpa-diamond">
+                        <div class="diamond">
+                            <div class="diamond-section health">0</div>
+                            <div class="diamond-section fire">0</div>
+                            <div class="diamond-section reactivity">0</div>
+                            <div class="diamond-section specific">0</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
+                        <div><strong>Appearance</strong> Clear, colorless solution</div>
+                        <div><strong>Physical state</strong> Liquid</div>
+                        <div><strong>Odor</strong> Slight hypochlorous</div>
+                    </div>
+                </div>
+                
+                <div class="section-content">
+                    <p><strong>Precautionary Statements - Prevention</strong><br>
+                    Do not mix with other chemicals<br>
+                    Handle in accordance with standard industrial hygiene practices</p>
+                    
+                    <p><strong>Precautionary Statements - Response</strong><br>
+                    IF IN EYES: This product is safe for eye contact. Optometrists use hypochlorous acid to clean eyes before procedures. Rinsing with water is optional if desired for comfort.<br>
+                    IF ON SKIN: This product is safe for skin contact and will not cause irritation. Rinsing is optional.<br>
+                    IF SWALLOWED: This product is non-toxic. If small amounts are accidentally ingested, no adverse effects are expected. Drink water if desired for comfort.<br>
+                    IF INHALED: This product does not produce harmful fumes. No adverse effects from normal use are expected.</p>
+                    
+                    <p><strong>Precautionary Statements - Storage</strong><br>
+                    Store at temperatures between 45°F and 100°F (7°C and 38°C). Keep away from direct sunlight. Keep containers tightly closed. Do not allow to freeze.</p>
+                    
+                    <p><strong>Precautionary Statements - Disposal</strong><br>
+                    May be safely disposed of in municipal drains or on plants, as product biodegrades to salt water. Follow local regulations for container disposal.</p>
+                    
+                    <p><strong>Hazards not otherwise classified (HNOC)</strong><br>
+                    0% of the mixture consists of ingredients with unknown acute toxicity</p>
+                    
+                    <p><strong>Other Information</strong><br>
+                    • This product is naturally produced by the human immune system<br>
+                    • Safe to discharge anywhere it is safe to discharge water into the environment<br>
+                    • Non-toxic to humans, animals, and aquatic life<br>
+                    • Biodegrades to harmless salt water</p>
+                </div>
             </div>
         </div>
         
-        <div class="section-content">
-            <p><strong>Precautionary Statements - Prevention</strong><br>
-            Do not mix with other chemicals<br>
-            Handle in accordance with standard industrial hygiene practices</p>
+        <!-- PAGE 2 -->
+        <div class="page">
+            <div class="revision-info">
+                <span><strong>Hypochlorous Acid</strong></span>
+                <span>Revision Date  29-Sep-2025</span>
+            </div>
+            <div class="divider"></div>
+            <div class="divider"></div>
+            <div class="page-number">Page  2 / 6</div>
             
-            <p><strong>Precautionary Statements - Response</strong><br>
-            IF IN EYES: This product is safe for eye contact. Optometrists use hypochlorous acid to clean eyes before procedures. Rinsing with water is optional if desired for comfort.<br>
-            IF ON SKIN: This product is safe for skin contact and will not cause irritation. Rinsing is optional.<br>
-            IF SWALLOWED: This product is non-toxic. If small amounts are accidentally ingested, no adverse effects are expected. Drink water if desired for comfort.<br>
-            IF INHALED: This product does not produce harmful fumes. No adverse effects from normal use are expected.</p>
-            
-            <p><strong>Precautionary Statements - Storage</strong><br>
-            Store at temperatures between 45°F and 100°F (7°C and 38°C). Keep away from direct sunlight. Keep containers tightly closed. Do not allow to freeze.</p>
-            
-            <p><strong>Precautionary Statements - Disposal</strong><br>
-            May be safely disposed of in municipal drains or on plants, as product biodegrades to salt water. Follow local regulations for container disposal.</p>
-            
-            <p><strong>Hazards not otherwise classified (HNOC)</strong><br>
-            0% of the mixture consists of ingredients with unknown acute toxicity</p>
-            
-            <p><strong>Other Information</strong><br>
-            • This product is naturally produced by the human immune system<br>
-            • Safe to discharge anywhere it is safe to discharge water into the environment<br>
-            • Non-toxic to humans, animals, and aquatic life<br>
-            • Biodegrades to harmless salt water</p>
-        </div>
-    </div>
-    
-    <!-- PAGE 2 -->
-    <div class="page">
-        <div class="revision-info">
-            <span><strong>Hypochlorous Solution</strong></span>
-            <span>Revision Date  29-Sep-2025</span>
-        </div>
-        <div class="divider"></div>
-        <div class="divider"></div>
-        <div class="page-number">Page  2 / 6</div>
-        
-        <h1>3. COMPOSITION/INFORMATION ON INGREDIENTS</h1>
-        <table>
-            <tr>
-                <th>Chemical Name</th>
-                <th>CAS No.</th>
-                <th>weight-%</th>
-            </tr>
-            <tr>
-                <td>Water</td>
-                <td>7732-18-5</td>
-                <td>&gt;99.69</td>
-            </tr>
-            <tr>
-                <td>Sodium Chloride</td>
-                <td>7647-14-5</td>
-                <td>&lt;0.3</td>
-            </tr>
-            <tr>
-                <td>Ethanoic Acid (Acetic Acid)</td>
-                <td>64-19-7</td>
-                <td>&lt;0.2</td>
-            </tr>
-            <tr>
-                <td>Hypochlorous Acid</td>
-                <td>7790-92-3</td>
-                <td>&lt;0.0134</td>
-            </tr>
-        </table>
-        <p>*The product contains no substances which at their given concentration are hazardous to health. All ingredients are recognized as safe for their intended use.</p>
-        
-        <h1>4. FIRST AID MEASURES</h1>
-        <div class="section-content">
-            <p><strong>First aid measures</strong></p>
-            <div class="info-row">
-                <span class="label">General advice</span>
-                <span>This product is non-toxic and safe for contact with skin, eyes, and mucous membranes. No adverse health effects are expected from normal use or accidental exposure. The following information is provided for reference purposes. Have the product container, label, or SDS available when calling a poison control center or doctor if desired.</span>
+            <div class="section-wrapper">
+                <h1>3. COMPOSITION/INFORMATION ON INGREDIENTS</h1>
+                <table>
+                    <tr>
+                        <th>Chemical Name</th>
+                        <th>CAS No.</th>
+                        <th>weight-%</th>
+                    </tr>
+                    <tr>
+                        <td>Water</td>
+                        <td>7732-18-5</td>
+                        <td>&gt;99.69</td>
+                    </tr>
+                    <tr>
+                        <td>Sodium Chloride</td>
+                        <td>7647-14-5</td>
+                        <td>&lt;0.3</td>
+                    </tr>
+                    <tr>
+                        <td>Ethanoic Acid (Acetic Acid)</td>
+                        <td>64-19-7</td>
+                        <td>&lt;0.2</td>
+                    </tr>
+                    <tr>
+                        <td>Hypochlorous Acid</td>
+                        <td>7790-92-3</td>
+                        <td>&lt;0.0134</td>
+                    </tr>
+                </table>
+                <p>*The product contains no substances which at their given concentration are hazardous to health. All ingredients are recognized as safe for their intended use.</p>
             </div>
             
-            <div class="info-row">
-                <span class="label">Eye contact</span>
-                <span>This product is safe for eye contact. Hypochlorous acid is used by optometrists to safely clean eyes before medical procedures. The solution will not cause eye irritation or damage. Rinsing with clean water is optional and may be done for comfort if desired, but is not medically necessary.</span>
+            <div class="section-wrapper">
+                <h1>4. FIRST AID MEASURES</h1>
+                <div class="section-content">
+                    <p><strong>First aid measures</strong></p>
+                    <div class="info-row">
+                        <span class="label">General advice</span>
+                        <span>This product is non-toxic and safe for contact with skin, eyes, and mucous membranes. No adverse health effects are expected from normal use or accidental exposure. The following information is provided for reference purposes. Have the product container, label, or SDS available when calling a poison control center or doctor if desired.</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Eye contact</span>
+                        <span>This product is safe for eye contact. Hypochlorous acid is used by optometrists to safely clean eyes before medical procedures. The solution will not cause eye irritation or damage. Rinsing with clean water is optional and may be done for comfort if desired, but is not medically necessary.</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Skin contact</span>
+                        <span>This product is safe for skin contact and will not cause irritation. Hypochlorous acid is naturally produced by the human body's immune system. The product is safe to remain on skin and will air dry without adverse effects. Washing with water is optional.</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Inhalation</span>
+                        <span>This product does not produce harmful vapors or fumes. No adverse respiratory effects are expected from normal use. No treatment is necessary.</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Ingestion</span>
+                        <span>This product is non-toxic if accidentally ingested in small amounts. Hypochlorous acid is approved by the FDA for use on food products and is safe for incidental ingestion. Drinking water is optional if desired for comfort, but no adverse gastric effects are expected.</span>
+                    </div>
+                    
+                    <p><strong>Most important symptoms and effects, both acute and delayed</strong></p>
+                    <div class="info-row">
+                        <span class="label">Symptoms</span>
+                        <span>None. No adverse health effects are expected from exposure to this product under normal conditions of use.</span>
+                    </div>
+                    
+                    <p><strong>Indication of any immediate medical attention and special treatment needed</strong></p>
+                    <div class="info-row">
+                        <span class="label">Note to physicians</span>
+                        <span>This product is non-toxic and non-irritating. No specific treatment is required for exposure. Product is naturally produced by human neutrophils as part of the immune response.</span>
+                    </div>
+                </div>
             </div>
             
-            <div class="info-row">
-                <span class="label">Skin contact</span>
-                <span>This product is safe for skin contact and will not cause irritation. Hypochlorous acid is naturally produced by the human body's immune system. The product is safe to remain on skin and will air dry without adverse effects. Washing with water is optional.</span>
+            <div class="section-wrapper">
+                <h1>5. FIRE-FIGHTING MEASURES</h1>
+                <div class="section-content">
+                    <p><strong>Suitable extinguishing media</strong><br>
+                    Product is not flammable. If container catches fire, use water or appropriate fire extinguisher.</p>
+                    
+                    <p><strong>Unsuitable extinguishing media</strong><br>
+                    None. Product is not flammable.</p>
+                    
+                    <p><strong>Specific hazards arising from the chemical</strong><br>
+                    Product is not flammable or explosive. Product is not sensitive to mechanical impact or static discharge.</p>
+                    
+                    <p><strong>Hazardous combustion products</strong><br>
+                    None.</p>
+                    
+                    <p><strong>Explosion data</strong></p>
+                    <div class="info-row">
+                        <span class="label">Sensitivity to Mechanical Impact</span>
+                        <span>None.</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Sensitivity to Static Discharge</span>
+                        <span>None.</span>
+                    </div>
+                    
+                    <p><strong>Protective equipment and precautions for firefighters</strong><br>
+                    As in any fire, wear self-contained breathing apparatus pressure-demand, MSHA/NIOSH (approved or equivalent) and full protective gear.</p>
+                </div>
             </div>
             
-            <div class="info-row">
-                <span class="label">Inhalation</span>
-                <span>This product does not produce harmful vapors or fumes. No adverse respiratory effects are expected from normal use. No treatment is necessary.</span>
+            <div class="section-wrapper">
+                <h1>6. ACCIDENTAL RELEASE MEASURES</h1>
+                <div class="section-content">
+                    <p><strong>Personal precautions, protective equipment and emergency procedures</strong></p>
+                    <div class="info-row">
+                        <span class="label">Personal precautions</span>
+                        <span>None required. Product is non-toxic and safe for skin contact.</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">For emergency responders</span>
+                        <span>No special precautions required. Product is non-hazardous.</span>
+                    </div>
+                    
+                    <p><strong>Environmental precautions</strong></p>
+                    <div class="info-row">
+                        <span class="label">Environmental precautions</span>
+                        <span>None. Product biodegrades to harmless salt water. Safe to discharge anywhere it is safe to discharge water into the environment. Non-toxic to aquatic life.</span>
+                    </div>
+                    
+                    <p><strong>Methods and material for containment and cleaning up</strong></p>
+                    <div class="info-row">
+                        <span class="label">Methods for containment</span>
+                        <span>None required.</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Methods for cleaning up</span>
+                        <span>If spilled, clean up spilled liquid using standard methods. Mop or absorb with cloths or paper towels. Cleaning materials may be disposed of in regular trash. Product may be safely rinsed down drains with water.</span>
+                    </div>
+                </div>
             </div>
             
-            <div class="info-row">
-                <span class="label">Ingestion</span>
-                <span>This product is non-toxic if accidentally ingested in small amounts. Hypochlorous acid is approved by the FDA for use on food products and is safe for incidental ingestion. Drinking water is optional if desired for comfort, but no adverse gastric effects are expected.</span>
-            </div>
-            
-            <p><strong>Most important symptoms and effects, both acute and delayed</strong></p>
-            <div class="info-row">
-                <span class="label">Symptoms</span>
-                <span>None. No adverse health effects are expected from exposure to this product under normal conditions of use.</span>
-            </div>
-            
-            <p><strong>Indication of any immediate medical attention and special treatment needed</strong></p>
-            <div class="info-row">
-                <span class="label">Note to physicians</span>
-                <span>This product is non-toxic and non-irritating. No specific treatment is required for exposure. Product is naturally produced by human neutrophils as part of the immune response.</span>
-            </div>
-        </div>
-        
-        <h1>5. FIRE-FIGHTING MEASURES</h1>
-        <div class="section-content">
-            <p><strong>Suitable extinguishing media</strong><br>
-            Product is not flammable. If container catches fire, use water or appropriate fire extinguisher.</p>
-            
-            <p><strong>Unsuitable extinguishing media</strong><br>
-            None. Product is not flammable.</p>
-            
-            <p><strong>Specific hazards arising from the chemical</strong><br>
-            Product is not flammable or explosive. Product is not sensitive to mechanical impact or static discharge.</p>
-            
-            <p><strong>Hazardous combustion products</strong><br>
-            None.</p>
-            
-            <p><strong>Explosion data</strong></p>
-            <div class="info-row">
-                <span class="label">Sensitivity to Mechanical Impact</span>
-                <span>None.</span>
-            </div>
-            <div class="info-row">
-                <span class="label">Sensitivity to Static Discharge</span>
-                <span>None.</span>
-            </div>
-            
-            <p><strong>Protective equipment and precautions for firefighters</strong><br>
-            As in any fire, wear self-contained breathing apparatus pressure-demand, MSHA/NIOSH (approved or equivalent) and full protective gear.</p>
-        </div>
-        
-        <h1>6. ACCIDENTAL RELEASE MEASURES</h1>
-        <div class="section-content">
-            <p><strong>Personal precautions, protective equipment and emergency procedures</strong></p>
-            <div class="info-row">
-                <span class="label">Personal precautions</span>
-                <span>None required. Product is non-toxic and safe for skin contact.</span>
-            </div>
-            
-            <div class="info-row">
-                <span class="label">For emergency responders</span>
-                <span>No special precautions required. Product is non-hazardous.</span>
-            </div>
-            
-            <p><strong>Environmental precautions</strong></p>
-            <div class="info-row">
-                <span class="label">Environmental precautions</span>
-                <span>None. Product biodegrades to harmless salt water. Safe to discharge anywhere it is safe to discharge water into the environment. Non-toxic to aquatic life.</span>
-            </div>
-            
-            <p><strong>Methods and material for containment and cleaning up</strong></p>
-            <div class="info-row">
-                <span class="label">Methods for containment</span>
-                <span>None required.</span>
-            </div>
-            
-            <div class="info-row">
-                <span class="label">Methods for cleaning up</span>
-                <span>If spilled, clean up spilled liquid using standard methods. Mop or absorb with cloths or paper towels. Cleaning materials may be disposed of in regular trash. Product may be safely rinsed down drains with water.</span>
+            <div class="section-wrapper">
+                <h1>7. HANDLING AND STORAGE</h1>
+                <div class="section-content">
+                    <p><strong>Precautions for safe handling</strong></p>
+                </div>
             </div>
         </div>
         
-        <h1>7. HANDLING AND STORAGE</h1>
-        <div class="section-content">
-            <p><strong>Precautions for safe handling</strong></p>
-        </div>
-    </div>
-    
-    <!-- PAGE 3 -->
-    <div class="page">
-        <div class="revision-info">
-            <span><strong>Hypochlorous Solution</strong></span>
-            <span>Revision Date  29-Sep-2025</span>
-        </div>
-        <div class="divider"></div>
-        <div class="divider"></div>
-        <div class="page-number">Page  3 / 6</div>
-        
-        <div class="section-content">
-            <div class="info-row">
-                <span class="label">Advice on safe handling</span>
-                <span>Product is safe for skin contact and poses no health hazards under normal handling conditions. Handle in accordance with standard industrial hygiene and safety practices. Do not mix with other chemicals.</span>
+        <!-- PAGE 3 -->
+        <div class="page">
+            <div class="revision-info">
+                <span><strong>Hypochlorous Acid</strong></span>
+                <span>Revision Date  29-Sep-2025</span>
+            </div>
+            <div class="divider"></div>
+            <div class="divider"></div>
+            <div class="page-number">Page  3 / 6</div>
+            
+            <div class="section-content">
+                <div class="info-row">
+                    <span class="label">Advice on safe handling</span>
+                    <span>Product is safe for skin contact and poses no health hazards under normal handling conditions. Handle in accordance with standard industrial hygiene and safety practices. Do not mix with other chemicals.</span>
+                </div>
+                
+                <p><strong>Conditions for safe storage, including any incompatibilities</strong></p>
+                <div class="info-row">
+                    <span class="label">Storage Conditions</span>
+                    <span>Keep containers tightly closed. Store at temperatures between 45°F and 100°F (7°C and 38°C). Ideal storage temperature is approximately 45°F (7°C). Store in original sealed container or in sealed, opaque spray bottles. Keep away from direct sunlight and heat sources. Do not allow to freeze.</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="label">Shelf Life</span>
+                    <span>Product has a 12-month shelf life once activated when stored under recommended conditions. Product can be reactivated after this period using appropriate electrolysis equipment.</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="label">Incompatible materials</span>
+                    <span>Avoid contact with strong acids or strong bases. Do not mix with ammonia or other cleaning chemicals.</span>
+                </div>
             </div>
             
-            <p><strong>Conditions for safe storage, including any incompatibilities</strong></p>
-            <div class="info-row">
-                <span class="label">Storage Conditions</span>
-                <span>Keep containers tightly closed. Store at temperatures between 45°F and 100°F (7°C and 38°C). Ideal storage temperature is approximately 45°F (7°C). Store in original sealed container or in sealed, opaque spray bottles. Keep away from direct sunlight and heat sources. Do not allow to freeze.</span>
+            <div class="section-wrapper">
+                <h1>8. EXPOSURE CONTROLS/PERSONAL PROTECTION</h1>
+                <div class="section-content">
+                    <p><strong>Control parameters</strong></p>
+                    <p><strong>Exposure Guidelines</strong><br>
+                    This product, as supplied, does not contain any hazardous materials and does not have occupational exposure limits established by any regulatory authority. Product is safe for routine exposure.</p>
+                    
+                    <p><strong>Appropriate engineering controls</strong></p>
+                    <div class="info-row">
+                        <span class="label">Engineering Controls</span>
+                        <span>No special engineering controls required. Standard workplace ventilation is sufficient.</span>
+                    </div>
+                    
+                    <p><strong>Individual protection measures, such as personal protective equipment</strong></p>
+                    <div class="info-row">
+                        <span class="label">Eye/face protection</span>
+                        <span>No protective equipment required. Product is safe for eye contact.</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Skin and body protection</span>
+                        <span>No protective equipment required. Product is safe for skin contact.</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Respiratory protection</span>
+                        <span>No protective equipment required. Product does not produce harmful vapors or fumes.</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">General Hygiene Considerations</span>
+                        <span>Product is safe for routine handling. Follow standard industrial hygiene practices.</span>
+                    </div>
+                </div>
             </div>
             
-            <div class="info-row">
-                <span class="label">Incompatible materials</span>
-                <span>Avoid contact with strong acids or strong bases. Do not mix with ammonia or other cleaning chemicals.</span>
-            </div>
-        </div>
-        
-        <h1>8. EXPOSURE CONTROLS/PERSONAL PROTECTION</h1>
-        <div class="section-content">
-            <p><strong>Control parameters</strong></p>
-            <p><strong>Exposure Guidelines</strong><br>
-            This product, as supplied, does not contain any hazardous materials and does not have occupational exposure limits established by any regulatory authority. Product is safe for routine exposure.</p>
-            
-            <p><strong>Appropriate engineering controls</strong></p>
-            <div class="info-row">
-                <span class="label">Engineering Controls</span>
-                <span>No special engineering controls required. Standard workplace ventilation is sufficient.</span>
-            </div>
-            
-            <p><strong>Individual protection measures, such as personal protective equipment</strong></p>
-            <div class="info-row">
-                <span class="label">Eye/face protection</span>
-                <span>No protective equipment required. Product is safe for eye contact.</span>
-            </div>
-            
-            <div class="info-row">
-                <span class="label">Skin and body protection</span>
-                <span>No protective equipment required. Product is safe for skin contact.</span>
-            </div>
-            
-            <div class="info-row">
-                <span class="label">Respiratory protection</span>
-                <span>No protective equipment required. Product does not produce harmful vapors or fumes.</span>
-            </div>
-            
-            <div class="info-row">
-                <span class="label">General Hygiene Considerations</span>
-                <span>Product is safe for routine handling. Follow standard industrial hygiene practices.</span>
-            </div>
-        </div>
-        
-        <h1>9. PHYSICAL AND CHEMICAL PROPERTIES</h1>
-        <div class="section-content">
-            <p><strong>Information on basic physical and chemical properties</strong></p>
-            <table>
-                <tr>
-                    <th>Property</th>
-                    <th>Values</th>
-                    <th>Remarks • Method</th>
-                </tr>
-                <tr>
-                    <td>Physical state</td>
-                    <td>Liquid</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Appearance</td>
-                    <td>Clear</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Color</td>
-                    <td>Clear, colorless</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Odor</td>
-                    <td>Slight hypochlorous odor</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Odor threshold</td>
-                    <td>0.3 ppm</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>pH</td>
-                    <td>5.4 - 6.2</td>
-                    <td>Optimal range for safety and efficacy</td>
-                </tr>
-                <tr>
-                    <td>Melting point/freezing point</td>
-                    <td>0 °C / 32 °F</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Boiling point / boiling range</td>
-                    <td>100 °C / 212 °F</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Flash point</td>
-                    <td>5001 °C / 9034 °F</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Evaporation rate</td>
-                    <td>No data available</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Flammability (solid, gas)</td>
-                    <td>Product is not flammable</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td colspan="3"><strong>Flammability Limit in Air</strong></td>
-                </tr>
-                <tr>
-                    <td>Upper flammability limit:</td>
-                    <td>No data available</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Lower flammability limit:</td>
-                    <td>No data available</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Vapor pressure</td>
-                    <td>17.5 mm Hg</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Vapor density</td>
-                    <td>0.017 g/l</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Specific Gravity</td>
-                    <td>1.0</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Water solubility</td>
-                    <td>29.3 g/100 ml @ 0°C</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Solubility in other solvents</td>
-                    <td>No data available</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Partition coefficient</td>
-                    <td>n-octanol/water: None</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Autoignition temperature</td>
-                    <td>No data available</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Decomposition temperature</td>
-                    <td>No data available</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Kinematic viscosity</td>
-                    <td>No data available</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Dynamic viscosity</td>
-                    <td>1.002 mPa</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Explosive properties</td>
-                    <td>No data available</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Oxidizing properties</td>
-                    <td>No data available</td>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
-        
-        <h1>10. STABILITY AND REACTIVITY</h1>
-        <div class="section-content">
-            <p><strong>Reactivity</strong><br>
-            Product exhibits antimicrobial activity against bacteria, viruses, mold, mildew, spores, allergens, and microorganisms. This is the product's intended function and does not represent a safety hazard. No other reactivity concerns.</p>
-            
-            <p><strong>Chemical stability</strong><br>
-            Stable under normal storage conditions. Hypochlorous acid naturally degrades to harmless salt water with prolonged exposure to sunlight or air, which is environmentally beneficial.</p>
-            
-            <p><strong>Possibility of Hazardous Reactions</strong><br>
-            None under normal storage and usage conditions.</p>
-            
-            <p><strong>Conditions to avoid</strong><br>
-            Prolonged exposure to direct sunlight (reduces product efficacy), prolonged exposure of unsealed containers to atmosphere (reduces product efficacy), freezing temperatures, or temperatures above 100°F (38°C).</p>
-        </div>
-    </div>
-    
-    <!-- PAGE 4 -->
-    <div class="page">
-        <div class="revision-info">
-            <span><strong>Hypochlorous Solution</strong></span>
-            <span>Revision Date  29-Sep-2025</span>
-        </div>
-        <div class="divider"></div>
-        <div class="divider"></div>
-        <div class="page-number">Page  4 / 6</div>
-        
-        <div class="section-content">
-            <p><strong>Incompatible materials</strong><br>
-            Do not mix with ammonia, strong acids, strong bases, or other cleaning or disinfection chemicals.</p>
-            
-            <p><strong>Hazardous Decomposition Products</strong><br>
-            None. Product naturally degrades to water and salt under all conditions.</p>
-        </div>
-        
-        <h1>11. TOXICOLOGICAL INFORMATION</h1>
-        <div class="section-content">
-            <p><strong>Information on likely routes of exposure</strong></p>
-            <p><strong>Product Information</strong></p>
-            
-            <div class="info-row">
-                <span class="label">Inhalation</span>
-                <span>This product does not produce harmful vapors or fumes. No adverse respiratory effects are expected from normal use. Hypochlorous acid is naturally produced by the human body.</span>
+            <div class="section-wrapper">
+                <h1>9. PHYSICAL AND CHEMICAL PROPERTIES</h1>
+                <div class="section-content">
+                    <p><strong>Information on basic physical and chemical properties</strong></p>
+                    <table>
+                        <tr>
+                            <th>Property</th>
+                            <th>Values</th>
+                            <th>Remarks • Method</th>
+                        </tr>
+                        <tr>
+                            <td>Physical state</td>
+                            <td>Liquid</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Appearance</td>
+                            <td>Clear</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Color</td>
+                            <td>Clear, colorless</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Odor</td>
+                            <td>Slight hypochlorous odor</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Odor threshold</td>
+                            <td>0.3 ppm</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>pH</td>
+                            <td>5.4 - 6.2</td>
+                            <td>Optimal range for safety and efficacy</td>
+                        </tr>
+                        <tr>
+                            <td>Melting point/freezing point</td>
+                            <td>0 °C / 32 °F</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Boiling point / boiling range</td>
+                            <td>100 °C / 212 °F</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Flash point</td>
+                            <td>5001 °C / 9034 °F</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Evaporation rate</td>
+                            <td>No data available</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Flammability (solid, gas)</td>
+                            <td>Product is not flammable</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><strong>Flammability Limit in Air</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Upper flammability limit:</td>
+                            <td>No data available</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Lower flammability limit:</td>
+                            <td>No data available</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Vapor pressure</td>
+                            <td>17.5 mm Hg</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Vapor density</td>
+                            <td>0.017 g/l</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Specific Gravity</td>
+                            <td>1.0</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Water solubility</td>
+                            <td>29.3 g/100 ml @ 0°C</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Solubility in other solvents</td>
+                            <td>No data available</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Partition coefficient</td>
+                            <td>n-octanol/water: None</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Autoignition temperature</td>
+                            <td>No data available</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Decomposition temperature</td>
+                            <td>No data available</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Kinematic viscosity</td>
+                            <td>No data available</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Dynamic viscosity</td>
+                            <td>1.002 mPa</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Explosive properties</td>
+                            <td>No data available</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Oxidizing properties</td>
+                            <td>No data available</td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
             </div>
             
-            <div class="info-row">
-                <span class="label">Eye contact</span>
-                <span>This product is safe for eye contact. Hypochlorous acid is used safely by optometrists to clean eyes before medical procedures. No eye irritation or adverse effects are expected.</span>
-            </div>
-            
-            <div class="info-row">
-                <span class="label">Skin Contact</span>
-                <span>This product is safe for skin contact. Hypochlorous acid is naturally produced by human white blood cells and is used in clinical wound care. No skin irritation or adverse effects are expected. Product is safe to air dry on skin.</span>
-            </div>
-            
-            <div class="info-row">
-                <span class="label">Ingestion</span>
-                <span>This product is non-toxic if accidentally ingested in small amounts. Hypochlorous acid is FDA-approved for use on food products. No adverse gastric effects are expected from accidental ingestion.</span>
-            </div>
-            
-            <table style="margin-top: 15px;">
-                <tr>
-                    <th>Chemical Name</th>
-                    <th>Oral LD50</th>
-                    <th>Dermal LD50</th>
-                    <th>Inhalation LC50</th>
-                </tr>
-                <tr>
-                    <td>Hypochlorous Acid<br>7790-92-3</td>
-                    <td>Non-toxic at use concentration</td>
-                    <td>Non-toxic at use concentration</td>
-                    <td>Non-toxic at use concentration</td>
-                </tr>
-            </table>
-            
-            <p><strong>Information on toxicological effects</strong></p>
-            <div class="info-row">
-                <span class="label">Symptoms</span>
-                <span>None. No adverse health effects expected from exposure to this product.</span>
-            </div>
-            
-            <p><strong>Delayed and immediate effects as well as chronic effects from short and long-term exposure</strong></p>
-            <div class="info-row">
-                <span class="label">Sensitization</span>
-                <span>Not a sensitizer. Product is naturally produced by the human immune system.</span>
-            </div>
-            <div class="info-row">
-                <span class="label">Germ cell mutagenicity</span>
-                <span>Not mutagenic.</span>
-            </div>
-            <div class="info-row">
-                <span class="label">Carcinogenicity</span>
-                <span>Not carcinogenic. No carcinogenic substances present.</span>
-            </div>
-            
-            <p><strong>Chemical Listed in the National Toxicology Program Report on Carcinogens or in the International Agency for Research on Cancer Monographs or Found to be a Potential Carcinogen by OSHA:</strong> No</p>
-            
-            <div class="info-row">
-                <span class="label">Reproductive toxicity</span>
-                <span>Not a reproductive toxin.</span>
-            </div>
-            <div class="info-row">
-                <span class="label">STOT - single exposure</span>
-                <span>No target organ toxicity.</span>
-            </div>
-            <div class="info-row">
-                <span class="label">STOT - repeated exposure</span>
-                <span>No target organ toxicity.</span>
-            </div>
-            <div class="info-row">
-                <span class="label">Aspiration hazard</span>
-                <span>Not an aspiration hazard.</span>
-            </div>
-            
-            <p><strong>Numerical measures of toxicity - Product Information</strong></p>
-            <div class="info-row">
-                <span class="label">Unknown Acute Toxicity</span>
-                <span>0% of the mixture consists of ingredient(s) of unknown toxicity. All ingredients are known to be safe at use concentrations.</span>
+            <div class="section-wrapper">
+                <h1>10. STABILITY AND REACTIVITY</h1>
+                <div class="section-content">
+                    <p><strong>Reactivity</strong><br>
+                    Product exhibits antimicrobial activity against bacteria, viruses, mold, mildew, spores, allergens, and microorganisms. This is the product's intended function and does not represent a safety hazard. No other reactivity concerns.</p>
+                    
+                    <p><strong>Chemical stability</strong><br>
+                    Stable under normal storage conditions. Product maintains efficacy for 12 months once activated when stored under recommended conditions (sealed containers, away from direct sunlight, at temperatures between 45°F and 100°F). Hypochlorous acid naturally degrades to harmless salt water with prolonged exposure to sunlight or air, which is environmentally beneficial. Product can be reactivated using appropriate electrolysis equipment after the 12-month period.</p>
+                    
+                    <p><strong>Possibility of Hazardous Reactions</strong><br>
+                    None under normal storage and usage conditions.</p>
+                    
+                    <p><strong>Conditions to avoid</strong><br>
+                    Prolonged exposure to direct sunlight (reduces product efficacy), prolonged exposure of unsealed containers to atmosphere (reduces product efficacy), freezing temperatures, or temperatures above 100°F (38°C).</p>
+                </div>
             </div>
         </div>
         
-        <h1>12. ECOLOGICAL INFORMATION</h1>
-        <div class="section-content">
-            <p><strong>Ecotoxicity</strong><br>
-            Product is non-toxic to aquatic life and the environment. Product biodegrades to harmless salt water.</p>
+        <!-- PAGE 4 -->
+        <div class="page">
+            <div class="revision-info">
+                <span><strong>Hypochlorous Acid</strong></span>
+                <span>Revision Date  29-Sep-2025</span>
+            </div>
+            <div class="divider"></div>
+            <div class="divider"></div>
+            <div class="page-number">Page  4 / 6</div>
             
-            <table>
-                <tr>
-                    <th>Chemical Name</th>
-                    <th>Fish</th>
-                    <th>Crustacea</th>
-                </tr>
-                <tr>
-                    <td>Hypochlorous Acid<br>7790-92-3</td>
-                    <td>Non-toxic at use concentration</td>
-                    <td>Non-toxic at use concentration</td>
-                </tr>
-            </table>
+            <div class="section-content">
+                <p><strong>Incompatible materials</strong><br>
+                Do not mix with ammonia, strong acids, strong bases, or other cleaning or disinfection chemicals.</p>
+                
+                <p><strong>Hazardous Decomposition Products</strong><br>
+                None. Product naturally degrades to water and salt under all conditions.</p>
+            </div>
             
-            <p><strong>Persistence and degradability</strong><br>
-            Product readily biodegrades to harmless salt water solution. Environmentally friendly with no persistent residues. Product containers should be disposed of according to local regulations.</p>
+            <div class="section-wrapper">
+                <h1>11. TOXICOLOGICAL INFORMATION</h1>
+                <div class="section-content">
+                    <p><strong>Information on likely routes of exposure</strong></p>
+                    <p><strong>Product Information</strong></p>
+                    
+                    <div class="info-row">
+                        <span class="label">Inhalation</span>
+                        <span>This product does not produce harmful vapors or fumes. No adverse respiratory effects are expected from normal use. Hypochlorous acid is naturally produced by the human body.</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Eye contact</span>
+                        <span>This product is safe for eye contact. Hypochlorous acid is used safely by optometrists to clean eyes before medical procedures. No eye irritation or adverse effects are expected.</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Skin Contact</span>
+                        <span>This product is safe for skin contact. Hypochlorous acid is naturally produced by human white blood cells and is used in clinical wound care. No skin irritation or adverse effects are expected. Product is safe to air dry on skin.</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Ingestion</span>
+                        <span>This product is non-toxic if accidentally ingested in small amounts. Hypochlorous acid is FDA-approved for use on food products. No adverse gastric effects are expected from accidental ingestion.</span>
+                    </div>
+                    
+                    <table style="margin-top: 15px;">
+                        <tr>
+                            <th>Chemical Name</th>
+                            <th>Oral LD50</th>
+                            <th>Dermal LD50</th>
+                            <th>Inhalation LC50</th>
+                        </tr>
+                        <tr>
+                            <td>Hypochlorous Acid<br>7790-92-3</td>
+                            <td>Non-toxic at use concentration</td>
+                            <td>Non-toxic at use concentration</td>
+                            <td>Non-toxic at use concentration</td>
+                        </tr>
+                    </table>
+                    
+                    <p><strong>Information on toxicological effects</strong></p>
+                    <div class="info-row">
+                        <span class="label">Symptoms</span>
+                        <span>None. No adverse health effects expected from exposure to this product.</span>
+                    </div>
+                    
+                    <p><strong>Delayed and immediate effects as well as chronic effects from short and long-term exposure</strong></p>
+                    <div class="info-row">
+                        <span class="label">Sensitization</span>
+                        <span>Not a sensitizer. Product is naturally produced by the human immune system.</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Germ cell mutagenicity</span>
+                        <span>Not mutagenic.</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Carcinogenicity</span>
+                        <span>Not carcinogenic. No carcinogenic substances present.</span>
+                    </div>
+                    
+                    <p><strong>Chemical Listed in the National Toxicology Program Report on Carcinogens or in the International Agency for Research on Cancer Monographs or Found to be a Potential Carcinogen by OSHA:</strong> No</p>
+                    
+                    <div class="info-row">
+                        <span class="label">Reproductive toxicity</span>
+                        <span>Not a reproductive toxin.</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">STOT - single exposure</span>
+                        <span>No target organ toxicity.</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">STOT - repeated exposure</span>
+                        <span>No target organ toxicity.</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Aspiration hazard</span>
+                        <span>Not an aspiration hazard.</span>
+                    </div>
+                    
+                    <p><strong>Numerical measures of toxicity - Product Information</strong></p>
+                    <div class="info-row">
+                        <span class="label">Unknown Acute Toxicity</span>
+                        <span>0% of the mixture consists of ingredient(s) of unknown toxicity. All ingredients are known to be safe at use concentrations.</span>
+                    </div>
+                </div>
+            </div>
             
-            <p><strong>Bioaccumulation</strong></p>
-            <table>
-                <tr>
-                    <th>Chemical Name</th>
-                    <th>Partition coefficient</th>
-                </tr>
-                <tr>
-                    <td>Hypochlorous Acid - 7790-92-3</td>
-                    <td>None - does not bioaccumulate</td>
-                </tr>
-            </table>
+            <div class="section-wrapper">
+                <h1>12. ECOLOGICAL INFORMATION</h1>
+                <div class="section-content">
+                    <p><strong>Ecotoxicity</strong><br>
+                    Product is non-toxic to aquatic life and the environment. Product biodegrades to harmless salt water.</p>
+                    
+                    <table>
+                        <tr>
+                            <th>Chemical Name</th>
+                            <th>Fish</th>
+                            <th>Crustacea</th>
+                        </tr>
+                        <tr>
+                            <td>Hypochlorous Acid<br>7790-92-3</td>
+                            <td>Non-toxic at use concentration</td>
+                            <td>Non-toxic at use concentration</td>
+                        </tr>
+                    </table>
+                    
+                    <p><strong>Persistence and degradability</strong><br>
+                    Product readily biodegrades to harmless salt water solution. Environmentally friendly with no persistent residues. Product containers should be disposed of according to local regulations.</p>
+                    
+                    <p><strong>Bioaccumulation</strong></p>
+                    <table>
+                        <tr>
+                            <th>Chemical Name</th>
+                            <th>Partition coefficient</th>
+                        </tr>
+                        <tr>
+                            <td>Hypochlorous Acid - 7790-92-3</td>
+                            <td>None - does not bioaccumulate</td>
+                        </tr>
+                    </table>
+                    
+                    <p><strong>Mobility</strong><br>
+                    Readily soluble in water.</p>
+                    
+                    <p><strong>Other adverse effects</strong><br>
+                    None. Product is environmentally safe and biodegradable.</p>
+                </div>
+            </div>
             
-            <p><strong>Mobility</strong><br>
-            Readily soluble in water.</p>
-            
-            <p><strong>Other adverse effects</strong><br>
-            None. Product is environmentally safe and biodegradable.</p>
+            <div class="section-wrapper">
+                <h1>13. DISPOSAL CONSIDERATIONS</h1>
+                <div class="section-content">
+                    <p><strong>Waste treatment methods</strong></p>
+                    <div class="info-row">
+                        <span class="label">Disposal of wastes</span>
+                        <span>No special precautions required for disposal of the product. Product may be safely disposed of in municipal drains. Product biodegrades to harmless salt water and may be safely disposed of on plants or landscape.</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Contaminated packaging</span>
+                        <span>Follow local regulations for disposal of containers.</span>
+                    </div>
+                </div>
+            </div>
         </div>
         
-        <h1>13. DISPOSAL CONSIDERATIONS</h1>
-        <div class="section-content">
-            <p><strong>Waste treatment methods</strong></p>
-            <div class="info-row">
-                <span class="label">Disposal of wastes</span>
-                <span>No special precautions required for disposal of the product. Product may be safely disposed of in municipal drains. Product biodegrades to harmless salt water and may be safely disposed of on plants or landscape.</span>
+        <!-- PAGE 5 -->
+        <div class="page">
+            <div class="revision-info">
+                <span><strong>Hypochlorous Acid</strong></span>
+                <span>Revision Date  29-Sep-2025</span>
             </div>
-            <div class="info-row">
-                <span class="label">Contaminated packaging</span>
-                <span>Follow local regulations for disposal of containers.</span>
+            <div class="divider"></div>
+            <div class="divider"></div>
+            <div class="page-number">Page  5 / 6</div>
+            
+            <div class="section-wrapper">
+                <h1>14. TRANSPORT INFORMATION</h1>
+                <div class="section-content">
+                    <p><strong>DOT</strong></p>
+                    <div class="info-row">
+                        <span class="label">Classification</span>
+                        <span>No special precautions are required. Not regulated as a hazardous material.</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">UN/ID No.</span>
+                        <span>Not applicable</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Proper shipping name</span>
+                        <span>Not applicable</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Hazard Class</span>
+                        <span>Not applicable</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Packing Group</span>
+                        <span>Not applicable</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section-wrapper">
+                <h1>15. REGULATORY INFORMATION</h1>
+                <div class="section-content">
+                    <p><strong>International Inventories</strong></p>
+                    <table>
+                        <tr>
+                            <td><strong>TSCA</strong></td>
+                            <td>Complies</td>
+                        </tr>
+                        <tr>
+                            <td><strong>DSL/NDSL</strong></td>
+                            <td>Complies</td>
+                        </tr>
+                        <tr>
+                            <td><strong>EINECS/ELINCS</strong></td>
+                            <td>Complies</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WHO Essential Medicines</strong></td>
+                            <td>Listed</td>
+                        </tr>
+                    </table>
+                    
+                    <p><strong>Legend:</strong><br>
+                    TSCA - United States Toxic Substances Control Act Section 8(b) Inventory<br>
+                    DSL/NDSL - Canadian Domestic Substances List/Non-Domestic Substances List<br>
+                    EINECS/ELINCS - European Inventory of Existing Chemical Substances/European List of Notified Chemical Substances<br>
+                    WHO - World Health Organization</p>
+                    
+                    <p><strong>US Federal Regulations</strong></p>
+                    <p><strong>SARA 313</strong><br>
+                    None of the chemicals are subject to the reporting requirements of the Act and Title 40 of the Code of Federal Regulations, Part 372</p>
+                    
+                    <p><strong>SARA 311/312 Hazard Categories</strong></p>
+                    <table>
+                        <tr>
+                            <td><strong>Acute health hazard</strong></td>
+                            <td>No</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Chronic Health Hazard</strong></td>
+                            <td>No</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Fire hazard</strong></td>
+                            <td>No</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sudden release of pressure hazard</strong></td>
+                            <td>No</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Reactive Hazard</strong></td>
+                            <td>No</td>
+                        </tr>
+                    </table>
+                    
+                    <p><strong>CWA (Clean Water Act)</strong><br>
+                    This product does not contain any substances regulated as pollutants pursuant to the Clean Water Act (40 CFR 122.21 and 40 CFR 122.42)</p>
+                    
+                    <p><strong>CERCLA</strong><br>
+                    This material, as supplied, does not contain any substances regulated as hazardous substances under the Comprehensive Environmental Response Compensation and Liability Act (CERCLA) (40 CFR 302) or the Superfund Amendments and Reauthorization Act (SARA) (40 CFR 355).</p>
+                    
+                    <p><strong>US State Regulations</strong></p>
+                    <p><strong>California Proposition 65</strong><br>
+                    This product does not contain any chemicals known to the state of California to cause cancer, birth defects, or any reproductive harm.</p>
+                    
+                    <p><strong>U.S. State Right-to-Know Regulations</strong></p>
+                    <table>
+                        <tr>
+                            <th>Chemical Name</th>
+                            <th>New Jersey</th>
+                            <th>Massachusetts</th>
+                            <th>Pennsylvania</th>
+                        </tr>
+                        <tr>
+                            <td colspan="4">None of the chemicals in this product are on the right-to-know lists</td>
+                        </tr>
+                    </table>
+                    
+                    <p><strong>U.S. EPA Label Information</strong></p>
+                    <div class="info-row">
+                        <span class="label">EPA Registration Number</span>
+                        <span>97801-1</span>
+                    </div>
+                    
+                    <p><strong>FSIS Approved Uses - Electrolytically Generated Hypochlorous Acid</strong></p>
+                    <table style="font-size: 7pt;">
+                        <tr>
+                            <th>Application</th>
+                            <th>Concentration Limit</th>
+                        </tr>
+                        <tr>
+                            <td>Red meat carcasses (spray)</td>
+                            <td>≤50 ppm FAC</td>
+                        </tr>
+                        <tr>
+                            <td>Poultry carcasses (spray)</td>
+                            <td>≤50 ppm FAC</td>
+                        </tr>
+                        <tr>
+                            <td>Meat processing water</td>
+                            <td>≤5 ppm FAC</td>
+                        </tr>
+                        <tr>
+                            <td>Poultry processing water</td>
+                            <td>≤50 ppm FAC</td>
+                        </tr>
+                        <tr>
+                            <td>Poultry chiller water</td>
+                            <td>≤50 ppm FAC</td>
+                        </tr>
+                        <tr>
+                            <td>Poultry chiller red water</td>
+                            <td>≤5 ppm FAC</td>
+                        </tr>
+                        <tr>
+                            <td>Giblets and salvage parts</td>
+                            <td>≤50 ppm FAC</td>
+                        </tr>
+                    </table>
+                    <p style="font-size: 7pt;">FAC = Free Available Chlorine. This product at 163-200 ppm concentration must be diluted appropriately for specific FSIS-approved applications.</p>
+                </div>
+            </div>
+            
+            <div class="section-wrapper">
+                <h1>16. OTHER INFORMATION</h1>
+                <div class="section-content">
+                    <table>
+                        <tr>
+                            <td><strong>NFPA</strong></td>
+                            <td><strong>Health hazards</strong> 0</td>
+                            <td><strong>Flammability</strong> 0</td>
+                            <td><strong>Instability</strong> 0</td>
+                            <td><strong>Physical and Chemical Properties</strong><br>None</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
-    
-    <!-- PAGE 5 -->
-    <div class="page">
-        <div class="revision-info">
-            <span><strong>Hypochlorous Solution</strong></span>
-            <span>Revision Date  29-Sep-2025</span>
-        </div>
-        <div class="divider"></div>
-        <div class="divider"></div>
-        <div class="page-number">Page  5 / 6</div>
         
-        <h1>14. TRANSPORT INFORMATION</h1>
-        <div class="section-content">
-            <p><strong>DOT</strong></p>
-            <div class="info-row">
-                <span class="label">Classification</span>
-                <span>No special precautions are required. Not regulated as a hazardous material.</span>
+        <!-- PAGE 6 -->
+        <div class="page">
+            <div class="revision-info">
+                <span><strong>Hypochlorous Acid</strong></span>
+                <span>Revision Date  29-Sep-2025</span>
             </div>
-            <div class="info-row">
-                <span class="label">UN/ID No.</span>
-                <span>Not applicable</span>
+            <div class="divider"></div>
+            <div class="divider"></div>
+            <div class="page-number">Page  6 / 6</div>
+            
+            <div class="section-content">
+                <table>
+                    <tr>
+                        <td><strong>HMIS</strong></td>
+                        <td><strong>Health hazards</strong> 0</td>
+                        <td><strong>Flammability</strong> 0</td>
+                        <td><strong>Physical hazards</strong> 0</td>
+                        <td><strong>Personal protection</strong> None required</td>
+                    </tr>
+                </table>
+                
+                <br>
+                
+                <table>
+                    <tr>
+                        <th>Prepared By</th>
+                        <td>Technical Department</td>
+                    </tr>
+                    <tr>
+                        <th>Issue Date</th>
+                        <td>29-Sep-2025</td>
+                    </tr>
+                    <tr>
+                        <th>Revision Date</th>
+                        <td>29-Sep-2025</td>
+                    </tr>
+                    <tr>
+                        <th>Version</th>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <th>Revision Note</th>
+                        <td>Initial release in standardized SDS format with enhanced safety information.</td>
+                    </tr>
+                </table>
+                
+                <h2 style="font-size: 10pt; margin-top: 20px;"><strong>Additional Safety Information</strong></h2>
+                <p class="footer-text">
+                    This product contains hypochlorous acid, a naturally occurring molecule produced by the human immune system. Hypochlorous acid is recognized by regulatory agencies worldwide for its exceptional safety profile:
+                </p>
+                <ul style="font-size: 8pt;">
+                    <li>Listed on the World Health Organization's Essential Medicines List</li>
+                    <li>FDA-approved for use on food products and in clinical applications</li>
+                    <li>EPA-registered as a surface disinfectant</li>
+                    <li>Used safely by optometrists for eye cleaning procedures</li>
+                    <li>Used in clinical wound care for over a century</li>
+                    <li>Safe for use around children, pets, and sensitive individuals</li>
+                    <li>Non-toxic to aquatic life and the environment</li>
+                    <li>Biodegrades to harmless salt water</li>
+                    <li>12-month shelf life once activated when stored properly; can be reactivated</li>
+                </ul>
+                
+                <h2 style="font-size: 10pt; margin-top: 20px;"><strong>Disclaimer</strong></h2>
+                <p class="footer-text">
+                    The information provided in this Safety Data Sheet is correct to the best of our knowledge, information and belief at the date of its publication. The information given is designed as guidance for safe handling, use, processing, storage, transportation, disposal and release. The product described in this SDS has been extensively studied and is recognized for its exceptional safety profile by multiple regulatory agencies including WHO, FDA, and EPA. At the concentration supplied (163-200 ppm), this product is non-toxic and safe for skin contact, eye contact, and poses no inhalation hazards under normal conditions of use. This safety profile applies to the product both in its concentrated form as supplied and at typical use dilutions.
+                </p>
+                
+                <p style="text-align: center; margin-top: 30px; font-weight: bold;">
+                    End of Safety Data Sheet
+                </p>
             </div>
-            <div class="info-row">
-                <span class="label">Proper shipping name</span>
-                <span>Not applicable</span>
-            </div>
-            <div class="info-row">
-                <span class="label">Hazard Class</span>
-                <span>Not applicable</span>
-            </div>
-            <div class="info-row">
-                <span class="label">Packing Group</span>
-                <span>Not applicable</span>
-            </div>
-        </div>
-        
-        <h1>15. REGULATORY INFORMATION</h1>
-        <div class="section-content">
-            <p><strong>International Inventories</strong></p>
-            <table>
-                <tr>
-                    <td><strong>TSCA</strong></td>
-                    <td>Complies</td>
-                </tr>
-                <tr>
-                    <td><strong>DSL/NDSL</strong></td>
-                    <td>Complies</td>
-                </tr>
-                <tr>
-                    <td><strong>EINECS/ELINCS</strong></td>
-                    <td>Complies</td>
-                </tr>
-                <tr>
-                    <td><strong>WHO Essential Medicines</strong></td>
-                    <td>Listed</td>
-                </tr>
-            </table>
-            
-            <p><strong>Legend:</strong><br>
-            TSCA - United States Toxic Substances Control Act Section 8(b) Inventory<br>
-            DSL/NDSL - Canadian Domestic Substances List/Non-Domestic Substances List<br>
-            EINECS/ELINCS - European Inventory of Existing Chemical Substances/European List of Notified Chemical Substances<br>
-            WHO - World Health Organization</p>
-            
-            <p><strong>US Federal Regulations</strong></p>
-            <p><strong>SARA 313</strong><br>
-            None of the chemicals are subject to the reporting requirements of the Act and Title 40 of the Code of Federal Regulations, Part 372</p>
-            
-            <p><strong>SARA 311/312 Hazard Categories</strong></p>
-            <table>
-                <tr>
-                    <td><strong>Acute health hazard</strong></td>
-                    <td>No</td>
-                </tr>
-                <tr>
-                    <td><strong>Chronic Health Hazard</strong></td>
-                    <td>No</td>
-                </tr>
-                <tr>
-                    <td><strong>Fire hazard</strong></td>
-                    <td>No</td>
-                </tr>
-                <tr>
-                    <td><strong>Sudden release of pressure hazard</strong></td>
-                    <td>No</td>
-                </tr>
-                <tr>
-                    <td><strong>Reactive Hazard</strong></td>
-                    <td>No</td>
-                </tr>
-            </table>
-            
-            <p><strong>CWA (Clean Water Act)</strong><br>
-            This product does not contain any substances regulated as pollutants pursuant to the Clean Water Act (40 CFR 122.21 and 40 CFR 122.42)</p>
-            
-            <p><strong>CERCLA</strong><br>
-            This material, as supplied, does not contain any substances regulated as hazardous substances under the Comprehensive Environmental Response Compensation and Liability Act (CERCLA) (40 CFR 302) or the Superfund Amendments and Reauthorization Act (SARA) (40 CFR 355).</p>
-            
-            <p><strong>US State Regulations</strong></p>
-            <p><strong>California Proposition 65</strong><br>
-            This product does not contain any chemicals known to the state of California to cause cancer, birth defects, or any reproductive harm.</p>
-            
-            <p><strong>U.S. State Right-to-Know Regulations</strong></p>
-            <table>
-                <tr>
-                    <th>Chemical Name</th>
-                    <th>New Jersey</th>
-                    <th>Massachusetts</th>
-                    <th>Pennsylvania</th>
-                </tr>
-                <tr>
-                    <td colspan="4">None of the chemicals in this product are on the right-to-know lists</td>
-                </tr>
-            </table>
-            
-            <p><strong>U.S. EPA Label Information</strong></p>
-            <div class="info-row">
-                <span class="label">EPA Registration Number</span>
-                <span>97801-1</span>
-            </div>
-            
-            <p><strong>FSIS Approved Uses - Electrolytically Generated Hypochlorous Acid</strong></p>
-            <table style="font-size: 7pt;">
-                <tr>
-                    <th>Application</th>
-                    <th>Concentration Limit</th>
-                </tr>
-                <tr>
-                    <td>Red meat carcasses (spray)</td>
-                    <td>≤50 ppm FAC</td>
-                </tr>
-                <tr>
-                    <td>Poultry carcasses (spray)</td>
-                    <td>≤50 ppm FAC</td>
-                </tr>
-                <tr>
-                    <td>Meat processing water</td>
-                    <td>≤5 ppm FAC</td>
-                </tr>
-                <tr>
-                    <td>Poultry processing water</td>
-                    <td>≤50 ppm FAC</td>
-                </tr>
-                <tr>
-                    <td>Poultry chiller water</td>
-                    <td>≤50 ppm FAC</td>
-                </tr>
-                <tr>
-                    <td>Poultry chiller red water</td>
-                    <td>≤5 ppm FAC</td>
-                </tr>
-                <tr>
-                    <td>Giblets and salvage parts</td>
-                    <td>≤50 ppm FAC</td>
-                </tr>
-            </table>
-            <p style="font-size: 7pt;">FAC = Free Available Chlorine. This product at 163-200 ppm concentration must be diluted appropriately for specific FSIS-approved applications.</p>
-        </div>
-        
-        <h1>16. OTHER INFORMATION</h1>
-        <div class="section-content">
-            <table>
-                <tr>
-                    <td><strong>NFPA</strong></td>
-                    <td><strong>Health hazards</strong> 0</td>
-                    <td><strong>Flammability</strong> 0</td>
-                    <td><strong>Instability</strong> 0</td>
-                    <td><strong>Physical and Chemical Properties</strong><br>None</td>
-                </tr>
-            </table>
-        </div>
-    </div>
-    
-    <!-- PAGE 6 -->
-    <div class="page">
-        <div class="revision-info">
-            <span><strong>Hypochlorous Solution</strong></span>
-            <span>Revision Date  29-Sep-2025</span>
-        </div>
-        <div class="divider"></div>
-        <div class="divider"></div>
-        <div class="page-number">Page  6 / 6</div>
-        
-        <div class="section-content">
-            <table>
-                <tr>
-                    <td><strong>HMIS</strong></td>
-                    <td><strong>Health hazards</strong> 0</td>
-                    <td><strong>Flammability</strong> 0</td>
-                    <td><strong>Physical hazards</strong> 0</td>
-                    <td><strong>Personal protection</strong> None required</td>
-                </tr>
-            </table>
-            
-            <br>
-            
-            <table>
-                <tr>
-                    <th>Prepared By</th>
-                    <td>Technical Department</td>
-                </tr>
-                <tr>
-                    <th>Issue Date</th>
-                    <td>29-Sep-2025</td>
-                </tr>
-                <tr>
-                    <th>Revision Date</th>
-                    <td>29-Sep-2025</td>
-                </tr>
-                <tr>
-                    <th>Version</th>
-                    <td>1</td>
-                </tr>
-                <tr>
-                    <th>Revision Note</th>
-                    <td>Initial release in standardized SDS format with enhanced safety information.</td>
-                </tr>
-            </table>
-            
-            <h2 style="font-size: 10pt; margin-top: 20px;"><strong>Additional Safety Information</strong></h2>
-            <p class="footer-text">
-                This product contains hypochlorous acid, a naturally occurring molecule produced by the human immune system. Hypochlorous acid is recognized by regulatory agencies worldwide for its exceptional safety profile:
-            </p>
-            <ul style="font-size: 8pt;">
-                <li>Listed on the World Health Organization's Essential Medicines List</li>
-                <li>FDA-approved for use on food products and in clinical applications</li>
-                <li>EPA-registered as a surface disinfectant</li>
-                <li>Used safely by optometrists for eye cleaning procedures</li>
-                <li>Used in clinical wound care for over a century</li>
-                <li>Safe for use around children, pets, and sensitive individuals</li>
-                <li>Non-toxic to aquatic life and the environment</li>
-                <li>Biodegrades to harmless salt water</li>
-            </ul>
-            
-            <h2 style="font-size: 10pt; margin-top: 20px;"><strong>Disclaimer</strong></h2>
-            <p class="footer-text">
-                The information provided in this Safety Data Sheet is correct to the best of our knowledge, information and belief at the date of its publication. The information given is designed as guidance for safe handling, use, processing, storage, transportation, disposal and release. The product described in this SDS has been extensively studied and is recognized for its exceptional safety profile by multiple regulatory agencies including WHO, FDA, and EPA. At the concentration supplied (163-200 ppm), this product is non-toxic and safe for skin contact, eye contact, and poses no inhalation hazards under normal conditions of use. This safety profile applies to the product both in its concentrated form as supplied and at typical use dilutions.
-            </p>
-            
-            <p style="text-align: center; margin-top: 30px; font-weight: bold;">
-                End of Safety Data Sheet
-            </p>
         </div>
     </div>
 </body>
