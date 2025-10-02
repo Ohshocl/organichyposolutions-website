@@ -1699,6 +1699,223 @@
         border-radius: 12px;
         transition: all 0.3s ease;
         cursor: pointer;
+        min-height: 100%;
+        overflow: visible;
+    }
+    
+    .service-card .card-body {
+        overflow: visible;
+        height: auto;
+    }
+    
+    .service-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        border-color: #007bff;
+    }
+    
+    .expand-content {
+        display: none;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #e9ecef;
+        overflow: visible;
+        max-height: none;
+        height: auto;
+    }
+    
+    .expand-indicator {
+        text-align: center;
+        margin-top: 15px;
+        color: #6c757d;
+        font-size: 1.2rem;
+        transition: transform 0.3s ease;
+    }
+    
+    .price-highlight {
+        background: linear-gradient(135deg, #ffc107, #ff8c00);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 5px;
+        display: block;
+    }
+    
+    .subscription-highlight {
+        background: linear-gradient(135deg, #17a2b8, #138496);
+        color: white;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+    
+    /* Ensure row can accommodate expanded content */
+    .row {
+        overflow: visible;
+    }
+    
+    .col-lg-6 {
+        overflow: visible;
+        margin-bottom: 30px;
+    }
+    
+    /* Mobile expandable functionality */
+    @media (max-width: 768px) {
+        .service-card.expanded .expand-content {
+            display: block !important;
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        .service-card.expanded .expand-indicator i {
+            transform: rotate(45deg);
+        }
+        
+        .service-card {
+            margin-bottom: 20px;
+        }
+        
+        .expand-content {
+            padding: 15px 0;
+        }
+    }
+    
+    /* Desktop - always show expanded content */
+    @media (min-width: 769px) {
+        .expand-content {
+            display: block !important;
+            max-height: none;
+            overflow: visible;
+        }
+        
+        .expand-indicator {
+            display: none;
+        }
+        
+        .service-card {
+            height: auto;
+            min-height: 600px;
+        }
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            max-height: 0;
+        }
+        to {
+            opacity: 1;
+            max-height: 2000px;
+        }
+    }
+    
+    /* Ensure no content is cut off */
+    .container, .row, .col-lg-6 {
+        overflow: visible !important;
+    }
+    
+    /* Better spacing for content */
+    .expand-content .row {
+        margin-bottom: 1rem;
+    }
+    
+    .expand-content h6 {
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .expand-content ul.small {
+        margin-bottom: 1rem;
+    }
+    </style>
+
+    <script>
+    function toggleMobileExpand(card) {
+        if (window.innerWidth <= 768) {
+            card.classList.toggle('expanded');
+        }
+    }
+    </script>
+    <style>
+    .food-quality-benefits, .agricultural-quality-benefits {
+        background: #f8f9fa;
+        border-left: 4px solid #28a745;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 0 8px 8px 0;
+    }
+    
+    .quality-badge {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        margin: 2px;
+        display: inline-block;
+        box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+    }
+    
+    .industry-risks {
+        background: #fff5f5;
+        border-left: 4px solid #dc3545;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 0 8px 8px 0;
+    }
+    
+    .prevention-solutions {
+        background: #f0f8f0;
+        border-left: 4px solid #28a745;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 0 8px 8px 0;
+    }
+    
+    .risk-badge {
+        background: linear-gradient(135deg, #dc3545, #e74c3c);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        margin: 2px;
+        display: inline-block;
+        box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+    }
+    
+    .prevention-badge {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        margin: 2px;
+        display: inline-block;
+        box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+    }
+    
+    .certification-badge {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        margin: 2px;
+        display: inline-block;
+        box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+    }
+    
+    .service-card {
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        cursor: pointer;
         height: 100%;
     }
     
