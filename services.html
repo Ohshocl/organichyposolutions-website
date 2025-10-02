@@ -436,6 +436,78 @@
             border-radius: 8px;
         }
 
+        /* NEW: IMPROVED SDS DOCUMENTATION STYLING */
+        .sds-doc-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .sds-doc-card:hover {
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .sds-doc-header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            color: white;
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .sds-doc-header:hover {
+            background: linear-gradient(135deg, var(--dark-navy), var(--primary-blue));
+        }
+
+        .sds-doc-header h5 {
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .sds-toggle-icon {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .sds-doc-header[aria-expanded="true"] .sds-toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .sds-doc-body {
+            padding: 0;
+        }
+
+        .sds-key-info {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 1.5rem;
+            margin: 1rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .sds-download-btn {
+            background: linear-gradient(45deg, var(--primary-green), var(--secondary-green));
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3);
+        }
+
+        .sds-download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 222, 128, 0.4);
+            background: linear-gradient(45deg, var(--secondary-green), var(--primary-green));
+        }
+
         /* SDS Comparison Styling */
         .sds-comparison {
             background: linear-gradient(135deg, #fff5f5, #fef2f2);
@@ -478,24 +550,6 @@
             font-size: 1.5rem;
         }
 
-        /* NEW: SDS Document Section Styling */
-        .sds-document-section {
-            margin: 20px 0;
-        }
-
-        .sds-document-section .collapse {
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        .sds-downloads {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-left: 4px solid var(--primary-blue);
-            padding: 1.5rem;
-            margin: 1rem 0;
-            border-radius: 8px;
-        }
-
         .fsis-resources {
             background: linear-gradient(135deg, #fff8f3, #fef3e2);
             border-left: 4px solid var(--warning-gold);
@@ -512,51 +566,6 @@
             border-radius: 8px;
         }
 
-        @media (max-width: 768px) {
-            .sds-document-section .collapse {
-                max-height: 300px;
-            }
-        }
-
-        /* NEW: SDS Document Section Styling */
-        .sds-document-section {
-            margin: 20px 0;
-        }
-
-        .sds-document-section .collapse {
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        .sds-downloads {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-left: 4px solid var(--primary-blue);
-            padding: 1.5rem;
-            margin: 1rem 0;
-            border-radius: 8px;
-        }
-
-        .fsis-resources {
-            background: linear-gradient(135deg, #fff8f3, #fef3e2);
-            border-left: 4px solid var(--warning-gold);
-            padding: 1.5rem;
-            margin: 1rem 0;
-            border-radius: 8px;
-        }
-
-        .fsis-compliance {
-            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
-            border-left: 4px solid var(--light-blue);
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 8px;
-        }
-
-        @media (max-width: 768px) {
-            .sds-document-section .collapse {
-                max-height: 300px;
-            }
-        }
         .footer-section {
             background-color: #1a1a1a;
             color: white;
@@ -889,7 +898,7 @@
         </div>
     </section>
 
-    <!-- Services Overview - Enhanced with Comprehensive Risk Coverage -->
+ <!-- Services Overview - Enhanced with Comprehensive Risk Coverage -->
     <section id="services-overview" class="py-5">
         <div class="container">
             <div class="text-center mb-5">
@@ -1542,199 +1551,156 @@
         </div>
     </section>
 
-  
- <!-- Safety Documentation & Downloads Section -->
-<section id="sds-documentation" class="py-5">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold">Safety Documentation & Downloads</h2>
-            <p class="lead">Complete safety data sheets and regulatory compliance documentation</p>
-        </div>
-        
-        <div class="row">
-            <div class="col-lg-10 mx-auto">
-                <!-- Collapsible SDS Embed Section -->
-                <div class="sds-document-section mb-5">
-                    <div class="text-center mb-4">
-                        <button class="btn btn-outline-primary btn-lg" type="button" data-bs-toggle="collapse" data-bs-target="#sds-embed" aria-expanded="false" aria-controls="sds-embed">
-                            📋 View Safety Data Sheet (SDS)
-                        </button>
-                    </div>
-                    <div class="collapse" id="sds-embed">
-                        <div class="card">
-                            <div class="card-body">
-                                <!-- Embed SDS document -->
-                                <iframe src="documents/sds/HOCL - Safety Data Sheet.pdf" width="100%" height="600px" style="border: none; border-radius: 8px;">
-                                    <p>Your browser does not support PDFs. <a href="documents/sds/HOCL - Safety Data Sheet.pdf">Download the PDF</a> instead.</p>
+    <!-- Safety Documentation & Downloads Section - IMPROVED -->
+    <section id="sds-documentation" class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">Safety Documentation & Downloads</h2>
+                <p class="lead">Complete safety data sheets and regulatory compliance documentation</p>
+            </div>
+            
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <!-- SDS Document Card -->
+                    <div class="sds-doc-card">
+                        <div class="sds-doc-header" data-bs-toggle="collapse" data-bs-target="#sds-embed" aria-expanded="false" aria-controls="sds-embed">
+                            <div>
+                                <h5>📋 View Safety Data Sheet (SDS)</h5>
+                                <p class="mb-0 small opacity-75">Click to view or download complete safety documentation</p>
+                            </div>
+                            <div class="sds-toggle-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="collapse sds-doc-body" id="sds-embed">
+                            <div class="p-3">
+                                <div class="text-center mb-3">
+                                    <a href="documents/sds/HOCL - Safety Data Sheet.pdf" class="sds-download-btn me-2" download>
+                                        <i class="fas fa-download me-2"></i>Download HOCl Safety Data Sheet
+                                    </a>
+                                    <a href="https://organichyposolutions.com/hoclsds" class="sds-download-btn" target="_blank">
+                                        <i class="fas fa-external-link-alt me-2"></i>View Full SDS Page
+                                    </a>
+                                </div>
+                                <iframe src="documents/sds/HOCL - Safety Data Sheet.pdf#view=FitH" width="100%" height="500px" style="border: none; border-radius: 8px;">
+                                    <p>Your browser does not support PDFs. <a href="documents/sds/HOCL - Safety Data Sheet.pdf">Download the PDF</a> or <a href="https://organichyposolutions.com/hoclsds" target="_blank">view the full SDS page</a>.</p>
                                 </iframe>
                             </div>
+                            
+                            <!-- SDS Key Information -->
+                            <div class="sds-key-info">
+                                <h6 class="fw-bold mb-3">HOCl Solution Key Information:</h6>
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <strong>Chemical Formula:</strong> HOCl<br>
+                                        <strong>CAS Number:</strong> 7790-92-3
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <strong>Concentration:</strong> 163-200 ppm FAC<br>
+                                        <strong>EPA Registration:</strong> 97801-1
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <strong>Safety Rating:</strong> NFPA 0-0-0-0<br>
+                                        <strong>OSHA Status:</strong> Non-Hazardous
+                                    </div>
+                                </div>
+                                <p class="mb-0 mt-2"><small><strong>Recommended Use:</strong> Cleaner, Deodorizer, Disinfectant for meat and poultry processing facilities</small></p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Download Links Section -->
-                <div class="sds-downloads mb-5">
-                    <h5 class="fw-bold text-center mb-4">📄 Safety Data Sheet Downloads</h5>
-                    <div class="row justify-content-center">
-                        <div class="col-md-6 mb-3">
-                            <a href="documents/sds/HOCL - Safety Data Sheet.pdf" class="btn btn-success btn-block w-100" download>
-                                📄 Download HOCl Safety Data Sheet
-                            </a>
+                    <!-- FSIS Resources Card -->
+                    <div class="sds-doc-card mt-4">
+                        <div class="sds-doc-header" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);" data-bs-toggle="collapse" data-bs-target="#fsis-docs" aria-expanded="false" aria-controls="fsis-docs">
+                            <div>
+                                <h5>🏛️ FSIS Compliance Documentation</h5>
+                                <p class="mb-0 small opacity-75">FSIS Directive 7120 - Safe and Suitable Ingredients</p>
+                            </div>
+                            <div class="sds-toggle-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <!-- SDS Key Information -->
-                    <div class="card mt-4 bg-light">
-                        <div class="card-body">
-                            <h6 class="fw-bold mb-3">HOCl Solution Key Information:</h6>
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <strong>Chemical Formula:</strong> HOCl<br>
-                                    <strong>CAS Number:</strong> 7790-92-3
+                        <div class="collapse sds-doc-body" id="fsis-docs">
+                            <div class="p-4">
+                                <div class="row mb-4">
+                                    <div class="col-md-4 text-center mb-3">
+                                        <div class="certification-badge mb-2">FSIS Approved</div>
+                                        <p class="small">Electrolytically generated hypochlorous acid approved for multiple applications</p>
+                                    </div>
+                                    <div class="col-md-4 text-center mb-3">
+                                        <div class="certification-badge mb-2">9 CFR 416</div>
+                                        <p class="small">Meeting FSIS requirements for standard programs</p>
+                                    </div>
+                                    <div class="col-md-4 text-center mb-3">
+                                        <div class="certification-badge mb-2">EPA Registered</div>
+                                        <p class="small">EPA Registration Number 97801-1</p>
+                                    </div>
                                 </div>
-                                <div class="col-md-4 mb-3">
-                                    <strong>Concentration:</strong> 163-200 ppm FAC<br>
-                                    <strong>EPA Registration:</strong> 97801-1
+                                
+                                <h6 class="fw-bold mb-3">FSIS Directive 7120 - Antimicrobial Tables:</h6>
+                                <div class="row mb-4">
+                                    <div class="col-md-6 mb-3">
+                                        <a href="documents/fsis/FSIS Directive 7120.table_1.pdf" class="sds-download-btn w-100 d-block text-center" download>
+                                            <i class="fas fa-download me-2"></i>Table 1 - Antimicrobials
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <a href="documents/fsis/FSIS Directive 7120.table_2.pdf" class="sds-download-btn w-100 d-block text-center" download>
+                                            <i class="fas fa-download me-2"></i>Table 2 - Safe & Suitable Ingredients
+                                        </a>
+                                    </div>
                                 </div>
-                                <div class="col-md-4 mb-3">
-                                    <strong>Safety Rating:</strong> NFPA 0-0-0-0<br>
-                                    <strong>OSHA Status:</strong> Non-Hazardous
+
+                                <!-- FSIS Approved Applications -->
+                                <div class="sds-key-info">
+                                    <h6 class="fw-bold mb-3">FSIS Approved HOCl Applications:</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-hover">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Application</th>
+                                                    <th>Maximum Concentration</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr><td>Red Meat Carcasses (spray)</td><td>≤50 ppm FAC</td></tr>
+                                                <tr><td>Poultry Carcasses (spray)</td><td>≤50 ppm FAC</td></tr>
+                                                <tr><td>Meat Processing Water</td><td>≤5 ppm FAC</td></tr>
+                                                <tr><td>Poultry Processing Water</td><td>≤50 ppm FAC</td></tr>
+                                                <tr><td>Poultry Chiller Water</td><td>≤50 ppm FAC</td></tr>
+                                                <tr><td>Poultry Chiller Red Water</td><td>≤5 ppm FAC</td></tr>
+                                                <tr><td>Giblets and Salvage Parts</td><td>≤50 ppm FAC</td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <p class="small text-muted mb-0 mt-3">
+                                        <strong>Note:</strong> FAC = Free Available Chlorine. Our product at 163-200 ppm concentration must be diluted appropriately for specific FSIS-approved applications as shown above.
+                                    </p>
+                                </div>
+
+                                <div class="alert alert-info mt-4" role="alert">
+                                    <h6 class="fw-bold"><i class="fas fa-info-circle"></i> Regulatory Compliance</h6>
+                                    <p class="mb-2">Our hypochlorous acid solution complies with:</p>
+                                    <ul class="mb-0">
+                                        <li>FSIS Directive 7120 - Safe and Suitable Ingredients</li>
+                                        <li>21 CFR (Code of Federal Regulations) food contact requirements</li>
+                                        <li>OSHA Hazard Communication Standard (29 CFR 1910.1200)</li>
+                                        <li>EPA antimicrobial registration requirements</li>
+                                    </ul>
+                                </div>
+
+                                <div class="text-center mt-3">
+                                    <p class="small text-muted">For questions regarding FSIS compliance, contact FSIS at 1-800-233-3935 or visit <a href="https://www.fsis.usda.gov" target="_blank">www.fsis.usda.gov</a></p>
                                 </div>
                             </div>
-                            <p class="mb-0 mt-2"><small><strong>Recommended Use:</strong> Cleaner, Deodorizer, Disinfectant for meat and poultry processing facilities</small></p>
                         </div>
-                    </div>
-                </div>
-
-                <!-- FSIS Resources Section -->
-                <div class="fsis-resources">
-                    <h5 class="fw-bold text-center mb-4">🏛️ FSIS Compliance Documentation</h5>
-                    <p class="text-center mb-4">FSIS Directive 7120 - Safe and Suitable Ingredients for meat and poultry processing facilities</p>
-                    
-                    <div class="row mb-4">
-                        <div class="col-md-4 text-center mb-3">
-                            <div class="certification-badge mb-2">FSIS Approved</div>
-                            <p class="small">Electrolytically generated hypochlorous acid approved for multiple applications</p>
-                        </div>
-                        <div class="col-md-4 text-center mb-3">
-                            <div class="certification-badge mb-2">9 CFR 416</div>
-                            <p class="small">Meeting FSIS requirements for standard programs</p>
-                        </div>
-                        <div class="col-md-4 text-center mb-3">
-                            <div class="certification-badge mb-2">EPA Registered</div>
-                            <p class="small">EPA Registration Number 97801-1</p>
-                        </div>
-                    </div>
-                    
-                    <!-- FSIS Table Downloads -->
-                    <h6 class="fw-bold mb-3">FSIS Directive 7120 - Antimicrobial Tables:</h6>
-                    <div class="row mb-4">
-                        <div class="col-md-6 mb-3">
-                            <a href="documents/fsis/FSIS Directive 7120.table_1.pdf" class="btn btn-outline-primary w-100" download>
-                                📋 Download FSIS Table 1 - Antimicrobials
-                            </a>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <a href="documents/fsis/FSIS Directive 7120.table_2.pdf" class="btn btn-outline-primary w-100" download>
-                                📋 Download FSIS Table 2 - Safe & Suitable Ingredients
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- FSIS Approved Applications -->
-                    <div class="card bg-light">
-                        <div class="card-body">
-                            <h6 class="fw-bold mb-3">FSIS Approved HOCl Applications:</h6>
-                            <div class="table-responsive">
-                                <table class="table table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Application</th>
-                                            <th>Maximum Concentration</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Red Meat Carcasses (spray)</td>
-                                            <td>≤50 ppm FAC</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Poultry Carcasses (spray)</td>
-                                            <td>≤50 ppm FAC</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Meat Processing Water</td>
-                                            <td>≤5 ppm FAC</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Poultry Processing Water</td>
-                                            <td>≤50 ppm FAC</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Poultry Chiller Water</td>
-                                            <td>≤50 ppm FAC</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Poultry Chiller Red Water</td>
-                                            <td>≤5 ppm FAC</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Giblets and Salvage Parts</td>
-                                            <td>≤50 ppm FAC</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <p class="small text-muted mb-0 mt-3">
-                                <strong>Note:</strong> FAC = Free Available Chlorine. Our product at 163-200 ppm concentration must be diluted appropriately for specific FSIS-approved applications as shown above.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Regulatory Compliance Info -->
-                    <div class="alert alert-info mt-4" role="alert">
-                        <h6 class="fw-bold"><i class="fas fa-info-circle"></i> Regulatory Compliance</h6>
-                        <p class="mb-2">Our hypochlorous acid solution complies with:</p>
-                        <ul class="mb-0">
-                            <li>FSIS Directive 7120 - Safe and Suitable Ingredients</li>
-                            <li>21 CFR (Code of Federal Regulations) food contact requirements</li>
-                            <li>OSHA Hazard Communication Standard (29 CFR 1910.1200)</li>
-                            <li>EPA antimicrobial registration requirements</li>
-                        </ul>
-                    </div>
-
-                    <div class="text-center mt-4">
-                        <p class="small text-muted">For questions regarding FSIS compliance, contact FSIS at 1-800-233-3935 or visit <a href="https://www.fsis.usda.gov" target="_blank">www.fsis.usda.gov</a></p>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<style>
-.certification-badge {
-    display: inline-block;
-    padding: 8px 16px;
-    background-color: #198754;
-    color: white;
-    border-radius: 20px;
-    font-weight: bold;
-    font-size: 0.9rem;
-}
-
-.table th {
-    background-color: #f8f9fa;
-    font-weight: 600;
-}
-
-.table td, .table th {
-    vertical-align: middle;
-    padding: 0.75rem;
-}
-</style>
-
-    <!-- SDS Safety Comparison -->
+    <!-- SDS Safety Comparison - FULL CONTENT VISIBLE -->
     <section id="sds-comparison" class="py-5">
         <div class="container">
             <div class="text-center mb-5">
@@ -1846,11 +1812,6 @@
                         <p class="small mt-2">Eliminate chemical exposure risks</p>
                     </div>
                 </div>
-                <div class="mt-3">
-                    <small class="text-muted">
-                                          
-                    </small>
-                </div>
             </div>
         </div>
     </section>
@@ -1882,14 +1843,14 @@
                             <div class="mb-3">
                                 <div class="subscription-highlight mb-2">Residential Plans</div>
                                 <h3 class="text-success">Up to 14¢/sq ft*</h3>
-                                <p class="text-muted">Discounts up to 20% with annual contracts</p>
+                                <p class="text-muted">Save up to 20% with subscription contracts</p>
                             </div>
                             <ul class="list-unstyled text-start">
                                 <li>✓ Whole home sanitization</li>
                                 <li>✓ Priority scheduling</li>
-                                <li>✓ Monthly contracts: 15% discount</li>
-                                <li>✓ Quarterly contracts: 10% discount</li>
-                                <li>✓ Annual contracts: 20% discount + bonus services</li>
+                                <li>✓ Monthly contracts available</li>
+                                <li>✓ Quarterly contracts available</li>
+                                <li>✓ Annual contracts: Best savings + bonus services</li>
                                 <li>✓ Free consultations and service documentation</li>
                             </ul>
                             <div class="mt-3">
@@ -1908,14 +1869,14 @@
                             <div class="mb-3">
                                 <div class="subscription-highlight mb-2">Commercial Plans</div>
                                 <h3 class="text-primary">Up to 12¢/sq ft*</h3>
-                                <p class="text-muted">Discounts up to 20% with annual contracts</p>
+                                <p class="text-muted">Save up to 20% with subscription contracts</p>
                             </div>
                             <ul class="list-unstyled text-start">
                                 <li>✓ Complete facility sanitization</li>
                                 <li>✓ Compliance documentation</li>
-                                <li>✓ Monthly contracts: 15% discount</li>
-                                <li>✓ Bi-monthly contracts: 10% discount</li>
-                                <li>✓ Annual contracts: 20% discount + bonus services</li>
+                                <li>✓ Monthly contracts available</li>
+                                <li>✓ Bi-monthly contracts available</li>
+                                <li>✓ Annual contracts: Best savings + bonus services</li>
                                 <li>✓ Priority scheduling and quarterly reports</li>
                             </ul>
                             <div class="mt-3">
@@ -1934,15 +1895,15 @@
                             <div class="mb-3">
                                 <div class="subscription-highlight mb-2">Specialized Industry Plans</div>
                                 <h3 class="text-warning">Custom Pricing*</h3>
-                                <p class="text-muted">Tailored to your existing SOPs - Discounts up to 20%</p>
+                                <p class="text-muted">Tailored to your existing SOPs - Save up to 20%</p>
                             </div>
                             <ul class="list-unstyled text-start">
                                 <li>✓ Healthcare facility protocols</li>
                                 <li>✓ Food processing integration</li>
                                 <li>✓ Agricultural compliance programs</li>
-                                <li>✓ Monthly contracts: 15% discount</li>
-                                <li>✓ Bi-monthly contracts: 10% discount</li>
-                                <li>✓ Annual contracts: 20% discount + bonus services</li>
+                                <li>✓ Monthly contracts available</li>
+                                <li>✓ Bi-monthly contracts available</li>
+                                <li>✓ Annual contracts: Best savings + bonus services</li>
                                 <li>✓ EPA compliance documentation included</li>
                             </ul>
                             <div class="mt-3">
@@ -2103,80 +2064,81 @@
         </div>
     </section>
 
- <!-- Product Selection for Maximum Results -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold">Professional HOCl Products</h2>
-            <p class="lead">Dual-certified hypochlorous acid solutions for comprehensive applications</p>
-            <div class="mt-3">
-                <span class="cert-badge">EPA Registered #97801-1</span>
-                <span class="cert-badge">USDA Certified Organic #8150019050</span>
+    <!-- Product Selection for Maximum Results -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">Professional HOCl Products</h2>
+                <p class="lead">Dual-certified hypochlorous acid solutions for comprehensive applications</p>
+                <div class="mt-3">
+                    <span class="certification-badge">EPA Registered #97801-1</span>
+                    <span class="certification-badge">USDA Certified Organic #8150019050</span>
+                </div>
             </div>
-        </div>
-        
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="card border-0 shadow-lg">
-                    <div class="card-header text-white text-center" style="background: linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-primary-blue));">
-                        <h5 class="mb-2 fw-bold">Same Professional HOCl Formula - Dual Certification Advantages</h5>
-                        <p class="mb-0 small">Our hypochlorous acid products carry both EPA registration AND USDA organic certification</p>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="row">
-                            <div class="col-lg-6 mb-4">
-                                <div class="d-flex align-items-start mb-3">
-                                    <div class="me-3">
-                                        <i class="fas fa-seedling fa-2x text-success"></i>
-                                    </div>
-                                    <div>
-                                        <h6 class="fw-bold text-success mb-2">USDA Certified Organic Applications</h6>
-                                        <p class="text-muted small mb-2">When organic certification matters most:</p>
-                                    </div>
-                                </div>
-                                <ul class="list-unstyled ms-5">
-                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Residential properties</li>
-                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Food service operations</li>
-                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Childcare facilities</li>
-                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Organic food processing</li>
-                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Pet care facilities</li>
-                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Eco-conscious businesses</li>
-                                </ul>
-                            </div>
-                            
-                            <div class="col-lg-6 mb-4">
-                                <div class="d-flex align-items-start mb-3">
-                                    <div class="me-3">
-                                        <i class="fas fa-shield-alt fa-2x text-primary"></i>
-                                    </div>
-                                    <div>
-                                        <h6 class="fw-bold text-primary mb-2">EPA Registered Applications</h6>
-                                        <p class="text-muted small mb-2">When maximum efficacy claims are required:</p>
-                                    </div>
-                                </div>
-                                <ul class="list-unstyled ms-5">
-                                    <li class="mb-2"><i class="fas fa-check text-primary me-2"></i>Healthcare facilities</li>
-                                    <li class="mb-2"><i class="fas fa-check text-primary me-2"></i>Commercial properties</li>
-                                    <li class="mb-2"><i class="fas fa-check text-primary me-2"></i>Industrial facilities</li>
-                                    <li class="mb-2"><i class="fas fa-check text-primary me-2"></i>Educational institutions</li>
-                                    <li class="mb-2"><i class="fas fa-check text-primary me-2"></i>High-traffic public areas</li>
-                                    <li class="mb-2"><i class="fas fa-check text-primary me-2"></i>Professional cleaning services</li>
-                                </ul>
-                            </div>
+            
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card border-0 shadow-lg">
+                        <div class="card-header text-white text-center" style="background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));">
+                            <h5 class="mb-2 fw-bold">Same Professional HOCl Formula - Dual Certification Advantages</h5>
+                            <p class="mb-0 small">Our hypochlorous acid products carry both EPA registration AND USDA organic certification</p>
                         </div>
-
-                        <div class="alert alert-info mb-0">
-                            <div class="row align-items-center">
-                                <div class="col-md-8">
-                                    <h6 class="fw-bold mb-2">
-                                        <i class="fas fa-star me-2"></i>The Dual-Certification Advantage
-                                    </h6>
-                                    <p class="mb-0 small">Our HOCl products are the only disinfectants with both EPA registration (proving 99.9% antimicrobial efficacy) AND USDA organic certification. Safe for food contact surfaces with no rinse required (FDA FCN 1811). Choose the certification that matters most for your compliance needs.</p>
+                        <div class="card-body p-4">
+                            <div class="row">
+                                <div class="col-lg-6 mb-4">
+                                    <div class="d-flex align-items-start mb-3">
+                                        <div class="me-3">
+                                            <i class="fas fa-seedling fa-2x text-success"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="fw-bold text-success mb-2">USDA Certified Organic Applications</h6>
+                                            <p class="text-muted small mb-2">When organic certification matters most:</p>
+                                        </div>
+                                    </div>
+                                    <ul class="list-unstyled ms-5">
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Residential properties</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Food service operations</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Childcare facilities</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Organic food processing</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Pet care facilities</li>
+                                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Eco-conscious businesses</li>
+                                    </ul>
                                 </div>
-                                <div class="col-md-4 text-center">
-                                    <a href="products.html" class="btn btn-success btn-sm mt-2">
-                                        <i class="fas fa-shopping-bag me-2"></i>Shop HOCl Products
-                                    </a>
+                                
+                                <div class="col-lg-6 mb-4">
+                                    <div class="d-flex align-items-start mb-3">
+                                        <div class="me-3">
+                                            <i class="fas fa-shield-alt fa-2x text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="fw-bold text-primary mb-2">EPA Registered Applications</h6>
+                                            <p class="text-muted small mb-2">When maximum efficacy claims are required:</p>
+                                        </div>
+                                    </div>
+                                    <ul class="list-unstyled ms-5">
+                                        <li class="mb-2"><i class="fas fa-check text-primary me-2"></i>Healthcare facilities</li>
+                                        <li class="mb-2"><i class="fas fa-check text-primary me-2"></i>Commercial properties</li>
+                                        <li class="mb-2"><i class="fas fa-check text-primary me-2"></i>Industrial facilities</li>
+                                        <li class="mb-2"><i class="fas fa-check text-primary me-2"></i>Educational institutions</li>
+                                        <li class="mb-2"><i class="fas fa-check text-primary me-2"></i>High-traffic public areas</li>
+                                        <li class="mb-2"><i class="fas fa-check text-primary me-2"></i>Professional cleaning services</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info mb-0">
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <h6 class="fw-bold mb-2">
+                                            <i class="fas fa-star me-2"></i>The Dual-Certification Advantage
+                                        </h6>
+                                        <p class="mb-0 small">Our HOCl products are the only disinfectants with both EPA registration (proving 99.9% antimicrobial efficacy) AND USDA organic certification. Safe for food contact surfaces with no rinse required (FDA FCN 1811). Choose the certification that matters most for your compliance needs.</p>
+                                    </div>
+                                    <div class="col-md-4 text-center">
+                                        <a href="products.html" class="btn btn-success btn-sm mt-2">
+                                            <i class="fas fa-shopping-bag me-2"></i>Shop HOCl Products
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -2184,8 +2146,7 @@
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
     <!-- Allergen Reduction Benefits -->
     <section class="py-5">
@@ -2413,17 +2374,6 @@
         // Close promotional banner
         function closeBanner() {
             document.getElementById('promoBanner').style.display = 'none';
-        }
-
-        // SDS Download functionality
-        function downloadSDS(type) {
-            if (type === 'hocl') {
-                // Trigger download of HOCl SDS
-                alert('HOCl Safety Data Sheet download would be triggered here');
-            } else if (type === 'quaternary') {
-                // Trigger download of Quaternary Ammonium SDS
-                alert('Quaternary Ammonium Safety Data Sheet download would be triggered here');
-            }
         }
 
         // Initialize everything after DOM loads
