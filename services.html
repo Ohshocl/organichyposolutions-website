@@ -321,23 +321,27 @@
             }
         }
 
-        /* Desktop: Always show expanded content */
-        @media (min-width: 769px) {
-            .expand-content {
-                display: block !important;
-                max-height: none;
-                overflow: visible;
-            }
-            
-            .expand-indicator {
-                display: none;
-            }
-            
-            .service-card {
-                height: auto;
-                min-height: 600px;
-            }
-        }
+       /* Desktop: Show expanded content on hover */
+@media (min-width: 769px) {
+    .expand-content {
+        display: none;
+        max-height: none;
+        overflow: visible;
+    }
+    
+    .service-card:hover .expand-content {
+        display: block !important;
+    }
+    
+    .expand-indicator {
+        display: none;
+    }
+    
+    .service-card {
+        height: auto;
+        transition: all 0.3s ease;
+    }
+}
 
         @keyframes slideDown {
             from {
