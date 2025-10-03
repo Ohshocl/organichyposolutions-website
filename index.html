@@ -703,20 +703,21 @@
         }
 
         .stat-card {
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: auto; /* Don't create a new stacking context */
+}
 
-        .stat-card:hover {
-            background: rgba(255,255,255,0.15);
-            transform: scale(1.05);
-        }
-
+.stat-card:hover {
+    background: rgba(255,255,255,0.15);
+    transform: scale(1.05);
+    z-index: 10600; /* Only increase z-index on hover */
+}
         .stat-card::after {
             content: 'ⓘ';
             position: absolute;
@@ -770,27 +771,27 @@
         }
 
         /* MOBILE-FRIENDLY TOOLTIPS */
-        .tooltip-content {
-            position: absolute;
-            bottom: 120%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.95);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            min-width: 280px;
-            max-width: 90vw;
-            z-index: 10000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            font-size: 0.9em;
-            text-align: left;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.1);
-            pointer-events: none;
-        }
+.tooltip-content {
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.95);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    min-width: 280px;
+    max-width: 90vw;
+    z-index: 10500; /* Higher than navbar's 1020 */
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+    text-align: left;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+    pointer-events: none;
+}
         .stat-card.active .tooltip-content {
             opacity: 1;
             visibility: visible;
