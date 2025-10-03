@@ -681,7 +681,6 @@
     border-radius: 20px;
     padding: 30px;
     border: 1px solid rgba(255,255,255,0.15);
-    margin-top: 100px; /* Add this to create space from navbar */
 }
 
         .stats-title {
@@ -773,8 +772,8 @@
 
         /* MOBILE-FRIENDLY TOOLTIPS */
 .tooltip-content {
-    position: absolute;
-    bottom: 120%;
+    position: fixed; /* Changed from absolute */
+    top: 150px; /* Fixed distance from top of viewport, below navbar */
     left: 50%;
     transform: translateX(-50%);
     background: rgba(0,0,0,0.95);
@@ -783,7 +782,7 @@
     border-radius: 12px;
     min-width: 280px;
     max-width: 90vw;
-    z-index: 10500; /* Higher than navbar's 1020 */
+    z-index: 10500;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
