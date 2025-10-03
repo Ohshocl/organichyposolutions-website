@@ -245,94 +245,214 @@
             z-index: 2;
         }
 
-        /* SERVICE CARDS WITH HOVER EXPANSION */
+        /* CONSOLIDATED SERVICE CARD STYLES */
         .service-card {
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
             transition: all 0.3s ease;
-            height: auto;
-            border: none;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            border-radius: 15px;
-            overflow: hidden;
-            background: white;
             cursor: pointer;
+            height: auto;
+            overflow: visible;
             position: relative;
-        }
-
-        .service-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
 
         .service-card .card-body {
+            overflow: visible;
             position: relative;
-            padding: 2rem !important;
+            padding: 20px;
         }
 
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-color: #007bff;
+        }
+
+        /* Expand content - hidden by default on mobile */
         .expand-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease, opacity 0.3s ease;
-            opacity: 0;
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+            overflow: visible;
+            max-height: none;
+            width: 100%;
+            box-sizing: border-box;
         }
 
-        .service-card:hover .expand-content,
-        .service-card.mobile-expanded .expand-content {
-            max-height: 800px;
-            opacity: 1;
-            margin-top: 1rem;
-        }
-
+        /* Expand indicator - only visible on mobile */
         .expand-indicator {
-            position: absolute;
-            bottom: 1rem;
-            right: 1rem;
-            background: var(--primary-blue);
-            color: white;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #6c757d;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
         }
 
-        .service-card:hover .expand-indicator {
-            transform: rotate(180deg);
-            background: var(--primary-green);
-        }
-
-        /* Mobile tap functionality */
+        /* Mobile: Click to expand */
         @media (max-width: 768px) {
+            .service-card.expanded .expand-content,
+            .service-card.mobile-expanded .expand-content {
+                display: block !important;
+                animation: slideDown 0.3s ease-out;
+                overflow: visible;
+            }
+            
+            .service-card.expanded .expand-indicator i,
+            .service-card.mobile-expanded .expand-indicator i {
+                transform: rotate(45deg);
+            }
+            
             .service-card {
-                cursor: pointer;
+                margin-bottom: 25px;
+            }
+            
+            .expand-content {
+                padding: 15px 0;
+                overflow: visible;
+            }
+            
+            .col-lg-6 {
+                margin-bottom: 25px;
+            }
+        }
+
+        /* Desktop: Always show expanded content */
+        @media (min-width: 769px) {
+            .expand-content {
+                display: block !important;
+                max-height: none;
+                overflow: visible;
             }
             
             .expand-indicator {
-                display: flex;
+                display: none;
+            }
+            
+            .service-card {
+                height: auto;
+                min-height: 600px;
             }
         }
 
-        .price-highlight {
-            background: linear-gradient(45deg, var(--warning-gold), #fbbf24);
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                max-height: 3000px;
+            }
+        }
+
+        /* Content organization */
+        .expand-content .row {
+            margin: 0 -5px;
+            margin-bottom: 1rem;
+        }
+        
+        .expand-content .col-md-6 {
+            padding: 0 5px;
+            margin-bottom: 15px;
+        }
+        
+        .expand-content h6 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+        
+        .expand-content ul.small {
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+        }
+        
+        .expand-content ul.small li {
+            margin-bottom: 3px;
+            word-wrap: break-word;
+        }
+        
+        .expand-content ul.list-unstyled li {
+            margin-bottom: 5px;
+        }
+
+        /* Ensure proper containment */
+        .container, .row, .col-lg-6 {
+            overflow: visible !important;
+        }
+
+        /* BADGE STYLES */
+        .quality-badge {
+            background: linear-gradient(135deg, #28a745, #20c997);
             color: white;
-            padding: 0.5rem 1rem;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin: 2px;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+        }
+
+        .risk-badge {
+            background: linear-gradient(135deg, #dc3545, #e74c3c);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin: 2px;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+        }
+
+        .prevention-badge {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin: 2px;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+        }
+
+        .certification-badge {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin: 2px;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+        }
+
+        .price-highlight {
+            background: linear-gradient(135deg, #ffc107, #ff8c00);
+            color: white;
+            padding: 8px 12px;
             border-radius: 8px;
             font-weight: bold;
-            display: inline-block;
-            margin: 0.25rem;
+            text-align: center;
+            margin-bottom: 5px;
+            display: block;
         }
 
         .subscription-highlight {
-            background: linear-gradient(45deg, #6f42c1, #e83e8c);
+            background: linear-gradient(135deg, #17a2b8, #138496);
             color: white;
-            padding: 0.4rem 0.8rem;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            display: inline-block;
-            margin: 0.2rem;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
         .measurement-badge {
@@ -343,6 +463,31 @@
             font-weight: bold;
             display: inline-block;
             margin: 0.25rem;
+        }
+
+        /* CONTENT SECTIONS */
+        .food-quality-benefits, .agricultural-quality-benefits {
+            background: #f8f9fa;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .industry-risks {
+            background: #fff5f5;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .prevention-solutions {
+            background: #f0f8f0;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
         }
 
         .quality-standard {
@@ -386,214 +531,226 @@
             font-size: 1.2rem;
         }
 
-        .certification-badge {
-            background: linear-gradient(45deg, var(--primary-green), var(--primary-blue));
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.85rem;
-            margin: 0.2rem;
-            display: inline-block;
-        }
-
-        /* Risk highlight badges */
-        .risk-badge {
-            background: linear-gradient(45deg, #dc3545, #e74c3c);
-            color: white;
-            padding: 0.3rem 0.8rem;
+        /* SDS Documentation Styles */
+        .sds-doc-card {
+            background: white;
             border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            display: inline-block;
-            margin: 0.2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 20px;
         }
 
-        .prevention-badge {
-            background: linear-gradient(45deg, #28a745, #20c997);
+        .sds-doc-header {
+            background: linear-gradient(135deg, #2E5EAA, #7DD3FC);
             color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            display: inline-block;
-            margin: 0.2rem;
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
         }
 
-        /* Industry risk sections */
-        .industry-risks {
-            background: linear-gradient(135deg, #fff5f5, #fef2f2);
-            border-left: 4px solid #dc3545;
-            padding: 1rem;
-            margin: 1rem 0;
+        .sds-doc-header:hover {
+            transform: translateX(5px);
+        }
+
+        .sds-doc-header h5 {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .sds-toggle-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .sds-doc-header[aria-expanded="true"] .sds-toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .sds-doc-body {
+            background: white;
+        }
+
+        .sds-download-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 10px 20px;
             border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
 
-        .prevention-solutions {
+        .sds-download-btn:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .sds-key-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        /* SDS Comparison Styles */
+        .sds-comparison {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            height: 100%;
+            border: 2px solid #dc3545;
+        }
+
+        .sds-comparison.sds-safe {
+            border: 2px solid #28a745;
+        }
+
+        .hazard-symbol, .safety-symbol {
+            display: inline-block;
+            font-size: 2.5rem;
+            margin: 0 5px;
+        }
+
+        /* Allergen Disclaimer */
+        .allergen-disclaimer {
             background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
-            border-left: 4px solid #16a34a;
-            padding: 1rem;
-            margin: 1rem 0;
+            border: 1px solid #16a34a;
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        /* Pricing Disclaimer */
+        .pricing-disclaimer {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            padding: 15px;
             border-radius: 8px;
         }
 
-/* Service Card Styles - CONSOLIDATED */
-.service-card {
-    border: 1px solid #e9ecef;
-    border-radius: 12px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    height: auto;
-    overflow: visible;
-    position: relative;
-    margin-bottom: 30px;
-}
+        /* Footer Styles */
+        .footer-section {
+            background: #2E5EAA;
+            color: white;
+            padding: 3rem 0 1rem;
+            margin-top: 50px;
+        }
 
-.service-card .card-body {
-    overflow: visible;
-    position: relative;
-    padding: 20px;
-}
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
 
-.service-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    border-color: #007bff;
-}
+        .footer-brand-name {
+            color: white;
+            margin-bottom: 0;
+            margin-left: 10px;
+        }
 
-/* Expand content - hidden by default on mobile */
-.expand-content {
-    display: none;
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #e9ecef;
-    overflow: visible;
-}
+        .footer-tagline {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
 
-/* Expand indicator - only visible on mobile */
-.expand-indicator {
-    display: block;
-    text-align: center;
-    margin-top: 15px;
-    color: #6c757d;
-    font-size: 1.2rem;
-    transition: transform 0.3s ease;
-}
+        .footer-heading {
+            color: #7DD3FC;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
 
-/* Mobile: Click to expand */
-@media (max-width: 768px) {
-    .service-card.expanded .expand-content {
-        display: block;
-        animation: slideDown 0.3s ease-out;
-    }
-    
-    .service-card.expanded .expand-indicator i {
-        transform: rotate(45deg);
-    }
-}
+        .footer-list {
+            list-style: none;
+            padding: 0;
+        }
 
-/* Desktop: Always show expanded content */
-@media (min-width: 769px) {
-    .expand-content {
-        display: block !important;
-    }
-    
-    .expand-indicator {
-        display: none;
-    }
-}
+        .footer-list li {
+            margin-bottom: 8px;
+        }
 
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        max-height: 0;
-    }
-    to {
-        opacity: 1;
-        max-height: 3000px;
-    }
-}
+        .footer-list a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
 
-/* Supporting badge styles */
-.food-quality-benefits, .agricultural-quality-benefits {
-    background: #f8f9fa;
-    border-left: 4px solid #28a745;
-    padding: 15px;
-    margin: 15px 0;
-    border-radius: 0 8px 8px 0;
-}
+        .footer-list a:hover {
+            color: #7DD3FC;
+        }
 
-.quality-badge {
-    background: linear-gradient(135deg, #28a745, #20c997);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    margin: 2px;
-    display: inline-block;
-    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
-}
+        .footer-contact {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
 
-.industry-risks {
-    background: #fff5f5;
-    border-left: 4px solid #dc3545;
-    padding: 15px;
-    margin: 15px 0;
-    border-radius: 0 8px 8px 0;
-}
+        .footer-contact a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
 
-.prevention-solutions {
-    background: #f0f8f0;
-    border-left: 4px solid #28a745;
-    padding: 15px;
-    margin: 15px 0;
-    border-radius: 0 8px 8px 0;
-}
+        .footer-contact a:hover {
+            color: #7DD3FC;
+        }
 
-.risk-badge {
-    background: linear-gradient(135deg, #dc3545, #e74c3c);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    margin: 2px;
-    display: inline-block;
-    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
-}
+        .footer-contact i {
+            width: 16px;
+            margin-right: 8px;
+            color: #7DD3FC;
+        }
 
-.prevention-badge {
-    background: linear-gradient(135deg, #28a745, #20c997);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    margin: 2px;
-    display: inline-block;
-    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
-}
+        .social-icons {
+            margin-top: 20px;
+        }
 
-.certification-badge {
-    background: linear-gradient(135deg, #007bff, #0056b3);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    margin: 2px;
-    display: inline-block;
-    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
-}
+        .social-icons a {
+            display: inline-block;
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 36px;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+            color: white;
+        }
 
-.subscription-highlight {
-    background: linear-gradient(135deg, #17a2b8, #138496);
-    color: white;
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
+        .social-icons a:hover {
+            background: #7DD3FC;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .footer-badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .footer-badges {
+                justify-content: center;
+                margin-top: 15px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1402,620 +1559,6 @@
             </div>
         </div>
     </section>
-
-    <style>
-    .food-quality-benefits, .agricultural-quality-benefits {
-        background: #f8f9fa;
-        border-left: 4px solid #28a745;
-        padding: 15px;
-        margin: 15px 0;
-        border-radius: 0 8px 8px 0;
-    }
-    
-    .quality-badge {
-        background: linear-gradient(135deg, #28a745, #20c997);
-        color: white;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 500;
-        margin: 2px;
-        display: inline-block;
-        box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
-    }
-    
-    .industry-risks {
-        background: #fff5f5;
-        border-left: 4px solid #dc3545;
-        padding: 15px;
-        margin: 15px 0;
-        border-radius: 0 8px 8px 0;
-    }
-    
-    .prevention-solutions {
-        background: #f0f8f0;
-        border-left: 4px solid #28a745;
-        padding: 15px;
-        margin: 15px 0;
-        border-radius: 0 8px 8px 0;
-    }
-    
-    .risk-badge {
-        background: linear-gradient(135deg, #dc3545, #e74c3c);
-        color: white;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 500;
-        margin: 2px;
-        display: inline-block;
-        box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
-    }
-    
-    .prevention-badge {
-        background: linear-gradient(135deg, #28a745, #20c997);
-        color: white;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 500;
-        margin: 2px;
-        display: inline-block;
-        box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
-    }
-    
-    .certification-badge {
-        background: linear-gradient(135deg, #007bff, #0056b3);
-        color: white;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 500;
-        margin: 2px;
-        display: inline-block;
-        box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
-    }
-    
-    .service-card {
-        border: 1px solid #e9ecef;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        height: auto;
-        overflow: hidden;
-        position: relative;
-        margin-bottom: 30px;
-    }
-    
-    .service-card .card-body {
-        overflow: hidden;
-        position: relative;
-        padding: 20px;
-    }
-    
-    .service-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        border-color: #007bff;
-    }
-    
-    .expand-content {
-        display: none;
-        margin-top: 20px;
-        padding-top: 20px;
-        border-top: 1px solid #e9ecef;
-        overflow: hidden;
-        max-height: none;
-        width: 100%;
-        box-sizing: border-box;
-    }
-    
-    .expand-indicator {
-        text-align: center;
-        margin-top: 15px;
-        color: #6c757d;
-        font-size: 1.2rem;
-        transition: transform 0.3s ease;
-    }
-    
-    .subscription-highlight {
-        background: linear-gradient(135deg, #17a2b8, #138496);
-        color: white;
-        padding: 6px 10px;
-        border-radius: 6px;
-        font-size: 0.9rem;
-        font-weight: 500;
-    }
-    
-    /* Ensure proper containment */
-    .col-lg-6 {
-        overflow: visible;
-        margin-bottom: 30px;
-        position: relative;
-    }
-    
-    /* Better content organization */
-    .expand-content .row {
-        margin: 0 -5px;
-    }
-    
-    .expand-content .col-md-6 {
-        padding: 0 5px;
-        margin-bottom: 15px;
-    }
-    
-    .expand-content h6 {
-        margin-top: 1.5rem;
-        margin-bottom: 0.75rem;
-        font-size: 1rem;
-    }
-    
-    .expand-content ul.small {
-        margin-bottom: 1rem;
-        font-size: 0.85rem;
-    }
-    
-    .expand-content ul.small li {
-        margin-bottom: 3px;
-        word-wrap: break-word;
-    }
-    
-    .expand-content ul.list-unstyled li {
-        margin-bottom: 5px;
-    }
-    
-    /* Mobile expandable functionality */
-    @media (max-width: 768px) {
-        .service-card {
-            overflow: visible;
-        }
-        
-        .service-card.expanded .expand-content {
-            display: block !important;
-            animation: slideDown 0.3s ease-out;
-            overflow: visible;
-        }
-        
-        .service-card.expanded .expand-indicator i {
-            transform: rotate(45deg);
-        }
-        
-        .service-card {
-            margin-bottom: 25px;
-        }
-        
-        .expand-content {
-            padding: 15px 0;
-            overflow: visible;
-        }
-        
-        .col-lg-6 {
-            margin-bottom: 25px;
-        }
-    }
-    
-    /* Desktop - always show expanded content */
-    @media (min-width: 769px) {
-        .service-card {
-            overflow: visible;
-            height: auto;
-        }
-        
-        .service-card .card-body {
-            overflow: visible;
-        }
-        
-        .expand-content {
-            display: block !important;
-            overflow: visible;
-            max-height: none;
-        }
-        
-        .expand-indicator {
-            display: none;
-        }
-    }
-    
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            max-height: 0;
-        }
-        to {
-            opacity: 1;
-            max-height: 3000px;
-        }
-    }
-    
-    /* Specific fix for agricultural section overflow */
-    .service-card:nth-child(3) {
-        overflow: visible;
-    }
-    
-    .service-card:nth-child(3) .expand-content {
-        overflow: visible;
-        word-wrap: break-word;
-    }
-    
-    .service-card:nth-child(3) .card-body {
-        overflow: visible;
-    }
-    </style>
-
-    <script>
-    function toggleMobileExpand(card) {
-        if (window.innerWidth <= 768) {
-            card.classList.toggle('expanded');
-        }
-    }
-    </script>
-
-    <style>
-    .food-quality-benefits, .agricultural-quality-benefits {
-        background: #f8f9fa;
-        border-left: 4px solid #28a745;
-        padding: 15px;
-        margin: 15px 0;
-        border-radius: 0 8px 8px 0;
-    }
-    
-    .quality-badge {
-        background: linear-gradient(135deg, #28a745, #20c997);
-        color: white;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 500;
-        margin: 2px;
-        display: inline-block;
-        box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
-    }
-    
-    .industry-risks {
-        background: #fff5f5;
-        border-left: 4px solid #dc3545;
-        padding: 15px;
-        margin: 15px 0;
-        border-radius: 0 8px 8px 0;
-    }
-    
-    .prevention-solutions {
-        background: #f0f8f0;
-        border-left: 4px solid #28a745;
-        padding: 15px;
-        margin: 15px 0;
-        border-radius: 0 8px 8px 0;
-    }
-    
-    .risk-badge {
-        background: linear-gradient(135deg, #dc3545, #e74c3c);
-        color: white;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 500;
-        margin: 2px;
-        display: inline-block;
-        box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
-    }
-    
-    .prevention-badge {
-        background: linear-gradient(135deg, #28a745, #20c997);
-        color: white;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 500;
-        margin: 2px;
-        display: inline-block;
-        box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
-    }
-    
-    .certification-badge {
-        background: linear-gradient(135deg, #007bff, #0056b3);
-        color: white;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 500;
-        margin: 2px;
-        display: inline-block;
-        box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
-    }
-    
-    .service-card {
-        border: 1px solid #e9ecef;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        min-height: 100%;
-        overflow: visible;
-    }
-    
-    .service-card .card-body {
-        overflow: visible;
-        height: auto;
-    }
-    
-    .service-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        border-color: #007bff;
-    }
-    
-    .expand-content {
-        display: none;
-        margin-top: 20px;
-        padding-top: 20px;
-        border-top: 1px solid #e9ecef;
-        overflow: visible;
-        max-height: none;
-        height: auto;
-    }
-    
-    .expand-indicator {
-        text-align: center;
-        margin-top: 15px;
-        color: #6c757d;
-        font-size: 1.2rem;
-        transition: transform 0.3s ease;
-    }
-    
-    .price-highlight {
-        background: linear-gradient(135deg, #ffc107, #ff8c00);
-        color: white;
-        padding: 8px 12px;
-        border-radius: 8px;
-        font-weight: bold;
-        text-align: center;
-        margin-bottom: 5px;
-        display: block;
-    }
-    
-    .subscription-highlight {
-        background: linear-gradient(135deg, #17a2b8, #138496);
-        color: white;
-        padding: 6px 10px;
-        border-radius: 6px;
-        font-size: 0.9rem;
-        font-weight: 500;
-    }
-    
-    /* Ensure row can accommodate expanded content */
-    .row {
-        overflow: visible;
-    }
-    
-    .col-lg-6 {
-        overflow: visible;
-        margin-bottom: 30px;
-    }
-    
-    /* Mobile expandable functionality */
-    @media (max-width: 768px) {
-        .service-card.expanded .expand-content {
-            display: block !important;
-            animation: slideDown 0.3s ease-out;
-        }
-        
-        .service-card.expanded .expand-indicator i {
-            transform: rotate(45deg);
-        }
-        
-        .service-card {
-            margin-bottom: 20px;
-        }
-        
-        .expand-content {
-            padding: 15px 0;
-        }
-    }
-    
-    /* Desktop - always show expanded content */
-    @media (min-width: 769px) {
-        .expand-content {
-            display: block !important;
-            max-height: none;
-            overflow: visible;
-        }
-        
-        .expand-indicator {
-            display: none;
-        }
-        
-        .service-card {
-            height: auto;
-            min-height: 600px;
-        }
-    }
-    
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            max-height: 0;
-        }
-        to {
-            opacity: 1;
-            max-height: 2000px;
-        }
-    }
-    
-    /* Ensure no content is cut off */
-    .container, .row, .col-lg-6 {
-        overflow: visible !important;
-    }
-    
-    /* Better spacing for content */
-    .expand-content .row {
-        margin-bottom: 1rem;
-    }
-    
-    .expand-content h6 {
-        margin-top: 1.5rem;
-        margin-bottom: 0.75rem;
-    }
-    
-    .expand-content ul.small {
-        margin-bottom: 1rem;
-    }
-    </style>
-
-    <script>
-    function toggleMobileExpand(card) {
-        if (window.innerWidth <= 768) {
-            card.classList.toggle('expanded');
-        }
-    }
-    </script>
-    <style>
-    .food-quality-benefits, .agricultural-quality-benefits {
-        background: #f8f9fa;
-        border-left: 4px solid #28a745;
-        padding: 15px;
-        margin: 15px 0;
-        border-radius: 0 8px 8px 0;
-    }
-    
-    .quality-badge {
-        background: linear-gradient(135deg, #28a745, #20c997);
-        color: white;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 500;
-        margin: 2px;
-        display: inline-block;
-        box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
-    }
-    
-    .industry-risks {
-        background: #fff5f5;
-        border-left: 4px solid #dc3545;
-        padding: 15px;
-        margin: 15px 0;
-        border-radius: 0 8px 8px 0;
-    }
-    
-    .prevention-solutions {
-        background: #f0f8f0;
-        border-left: 4px solid #28a745;
-        padding: 15px;
-        margin: 15px 0;
-        border-radius: 0 8px 8px 0;
-    }
-    
-    .risk-badge {
-        background: linear-gradient(135deg, #dc3545, #e74c3c);
-        color: white;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 500;
-        margin: 2px;
-        display: inline-block;
-        box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
-    }
-    
-    .prevention-badge {
-        background: linear-gradient(135deg, #28a745, #20c997);
-        color: white;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 500;
-        margin: 2px;
-        display: inline-block;
-        box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
-    }
-    
-    .certification-badge {
-        background: linear-gradient(135deg, #007bff, #0056b3);
-        color: white;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 500;
-        margin: 2px;
-        display: inline-block;
-        box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
-    }
-    
-    .service-card {
-        border: 1px solid #e9ecef;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        height: 100%;
-    }
-    
-    .service-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        border-color: #007bff;
-    }
-    
-    .expand-content {
-        display: none;
-        margin-top: 20px;
-        padding-top: 20px;
-        border-top: 1px solid #e9ecef;
-    }
-    
-    .expand-indicator {
-        text-align: center;
-        margin-top: 15px;
-        color: #6c757d;
-        font-size: 1.2rem;
-    }
-    
-    .price-highlight {
-        background: linear-gradient(135deg, #ffc107, #ff8c00);
-        color: white;
-        padding: 8px 12px;
-        border-radius: 8px;
-        font-weight: bold;
-        text-align: center;
-        margin-bottom: 5px;
-        display: block;
-    }
-    
-    .subscription-highlight {
-        background: linear-gradient(135deg, #17a2b8, #138496);
-        color: white;
-        padding: 6px 10px;
-        border-radius: 6px;
-        font-size: 0.9rem;
-        font-weight: 500;
-    }
-    
-    @media (max-width: 768px) {
-        .service-card.expanded .expand-content {
-            display: block;
-        }
-        
-        .service-card.expanded .expand-indicator i {
-            transform: rotate(45deg);
-        }
-    }
-    
-    @media (min-width: 769px) {
-        .expand-content {
-            display: block;
-        }
-        
-        .expand-indicator {
-            display: none;
-        }
-    }
-    </style>
-
-    <script>
-    function toggleMobileExpand(card) {
-        if (window.innerWidth <= 768) {
-            card.classList.toggle('expanded');
-        }
-    }
-    </script>
 
     <!-- Safety Documentation & Downloads Section - IMPROVED -->
     <section id="sds-documentation" class="py-5 bg-light">
