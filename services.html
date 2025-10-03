@@ -436,320 +436,164 @@
             border-radius: 8px;
         }
 
-        /* NEW: IMPROVED SDS DOCUMENTATION STYLING */
-        .sds-doc-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            overflow: hidden;
-            margin-bottom: 2rem;
-            transition: all 0.3s ease;
-        }
+/* Service Card Styles - CONSOLIDATED */
+.service-card {
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    height: auto;
+    overflow: visible;
+    position: relative;
+    margin-bottom: 30px;
+}
 
-        .sds-doc-card:hover {
-            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-        }
+.service-card .card-body {
+    overflow: visible;
+    position: relative;
+    padding: 20px;
+}
 
-        .sds-doc-header {
-            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
-            color: white;
-            padding: 1.5rem;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border-color: #007bff;
+}
 
-        .sds-doc-header:hover {
-            background: linear-gradient(135deg, var(--dark-navy), var(--primary-blue));
-        }
+/* Expand content - hidden by default on mobile */
+.expand-content {
+    display: none;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+    overflow: visible;
+}
 
-        .sds-doc-header h5 {
-            margin: 0;
-            font-weight: bold;
-        }
+/* Expand indicator - only visible on mobile */
+.expand-indicator {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #6c757d;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
 
-        .sds-toggle-icon {
-            font-size: 1.5rem;
-            transition: transform 0.3s ease;
-        }
+/* Mobile: Click to expand */
+@media (max-width: 768px) {
+    .service-card.expanded .expand-content {
+        display: block;
+        animation: slideDown 0.3s ease-out;
+    }
+    
+    .service-card.expanded .expand-indicator i {
+        transform: rotate(45deg);
+    }
+}
 
-        .sds-doc-header[aria-expanded="true"] .sds-toggle-icon {
-            transform: rotate(180deg);
-        }
+/* Desktop: Always show expanded content */
+@media (min-width: 769px) {
+    .expand-content {
+        display: block !important;
+    }
+    
+    .expand-indicator {
+        display: none;
+    }
+}
 
-        .sds-doc-body {
-            padding: 0;
-        }
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 3000px;
+    }
+}
 
-        .sds-key-info {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            padding: 1.5rem;
-            margin: 1rem;
-            border-radius: 12px;
-            border-left: 4px solid var(--primary-green);
-        }
+/* Supporting badge styles */
+.food-quality-benefits, .agricultural-quality-benefits {
+    background: #f8f9fa;
+    border-left: 4px solid #28a745;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 0 8px 8px 0;
+}
 
-        .sds-download-btn {
-            background: linear-gradient(45deg, var(--primary-green), var(--secondary-green));
-            border: none;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 10px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3);
-        }
+.quality-badge {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin: 2px;
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+}
 
-        .sds-download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(74, 222, 128, 0.4);
-            background: linear-gradient(45deg, var(--secondary-green), var(--primary-green));
-        }
+.industry-risks {
+    background: #fff5f5;
+    border-left: 4px solid #dc3545;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 0 8px 8px 0;
+}
 
-        /* SDS Comparison Styling */
-        .sds-comparison {
-            background: linear-gradient(135deg, #fff5f5, #fef2f2);
-            border: 2px solid #fca5a5;
-            border-radius: 15px;
-            padding: 2rem;
-            margin: 2rem 0;
-        }
+.prevention-solutions {
+    background: #f0f8f0;
+    border-left: 4px solid #28a745;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 0 8px 8px 0;
+}
 
-        .sds-safe {
-            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
-            border: 2px solid #86efac;
-        }
+.risk-badge {
+    background: linear-gradient(135deg, #dc3545, #e74c3c);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin: 2px;
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+}
 
-        .hazard-symbol {
-            width: 60px;
-            height: 60px;
-            margin: 0.5rem;
-            border: 2px solid #dc2626;
-            border-radius: 10px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: #dc2626;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
+.prevention-badge {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin: 2px;
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+}
 
-        .safety-symbol {
-            width: 60px;
-            height: 60px;
-            margin: 0.5rem;
-            border: 2px solid #16a34a;
-            border-radius: 10px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: #16a34a;
-            font-weight: bold;
-            font-size: 1.5rem;
-        }
+.certification-badge {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin: 2px;
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
 
-        .fsis-resources {
-            background: linear-gradient(135deg, #fff8f3, #fef3e2);
-            border-left: 4px solid var(--warning-gold);
-            padding: 1.5rem;
-            margin: 1rem 0;
-            border-radius: 8px;
-        }
-
-        .fsis-compliance {
-            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
-            border-left: 4px solid var(--light-blue);
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 8px;
-        }
-
-        .footer-section {
-            background-color: #1a1a1a;
-            color: white;
-            padding: 3rem 0 1rem;
-            width: 100vw;
-            margin-left: calc(-50vw + 50%);
-            margin-right: calc(-50vw + 50%);
-            position: relative;
-        }
-
-        .footer-brand {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .footer-brand-name {
-            color: white;
-            font-weight: 700;
-            font-size: 1.2rem;
-            margin: 0;
-        }
-
-        .footer-tagline {
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.5;
-            margin-bottom: 0;
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-        }
-
-        .footer-heading {
-            color: white;
-            font-weight: 700;
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .footer-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .footer-list li {
-            margin-bottom: 0.5rem;
-            line-height: 1.4;
-        }
-
-        .footer-list a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: color 0.2s ease;
-        }
-
-        .footer-list a:hover {
-            color: var(--ohs-accent-blue);
-            text-decoration: none;
-        }
-
-        .footer-contact {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.85rem;
-            line-height: 1.6;
-        }
-
-        .footer-contact i {
-            margin-right: 0.5rem;
-            width: 16px;
-            color: var(--ohs-accent-blue);
-        }
-
-        .footer-contact a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-
-        .footer-contact a:hover {
-            color: var(--ohs-accent-blue);
-        }
-
-        .social-icons {
-            margin-top: 1rem;
-        }
-
-        .social-icons a {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 1.2rem;
-            margin-right: 1rem;
-            transition: color 0.2s ease;
-            text-decoration: none;
-        }
-
-        .social-icons a:hover {
-            color: var(--ohs-accent-blue);
-        }
-
-        .footer-bottom {
-            border-top: 1px solid #333;
-            padding-top: 1rem;
-            margin-top: 2rem;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.8rem;
-        }
-
-        .footer-badges {
-            display: flex;
-            gap: 0.5rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 0.5rem;
-        }
-
-        .footer-badge {
-            background: rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.8);
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .pricing-disclaimer {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-        }
-
-        .allergen-disclaimer {
-            background: #e8f5e8;
-            border: 1px solid var(--primary-green);
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-        }
-
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-            .footer-section {
-                padding: 2rem 0 1rem;
-                text-align: center;
-            }
-            
-            .footer-brand {
-                justify-content: center;
-                margin-bottom: 1.5rem;
-            }
-            
-            .social-icons {
-                text-align: center;
-                margin: 1rem 0;
-            }
-
-            .footer-badges {
-                justify-content: center;
-            }
-            
-            .hero-section {
-                padding: 3rem 0;
-            }
-            
-            .process-step {
-                margin: 0.5rem 0;
-                padding: 1.5rem;
-            }
-
-            .service-card .card-body {
-                padding: 1.5rem !important;
-            }
-        }
-
-        @media (max-width: 991.98px) {
-            .navbar-nav .nav-link {
-                padding: 0.5rem 0.75rem !important;
-            }
-        }
+.subscription-highlight {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
     </style>
 </head>
 <body>
