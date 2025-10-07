@@ -64,7 +64,7 @@
         window.SHOPIFY_STOREFRONT_TOKEN = window.SHOPIFY_STOREFRONT_TOKEN || null;
         window.SHOPIFY_DEBUG = window.SHOPIFY_DEBUG !== undefined ? window.SHOPIFY_DEBUG : true;
         
-        // HARDCODED PRODUCT CATALOG (4 products from cart.js)
+        // HARDCODED PRODUCT CATALOG (2 products for quick add)
         window.SIMPLE_PRODUCT_CATALOG = {
             'ohs-32oz-organic-cleaner': {
                 id: 'ohs-32oz-organic-cleaner',
@@ -82,7 +82,7 @@
                 pricing: {
                     cost: 11.52,
                     wholesale: 16.13,
-                    retail: 24.99
+                    retail: 21.80
                 },
                 type: 'organic',
                 emoji: '🧽',
@@ -92,81 +92,29 @@
                 }
             },
             
-            'ohs-8oz-organic-skin-health-mist': {
-                id: 'ohs-8oz-organic-skin-health-mist',
-                shopifyHandle: '8oz-organic-skin-health-mist',
-                name: '8oz Organic Skin Health Mist',
-                description: 'USDA Certified Organic skin health mist for family-safe therapeutic applications.',
-                sku: 'OHS-8OZ-SKIN-MIST',
-                weight: 0.6,
-                category: 'Organic Personal Care',
-                certifications: ['USDA Organic #8150019050', 'Skin Safe', 'Family Safe'],
+            'ohs-1gal-organic-solution': {
+                id: 'ohs-1gal-organic-solution',
+                shopifyHandle: '1-gallon-organic-ready-to-use-solution',
+                name: '1 Gallon Organic Ready-to-Use Solution',
+                description: 'USDA Certified Organic 1-gallon solution for large-scale eco-conscious applications.',
+                sku: 'OHS-1GAL-READY-RTU',
+                weight: 8.5,
+                category: 'Organic Large Format',
+                certifications: ['USDA Organic #8150019050', 'EPA Registered', 'Eco-Safe'],
                 productLine: 'organic',
-                useCase: ['family', 'skincare', 'therapeutic', 'eco-conscious'],
+                useCase: ['large-facility', 'commercial', 'eco-conscious'],
                 badgeType: 'USDA Organic',
                 badgeColor: '#4ADE80',
                 pricing: {
-                    cost: 9.68,
-                    wholesale: 13.55,
-                    retail: 18.99
+                    cost: 19.69,
+                    wholesale: 27.57,
+                    retail: 37.28
                 },
                 type: 'organic',
-                emoji: '🌸',
+                emoji: '🌿',
                 shopifyVariants: {
-                    retail: "41829061263431",
-                    wholesale: "41829061328967"
-                }
-            },
-            
-            'hc-32oz-cleaner-epa': {
-                id: 'hc-32oz-cleaner-epa',
-                shopifyHandle: '32oz-multi-use-cleaner-epa-certified',
-                name: '32oz Multi Use Cleaner EPA',
-                description: 'EPA-certified premium multi-use cleaner for professional applications.',
-                sku: 'HC-32OZ-CLEANER-EPA',
-                weight: 2.2,
-                category: 'EPA Certified Products',
-                certifications: ['EPA Registered', 'Professional Grade', 'Commercial Use'],
-                productLine: 'premium',
-                useCase: ['healthcare', 'commercial', 'industrial'],
-                badgeType: 'EPA Premium',
-                badgeColor: '#f59e0b',
-                pricing: {
-                    cost: 11.64,
-                    wholesale: 17.68,
-                    retail: 34.99
-                },
-                type: 'premium',
-                emoji: '🔬',
-                shopifyVariants: {
-                    retail: "41829062115399",
-                    wholesale: "41829062180935"
-                }
-            },
-            
-            'hc-1gal-ready-to-use-epa': {
-                id: 'hc-1gal-ready-to-use-epa',
-                shopifyHandle: '1-gallon-ready-to-use-epa-certified',
-                name: '1 Gallon Ready to Use EPA',
-                description: 'EPA-certified premium 1-gallon solution for professional applications.',
-                sku: 'HC-1GAL-RTU-EPA',
-                weight: 8.8,
-                category: 'EPA Certified Products',
-                certifications: ['EPA Registered', 'Professional Grade', 'Commercial Use'],
-                productLine: 'premium',
-                useCase: ['healthcare', 'commercial', 'industrial'],
-                badgeType: 'EPA Premium',
-                badgeColor: '#f59e0b',
-                pricing: {
-                    cost: 20.07,
-                    wholesale: 30.47,
-                    retail: 89.99
-                },
-                type: 'premium',
-                emoji: '🔬',
-                shopifyVariants: {
-                    retail: "41829062967367",
-                    wholesale: "41829063032903"
+                    retail: "41829068701767",
+                    wholesale: "41829068767303"
                 }
             }
         };
@@ -175,7 +123,7 @@
         console.log('🔐 Shopify configuration status:');
         console.log('🏪 Store:', window.SHOPIFY_DOMAIN);
         console.log('🔑 Token configured:', window.SHOPIFY_STOREFRONT_TOKEN ? '✅' : '❌');
-        console.log('📦 Product catalog loaded: 4 products');
+        console.log('📦 Product catalog loaded: 2 products');
         console.log('🐛 Debug mode:', window.SHOPIFY_DEBUG ? 'ON' : 'OFF');
     </script>
     
@@ -378,27 +326,27 @@
 
         /* ENHANCED HERO SECTION */
         .hero-section {
-    background: linear-gradient(135deg, #2E5EAA 0%, #5E8FD0 100%);
-    color: white;
-    padding: 60px 0;
-    position: relative;
-    overflow: visible; /* Changed from hidden */
-}
+            background: linear-gradient(135deg, #2E5EAA 0%, #5E8FD0 100%);
+            color: white;
+            padding: 60px 0;
+            position: relative;
+            overflow: visible;
+        }
 
-.hero-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: 
-        radial-gradient(circle at 20% 80%, rgba(125, 211, 252, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(74, 222, 128, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
-    pointer-events: none;
-    overflow: hidden; /* Move overflow hidden here instead */
-}
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(125, 211, 252, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(74, 222, 128, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
+            pointer-events: none;
+            overflow: hidden;
+        }
 
         .hero-content {
             position: relative;
@@ -540,35 +488,6 @@
             margin: 0;
         }
 
-        .product-line-toggle {
-            display: flex;
-            background: rgba(0,0,0,0.2);
-            border-radius: 25px;
-            padding: 3px;
-        }
-
-        .line-btn {
-            background: transparent;
-            border: none;
-            color: rgba(255,255,255,0.7);
-            padding: 6px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        .line-btn.active {
-            background: white;
-            color: var(--ohs-primary-blue);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .line-btn:hover:not(.active) {
-            color: white;
-        }
-
         /* PRODUCT CARDS IN QUICK ADD */
         .quick-products {
             display: grid;
@@ -675,13 +594,13 @@
         }
 
         /* STATS SECTION */
-       .hero-stats {
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 30px;
-    border: 1px solid rgba(255,255,255,0.15);
-}
+        .hero-stats {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
 
         .stats-title {
             font-size: 1.5rem;
@@ -703,21 +622,22 @@
         }
 
         .stat-card {
-    background: rgba(255,255,255,0.1);
-    border-radius: 15px;
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    z-index: auto; /* Don't create a new stacking context */
-}
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: auto;
+        }
 
-.stat-card:hover {
-    background: rgba(255,255,255,0.15);
-    transform: scale(1.05);
-    z-index: 10600; /* Only increase z-index on hover */
-}
+        .stat-card:hover {
+            background: rgba(255,255,255,0.15);
+            transform: scale(1.05);
+            z-index: 10600;
+        }
+
         .stat-card::after {
             content: 'ⓘ';
             position: absolute;
@@ -771,40 +691,40 @@
         }
 
         /* MOBILE-FRIENDLY TOOLTIPS */
-.tooltip-content {
-    position: fixed;
-    top: 150px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.95);
-    color: white;
-    padding: 20px;
-    border-radius: 12px;
-    min-width: 280px;
-    max-width: 90vw;
-    z-index: 10500;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    font-size: 0.9em;
-    text-align: left;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-    border: 1px solid rgba(255,255,255,0.1);
-    pointer-events: none;
-}
+        .tooltip-content {
+            position: fixed;
+            top: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.95);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            min-width: 280px;
+            max-width: 90vw;
+            z-index: 10500;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+            text-align: left;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            pointer-events: none;
+        }
 
-.stat-card.active .tooltip-content {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-}
+        .stat-card.active .tooltip-content {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
 
-@media (min-width: 769px) {
-    .stat-card:hover .tooltip-content {
-        opacity: 1;
-        visibility: visible;
-    }
-}
+        @media (min-width: 769px) {
+            .stat-card:hover .tooltip-content {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
 
         @media (max-width: 768px) {
             .tooltip-content {
@@ -1503,26 +1423,17 @@
                         </a>
                     </div>
                     
-                    <!-- SLEEK Quick Product Selection Widget -->
+                    <!-- SLEEK Quick Add Widget -->
                     <div class="quick-add-widget">
                         <div class="quick-add-header">
                             <h3 class="quick-add-title">Quick Add Popular Products</h3>
-                            <div class="product-line-toggle">
-                                <button class="line-btn active" onclick="showProductLine('organic')" id="organic-toggle">
-                                    🌿 Organic
-                                </button>
-                                <button class="line-btn" onclick="showProductLine('premium')" id="premium-toggle">
-                                    ⚡ Premium
-                                </button>
-                            </div>
                         </div>
                         
-                        <!-- Organic Products Quick Add -->
-                        <div id="organic-products" class="quick-products">
+                        <div class="quick-products">
                             <div class="quick-product-card">
                                 <div class="product-info">
-                                    <div class="product-name">32oz All-Purpose Cleaner</div>
-                                    <div class="product-price">$24.99</div>
+                                    <div class="product-name">32oz Organic Ready-to-Use Cleaner</div>
+                                    <div class="product-price">$21.80</div>
                                 </div>
                                 <div class="product-controls">
                                     <div class="qty-control">
@@ -1530,7 +1441,7 @@
                                         <span class="qty-display" id="qty-ohs-32oz-cleaner">1</span>
                                         <button class="qty-btn" onclick="updateHeroQuantity('ohs-32oz-cleaner', 1)">+</button>
                                     </div>
-                                    <button class="add-btn" onclick="quickAddProduct('ohs-32oz-organic-cleaner')" id="quick-add-organic-32oz">
+                                    <button class="add-btn" onclick="quickAddProduct('ohs-32oz-organic-cleaner')" id="quick-add-32oz">
                                         Add to Cart
                                     </button>
                                 </div>
@@ -1538,53 +1449,16 @@
                             
                             <div class="quick-product-card">
                                 <div class="product-info">
-                                    <div class="product-name">8oz Skin Care Mist</div>
-                                    <div class="product-price">$18.99</div>
+                                    <div class="product-name">1 Gallon Organic Solution</div>
+                                    <div class="product-price">$37.28</div>
                                 </div>
                                 <div class="product-controls">
                                     <div class="qty-control">
-                                        <button class="qty-btn" onclick="updateHeroQuantity('ohs-8oz-mist', -1)" id="minus-ohs-8oz-mist">−</button>
-                                        <span class="qty-display" id="qty-ohs-8oz-mist">1</span>
-                                        <button class="qty-btn" onclick="updateHeroQuantity('ohs-8oz-mist', 1)">+</button>
+                                        <button class="qty-btn" onclick="updateHeroQuantity('ohs-1gal-solution', -1)" id="minus-ohs-1gal-solution">−</button>
+                                        <span class="qty-display" id="qty-ohs-1gal-solution">1</span>
+                                        <button class="qty-btn" onclick="updateHeroQuantity('ohs-1gal-solution', 1)">+</button>
                                     </div>
-                                    <button class="add-btn" onclick="quickAddProduct('ohs-8oz-organic-skin-health-mist')" id="quick-add-organic-8oz">
-                                        Add to Cart
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Premium Products Quick Add -->
-                        <div id="premium-products" class="quick-products" style="display: none;">
-                            <div class="quick-product-card">
-                                <div class="product-info">
-                                    <div class="product-name">32oz Professional Grade</div>
-                                    <div class="product-price">$34.99</div>
-                                </div>
-                                <div class="product-controls">
-                                    <div class="qty-control">
-                                        <button class="qty-btn" onclick="updateHeroQuantity('hc-32oz-pro', -1)" id="minus-hc-32oz-pro">−</button>
-                                        <span class="qty-display" id="qty-hc-32oz-pro">1</span>
-                                        <button class="qty-btn" onclick="updateHeroQuantity('hc-32oz-pro', 1)">+</button>
-                                    </div>
-                                    <button class="add-btn" onclick="quickAddProduct('hc-32oz-cleaner-epa')" id="quick-add-premium-32oz">
-                                        Add to Cart
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div class="quick-product-card">
-                                <div class="product-info">
-                                    <div class="product-name">1 Gallon Commercial</div>
-                                    <div class="product-price">$89.99</div>
-                                </div>
-                                <div class="product-controls">
-                                    <div class="qty-control">
-                                        <button class="qty-btn" onclick="updateHeroQuantity('hc-1gal-comm', -1)" id="minus-hc-1gal-comm">−</button>
-                                        <span class="qty-display" id="qty-hc-1gal-comm">1</span>
-                                        <button class="qty-btn" onclick="updateHeroQuantity('hc-1gal-comm', 1)">+</button>
-                                    </div>
-                                    <button class="add-btn" onclick="quickAddProduct('hc-1gal-ready-to-use-epa')" id="quick-add-premium-1gal">
+                                    <button class="add-btn" onclick="quickAddProduct('ohs-1gal-organic-solution')" id="quick-add-1gal">
                                         Add to Cart
                                     </button>
                                 </div>
@@ -1723,46 +1597,46 @@
     </section>
 
     <!-- Service Process Section -->
-<section class="process-section">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold">Our Professional Sanitization Process</h2>
-            <p class="lead">Four-step Tailored methodology with agile adaptation ensuring consistent, effective results across all Utah sanitization services</p>
+    <section class="process-section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">Our Professional Sanitization Process</h2>
+                <p class="lead">Four-step Tailored methodology with agile adaptation ensuring consistent, effective results across all Utah sanitization services</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="process-step">
+                        <span class="step-number">1</span>
+                        <h5 class="fw-bold mt-3">Comprehensive Assessment & Custom Planning</h5>
+                        <p>Thorough evaluation of your unique environment to determine optimal sanitization strategy, whether fogging, surface treatment, or specialized protocols for healthcare, food processing, agricultural, or residential needs.</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="process-step">
+                        <span class="step-number">2</span>
+                        <h5 class="fw-bold mt-3">Individually Tailored Preparation</h5>
+                        <p>Strategic setup following your operating procedures with appropriate equipment selection - from Nebula foggers to targeted application systems - tailored to your facility's specific requirements and compliance standards.</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="process-step">
+                        <span class="step-number">3</span>
+                        <h5 class="fw-bold mt-3">Precision Application & Execution</h5>
+                        <p>Systematic sanitization delivery using proven methodologies including fogging, surface treatment, and specialized protocols ensuring proper concentration, complete coverage, and adequate contact time for maximum pathogen elimination.</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="process-step">
+                        <span class="step-number">4</span>
+                        <h5 class="fw-bold mt-3">Quality Assurance & Documentation</h5>
+                        <p>Real-time verification with comprehensive service documentation, client education, and performance tracking to ensure regulatory compliance and deliver measurable results across all sanitization services.</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="row">
-            <div class="col-lg-6 mb-4">
-                <div class="process-step">
-                    <span class="step-number">1</span>
-                    <h5 class="fw-bold mt-3">Comprehensive Assessment & Custom Planning</h5>
-                    <p>Thorough evaluation of your unique environment to determine optimal sanitization strategy, whether fogging, surface treatment, or specialized protocols for healthcare, food processing, agricultural, or residential needs.</p>
-                </div>
-            </div>
-            <div class="col-lg-6 mb-4">
-                <div class="process-step">
-                    <span class="step-number">2</span>
-                    <h5 class="fw-bold mt-3">Individually Tailored Preparation</h5>
-                    <p>Strategic setup following your operating procedures with appropriate equipment selection - from Nebula foggers to targeted application systems - tailored to your facility's specific requirements and compliance standards.</p>
-                </div>
-            </div>
-            <div class="col-lg-6 mb-4">
-                <div class="process-step">
-                    <span class="step-number">3</span>
-                    <h5 class="fw-bold mt-3">Precision Application & Execution</h5>
-                    <p>Systematic sanitization delivery using proven methodologies including fogging, surface treatment, and specialized protocols ensuring proper concentration, complete coverage, and adequate contact time for maximum pathogen elimination.</p>
-                </div>
-            </div>
-            <div class="col-lg-6 mb-4">
-                <div class="process-step">
-                    <span class="step-number">4</span>
-                    <h5 class="fw-bold mt-3">Quality Assurance & Documentation</h5>
-                    <p>Real-time verification with comprehensive service documentation, client education, and performance tracking to ensure regulatory compliance and deliver measurable results across all sanitization services.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+    </section>
 
-  <!-- UPDATED Services Preview - Matching Screenshot Style -->
+    <!-- UPDATED Services Preview - Matching Screenshot Style -->
     <section class="py-5 bg-light" id="services">
         <div class="container">
             <div class="text-center mb-5">
@@ -1994,48 +1868,48 @@
     </section>
 
     <!-- About Section -->
-<section class="about-section" id="about">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold">About Organic HypoSolutions</h2>
-            <p class="lead">Utah's premier comprehensive sanitization company providing specialized solutions across all industries</p>
-        </div>
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <h4 class="fw-bold mb-3">Our Mission</h4>
-                <p>Founded by Brandon O'Neal and Bob Strang, Organic HypoSolutions delivers EPA-registered, USDA certified organic sanitization solutions to food processing facilities, healthcare institutions, agricultural operations, and residential properties across Utah. Our mission is to provide the safest, most effective sanitization available while protecting people, animals, and the environment.</p>
-                
-                <h5 class="fw-bold mt-4">Comprehensive Sanitization Expertise</h5>
-                <p>From food processing protocols to healthcare-grade disinfection and agricultural biosecurity, we utilize advanced hypochlorous acid technology and specialized application methods tailored to each industry's unique contamination challenges and regulatory requirements.</p>
-                
-                <div class="mt-4">
-                    <a href="services.html" class="btn btn-primary me-2">View All Services</a>
-                    <a href="about.html" class="btn btn-outline-primary">Learn More About Us</a>
-                </div>
+    <section class="about-section" id="about">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">About Organic HypoSolutions</h2>
+                <p class="lead">Utah's premier comprehensive sanitization company providing specialized solutions across all industries</p>
             </div>
-            <div class="col-lg-6">
-                <div class="bg-light p-4 rounded-3">
-                    <h5 class="fw-bold mb-3">Comprehensive Utah Sanitization Benefits:</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><i class="fas fa-industry text-primary me-2"></i><strong>Multi-Industry Expertise:</strong> Food processing, healthcare, agricultural, and residential specialization</li>
-                        <li class="mb-2"><i class="fas fa-certificate text-success me-2"></i><strong>Regulatory Compliance:</strong> EPA-registered, USDA Organic certified</li>
-                        <li class="mb-2"><i class="fas fa-shield-virus text-danger me-2"></i><strong>Pathogen Elimination:</strong> 99.9% effectiveness against bacteria, viruses, mold, and biofilm</li>
-                        <li class="mb-2"><i class="fas fa-baby text-success me-2"></i><strong>Food Contact Safe:</strong> No rinse required, safe for processing environments</li>
-                        <li class="mb-2"><i class="fas fa-leaf text-success me-2"></i><strong>Environmentally Safe:</strong> Biodegrades to harmless salt water</li>
-                        <li class="mb-2"><i class="fas fa-hospital text-primary me-2"></i><strong>Hospital-Grade:</strong> Healthcare disinfectant classification with sporicidal activity</li>
-                        <li class="mb-2"><i class="fas fa-paw text-info me-2"></i><strong>Animal Safe:</strong> Approved for livestock and veterinary applications</li>
-                        <li class="mb-2"><i class="fas fa-home text-warning me-2"></i><strong>Residential Friendly:</strong> Safe for families, pets, and allergy-sensitive individuals</li>
-                    </ul>
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h4 class="fw-bold mb-3">Our Mission</h4>
+                    <p>Founded by Brandon O'Neal and Bob Strang, Organic HypoSolutions delivers EPA-registered, USDA certified organic sanitization solutions to food processing facilities, healthcare institutions, agricultural operations, and residential properties across Utah. Our mission is to provide the safest, most effective sanitization available while protecting people, animals, and the environment.</p>
                     
-                    <div class="alert alert-info mt-4">
-                        <strong><i class="fas fa-map-marker-alt me-2"></i>Service Area:</strong> 
-                        We provide specialized sanitization services throughout Utah, covering food processing facilities, healthcare institutions, agricultural operations, and residential properties in Salt Lake City, Provo, Ogden, and surrounding communities.
+                    <h5 class="fw-bold mt-4">Comprehensive Sanitization Expertise</h5>
+                    <p>From food processing protocols to healthcare-grade disinfection and agricultural biosecurity, we utilize advanced hypochlorous acid technology and specialized application methods tailored to each industry's unique contamination challenges and regulatory requirements.</p>
+                    
+                    <div class="mt-4">
+                        <a href="services.html" class="btn btn-primary me-2">View All Services</a>
+                        <a href="about.html" class="btn btn-outline-primary">Learn More About Us</a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="bg-light p-4 rounded-3">
+                        <h5 class="fw-bold mb-3">Comprehensive Utah Sanitization Benefits:</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-industry text-primary me-2"></i><strong>Multi-Industry Expertise:</strong> Food processing, healthcare, agricultural, and residential specialization</li>
+                            <li class="mb-2"><i class="fas fa-certificate text-success me-2"></i><strong>Regulatory Compliance:</strong> EPA-registered, USDA Organic certified</li>
+                            <li class="mb-2"><i class="fas fa-shield-virus text-danger me-2"></i><strong>Pathogen Elimination:</strong> 99.9% effectiveness against bacteria, viruses, mold, and biofilm</li>
+                            <li class="mb-2"><i class="fas fa-baby text-success me-2"></i><strong>Food Contact Safe:</strong> No rinse required, safe for processing environments</li>
+                            <li class="mb-2"><i class="fas fa-leaf text-success me-2"></i><strong>Environmentally Safe:</strong> Biodegrades to harmless salt water</li>
+                            <li class="mb-2"><i class="fas fa-hospital text-primary me-2"></i><strong>Hospital-Grade:</strong> Healthcare disinfectant classification with sporicidal activity</li>
+                            <li class="mb-2"><i class="fas fa-paw text-info me-2"></i><strong>Animal Safe:</strong> Approved for livestock and veterinary applications</li>
+                            <li class="mb-2"><i class="fas fa-home text-warning me-2"></i><strong>Residential Friendly:</strong> Safe for families, pets, and allergy-sensitive individuals</li>
+                        </ul>
+                        
+                        <div class="alert alert-info mt-4">
+                            <strong><i class="fas fa-map-marker-alt me-2"></i>Service Area:</strong> 
+                            We provide specialized sanitization services throughout Utah, covering food processing facilities, healthcare institutions, agricultural operations, and residential properties in Salt Lake City, Provo, Ogden, and surrounding communities.
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
     <!-- Quick Contact -->
     <section class="contact-section" id="contact">
@@ -2172,8 +2046,8 @@
                             <i class="fab fa-instagram"></i>
                         </a>
                         <a href="https://www.linkedin.com/company/organic-hyposolutions" target="_blank" aria-label="LinkedIn">
-    <i class="fab fa-linkedin"></i>
-</a>
+                            <i class="fab fa-linkedin"></i>
+                        </a>
                         <a href="https://www.tiktok.com/@organic.hyposolutions" target="_blank" aria-label="TikTok">
                             <i class="fab fa-tiktok"></i>
                         </a>
@@ -2198,7 +2072,7 @@
         </div>
     </footer>
 
-    <!-- Shopify Product Schema (for SEO) -->
+   <!-- Shopify Product Schema (for SEO) -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -2238,479 +2112,451 @@
 
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- SIMPLIFIED JAVASCRIPT - PRESERVED UNIFIED CART SYSTEM -->
+<script>
+    // ===================================================================
+    // UNIFIED CART SYSTEM - EXACT SAME AS PRODUCTS PAGE
+    // ===================================================================
     
-    <!-- SIMPLIFIED JAVASCRIPT - PRESERVED UNIFIED CART SYSTEM -->
-    <script>
-        // ===================================================================
-        // UNIFIED CART SYSTEM - EXACT SAME AS PRODUCTS PAGE
-        // ===================================================================
+    // Use the same localStorage key as your products page cart system
+    const CART_STORAGE_KEY = 'ohsCart'; // Standard key used across site
+    
+    // Load existing cart (compatible with products page format)
+    let cartItems = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+    
+    // Hero quantity management - UPDATED FOR 2 PRODUCTS
+    let heroQuantities = {
+        'ohs-32oz-organic-cleaner': 1,
+        'ohs-1gal-organic-solution': 1
+    };
+    
+    // Quick add product function - IDENTICAL TO PRODUCTS PAGE
+    function quickAddProduct(productId) {
+        const button = event.target;
+        const originalText = button.innerHTML;
         
-        // Use the same localStorage key as your products page cart system
-        const CART_STORAGE_KEY = 'ohsCart'; // Standard key used across site
+        // Show loading state
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+        button.disabled = true;
+        button.classList.add('loading');
         
-        // Load existing cart (compatible with products page format)
-        let cartItems = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+        try {
+            // Get product from hardcoded catalog
+            const product = window.SIMPLE_PRODUCT_CATALOG[productId];
+            if (!product) {
+                throw new Error(`Product ${productId} not found in catalog`);
+            }
+            
+            // Get quantity
+            const quantity = heroQuantities[productId] || 1;
+            
+            // Check if product already exists in cart
+            const existingItemIndex = cartItems.findIndex(item => item.productId === productId);
+            
+            if (existingItemIndex !== -1) {
+                // Update existing item quantity
+                cartItems[existingItemIndex].quantity += quantity;
+            } else {
+                // Add new item in format compatible with products page
+                cartItems.push({
+                    productId: productId,           // Standard field name
+                    name: product.name,
+                    price: product.pricing.retail,
+                    category: product.badgeType,
+                    quantity: quantity,
+                    variantId: product.shopifyVariants.retail,
+                    // Additional fields for compatibility
+                    handle: product.shopifyHandle,
+                    sku: product.sku,
+                    type: product.type,
+                    addedAt: new Date().toISOString()
+                });
+            }
+            
+            // Save to localStorage with standard key
+            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
+            
+            // Trigger storage event for cross-page updates
+            window.dispatchEvent(new Event('storage'));
+            
+            // Update cart badge
+            updateCartBadge();
+            
+            // Show success feedback
+            showSuccessFeedback(product.name, quantity);
+            
+            console.log(`✅ Added ${quantity}x ${product.name} to unified cart`);
+            console.log(`📦 Cart now has ${cartItems.length} unique items`);
+            
+            // Track analytics
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'add_to_cart', {
+                    'currency': 'USD',
+                    'value': product.pricing.retail * quantity,
+                    'items': [{
+                        'item_id': product.shopifyVariants.retail,
+                        'item_name': product.name,
+                        'category': product.badgeType,
+                        'quantity': quantity,
+                        'price': product.pricing.retail
+                    }]
+                });
+            }
+            
+        } catch (error) {
+            console.error('Error adding product to cart:', error);
+            showErrorFeedback('Failed to add product. Please try again.');
+        } finally {
+            // Restore button state
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+                button.classList.remove('loading');
+            }, 1000);
+        }
+    }
+    
+    // Update cart badge - COMPATIBLE with products page
+    function updateCartBadge() {
+        const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+        const cartBadge = document.getElementById('cartBadge');
         
-        // Hero quantity management
-        let heroQuantities = {
-            'ohs-32oz-organic-cleaner': 1,
-            'ohs-8oz-organic-skin-health-mist': 1,
-            'hc-32oz-cleaner-epa': 1,
-            'hc-1gal-ready-to-use-epa': 1
+        if (cartBadge) {
+            if (totalItems > 0) {
+                cartBadge.textContent = totalItems;
+                cartBadge.style.display = 'inline-block';
+            } else {
+                cartBadge.style.display = 'none';
+            }
+        }
+        
+        // Also update any other cart displays on the page
+        const cartCount = document.querySelector('.cart-count');
+        if (cartCount) {
+            cartCount.textContent = totalItems;
+        }
+    }
+    
+    // Listen for cart updates from other pages
+    window.addEventListener('storage', function(e) {
+        if (e.key === CART_STORAGE_KEY) {
+            // Cart was updated on another page/tab
+            cartItems = JSON.parse(e.newValue || '[]');
+            updateCartBadge();
+            console.log('🔄 Cart updated from another page');
+        }
+    });
+    
+    // Proceed to checkout - SIMPLIFIED NO API VERSION
+    function proceedToCheckout() {
+        try {
+            if (cartItems.length === 0) {
+                alert('Your cart is empty. Please add some products first.');
+                return;
+            }
+            
+            console.log('🛒 Proceeding to checkout with', cartItems.length, 'unique items');
+            console.log('📦 Total items:', cartItems.reduce((sum, item) => sum + item.quantity, 0));
+            console.log('🔗 Cart will sync with products page via localStorage key:', CART_STORAGE_KEY);
+            
+            // Simply redirect to cart page - cart page will handle Shopify integration
+            window.location.href = 'shop/cart.html';
+            
+        } catch (error) {
+            console.error('Checkout error:', error);
+            showErrorFeedback('There was an error processing your checkout. Please try again.');
+        }
+    }
+    
+    // Update quantity in hero section - UPDATED FOR 2 PRODUCTS
+    function updateHeroQuantity(productKey, change) {
+        // Product key mappings - UPDATED
+        const productMappings = {
+            'ohs-32oz-cleaner': 'ohs-32oz-organic-cleaner',
+            'ohs-1gal-solution': 'ohs-1gal-organic-solution'
         };
         
-        // Quick add product function - IDENTICAL TO PRODUCTS PAGE
-        function quickAddProduct(productId) {
-            const button = event.target;
-            const originalText = button.innerHTML;
+        const productId = productMappings[productKey];
+        if (productId && heroQuantities[productId] !== undefined) {
+            heroQuantities[productId] = Math.max(1, heroQuantities[productId] + change);
             
-            // Show loading state
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
-            button.disabled = true;
-            button.classList.add('loading');
+            const display = document.getElementById('qty-' + productKey);
+            const minusBtn = document.getElementById('minus-' + productKey);
             
-            try {
-                // Get product from hardcoded catalog
-                const product = window.SIMPLE_PRODUCT_CATALOG[productId];
-                if (!product) {
-                    throw new Error(`Product ${productId} not found in catalog`);
-                }
-                
-                // Get quantity
-                const quantity = heroQuantities[productId] || 1;
-                
-                // Check if product already exists in cart
-                const existingItemIndex = cartItems.findIndex(item => item.productId === productId);
-                
-                if (existingItemIndex !== -1) {
-                    // Update existing item quantity
-                    cartItems[existingItemIndex].quantity += quantity;
-                } else {
-                    // Add new item in format compatible with products page
-                    cartItems.push({
-                        productId: productId,           // Standard field name
-                        name: product.name,
-                        price: product.pricing.retail,
-                        category: product.badgeType,
-                        quantity: quantity,
-                        variantId: product.shopifyVariants.retail,
-                        // Additional fields for compatibility
-                        handle: product.shopifyHandle,
-                        sku: product.sku,
-                        type: product.type,
-                        addedAt: new Date().toISOString()
-                    });
-                }
-                
-                // Save to localStorage with standard key
-                localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
-                
-                // Trigger storage event for cross-page updates
-                window.dispatchEvent(new Event('storage'));
-                
-                // Update cart badge
-                updateCartBadge();
-                
-                // Show success feedback
-                showSuccessFeedback(product.name, quantity);
-                
-                console.log(`✅ Added ${quantity}x ${product.name} to unified cart`);
-                console.log(`📦 Cart now has ${cartItems.length} unique items`);
-                
-                // Track analytics
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'add_to_cart', {
-                        'currency': 'USD',
-                        'value': product.pricing.retail * quantity,
-                        'items': [{
-                            'item_id': product.shopifyVariants.retail,
-                            'item_name': product.name,
-                            'category': product.badgeType,
-                            'quantity': quantity,
-                            'price': product.pricing.retail
-                        }]
-                    });
-                }
-                
-            } catch (error) {
-                console.error('Error adding product to cart:', error);
-                showErrorFeedback('Failed to add product. Please try again.');
-            } finally {
-                // Restore button state
+            if (display) display.textContent = heroQuantities[productId];
+            if (minusBtn) minusBtn.disabled = heroQuantities[productId] <= 1;
+        }
+    }
+    
+    // Show success feedback
+    function showSuccessFeedback(productName, quantity) {
+        const feedback = document.getElementById('quick-add-feedback');
+        const message = document.getElementById('feedback-message');
+        
+        if (feedback && message) {
+            message.textContent = `${quantity}x ${productName} added to cart!`;
+            feedback.style.display = 'block';
+            feedback.classList.add('show');
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                feedback.classList.remove('show');
                 setTimeout(() => {
-                    button.innerHTML = originalText;
-                    button.disabled = false;
-                    button.classList.remove('loading');
-                }, 1000);
-            }
+                    feedback.style.display = 'none';
+                }, 300);
+            }, 3000);
+        }
+    }
+    
+    // Show error feedback
+    function showErrorFeedback(message) {
+        const feedback = document.getElementById('quick-add-feedback');
+        const messageEl = document.getElementById('feedback-message');
+        
+        if (feedback && messageEl) {
+            feedback.style.backgroundColor = '#f8d7da';
+            feedback.style.color = '#721c24';
+            feedback.style.borderLeftColor = '#f5c6cb';
+            messageEl.textContent = message;
+            feedback.style.display = 'block';
+            feedback.classList.add('show');
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                feedback.classList.remove('show');
+                setTimeout(() => {
+                    feedback.style.display = 'none';
+                    // Reset to success colors
+                    feedback.style.backgroundColor = '';
+                    feedback.style.color = '';
+                    feedback.style.borderLeftColor = '';
+                }, 300);
+            }, 5000);
+        }
+    }
+    
+    // Service booking functions
+    function bookResidentialService() {
+        // Track booking intent
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'book_residential_service', {
+                'event_category': 'Service Booking',
+                'event_label': 'Hero Section'
+            });
         }
         
-        // Update cart badge - COMPATIBLE with products page
-        function updateCartBadge() {
-            const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-            const cartBadge = document.getElementById('cartBadge');
-            
-            if (cartBadge) {
-                if (totalItems > 0) {
-                    cartBadge.textContent = totalItems;
-                    cartBadge.style.display = 'inline-block';
-                } else {
-                    cartBadge.style.display = 'none';
+        // Redirect to booking form
+        window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform?entry.service_type=Residential&entry.source=Homepage_Hero', '_blank');
+    }
+
+    function bookCommercialService() {
+        // Track booking intent
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'book_commercial_service', {
+                'event_category': 'Service Booking',
+                'event_label': 'Hero Section'
+            });
+        }
+        
+        // Redirect to commercial quote form
+        window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform?entry.service_type=Commercial&entry.source=Homepage_Hero', '_blank');
+    }
+    
+    // Banner close functionality
+    function closeBanner() {
+        const banner = document.getElementById('promoBanner');
+        banner.style.transform = 'translateY(-100%)';
+        setTimeout(() => {
+            banner.style.display = 'none';
+        }, 300);
+        
+        // Store in localStorage so it stays closed for the session
+        localStorage.setItem('promoBannerClosed', 'true');
+        
+        // Track banner close
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'banner_close', {
+                'event_category': 'User Interaction',
+                'event_label': 'Promotional Banner'
+            });
+        }
+    }
+    
+    // Check if banner should be shown
+    function checkBanner() {
+        const banner = document.getElementById('promoBanner');
+        if (localStorage.getItem('promoBannerClosed') === 'true') {
+            banner.style.display = 'none';
+        }
+    }
+    
+    // MOBILE-FRIENDLY TOOLTIP HANDLING
+    function initMobileTooltips() {
+        const statCards = document.querySelectorAll('.stat-card');
+        const overlay = document.getElementById('tooltipOverlay');
+        
+        statCards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                e.stopPropagation();
+                
+                // Check if on mobile
+                if (window.innerWidth <= 768) {
+                    // Close any other open tooltips
+                    statCards.forEach(otherCard => {
+                        if (otherCard !== this) {
+                            otherCard.classList.remove('active');
+                        }
+                    });
+                    
+                    // Toggle this tooltip
+                    this.classList.toggle('active');
+                    
+                    // Show/hide overlay
+                    if (this.classList.contains('active')) {
+                        overlay.classList.add('active');
+                    } else {
+                        overlay.classList.remove('active');
+                    }
                 }
-            }
-            
-            // Also update any other cart displays on the page
-            const cartCount = document.querySelector('.cart-count');
-            if (cartCount) {
-                cartCount.textContent = totalItems;
-            }
-        }
-        
-        // Listen for cart updates from other pages
-        window.addEventListener('storage', function(e) {
-            if (e.key === CART_STORAGE_KEY) {
-                // Cart was updated on another page/tab
-                cartItems = JSON.parse(e.newValue || '[]');
-                updateCartBadge();
-                console.log('🔄 Cart updated from another page');
-            }
+            });
         });
         
-        // Proceed to checkout - SIMPLIFIED NO API VERSION
-        function proceedToCheckout() {
-            try {
-                if (cartItems.length === 0) {
-                    alert('Your cart is empty. Please add some products first.');
-                    return;
-                }
-                
-                console.log('🛒 Proceeding to checkout with', cartItems.length, 'unique items');
-                console.log('📦 Total items:', cartItems.reduce((sum, item) => sum + item.quantity, 0));
-                console.log('🔗 Cart will sync with products page via localStorage key:', CART_STORAGE_KEY);
-                
-                // Simply redirect to cart page - cart page will handle Shopify integration
-                window.location.href = 'shop/cart.html';
-                
-            } catch (error) {
-                console.error('Checkout error:', error);
-                showErrorFeedback('There was an error processing your checkout. Please try again.');
-            }
-        }
-        
-        // Product line switching
-        function showProductLine(line) {
-            const organicProducts = document.getElementById('organic-products');
-            const premiumProducts = document.getElementById('premium-products');
-            const organicToggle = document.getElementById('organic-toggle');
-            const premiumToggle = document.getElementById('premium-toggle');
-            
-            if (line === 'organic') {
-                organicProducts.style.display = 'grid';
-                premiumProducts.style.display = 'none';
-                organicToggle.classList.add('active');
-                premiumToggle.classList.remove('active');
-            } else {
-                organicProducts.style.display = 'none';
-                premiumProducts.style.display = 'grid';
-                organicToggle.classList.remove('active');
-                premiumToggle.classList.add('active');
-            }
-        }
-        
-        // Update quantity in hero section
-        function updateHeroQuantity(productKey, change) {
-            // Product key mappings - FIXED MAPPING
-            const productMappings = {
-                'ohs-32oz-cleaner': 'ohs-32oz-organic-cleaner',
-                'ohs-8oz-mist': 'ohs-8oz-organic-skin-health-mist',
-                'hc-32oz-pro': 'hc-32oz-cleaner-epa',
-                'hc-1gal-comm': 'hc-1gal-ready-to-use-epa'
-            };
-            
-            const productId = productMappings[productKey];
-            if (productId && heroQuantities[productId] !== undefined) {
-                heroQuantities[productId] = Math.max(1, heroQuantities[productId] + change);
-                
-                const display = document.getElementById('qty-' + productKey);
-                const minusBtn = document.getElementById('minus-' + productKey);
-                
-                if (display) display.textContent = heroQuantities[productId];
-                if (minusBtn) minusBtn.disabled = heroQuantities[productId] <= 1;
-            }
-        }
-        
-        // Show success feedback
-        function showSuccessFeedback(productName, quantity) {
-            const feedback = document.getElementById('quick-add-feedback');
-            const message = document.getElementById('feedback-message');
-            
-            if (feedback && message) {
-                message.textContent = `${quantity}x ${productName} added to cart!`;
-                feedback.style.display = 'block';
-                feedback.classList.add('show');
-                
-                // Hide after 3 seconds
-                setTimeout(() => {
-                    feedback.classList.remove('show');
-                    setTimeout(() => {
-                        feedback.style.display = 'none';
-                    }, 300);
-                }, 3000);
-            }
-        }
-        
-        // Show error feedback
-        function showErrorFeedback(message) {
-            const feedback = document.getElementById('quick-add-feedback');
-            const messageEl = document.getElementById('feedback-message');
-            
-            if (feedback && messageEl) {
-                feedback.style.backgroundColor = '#f8d7da';
-                feedback.style.color = '#721c24';
-                feedback.style.borderLeftColor = '#f5c6cb';
-                messageEl.textContent = message;
-                feedback.style.display = 'block';
-                feedback.classList.add('show');
-                
-                // Hide after 5 seconds
-                setTimeout(() => {
-                    feedback.classList.remove('show');
-                    setTimeout(() => {
-                        feedback.style.display = 'none';
-                        // Reset to success colors
-                        feedback.style.backgroundColor = '';
-                        feedback.style.color = '';
-                        feedback.style.borderLeftColor = '';
-                    }, 300);
-                }, 5000);
-            }
-        }
-        
-        // Service booking functions
-        function bookResidentialService() {
-            // Track booking intent
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'book_residential_service', {
-                    'event_category': 'Service Booking',
-                    'event_label': 'Hero Section'
+        // Close tooltips when clicking overlay or tooltip content on mobile
+        if (overlay) {
+            overlay.addEventListener('click', function() {
+                statCards.forEach(card => {
+                    card.classList.remove('active');
                 });
-            }
-            
-            // Redirect to booking form
-            window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform?entry.service_type=Residential&entry.source=Homepage_Hero', '_blank');
-        }
-
-        function bookCommercialService() {
-            // Track booking intent
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'book_commercial_service', {
-                    'event_category': 'Service Booking',
-                    'event_label': 'Hero Section'
-                });
-            }
-            
-            // Redirect to commercial quote form
-            window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform?entry.service_type=Commercial&entry.source=Homepage_Hero', '_blank');
-        }
-        
-        // Banner close functionality
-        function closeBanner() {
-            const banner = document.getElementById('promoBanner');
-            banner.style.transform = 'translateY(-100%)';
-            setTimeout(() => {
-                banner.style.display = 'none';
-            }, 300);
-            
-            // Store in localStorage so it stays closed for the session
-            localStorage.setItem('promoBannerClosed', 'true');
-            
-            // Track banner close
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'banner_close', {
-                    'event_category': 'User Interaction',
-                    'event_label': 'Promotional Banner'
-                });
-            }
-        }
-        
-        // Check if banner should be shown
-        function checkBanner() {
-            const banner = document.getElementById('promoBanner');
-            if (localStorage.getItem('promoBannerClosed') === 'true') {
-                banner.style.display = 'none';
-            }
-        }
-        
-        // MOBILE-FRIENDLY TOOLTIP HANDLING
-        function initMobileTooltips() {
-            const statCards = document.querySelectorAll('.stat-card');
-            const overlay = document.getElementById('tooltipOverlay');
-            
-            statCards.forEach(card => {
-                card.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    
-                    // Check if on mobile
-                    if (window.innerWidth <= 768) {
-                        // Close any other open tooltips
-                        statCards.forEach(otherCard => {
-                            if (otherCard !== this) {
-                                otherCard.classList.remove('active');
-                            }
-                        });
-                        
-                        // Toggle this tooltip
-                        this.classList.toggle('active');
-                        
-                        // Show/hide overlay
-                        if (this.classList.contains('active')) {
-                            overlay.classList.add('active');
-                        } else {
-                            overlay.classList.remove('active');
-                        }
-                    }
-                });
+                this.classList.remove('active');
             });
-            
-            // Close tooltips when clicking overlay or tooltip content on mobile
-            if (overlay) {
-                overlay.addEventListener('click', function() {
+        }
+        
+        // Close tooltips when clicking outside
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+                if (!e.target.closest('.stat-card')) {
                     statCards.forEach(card => {
                         card.classList.remove('active');
                     });
-                    this.classList.remove('active');
-                });
+                    if (overlay) {
+                        overlay.classList.remove('active');
+                    }
+                }
             }
-            
-            // Close tooltips when clicking outside
-            document.addEventListener('click', function(e) {
-                if (window.innerWidth <= 768) {
-                    if (!e.target.closest('.stat-card')) {
-                        statCards.forEach(card => {
-                            card.classList.remove('active');
+        });
+    }
+    
+    // Smooth scrolling for anchor links - FIXED VERSION
+    function initSmoothScrolling() {
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                
+                // Skip if href is just '#' or invalid
+                if (!href || href === '#' || href.length <= 1) {
+                    return; // Let default behavior happen (page top)
+                }
+                
+                e.preventDefault();
+                
+                try {
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
                         });
-                        if (overlay) {
-                            overlay.classList.remove('active');
-                        }
+                    } else {
+                        console.warn(`Smooth scroll target not found: ${href}`);
                     }
+                } catch (error) {
+                    console.warn(`Invalid selector for smooth scroll: ${href}`, error);
+                    // Let default behavior happen
                 }
             });
-        }
-        
-        // Smooth scrolling for anchor links - FIXED VERSION
-        function initSmoothScrolling() {
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    const href = this.getAttribute('href');
-                    
-                    // Skip if href is just '#' or invalid
-                    if (!href || href === '#' || href.length <= 1) {
-                        return; // Let default behavior happen (page top)
-                    }
-                    
-                    e.preventDefault();
-                    
-                    try {
-                        const target = document.querySelector(href);
-                        if (target) {
-                            target.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'start'
-                            });
-                        } else {
-                            console.warn(`Smooth scroll target not found: ${href}`);
-                        }
-                    } catch (error) {
-                        console.warn(`Invalid selector for smooth scroll: ${href}`, error);
-                        // Let default behavior happen
-                    }
-                });
-            });
-        }
-        
-        // Add animation to cards on scroll
-        function initAnimations() {
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
+        });
+    }
+    
+    // Add animation to cards on scroll
+    function initAnimations() {
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
 
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
-
-            // Observe all cards for animation
-            document.querySelectorAll('.service-card, .standard-card, .process-step, .product-line-card').forEach(card => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(card);
-            });
-        }
-        
-        // Initialize everything when DOM is ready
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🎉 OHS Homepage Loading...');
-            console.log('📦 Unified cart loaded with', cartItems.length, 'unique items');
-            console.log('🔗 Cart will sync with products page via localStorage key:', CART_STORAGE_KEY);
-            
-            // Check banner status
-            checkBanner();
-            
-            // Initialize mobile-friendly tooltips
-            initMobileTooltips();
-            
-            // Initialize smooth scrolling
-            initSmoothScrolling();
-            
-            // Initialize animations
-            initAnimations();
-            
-            // Load existing cart and update badge
-            updateCartBadge();
-            
-            // Set initial disabled states for minus buttons - SIMPLIFIED
-            const productKeyMappings = {
-                'ohs-32oz-cleaner': 'ohs-32oz-organic-cleaner',
-                'ohs-8oz-mist': 'ohs-8oz-organic-skin-health-mist',
-                'hc-32oz-pro': 'hc-32oz-cleaner-epa',
-                'hc-1gal-comm': 'hc-1gal-ready-to-use-epa'
-            };
-            
-            Object.entries(productKeyMappings).forEach(([displayKey, productId]) => {
-                const minusBtn = document.getElementById('minus-' + displayKey);
-                if (minusBtn && heroQuantities[productId] <= 1) {
-                    minusBtn.disabled = true;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
                 }
             });
-            
-            console.log('✅ Homepage initialization complete');
-            console.log('📱 Mobile tooltips initialized');
+        }, observerOptions);
 
-            // Track page load
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'page_view', {
-                    'page_title': 'Homepage',
-                    'page_location': window.location.href
-                });
+        // Observe all cards for animation
+        document.querySelectorAll('.service-card, .standard-card, .process-step, .product-line-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+    }
+    
+    // Initialize everything when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🎉 OHS Homepage Loading...');
+        console.log('📦 Unified cart loaded with', cartItems.length, 'unique items');
+        console.log('🔗 Cart will sync with products page via localStorage key:', CART_STORAGE_KEY);
+        
+        // Check banner status
+        checkBanner();
+        
+        // Initialize mobile-friendly tooltips
+        initMobileTooltips();
+        
+        // Initialize smooth scrolling
+        initSmoothScrolling();
+        
+        // Initialize animations
+        initAnimations();
+        
+        // Load existing cart and update badge
+        updateCartBadge();
+        
+        // Set initial disabled states for minus buttons - UPDATED FOR 2 PRODUCTS
+        const productKeyMappings = {
+            'ohs-32oz-cleaner': 'ohs-32oz-organic-cleaner',
+            'ohs-1gal-solution': 'ohs-1gal-organic-solution'
+        };
+        
+        Object.entries(productKeyMappings).forEach(([displayKey, productId]) => {
+            const minusBtn = document.getElementById('minus-' + displayKey);
+            if (minusBtn && heroQuantities[productId] <= 1) {
+                minusBtn.disabled = true;
             }
         });
         
-        // Make functions globally available
-        window.closeBanner = closeBanner;
-        window.quickAddProduct = quickAddProduct;
-        window.showProductLine = showProductLine;
-        window.updateHeroQuantity = updateHeroQuantity;
-        window.bookResidentialService = bookResidentialService;
-        window.bookCommercialService = bookCommercialService;
-        window.proceedToCheckout = proceedToCheckout;
-        window.updateCartBadge = updateCartBadge;
-        
-        console.log('🚀 Homepage JavaScript Loaded - Enhanced Visual Version');
-    </script>
-</body>
+        console.log('✅ Homepage initialization complete');
+        console.log('📱 Mobile tooltips initialized');
+
+        // Track page load
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'page_view', {
+                'page_title': 'Homepage',
+                'page_location': window.location.href
+            });
+        }
+    });
+    
+    // Make functions globally available
+    window.closeBanner = closeBanner;
+    window.quickAddProduct = quickAddProduct;
+    window.updateHeroQuantity = updateHeroQuantity;
+    window.bookResidentialService = bookResidentialService;
+    window.bookCommercialService = bookCommercialService;
+    window.proceedToCheckout = proceedToCheckout;
+    window.updateCartBadge = updateCartBadge;
+    
+    console.log('🚀 Homepage JavaScript Loaded - 2 Product Quick Add Version');
+</script>
