@@ -352,120 +352,6 @@
             }
         }
 
-        /* Cart Preview */
-        .cart-preview {
-            position: fixed;
-            top: 100px;
-            right: -420px;
-            width: 400px;
-            max-height: 80vh;
-            background: white;
-            border-radius: 1rem 0 0 1rem;
-            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
-            padding: 1.5rem;
-            z-index: 1050;
-            transition: right 0.3s ease;
-            overflow-y: auto;
-            border: 2px solid var(--primary-blue);
-            border-right: none;
-        }
-
-        .cart-preview.show {
-            right: 0;
-        }
-
-        .cart-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            z-index: 1040;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .cart-overlay.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* Cart Styling */
-        .cart-header {
-            border-bottom: 2px solid var(--gray-200);
-            padding-bottom: 1rem;
-        }
-
-        .cart-title {
-            color: var(--primary-blue);
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-
-        .cart-items {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .empty-cart i {
-            opacity: 0.3;
-        }
-
-        .cart-item {
-            display: flex;
-            align-items: center;
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        .cart-item-info {
-            flex-grow: 1;
-            margin-right: 1rem;
-        }
-
-        .cart-item-name {
-            font-weight: 600;
-            color: var(--primary-blue);
-            font-size: 0.9rem;
-        }
-
-        .cart-item-details {
-            font-size: 0.75rem;
-            color: var(--gray-600);
-        }
-
-        .cart-qty-btn {
-            background: var(--primary-blue);
-            color: white;
-            border: none;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
-
-        .cart-qty-btn:hover {
-            background: var(--secondary-blue);
-        }
-
-        .cart-item-remove {
-            background: #dc3545;
-            color: white;
-            border: none;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            font-size: 0.7rem;
-            cursor: pointer;
-            margin-left: 0.5rem;
-        }
-
         /* Products Section */
         .products-main {
             min-height: 60vh;
@@ -750,15 +636,6 @@
                 max-width: 200px;
             }
 
-            .cart-preview {
-                width: calc(100vw - 20px);
-                right: -100vw;
-            }
-
-            .cart-preview.show {
-                right: 10px;
-            }
-
             .navbar-brand img {
                 height: 50px !important;
             }
@@ -961,66 +838,6 @@
     </div>
 </main>
 
-<!-- Cart Preview -->
-<div id="cartPreview" class="cart-preview">
-    <div class="cart-header d-flex justify-content-between align-items-center mb-3">
-        <h6 class="cart-title mb-0">
-            <i class="fas fa-shopping-cart me-2"></i>Shopping Cart
-        </h6>
-        <button class="btn-close" onclick="toggleCart()"></button>
-    </div>
-    
-    <div id="cartItems" class="cart-items">
-        <div class="empty-cart text-center py-4">
-            <i class="fas fa-shopping-cart fa-3x mb-3 text-muted"></i>
-            <h6 class="text-muted">Your cart is empty</h6>
-            <p class="text-muted small">Add products to get started</p>
-        </div>
-    </div>
-    
-    <div id="cartSummary" class="cart-summary" style="display: none;">
-        <hr class="my-3">
-        
-        <div class="pricing-breakdown">
-            <div class="d-flex justify-content-between mb-2">
-                <span>Subtotal:</span>
-                <span id="cartSubtotal">$0.00</span>
-            </div>
-            <div class="d-flex justify-content-between mb-2">
-                <span>Shipping:</span>
-                <span class="text-info">Calculated at Checkout</span>
-            </div>
-            <div class="d-flex justify-content-between fw-bold border-top pt-2">
-                <span>Total:</span>
-                <span id="cartTotal">$0.00</span>
-            </div>
-        </div>
-        
-        <div class="cart-actions mt-3">
-            <div class="d-grid gap-2">
-                <button class="btn btn-primary" onclick="proceedToCart()">
-                    <i class="fas fa-shopping-cart me-2"></i>View Cart & Checkout
-                </button>
-                <div class="row">
-                    <div class="col-6">
-                        <button class="btn btn-outline-secondary btn-sm w-100" onclick="clearCart()">
-                            <i class="fas fa-trash me-1"></i>Clear
-                        </button>
-                    </div>
-                    <div class="col-6">
-                        <a href="tel:+18017125663" class="btn btn-outline-success btn-sm w-100">
-                            <i class="fas fa-phone me-1"></i>Help
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Cart Overlay -->
-<div id="cartOverlay" class="cart-overlay" onclick="toggleCart()"></div>
-
 <!-- Footer -->
 <footer class="footer-section">
     <div class="container">
@@ -1129,6 +946,9 @@
 <!-- Bootstrap JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
+<!-- CRITICAL: Load Cart System First -->
+<script src="shop/js/cart.js"></script>
+
 <!-- JavaScript -->
 <script>
     // ================================================================
@@ -1227,7 +1047,6 @@
         }
     };
 
-    let cartVisible = false;
     let productQuantities = {};
 
     // ================================================================
@@ -1338,31 +1157,43 @@
         
         const quantity = productQuantities[productId] || 1;
         
-        let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-        const existingIndex = cart.findIndex(item => item.productId === productId);
-        
-        if (existingIndex >= 0) {
-            cart[existingIndex].quantity += quantity;
+        // Use the enhanced cart system from cart.js
+        if (window.cart && typeof window.addProductToCart === 'function') {
+            const success = window.addProductToCart(productId, quantity, 'retail');
+            if (success) {
+                showNotification(`Added ${quantity}x ${product.name} to cart!`, 'success');
+                // Reset quantity
+                const input = document.getElementById(`qty-${productId}`);
+                if (input) input.value = 1;
+                productQuantities[productId] = 1;
+            }
         } else {
-            cart.push({
-                productId: product.id,
-                name: product.name,
-                price: product.pricing.retail,
-                quantity: quantity,
-                emoji: product.emoji,
-                sku: product.sku
-            });
+            // Fallback to simple localStorage cart
+            let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+            const existingIndex = cart.findIndex(item => item.productId === productId);
+            
+            if (existingIndex >= 0) {
+                cart[existingIndex].quantity += quantity;
+            } else {
+                cart.push({
+                    productId: product.id,
+                    name: product.name,
+                    price: product.pricing.retail,
+                    quantity: quantity,
+                    emoji: product.emoji,
+                    sku: product.sku
+                });
+            }
+            
+            localStorage.setItem('ohsCart', JSON.stringify(cart));
+            updateCartBadges();
+            showNotification(`Added ${quantity}x ${product.name} to cart!`, 'success');
+            
+            // Reset quantity
+            const input = document.getElementById(`qty-${productId}`);
+            if (input) input.value = 1;
+            productQuantities[productId] = 1;
         }
-        
-        localStorage.setItem('ohsCart', JSON.stringify(cart));
-        updateCartBadges();
-        updateCartPreview();
-        showNotification(`Added ${quantity}x ${product.name} to cart!`, 'success');
-        
-        // Reset quantity
-        const input = document.getElementById(`qty-${productId}`);
-        if (input) input.value = 1;
-        productQuantities[productId] = 1;
     }
 
     // ================================================================
@@ -1454,8 +1285,18 @@
     }
 
     function updateCartBadges() {
-        const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        let totalItems = 0;
+        
+        // Try to use the enhanced cart system first
+        if (window.cart && window.cart.items && Array.isArray(window.cart.items)) {
+            totalItems = window.cart.items.reduce((sum, item) => sum + item.quantity, 0);
+        } else {
+            // Fallback to localStorage
+            const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+            if (Array.isArray(cart)) {
+                totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+            }
+        }
         
         ['cartBadge', 'heroCartCount', 'floatingCartCount'].forEach(id => {
             const badge = document.getElementById(id);
@@ -1465,7 +1306,7 @@
             }
         });
         
-        // Show/hide the hero cart count wrapper
+        // Update hero cart count wrapper
         const heroWrapper = document.getElementById('heroCartCountWrapper');
         if (heroWrapper) {
             heroWrapper.style.display = totalItems > 0 ? 'inline' : 'none';
@@ -1518,8 +1359,24 @@
     // ================================================================
 
     document.addEventListener('DOMContentLoaded', function() {
-        loadProducts();
-        updateCartBadges();
+        // Wait for cart system to be ready
+        const initCart = () => {
+            if (window.cart) {
+                console.log('✅ Cart system ready, initializing products page');
+                loadProducts();
+                updateCartBadges();
+                
+                // Listen for cart updates
+                window.addEventListener('cartUpdated', function() {
+                    updateCartBadges();
+                });
+            } else {
+                console.log('⏳ Waiting for cart system...');
+                setTimeout(initCart, 100);
+            }
+        };
+        
+        initCart();
         
         if (localStorage.getItem('promoBannerClosed') === 'true') {
             document.getElementById('promoBanner').style.display = 'none';
