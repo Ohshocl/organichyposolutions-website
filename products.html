@@ -76,7 +76,7 @@
         }
 
         .navbar-brand img {
-            height: 60px !important;
+            height: 45px !important;
             width: auto !important;
             margin-right: 0.5rem !important;
         }
@@ -643,7 +643,7 @@
         }
 
         .footer-brand img {
-            height: 65px;
+            height: 50px;
             width: auto;
             margin-right: 0.75rem;
         }
@@ -750,10 +750,6 @@
                 max-width: 200px;
             }
 
-            .navbar-brand img {
-                height: 50px !important;
-            }
-
             .cart-preview {
                 width: calc(100vw - 20px);
                 right: -100vw;
@@ -761,6 +757,10 @@
 
             .cart-preview.show {
                 right: 10px;
+            }
+
+            .navbar-brand img {
+                height: 35px !important;
             }
         }
     </style>
@@ -788,7 +788,6 @@
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="index.html">
             <img src="assets/images/logos/OHS Brand Image.jpg" alt="Organic HypoSolutions Logo">
-            <span>Organic HypoSolutions</span>
         </a>
         
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -913,7 +912,7 @@
                 <i class="fas fa-boxes me-2"></i>Browse Products
             </button>
             <button class="btn btn-outline-light" onclick="toggleCart()">
-                <i class="fas fa-shopping-cart me-2"></i>Cart<span id="heroCartCountWrapper" style="display: none;"> (<span id="heroCartCount">0</span>)</span>
+                <i class="fas fa-shopping-cart me-2"></i>Cart (<span id="heroCartCount">0</span>)
             </button>
             <a href="tel:+18017125663" class="btn btn-outline-light">
                 <i class="fas fa-phone me-2"></i>(801) 712-5663
@@ -1129,9 +1128,6 @@
 <!-- Bootstrap JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
-<!-- CRITICAL: Load Cart System First -->
-<script src="shop/js/cart.js"></script>
-
 <!-- JavaScript -->
 <script>
     // ================================================================
@@ -1341,48 +1337,31 @@
         
         const quantity = productQuantities[productId] || 1;
         
-        // Use the enhanced cart system from cart.js
-        if (window.cart && typeof window.addProductToCart === 'function') {
-            const success = window.addProductToCart(productId, quantity, 'retail');
-            if (success) {
-                showNotification(`Added ${quantity}x ${product.name} to cart!`, 'success');
-                updateCartBadges();
-                updateCartPreview();
-                // Reset quantity
-                const input = document.getElementById(`qty-${productId}`);
-                if (input) input.value = 1;
-                productQuantities[productId] = 1;
-            }
+        let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+        const existingIndex = cart.findIndex(item => item.productId === productId);
+        
+        if (existingIndex >= 0) {
+            cart[existingIndex].quantity += quantity;
         } else {
-            // Fallback to simple localStorage cart
-            let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-            if (!Array.isArray(cart)) cart = [];
-            
-            const existingIndex = cart.findIndex(item => item.productId === productId);
-            
-            if (existingIndex >= 0) {
-                cart[existingIndex].quantity += quantity;
-            } else {
-                cart.push({
-                    productId: product.id,
-                    name: product.name,
-                    price: product.pricing.retail,
-                    quantity: quantity,
-                    emoji: product.emoji,
-                    sku: product.sku
-                });
-            }
-            
-            localStorage.setItem('ohsCart', JSON.stringify(cart));
-            updateCartBadges();
-            updateCartPreview();
-            showNotification(`Added ${quantity}x ${product.name} to cart!`, 'success');
-            
-            // Reset quantity
-            const input = document.getElementById(`qty-${productId}`);
-            if (input) input.value = 1;
-            productQuantities[productId] = 1;
+            cart.push({
+                productId: product.id,
+                name: product.name,
+                price: product.pricing.retail,
+                quantity: quantity,
+                emoji: product.emoji,
+                sku: product.sku
+            });
         }
+        
+        localStorage.setItem('ohsCart', JSON.stringify(cart));
+        updateCartBadges();
+        updateCartPreview();
+        showNotification(`Added ${quantity}x ${product.name} to cart!`, 'success');
+        
+        // Reset quantity
+        const input = document.getElementById(`qty-${productId}`);
+        if (input) input.value = 1;
+        productQuantities[productId] = 1;
     }
 
     // ================================================================
@@ -1474,18 +1453,8 @@
     }
 
     function updateCartBadges() {
-        let totalItems = 0;
-        
-        // Try to use the enhanced cart system first
-        if (window.cart && window.cart.items && Array.isArray(window.cart.items)) {
-            totalItems = window.cart.items.reduce((sum, item) => sum + item.quantity, 0);
-        } else {
-            // Fallback to localStorage
-            const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-            if (Array.isArray(cart)) {
-                totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
-            }
-        }
+        const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
         
         ['cartBadge', 'heroCartCount', 'floatingCartCount'].forEach(id => {
             const badge = document.getElementById(id);
@@ -1494,12 +1463,6 @@
                 badge.style.display = totalItems > 0 ? 'inline-block' : 'none';
             }
         });
-        
-        // Update hero cart count wrapper
-        const heroWrapper = document.getElementById('heroCartCountWrapper');
-        if (heroWrapper) {
-            heroWrapper.style.display = totalItems > 0 ? 'inline' : 'none';
-        }
     }
 
     function toggleCart() {
@@ -1548,27 +1511,8 @@
     // ================================================================
 
     document.addEventListener('DOMContentLoaded', function() {
-        // Load products immediately - don't wait
         loadProducts();
         updateCartBadges();
-        
-        // Initialize cart system when ready
-        const initCart = () => {
-            if (window.cart) {
-                console.log('✅ Cart system ready');
-                updateCartBadges();
-                
-                // Listen for cart updates
-                window.addEventListener('cartUpdated', function() {
-                    updateCartBadges();
-                    updateCartPreview();
-                });
-            } else {
-                setTimeout(initCart, 100);
-            }
-        };
-        
-        initCart();
         
         if (localStorage.getItem('promoBannerClosed') === 'true') {
             document.getElementById('promoBanner').style.display = 'none';
