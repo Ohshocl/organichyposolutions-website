@@ -750,6 +750,10 @@
                 max-width: 200px;
             }
 
+            .navbar-brand img {
+                height: 50px !important;
+            }
+
             .cart-preview {
                 width: calc(100vw - 20px);
                 right: -100vw;
@@ -757,10 +761,6 @@
 
             .cart-preview.show {
                 right: 10px;
-            }
-
-            .navbar-brand img {
-                height: 50px !important;
             }
         }
     </style>
@@ -1129,6 +1129,9 @@
 <!-- Bootstrap JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
+<!-- CRITICAL: Load Cart System First -->
+<script src="shop/js/cart.js"></script>
+
 <!-- JavaScript -->
 <script>
     // ================================================================
@@ -1338,31 +1341,48 @@
         
         const quantity = productQuantities[productId] || 1;
         
-        let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-        const existingIndex = cart.findIndex(item => item.productId === productId);
-        
-        if (existingIndex >= 0) {
-            cart[existingIndex].quantity += quantity;
+        // Use the enhanced cart system from cart.js
+        if (window.cart && typeof window.addProductToCart === 'function') {
+            const success = window.addProductToCart(productId, quantity, 'retail');
+            if (success) {
+                showNotification(`Added ${quantity}x ${product.name} to cart!`, 'success');
+                updateCartBadges();
+                updateCartPreview();
+                // Reset quantity
+                const input = document.getElementById(`qty-${productId}`);
+                if (input) input.value = 1;
+                productQuantities[productId] = 1;
+            }
         } else {
-            cart.push({
-                productId: product.id,
-                name: product.name,
-                price: product.pricing.retail,
-                quantity: quantity,
-                emoji: product.emoji,
-                sku: product.sku
-            });
+            // Fallback to simple localStorage cart
+            let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+            if (!Array.isArray(cart)) cart = [];
+            
+            const existingIndex = cart.findIndex(item => item.productId === productId);
+            
+            if (existingIndex >= 0) {
+                cart[existingIndex].quantity += quantity;
+            } else {
+                cart.push({
+                    productId: product.id,
+                    name: product.name,
+                    price: product.pricing.retail,
+                    quantity: quantity,
+                    emoji: product.emoji,
+                    sku: product.sku
+                });
+            }
+            
+            localStorage.setItem('ohsCart', JSON.stringify(cart));
+            updateCartBadges();
+            updateCartPreview();
+            showNotification(`Added ${quantity}x ${product.name} to cart!`, 'success');
+            
+            // Reset quantity
+            const input = document.getElementById(`qty-${productId}`);
+            if (input) input.value = 1;
+            productQuantities[productId] = 1;
         }
-        
-        localStorage.setItem('ohsCart', JSON.stringify(cart));
-        updateCartBadges();
-        updateCartPreview();
-        showNotification(`Added ${quantity}x ${product.name} to cart!`, 'success');
-        
-        // Reset quantity
-        const input = document.getElementById(`qty-${productId}`);
-        if (input) input.value = 1;
-        productQuantities[productId] = 1;
     }
 
     // ================================================================
@@ -1454,8 +1474,18 @@
     }
 
     function updateCartBadges() {
-        const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        let totalItems = 0;
+        
+        // Try to use the enhanced cart system first
+        if (window.cart && window.cart.items && Array.isArray(window.cart.items)) {
+            totalItems = window.cart.items.reduce((sum, item) => sum + item.quantity, 0);
+        } else {
+            // Fallback to localStorage
+            const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+            if (Array.isArray(cart)) {
+                totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+            }
+        }
         
         ['cartBadge', 'heroCartCount', 'floatingCartCount'].forEach(id => {
             const badge = document.getElementById(id);
@@ -1465,7 +1495,7 @@
             }
         });
         
-        // Show/hide the hero cart count wrapper
+        // Update hero cart count wrapper
         const heroWrapper = document.getElementById('heroCartCountWrapper');
         if (heroWrapper) {
             heroWrapper.style.display = totalItems > 0 ? 'inline' : 'none';
@@ -1518,8 +1548,27 @@
     // ================================================================
 
     document.addEventListener('DOMContentLoaded', function() {
+        // Load products immediately - don't wait
         loadProducts();
         updateCartBadges();
+        
+        // Initialize cart system when ready
+        const initCart = () => {
+            if (window.cart) {
+                console.log('✅ Cart system ready');
+                updateCartBadges();
+                
+                // Listen for cart updates
+                window.addEventListener('cartUpdated', function() {
+                    updateCartBadges();
+                    updateCartPreview();
+                });
+            } else {
+                setTimeout(initCart, 100);
+            }
+        };
+        
+        initCart();
         
         if (localStorage.getItem('promoBannerClosed') === 'true') {
             document.getElementById('promoBanner').style.display = 'none';
