@@ -76,7 +76,7 @@
         }
 
         .navbar-brand img {
-            height: 45px !important;
+            height: 60px !important;
             width: auto !important;
             margin-right: 0.5rem !important;
         }
@@ -643,7 +643,7 @@
         }
 
         .footer-brand img {
-            height: 50px;
+            height: 65px;
             width: auto;
             margin-right: 0.75rem;
         }
@@ -750,6 +750,10 @@
                 max-width: 200px;
             }
 
+            .navbar-brand img {
+                height: 50px !important;
+            }
+
             .cart-preview {
                 width: calc(100vw - 20px);
                 right: -100vw;
@@ -757,10 +761,6 @@
 
             .cart-preview.show {
                 right: 10px;
-            }
-
-            .navbar-brand img {
-                height: 35px !important;
             }
         }
     </style>
@@ -788,6 +788,7 @@
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="index.html">
             <img src="assets/images/logos/OHS Brand Image.jpg" alt="Organic HypoSolutions Logo">
+            <span>Organic HypoSolutions</span>
         </a>
         
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -912,7 +913,7 @@
                 <i class="fas fa-boxes me-2"></i>Browse Products
             </button>
             <button class="btn btn-outline-light" onclick="toggleCart()">
-                <i class="fas fa-shopping-cart me-2"></i>Cart (<span id="heroCartCount">0</span>)
+                <i class="fas fa-shopping-cart me-2"></i>Cart<span id="heroCartCountWrapper" style="display: none;"> (<span id="heroCartCount">0</span>)</span>
             </button>
             <a href="tel:+18017125663" class="btn btn-outline-light">
                 <i class="fas fa-phone me-2"></i>(801) 712-5663
@@ -1131,13 +1132,23 @@
 <!-- JavaScript -->
 <script>
     // ================================================================
+    // UNIFIED CART SYSTEM - SAME AS INDEX.HTML
+    // ================================================================
+    
+    // Use the same localStorage key as index.html
+    const CART_STORAGE_KEY = 'ohsCart';
+    
+    // Load existing cart
+    let cartItems = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+    
+    // ================================================================
     // PRODUCT CATALOG WITH COMING SOON TOGGLE
     // ================================================================
     
     // Set to TRUE to activate a coming soon product
     const ENABLE_COMING_SOON_PRODUCTS = {
-        'ohs-32oz-laundry-booster': false,  // Change to true to activate
-        'ohs-organic-wipes': false          // Change to true to activate
+        'ohs-32oz-laundry-booster': false,
+        'ohs-organic-wipes': false
     };
 
     // Product Catalog - 4 Products (2 Active, 2 Coming Soon)
@@ -1333,80 +1344,126 @@
 
     function addToCart(productId) {
         const product = PRODUCT_CATALOG[productId];
-        if (!product) return;
+        if (!product) {
+            console.error(`Product ${productId} not found`);
+            return;
+        }
         
         const quantity = productQuantities[productId] || 1;
         
-        let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-        const existingIndex = cart.findIndex(item => item.productId === productId);
-        
-        if (existingIndex >= 0) {
-            cart[existingIndex].quantity += quantity;
-        } else {
-            cart.push({
-                productId: product.id,
-                name: product.name,
-                price: product.pricing.retail,
-                quantity: quantity,
-                emoji: product.emoji,
-                sku: product.sku
-            });
+        try {
+            // Check if product already exists in cart
+            const existingItemIndex = cartItems.findIndex(item => item.productId === productId);
+            
+            if (existingItemIndex !== -1) {
+                // Update existing item quantity
+                cartItems[existingItemIndex].quantity += quantity;
+            } else {
+                // Add new item in format compatible with index.html
+                cartItems.push({
+                    productId: productId,
+                    name: product.name,
+                    price: product.pricing.retail,
+                    category: product.badgeType,
+                    quantity: quantity,
+                    variantId: product.shopifyVariants.retail,
+                    handle: product.shopifyHandle,
+                    sku: product.sku,
+                    type: product.type,
+                    emoji: product.emoji,
+                    addedAt: new Date().toISOString()
+                });
+            }
+            
+            // Save to localStorage with standard key
+            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
+            
+            // Trigger storage event for cross-page updates
+            window.dispatchEvent(new Event('storage'));
+            
+            // Update UI
+            updateCartBadges();
+            updateCartPreview();
+            
+            // Show success message
+            showNotification(`Added ${quantity}x ${product.name} to cart!`, 'success');
+            
+            console.log(`✅ Added ${quantity}x ${product.name} to unified cart`);
+            console.log(`📦 Cart now has ${cartItems.length} unique items`);
+            
+            // Reset quantity
+            const input = document.getElementById(`qty-${productId}`);
+            if (input) input.value = 1;
+            productQuantities[productId] = 1;
+            
+            // Track analytics
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'add_to_cart', {
+                    'currency': 'USD',
+                    'value': product.pricing.retail * quantity,
+                    'items': [{
+                        'item_id': product.shopifyVariants.retail,
+                        'item_name': product.name,
+                        'category': product.badgeType,
+                        'quantity': quantity,
+                        'price': product.pricing.retail
+                    }]
+                });
+            }
+            
+        } catch (error) {
+            console.error('Error adding product to cart:', error);
+            showNotification('Failed to add product. Please try again.', 'error');
         }
-        
-        localStorage.setItem('ohsCart', JSON.stringify(cart));
-        updateCartBadges();
-        updateCartPreview();
-        showNotification(`Added ${quantity}x ${product.name} to cart!`, 'success');
-        
-        // Reset quantity
-        const input = document.getElementById(`qty-${productId}`);
-        if (input) input.value = 1;
-        productQuantities[productId] = 1;
     }
 
     // ================================================================
-    // CART FUNCTIONS
+    // CART FUNCTIONS - UNIFIED WITH INDEX.HTML
     // ================================================================
 
     function updateCartPreview() {
-        const cartItems = document.getElementById('cartItems');
+        const cartItemsContainer = document.getElementById('cartItems');
         const cartSummary = document.getElementById('cartSummary');
-        const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
         
-        if (cart.length === 0) {
-            cartItems.innerHTML = `
+        // Reload cart from localStorage to ensure it's current
+        cartItems = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+        
+        if (!Array.isArray(cartItems) || cartItems.length === 0) {
+            cartItemsContainer.innerHTML = `
                 <div class="empty-cart text-center py-4">
                     <i class="fas fa-shopping-cart fa-3x mb-3 text-muted"></i>
                     <h6 class="text-muted">Your cart is empty</h6>
                     <p class="text-muted small">Add products to get started</p>
                 </div>
             `;
-            cartSummary.style.display = 'none';
+            if (cartSummary) cartSummary.style.display = 'none';
             return;
         }
         
         let itemsHTML = '';
         let subtotal = 0;
         
-        cart.forEach(item => {
+        cartItems.forEach(item => {
             const itemTotal = item.price * item.quantity;
             subtotal += itemTotal;
             
             itemsHTML += `
                 <div class="cart-item">
                     <div class="cart-item-info">
-                        <div class="cart-item-name">${item.name}</div>
-                        <div class="cart-item-details">SKU: ${item.sku} • $${item.price.toFixed(2)} each</div>
+                        <div class="cart-item-name">${item.emoji || '📦'} ${item.name}</div>
+                        <div class="cart-item-details">
+                            SKU: ${item.sku || 'N/A'} • $${item.price.toFixed(2)} each
+                        </div>
                     </div>
                     <div class="d-flex align-items-center">
                         <button class="cart-qty-btn" onclick="updateCartQuantity('${item.productId}', -1)">
                             <i class="fas fa-minus"></i>
                         </button>
-                        <span class="mx-2">${item.quantity}</span>
+                        <span class="mx-2 fw-bold">${item.quantity}</span>
                         <button class="cart-qty-btn" onclick="updateCartQuantity('${item.productId}', 1)">
                             <i class="fas fa-plus"></i>
                         </button>
-                        <button class="cart-item-remove" onclick="removeFromCart('${item.productId}')">
+                        <button class="cart-item-remove" onclick="removeFromCart('${item.productId}')" title="Remove item">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
@@ -1414,31 +1471,42 @@
             `;
         });
         
-        cartItems.innerHTML = itemsHTML;
-        document.getElementById('cartSubtotal').textContent = `$${subtotal.toFixed(2)}`;
-        document.getElementById('cartTotal').textContent = `$${subtotal.toFixed(2)}`;
-        cartSummary.style.display = 'block';
+        cartItemsContainer.innerHTML = itemsHTML;
+        
+        if (cartSummary) {
+            document.getElementById('cartSubtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('cartTotal').textContent = `$${subtotal.toFixed(2)}`;
+            cartSummary.style.display = 'block';
+        }
     }
 
     function updateCartQuantity(productId, change) {
-        let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-        const itemIndex = cart.findIndex(item => item.productId === productId);
+        // Reload cart from localStorage
+        cartItems = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+        
+        const itemIndex = cartItems.findIndex(item => item.productId === productId);
         
         if (itemIndex >= 0) {
-            cart[itemIndex].quantity += change;
-            if (cart[itemIndex].quantity <= 0) {
-                cart.splice(itemIndex, 1);
+            cartItems[itemIndex].quantity += change;
+            
+            if (cartItems[itemIndex].quantity <= 0) {
+                cartItems.splice(itemIndex, 1);
             }
-            localStorage.setItem('ohsCart', JSON.stringify(cart));
+            
+            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
+            window.dispatchEvent(new Event('storage'));
             updateCartPreview();
             updateCartBadges();
         }
     }
 
     function removeFromCart(productId) {
-        let cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-        cart = cart.filter(item => item.productId !== productId);
-        localStorage.setItem('ohsCart', JSON.stringify(cart));
+        // Reload cart from localStorage
+        cartItems = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+        
+        cartItems = cartItems.filter(item => item.productId !== productId);
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
+        window.dispatchEvent(new Event('storage'));
         updateCartPreview();
         updateCartBadges();
         showNotification('Item removed from cart', 'info');
@@ -1446,16 +1514,24 @@
 
     function clearCart() {
         if (confirm('Clear all items from cart?')) {
-            localStorage.setItem('ohsCart', JSON.stringify([]));
+            cartItems = [];
+            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify([]));
+            window.dispatchEvent(new Event('storage'));
             updateCartPreview();
             updateCartBadges();
+            showNotification('Cart cleared', 'info');
         }
     }
 
     function updateCartBadges() {
-        const cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        // Reload cart from localStorage to ensure accuracy
+        cartItems = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
         
+        const totalItems = Array.isArray(cartItems) 
+            ? cartItems.reduce((sum, item) => sum + (item.quantity || 0), 0) 
+            : 0;
+        
+        // Update all badge elements
         ['cartBadge', 'heroCartCount', 'floatingCartCount'].forEach(id => {
             const badge = document.getElementById(id);
             if (badge) {
@@ -1463,7 +1539,25 @@
                 badge.style.display = totalItems > 0 ? 'inline-block' : 'none';
             }
         });
+        
+        // Update hero cart count wrapper
+        const heroWrapper = document.getElementById('heroCartCountWrapper');
+        if (heroWrapper) {
+            heroWrapper.style.display = totalItems > 0 ? 'inline' : 'none';
+        }
+        
+        console.log(`📊 Cart badges updated: ${totalItems} total items`);
     }
+
+    // Listen for cart updates from other pages
+    window.addEventListener('storage', function(e) {
+        if (e.key === CART_STORAGE_KEY) {
+            cartItems = JSON.parse(e.newValue || '[]');
+            updateCartBadges();
+            updateCartPreview();
+            console.log('🔄 Cart updated from another page');
+        }
+    });
 
     function toggleCart() {
         const cartPreview = document.getElementById('cartPreview');
@@ -1507,21 +1601,64 @@
     }
 
     // ================================================================
-    // INITIALIZE
+    // INITIALIZE - UNIFIED SYSTEM
     // ================================================================
 
     document.addEventListener('DOMContentLoaded', function() {
-        loadProducts();
-        updateCartBadges();
+        console.log('🎉 OHS Products Page Loading...');
+        console.log('📦 Unified cart loaded with', cartItems.length, 'unique items');
+        console.log('🔗 Cart will sync with index page via localStorage key:', CART_STORAGE_KEY);
         
+        // Load products immediately
+        loadProducts();
+        
+        // Initialize cart display
+        updateCartBadges();
+        updateCartPreview();
+        
+        // Check banner status
         if (localStorage.getItem('promoBannerClosed') === 'true') {
-            document.getElementById('promoBanner').style.display = 'none';
+            const banner = document.getElementById('promoBanner');
+            if (banner) banner.style.display = 'none';
         }
         
-        console.log('✅ Products page loaded');
-        console.log('📦 Active:', Object.values(PRODUCT_CATALOG).filter(p => p.status === 'active').length);
-        console.log('⏰ Coming soon:', Object.values(PRODUCT_CATALOG).filter(p => p.status === 'coming-soon').length);
+        // Update product statistics
+        const allProducts = Object.values(PRODUCT_CATALOG);
+        const activeProducts = allProducts.filter(p => p.status === 'active');
+        const comingSoonProducts = allProducts.filter(p => p.status === 'coming-soon' && !ENABLE_COMING_SOON_PRODUCTS[p.id]);
+        
+        const totalCountEl = document.getElementById('totalProductCount');
+        const activeCountEl = document.getElementById('activeProductCount');
+        const comingSoonCountEl = document.getElementById('comingSoonCount');
+        
+        if (totalCountEl) totalCountEl.textContent = allProducts.length;
+        if (activeCountEl) activeCountEl.textContent = activeProducts.length;
+        if (comingSoonCountEl) comingSoonCountEl.textContent = comingSoonProducts.length;
+        
+        console.log('✅ Products page initialization complete');
+        console.log('📊 Active:', activeProducts.length, '| Coming soon:', comingSoonProducts.length);
+        
+        // Track page load
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'page_view', {
+                'page_title': 'Products',
+                'page_location': window.location.href
+            });
+        }
     });
+    
+    // Make functions globally available
+    window.addToCart = addToCart;
+    window.changeQuantity = changeQuantity;
+    window.updateCartQuantity = updateCartQuantity;
+    window.removeFromCart = removeFromCart;
+    window.clearCart = clearCart;
+    window.toggleCart = toggleCart;
+    window.proceedToCart = proceedToCart;
+    window.scrollToProducts = scrollToProducts;
+    window.closeBanner = closeBanner;
+    
+    console.log('🚀 Products Page JavaScript Loaded - Unified Cart System Active');
 </script>
 
 </body>
