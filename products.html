@@ -1051,8 +1051,8 @@
             <div class="col-md-2 mb-4">
                 <h6 class="footer-heading">Products</h6>
                 <ul class="footer-list">
-                    <li><a href="products.html">USDA Organic (4)</a></li>
-                    <li><a href="products.html">Available Now (2)</a></li>
+                    <li><a href="products.html">USDA Organic (5)</a></li>
+<li><a href="products.html">Coming Soon (3)</a></li>
                     <li><a href="products.html">Coming Soon (2)</a></li>
                     <li><a href="products.html">All Products</a></li>
                 </ul>
@@ -1117,7 +1117,7 @@
                     <p class="mb-0">&copy; 2025 Organic HypoSolutions. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <span class="footer-badge">4 Products</span>
+                    <span class="footer-badge">5 Products</span>
                     <span class="footer-badge">Family Owned</span>
                     <span class="footer-badge">Patent Pending</span>
                 </div>
@@ -1146,96 +1146,117 @@
     // ================================================================
     
     // Set to TRUE to activate a coming soon product
-    const ENABLE_COMING_SOON_PRODUCTS = {
-        'ohs-32oz-laundry-booster': false,
-        'ohs-organic-wipes': false
-    };
-
-    // Product Catalog - 4 Products (2 Active, 2 Coming Soon)
-    const PRODUCT_CATALOG = {
-        'ohs-1gal-organic-solution': {
-            id: 'ohs-1gal-organic-solution',
-            shopifyHandle: '1-gallon-organic-ready-to-use-solution',
-            name: '1 Gallon Organic Ready-to-Use Solution',
-            description: 'USDA Certified Organic 1-gallon solution for large-scale eco-conscious applications. Perfect for medium-sized businesses and households.',
-            sku: 'OHS-1GAL-READY-RTU',
-            weight: 8.5,
-            category: 'Commercial Cleaning',
-            certifications: ['USDA Organic', 'EPA Registered', 'Food Safe'],
-            productLine: 'organic',
-            useCase: ['commercial', 'bulk', 'food-safe'],
-            badgeType: 'USDA Organic',
-            badgeColor: '#4ADE80',
-            pricing: { cost: 19.69, wholesale: 27.57, retail: 37.28 },
-            type: 'organic',
-            emoji: '🌿',
-            image: 'assets/images/products/1_gallon_organic_ready_to_use_solution.jpg',
-            shopifyVariants: { retail: "41829068701767", wholesale: "41829068767303" },
-            status: 'active'
-        },
-        'ohs-32oz-organic-cleaner': {
-            id: 'ohs-32oz-organic-cleaner',
-            shopifyHandle: '32oz-organic-ready-to-use-cleaner',
-            name: '32oz Organic Ready-to-Use Cleaner',
-            description: 'USDA Certified Organic ready-to-use cleaner for eco-conscious families. Professional-grade formulation.',
-            sku: 'OHS-32OZ-CLEANER-RTU',
-            weight: 2.2,
-            category: 'Commercial Cleaning',
-            certifications: ['USDA Organic', 'EPA Registered', 'Food Safe'],
-            productLine: 'organic',
-            useCase: ['residential', 'commercial', 'professional'],
-            badgeType: 'USDA Organic',
-            badgeColor: '#4ADE80',
-            pricing: { cost: 11.52, wholesale: 16.13, retail: 21.80 },
-            type: 'organic',
-            emoji: '🧽',
-            image: 'assets/images/products/32oz_organic_ready_to_use_cleaner.jpg',
-            shopifyVariants: { retail: "41829063295047", wholesale: "41829063327815" },
-            status: 'active'
-        },
-        'ohs-32oz-laundry-booster': {
-            id: 'ohs-32oz-laundry-booster',
-            shopifyHandle: '32oz-organic-laundry-booster',
-            name: '32oz Organic Laundry Booster',
-            description: 'USDA Certified Organic laundry booster with odor elimination. Eco-friendly formulation perfect for families.',
-            sku: 'OHS-32OZ-LAUNDRY-BOOSTER',
-            weight: 2.2,
-            category: 'Laundry Care',
-            certifications: ['USDA Organic', 'EPA Registered', 'Eco-Friendly'],
-            productLine: 'organic',
-            useCase: ['laundry', 'odor-elimination', 'eco-friendly'],
-            badgeType: 'USDA Organic',
-            badgeColor: '#4ADE80',
-            pricing: { cost: 15.91, wholesale: 17.64, retail: 23.86 },
-            type: 'organic',
-            emoji: '🧺',
-            image: 'assets/images/products/32oz_organic_laundry_booster.jpg',
-            shopifyVariants: { retail: "41829068832839", wholesale: "41829068865607" },
-            status: 'coming-soon',
-            availabilityText: 'Available Soon'
-        },
-        'ohs-organic-wipes': {
-            id: 'ohs-organic-wipes',
-            shopifyHandle: 'organic-all-in-one-disinfecting-wipes',
-            name: 'Organic All-in-One Disinfecting Wipes',
-            description: 'USDA Certified Organic disinfecting wipes. Convenient, eco-friendly cleaning solution.',
-            sku: 'OHS-WIPES-ORGANIC',
-            weight: 1.5,
-            category: 'Cleaning Supplies',
-            certifications: ['USDA Organic', 'EPA Registered', 'Eco-Friendly'],
-            productLine: 'organic',
-            useCase: ['convenient', 'disinfecting', 'wipes'],
-            badgeType: 'USDA Organic',
-            badgeColor: '#4ADE80',
-            pricing: { cost: 16.19, wholesale: 17.98, retail: 24.29 },
-            type: 'organic',
-            emoji: '🧻',
-            image: 'assets/images/products/organic_all_in_one_disinfecting_wipes.jpg',
-            shopifyVariants: { retail: "41829069619271", wholesale: "41829069652039" },
-            status: 'coming-soon',
-            availabilityText: 'Available Soon'
-        }
-    };
+const ENABLE_COMING_SOON_PRODUCTS = {
+    'ohs-32oz-laundry-booster': false,
+    'ohs-organic-wipes': false,
+    'ohs-1gal-laundry-booster': false  // ← Add this new one
+};
+// Product Catalog - 5 Products (2 Active, 3 Coming Soon)
+const PRODUCT_CATALOG = {
+    'ohs-1gal-organic-solution': {
+        id: 'ohs-1gal-organic-solution',
+        shopifyHandle: '1-gallon-organic-ready-to-use-solution',
+        name: '1 Gallon Organic Ready-to-Use Solution - USDA Certified',
+        description: 'Bulk premium professional-grade hypochlorous acid cleaner and disinfectant for large-scale applications. Advanced formulation with premium packaging. Kills 99.9% of pathogens including bacteria viruses and fungi. Perfect for premium commercial facilities luxury establishments and high-end bulk users. Safe for food contact surfaces and skin. Cost-effective solution for high-volume premium cleaning needs. Made in Utah USA.',
+        sku: 'OHS-1GAL-READY-RTU',
+        weight: 8.5,
+        category: 'Commercial Cleaning',
+        certifications: ['USDA Organic', 'EPA Registered', 'Food Safe'],
+        productLine: 'organic',
+        useCase: ['commercial', 'bulk', 'food-safe'],
+        badgeType: 'USDA Organic',
+        badgeColor: '#4ADE80',
+        pricing: { cost: 12.51, wholesale: 15.43, retail: 20.85 },
+        type: 'organic',
+        emoji: '🌿',
+        image: 'assets/images/products/1_gallon_organic_ready_to_use_solution.jpg',
+        shopifyVariants: { retail: "41829068701767", wholesale: "41829068767303" },
+        status: 'active'
+    },
+    'ohs-32oz-organic-cleaner': {
+        id: 'ohs-32oz-organic-cleaner',
+        shopifyHandle: '32oz-organic-ready-to-use-cleaner',
+        name: '32oz Organic Ready-to-Use Cleaner - USDA Certified',
+        description: 'Professional-strength ready-to-use hypochlorous acid cleaner and disinfectant. USDA Certified Organic (#Z-699995-2008) and EPA registered (#97801-1). Kills 99.9% of pathogens including bacteria viruses and fungi. Safe for food contact surfaces toys and skin. Perfect for homes offices restaurants and healthcare facilities. No harsh chemicals no toxic fumes. Simply spray and wipe. Made in Utah USA.',
+        sku: 'OHS-32OZ-RTU',
+        weight: 2.2,
+        category: 'Commercial Cleaning',
+        certifications: ['USDA Organic', 'EPA Registered', 'Food Safe'],
+        productLine: 'organic',
+        useCase: ['residential', 'commercial', 'professional'],
+        badgeType: 'USDA Organic',
+        badgeColor: '#4ADE80',
+        pricing: { cost: 6.96, wholesale: 8.58, retail: 11.6 },
+        type: 'organic',
+        emoji: '🧽',
+        image: 'assets/images/products/32oz_organic_ready_to_use_cleaner.jpg',
+        shopifyVariants: { retail: "41829068537927", wholesale: "41829068603463" },
+        status: 'active'
+    },
+    'ohs-32oz-laundry-booster': {
+        id: 'ohs-32oz-laundry-booster',
+        shopifyHandle: 'ohs-32oz-organic-laundry-booster',
+        name: '32oz Organic Laundry Booster W/ Cap - USDA Certified',
+        description: 'Premium laundry enhancement solution using hypochlorous acid technology. USDA Certified Organic. Eliminates odors brightens whites and provides antimicrobial protection to fabrics. Safe for all fabric types and colors. Perfect for households and commercial laundries. Non-toxic non-irritating formula. Eco-friendly alternative to harsh chemicals. Made in Utah USA.',
+        sku: 'OHS-32OZ-LAUNDRY-BOOSTER',
+        weight: 2.2,
+        category: 'Laundry Care',
+        certifications: ['USDA Organic', 'EPA Registered', 'Eco-Friendly'],
+        productLine: 'organic',
+        useCase: ['laundry', 'odor-elimination', 'eco-friendly'],
+        badgeType: 'USDA Organic',
+        badgeColor: '#4ADE80',
+        pricing: { cost: 7.62, wholesale: 9.4, retail: 12.7 },
+        type: 'organic',
+        emoji: '🧺',
+        image: 'assets/images/products/32oz_organic_laundry_booster.jpg',
+        shopifyVariants: { retail: "41829064572999", wholesale: "41829064638535" },
+        status: 'coming-soon',
+        availabilityText: 'Available Soon'
+    },
+    'ohs-organic-wipes': {
+        id: 'ohs-organic-wipes',
+        shopifyHandle: 'ohs-organic-wipes',
+        name: 'All in One Hypochlorous Organic Wipes - USDA Certified',
+        description: 'Convenient pre-moistened hypochlorous acid wipes. USDA Certified Organic and EPA registered. Kills 99.9% of pathogens. Perfect for quick cleaning and disinfecting on-the-go. Safe for all surfaces including food contact. Ideal for homes offices travel and healthcare. Non-toxic alcohol-free formula. Made in Utah USA.',
+        sku: 'OHS-WIPES-ORGANIC',
+        weight: 1.5,
+        category: 'Cleaning Supplies',
+        certifications: ['USDA Organic', 'EPA Registered', 'Eco-Friendly'],
+        productLine: 'organic',
+        useCase: ['convenient', 'disinfecting', 'wipes'],
+        badgeType: 'USDA Organic',
+        badgeColor: '#4ADE80',
+        pricing: { cost: 9.26, wholesale: 11.42, retail: 15.43 },
+        type: 'organic',
+        emoji: '🧻',
+        image: 'assets/images/products/organic_all_in_one_disinfecting_wipes.jpg',
+        shopifyVariants: { retail: "41829069619271", wholesale: "41829069684807" },
+        status: 'coming-soon',
+        availabilityText: 'Available Soon'
+    },
+    'ohs-1gal-laundry-booster': {
+        id: 'ohs-1gal-laundry-booster',
+        shopifyHandle: 'ohs-1-gallon-organic-laundry-booster',
+        name: '1 Gallon Organic Laundry Booster W/ Cap - USDA Certified',
+        description: 'Bulk premium laundry enhancement solution using hypochlorous acid technology. USDA Certified Organic. Eliminates odors brightens whites and provides antimicrobial protection to fabrics. Perfect for commercial laundries hotels and professional cleaning services. Safe for all fabric types and colors. Cost-effective bulk solution for high-volume laundry needs. Eco-friendly alternative to harsh chemicals. Made in Utah USA.',
+        sku: 'OHS-1GAL-LAUNDRY-BOOSTER',
+        weight: 8.5,
+        category: 'Laundry Care',
+        certifications: ['USDA Organic', 'EPA Registered', 'Eco-Friendly'],
+        productLine: 'organic',
+        useCase: ['bulk', 'commercial', 'laundry'],
+        badgeType: 'USDA Organic',
+        badgeColor: '#4ADE80',
+        pricing: { cost: 14.25, wholesale: 17.57, retail: 23.75 },
+        type: 'organic',
+        emoji: '🧺',
+        image: 'assets/images/products/1_gallon_organic_laundry_booster.jpg',
+        shopifyVariants: { retail: "41829064704071", wholesale: "41829064769607" },
+        status: 'coming-soon',
+        availabilityText: 'Available Soon'
+    }
+};
 
     let cartVisible = false;
     let productQuantities = {};
