@@ -1943,7 +1943,12 @@
                     throw new Error('No valid products found for checkout');
                 }
                 
-                const checkoutUrl = `https://${SHOPIFY_DOMAIN}/cart/${lineItems.join(',')}`;
+                // Go directly to checkout with items
+const params = lineItems.map(item => {
+    const [variantId, qty] = item.split(':');
+    return `${variantId}:${qty}`;
+}).join(',');
+const checkoutUrl = `https://${SHOPIFY_DOMAIN}/cart/add?id=${params}&return_to=/checkout`;
                 
                 console.log('Checkout URL:', checkoutUrl);
                 showNotification('Opening secure checkout...', 'success');
