@@ -1884,98 +1884,78 @@
             }
         }
 
-        // Proceed to checkout
-        function proceedToCheckout() {
-            if (cartItems.length === 0) {
-                showNotification('Your cart is empty!', 'warning');
-                return;
+function proceedToCheckout() {
+    if (cartItems.length === 0) {
+        showNotification('Your cart is empty!', 'warning');
+        return;
+    }
+    
+    const btn = document.getElementById('checkoutBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner me-2"></span>Redirecting to Shopify...';
+    
+    try {
+        // Build items for Shopify Ajax Cart API
+        const items = [];
+        
+        cartItems.forEach(item => {
+            let variantId = null;
+            
+            if (item.variantId) {
+                variantId = item.variantId;
+            } else if (typeof PRODUCT_CATALOG !== 'undefined' && PRODUCT_CATALOG[item.productId]) {
+                const product = PRODUCT_CATALOG[item.productId];
+                const wholesaleInfo = safeCalculateWholesaleRate(item.productId, item.quantity);
+                
+                if (product.shopifyVariants) {
+                    variantId = wholesaleInfo.isWholesale && product.shopifyVariants.wholesale 
+                        ? product.shopifyVariants.wholesale 
+                        : product.shopifyVariants.retail;
+                }
             }
             
-            const btn = document.getElementById('checkoutBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner me-2"></span>Redirecting to Shopify...';
-            
-            try {
-                const lineItems = [];
-                const itemsWithoutVariants = [];
-                
-                cartItems.forEach(item => {
-                    let variantId = null;
-                    
-                    if (item.variantId) {
-                        variantId = item.variantId;
-                    } else if (typeof PRODUCT_CATALOG !== 'undefined' && PRODUCT_CATALOG[item.productId]) {
-                        const product = PRODUCT_CATALOG[item.productId];
-                        const wholesaleInfo = safeCalculateWholesaleRate(item.productId, item.quantity);
-                        
-                        if (product.shopifyVariants) {
-                            variantId = wholesaleInfo.isWholesale && product.shopifyVariants.wholesale 
-                                ? product.shopifyVariants.wholesale 
-                                : product.shopifyVariants.retail;
-                        }
-                    } else {
-                        variantId = getVariantIdFromName(item.name, item.productId);
-                    }
-                    
-                    if (variantId) {
-                        lineItems.push(`${variantId}:${item.quantity}`);
-                        console.log(`Adding to checkout: ${item.name} (${variantId}:${item.quantity})`);
-                    } else {
-                        itemsWithoutVariants.push(item.name);
-                        console.warn(`No variant ID found for: ${item.name} (${item.productId})`);
-                    }
+            if (variantId) {
+                items.push({
+                    id: variantId,
+                    quantity: item.quantity
                 });
-                
-                if (itemsWithoutVariants.length > 0 && lineItems.length > 0) {
-                    const confirmed = confirm(
-                        `Some items don't have checkout variants and will be skipped:\n\n${itemsWithoutVariants.join('\n')}\n\nProceed with remaining items?`
-                    );
-                    if (!confirmed) {
-                        btn.disabled = false;
-                        btn.innerHTML = '<i class="fas fa-lock me-2"></i>SECURE CHECKOUT';
-                        return;
-                    }
-                } else if (itemsWithoutVariants.length > 0 && lineItems.length === 0) {
-                    throw new Error(`No items could be processed for checkout. Please contact us at (801) 712-5663 for assistance.`);
-                }
-                
-                if (lineItems.length === 0) {
-                    throw new Error('No valid products found for checkout');
-                }
-                
-const checkoutUrl = `https://${SHOPIFY_DOMAIN}/cart/${lineItems.join(',')}`;
-                
-                console.log('Checkout URL:', checkoutUrl);
-                showNotification('Opening secure checkout...', 'success');
-                
-                setTimeout(() => {
-                    const newTab = window.open(checkoutUrl, '_blank');
-                    if (newTab) {
-                        newTab.focus();
-                        btn.disabled = false;
-                        btn.innerHTML = '<i class="fas fa-lock me-2"></i>SECURE CHECKOUT';
-                    } else {
-                        console.warn('Popup blocked, opening in same window');
-                        window.location.href = checkoutUrl;
-                    }
-                }, 1000);
-                
-            } catch (error) {
-                console.error('Checkout error:', error);
-                showNotification('Checkout failed: ' + error.message, 'error');
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-lock me-2"></i>SECURE CHECKOUT';
-                
-                setTimeout(() => {
-                    const contactConfirm = confirm(
-                        'Having trouble with checkout? Would you like to call us for assistance?\n\nPhone: (801) 712-5663'
-                    );
-                    if (contactConfirm) {
-                        window.location.href = 'tel:+18017125663';
-                    }
-                }, 3000);
             }
+        });
+        
+        if (items.length === 0) {
+            throw new Error('No valid products found for checkout');
         }
+        
+        // Use Shopify Ajax Cart API
+        fetch(`https://${SHOPIFY_DOMAIN}/cart/add.js`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ items: items })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Redirect to cart
+            showNotification('Opening secure checkout...', 'success');
+            setTimeout(() => {
+                window.location.href = `https://${SHOPIFY_DOMAIN}/cart`;
+            }, 500);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Fallback: try direct link
+            const simpleUrl = `https://${SHOPIFY_DOMAIN}/products/${items[0].id}`;
+            window.location.href = simpleUrl;
+        });
+        
+    } catch (error) {
+        console.error('Checkout error:', error);
+        showNotification('Checkout failed: ' + error.message, 'error');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-lock me-2"></i>SECURE CHECKOUT';
+    }
+}
 
         // Map product names/IDs to known variant IDs
         function getVariantIdFromName(name, productId) {
