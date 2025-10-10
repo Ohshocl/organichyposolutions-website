@@ -891,7 +891,7 @@
         
         <div class="hero-stats mb-4">
             <div class="stat-item">
-                <span class="stat-number" id="totalProductCount">4</span>
+                <span class="stat-number" id="totalProductCount">5</span>
                 <span class="stat-label">Total Products</span>
             </div>
             <div class="stat-item">
@@ -899,7 +899,7 @@
                 <span class="stat-label">Available Now</span>
             </div>
             <div class="stat-item">
-                <span class="stat-number" id="comingSoonCount">2</span>
+                <span class="stat-number" id="comingSoonCount">3</span>
                 <span class="stat-label">Coming Soon</span>
             </div>
             <div class="stat-item">
@@ -1052,8 +1052,7 @@
                 <h6 class="footer-heading">Products</h6>
                 <ul class="footer-list">
                     <li><a href="products.html">USDA Organic (5)</a></li>
-<li><a href="products.html">Coming Soon (3)</a></li>
-                    <li><a href="products.html">Coming Soon (2)</a></li>
+                    <li><a href="products.html">Coming Soon (3)</a></li>
                     <li><a href="products.html">All Products</a></li>
                 </ul>
             </div>
@@ -1135,131 +1134,171 @@
     // UNIFIED CART SYSTEM - SAME AS INDEX.HTML
     // ================================================================
     
-    // Use the same localStorage key as index.html
     const CART_STORAGE_KEY = 'ohsCart';
-    
-    // Load existing cart
     let cartItems = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
     
     // ================================================================
-    // PRODUCT CATALOG WITH COMING SOON TOGGLE
+    // PRODUCT CATALOG WITH WHOLESALE THRESHOLDS
     // ================================================================
     
-    // Set to TRUE to activate a coming soon product
-const ENABLE_COMING_SOON_PRODUCTS = {
-    'ohs-32oz-laundry-booster': false,
-    'ohs-organic-wipes': false,
-    'ohs-1gal-laundry-booster': false  // ← Add this new one
-};
-// Product Catalog - 5 Products (2 Active, 3 Coming Soon)
-const PRODUCT_CATALOG = {
-    'ohs-1gal-organic-solution': {
-        id: 'ohs-1gal-organic-solution',
-        shopifyHandle: '1-gallon-organic-ready-to-use-solution',
-        name: '1 Gallon Organic Ready-to-Use Solution - USDA Certified',
-        description: 'Bulk premium professional-grade hypochlorous acid cleaner and disinfectant for large-scale applications. Advanced formulation with premium packaging. Kills 99.9% of pathogens including bacteria viruses and fungi. Perfect for premium commercial facilities luxury establishments and high-end bulk users. Safe for food contact surfaces and skin. Cost-effective solution for high-volume premium cleaning needs. Made in Utah USA.',
-        sku: 'OHS-1GAL-READY-RTU',
-        weight: 8.5,
-        category: 'Commercial Cleaning',
-        certifications: ['USDA Organic', 'EPA Registered', 'Food Safe'],
-        productLine: 'organic',
-        useCase: ['commercial', 'bulk', 'food-safe'],
-        badgeType: 'USDA Organic',
-        badgeColor: '#4ADE80',
-        pricing: { cost: 12.51, wholesale: 15.43, retail: 20.85 },
-        type: 'organic',
-        emoji: '🌿',
-        image: 'assets/images/products/1_gallon_organic_ready_to_use_solution.jpg',
-        shopifyVariants: { retail: "41829068701767", wholesale: "41829068767303" },
-        status: 'active'
-    },
-    'ohs-32oz-organic-cleaner': {
-        id: 'ohs-32oz-organic-cleaner',
-        shopifyHandle: '32oz-organic-ready-to-use-cleaner',
-        name: '32oz Organic Ready-to-Use Cleaner - USDA Certified',
-        description: 'Professional-strength ready-to-use hypochlorous acid cleaner and disinfectant. USDA Certified Organic (#Z-699995-2008) and EPA registered (#97801-1). Kills 99.9% of pathogens including bacteria viruses and fungi. Safe for food contact surfaces toys and skin. Perfect for homes offices restaurants and healthcare facilities. No harsh chemicals no toxic fumes. Simply spray and wipe. Made in Utah USA.',
-        sku: 'OHS-32OZ-RTU',
-        weight: 2.2,
-        category: 'Commercial Cleaning',
-        certifications: ['USDA Organic', 'EPA Registered', 'Food Safe'],
-        productLine: 'organic',
-        useCase: ['residential', 'commercial', 'professional'],
-        badgeType: 'USDA Organic',
-        badgeColor: '#4ADE80',
-        pricing: { cost: 6.96, wholesale: 8.58, retail: 11.6 },
-        type: 'organic',
-        emoji: '🧽',
-        image: 'assets/images/products/32oz_organic_ready_to_use_cleaner.jpg',
-        shopifyVariants: { retail: "41829068537927", wholesale: "41829068603463" },
-        status: 'active'
-    },
-    'ohs-32oz-laundry-booster': {
-        id: 'ohs-32oz-laundry-booster',
-        shopifyHandle: 'ohs-32oz-organic-laundry-booster',
-        name: '32oz Organic Laundry Booster W/ Cap - USDA Certified',
-        description: 'Premium laundry enhancement solution using hypochlorous acid technology. USDA Certified Organic. Eliminates odors brightens whites and provides antimicrobial protection to fabrics. Safe for all fabric types and colors. Perfect for households and commercial laundries. Non-toxic non-irritating formula. Eco-friendly alternative to harsh chemicals. Made in Utah USA.',
-        sku: 'OHS-32OZ-LAUNDRY-BOOSTER',
-        weight: 2.2,
-        category: 'Laundry Care',
-        certifications: ['USDA Organic', 'EPA Registered', 'Eco-Friendly'],
-        productLine: 'organic',
-        useCase: ['laundry', 'odor-elimination', 'eco-friendly'],
-        badgeType: 'USDA Organic',
-        badgeColor: '#4ADE80',
-        pricing: { cost: 7.62, wholesale: 9.4, retail: 12.7 },
-        type: 'organic',
-        emoji: '🧺',
-        image: 'assets/images/products/32oz_organic_laundry_booster.jpg',
-        shopifyVariants: { retail: "41829064572999", wholesale: "41829064638535" },
-        status: 'coming-soon',
-        availabilityText: 'Available Soon'
-    },
-    'ohs-organic-wipes': {
-        id: 'ohs-organic-wipes',
-        shopifyHandle: 'ohs-organic-wipes',
-        name: 'All in One Hypochlorous Organic Wipes - USDA Certified',
-        description: 'Convenient pre-moistened hypochlorous acid wipes. USDA Certified Organic and EPA registered. Kills 99.9% of pathogens. Perfect for quick cleaning and disinfecting on-the-go. Safe for all surfaces including food contact. Ideal for homes offices travel and healthcare. Non-toxic alcohol-free formula. Made in Utah USA.',
-        sku: 'OHS-WIPES-ORGANIC',
-        weight: 1.5,
-        category: 'Cleaning Supplies',
-        certifications: ['USDA Organic', 'EPA Registered', 'Eco-Friendly'],
-        productLine: 'organic',
-        useCase: ['convenient', 'disinfecting', 'wipes'],
-        badgeType: 'USDA Organic',
-        badgeColor: '#4ADE80',
-        pricing: { cost: 9.26, wholesale: 11.42, retail: 15.43 },
-        type: 'organic',
-        emoji: '🧻',
-        image: 'assets/images/products/organic_all_in_one_disinfecting_wipes.jpg',
-        shopifyVariants: { retail: "41829069619271", wholesale: "41829069684807" },
-        status: 'coming-soon',
-        availabilityText: 'Available Soon'
-    },
-    'ohs-1gal-laundry-booster': {
-        id: 'ohs-1gal-laundry-booster',
-        shopifyHandle: 'ohs-1-gallon-organic-laundry-booster',
-        name: '1 Gallon Organic Laundry Booster W/ Cap - USDA Certified',
-        description: 'Bulk premium laundry enhancement solution using hypochlorous acid technology. USDA Certified Organic. Eliminates odors brightens whites and provides antimicrobial protection to fabrics. Perfect for commercial laundries hotels and professional cleaning services. Safe for all fabric types and colors. Cost-effective bulk solution for high-volume laundry needs. Eco-friendly alternative to harsh chemicals. Made in Utah USA.',
-        sku: 'OHS-1GAL-LAUNDRY-BOOSTER',
-        weight: 8.5,
-        category: 'Laundry Care',
-        certifications: ['USDA Organic', 'EPA Registered', 'Eco-Friendly'],
-        productLine: 'organic',
-        useCase: ['bulk', 'commercial', 'laundry'],
-        badgeType: 'USDA Organic',
-        badgeColor: '#4ADE80',
-        pricing: { cost: 14.25, wholesale: 17.57, retail: 23.75 },
-        type: 'organic',
-        emoji: '🧺',
-        image: 'assets/images/products/1_gallon_organic_laundry_booster.jpg',
-        shopifyVariants: { retail: "41829064704071", wholesale: "41829064769607" },
-        status: 'coming-soon',
-        availabilityText: 'Available Soon'
-    }
-};
+    const ENABLE_COMING_SOON_PRODUCTS = {
+        'ohs-32oz-laundry-booster': false,
+        'ohs-organic-wipes': false,
+        'ohs-1gal-laundry-booster': false
+    };
+
+    const PRODUCT_CATALOG = {
+        'ohs-1gal-organic-solution': {
+            id: 'ohs-1gal-organic-solution',
+            shopifyHandle: '1-gallon-organic-ready-to-use-solution',
+            name: '1 Gallon Organic Ready-to-Use Solution - USDA Certified',
+            description: 'Bulk premium professional-grade hypochlorous acid cleaner and disinfectant for large-scale applications. Advanced formulation with premium packaging. Kills 99.9% of pathogens including bacteria viruses and fungi. Perfect for premium commercial facilities luxury establishments and high-end bulk users. Safe for food contact surfaces and skin. Cost-effective solution for high-volume premium cleaning needs. Made in Utah USA.',
+            sku: 'OHS-1GAL-READY-RTU',
+            weight: 8.5,
+            category: 'Commercial Cleaning',
+            certifications: ['USDA Organic', 'EPA Registered', 'Food Safe'],
+            productLine: 'organic',
+            useCase: ['commercial', 'bulk', 'food-safe'],
+            badgeType: 'USDA Organic',
+            badgeColor: '#4ADE80',
+            pricing: { cost: 12.51, wholesale: 15.43, retail: 20.85 },
+            wholesaleThreshold: 10,
+            type: 'organic',
+            emoji: '🌿',
+            image: 'assets/images/products/1_gallon_organic_ready_to_use_solution.jpg',
+            shopifyVariants: { retail: "41829068701767", wholesale: "41829068767303" },
+            status: 'active'
+        },
+        'ohs-32oz-organic-cleaner': {
+            id: 'ohs-32oz-organic-cleaner',
+            shopifyHandle: '32oz-organic-ready-to-use-cleaner',
+            name: '32oz Organic Ready-to-Use Cleaner - USDA Certified',
+            description: 'Professional-strength ready-to-use hypochlorous acid cleaner and disinfectant. USDA Certified Organic (#Z-699995-2008) and EPA registered (#97801-1). Kills 99.9% of pathogens including bacteria viruses and fungi. Safe for food contact surfaces toys and skin. Perfect for homes offices restaurants and healthcare facilities. No harsh chemicals no toxic fumes. Simply spray and wipe. Made in Utah USA.',
+            sku: 'OHS-32OZ-RTU',
+            weight: 2.2,
+            category: 'Commercial Cleaning',
+            certifications: ['USDA Organic', 'EPA Registered', 'Food Safe'],
+            productLine: 'organic',
+            useCase: ['residential', 'commercial', 'professional'],
+            badgeType: 'USDA Organic',
+            badgeColor: '#4ADE80',
+            pricing: { cost: 6.96, wholesale: 8.58, retail: 11.6 },
+            wholesaleThreshold: 25,
+            type: 'organic',
+            emoji: '🧽',
+            image: 'assets/images/products/32oz_organic_ready_to_use_cleaner.jpg',
+            shopifyVariants: { retail: "41829068537927", wholesale: "41829068603463" },
+            status: 'active'
+        },
+        'ohs-32oz-laundry-booster': {
+            id: 'ohs-32oz-laundry-booster',
+            shopifyHandle: 'ohs-32oz-organic-laundry-booster',
+            name: '32oz Organic Laundry Booster W/ Cap - USDA Certified',
+            description: 'Premium laundry enhancement solution using hypochlorous acid technology. USDA Certified Organic. Eliminates odors brightens whites and provides antimicrobial protection to fabrics. Safe for all fabric types and colors. Perfect for households and commercial laundries. Non-toxic non-irritating formula. Eco-friendly alternative to harsh chemicals. Made in Utah USA.',
+            sku: 'OHS-32OZ-LAUNDRY-BOOSTER',
+            weight: 2.2,
+            category: 'Laundry Care',
+            certifications: ['USDA Organic', 'EPA Registered', 'Eco-Friendly'],
+            productLine: 'organic',
+            useCase: ['laundry', 'odor-elimination', 'eco-friendly'],
+            badgeType: 'USDA Organic',
+            badgeColor: '#4ADE80',
+            pricing: { cost: 7.62, wholesale: 9.4, retail: 12.7 },
+            wholesaleThreshold: 25,
+            type: 'organic',
+            emoji: '🧺',
+            image: 'assets/images/products/32oz_organic_laundry_booster.jpg',
+            shopifyVariants: { retail: "41829064572999", wholesale: "41829064638535" },
+            status: 'coming-soon',
+            availabilityText: 'Available Soon'
+        },
+        'ohs-organic-wipes': {
+            id: 'ohs-organic-wipes',
+            shopifyHandle: 'ohs-organic-wipes',
+            name: 'All in One Hypochlorous Organic Wipes - USDA Certified',
+            description: 'Convenient pre-moistened hypochlorous acid wipes. USDA Certified Organic and EPA registered. Kills 99.9% of pathogens. Perfect for quick cleaning and disinfecting on-the-go. Safe for all surfaces including food contact. Ideal for homes offices travel and healthcare. Non-toxic alcohol-free formula. Made in Utah USA.',
+            sku: 'OHS-WIPES-ORGANIC',
+            weight: 1.5,
+            category: 'Cleaning Supplies',
+            certifications: ['USDA Organic', 'EPA Registered', 'Eco-Friendly'],
+            productLine: 'organic',
+            useCase: ['convenient', 'disinfecting', 'wipes'],
+            badgeType: 'USDA Organic',
+            badgeColor: '#4ADE80',
+            pricing: { cost: 9.26, wholesale: 11.42, retail: 15.43 },
+            wholesaleThreshold: 20,
+            type: 'organic',
+            emoji: '🧻',
+            image: 'assets/images/products/organic_all_in_one_disinfecting_wipes.jpg',
+            shopifyVariants: { retail: "41829069619271", wholesale: "41829069684807" },
+            status: 'coming-soon',
+            availabilityText: 'Available Soon'
+        },
+        'ohs-1gal-laundry-booster': {
+            id: 'ohs-1gal-laundry-booster',
+            shopifyHandle: 'ohs-1-gallon-organic-laundry-booster',
+            name: '1 Gallon Organic Laundry Booster W/ Cap - USDA Certified',
+            description: 'Bulk premium laundry enhancement solution using hypochlorous acid technology. USDA Certified Organic. Eliminates odors brightens whites and provides antimicrobial protection to fabrics. Perfect for commercial laundries hotels and professional cleaning services. Safe for all fabric types and colors. Cost-effective bulk solution for high-volume laundry needs. Eco-friendly alternative to harsh chemicals. Made in Utah USA.',
+            sku: 'OHS-1GAL-LAUNDRY-BOOSTER',
+            weight: 8.5,
+            category: 'Laundry Care',
+            certifications: ['USDA Organic', 'EPA Registered', 'Eco-Friendly'],
+            productLine: 'organic',
+            useCase: ['bulk', 'commercial', 'laundry'],
+            badgeType: 'USDA Organic',
+            badgeColor: '#4ADE80',
+            pricing: { cost: 14.25, wholesale: 17.57, retail: 23.75 },
+            wholesaleThreshold: 10,
+            type: 'organic',
+            emoji: '🧺',
+            image: 'assets/images/products/1_gallon_organic_laundry_booster.jpg',
+            shopifyVariants: { retail: "41829064704071", wholesale: "41829064769607" },
+            status: 'coming-soon',
+            availabilityText: 'Available Soon'
+        }
+    };
 
     let cartVisible = false;
     let productQuantities = {};
+
+    // ================================================================
+    // PRICING FUNCTIONS - WHOLESALE THRESHOLD LOGIC
+    // ================================================================
+
+    function getPricingTier(product, quantity) {
+        const threshold = product.wholesaleThreshold || 999999;
+        const isWholesale = quantity >= threshold;
+        
+        return {
+            isWholesale: isWholesale,
+            price: isWholesale ? product.pricing.wholesale : product.pricing.retail,
+            variantId: isWholesale ? product.shopifyVariants.wholesale : product.shopifyVariants.retail,
+            tier: isWholesale ? 'Wholesale' : 'Retail',
+            savingsPerUnit: isWholesale ? (product.pricing.retail - product.pricing.wholesale) : 0
+        };
+    }
+
+    function displayPricingInfo(productId, quantity) {
+        const product = PRODUCT_CATALOG[productId];
+        if (!product) return;
+        
+        const pricingInfo = getPricingTier(product, quantity);
+        const priceDisplay = document.querySelector(`[data-product-id="${productId}"] .price-display`);
+        
+        if (priceDisplay && pricingInfo.isWholesale) {
+            priceDisplay.innerHTML = `
+                <div class="current-price text-success">$${pricingInfo.price.toFixed(2)}</div>
+                <div class="price-label text-success">Wholesale Price</div>
+                <small class="text-muted">Save $${pricingInfo.savingsPerUnit.toFixed(2)}/unit</small>
+            `;
+        } else if (priceDisplay) {
+            priceDisplay.innerHTML = `
+                <div class="current-price">$${product.pricing.retail.toFixed(2)}</div>
+                <div class="price-label">Retail Price</div>
+                ${product.wholesaleThreshold ? `<small class="text-info">Wholesale at ${product.wholesaleThreshold}+ units</small>` : ''}
+            `;
+        }
+    }
 
     // ================================================================
     // PRODUCT DISPLAY
@@ -1321,8 +1360,17 @@ const PRODUCT_CATALOG = {
                                 <div class="price-display mb-3">
                                     <div class="current-price">$${retail.toFixed(2)}</div>
                                     <div class="price-label">Retail Price</div>
+                                    ${product.wholesaleThreshold ? `<small class="text-info">Wholesale at ${product.wholesaleThreshold}+ units</small>` : ''}
                                 </div>
                                 <div class="text-muted small mb-2">SKU: ${product.sku}</div>
+                                ${product.wholesaleThreshold ? `
+                                    <div class="alert alert-info py-2 px-3 mb-2" style="font-size: 0.75rem;">
+                                        <i class="fas fa-tag me-1"></i>
+                                        <strong>Wholesale Price:</strong> $${product.pricing.wholesale.toFixed(2)}
+                                        <br>
+                                        <small>Save $${(retail - product.pricing.wholesale).toFixed(2)}/unit at ${product.wholesaleThreshold}+ qty</small>
+                                    </div>
+                                ` : ''}
                                 <ul class="list-unstyled small mb-3">
                                     <li><i class="fas fa-check text-success me-1"></i>Family & Pet Safe</li>
                                     <li><i class="fas fa-check text-success me-1"></i>Utah Made</li>
@@ -1333,7 +1381,8 @@ const PRODUCT_CATALOG = {
                                         <i class="fas fa-minus"></i>
                                     </button>
                                     <input type="number" class="form-control form-control-sm text-center" 
-                                           id="qty-${product.id}" value="1" min="1" max="999" style="max-width: 70px;">
+                                           id="qty-${product.id}" value="1" min="1" max="999" style="max-width: 70px;"
+                                           onchange="displayPricingInfo('${product.id}', this.value)">
                                     <button class="btn btn-outline-primary btn-sm" onclick="changeQuantity('${product.id}', 1)">
                                         <i class="fas fa-plus"></i>
                                     </button>
@@ -1361,6 +1410,7 @@ const PRODUCT_CATALOG = {
         const newValue = Math.max(1, Math.min(999, parseInt(input.value) + change));
         input.value = newValue;
         productQuantities[productId] = newValue;
+        displayPricingInfo(productId, newValue);
     }
 
     function addToCart(productId) {
@@ -1371,63 +1421,66 @@ const PRODUCT_CATALOG = {
         }
         
         const quantity = productQuantities[productId] || 1;
+        const pricingInfo = getPricingTier(product, quantity);
         
         try {
-            // Check if product already exists in cart
             const existingItemIndex = cartItems.findIndex(item => item.productId === productId);
             
             if (existingItemIndex !== -1) {
-                // Update existing item quantity
-                cartItems[existingItemIndex].quantity += quantity;
+                const newQuantity = cartItems[existingItemIndex].quantity + quantity;
+                const updatedPricing = getPricingTier(product, newQuantity);
+                
+                cartItems[existingItemIndex].quantity = newQuantity;
+                cartItems[existingItemIndex].price = updatedPricing.price;
+                cartItems[existingItemIndex].variantId = updatedPricing.variantId;
+                cartItems[existingItemIndex].pricingTier = updatedPricing.tier;
+                cartItems[existingItemIndex].isWholesale = updatedPricing.isWholesale;
             } else {
-                // Add new item in format compatible with index.html
                 cartItems.push({
                     productId: productId,
                     name: product.name,
-                    price: product.pricing.retail,
+                    price: pricingInfo.price,
                     category: product.badgeType,
                     quantity: quantity,
-                    variantId: product.shopifyVariants.retail,
+                    variantId: pricingInfo.variantId,
                     handle: product.shopifyHandle,
                     sku: product.sku,
                     type: product.type,
                     emoji: product.emoji,
+                    pricingTier: pricingInfo.tier,
+                    isWholesale: pricingInfo.isWholesale,
+                    wholesaleThreshold: product.wholesaleThreshold,
                     addedAt: new Date().toISOString()
                 });
             }
             
-            // Save to localStorage with standard key
             localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
-            
-            // Trigger storage event for cross-page updates
             window.dispatchEvent(new Event('storage'));
             
-            // Update UI
             updateCartBadges();
             updateCartPreview();
             
-            // Show success message
-            showNotification(`Added ${quantity}x ${product.name} to cart!`, 'success');
+            const tierInfo = pricingInfo.isWholesale ? ` at Wholesale Price ($${pricingInfo.savingsPerUnit.toFixed(2)}/unit savings!)` : '';
+            showNotification(`Added ${quantity}x ${product.name}${tierInfo} to cart!`, 'success');
             
-            console.log(`✅ Added ${quantity}x ${product.name} to unified cart`);
-            console.log(`📦 Cart now has ${cartItems.length} unique items`);
+            console.log(`✅ Added ${quantity}x ${product.name} at ${pricingInfo.tier} price`);
             
-            // Reset quantity
             const input = document.getElementById(`qty-${productId}`);
             if (input) input.value = 1;
             productQuantities[productId] = 1;
+            displayPricingInfo(productId, 1);
             
-            // Track analytics
             if (typeof gtag !== 'undefined') {
                 gtag('event', 'add_to_cart', {
                     'currency': 'USD',
-                    'value': product.pricing.retail * quantity,
+                    'value': pricingInfo.price * quantity,
                     'items': [{
-                        'item_id': product.shopifyVariants.retail,
+                        'item_id': pricingInfo.variantId,
                         'item_name': product.name,
                         'category': product.badgeType,
                         'quantity': quantity,
-                        'price': product.pricing.retail
+                        'price': pricingInfo.price,
+                        'item_variant': pricingInfo.tier
                     }]
                 });
             }
@@ -1439,14 +1492,13 @@ const PRODUCT_CATALOG = {
     }
 
     // ================================================================
-    // CART FUNCTIONS - UNIFIED WITH INDEX.HTML
+    // CART FUNCTIONS - WITH WHOLESALE PRICING
     // ================================================================
 
     function updateCartPreview() {
         const cartItemsContainer = document.getElementById('cartItems');
         const cartSummary = document.getElementById('cartSummary');
         
-        // Reload cart from localStorage to ensure it's current
         cartItems = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
         
         if (!Array.isArray(cartItems) || cartItems.length === 0) {
@@ -1468,10 +1520,14 @@ const PRODUCT_CATALOG = {
             const itemTotal = item.price * item.quantity;
             subtotal += itemTotal;
             
+            const tierBadge = item.isWholesale 
+                ? '<span class="badge bg-success ms-1" style="font-size: 0.65rem;">Wholesale</span>' 
+                : '';
+            
             itemsHTML += `
                 <div class="cart-item">
                     <div class="cart-item-info">
-                        <div class="cart-item-name">${item.emoji || '📦'} ${item.name}</div>
+                        <div class="cart-item-name">${item.emoji || '📦'} ${item.name}${tierBadge}</div>
                         <div class="cart-item-details">
                             SKU: ${item.sku || 'N/A'} • $${item.price.toFixed(2)} each
                         </div>
@@ -1502,16 +1558,35 @@ const PRODUCT_CATALOG = {
     }
 
     function updateCartQuantity(productId, change) {
-        // Reload cart from localStorage
         cartItems = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
         
         const itemIndex = cartItems.findIndex(item => item.productId === productId);
         
         if (itemIndex >= 0) {
-            cartItems[itemIndex].quantity += change;
+            const newQuantity = cartItems[itemIndex].quantity + change;
             
-            if (cartItems[itemIndex].quantity <= 0) {
+            if (newQuantity <= 0) {
                 cartItems.splice(itemIndex, 1);
+            } else {
+                const product = PRODUCT_CATALOG[productId];
+                if (product) {
+                    const wasWholesale = cartItems[itemIndex].isWholesale;
+                    const updatedPricing = getPricingTier(product, newQuantity);
+                    
+                    cartItems[itemIndex].quantity = newQuantity;
+                    cartItems[itemIndex].price = updatedPricing.price;
+                    cartItems[itemIndex].variantId = updatedPricing.variantId;
+                    cartItems[itemIndex].pricingTier = updatedPricing.tier;
+                    cartItems[itemIndex].isWholesale = updatedPricing.isWholesale;
+                    
+                    if (updatedPricing.isWholesale && !wasWholesale) {
+                        showNotification(`🎉 Wholesale pricing activated! Saving $${updatedPricing.savingsPerUnit.toFixed(2)}/unit`, 'success');
+                    } else if (!updatedPricing.isWholesale && wasWholesale) {
+                        showNotification(`Quantity below wholesale threshold. Retail pricing applied.`, 'info');
+                    }
+                } else {
+                    cartItems[itemIndex].quantity = newQuantity;
+                }
             }
             
             localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
@@ -1522,9 +1597,7 @@ const PRODUCT_CATALOG = {
     }
 
     function removeFromCart(productId) {
-        // Reload cart from localStorage
         cartItems = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
-        
         cartItems = cartItems.filter(item => item.productId !== productId);
         localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
         window.dispatchEvent(new Event('storage'));
@@ -1545,14 +1618,12 @@ const PRODUCT_CATALOG = {
     }
 
     function updateCartBadges() {
-        // Reload cart from localStorage to ensure accuracy
         cartItems = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
         
         const totalItems = Array.isArray(cartItems) 
             ? cartItems.reduce((sum, item) => sum + (item.quantity || 0), 0) 
             : 0;
         
-        // Update all badge elements
         ['cartBadge', 'heroCartCount', 'floatingCartCount'].forEach(id => {
             const badge = document.getElementById(id);
             if (badge) {
@@ -1561,16 +1632,12 @@ const PRODUCT_CATALOG = {
             }
         });
         
-        // Update hero cart count wrapper
         const heroWrapper = document.getElementById('heroCartCountWrapper');
         if (heroWrapper) {
             heroWrapper.style.display = totalItems > 0 ? 'inline' : 'none';
         }
-        
-        console.log(`📊 Cart badges updated: ${totalItems} total items`);
     }
 
-    // Listen for cart updates from other pages
     window.addEventListener('storage', function(e) {
         if (e.key === CART_STORAGE_KEY) {
             cartItems = JSON.parse(e.newValue || '[]');
@@ -1622,28 +1689,22 @@ const PRODUCT_CATALOG = {
     }
 
     // ================================================================
-    // INITIALIZE - UNIFIED SYSTEM
+    // INITIALIZE
     // ================================================================
 
     document.addEventListener('DOMContentLoaded', function() {
         console.log('🎉 OHS Products Page Loading...');
         console.log('📦 Unified cart loaded with', cartItems.length, 'unique items');
-        console.log('🔗 Cart will sync with index page via localStorage key:', CART_STORAGE_KEY);
         
-        // Load products immediately
         loadProducts();
-        
-        // Initialize cart display
         updateCartBadges();
         updateCartPreview();
         
-        // Check banner status
         if (localStorage.getItem('promoBannerClosed') === 'true') {
             const banner = document.getElementById('promoBanner');
             if (banner) banner.style.display = 'none';
         }
         
-        // Update product statistics
         const allProducts = Object.values(PRODUCT_CATALOG);
         const activeProducts = allProducts.filter(p => p.status === 'active');
         const comingSoonProducts = allProducts.filter(p => p.status === 'coming-soon' && !ENABLE_COMING_SOON_PRODUCTS[p.id]);
@@ -1657,9 +1718,13 @@ const PRODUCT_CATALOG = {
         if (comingSoonCountEl) comingSoonCountEl.textContent = comingSoonProducts.length;
         
         console.log('✅ Products page initialization complete');
-        console.log('📊 Active:', activeProducts.length, '| Coming soon:', comingSoonProducts.length);
+        console.log('💰 Wholesale Pricing Thresholds:');
+        allProducts.forEach(p => {
+            if (p.wholesaleThreshold) {
+                console.log(`   ${p.name}: ${p.wholesaleThreshold}+ units → $${p.pricing.wholesale} (save $${(p.pricing.retail - p.pricing.wholesale).toFixed(2)}/unit)`);
+            }
+        });
         
-        // Track page load
         if (typeof gtag !== 'undefined') {
             gtag('event', 'page_view', {
                 'page_title': 'Products',
@@ -1668,7 +1733,6 @@ const PRODUCT_CATALOG = {
         }
     });
     
-    // Make functions globally available
     window.addToCart = addToCart;
     window.changeQuantity = changeQuantity;
     window.updateCartQuantity = updateCartQuantity;
@@ -1678,8 +1742,10 @@ const PRODUCT_CATALOG = {
     window.proceedToCart = proceedToCart;
     window.scrollToProducts = scrollToProducts;
     window.closeBanner = closeBanner;
+    window.displayPricingInfo = displayPricingInfo;
+    window.getPricingTier = getPricingTier;
     
-    console.log('🚀 Products Page JavaScript Loaded - Unified Cart System Active');
+    console.log('🚀 Products Page JavaScript Loaded - Wholesale Pricing Active');
 </script>
 
 </body>
