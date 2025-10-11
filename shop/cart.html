@@ -1207,6 +1207,7 @@
                 sku: 'OHS-32OZ-RTU',
                 type: 'organic',
                 emoji: '🧴',
+                image: '../assets/images/products/32oz_organic_ready_to_use_cleaner.jpeg',
                 wholesaleThreshold: 25,
                 pricing: { retail: 11.60, wholesale: 8.58 },
                 shopifyVariants: { retail: '41829068537927', wholesale: '41829068603463' }
@@ -1217,6 +1218,7 @@
                 sku: 'OHS-32OZ-RTU',
                 type: 'organic',
                 emoji: '🧴',
+                image: '../assets/images/products/32oz_organic_ready_to_use_cleaner.jpeg',
                 wholesaleThreshold: 25,
                 pricing: { retail: 11.60, wholesale: 8.58 },
                 shopifyVariants: { retail: '41829068537927', wholesale: '41829068603463' }
@@ -1227,6 +1229,7 @@
                 sku: 'OHS-32OZ-RTU',
                 type: 'organic',
                 emoji: '🧴',
+                image: '../assets/images/products/32oz_organic_ready_to_use_cleaner.jpeg',
                 wholesaleThreshold: 25,
                 pricing: { retail: 11.60, wholesale: 8.58 },
                 shopifyVariants: { retail: '41829068537927', wholesale: '41829068603463' }
@@ -1239,6 +1242,7 @@
                 sku: 'OHS-1GAL-READY-RTU',
                 type: 'organic',
                 emoji: '🪣',
+                image: '../assets/images/products/1_gallon_organic_ready_to_use_solution.jpg',
                 wholesaleThreshold: 10,
                 pricing: { retail: 20.85, wholesale: 15.43 },
                 shopifyVariants: { retail: '41829068701767', wholesale: '41829068767303' }
@@ -1249,6 +1253,7 @@
                 sku: 'OHS-1GAL-READY-RTU',
                 type: 'organic',
                 emoji: '🪣',
+                image: '../assets/images/products/1_gallon_organic_ready_to_use_solution.jpg',
                 wholesaleThreshold: 10,
                 pricing: { retail: 20.85, wholesale: 15.43 },
                 shopifyVariants: { retail: '41829068701767', wholesale: '41829068767303' }
@@ -1259,6 +1264,7 @@
                 sku: 'OHS-1GAL-READY-RTU',
                 type: 'organic',
                 emoji: '🪣',
+                image: '../assets/images/products/1_gallon_organic_ready_to_use_solution.jpg',
                 wholesaleThreshold: 10,
                 pricing: { retail: 20.85, wholesale: 15.43 },
                 shopifyVariants: { retail: '41829068701767', wholesale: '41829068767303' }
@@ -1271,6 +1277,7 @@
                 sku: 'OHS-WIPES-ORGANIC',
                 type: 'organic',
                 emoji: '🧻',
+                image: '../assets/images/products/organic_all_in_one_disinfecting_wipes.jpg',
                 wholesaleThreshold: 20,
                 pricing: { retail: 15.43, wholesale: 11.42 },
                 shopifyVariants: { retail: '41829069619271', wholesale: '41829069684807' }
@@ -1281,6 +1288,7 @@
                 sku: 'OHS-WIPES-ORGANIC',
                 type: 'organic',
                 emoji: '🧻',
+                image: '../assets/images/products/organic_all_in_one_disinfecting_wipes.jpg',
                 wholesaleThreshold: 20,
                 pricing: { retail: 15.43, wholesale: 11.42 },
                 shopifyVariants: { retail: '41829069619271', wholesale: '41829069684807' }
@@ -1293,6 +1301,7 @@
                 sku: 'OHS-32OZ-LAUNDRY-BOOSTER',
                 type: 'organic',
                 emoji: '👕',
+                image: '../assets/images/products/32oz_organic_laundry.jpeg',
                 wholesaleThreshold: 25,
                 pricing: { retail: 12.70, wholesale: 9.40 },
                 shopifyVariants: { retail: '41829064572999', wholesale: '41829064638535' }
@@ -1303,6 +1312,7 @@
                 sku: 'OHS-32OZ-LAUNDRY-BOOSTER',
                 type: 'organic',
                 emoji: '👕',
+                image: '../assets/images/products/32oz_organic_laundry.jpeg',
                 wholesaleThreshold: 25,
                 pricing: { retail: 12.70, wholesale: 9.40 },
                 shopifyVariants: { retail: '41829064572999', wholesale: '41829064638535' }
@@ -1315,6 +1325,7 @@
                 sku: 'OHS-1GAL-LAUNDRY-BOOSTER',
                 type: 'organic',
                 emoji: '👔',
+                image: '../assets/images/products/1gallon_organic_laundry_booster.jpg',
                 wholesaleThreshold: 10,
                 pricing: { retail: 23.75, wholesale: 17.57 },
                 shopifyVariants: { retail: '41829064704071', wholesale: '41829064769607' }
@@ -1325,6 +1336,7 @@
                 sku: 'OHS-1GAL-LAUNDRY-BOOSTER',
                 type: 'organic',
                 emoji: '👔',
+                image: '../assets/images/products/1gallon_organic_laundry_booster.jpg',
                 wholesaleThreshold: 10,
                 pricing: { retail: 23.75, wholesale: 17.57 },
                 shopifyVariants: { retail: '41829064704071', wholesale: '41829064769607' }
@@ -1511,6 +1523,7 @@
                 price: parseFloat(item.price) || 0,
                 quantity: Math.max(1, parseInt(item.quantity) || 1),
                 emoji: product ? product.emoji : (item.emoji || '🧴'),
+                image: product ? product.image : (item.image || null),
                 type: product ? product.type : (item.type || 'organic'),
                 sku: product ? product.sku : (item.sku || null),
                 addedAt: item.addedAt || Date.now()
@@ -1589,12 +1602,26 @@
                 ? (wholesaleInfo.retailPrice - wholesaleInfo.wholesalePrice) * item.quantity 
                 : 0;
             
+            // Get product image or use emoji as fallback
+            const product = findProduct(item.productId);
+            const hasImage = product && product.image;
+            
             return `
                 <div class="cart-item" data-product-id="${item.productId}" data-index="${index}">
                     <div class="row align-items-center">
                         <div class="col-2">
                             <div class="product-image ${item.type === 'organic' ? 'organic' : 'premium'}">
-                                ${item.emoji || '🧴'}
+                                ${hasImage ? `
+                                    <img src="${product.image}" 
+                                         alt="${item.name}" 
+                                         style="width: 100%; height: 100%; object-fit: cover; border-radius: 15px;"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <span style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; font-size: 2.5rem;">
+                                        ${item.emoji || '🧴'}
+                                    </span>
+                                ` : `
+                                    ${item.emoji || '🧴'}
+                                `}
                             </div>
                         </div>
                         <div class="col-4">
@@ -1884,15 +1911,15 @@
                 // Build Shopify cart URL
                 const cartUrl = `https://${SHOPIFY_DOMAIN}/cart/${cartParams.join(',')}`;
                 
-                console.log('🛒 Redirecting to Shopify cart:', cartUrl);
-                showNotification('Opening secure checkout...', 'success');
+                console.log('🛒 Opening Shopify cart in new tab:', cartUrl);
+                showNotification('Opening secure checkout in new tab...', 'success');
                 
-                // Small delay for better UX
+                // Open in new tab
                 setTimeout(() => {
                     window.open(cartUrl, '_blank');
-// Re-enable button after opening
-btn.disabled = false;
-btn.innerHTML = '<i class="fas fa-lock me-2"></i>SECURE CHECKOUT';
+                    // Re-enable button after opening
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-lock me-2"></i>SECURE CHECKOUT';
                 }, 500);
                 
             } catch (error) {
