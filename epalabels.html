@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hypochlorous Multi-Purpose Cleaner & Disinfectant - Product Label</title>
+    <title>Hypochlorous Multi-Purpose Cleaner & Disinfectant - EPA Optimized Label</title>
     <style>
         * {
             margin: 0;
@@ -31,7 +31,7 @@
             page-break-after: always;
             position: relative;
             padding: 0;
-            overflow: hidden;
+            overflow: hidden; /* CRITICAL: No scrolling */
         }
 
         .page:last-child {
@@ -77,98 +77,100 @@
             }
         }
 
-        /* FRONT PANEL STYLES */
+        /* ========================================
+           FRONT PANEL - MAXIMIZED INFORMATION
+           ======================================== */
         .front-panel {
             background: linear-gradient(135deg, #00A3E0 0%, #0077B3 100%);
             color: white;
-            padding: 60px 50px;
+            padding: 30px 35px;
             height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: space-around;
+            justify-content: space-between;
             position: relative;
         }
 
         .logo-image {
-            max-width: 450px;
+            max-width: 350px;
             height: auto;
             margin: 0 auto;
             display: block;
             background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
         }
 
         .product-title {
             text-align: center;
-            margin: 30px 0;
+            margin: 15px 0 10px 0;
         }
 
         .product-name {
-            font-size: 64px;
+            font-size: 52px;
             font-weight: bold;
-            margin-bottom: 15px;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
-            line-height: 1.1;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+            line-height: 1;
         }
 
         .product-subtitle {
-            font-size: 36px;
+            font-size: 28px;
             font-weight: 300;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
 
         .badge-container {
             display: flex;
             justify-content: center;
-            gap: 50px;
-            margin: 40px 0;
+            gap: 30px;
+            margin: 15px 0;
         }
 
         .badge {
             background: white;
             color: #2E7D32;
-            padding: 35px;
+            padding: 20px;
             border-radius: 50%;
-            width: 250px;
-            height: 250px;
+            width: 180px;
+            height: 180px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-            border: 7px solid #4CAF50;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            border: 5px solid #4CAF50;
         }
 
         .badge-large {
-            font-size: 32px;
-            margin-bottom: 10px;
-            line-height: 1.1;
+            font-size: 24px;
+            margin-bottom: 6px;
+            line-height: 1;
             text-align: center;
         }
 
         .badge-small {
-            font-size: 18px;
+            font-size: 14px;
             text-align: center;
-            line-height: 1.3;
+            line-height: 1.2;
         }
 
         .main-claim {
-            font-size: 42px;
+            font-size: 32px;
             font-weight: bold;
-            margin: 35px 0;
+            margin: 12px 0;
             text-align: center;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             background: rgba(255,255,255,0.2);
-            padding: 25px;
-            border-radius: 10px;
+            padding: 15px;
+            border-radius: 8px;
         }
 
         .sub-claim {
-            font-size: 28px;
-            margin: 18px 0;
+            font-size: 20px;
+            margin: 8px 0;
             text-align: center;
             font-weight: 500;
         }
@@ -176,77 +178,141 @@
         .warning-box {
             background: #FF5722;
             color: white;
-            padding: 18px 25px;
-            border-radius: 10px;
+            padding: 12px 18px;
+            border-radius: 8px;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 16px;
             position: absolute;
-            top: 40px;
-            right: 40px;
-            max-width: 200px;
+            top: 25px;
+            right: 25px;
+            max-width: 180px;
             text-align: center;
             box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-            border: 4px solid white;
-            line-height: 1.3;
+            border: 3px solid white;
+            line-height: 1.2;
+        }
+
+        /* NEW: Front panel info boxes for critical EPA info */
+        .front-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 12px 0;
+        }
+
+        .info-box {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .info-box-title {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 6px;
+            color: #00A3E0;
+            border-bottom: 2px solid #00A3E0;
+            padding-bottom: 3px;
+        }
+
+        .info-box ul {
+            margin-left: 18px;
+            margin-top: 5px;
+        }
+
+        .info-box li {
+            margin-bottom: 3px;
         }
 
         .epa-info {
-            font-size: 18px;
-            padding: 25px;
+            font-size: 15px;
+            padding: 12px;
             background: rgba(255,255,255,0.95);
             color: #333;
-            border-radius: 10px;
+            border-radius: 8px;
             text-align: center;
-            line-height: 1.9;
+            line-height: 1.6;
             font-weight: 600;
         }
 
-        /* BACK PANEL STYLES */
+        .net-contents {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        /* ========================================
+           BACK PANEL - NO OVERFLOW/SCROLLING
+           ======================================== */
         .back-panel {
-            padding: 50px;
+            padding: 30px 35px;
             background: white;
             height: 100%;
-            overflow: auto;
+            overflow: hidden; /* CRITICAL: No scrolling */
+            display: flex;
+            flex-direction: column;
         }
 
         .section {
-            margin-bottom: 35px;
+            margin-bottom: 20px;
+        }
+
+        .section-compact {
+            margin-bottom: 12px;
         }
 
         .section-title {
             background: #00A3E0;
             color: white;
-            padding: 15px 20px;
+            padding: 8px 12px;
             font-weight: bold;
-            font-size: 20px;
-            margin-bottom: 18px;
-            border-radius: 5px;
+            font-size: 14px;
+            margin-bottom: 8px;
+            border-radius: 4px;
         }
 
         .section-content {
-            padding: 0 20px;
-            line-height: 1.8;
-            font-size: 16px;
+            padding: 0 8px;
+            line-height: 1.4;
+            font-size: 11px;
+        }
+
+        .section-content p {
+            margin-bottom: 6px;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 18px 0;
+            margin: 8px 0;
         }
 
         table th {
             background: #00A3E0;
             color: white;
-            padding: 12px;
+            padding: 6px;
             text-align: left;
-            font-size: 16px;
+            font-size: 11px;
         }
 
         table td {
-            padding: 12px;
+            padding: 6px;
             border-bottom: 1px solid #ddd;
-            font-size: 15px;
+            font-size: 11px;
         }
 
         .bold {
@@ -254,32 +320,38 @@
         }
 
         ul {
-            margin-left: 25px;
-            margin-top: 12px;
+            margin-left: 18px;
+            margin-top: 5px;
         }
 
         li {
-            margin-bottom: 10px;
-            line-height: 1.6;
+            margin-bottom: 4px;
+            line-height: 1.3;
+            font-size: 11px;
         }
 
         .footer {
             background: #333;
             color: white;
-            padding: 25px;
+            padding: 12px;
             text-align: center;
-            font-size: 15px;
-            margin-top: 30px;
-            border-radius: 5px;
+            font-size: 11px;
+            margin-top: auto; /* Push to bottom */
+            border-radius: 4px;
         }
 
         .footer p {
-            margin: 8px 0;
+            margin: 3px 0;
+        }
+
+        /* Compact spacing for back panel */
+        .back-panel .section-content strong {
+            font-size: 11px;
         }
     </style>
 </head>
 <body>
-    <!-- FRONT LABEL - PAGE 1 -->
+    <!-- FRONT LABEL - PAGE 1 - MAXIMIZED INFO -->
     <div class="page">
         <div class="front-panel">
             <img src="assets/images/logos/epa OHS Brand Image.jpg" alt="Company Logo" class="logo-image">
@@ -316,6 +388,29 @@
                 Ready to Use • No Dilution Required • No Rinsing Required
             </div>
 
+            <!-- NEW: Critical info on front -->
+            <div class="front-info-grid">
+                <div class="info-box">
+                    <div class="info-box-title">CONTAINS NO:</div>
+                    <ul style="margin-left: 15px; font-size: 11px;">
+                        <li>Alcohol</li>
+                        <li>Quaternary Compounds</li>
+                        <li>Carcinogens, BPA</li>
+                        <li>Phenols, VOCs</li>
+                        <li>Fragrances or Dyes</li>
+                    </ul>
+                </div>
+                <div class="info-box">
+                    <div class="info-box-title">ACTIVE INGREDIENT:</div>
+                    <strong>Hypochlorous Acid ... 0.0134%</strong><br>
+                    Other Ingredients ... 99.9866%<br>
+                    <strong>TOTAL ............... 100.0000%</strong>
+                    <div style="margin-top: 6px; font-size: 10px;">
+                        <strong>Use within 120 days or test to verify 163 ppm FAC before use.</strong>
+                    </div>
+                </div>
+            </div>
+
             <div class="epa-info">
                 EPA Registration Number: 97801-1<br>
                 EPA Establishment Number: 97801-UT-1
@@ -325,127 +420,94 @@
 
     <div class="page-break">PAGE BREAK - FLIP TO BACK LABEL</div>
 
-    <!-- BACK LABEL - PAGE 2 -->
+    <!-- BACK LABEL - PAGE 2 - NO SCROLLING -->
     <div class="page">
         <div class="back-panel">
-            <div class="section">
-                <div class="section-title">ACTIVE INGREDIENT</div>
-                <div class="section-content">
-                    <table>
-                        <tr>
-                            <td><strong>Hypochlorous Acid</strong></td>
-                            <td style="text-align: right;"><strong>0.0134%</strong></td>
-                        </tr>
-                        <tr>
-                            <td>OTHER INGREDIENTS</td>
-                            <td style="text-align: right;">99.9866%</td>
-                        </tr>
-                        <tr style="font-weight: bold; background: #f5f5f5;">
-                            <td>TOTAL</td>
-                            <td style="text-align: right;">100.0000%</td>
-                        </tr>
-                    </table>
-                    <p><strong>Use within 120 days or test with chlorine test strip to verify minimum concentration of 163 ppm FAC before use.</strong></p>
-                </div>
-            </div>
-
-            <div class="section">
-                <div class="section-title">PRODUCT FEATURES</div>
-                <div class="section-content">
-                    <p class="bold">Contains NO:</p>
-                    <ul>
-                        <li>Alcohol, Quaternary Ammonium Compounds, or Carcinogens</li>
-                        <li>BPA, Phenols, VOCs, Phosphates, Fragrances, Dyes, or Bleach</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="section">
+            
+            <div class="section-compact">
                 <div class="section-title">PRECAUTIONARY STATEMENTS</div>
                 <div class="section-content">
-                    <p><strong>Do not use with other household chemicals.</strong></p>
-                    <p>No Personal Protective Equipment such as gloves, goggles, masks or respirators are required for use.</p>
+                    <p><strong>Do not use with other household chemicals.</strong> No Personal Protective Equipment such as gloves, goggles, masks or respirators are required for use.</p>
                 </div>
             </div>
 
-            <div class="section">
+            <div class="section-compact">
                 <div class="section-title">DIRECTIONS FOR USE</div>
                 <div class="section-content">
                     <p class="bold">It is a violation of Federal law to use this product in a manner inconsistent with its labeling.</p>
                     
-                    <p style="margin-top: 15px;"><span class="bold">HARD NON-POROUS SURFACE DISINFECTION:</span> Spray, Sponge, Wipe, Dip, Mop or Immerse on surface. Allow surface to remain visibly wet for 10 minutes. Allow to air dry or wipe dry with a clean microfiber cloth, dish towel, or paper towel. No rinsing necessary, even on food contact surfaces. For visibly soiled surfaces, pre-cleaning is required.</p>
+                    <p style="margin-top: 6px;"><span class="bold">HARD NON-POROUS SURFACE DISINFECTION:</span> Spray, Sponge, Wipe, Dip, Mop or Immerse on surface. Allow surface to remain visibly wet for 10 minutes. Allow to air dry or wipe dry with a clean microfiber cloth, dish towel, or paper towel. No rinsing necessary, even on food contact surfaces. For visibly soiled surfaces, pre-cleaning is required.</p>
 
-                    <p style="margin-top: 12px;"><span class="bold">GENERAL CLEANING AND DEODORIZING:</span> Spray until visibly wet. Let stand for ten minutes to kill odor causing microorganisms. Then wipe dry. For visibly soiled areas, a preliminary cleaning is required.</p>
+                    <p style="margin-top: 6px;"><span class="bold">ELECTRONIC EQUIPMENT, HARD, NON-POROUS SURFACES:</span> Completely power off electrical equipment prior to treatment. Pre-clean soils with a clean cloth slightly wetted with this product. Apply using cloth or spray. Avoid over soaking. Surfaces must remain visibly wet for 10 minutes. Do not restore power until thoroughly dry.</p>
 
-                    <p style="margin-top: 12px;"><span class="bold">WATER SENSITIVE ELECTRONIC EQUIPMENT:</span> Completely power off electrical equipment prior to treatment. Pre-clean soils from external surfaces with a clean cloth slightly wetted with this product. Carefully apply using a cloth or spray device. Avoid over soaking. Treated surfaces must remain visibly wet for 10 minutes. Do not restore power until thoroughly dry.</p>
+                    <p style="margin-top: 6px;"><span class="bold">GENERAL CLEANING AND DEODORIZING:</span> Spray until visibly wet. Let stand for ten minutes to kill odor causing microorganisms. Then wipe dry. For visibly soiled areas, preliminary cleaning is required.</p>
                 </div>
             </div>
 
-            <div class="section">
-                <div class="section-title">ORGANISM EFFECTIVENESS TABLE</div>
-                <div class="section-content">
-                    <p>This product has been tested and found effective against:</p>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Organism</th>
-                                <th>Contact Time</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Bacteria: Staphylococcus aureus</strong> [ATCC 6538]</td>
-                                <td>10 min</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Bacteria: Pseudomonas aeruginosa</strong> [ATCC 15442]</td>
-                                <td>10 min</td>
-                            </tr>
-                            <tr>
-                                <td><strong>**Virus: Human Coronavirus 229E</strong> [VR-740]</td>
-                                <td>10 min</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="two-column">
+                <div class="section-compact">
+                    <div class="section-title">ORGANISM TABLE</div>
+                    <div class="section-content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Organism</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>*Staphylococcus aureus</strong> [6538]</td>
+                                    <td>10 min</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>*Pseudomonas aeruginosa</strong> [15442]</td>
+                                    <td>10 min</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>**Human Coronavirus 229E</strong> [VR-740]</td>
+                                    <td>10 min</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="section-compact">
+                    <div class="section-title">KEY FEATURES</div>
+                    <div class="section-content">
+                        <ul style="font-size: 10px;">
+                            <li>3-in-1: Disinfectant/Cleaner/Deodorizer</li>
+                            <li>Broad Spectrum Virucidal & Bactericidal</li>
+                            <li>Hospital, Commercial & Household use</li>
+                            <li>One-step cleaner & disinfectant</li>
+                            <li>Derived from natural minerals & pure water</li>
+                            <li>Turns into harmless dilute saline after use</li>
+                            <li>Non-abrasive, Non-greasy, Non-flammable</li>
+                            <li>Leaves no chemical residue</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
-            <div class="section">
-                <div class="section-title">TECHNOLOGY HIGHLIGHTS</div>
-                <div class="section-content">
-                    <p><strong>3 in 1 Formula: Disinfectant/Cleaner/Deodorizer</strong></p>
-                    <ul>
-                        <li>Broad Spectrum Virucidal and Bactericidal Disinfectant</li>
-                        <li>Hospital, Commercial, and Household Disinfectant</li>
-                        <li>Multi-surface Disinfectant for hard, non-porous surfaces</li>
-                        <li>Kills odor-causing bacteria</li>
-                        <li>One-step cleaner, deodorizer and disinfectant</li>
-                        <li>Derived from naturally occurring minerals and pure water</li>
-                        <li>After use turns into harmless dilute saline solution</li>
-                        <li>Non-abrasive, Non-greasy, Non-flammable</li>
-                        <li>Leaves no chemical residue</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="section">
+            <div class="section-compact">
                 <div class="section-title">STORAGE AND DISPOSAL</div>
                 <div class="section-content">
                     <p><strong>STORAGE:</strong> Store in a closed opaque plastic container in a cool, dry area away from direct sunlight.</p>
                     
-                    <p style="margin-top: 10px;"><strong>DISPOSAL:</strong> After performing its disinfection function this product rapidly turns back into a dilute saline solution that may be used to water plants or may be safely poured down the drain or disposed at an approved waste disposal facility.</p>
+                    <p style="margin-top: 6px;"><strong>DISPOSAL:</strong> After performing its disinfection function this product rapidly turns back into a dilute saline solution that may be used to water plants or may be safely poured down the drain or disposed at an approved waste disposal facility.</p>
                     
-                    <p style="margin-top: 10px;"><strong>CONTAINER HANDLING:</strong> Container is refillable or may be disposed. To refill, transfer product from another container containing this same product to this empty, clean container. To dispose, empty remaining contents into application equipment, a drain receptacle, or use to water plants. Then offer for recycling if available, or puncture and dispose in a sanitary landfill, or by incineration, or by other procedures allowed by state and local authorities.</p>
+                    <p style="margin-top: 6px;"><strong>CONTAINER HANDLING:</strong> Container is refillable or may be disposed. To refill, transfer product from another container containing this same product to this empty, clean container. To dispose of container, empty remaining contents into application equipment, a drain receptacle, or use to water plants. Then offer for recycling if available, or puncture and dispose in a sanitary landfill, or by incineration, or by other procedures allowed by state and local authorities.</p>
                 </div>
             </div>
 
             <div class="footer">
                 <p><strong>MANUFACTURED BY: Sani-TEST LLC</strong></p>
                 <p>PO Box 461, Perkasie, PA 18944</p>
-                <p style="margin-top: 15px;">EPA Registration Number: 97801-1</p>
-                <p>EPA Establishment Number: 97801-UT-1</p>
+                <p style="margin-top: 8px;">EPA Registration Number: 97801-1 • EPA Establishment Number: 97801-UT-1</p>
             </div>
         </div>
     </div>
+
 </body>
 </html>
