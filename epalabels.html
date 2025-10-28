@@ -17,23 +17,25 @@
             color: #000;
         }
 
-        /* Print-specific styles - LANDSCAPE */
+        /* Print-specific styles */
         @page {
-            size: 11in 8.5in landscape;
+            size: 8.5in 11in;
             margin: 0.25in;
         }
 
         .page {
-            width: 10.5in;
-            height: 8in;
+            width: 8in;
+            height: 10.5in;
             margin: 0 auto;
             background: white;
+            page-break-after: always;
             position: relative;
             padding: 0;
-            overflow: hidden;
-            display: flex;
-            flex-direction: row;
-            gap: 1in; /* Space between front and back */
+            overflow: hidden; /* CRITICAL: No scrolling */
+        }
+
+        .page:last-child {
+            page-break-after: auto;
         }
 
         /* Screen view only */
@@ -46,9 +48,21 @@
                 margin: 20px auto;
                 box-shadow: 0 0 20px rgba(0,0,0,0.3);
             }
+            .page-break {
+                height: 40px;
+                background: #666;
+                margin: 0 auto;
+                width: 8in;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: bold;
+                font-size: 18px;
+            }
         }
 
-        /* Hide any extra elements when printing */
+        /* Hide page break indicator when printing */
         @media print {
             body {
                 background: white;
@@ -58,52 +72,51 @@
                 margin: 0;
                 box-shadow: none;
             }
+            .page-break {
+                display: none;
+            }
         }
 
-
-
         /* ========================================
-           FRONT PANEL - LEFT SIDE
+           FRONT PANEL - MAXIMIZED INFORMATION
            ======================================== */
         .front-panel {
             background: linear-gradient(135deg, #00A3E0 0%, #0077B3 100%);
             color: white;
-            padding: 25px 30px;
-            flex: 1;
+            padding: 30px 35px;
             height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
-            border-radius: 8px;
         }
 
         .logo-image {
-            max-width: 280px;
+            max-width: 350px;
             height: auto;
             margin: 0 auto;
             display: block;
             background: white;
-            padding: 12px;
+            padding: 15px;
             border-radius: 8px;
             box-shadow: 0 3px 8px rgba(0,0,0,0.2);
         }
 
         .product-title {
             text-align: center;
-            margin: 12px 0 8px 0;
+            margin: 15px 0 10px 0;
         }
 
         .product-name {
-            font-size: 48px;
+            font-size: 52px;
             font-weight: bold;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
             line-height: 1;
         }
 
         .product-subtitle {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 300;
             letter-spacing: 0.5px;
         }
@@ -111,53 +124,53 @@
         .badge-container {
             display: flex;
             justify-content: center;
-            gap: 25px;
-            margin: 12px 0;
+            gap: 30px;
+            margin: 15px 0;
         }
 
         .badge {
             background: white;
             color: #2E7D32;
-            padding: 15px;
+            padding: 20px;
             border-radius: 50%;
-            width: 150px;
-            height: 150px;
+            width: 180px;
+            height: 180px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-            border: 4px solid #4CAF50;
+            border: 5px solid #4CAF50;
         }
 
         .badge-large {
-            font-size: 20px;
-            margin-bottom: 5px;
+            font-size: 24px;
+            margin-bottom: 6px;
             line-height: 1;
             text-align: center;
         }
 
         .badge-small {
-            font-size: 12px;
+            font-size: 14px;
             text-align: center;
             line-height: 1.2;
         }
 
         .main-claim {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: bold;
-            margin: 10px 0;
+            margin: 12px 0;
             text-align: center;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             background: rgba(255,255,255,0.2);
-            padding: 12px;
+            padding: 15px;
             border-radius: 8px;
         }
 
         .sub-claim {
-            font-size: 18px;
-            margin: 6px 0;
+            font-size: 20px;
+            margin: 8px 0;
             text-align: center;
             font-weight: 500;
         }
@@ -165,144 +178,141 @@
         .warning-box {
             background: #FF5722;
             color: white;
-            padding: 10px 15px;
+            padding: 12px 18px;
             border-radius: 8px;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 16px;
             position: absolute;
-            top: 20px;
-            right: 20px;
-            max-width: 160px;
+            top: 25px;
+            right: 25px;
+            max-width: 180px;
             text-align: center;
             box-shadow: 0 4px 8px rgba(0,0,0,0.4);
             border: 3px solid white;
             line-height: 1.2;
         }
 
+        /* NEW: Front panel info boxes for critical EPA info */
         .front-info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin: 10px 0;
+            gap: 15px;
+            margin: 12px 0;
         }
 
         .info-box {
             background: rgba(255,255,255,0.95);
             color: #333;
-            padding: 10px;
+            padding: 12px;
             border-radius: 8px;
-            font-size: 11px;
+            font-size: 13px;
             line-height: 1.4;
         }
 
         .info-box-title {
             font-weight: bold;
-            font-size: 12px;
-            margin-bottom: 5px;
+            font-size: 14px;
+            margin-bottom: 6px;
             color: #00A3E0;
             border-bottom: 2px solid #00A3E0;
-            padding-bottom: 2px;
+            padding-bottom: 3px;
         }
 
         .info-box ul {
-            margin-left: 15px;
-            margin-top: 4px;
+            margin-left: 18px;
+            margin-top: 5px;
         }
 
         .info-box li {
-            margin-bottom: 2px;
-            font-size: 10px;
+            margin-bottom: 3px;
         }
 
         .epa-info {
-            font-size: 13px;
-            padding: 10px;
+            font-size: 15px;
+            padding: 12px;
             background: rgba(255,255,255,0.95);
             color: #333;
             border-radius: 8px;
             text-align: center;
-            line-height: 1.5;
+            line-height: 1.6;
             font-weight: 600;
         }
 
         .net-contents {
             background: rgba(255,255,255,0.95);
             color: #333;
-            padding: 10px;
+            padding: 12px;
             border-radius: 8px;
             text-align: center;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
-            margin: 8px 0;
+            margin: 10px 0;
         }
 
         /* ========================================
-           BACK PANEL - RIGHT SIDE
+           BACK PANEL - NO OVERFLOW/SCROLLING
            ======================================== */
         .back-panel {
-            padding: 25px 30px;
+            padding: 30px 35px;
             background: white;
-            flex: 1;
             height: 100%;
-            overflow: hidden;
+            overflow: hidden; /* CRITICAL: No scrolling */
             display: flex;
             flex-direction: column;
-            border-radius: 8px;
-            border: 2px solid #00A3E0;
         }
 
         .section {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .section-compact {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .section-title {
             background: #00A3E0;
             color: white;
-            padding: 6px 10px;
+            padding: 8px 12px;
             font-weight: bold;
-            font-size: 12px;
-            margin-bottom: 6px;
+            font-size: 14px;
+            margin-bottom: 8px;
             border-radius: 4px;
         }
 
         .section-content {
-            padding: 0 6px;
-            line-height: 1.3;
-            font-size: 10px;
+            padding: 0 8px;
+            line-height: 1.4;
+            font-size: 11px;
         }
 
         .section-content p {
-            margin-bottom: 5px;
+            margin-bottom: 6px;
         }
 
         .two-column {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 15px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 6px 0;
+            margin: 8px 0;
         }
 
         table th {
             background: #00A3E0;
             color: white;
-            padding: 5px;
+            padding: 6px;
             text-align: left;
-            font-size: 10px;
+            font-size: 11px;
         }
 
         table td {
-            padding: 5px;
+            padding: 6px;
             border-bottom: 1px solid #ddd;
-            font-size: 9px;
+            font-size: 11px;
         }
 
         .bold {
@@ -310,39 +320,39 @@
         }
 
         ul {
-            margin-left: 15px;
-            margin-top: 4px;
+            margin-left: 18px;
+            margin-top: 5px;
         }
 
         li {
-            margin-bottom: 3px;
-            line-height: 1.2;
-            font-size: 9px;
+            margin-bottom: 4px;
+            line-height: 1.3;
+            font-size: 11px;
         }
 
         .footer {
             background: #333;
             color: white;
-            padding: 10px;
+            padding: 12px;
             text-align: center;
-            font-size: 10px;
-            margin-top: auto;
+            font-size: 11px;
+            margin-top: auto; /* Push to bottom */
             border-radius: 4px;
         }
 
         .footer p {
-            margin: 2px 0;
+            margin: 3px 0;
         }
 
+        /* Compact spacing for back panel */
         .back-panel .section-content strong {
-            font-size: 10px;
+            font-size: 11px;
         }
     </style>
 </head>
 <body>
-    <!-- SINGLE PAGE - LANDSCAPE - WRAP-AROUND LABEL WITH SPACING -->
+    <!-- FRONT LABEL - PAGE 1 - MAXIMIZED INFO -->
     <div class="page">
-        <!-- FRONT PANEL - LEFT SIDE -->
         <div class="front-panel">
             <img src="assets/images/logos/epa OHS Brand Image.jpg" alt="Company Logo" class="logo-image">
             
@@ -378,10 +388,11 @@
                 Ready to Use • No Dilution Required • No Rinsing Required
             </div>
 
+            <!-- NEW: Critical info on front -->
             <div class="front-info-grid">
                 <div class="info-box">
                     <div class="info-box-title">CONTAINS NO:</div>
-                    <ul>
+                    <ul style="margin-left: 15px; font-size: 11px;">
                         <li>Alcohol</li>
                         <li>Quaternary Compounds</li>
                         <li>Carcinogens, BPA</li>
@@ -394,7 +405,7 @@
                     <strong>Hypochlorous Acid ... 0.0134%</strong><br>
                     Other Ingredients ... 99.9866%<br>
                     <strong>TOTAL ............... 100.0000%</strong>
-                    <div style="margin-top: 5px; font-size: 9px;">
+                    <div style="margin-top: 6px; font-size: 10px;">
                         <strong>Use within 120 days or test to verify 163 ppm FAC before use.</strong>
                     </div>
                 </div>
@@ -405,8 +416,12 @@
                 EPA Establishment Number: 97801-UT-1
             </div>
         </div>
+    </div>
 
-        <!-- BACK PANEL - RIGHT SIDE -->
+    <div class="page-break">PAGE BREAK - FLIP TO BACK LABEL</div>
+
+    <!-- BACK LABEL - PAGE 2 - NO SCROLLING -->
+    <div class="page">
         <div class="back-panel">
             
             <div class="section-compact">
@@ -421,11 +436,11 @@
                 <div class="section-content">
                     <p class="bold">It is a violation of Federal law to use this product in a manner inconsistent with its labeling.</p>
                     
-                    <p style="margin-top: 5px;"><span class="bold">HARD NON-POROUS SURFACE DISINFECTION:</span> Spray, Sponge, Wipe, Dip, Mop or Immerse on surface. Allow surface to remain visibly wet for 10 minutes. Allow to air dry or wipe dry with a clean microfiber cloth, dish towel, or paper towel. No rinsing necessary, even on food contact surfaces. For visibly soiled surfaces, pre-cleaning is required.</p>
+                    <p style="margin-top: 6px;"><span class="bold">HARD NON-POROUS SURFACE DISINFECTION:</span> Spray, Sponge, Wipe, Dip, Mop or Immerse on surface. Allow surface to remain visibly wet for 10 minutes. Allow to air dry or wipe dry with a clean microfiber cloth, dish towel, or paper towel. No rinsing necessary, even on food contact surfaces. For visibly soiled surfaces, pre-cleaning is required.</p>
 
-                    <p style="margin-top: 5px;"><span class="bold">ELECTRONIC EQUIPMENT, HARD, NON-POROUS SURFACES:</span> Completely power off electrical equipment prior to treatment. Pre-clean soils with a clean cloth slightly wetted with this product. Apply using cloth or spray. Avoid over soaking. Surfaces must remain visibly wet for 10 minutes. Do not restore power until thoroughly dry.</p>
+                    <p style="margin-top: 6px;"><span class="bold">ELECTRONIC EQUIPMENT, HARD, NON-POROUS SURFACES:</span> Completely power off electrical equipment prior to treatment. Pre-clean soils with a clean cloth slightly wetted with this product. Apply using cloth or spray. Avoid over soaking. Surfaces must remain visibly wet for 10 minutes. Do not restore power until thoroughly dry.</p>
 
-                    <p style="margin-top: 5px;"><span class="bold">GENERAL CLEANING AND DEODORIZING:</span> Spray until visibly wet. Let stand for ten minutes to kill odor causing microorganisms. Then wipe dry. For visibly soiled areas, preliminary cleaning is required.</p>
+                    <p style="margin-top: 6px;"><span class="bold">GENERAL CLEANING AND DEODORIZING:</span> Spray until visibly wet. Let stand for ten minutes to kill odor causing microorganisms. Then wipe dry. For visibly soiled areas, preliminary cleaning is required.</p>
                 </div>
             </div>
 
@@ -461,7 +476,7 @@
                 <div class="section-compact">
                     <div class="section-title">KEY FEATURES</div>
                     <div class="section-content">
-                        <ul>
+                        <ul style="font-size: 10px;">
                             <li>3-in-1: Disinfectant/Cleaner/Deodorizer</li>
                             <li>Broad Spectrum Virucidal & Bactericidal</li>
                             <li>Hospital, Commercial & Household use</li>
@@ -480,16 +495,16 @@
                 <div class="section-content">
                     <p><strong>STORAGE:</strong> Store in a closed opaque plastic container in a cool, dry area away from direct sunlight.</p>
                     
-                    <p style="margin-top: 5px;"><strong>DISPOSAL:</strong> After performing its disinfection function this product rapidly turns back into a dilute saline solution that may be used to water plants or may be safely poured down the drain or disposed at an approved waste disposal facility.</p>
+                    <p style="margin-top: 6px;"><strong>DISPOSAL:</strong> After performing its disinfection function this product rapidly turns back into a dilute saline solution that may be used to water plants or may be safely poured down the drain or disposed at an approved waste disposal facility.</p>
                     
-                    <p style="margin-top: 5px;"><strong>CONTAINER HANDLING:</strong> Container is refillable or may be disposed. To refill, transfer product from another container containing this same product to this empty, clean container. To dispose of container, empty remaining contents into application equipment, a drain receptacle, or use to water plants. Then offer for recycling if available, or puncture and dispose in a sanitary landfill, or by incineration, or by other procedures allowed by state and local authorities.</p>
+                    <p style="margin-top: 6px;"><strong>CONTAINER HANDLING:</strong> Container is refillable or may be disposed. To refill, transfer product from another container containing this same product to this empty, clean container. To dispose of container, empty remaining contents into application equipment, a drain receptacle, or use to water plants. Then offer for recycling if available, or puncture and dispose in a sanitary landfill, or by incineration, or by other procedures allowed by state and local authorities.</p>
                 </div>
             </div>
 
             <div class="footer">
                 <p><strong>MANUFACTURED BY: Sani-TEST LLC</strong></p>
                 <p>PO Box 461, Perkasie, PA 18944</p>
-                <p style="margin-top: 6px;">EPA Registration Number: 97801-1 • EPA Establishment Number: 97801-UT-1</p>
+                <p style="margin-top: 8px;">EPA Registration Number: 97801-1 • EPA Establishment Number: 97801-UT-1</p>
             </div>
         </div>
     </div>
