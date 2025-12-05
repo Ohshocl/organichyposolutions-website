@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeriCal Facility - ATP Testing Comparison</title>
+    <style>
+        @page {
+            size: letter;
+            margin: 0.75in;
+        }
+        
+        @media print {
+            .no-print { 
+                display: none !important; 
+            }
+            
+            body { 
+                margin: 0; 
+                padding: 0;
+                background: white;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 0;
+                max-width: 100%;
+            }
+            
+            .page-break { 
+                page-break-after: always; 
+            }
+            
+            .avoid-break {
+                page-break-inside: avoid;
+            }
+            
+            h1, h2, h3 {
+                page-break-after: avoid;
+            }
+            
+            table {
+                page-break-inside: auto;
+            }
+            
+            tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+            
+            thead {
+                display: table-header-group;
+            }
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 10pt;
+            line-height: 1.4;
+            color: #000;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 8in;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            border-bottom: 3px solid #000;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            font-size: 18pt;
+            margin-bottom: 8px;
+        }
+        
+        .header-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .info-box {
+            border: 1px solid #333;
+            padding: 8px;
+            font-size: 9pt;
+        }
+        
+        .info-box label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 3px;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 25px;
+            margin: 15px 0;
+            padding: 12px;
+            background: #f0f0f0;
+            border: 1px solid #333;
+            font-size: 9pt;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-box {
+            width: 35px;
+            height: 20px;
+            border: 1px solid #000;
+        }
+        
+        .pass { background: #c8e6c9; }
+        .caution { background: #fff9c4; }
+        .fail { background: #ffcdd2; }
+        
+        .summary-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .summary-box {
+            border: 2px solid #000;
+            padding: 12px;
+            font-size: 9pt;
+        }
+        
+        .summary-box h3 {
+            font-size: 11pt;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+        }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 10px 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 8px;
+            border: 1px solid #000;
+        }
+        
+        .stat-item .number {
+            font-size: 20pt;
+            font-weight: bold;
+            display: block;
+            line-height: 1;
+        }
+        
+        .stat-item .label {
+            font-size: 8pt;
+            text-transform: uppercase;
+            margin-top: 3px;
+            display: block;
+        }
+        
+        h2 {
+            font-size: 13pt;
+            margin: 25px 0 12px 0;
+            border-bottom: 2px solid #000;
+            padding-bottom: 5px;
+        }
+        
+        .testing-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 8pt;
+        }
+        
+        .testing-table th,
+        .testing-table td {
+            border: 1px solid #000;
+            padding: 5px 4px;
+            text-align: center;
+        }
+        
+        .testing-table th {
+            background: #e0e0e0;
+            font-weight: bold;
+            font-size: 8pt;
+        }
+        
+        .testing-table td:nth-child(2),
+        .testing-table td:nth-child(3) {
+            text-align: left;
+            font-size: 8pt;
+        }
+        
+        .result-cell {
+            display: inline-block;
+            padding: 2px 6px;
+            border: 1px solid #000;
+            font-weight: bold;
+            font-size: 7pt;
+            margin: 1px;
+        }
+        
+        .result-pass { background: #c8e6c9; }
+        .result-caution { background: #fff9c4; }
+        .result-fail { background: #ffcdd2; }
+        
+        .baseline-col { background: #f5f5f5; }
+        .chem-col { background: #fff3e0; }
+        .hocl-col { background: #e8f5e9; }
+        
+        .protocol-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .protocol-box {
+            border: 2px solid #000;
+            padding: 12px;
+            font-size: 9pt;
+        }
+        
+        .protocol-box h3 {
+            font-size: 11pt;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+        }
+        
+        .protocol-box p {
+            line-height: 1.8;
+        }
+        
+        .notes-section {
+            margin-top: 20px;
+            padding: 12px;
+            border: 2px solid #000;
+            min-height: 100px;
+        }
+        
+        .notes-section h3 {
+            font-size: 11pt;
+            margin-bottom: 8px;
+        }
+        
+        .notes-section .lines {
+            line-height: 2.2;
+            font-size: 9pt;
+        }
+        
+        .signature-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 25px;
+        }
+        
+        .signature-box {
+            border-top: 2px solid #000;
+            padding-top: 8px;
+            font-size: 9pt;
+        }
+        
+        .signature-label {
+            font-weight: bold;
+        }
+        
+        .footer {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 2px solid #000;
+            text-align: center;
+            font-size: 8pt;
+        }
+        
+        @media screen {
+            body {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header avoid-break">
+            <h1>MeriCal Facility - ATP Testing Comparison Report</h1>
+            <p style="font-size: 10pt; margin-top: 5px;">BDO Bay 3 - Baseline vs. MeriCal Chem Station vs. HOCl Treatment</p>
+            
+            <div class="header-info">
+                <div class="info-box">
+                    <label>Facility:</label>
+                    MeriCal LLC - 986 W 2nd St
+                </div>
+                <div class="info-box">
+                    <label>Test Date:</label>
+                    _____________________________
+                </div>
+                <div class="info-box">
+                    <label>Lead Technician:</label>
+                    _____________________________
+                </div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend avoid-break">
+            <div class="legend-item">
+                <div class="legend-box pass"></div>
+                <span><strong>PASS:</strong> &lt;10 RLU (Hygienically Clean)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box caution"></div>
+                <span><strong>CAUTION:</strong> 10-30 RLU (Monitor/Retest)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box fail"></div>
+                <span><strong>FAIL:</strong> &gt;30 RLU (Not Hygienically Clean)</span>
+            </div>
+        </div>
+
+        <!-- Summary Statistics -->
+        <div class="summary-section avoid-break">
+            <div class="summary-box">
+                <h3>Oct 25, 2025 Baseline</h3>
+                <div class="summary-stats">
+                    <div class="stat-item pass">
+                        <span class="number">7</span>
+                        <span class="label">Pass</span>
+                    </div>
+                    <div class="stat-item caution">
+                        <span class="number">19</span>
+                        <span class="label">Caution</span>
+                    </div>
+                    <div class="stat-item fail">
+                        <span class="number">7</span>
+                        <span class="label">Fail</span>
+                    </div>
+                </div>
+                <p style="margin-top: 8px; font-size: 8pt;">
+                    <strong>Avg RLU:</strong> 22.64<br>
+                    <strong>Pass Rate:</strong> 21.2%
+                </p>
+            </div>
+            
+            <div class="summary-box">
+                <h3>MeriCal Chem Station</h3>
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <span class="number">__</span>
+                        <span class="label">Pass</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="number">__</span>
+                        <span class="label">Caution</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="number">__</span>
+                        <span class="label">Fail</span>
+                    </div>
+                </div>
+                <p style="margin-top: 8px; font-size: 8pt;">
+                    <strong>Avg RLU:</strong> _______<br>
+                    <strong>Pass Rate:</strong> _______%
+                </p>
+            </div>
+
+            <div class="summary-box">
+                <h3>After HOCl Treatment</h3>
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <span class="number">__</span>
+                        <span class="label">Pass</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="number">__</span>
+                        <span class="label">Caution</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="number">__</span>
+                        <span class="label">Fail</span>
+                    </div>
+                </div>
+                <p style="margin-top: 8px; font-size: 8pt;">
+                    <strong>Avg RLU:</strong> _______<br>
+                    <strong>Pass Rate:</strong> _______%
+                </p>
+            </div>
+        </div>
+
+        <!-- Testing Results Table -->
+        <h2>Detailed Testing Results</h2>
+
+        <table class="testing-table">
+            <thead>
+                <tr>
+                    <th rowspan="2" style="width: 4%;">#</th>
+                    <th rowspan="2" style="width: 22%;">Testing Location</th>
+                    <th rowspan="2" style="width: 12%;">Surface Type</th>
+                    <th colspan="2" class="baseline-col">Oct 25 Baseline</th>
+                    <th colspan="3" class="chem-col">MeriCal Chem</th>
+                    <th colspan="3" class="hocl-col">HOCl Treatment</th>
+                    <th rowspan="2" style="width: 5%;">Photo #</th>
+                </tr>
+                <tr>
+                    <th class="baseline-col" style="width: 6%;">RLU</th>
+                    <th class="baseline-col" style="width: 5%;">Status</th>
+                    <th class="chem-col" style="width: 6%;">RLU</th>
+                    <th class="chem-col" style="width: 5%;">Status</th>
+                    <th class="chem-col" style="width: 5%;">Δ%</th>
+                    <th class="hocl-col" style="width: 6%;">RLU</th>
+                    <th class="hocl-col" style="width: 5%;">Status</th>
+                    <th class="hocl-col" style="width: 5%;">Δ%</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Gummy Production Equipment</td>
+                    <td>Floor</td>
+                    <td class="baseline-col"><strong>7</strong></td>
+                    <td class="baseline-col"><span class="result-cell result-pass">P</span></td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td>____</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Mixing/Blending Equipment</td>
+                    <td>Belts/Floor</td>
+                    <td class="baseline-col"><strong>8/27</strong></td>
+                    <td class="baseline-col"><span class="result-cell result-pass">P</span><span class="result-cell result-caution">C</span></td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td>____</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Encapsulation Machine</td>
+                    <td>Floor/Table</td>
+                    <td class="baseline-col"><strong>9/10</strong></td>
+                    <td class="baseline-col"><span class="result-cell result-pass">P</span><span class="result-cell result-caution">C</span></td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td>____</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Break Room</td>
+                    <td>Table/Floor</td>
+                    <td class="baseline-col"><strong>8/27</strong></td>
+                    <td class="baseline-col"><span class="result-cell result-pass">P</span><span class="result-cell result-caution">C</span></td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td>____</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Packaging Line Conveyor</td>
+                    <td>Floor/Belt</td>
+                    <td class="baseline-col"><strong>2/10</strong></td>
+                    <td class="baseline-col"><span class="result-cell result-pass">P</span><span class="result-cell result-caution">C</span></td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td>____</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Weigh Room</td>
+                    <td>Belt/Floor</td>
+                    <td class="baseline-col"><strong>12/10</strong></td>
+                    <td class="baseline-col"><span class="result-cell result-caution">C</span><span class="result-cell result-caution">C</span></td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td>____</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Flex Room</td>
+                    <td>Machine/Floor/Table</td>
+                    <td class="baseline-col"><strong>11/22/21</strong></td>
+                    <td class="baseline-col"><span class="result-cell result-caution">C</span><span class="result-cell result-caution">C</span><span class="result-cell result-caution">C</span></td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td>____</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>Restrooms - Men/Women</td>
+                    <td>Floor/Handle</td>
+                    <td class="baseline-col"><strong>2/3</strong></td>
+                    <td class="baseline-col"><span class="result-cell result-pass">P</span><span class="result-cell result-pass">P</span></td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td>____</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>Mixing/Pack Area</td>
+                    <td>Floor/Scale</td>
+                    <td class="baseline-col"><strong>33/63</strong></td>
+                    <td class="baseline-col"><span class="result-cell result-fail">F</span><span class="result-cell result-fail">F</span></td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td>____</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>Unit Dose W</td>
+                    <td>Floor/Table (4 points)</td>
+                    <td class="baseline-col"><strong>19/26/21/22</strong></td>
+                    <td class="baseline-col"><span class="result-cell result-caution">C</span><span class="result-cell result-caution">C</span><span class="result-cell result-caution">C</span><span class="result-cell result-caution">C</span></td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td>____</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>Door Handle - Clean Room</td>
+                    <td>Door Handle</td>
+                    <td class="baseline-col"><strong>8</strong></td>
+                    <td class="baseline-col"><span class="result-cell result-pass">P</span></td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td>____</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>Personnel Gowning Area</td>
+                    <td>Various Surfaces</td>
+                    <td class="baseline-col"><strong>5</strong></td>
+                    <td class="baseline-col"><span class="result-cell result-pass">P</span></td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td>____</td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>Main Floor - Dry Powder</td>
+                    <td>Floor</td>
+                    <td class="baseline-col"><strong>19</strong></td>
+                    <td class="baseline-col"><span class="result-cell result-caution">C</span></td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td>____</td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>Main Drain</td>
+                    <td>Drain</td>
+                    <td class="baseline-col"><strong>32</strong></td>
+                    <td class="baseline-col"><span class="result-cell result-fail">F</span></td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td>____</td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td>Drain 1 - Gummy Room</td>
+                    <td>Drain</td>
+                    <td class="baseline-col"><strong>45</strong></td>
+                    <td class="baseline-col"><span class="result-cell result-fail">F</span></td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td>____</td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td>Drain 2 - Gummy Room</td>
+                    <td>Drain</td>
+                    <td class="baseline-col"><strong>32</strong></td>
+                    <td class="baseline-col"><span class="result-cell result-fail">F</span></td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td>____</td>
+                </tr>
+                <tr>
+                    <td>17</td>
+                    <td>Cooler</td>
+                    <td>Floor/Rack</td>
+                    <td class="baseline-col"><strong>9/16</strong></td>
+                    <td class="baseline-col"><span class="result-cell result-pass">P</span><span class="result-cell result-caution">C</span></td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td>____</td>
+                </tr>
+                <tr>
+                    <td>18</td>
+                    <td>Gummy Coating Drain</td>
+                    <td>Drain</td>
+                    <td class="baseline-col"><strong>164</strong></td>
+                    <td class="baseline-col"><span class="result-cell result-fail">F</span></td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td>____</td>
+                </tr>
+                <tr>
+                    <td>19</td>
+                    <td>Blister Room</td>
+                    <td>Floor/Belt</td>
+                    <td class="baseline-col"><strong>32/12</strong></td>
+                    <td class="baseline-col"><span class="result-cell result-fail">F</span><span class="result-cell result-caution">C</span></td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="chem-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td class="hocl-col">____</td>
+                    <td>____</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Treatment Protocol Comparison -->
+        <h2>Treatment Protocol Comparison</h2>
+        
+        <div class="protocol-section avoid-break">
+            <div class="protocol-box">
+                <h3>MeriCal Chem Station Materials</h3>
+                <p>
+                    <strong>Chemical Used:</strong> ___________________________________<br>
+                    <strong>Concentration:</strong> ___________________________________<br>
+                    <strong>Application Method:</strong> ___________________________________<br>
+                    <strong>Contact Time:</strong> ___________________________________<br>
+                    <strong>PPE Required:</strong> ___________________________________<br>
+                    <strong>Rinse Required:</strong> ___________________________________<br>
+                    <strong>Applied By:</strong> ___________________________________
+                </p>
+            </div>
+            
+            <div class="protocol-box">
+                <h3>Organic Hyposolutions HOCl</h3>
+                <p>
+                    <strong>Product:</strong> Sani-TEST HOCl Solution<br>
+                    <strong>EPA Registration:</strong> #97801-1<br>
+                    <strong>USDA Certified Organic:</strong> #8150019050<br>
+                    <strong>FDA Compliance:</strong> FCN 1811 (Food Contact Approved)<br>
+                    <strong>Concentration:</strong> 500 PPM FAC<br>
+                    <strong>PPE Required:</strong> None<br>
+                    <strong>Rinse Required:</strong> No<br>
+                    <strong>Contact Time:</strong> 10+ minutes
+                </p>
+            </div>
+        </div>
+
+        <!-- Notes Sections -->
+        <div class="notes-section avoid-break">
+            <h3>Testing Notes & Observations</h3>
+            <div class="lines">
+                _______________________________________________________________________________________<br>
+                _______________________________________________________________________________________<br>
+                _______________________________________________________________________________________<br>
+                _______________________________________________________________________________________<br>
+                _______________________________________________________________________________________
+            </div>
+        </div>
+
+        <div class="notes-section avoid-break">
+            <h3>Comparative Analysis & Recommendations</h3>
+            <div class="lines">
+                _______________________________________________________________________________________<br>
+                _______________________________________________________________________________________<br>
+                _______________________________________________________________________________________<br>
+                _______________________________________________________________________________________<br>
+                _______________________________________________________________________________________
+            </div>
+        </div>
+
+        <!-- Signatures -->
+        <div class="signature-section avoid-break">
+            <div class="signature-box">
+                <div style="border-bottom: 2px solid #000; height: 40px; margin-bottom: 8px;"></div>
+                <div class="signature-label">Tested By: _________________________________ Date: ______________</div>
+            </div>
+            
+            <div class="signature-box">
+                <div style="border-bottom: 2px solid #000; height: 40px; margin-bottom: 8px;"></div>
+                <div class="signature-label">Reviewed By: _________________________________ Date: ______________</div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Organic Hyposolutions</strong> | USDA Certified Organic HOCl Sanitization | EPA #97801-1</p>
+            <p>5842 Crest Flower Way, Salt Lake City, UT 84118</p>
+            <p>Contact: Brandon O'Neal | (801) 712-5663 | ohshocl@gmail.com</p>
+            <p style="margin-top: 8px;">This comparative report demonstrates baseline contamination levels, current chemical effectiveness, and HOCl treatment results for FDA compliance.</p>
+        </div>
+    </div>
+
+    <button class="no-print" onclick="window.print()" style="position: fixed; top: 20px; right: 20px; padding: 15px 30px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.2); z-index: 1000;">
+        Print Report
+    </button>
+</body>
+</html>
