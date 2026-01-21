@@ -1173,10 +1173,71 @@
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
             
+            // =========================================================
+            // PREFILL FROM CALCULATOR - Check URL parameters
+            // =========================================================
+            function prefillFromCalculator() {
+                const params = new URLSearchParams(window.location.search);
+                
+                // Check if we came from the calculator
+                const source = params.get('source');
+                if (source && (source === 'calculator' || source === 'calculator_contract')) {
+                    console.log('📊 Prefilling from calculator...');
+                    
+                    // Prefill service type
+                    const serviceType = params.get('serviceType');
+                    if (serviceType) {
+                        serviceTypeInput.value = serviceType;
+                        // Select the corresponding card
+                        serviceTypeCards.forEach(card => {
+                            if (card.dataset.serviceType === serviceType) {
+                                card.classList.add('selected');
+                            } else {
+                                card.classList.remove('selected');
+                            }
+                        });
+                    }
+                    
+                    // Prefill square footage
+                    const sqft = params.get('sqft');
+                    if (sqft) {
+                        document.getElementById('squareFootage').value = sqft;
+                    }
+                    
+                    // Prefill complexity
+                    const complexity = params.get('complexity');
+                    if (complexity) {
+                        document.getElementById('complexity').value = complexity;
+                    }
+                    
+                    // Prefill frequency
+                    const frequency = params.get('frequency');
+                    if (frequency) {
+                        document.getElementById('frequency').value = frequency;
+                    }
+                    
+                    // Prefill contract type
+                    const contractType = params.get('contractType');
+                    if (contractType) {
+                        document.getElementById('contractType').value = contractType;
+                    }
+                    
+                    // Show notification that form was prefilled
+                    setTimeout(() => {
+                        showNotification('📊 Form prefilled from calculator! Please complete your contact information below.', 'success');
+                    }, 500);
+                    
+                    // Update the price estimate
+                    setTimeout(updatePriceEstimate, 100);
+                    
+                    // Clean up URL (remove parameters but keep on page)
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            }
+            
             // Service type selection
             const serviceTypeCards = document.querySelectorAll('.service-type-card');
             const serviceTypeInput = document.getElementById('serviceType');
-            const priceEstimate = document.getElementById('priceEstimate');
             
             // Service type selection handler
             serviceTypeCards.forEach(card => {
@@ -1402,6 +1463,9 @@
                     setTimeout(() => document.body.removeChild(notification), 300);
                 }, 6000);
             };
+            
+            // Prefill form if coming from calculator
+            prefillFromCalculator();
             
             console.log('✅ Service booking form ready');
         });
