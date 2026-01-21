@@ -818,9 +818,9 @@
                                 <label for="frequency" class="form-label">Desired Service Frequency</label>
                                 <select class="form-control" id="frequency" name="frequency">
                                     <option value="onetime">One-Time Service</option>
-                                    <option value="weekly">Weekly Service (15% discount)</option>
-                                    <option value="biweekly">Bi-Weekly Service (10% discount)</option>
-                                    <option value="monthly">Monthly Service (5% discount)</option>
+                                    <option value="weekly">Weekly Service</option>
+                                    <option value="biweekly">Bi-Weekly Service</option>
+                                    <option value="monthly">Monthly Service</option>
                                     <option value="quarterly">Quarterly Service</option>
                                 </select>
                             </div>
@@ -828,6 +828,18 @@
                                 <label for="preferredDate" class="form-label">Preferred Service Date</label>
                                 <input type="date" class="form-control" id="preferredDate" name="preferredDate">
                                 <small class="text-muted">We'll confirm availability when we contact you</small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="contractType" class="form-label">Contract Option</label>
+                                <select class="form-control" id="contractType" name="contractType">
+                                    <option value="payPerService">Pay Per Service (No contract required)</option>
+                                    <option value="monthlyContract">Monthly Contract (15% OFF)</option>
+                                    <option value="bimonthlyContract">Bi-Monthly Contract (10% OFF)</option>
+                                    <option value="annualContract">Annual Prepaid Contract (20% OFF + 2 bonus services)</option>
+                                </select>
+                                <small class="text-muted">Contract options provide discounts and priority scheduling</small>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -906,35 +918,50 @@
                     <input type="hidden" id="selectedAddons" name="selectedAddons" value="">
                     <input type="hidden" id="priceBreakdown" name="priceBreakdown" value="">
 
-                    <!-- Price Estimate -->
-                    <div class="price-estimate" id="priceEstimate" style="display: none;">
-                        <h4><i class="fas fa-calculator me-2"></i>Estimated Service Cost</h4>
-                        <div class="estimate-amount" id="estimateAmount">$0</div>
+                    <!-- Price Estimate - Always Visible -->
+                    <div class="price-estimate" id="priceEstimate">
+                        <h4><i class="fas fa-calculator me-2"></i>Your Service Estimate</h4>
                         
-                        <div class="price-breakdown" id="priceBreakdownDisplay">
-                            <div class="breakdown-row">
-                                <span>Base Service:</span>
-                                <span id="breakdownBase">$0</span>
+                        <!-- Prompt when not enough info -->
+                        <div id="estimatePrompt">
+                            <div class="estimate-amount" style="font-size: 1.5rem; color: rgba(255,255,255,0.7);">
+                                <i class="fas fa-hand-pointer me-2"></i>Select options above
                             </div>
-                            <div class="breakdown-row">
-                                <span>Complexity Adjustment:</span>
-                                <span id="breakdownComplexity">$0</span>
-                            </div>
-                            <div class="breakdown-row" id="frequencyDiscountRow" style="display: none;">
-                                <span>Frequency Discount:</span>
-                                <span id="breakdownFrequency" class="text-success">-$0</span>
-                            </div>
-                            <div class="breakdown-row">
-                                <span>Add-ons:</span>
-                                <span id="breakdownAddons">$0</span>
-                            </div>
-                            <div class="breakdown-row breakdown-total">
-                                <span>Total Estimate:</span>
-                                <span id="breakdownTotal">$0</span>
+                            <p class="mt-2 mb-0" style="color: rgba(255,255,255,0.8);">
+                                Choose a service type and enter square footage to see your instant estimate
+                            </p>
+                        </div>
+                        
+                        <!-- Actual estimate display -->
+                        <div id="estimateDisplay" style="display: none;">
+                            <div class="estimate-amount" id="estimateAmount">$0</div>
+                            <p class="mb-2" style="color: rgba(255,255,255,0.8); font-size: 0.9rem;">per service</p>
+                            
+                            <div class="price-breakdown" id="priceBreakdownDisplay">
+                                <div class="breakdown-row">
+                                    <span>Base Service (<span id="breakdownSqft">0</span> sq ft):</span>
+                                    <span id="breakdownBase">$0</span>
+                                </div>
+                                <div class="breakdown-row">
+                                    <span>Complexity Adjustment:</span>
+                                    <span id="breakdownComplexity">$0</span>
+                                </div>
+                                <div class="breakdown-row">
+                                    <span>Add-ons:</span>
+                                    <span id="breakdownAddons">$0</span>
+                                </div>
+                                <div class="breakdown-row" id="contractDiscountRow" style="display: none;">
+                                    <span>Contract Discount:</span>
+                                    <span id="breakdownDiscount" class="text-success">-$0</span>
+                                </div>
+                                <div class="breakdown-row breakdown-total">
+                                    <span>Estimated Total:</span>
+                                    <span id="breakdownTotal">$0</span>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="estimate-disclaimer">
+                        <div class="estimate-disclaimer mt-3">
                             <i class="fas fa-info-circle me-2"></i>
                             <strong>This is an estimate only.</strong> Final pricing will be confirmed by an OHS specialist after reviewing your specific requirements and conducting a site assessment if needed.
                         </div>
@@ -1119,10 +1146,17 @@
                 },
                 frequencyMultipliers: {
                     onetime: 1.0,
-                    weekly: 0.85,        // 15% discount
-                    biweekly: 0.90,      // 10% discount
-                    monthly: 0.95,       // 5% discount
+                    weekly: 1.0,
+                    biweekly: 1.0,
+                    monthly: 1.0,
                     quarterly: 1.0
+                },
+                // Contract discounts - matches calculator.html
+                contractDiscounts: {
+                    payPerService: 0,
+                    monthlyContract: 0.15,      // 15% OFF
+                    bimonthlyContract: 0.10,    // 10% OFF
+                    annualContract: 0.20        // 20% OFF
                 },
                 addons: {
                     organic: 25,
@@ -1168,6 +1202,7 @@
                 const sqft = parseInt(document.getElementById('squareFootage').value) || 0;
                 const complexity = document.getElementById('complexity').value;
                 const frequency = document.getElementById('frequency').value;
+                const contractType = document.getElementById('contractType').value;
                 
                 // Get selected add-ons
                 const organicChecked = document.getElementById('organic-treatment').checked;
@@ -1175,10 +1210,20 @@
                 const productsChecked = document.getElementById('followup-products').checked;
                 const certificateChecked = document.getElementById('certificate').checked;
                 
+                const estimatePrompt = document.getElementById('estimatePrompt');
+                const estimateDisplay = document.getElementById('estimateDisplay');
+                
+                // Show prompt if not enough info, otherwise show estimate
                 if (!serviceType || sqft < 100) {
-                    priceEstimate.style.display = 'none';
+                    estimatePrompt.style.display = 'block';
+                    estimateDisplay.style.display = 'none';
+                    document.getElementById('estimatedPrice').value = '';
                     return;
                 }
+                
+                // Hide prompt, show estimate
+                estimatePrompt.style.display = 'none';
+                estimateDisplay.style.display = 'block';
                 
                 // Calculate base price
                 let baseRate;
@@ -1196,11 +1241,6 @@
                 const complexityMultiplier = PRICING.complexityAdjustments[complexity] || 1.0;
                 const complexityAdjustment = basePrice * (complexityMultiplier - 1);
                 let adjustedPrice = basePrice * complexityMultiplier;
-                
-                // Apply frequency discount
-                const frequencyMultiplier = PRICING.frequencyMultipliers[frequency] || 1.0;
-                const frequencyDiscount = adjustedPrice * (1 - frequencyMultiplier);
-                let servicePrice = adjustedPrice * frequencyMultiplier;
                 
                 // Calculate add-on costs
                 let addonCost = 0;
@@ -1223,37 +1263,54 @@
                     addonNames.push('Completion Certificate (+$15)');
                 }
                 
-                const totalEstimate = Math.round(servicePrice + addonCost);
+                // Subtotal before contract discount
+                const subtotal = adjustedPrice + addonCost;
+                
+                // Apply contract discount
+                const contractDiscount = PRICING.contractDiscounts[contractType] || 0;
+                const discountAmount = subtotal * contractDiscount;
+                const totalEstimate = Math.round(subtotal - discountAmount);
                 
                 // Update displays
+                document.getElementById('breakdownSqft').textContent = sqft.toLocaleString();
                 document.getElementById('breakdownBase').textContent = '$' + Math.round(basePrice).toLocaleString();
                 document.getElementById('breakdownComplexity').textContent = '$' + Math.round(complexityAdjustment).toLocaleString();
+                document.getElementById('breakdownAddons').textContent = '$' + addonCost.toLocaleString();
                 
-                // Show/hide frequency discount row
-                const frequencyRow = document.getElementById('frequencyDiscountRow');
-                if (frequencyDiscount > 0) {
-                    frequencyRow.style.display = 'flex';
-                    document.getElementById('breakdownFrequency').textContent = '-$' + Math.round(frequencyDiscount).toLocaleString();
+                // Show/hide contract discount row
+                const discountRow = document.getElementById('contractDiscountRow');
+                if (discountAmount > 0) {
+                    discountRow.style.display = 'flex';
+                    const discountPercent = Math.round(contractDiscount * 100);
+                    document.getElementById('breakdownDiscount').textContent = '-$' + Math.round(discountAmount).toLocaleString() + ' (' + discountPercent + '% off)';
                 } else {
-                    frequencyRow.style.display = 'none';
+                    discountRow.style.display = 'none';
                 }
                 
-                document.getElementById('breakdownAddons').textContent = '$' + addonCost.toLocaleString();
                 document.getElementById('breakdownTotal').textContent = '$' + totalEstimate.toLocaleString();
                 document.getElementById('estimateAmount').textContent = '$' + totalEstimate.toLocaleString();
-                
-                priceEstimate.style.display = 'block';
                 
                 // Update hidden fields for form submission
                 document.getElementById('estimatedPrice').value = '$' + totalEstimate.toLocaleString();
                 document.getElementById('selectedAddons').value = addonNames.join(', ') || 'None';
                 
                 // Build price breakdown string for email
+                const contractName = {
+                    payPerService: 'Pay Per Service',
+                    monthlyContract: 'Monthly Contract (15% OFF)',
+                    bimonthlyContract: 'Bi-Monthly Contract (10% OFF)',
+                    annualContract: 'Annual Contract (20% OFF)'
+                }[contractType] || 'Pay Per Service';
+                
                 const breakdownText = [
+                    'Service Type: ' + serviceType,
+                    'Square Footage: ' + sqft + ' sq ft',
                     'Base Service: $' + Math.round(basePrice),
                     'Complexity (' + complexity + '): +$' + Math.round(complexityAdjustment),
-                    frequencyDiscount > 0 ? 'Frequency Discount (' + frequency + '): -$' + Math.round(frequencyDiscount) : '',
                     'Add-ons: $' + addonCost,
+                    'Contract: ' + contractName,
+                    discountAmount > 0 ? 'Contract Discount: -$' + Math.round(discountAmount) : '',
+                    'Frequency: ' + frequency,
                     'ESTIMATED TOTAL: $' + totalEstimate
                 ].filter(Boolean).join(' | ');
                 
@@ -1264,6 +1321,7 @@
             document.getElementById('squareFootage').addEventListener('input', updatePriceEstimate);
             document.getElementById('complexity').addEventListener('change', updatePriceEstimate);
             document.getElementById('frequency').addEventListener('change', updatePriceEstimate);
+            document.getElementById('contractType').addEventListener('change', updatePriceEstimate);
             
             // Add-on checkbox listeners
             document.querySelectorAll('input[type="checkbox"]:not(#termsAccepted)').forEach(checkbox => {
