@@ -1224,46 +1224,20 @@
 <script>
     // ================================================================
     // SHOPIFY STOREFRONT API CONFIGURATION
-    // Credentials loaded from external config file (not committed to repo)
+    // ================================================================
+    // NOTE: Storefront API tokens are READ-ONLY and designed for client-side use.
+    // They can ONLY read product/inventory data. They CANNOT:
+    // - Process payments
+    // - Access customer data  
+    // - Modify your store
+    // This is different from Admin API keys which must NEVER be exposed.
     // ================================================================
     
-    let SHOPIFY_CONFIG = {
-        domain: null,
-        storefrontAccessToken: null,
-        apiVersion: '2024-01',
-        isConfigured: false
+    const SHOPIFY_CONFIG = {
+        domain: '07fjjy-q3.myshopify.com',
+        storefrontAccessToken: '24ba1013dc413cb035a6f933b684f4e4',
+        apiVersion: '2024-01'
     };
-    
-    // Load Shopify config from external file
-    async function loadShopifyConfig() {
-        try {
-            const response = await fetch('/scripts/shopify-config.js');
-            if (!response.ok) {
-                console.warn('⚠️ Shopify config not found. Inventory features disabled.');
-                return false;
-            }
-            
-            const configText = await response.text();
-            // Execute the config script to get the values
-            const configScript = document.createElement('script');
-            configScript.textContent = configText;
-            document.head.appendChild(configScript);
-            
-            // Check if config was loaded
-            if (window.SHOPIFY_CREDENTIALS) {
-                SHOPIFY_CONFIG.domain = window.SHOPIFY_CREDENTIALS.domain;
-                SHOPIFY_CONFIG.storefrontAccessToken = window.SHOPIFY_CREDENTIALS.storefrontAccessToken;
-                SHOPIFY_CONFIG.isConfigured = true;
-                console.log('✅ Shopify config loaded successfully');
-                return true;
-            }
-            
-            return false;
-        } catch (error) {
-            console.warn('⚠️ Could not load Shopify config:', error.message);
-            return false;
-        }
-    }
     
     // ================================================================
     // UNIFIED CART SYSTEM
@@ -1512,12 +1486,6 @@
     // ================================================================
     
     async function fetchShopifyInventory() {
-        // Check if Shopify is configured
-        if (!SHOPIFY_CONFIG.isConfigured) {
-            console.log('⚠️ Shopify not configured - skipping inventory fetch');
-            return {};
-        }
-        
         // Check cache first
         if (lastInventoryFetch && (Date.now() - lastInventoryFetch) < INVENTORY_CACHE_DURATION) {
             console.log('📦 Using cached inventory data');
@@ -2336,14 +2304,7 @@
     document.addEventListener('DOMContentLoaded', async function() {
         console.log('🎉 OHS Products Page Loading...');
         console.log('📦 Unified cart loaded with', cartItems.length, 'unique items');
-        
-        // Load Shopify configuration first
-        const shopifyConfigured = await loadShopifyConfig();
-        if (shopifyConfigured) {
-            console.log('🔗 Shopify Integration: Connected to', SHOPIFY_CONFIG.domain);
-        } else {
-            console.log('⚠️ Shopify Integration: Running without inventory tracking');
-        }
+        console.log('🔗 Shopify Integration: Connecting to', SHOPIFY_CONFIG.domain);
         
         // Load products with inventory
         await loadProducts();
@@ -2410,7 +2371,6 @@
     window.refreshInventoryDisplay = refreshInventoryDisplay;
     window.fetchShopifyInventory = fetchShopifyInventory;
     window.updateWholesaleIndicator = updateWholesaleIndicator;
-    window.loadShopifyConfig = loadShopifyConfig;
     
     console.log('🚀 Products Page JavaScript Loaded - Shopify Inventory Integration Active');
     console.log('📧 Contact: OHS@OrganicHypoSolutions.com');
