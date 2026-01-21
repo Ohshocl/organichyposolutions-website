@@ -7,7 +7,7 @@
     <!-- SEO Meta Tags -->
     <title>Service Cost Calculator - Organic HypoSolutions - USDA Certified Organic HOCl</title>
     <meta name="description" content="Get instant pricing for Utah sanitization cost calculator and commercial fogging pricing. Professional cleaning cost estimates for residential disinfection quotes.">
-    <meta name="keywords" content="Utah sanitization cost calculator, commercial fogging pricing, residential disinfection quotes, professional cleaning cost estimate, hypochlorous acid service pricing, Utah facility sanitization rates, emergency disinfection pricing, subscription sanitization services, Salt Lake City cleaning quotes, professional fogging cost">
+    <meta name="keywords" content="Utah sanitization cost calculator, commercial fogging pricing, residential disinfection quotes, professional cleaning cost estimate, hypochlorous acid service pricing, Utah facility sanitization rates, subscription sanitization services, Salt Lake City cleaning quotes, professional fogging cost">
     
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Service Cost Calculator - Organic HypoSolutions">
@@ -480,25 +480,6 @@
                         </a></li>
                     </ul>
                 </li>
-                
-                <!-- HIDDEN: Account Dropdown
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-user me-1"></i>Account
-                    </a>
-                    <ul class="dropdown-menu">
-                        
-                        <li><a class="dropdown-item" href="auth/login.html">
-                            <i class="fas fa-sign-in-alt me-2"></i>Login
-                            <span class="badge bg-warning ms-1">Coming Soon</span>
-                        </a></li>
-                        <li><a class="dropdown-item" href="auth/register.html">
-                            <i class="fas fa-user-plus me-2"></i>Register
-                            <span class="badge bg-warning ms-1">Coming Soon</span>
-                        </a></li>
-                    </ul>
-                </li>
-                -->
             </ul>
         </div>
     </div>
@@ -536,7 +517,6 @@
                             <option value="education">🎓 Educational Facility</option>
                             <option value="food">🍽️ Food Service</option>
                             <option value="fitness">💪 Fitness Center</option>
-                            <option value="emergency">🚨 Emergency Service</option>
                         </select>
                     </div>
 
@@ -639,7 +619,7 @@
                 <div class="col-lg-6">
                     <!-- One-Time Service Results Section -->
                     <div class="calc-result">
-                        <h3 class="fw-bold mb-3">💰 One-Time Service Quote</h3>
+                        <h3 class="fw-bold mb-3">💰 Service Estimate</h3>
                         <div class="display-4 fw-bold mb-2" id="totalPrice">$620</div>
                         <p class="fs-5 mb-3" id="priceFrequency">per service</p>
                         
@@ -663,14 +643,18 @@
                             </div>
                             <hr class="border-light">
                             <div class="d-flex justify-content-between fw-bold fs-5">
-                                <span>Total Per Service:</span>
+                                <span>Estimated Total:</span>
                                 <span id="breakdownTotal">$620</span>
                             </div>
+                        </div>
+                        
+                        <div class="mt-3 p-2" style="background: rgba(255,255,255,0.1); border-radius: 8px;">
+                            <small><i class="fas fa-info-circle me-1"></i> This is an estimate. Final pricing confirmed by specialist.</small>
                         </div>
 
                         <div class="mt-4">
                             <button class="btn btn-light btn-lg me-2" onclick="requestQuote()">
-                                📋 Request Official Quote
+                                📋 Book Service with This Estimate
                             </button>
                             <button class="btn btn-outline-light btn-lg" onclick="callNow()">
                                 📞 Call (801) 712-5663
@@ -705,10 +689,14 @@
                                 <span id="contractTotalPrice">$527</span>
                             </div>
                         </div>
+                        
+                        <div class="mt-3 p-2" style="background: rgba(255,255,255,0.1); border-radius: 8px;">
+                            <small><i class="fas fa-info-circle me-1"></i> This is an estimate. Final pricing confirmed by specialist.</small>
+                        </div>
 
                         <div class="mt-4">
                             <button class="btn btn-light btn-lg me-2" onclick="requestContractQuote()">
-                                📋 Request Contract Quote
+                                📋 Book Service with Contract
                             </button>
                             <button class="btn btn-outline-light btn-lg" onclick="callNow()">
                                 📞 Call (801) 712-5663
@@ -980,6 +968,7 @@
     <script>
         // Global state tracking
         let currentSubscription = 'payPerService';
+        let lastCalculation = null; // Store last calculation for passing to book-service
         
         // Pricing configuration - using the successful pattern from debug test
         const PRICING = {
@@ -989,8 +978,7 @@
                 healthcare: 0.14,
                 education: 0.12,
                 food: 0.135,
-                fitness: 0.13,
-                emergency: 0.25
+                fitness: 0.13
             },
             volumeRate: 0.08,
             frequencyMultipliers: {
@@ -1011,8 +999,7 @@
                 healthcare: 500,
                 education: 400,
                 food: 400,
-                fitness: 350,
-                emergency: 600
+                fitness: 350
             },
             subscriptionDiscounts: {
                 payPerService: 0,
@@ -1022,6 +1009,23 @@
             },
             travelRate: 0.70,
             baseTravelRadius: 25
+        };
+
+        // Map calculator service types to book-service types
+        const SERVICE_TYPE_MAP = {
+            commercial: 'commercial',
+            residential: 'residential',
+            healthcare: 'commercial',
+            education: 'commercial',
+            food: 'commercial',
+            fitness: 'commercial'
+        };
+
+        // Map calculator complexity to book-service complexity
+        const COMPLEXITY_MAP = {
+            standard: 'standard',
+            moderate: 'moderate',
+            complex: 'complex'
         };
 
         // Main calculator function - using the working pattern
@@ -1097,6 +1101,24 @@
                     volumeDiscountAmount = savings;
                 }
                 
+                // Store calculation for passing to book-service
+                lastCalculation = {
+                    sqft: sqft,
+                    serviceType: serviceType,
+                    mappedServiceType: SERVICE_TYPE_MAP[serviceType] || 'commercial',
+                    frequency: frequency,
+                    complexity: complexity,
+                    mappedComplexity: COMPLEXITY_MAP[complexity] || 'standard',
+                    contractType: currentSubscription,
+                    basePrice: Math.round(basePrice * frequencyMultiplier),
+                    complexityAdjustment: Math.round(complexityAdjustment * frequencyMultiplier),
+                    travelCosts: Math.round(travelCosts),
+                    volumeDiscount: Math.round(volumeDiscountAmount),
+                    totalPrice: Math.round(totalPrice),
+                    contractDiscount: PRICING.subscriptionDiscounts[currentSubscription],
+                    contractPrice: Math.round(totalPrice * (1 - PRICING.subscriptionDiscounts[currentSubscription]))
+                };
+                
                 // Update all price displays
                 updateElement('basePrice', '$' + Math.round(basePrice * frequencyMultiplier).toLocaleString());
                 updateElement('complexityPrice', '$' + Math.round(complexityAdjustment * frequencyMultiplier).toLocaleString());
@@ -1141,6 +1163,12 @@
                 const discount = PRICING.subscriptionDiscounts[currentSubscription];
                 const contractPrice = totalPrice * (1 - discount);
                 const savings = totalPrice - contractPrice;
+                
+                // Update lastCalculation with contract info
+                if (lastCalculation) {
+                    lastCalculation.contractPrice = Math.round(contractPrice);
+                    lastCalculation.contractSavings = Math.round(savings);
+                }
 
                 // Update contract displays
                 updateElement('contractPrice', '$' + Math.round(contractPrice).toLocaleString());
@@ -1252,26 +1280,66 @@
             });
         }
 
-        // Utility functions
+        // =========================================================
+        // QUOTE REQUEST - Redirect to book-service with prefilled data
+        // =========================================================
         function requestQuote() {
             try {
-                window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
+                if (!lastCalculation) {
+                    updateCalculator();
+                }
+                
+                // Build URL parameters to pass to book-service page
+                const params = new URLSearchParams({
+                    serviceType: lastCalculation.mappedServiceType,
+                    sqft: lastCalculation.sqft,
+                    complexity: lastCalculation.mappedComplexity,
+                    frequency: lastCalculation.frequency,
+                    contractType: lastCalculation.contractType,
+                    estimate: lastCalculation.totalPrice,
+                    source: 'calculator'
+                });
+                
+                // Redirect to book-service page with parameters
+                window.location.href = 'shop/book-service.html?' + params.toString();
+                
             } catch (error) {
                 console.error('Quote request error:', error);
+                // Fallback - just go to book-service page
+                window.location.href = 'shop/book-service.html';
             }
         }
 
         function requestContractQuote() {
             try {
-                window.open('https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform', '_blank');
+                if (!lastCalculation) {
+                    updateCalculator();
+                }
+                
+                // Build URL parameters with contract pricing
+                const params = new URLSearchParams({
+                    serviceType: lastCalculation.mappedServiceType,
+                    sqft: lastCalculation.sqft,
+                    complexity: lastCalculation.mappedComplexity,
+                    frequency: lastCalculation.frequency,
+                    contractType: currentSubscription,
+                    estimate: lastCalculation.contractPrice,
+                    source: 'calculator_contract'
+                });
+                
+                // Redirect to book-service page with parameters
+                window.location.href = 'shop/book-service.html?' + params.toString();
+                
             } catch (error) {
                 console.error('Contract quote request error:', error);
+                // Fallback - just go to book-service page
+                window.location.href = 'shop/book-service.html';
             }
         }
 
         function callNow() {
             try {
-                window.open('tel:+18017125663');
+                window.location.href = 'tel:+18017125663';
             } catch (error) {
                 console.error('Call initiation error:', error);
             }
