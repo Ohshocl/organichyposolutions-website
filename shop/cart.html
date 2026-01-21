@@ -1373,44 +1373,104 @@
             }
         };
         
-        // Alternative ID lookups for flexibility
+        // =====================================================================
+        // EXTENDED PRODUCT ALIASES - Comprehensive lookup for all formats
+        // =====================================================================
         const PRODUCT_ALIASES = {
+            // 32oz Ready-to-Use Cleaner aliases
             'ohs-32oz-organic-ready-to-use': '7249401053255',
             'ohs-32oz-organic-cleaner': '7249401053255',
+            '32oz organic ready-to-use cleaner': '7249401053255',
+            '32oz ready-to-use': '7249401053255',
+            '32oz cleaner': '7249401053255',
+            'ohs-32oz-rtu': '7249401053255',
+            
+            // 1 Gallon Ready-to-Use aliases
             'ohs-1-gallon-organic-ready-to-use': '7249401086023',
             'ohs-1gal-organic-solution': '7249401086023',
+            '1 gallon organic ready-to-use solution': '7249401086023',
+            '1 gallon ready-to-use': '7249401086023',
+            '1gal ready-to-use': '7249401086023',
+            'ohs-1gal-rtu': '7249401086023',
+            
+            // Wipes aliases
             'ohs-organic-wipes': '7249401315399',
             'ohs-all-in-one-wipes': '7249401315399',
+            'all in one hypochlorous organic wipes': '7249401315399',
+            'organic wipes': '7249401315399',
+            'all-in-one wipes': '7249401315399',
+            'hc-all-in-one-wipes': '7249401315399',
+            
+            // 32oz Laundry Booster aliases - EXPANDED
             'ohs-32oz-organic-laundry-booster': '7249400004679',
             'ohs-32oz-laundry': '7249400004679',
+            '32oz organic laundry booster w/ cap': '7249400004679',
+            '32oz organic laundry booster': '7249400004679',
+            '32oz laundry booster': '7249400004679',
+            '32oz laundry': '7249400004679',
+            'hc-32oz-laundry-booster': '7249400004679',
+            'hc-32oz-laundry': '7249400004679',
+            'laundry booster 32oz': '7249400004679',
+            '32oz-organic-laundry-booster': '7249400004679',
+            
+            // 1 Gallon Laundry Booster aliases - EXPANDED
             'ohs-1-gallon-organic-laundry-booster': '7249400037447',
             'ohs-1gal-laundry': '7249400037447',
+            '1 gallon organic laundry booster w/ cap': '7249400037447',
+            '1 gallon organic laundry booster': '7249400037447',
+            '1 gallon laundry booster': '7249400037447',
+            '1gal laundry booster': '7249400037447',
+            '1gal laundry': '7249400037447',
+            'hc-1gal-laundry-booster': '7249400037447',
+            'hc-1gal-laundry': '7249400037447',
+            'laundry booster 1 gallon': '7249400037447',
+            '1-gallon-organic-laundry-booster': '7249400037447',
+            
+            // Skin Serum aliases
             'ohs-healing-serum': '7249401348167',
-            'ohs-skin-serum': '7249401348167'
+            'ohs-skin-serum': '7249401348167',
+            'ohs pure healing skin serum': '7249401348167',
+            'healing serum': '7249401348167',
+            'skin serum': '7249401348167'
         };
         
-        // SKU to Product ID mapping
+        // =====================================================================
+        // SKU to Product ID mapping - COMPREHENSIVE
+        // =====================================================================
         const SKU_MAP = {
+            // 32oz Ready-to-Use
             'OHS-32OZ-RTU-RETAIL': '7249401053255',
             'OHS-32OZ-RTU-RETAIL-SUB': '7249401053255',
             'OHS-32OZ-RTU-WHOLESALE': '7249401053255',
             'OHS-32OZ-RTU-WHOLESALE-SUB': '7249401053255',
+            
+            // 1 Gallon Ready-to-Use
             'OHS-1GAL-READY-RTU-RETAIL': '7249401086023',
             'OHS-1GAL-READY-RTU-RETAIL-SUB': '7249401086023',
             'OHS-1GAL-READY-RTU-WHOLESALE': '7249401086023',
             'OHS-1GAL-READY-RTU-WHOLESALE-SUB': '7249401086023',
+            
+            // Wipes
             'OHS-ALL-IN-ONE-WIPES': '7249401315399',
             'OHS-ALL-IN-ONE-WIPES-SUB': '7249401315399',
             'OHS-ALL-IN-ONE-WIPES-WHOLESALE': '7249401315399',
             'OHS-ALL-IN-ONE-WIPES-WHOLESALE-SUB': '7249401315399',
+            
+            // 32oz Laundry Booster
             'HC-32OZ-LAUNDRY-BOOSTER-RETAIL': '7249400004679',
             'HC-32OZ-LAUNDRY-BOOSTER-RETAIL-SUB': '7249400004679',
             'HC-32OZ-LAUNDRY-BOOSTER-WHOLESALE': '7249400004679',
             'HC-32OZ-LAUNDRY-BOOSTER-WHOLESALE-SUB': '7249400004679',
+            'OHS-32OZ-LAUNDRY': '7249400004679',
+            
+            // 1 Gallon Laundry Booster
             'HC-1GAL-LAUNDRY-BOOSTER-RETAIL': '7249400037447',
             'HC-1GAL-LAUNDRY-BOOSTER-RETAIL-SUB': '7249400037447',
             'HC-1GAL-LAUNDRY-BOOSTER-WHOLESALE': '7249400037447',
             'HC-1GAL-LAUNDRY-BOOSTER-WHOLESALE-SUB': '7249400037447',
+            'OHS-1GAL-LAUNDRY': '7249400037447',
+            
+            // Skin Serum
             'OHS-HEALING-SERUM-RETAIL': '7249401348167',
             'OHS-HEALING-SERUM-RETAIL-SUB': '7249401348167',
             'OHS-HEALING-SERUM-WHOLESALE': '7249401348167',
@@ -1418,45 +1478,77 @@
         };
         
         // =====================================================================
-        // PRODUCT LOOKUP FUNCTIONS
+        // PRODUCT LOOKUP FUNCTIONS - ENHANCED
         // =====================================================================
         
         function findProduct(identifier) {
             if (!identifier) return null;
             
-            const normalized = identifier.toString().toLowerCase().trim();
+            // Convert to string and normalize
+            const strIdentifier = String(identifier).trim();
+            const normalized = strIdentifier.toLowerCase();
             
             console.log('🔍 Finding product for identifier:', identifier);
             
-            // Direct lookup by Shopify Product ID
-            if (PRODUCT_CATALOG[identifier]) {
+            // 1. Direct lookup by Shopify Product ID
+            if (PRODUCT_CATALOG[strIdentifier]) {
                 console.log('✅ Found via direct Shopify ID lookup');
-                return PRODUCT_CATALOG[identifier];
+                return PRODUCT_CATALOG[strIdentifier];
             }
             
-            // Try alias lookup
+            // 2. Try alias lookup (case-insensitive)
             if (PRODUCT_ALIASES[normalized]) {
                 console.log('✅ Found via alias lookup:', normalized);
                 return PRODUCT_CATALOG[PRODUCT_ALIASES[normalized]];
             }
             
-            // Try SKU lookup
-            const upperIdentifier = identifier.toString().toUpperCase();
+            // 3. Try SKU lookup (case-insensitive)
+            const upperIdentifier = strIdentifier.toUpperCase();
             if (SKU_MAP[upperIdentifier]) {
                 console.log('✅ Found via SKU lookup:', upperIdentifier);
                 return PRODUCT_CATALOG[SKU_MAP[upperIdentifier]];
             }
             
-            // Try partial name matching
+            // 4. Try partial name matching (more comprehensive)
             for (const [key, product] of Object.entries(PRODUCT_CATALOG)) {
-                if (product.name && product.name.toLowerCase().includes(normalized)) {
-                    console.log('✅ Found via name match:', product.name);
-                    return product;
+                if (product.name) {
+                    const productNameLower = product.name.toLowerCase();
+                    // Check if normalized identifier is contained in product name
+                    if (productNameLower.includes(normalized) || normalized.includes(productNameLower)) {
+                        console.log('✅ Found via name match:', product.name);
+                        return product;
+                    }
+                }
+            }
+            
+            // 5. Try partial alias matching
+            for (const [alias, productId] of Object.entries(PRODUCT_ALIASES)) {
+                if (alias.includes(normalized) || normalized.includes(alias)) {
+                    console.log('✅ Found via partial alias match:', alias);
+                    return PRODUCT_CATALOG[productId];
+                }
+            }
+            
+            // 6. Special handling for laundry products by keywords
+            if (normalized.includes('laundry')) {
+                if (normalized.includes('32') || normalized.includes('32oz')) {
+                    console.log('✅ Found 32oz laundry via keyword match');
+                    return PRODUCT_CATALOG['7249400004679'];
+                }
+                if (normalized.includes('gallon') || normalized.includes('1gal') || normalized.includes('1 gal')) {
+                    console.log('✅ Found 1 gallon laundry via keyword match');
+                    return PRODUCT_CATALOG['7249400037447'];
                 }
             }
             
             console.warn('❌ Product not found for:', identifier);
             return null;
+        }
+        
+        // Function to normalize product ID for comparison
+        function normalizeProductId(identifier) {
+            const product = findProduct(identifier);
+            return product ? product.id : null;
         }
 
         // =====================================================================
@@ -1504,7 +1596,7 @@
         }
 
         // =====================================================================
-        // CART LOADING & MANAGEMENT
+        // CART LOADING & MANAGEMENT - FIXED WITH DUPLICATE MERGING
         // =====================================================================
         
         async function loadCartFromLocalStorage() {
@@ -1532,18 +1624,38 @@
                 
                 console.log('📦 Processing', rawItems.length, 'raw items...');
                 
+                // Use a map to merge duplicate products by normalized product ID
+                const mergedItems = new Map();
+                
                 for (const item of rawItems) {
                     console.log('🔄 Processing item:', item);
                     const validatedItem = validateAndNormalizeCartItem(item);
                     if (validatedItem) {
-                        cartItems.push(validatedItem);
-                        console.log('✅ Item added to cart:', validatedItem.name, '@', validatedItem.price);
+                        // Check if this product already exists in our merged map
+                        const existingItem = mergedItems.get(validatedItem.productId);
+                        if (existingItem) {
+                            // Merge quantities
+                            existingItem.quantity += validatedItem.quantity;
+                            // Recalculate price based on new total quantity
+                            const wholesaleInfo = calculateWholesaleRate(existingItem.productId, existingItem.quantity);
+                            existingItem.price = wholesaleInfo.price;
+                            console.log('🔀 Merged duplicate product:', existingItem.name, 'New qty:', existingItem.quantity);
+                        } else {
+                            mergedItems.set(validatedItem.productId, validatedItem);
+                            console.log('✅ Item added to cart:', validatedItem.name, '@', validatedItem.price);
+                        }
                     } else {
                         console.warn('❌ Item rejected:', item);
                     }
                 }
                 
-                console.log('✅ Cart loaded with', cartItems.length, 'valid items');
+                // Convert map back to array
+                cartItems = Array.from(mergedItems.values());
+                
+                // Save the merged cart back to localStorage to persist the merge
+                saveCart();
+                
+                console.log('✅ Cart loaded with', cartItems.length, 'unique items (duplicates merged)');
                 
             } catch (error) {
                 console.error('❌ Error loading cart:', error);
@@ -1562,10 +1674,24 @@
                 return null;
             }
             
-            const productId = item.productId || item.id || item.name;
-            const product = findProduct(productId);
+            // Try multiple identifiers to find the product
+            const identifiersToTry = [
+                item.productId,
+                item.id,
+                item.name,
+                item.sku
+            ].filter(Boolean);
             
-            console.log('🔍 Looking up product:', productId, '→', product ? 'FOUND' : 'NOT FOUND');
+            let product = null;
+            for (const identifier of identifiersToTry) {
+                product = findProduct(identifier);
+                if (product) {
+                    console.log('🔍 Found product using identifier:', identifier);
+                    break;
+                }
+            }
+            
+            console.log('🔍 Looking up product:', identifiersToTry.join(' / '), '→', product ? 'FOUND: ' + product.name : 'NOT FOUND');
             
             // Skip "Coming Soon" products with no pricing
             if (product && product.comingSoon) {
@@ -1575,8 +1701,11 @@
             
             const quantity = Math.max(1, parseInt(item.quantity) || 1);
             
+            // Use the canonical product ID from the catalog
+            const canonicalProductId = product ? product.id : (item.productId || item.id);
+            
             const normalizedItem = {
-                productId: product ? product.id : productId,
+                productId: canonicalProductId,
                 name: product ? product.name : (item.name || 'Unknown Product'),
                 price: parseFloat(item.price) || 0,
                 quantity: quantity,
@@ -1586,11 +1715,11 @@
                 addedAt: item.addedAt || Date.now()
             };
             
-            // If product found in catalog, use calculated price based on quantity
-            if (product && product.pricing) {
+            // If product found in catalog, ALWAYS use calculated price based on quantity
+            if (product && product.pricing && product.pricing.retail > 0) {
                 const wholesaleInfo = calculateWholesaleRate(product.id, quantity);
                 normalizedItem.price = wholesaleInfo.price;
-                console.log('✅ Updated price to:', normalizedItem.price, '(wholesale:', wholesaleInfo.isWholesale, ')');
+                console.log('✅ Price set from catalog:', normalizedItem.price, '(wholesale:', wholesaleInfo.isWholesale, ')');
             } else if (normalizedItem.price === 0) {
                 console.warn('⚠️ No price available for:', normalizedItem.name);
             }
@@ -1774,6 +1903,7 @@
         function saveCart() {
             try {
                 localStorage.setItem('ohsCart', JSON.stringify(cartItems));
+                console.log('💾 Cart saved with', cartItems.length, 'items');
             } catch (error) {
                 console.error('Error saving cart:', error);
             }
@@ -1999,8 +2129,9 @@
         // =====================================================================
         
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('🚀 Initializing OHS Cart System...');
+            console.log('🚀 Initializing OHS Cart System v2.1...');
             console.log('📋 Product Catalog loaded with', Object.keys(PRODUCT_CATALOG).length, 'products');
+            console.log('📋 Product Aliases:', Object.keys(PRODUCT_ALIASES).length, 'aliases configured');
             
             try {
                 if (localStorage.getItem('promoBannerClosed') === 'true') {
@@ -2033,7 +2164,7 @@
             }
         });
 
-        console.log('✅ OHS Cart System loaded - v2.0 (January 2025)');
+        console.log('✅ OHS Cart System loaded - v2.1 (January 2025) - Enhanced product lookup & duplicate merging');
     </script>
 </body>
 </html>
