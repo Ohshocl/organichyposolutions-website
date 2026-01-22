@@ -1127,23 +1127,29 @@
             console.log('📋 Service booking form initializing...');
             
             // =========================================================
-            // PRICING CONFIGURATION - Matches calculator.js
+            // PRICING CONFIGURATION - SYNCHRONIZED WITH CALCULATOR.HTML
+            // These values MUST match calculator.html exactly
             // =========================================================
             const PRICING = {
+                // Base rates per square foot by service type - MATCHES CALCULATOR
                 baseRates: {
                     residential: 0.15,    // $0.15 per sq ft
                     commercial: 0.125     // $0.125 per sq ft
                 },
-                volumeRate: 0.08,         // Volume rate for 20,000+ sq ft
+                // Volume rate for large facilities (20,000+ sq ft) - MATCHES CALCULATOR
+                volumeRate: 0.08,
+                // Minimum charges by service type - MATCHES CALCULATOR
                 minimums: {
-                    residential: 150,
-                    commercial: 200
+                    residential: 150,     // Minimum $150 for residential
+                    commercial: 200       // Minimum $200 for commercial
                 },
+                // Complexity adjustments - MATCHES CALCULATOR
                 complexityAdjustments: {
                     standard: 1.0,
                     moderate: 1.15,
                     complex: 1.3
                 },
+                // Frequency multipliers (for display purposes)
                 frequencyMultipliers: {
                     onetime: 1.0,
                     weekly: 1.0,
@@ -1151,13 +1157,14 @@
                     monthly: 1.0,
                     quarterly: 1.0
                 },
-                // Contract discounts - matches calculator.html
+                // Contract discounts - MATCHES CALCULATOR
                 contractDiscounts: {
                     payPerService: 0,
                     monthlyContract: 0.15,      // 15% OFF
                     bimonthlyContract: 0.10,    // 10% OFF
                     annualContract: 0.20        // 20% OFF
                 },
+                // Add-on prices
                 addons: {
                     organic: 25,
                     hvac: 75,
@@ -1174,7 +1181,7 @@
             }
             
             // =========================================================
-            // PREFILL FROM CALCULATOR - Check URL parameters
+            // PREFILL FROM CALCULATOR - FIXED URL PARAMETER READING
             // =========================================================
             function prefillFromCalculator() {
                 const params = new URLSearchParams(window.location.search);
@@ -1182,7 +1189,7 @@
                 // Check if we came from the calculator
                 const source = params.get('source');
                 if (source && (source === 'calculator' || source === 'calculator_contract')) {
-                    console.log('📊 Prefilling from calculator...');
+                    console.log('📊 Prefilling from calculator with params:', Object.fromEntries(params));
                     
                     // Prefill service type
                     const serviceType = params.get('serviceType');
@@ -1256,7 +1263,8 @@
             });
             
             // =========================================================
-            // PRICE ESTIMATION - Calculator-based logic
+            // PRICE ESTIMATION - SYNCHRONIZED WITH CALCULATOR.HTML
+            // Uses identical calculation logic to calculator.html
             // =========================================================
             function updatePriceEstimate() {
                 const serviceType = serviceTypeInput.value;
@@ -1286,7 +1294,11 @@
                 estimatePrompt.style.display = 'none';
                 estimateDisplay.style.display = 'block';
                 
-                // Calculate base price
+                // =========================================================
+                // CALCULATION LOGIC - MATCHES CALCULATOR.HTML EXACTLY
+                // =========================================================
+                
+                // 1. Determine base rate (volume discount for 20k+ sq ft)
                 let baseRate;
                 if (sqft > 20000) {
                     baseRate = PRICING.volumeRate;
@@ -1294,16 +1306,19 @@
                     baseRate = PRICING.baseRates[serviceType] || 0.125;
                 }
                 
+                // 2. Calculate base price from square footage
                 let basePrice = sqft * baseRate;
+                
+                // 3. Apply minimum charge
                 const minimum = PRICING.minimums[serviceType] || 150;
                 basePrice = Math.max(basePrice, minimum);
                 
-                // Apply complexity adjustment
+                // 4. Apply complexity adjustment
                 const complexityMultiplier = PRICING.complexityAdjustments[complexity] || 1.0;
                 const complexityAdjustment = basePrice * (complexityMultiplier - 1);
                 let adjustedPrice = basePrice * complexityMultiplier;
                 
-                // Calculate add-on costs
+                // 5. Calculate add-on costs
                 let addonCost = 0;
                 const addonNames = [];
                 
@@ -1324,15 +1339,17 @@
                     addonNames.push('Completion Certificate (+$15)');
                 }
                 
-                // Subtotal before contract discount
+                // 6. Subtotal before contract discount
                 const subtotal = adjustedPrice + addonCost;
                 
-                // Apply contract discount
+                // 7. Apply contract discount
                 const contractDiscount = PRICING.contractDiscounts[contractType] || 0;
                 const discountAmount = subtotal * contractDiscount;
                 const totalEstimate = Math.round(subtotal - discountAmount);
                 
-                // Update displays
+                // =========================================================
+                // UPDATE DISPLAYS
+                // =========================================================
                 document.getElementById('breakdownSqft').textContent = sqft.toLocaleString();
                 document.getElementById('breakdownBase').textContent = '$' + Math.round(basePrice).toLocaleString();
                 document.getElementById('breakdownComplexity').textContent = '$' + Math.round(complexityAdjustment).toLocaleString();
@@ -1376,6 +1393,8 @@
                 ].filter(Boolean).join(' | ');
                 
                 document.getElementById('priceBreakdown').value = breakdownText;
+                
+                console.log('💰 Price estimate updated:', { serviceType, sqft, complexity, totalEstimate });
             }
             
             // Update price estimate on form changes
