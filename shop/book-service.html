@@ -946,6 +946,14 @@
                                     <span>Complexity Adjustment:</span>
                                     <span id="breakdownComplexity">$0</span>
                                 </div>
+                                <div class="breakdown-row" id="dualMachineRow" style="display: none;">
+                                    <span>Dual Machine (20k+ sq ft):</span>
+                                    <span id="breakdownDualMachine">$0</span>
+                                </div>
+                                <div class="breakdown-row">
+                                    <span>Travel Costs (est. 30mi):</span>
+                                    <span id="breakdownTravel">$0</span>
+                                </div>
                                 <div class="breakdown-row">
                                     <span>Add-ons:</span>
                                     <span id="breakdownAddons">$0</span>
@@ -1092,7 +1100,7 @@
                     </p>
                     <p class="mb-2">
                         <i class="fas fa-envelope me-2"></i>
-                        <a href="mailto:OHS@OrganicHypoSolutions.com" class="text-white text-decoration-none">OHS@OrganicHypoSolutions.com</a>
+                        <a href="/cdn-cgi/l/email-protection#bbf4f3e8fbf4c9dcdad5d2d8f3c2cbd4e8d4d7cecfd2d4d5c895d8d4d6" class="text-white text-decoration-none"><span class="__cf_email__" data-cfemail="9fd0d7ccdfd0edf8fef1f6fcd7e6eff0ccf0f3eaebf6f0f1ecb1fcf0f2">[email&#160;protected]</span></a>
                     </p>
                     <p class="mb-3">
                         <i class="fas fa-map-marker-alt me-2"></i>
@@ -1117,7 +1125,7 @@
     </footer>
 
     <!-- REQUIRED JAVASCRIPT DEPENDENCIES -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/global-scripts.js"></script>
     <script src="../assets/js/analytics.js"></script>
 
@@ -1128,7 +1136,7 @@
             
             // =========================================================
             // PRICING CONFIGURATION - SYNCHRONIZED WITH CALCULATOR.HTML
-            // These values MUST match calculator.html exactly
+            // These values MUST match calculator.html EXACTLY
             // =========================================================
             const PRICING = {
                 // Base rates per square foot by service type - MATCHES CALCULATOR
@@ -1149,14 +1157,6 @@
                     moderate: 1.15,
                     complex: 1.3
                 },
-                // Frequency multipliers (for display purposes)
-                frequencyMultipliers: {
-                    onetime: 1.0,
-                    weekly: 1.0,
-                    biweekly: 1.0,
-                    monthly: 1.0,
-                    quarterly: 1.0
-                },
                 // Contract discounts - MATCHES CALCULATOR
                 contractDiscounts: {
                     payPerService: 0,
@@ -1164,6 +1164,9 @@
                     bimonthlyContract: 0.10,    // 10% OFF
                     annualContract: 0.20        // 20% OFF
                 },
+                // Travel costs - MATCHES CALCULATOR
+                travelRate: 0.70,
+                baseTravelRadius: 25,
                 // Add-on prices
                 addons: {
                     organic: 25,
@@ -1173,105 +1176,70 @@
                 }
             };
             
-            // Check for success message in URL
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('success') === 'true') {
-                showNotification('Service booking request sent successfully! An OHS specialist will contact you within 24 hours to confirm your appointment and finalize pricing.', 'success');
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
+            console.log('✅ PRICING loaded:', PRICING);
             
-            // =========================================================
-            // PREFILL FROM CALCULATOR - FIXED URL PARAMETER READING
-            // =========================================================
-            function prefillFromCalculator() {
-                const params = new URLSearchParams(window.location.search);
-                
-                // Check if we came from the calculator
-                const source = params.get('source');
-                if (source && (source === 'calculator' || source === 'calculator_contract')) {
-                    console.log('📊 Prefilling from calculator with params:', Object.fromEntries(params));
-                    
-                    // Prefill service type
-                    const serviceType = params.get('serviceType');
-                    if (serviceType) {
-                        serviceTypeInput.value = serviceType;
-                        // Select the corresponding card
-                        serviceTypeCards.forEach(card => {
-                            if (card.dataset.serviceType === serviceType) {
-                                card.classList.add('selected');
-                            } else {
-                                card.classList.remove('selected');
-                            }
-                        });
-                    }
-                    
-                    // Prefill square footage
-                    const sqft = params.get('sqft');
-                    if (sqft) {
-                        document.getElementById('squareFootage').value = sqft;
-                    }
-                    
-                    // Prefill complexity
-                    const complexity = params.get('complexity');
-                    if (complexity) {
-                        document.getElementById('complexity').value = complexity;
-                    }
-                    
-                    // Prefill frequency
-                    const frequency = params.get('frequency');
-                    if (frequency) {
-                        document.getElementById('frequency').value = frequency;
-                    }
-                    
-                    // Prefill contract type
-                    const contractType = params.get('contractType');
-                    if (contractType) {
-                        document.getElementById('contractType').value = contractType;
-                    }
-                    
-                    // Show notification that form was prefilled
-                    setTimeout(() => {
-                        showNotification('📊 Form prefilled from calculator! Please complete your contact information below.', 'success');
-                    }, 500);
-                    
-                    // Update the price estimate
-                    setTimeout(updatePriceEstimate, 100);
-                    
-                    // Clean up URL (remove parameters but keep on page)
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                }
-            }
-            
-            // Service type selection
+            // Get DOM elements
             const serviceTypeCards = document.querySelectorAll('.service-type-card');
             const serviceTypeInput = document.getElementById('serviceType');
+            const squareFootageInput = document.getElementById('squareFootage');
+            const complexityInput = document.getElementById('complexity');
+            const frequencyInput = document.getElementById('frequency');
+            const contractTypeInput = document.getElementById('contractType');
+            const estimatePrompt = document.getElementById('estimatePrompt');
+            const estimateDisplay = document.getElementById('estimateDisplay');
             
-            // Service type selection handler
-            serviceTypeCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    serviceTypeCards.forEach(c => c.classList.remove('selected'));
-                    this.classList.add('selected');
-                    serviceTypeInput.value = this.dataset.serviceType;
-                    updatePriceEstimate();
-                    
-                    if (typeof gtag !== 'undefined') {
-                        gtag('event', 'service_type_selected', {
-                            'service_type': this.dataset.serviceType
-                        });
-                    }
-                });
+            console.log('✅ DOM elements found:', {
+                serviceTypeCards: serviceTypeCards.length,
+                serviceTypeInput: !!serviceTypeInput,
+                squareFootageInput: !!squareFootageInput,
+                estimatePrompt: !!estimatePrompt,
+                estimateDisplay: !!estimateDisplay
             });
+            
+            // Notification system
+            function showNotification(message, type = 'success') {
+                const notification = document.createElement('div');
+                notification.className = 'position-fixed';
+                notification.style.cssText = `
+                    top: 120px; right: 20px; z-index: 9999;
+                    background: ${type === 'success' ? 'linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green))' : 'linear-gradient(135deg, #ef4444, #dc2626)'};
+                    color: white; padding: 15px 20px; border-radius: 10px;
+                    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+                    font-weight: bold; transform: translateX(400px);
+                    transition: all 0.3s ease; max-width: 350px;
+                `;
+                notification.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+                        <div>${message}</div>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(400px)';
+                    setTimeout(() => document.body.removeChild(notification), 300);
+                }, 6000);
+            }
+            
+            // Make showNotification globally available
+            window.showNotification = showNotification;
             
             // =========================================================
             // PRICE ESTIMATION - SYNCHRONIZED WITH CALCULATOR.HTML
-            // Uses identical calculation logic to calculator.html
             // =========================================================
             function updatePriceEstimate() {
+                console.log('🔄 updatePriceEstimate called');
+                
                 const serviceType = serviceTypeInput.value;
-                const sqft = parseInt(document.getElementById('squareFootage').value) || 0;
-                const complexity = document.getElementById('complexity').value;
-                const frequency = document.getElementById('frequency').value;
-                const contractType = document.getElementById('contractType').value;
+                const sqft = parseInt(squareFootageInput.value) || 0;
+                const complexity = complexityInput.value;
+                const frequency = frequencyInput.value;
+                const contractType = contractTypeInput.value;
+                
+                console.log('📊 Input values:', { serviceType, sqft, complexity, frequency, contractType });
                 
                 // Get selected add-ons
                 const organicChecked = document.getElementById('organic-treatment').checked;
@@ -1279,11 +1247,9 @@
                 const productsChecked = document.getElementById('followup-products').checked;
                 const certificateChecked = document.getElementById('certificate').checked;
                 
-                const estimatePrompt = document.getElementById('estimatePrompt');
-                const estimateDisplay = document.getElementById('estimateDisplay');
-                
                 // Show prompt if not enough info, otherwise show estimate
                 if (!serviceType || sqft < 100) {
+                    console.log('⚠️ Not enough info - showing prompt');
                     estimatePrompt.style.display = 'block';
                     estimateDisplay.style.display = 'none';
                     document.getElementById('estimatedPrice').value = '';
@@ -1291,6 +1257,7 @@
                 }
                 
                 // Hide prompt, show estimate
+                console.log('✅ Showing estimate display');
                 estimatePrompt.style.display = 'none';
                 estimateDisplay.style.display = 'block';
                 
@@ -1318,7 +1285,20 @@
                 const complexityAdjustment = basePrice * (complexityMultiplier - 1);
                 let adjustedPrice = basePrice * complexityMultiplier;
                 
-                // 5. Calculate add-on costs
+                // 5. Apply dual machine cost for large facilities (MATCHES CALCULATOR)
+                if (sqft > 20000) {
+                    adjustedPrice *= 2;
+                }
+                
+                // 6. Calculate travel costs (estimated at 30 miles - MATCHES CALCULATOR)
+                const estimatedDistance = 30;
+                let travelCosts = 0;
+                if (estimatedDistance > PRICING.baseTravelRadius) {
+                    const extraMiles = estimatedDistance - PRICING.baseTravelRadius;
+                    travelCosts = extraMiles * PRICING.travelRate;
+                }
+                
+                // 7. Calculate add-on costs
                 let addonCost = 0;
                 const addonNames = [];
                 
@@ -1339,10 +1319,10 @@
                     addonNames.push('Completion Certificate (+$15)');
                 }
                 
-                // 6. Subtotal before contract discount
-                const subtotal = adjustedPrice + addonCost;
+                // 8. Subtotal before contract discount (includes travel)
+                const subtotal = adjustedPrice + travelCosts + addonCost;
                 
-                // 7. Apply contract discount
+                // 9. Apply contract discount
                 const contractDiscount = PRICING.contractDiscounts[contractType] || 0;
                 const discountAmount = subtotal * contractDiscount;
                 const totalEstimate = Math.round(subtotal - discountAmount);
@@ -1353,7 +1333,18 @@
                 document.getElementById('breakdownSqft').textContent = sqft.toLocaleString();
                 document.getElementById('breakdownBase').textContent = '$' + Math.round(basePrice).toLocaleString();
                 document.getElementById('breakdownComplexity').textContent = '$' + Math.round(complexityAdjustment).toLocaleString();
+                document.getElementById('breakdownTravel').textContent = '$' + Math.round(travelCosts).toLocaleString();
                 document.getElementById('breakdownAddons').textContent = '$' + addonCost.toLocaleString();
+                
+                // Show/hide dual machine row for large facilities
+                const dualMachineRow = document.getElementById('dualMachineRow');
+                if (sqft > 20000) {
+                    dualMachineRow.style.display = 'flex';
+                    // Dual machine doubles the price, so the "extra" cost is the same as adjustedPrice/2
+                    document.getElementById('breakdownDualMachine').textContent = '+$' + Math.round(adjustedPrice / 2).toLocaleString();
+                } else {
+                    dualMachineRow.style.display = 'none';
+                }
                 
                 // Show/hide contract discount row
                 const discountRow = document.getElementById('contractDiscountRow');
@@ -1385,6 +1376,8 @@
                     'Square Footage: ' + sqft + ' sq ft',
                     'Base Service: $' + Math.round(basePrice),
                     'Complexity (' + complexity + '): +$' + Math.round(complexityAdjustment),
+                    sqft > 20000 ? 'Dual Machine: +$' + Math.round(adjustedPrice / 2) : '',
+                    'Travel (est. 30mi): $' + Math.round(travelCosts),
                     'Add-ons: $' + addonCost,
                     'Contract: ' + contractName,
                     discountAmount > 0 ? 'Contract Discount: -$' + Math.round(discountAmount) : '',
@@ -1394,7 +1387,7 @@
                 
                 document.getElementById('priceBreakdown').value = breakdownText;
                 
-                console.log('💰 Price estimate updated:', { serviceType, sqft, complexity, totalEstimate });
+                console.log('💰 Price estimate updated:', { serviceType, sqft, complexity, travelCosts, totalEstimate });
             }
             
             // Update price estimate on form changes
@@ -1455,33 +1448,93 @@
                 preferredDateInput.setAttribute('min', today);
             }
             
-            // Notification system
-            window.showNotification = function(message, type = 'success') {
-                const notification = document.createElement('div');
-                notification.className = 'position-fixed';
-                notification.style.cssText = `
-                    top: 120px; right: 20px; z-index: 9999;
-                    background: ${type === 'success' ? 'linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green))' : 'linear-gradient(135deg, #ef4444, #dc2626)'};
-                    color: white; padding: 15px 20px; border-radius: 10px;
-                    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-                    font-weight: bold; transform: translateX(400px);
-                    transition: all 0.3s ease; max-width: 350px;
-                `;
-                notification.innerHTML = `
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
-                        <div>${message}</div>
-                    </div>
-                `;
+            // =========================================================
+            // SERVICE TYPE SELECTION HANDLER
+            // =========================================================
+            serviceTypeCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    console.log('🖱️ Service type clicked:', this.dataset.serviceType);
+                    serviceTypeCards.forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    serviceTypeInput.value = this.dataset.serviceType;
+                    updatePriceEstimate();
+                    
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'service_type_selected', {
+                            'service_type': this.dataset.serviceType
+                        });
+                    }
+                });
+            });
+            
+            // =========================================================
+            // PREFILL FROM CALCULATOR
+            // =========================================================
+            function prefillFromCalculator() {
+                const params = new URLSearchParams(window.location.search);
+                const source = params.get('source');
                 
-                document.body.appendChild(notification);
+                console.log('🔍 Checking for calculator params, source:', source);
                 
-                setTimeout(() => notification.style.transform = 'translateX(0)', 100);
-                setTimeout(() => {
-                    notification.style.transform = 'translateX(400px)';
-                    setTimeout(() => document.body.removeChild(notification), 300);
-                }, 6000);
-            };
+                if (source && (source === 'calculator' || source === 'calculator_contract')) {
+                    console.log('📊 Prefilling from calculator with params:', Object.fromEntries(params));
+                    
+                    // Prefill service type
+                    const serviceType = params.get('serviceType');
+                    if (serviceType) {
+                        serviceTypeInput.value = serviceType;
+                        serviceTypeCards.forEach(card => {
+                            if (card.dataset.serviceType === serviceType) {
+                                card.classList.add('selected');
+                            } else {
+                                card.classList.remove('selected');
+                            }
+                        });
+                    }
+                    
+                    // Prefill square footage
+                    const sqft = params.get('sqft');
+                    if (sqft) {
+                        squareFootageInput.value = sqft;
+                    }
+                    
+                    // Prefill complexity
+                    const complexity = params.get('complexity');
+                    if (complexity) {
+                        complexityInput.value = complexity;
+                    }
+                    
+                    // Prefill frequency
+                    const frequency = params.get('frequency');
+                    if (frequency) {
+                        frequencyInput.value = frequency;
+                    }
+                    
+                    // Prefill contract type
+                    const contractType = params.get('contractType');
+                    if (contractType) {
+                        contractTypeInput.value = contractType;
+                    }
+                    
+                    // Update the price estimate
+                    updatePriceEstimate();
+                    
+                    // Show notification
+                    setTimeout(() => {
+                        showNotification('📊 Form prefilled from calculator! Please complete your contact information below.', 'success');
+                    }, 500);
+                    
+                    // Clean up URL
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            }
+            
+            // Check for success message in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('success') === 'true') {
+                showNotification('Service booking request sent successfully! An OHS specialist will contact you within 24 hours to confirm your appointment and finalize pricing.', 'success');
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
             
             // Prefill form if coming from calculator
             prefillFromCalculator();
