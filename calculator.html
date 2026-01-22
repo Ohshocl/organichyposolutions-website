@@ -966,21 +966,23 @@
 
 <!-- ========== SCRIPTS ========== -->
     <script>
-        // Global state tracking
-        let currentSubscription = 'payPerService';
-        let lastCalculation = null; // Store last calculation for passing to book-service
-        
-        // Pricing configuration - using the successful pattern from debug test
+        // =========================================================
+        // UNIFIED PRICING CONFIGURATION - SOURCE OF TRUTH
+        // This pricing MUST match book-service.html exactly
+        // =========================================================
         const PRICING = {
+            // Base rates per square foot by service type
             baseRates: {
-                commercial: 0.125,
-                residential: 0.15,
+                commercial: 0.125,    // $0.125 per sq ft
+                residential: 0.15,    // $0.15 per sq ft
                 healthcare: 0.14,
                 education: 0.12,
                 food: 0.135,
                 fitness: 0.13
             },
+            // Volume rate for large facilities (20,000+ sq ft)
             volumeRate: 0.08,
+            // Frequency multipliers (how frequency affects per-service pricing)
             frequencyMultipliers: {
                 monthly: 1.0,
                 biweekly: 1.8,
@@ -988,47 +990,47 @@
                 quarterly: 1.2,
                 onetime: 1.4
             },
+            // Complexity adjustments
             complexityAdjustments: {
                 standard: 1.0,
                 moderate: 1.15,
                 complex: 1.3
             },
+            // Minimum charges by service type
             minimums: {
-                commercial: 450,
-                residential: 200,
-                healthcare: 500,
-                education: 400,
-                food: 400,
-                fitness: 350
+                commercial: 200,      // Minimum $200 for commercial
+                residential: 150,     // Minimum $150 for residential
+                healthcare: 300,
+                education: 200,
+                food: 200,
+                fitness: 175
             },
-            subscriptionDiscounts: {
+            // Contract/subscription discounts
+            contractDiscounts: {
                 payPerService: 0,
-                monthlyContract: 0.15,
-                bimonthlyContract: 0.10,
-                annualContract: 0.20
+                monthlyContract: 0.15,      // 15% OFF
+                bimonthlyContract: 0.10,    // 10% OFF
+                annualContract: 0.20        // 20% OFF
             },
+            // Travel costs
             travelRate: 0.70,
-            baseTravelRadius: 25
+            baseTravelRadius: 25,
+            // Add-on prices (for book-service page)
+            addons: {
+                organic: 25,
+                hvac: 75,
+                products: 45,
+                certificate: 15
+            }
         };
 
-        // Map calculator service types to book-service types
-        const SERVICE_TYPE_MAP = {
-            commercial: 'commercial',
-            residential: 'residential',
-            healthcare: 'commercial',
-            education: 'commercial',
-            food: 'commercial',
-            fitness: 'commercial'
-        };
+        // Global state tracking
+        let currentSubscription = 'payPerService';
+        let lastCalculation = null;
 
-        // Map calculator complexity to book-service complexity
-        const COMPLEXITY_MAP = {
-            standard: 'standard',
-            moderate: 'moderate',
-            complex: 'complex'
-        };
-
-        // Main calculator function - using the working pattern
+        // =========================================================
+        // MAIN CALCULATOR FUNCTION
+        // =========================================================
         function updateCalculator() {
             try {
                 // Get input values
@@ -1055,73 +1057,76 @@
                     if (volumeDiscountRow) volumeDiscountRow.style.display = 'none';
                 }
                 
-                // Calculate base price
+                // =========================================================
+                // PRICING CALCULATION - Uses same logic as book-service
+                // =========================================================
+                
+                // 1. Determine base rate (volume discount for 20k+ sq ft)
                 let baseRate;
                 if (sqft > 20000) {
                     baseRate = PRICING.volumeRate;
                 } else {
-                    baseRate = PRICING.baseRates[serviceType];
+                    baseRate = PRICING.baseRates[serviceType] || 0.125;
                 }
                 
+                // 2. Calculate base price from square footage
                 let basePrice = sqft * baseRate;
-                const minimum = PRICING.minimums[serviceType];
+                
+                // 3. Apply minimum charge
+                const minimum = PRICING.minimums[serviceType] || 150;
                 basePrice = Math.max(basePrice, minimum);
                 
-                // Apply complexity adjustment
-                const complexityMultiplier = PRICING.complexityAdjustments[complexity];
-                basePrice *= complexityMultiplier;
+                // 4. Apply complexity adjustment
+                const complexityMultiplier = PRICING.complexityAdjustments[complexity] || 1.0;
+                const complexityAdjustment = basePrice * (complexityMultiplier - 1);
+                let adjustedPrice = basePrice * complexityMultiplier;
                 
-                // Apply dual machine cost for large facilities
+                // 5. Apply dual machine cost for large facilities
                 if (sqft > 20000) {
-                    basePrice *= 2;
+                    adjustedPrice *= 2;
                 }
                 
-                // Apply frequency multiplier
-                const frequencyMultiplier = PRICING.frequencyMultipliers[frequency];
-                let totalPrice = basePrice * frequencyMultiplier;
-                
-                // Calculate complexity adjustment for display
-                const complexityAdjustment = basePrice * (complexityMultiplier - 1) / complexityMultiplier;
-                
-                // Calculate travel costs (estimated)
+                // 6. Calculate travel costs (estimated at 30 miles)
                 const estimatedDistance = 30;
                 let travelCosts = 0;
                 if (estimatedDistance > PRICING.baseTravelRadius) {
                     const extraMiles = estimatedDistance - PRICING.baseTravelRadius;
-                    travelCosts = extraMiles * PRICING.travelRate * frequencyMultiplier;
+                    travelCosts = extraMiles * PRICING.travelRate;
                 }
                 
-                totalPrice += travelCosts;
+                // 7. Calculate total for single service
+                let totalPrice = adjustedPrice + travelCosts;
                 
-                // Calculate volume discount display
+                // 8. Calculate volume discount display amount
                 let volumeDiscountAmount = 0;
                 if (sqft > 20000) {
-                    const standardRate = PRICING.baseRates[serviceType];
-                    const savings = (standardRate - PRICING.volumeRate) * sqft * frequencyMultiplier;
-                    volumeDiscountAmount = savings;
+                    const standardRate = PRICING.baseRates[serviceType] || 0.125;
+                    volumeDiscountAmount = (standardRate - PRICING.volumeRate) * sqft;
                 }
                 
-                // Store calculation for passing to book-service
+                // =========================================================
+                // STORE CALCULATION FOR PASSING TO BOOK-SERVICE
+                // =========================================================
                 lastCalculation = {
                     sqft: sqft,
                     serviceType: serviceType,
-                    mappedServiceType: SERVICE_TYPE_MAP[serviceType] || 'commercial',
                     frequency: frequency,
                     complexity: complexity,
-                    mappedComplexity: COMPLEXITY_MAP[complexity] || 'standard',
                     contractType: currentSubscription,
-                    basePrice: Math.round(basePrice * frequencyMultiplier),
-                    complexityAdjustment: Math.round(complexityAdjustment * frequencyMultiplier),
+                    basePrice: Math.round(basePrice),
+                    complexityAdjustment: Math.round(complexityAdjustment),
                     travelCosts: Math.round(travelCosts),
                     volumeDiscount: Math.round(volumeDiscountAmount),
                     totalPrice: Math.round(totalPrice),
-                    contractDiscount: PRICING.subscriptionDiscounts[currentSubscription],
-                    contractPrice: Math.round(totalPrice * (1 - PRICING.subscriptionDiscounts[currentSubscription]))
+                    contractDiscount: PRICING.contractDiscounts[currentSubscription],
+                    contractPrice: Math.round(totalPrice * (1 - PRICING.contractDiscounts[currentSubscription]))
                 };
                 
-                // Update all price displays
-                updateElement('basePrice', '$' + Math.round(basePrice * frequencyMultiplier).toLocaleString());
-                updateElement('complexityPrice', '$' + Math.round(complexityAdjustment * frequencyMultiplier).toLocaleString());
+                // =========================================================
+                // UPDATE ALL PRICE DISPLAYS
+                // =========================================================
+                updateElement('basePrice', '$' + Math.round(basePrice).toLocaleString());
+                updateElement('complexityPrice', '$' + Math.round(complexityAdjustment).toLocaleString());
                 updateElement('travelPrice', '$' + Math.round(travelCosts).toLocaleString());
                 updateElement('volumeDiscount', '-$' + Math.round(volumeDiscountAmount).toLocaleString());
                 updateElement('totalPrice', '$' + Math.round(totalPrice).toLocaleString());
@@ -1130,11 +1135,13 @@
                 // Update frequency text
                 const priceFrequencyElement = document.getElementById('priceFrequency');
                 if (priceFrequencyElement) {
-                    priceFrequencyElement.textContent = frequency === 'onetime' ? 'one-time service' : 'per ' + frequency.replace('ly', '').replace('time', '-time');
+                    priceFrequencyElement.textContent = frequency === 'onetime' ? 'one-time service' : 'per service';
                 }
                 
-                // Handle subscription pricing
+                // Handle subscription/contract pricing display
                 updateSubscriptionPricing(totalPrice);
+                
+                console.log('📊 Calculator updated:', lastCalculation);
                 
             } catch (error) {
                 console.error('Calculator error:', error);
@@ -1160,7 +1167,7 @@
                 }
                 
                 // Calculate contract pricing
-                const discount = PRICING.subscriptionDiscounts[currentSubscription];
+                const discount = PRICING.contractDiscounts[currentSubscription];
                 const contractPrice = totalPrice * (1 - discount);
                 const savings = totalPrice - contractPrice;
                 
@@ -1224,7 +1231,7 @@
             }
         }
 
-        // Event handlers
+        // Event handlers setup
         function setupEventListeners() {
             // Slider events
             const slider = document.getElementById('squareFootage');
@@ -1269,10 +1276,7 @@
                 }
             }
             
-            // Initialize cart badge
             updateCartBadge();
-
-            // Listen for cart updates from other pages
             window.addEventListener('storage', function(e) {
                 if (e.key === 'cartItems') {
                     updateCartBadge();
@@ -1282,6 +1286,7 @@
 
         // =========================================================
         // QUOTE REQUEST - Redirect to book-service with prefilled data
+        // FIXED: Now correctly maps service types and passes all params
         // =========================================================
         function requestQuote() {
             try {
@@ -1289,23 +1294,28 @@
                     updateCalculator();
                 }
                 
+                // Map calculator service type to book-service service type
+                // book-service only has 'residential' and 'commercial'
+                const mappedServiceType = (lastCalculation.serviceType === 'residential') ? 'residential' : 'commercial';
+                
                 // Build URL parameters to pass to book-service page
                 const params = new URLSearchParams({
-                    serviceType: lastCalculation.mappedServiceType,
+                    serviceType: mappedServiceType,
                     sqft: lastCalculation.sqft,
-                    complexity: lastCalculation.mappedComplexity,
+                    complexity: lastCalculation.complexity,
                     frequency: lastCalculation.frequency,
                     contractType: lastCalculation.contractType,
                     estimate: lastCalculation.totalPrice,
                     source: 'calculator'
                 });
                 
+                console.log('📋 Redirecting to book-service with params:', params.toString());
+                
                 // Redirect to book-service page with parameters
                 window.location.href = 'shop/book-service.html?' + params.toString();
                 
             } catch (error) {
                 console.error('Quote request error:', error);
-                // Fallback - just go to book-service page
                 window.location.href = 'shop/book-service.html';
             }
         }
@@ -1316,46 +1326,42 @@
                     updateCalculator();
                 }
                 
+                // Map calculator service type to book-service service type
+                const mappedServiceType = (lastCalculation.serviceType === 'residential') ? 'residential' : 'commercial';
+                
                 // Build URL parameters with contract pricing
                 const params = new URLSearchParams({
-                    serviceType: lastCalculation.mappedServiceType,
+                    serviceType: mappedServiceType,
                     sqft: lastCalculation.sqft,
-                    complexity: lastCalculation.mappedComplexity,
+                    complexity: lastCalculation.complexity,
                     frequency: lastCalculation.frequency,
                     contractType: currentSubscription,
                     estimate: lastCalculation.contractPrice,
                     source: 'calculator_contract'
                 });
                 
+                console.log('📋 Redirecting to book-service with contract params:', params.toString());
+                
                 // Redirect to book-service page with parameters
                 window.location.href = 'shop/book-service.html?' + params.toString();
                 
             } catch (error) {
                 console.error('Contract quote request error:', error);
-                // Fallback - just go to book-service page
                 window.location.href = 'shop/book-service.html';
             }
         }
 
         function callNow() {
-            try {
-                window.location.href = 'tel:+18017125663';
-            } catch (error) {
-                console.error('Call initiation error:', error);
-            }
+            window.location.href = 'tel:+18017125663';
         }
 
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Calculator initializing...');
-            
-            // Set up all event listeners
+            console.log('🧮 Calculator initializing...');
             setupEventListeners();
-            
-            // Run initial calculation
             setTimeout(() => {
                 updateCalculator();
-                console.log('Calculator initialized successfully');
+                console.log('✅ Calculator initialized successfully');
             }, 100);
         });
 
