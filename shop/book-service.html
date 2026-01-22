@@ -946,14 +946,6 @@
                                     <span>Complexity Adjustment:</span>
                                     <span id="breakdownComplexity">$0</span>
                                 </div>
-                                <div class="breakdown-row" id="dualMachineRow" style="display: none;">
-                                    <span>Dual Machine (20k+ sq ft):</span>
-                                    <span id="breakdownDualMachine">$0</span>
-                                </div>
-                                <div class="breakdown-row">
-                                    <span>Travel Costs (est. 30mi):</span>
-                                    <span id="breakdownTravel">$0</span>
-                                </div>
                                 <div class="breakdown-row">
                                     <span>Add-ons:</span>
                                     <span id="breakdownAddons">$0</span>
@@ -1100,7 +1092,7 @@
                     </p>
                     <p class="mb-2">
                         <i class="fas fa-envelope me-2"></i>
-                        <a href="/cdn-cgi/l/email-protection#bbf4f3e8fbf4c9dcdad5d2d8f3c2cbd4e8d4d7cecfd2d4d5c895d8d4d6" class="text-white text-decoration-none"><span class="__cf_email__" data-cfemail="9fd0d7ccdfd0edf8fef1f6fcd7e6eff0ccf0f3eaebf6f0f1ecb1fcf0f2">[email&#160;protected]</span></a>
+                        <a href="mailto:OHS@OrganicHypoSolutions.com" class="text-white text-decoration-none">OHS@OrganicHypoSolutions.com</a>
                     </p>
                     <p class="mb-3">
                         <i class="fas fa-map-marker-alt me-2"></i>
@@ -1125,7 +1117,7 @@
     </footer>
 
     <!-- REQUIRED JAVASCRIPT DEPENDENCIES -->
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/global-scripts.js"></script>
     <script src="../assets/js/analytics.js"></script>
 
@@ -1136,7 +1128,7 @@
             
             // =========================================================
             // PRICING CONFIGURATION - SYNCHRONIZED WITH CALCULATOR.HTML
-            // These values MUST match calculator.html EXACTLY
+            // These values MUST match calculator.html exactly
             // =========================================================
             const PRICING = {
                 // Base rates per square foot by service type - MATCHES CALCULATOR
@@ -1157,6 +1149,14 @@
                     moderate: 1.15,
                     complex: 1.3
                 },
+                // Frequency multipliers (for display purposes)
+                frequencyMultipliers: {
+                    onetime: 1.0,
+                    weekly: 1.0,
+                    biweekly: 1.0,
+                    monthly: 1.0,
+                    quarterly: 1.0
+                },
                 // Contract discounts - MATCHES CALCULATOR
                 contractDiscounts: {
                     payPerService: 0,
@@ -1164,9 +1164,6 @@
                     bimonthlyContract: 0.10,    // 10% OFF
                     annualContract: 0.20        // 20% OFF
                 },
-                // Travel costs - MATCHES CALCULATOR
-                travelRate: 0.70,
-                baseTravelRadius: 25,
                 // Add-on prices
                 addons: {
                     organic: 25,
@@ -1321,20 +1318,7 @@
                 const complexityAdjustment = basePrice * (complexityMultiplier - 1);
                 let adjustedPrice = basePrice * complexityMultiplier;
                 
-                // 5. Apply dual machine cost for large facilities (MATCHES CALCULATOR)
-                if (sqft > 20000) {
-                    adjustedPrice *= 2;
-                }
-                
-                // 6. Calculate travel costs (estimated at 30 miles - MATCHES CALCULATOR)
-                const estimatedDistance = 30;
-                let travelCosts = 0;
-                if (estimatedDistance > PRICING.baseTravelRadius) {
-                    const extraMiles = estimatedDistance - PRICING.baseTravelRadius;
-                    travelCosts = extraMiles * PRICING.travelRate;
-                }
-                
-                // 7. Calculate add-on costs
+                // 5. Calculate add-on costs
                 let addonCost = 0;
                 const addonNames = [];
                 
@@ -1355,10 +1339,10 @@
                     addonNames.push('Completion Certificate (+$15)');
                 }
                 
-                // 8. Subtotal before contract discount (includes travel)
-                const subtotal = adjustedPrice + travelCosts + addonCost;
+                // 6. Subtotal before contract discount
+                const subtotal = adjustedPrice + addonCost;
                 
-                // 9. Apply contract discount
+                // 7. Apply contract discount
                 const contractDiscount = PRICING.contractDiscounts[contractType] || 0;
                 const discountAmount = subtotal * contractDiscount;
                 const totalEstimate = Math.round(subtotal - discountAmount);
@@ -1369,18 +1353,7 @@
                 document.getElementById('breakdownSqft').textContent = sqft.toLocaleString();
                 document.getElementById('breakdownBase').textContent = '$' + Math.round(basePrice).toLocaleString();
                 document.getElementById('breakdownComplexity').textContent = '$' + Math.round(complexityAdjustment).toLocaleString();
-                document.getElementById('breakdownTravel').textContent = '$' + Math.round(travelCosts).toLocaleString();
                 document.getElementById('breakdownAddons').textContent = '$' + addonCost.toLocaleString();
-                
-                // Show/hide dual machine row for large facilities
-                const dualMachineRow = document.getElementById('dualMachineRow');
-                if (sqft > 20000) {
-                    dualMachineRow.style.display = 'flex';
-                    // Dual machine doubles the price, so the "extra" cost is the same as adjustedPrice/2
-                    document.getElementById('breakdownDualMachine').textContent = '+$' + Math.round(adjustedPrice / 2).toLocaleString();
-                } else {
-                    dualMachineRow.style.display = 'none';
-                }
                 
                 // Show/hide contract discount row
                 const discountRow = document.getElementById('contractDiscountRow');
@@ -1412,8 +1385,6 @@
                     'Square Footage: ' + sqft + ' sq ft',
                     'Base Service: $' + Math.round(basePrice),
                     'Complexity (' + complexity + '): +$' + Math.round(complexityAdjustment),
-                    sqft > 20000 ? 'Dual Machine: +$' + Math.round(adjustedPrice / 2) : '',
-                    'Travel (est. 30mi): $' + Math.round(travelCosts),
                     'Add-ons: $' + addonCost,
                     'Contract: ' + contractName,
                     discountAmount > 0 ? 'Contract Discount: -$' + Math.round(discountAmount) : '',
@@ -1423,7 +1394,7 @@
                 
                 document.getElementById('priceBreakdown').value = breakdownText;
                 
-                console.log('💰 Price estimate updated:', { serviceType, sqft, complexity, travelCosts, totalEstimate });
+                console.log('💰 Price estimate updated:', { serviceType, sqft, complexity, totalEstimate });
             }
             
             // Update price estimate on form changes
@@ -1508,4 +1479,15 @@
                 setTimeout(() => notification.style.transform = 'translateX(0)', 100);
                 setTimeout(() => {
                     notification.style.transform = 'translateX(400px)';
-                    setTimeout(() => document.body.removeChild(notification), 300)
+                    setTimeout(() => document.body.removeChild(notification), 300);
+                }, 6000);
+            };
+            
+            // Prefill form if coming from calculator
+            prefillFromCalculator();
+            
+            console.log('✅ Service booking form ready');
+        });
+    </script>
+</body>
+</html>
