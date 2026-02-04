@@ -484,6 +484,12 @@
             border-radius: 1rem;
         }
 
+        .section-header.epa {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #92400e;
+            border-radius: 1rem;
+        }
+
         /* Product Cards */
         .product-card {
             background: white;
@@ -720,6 +726,17 @@
             font-weight: 600;
         }
 
+        /* State Restriction Notice */
+        .state-restriction-notice {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 1px solid #f59e0b;
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.75rem;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+        }
+
         /* Footer */
         .footer-section {
             background: #000000;
@@ -865,7 +882,7 @@
         <div class="d-flex justify-content-center align-items-center">
             <div class="text-center">
                 <span class="promo-text">
-                    💰 <strong>BULK DISCOUNTS AS HIGH AS 42%</strong> available
+                    💰 <strong>BULK DISCOUNTS AS HIGH AS 36%</strong> available
                 </span>
             </div>
             <button class="promo-close ms-3" onclick="closeBanner()" aria-label="Close banner">
@@ -943,24 +960,6 @@
                         </a></li>
                     </ul>
                 </li>
-                
-                <!-- HIDDEN: Account Dropdown
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user me-1"></i>Account
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="auth/login.html">
-                            <i class="fas fa-sign-in-alt me-2"></i>Login
-                            <span class="badge bg-warning ms-1">Coming Soon</span>
-                        </a></li>
-                        <li><a class="dropdown-item" href="auth/register.html">
-                            <i class="fas fa-user-plus me-2"></i>Register
-                            <span class="badge bg-warning ms-1">Coming Soon</span>
-                        </a></li>
-                    </ul>
-                </li>
-                -->
             </ul>
         </div>
     </div>
@@ -985,15 +984,15 @@
         
         <div class="hero-stats mb-4">
             <div class="stat-item">
-                <span class="stat-number" id="totalProductCount">6</span>
+                <span class="stat-number" id="totalProductCount">8</span>
                 <span class="stat-label">Total Products</span>
             </div>
             <div class="stat-item">
-                <span class="stat-number" id="activeProductCount">5</span>
+                <span class="stat-number" id="activeProductCount">8</span>
                 <span class="stat-label">Available Now</span>
             </div>
             <div class="stat-item">
-                <span class="stat-number" id="comingSoonCount">1</span>
+                <span class="stat-number" id="comingSoonCount">0</span>
                 <span class="stat-label">Coming Soon</span>
             </div>
             <div class="stat-item">
@@ -1064,7 +1063,7 @@
         <button class="btn-close" onclick="toggleCart()"></button>
     </div>
     
-    <div id="cartItems" class="cart-items">
+    <div id="cartItemsPreview" class="cart-items">
         <div class="empty-cart text-center py-4">
             <i class="fas fa-shopping-cart fa-3x mb-3 text-muted"></i>
             <h6 class="text-muted">Your cart is empty</h6>
@@ -1092,12 +1091,12 @@
         
         <div class="cart-actions mt-3">
             <div class="d-grid gap-2">
-                <button class="btn btn-primary" onclick="proceedToCart()">
+                <button class="btn btn-primary" onclick="proceedToCartPage()">
                     <i class="fas fa-shopping-cart me-2"></i>View Cart & Checkout
                 </button>
                 <div class="row">
                     <div class="col-6">
-                        <button class="btn btn-outline-secondary btn-sm w-100" onclick="clearCart()">
+                        <button class="btn btn-outline-secondary btn-sm w-100" onclick="clearCartLocal()">
                             <i class="fas fa-trash me-1"></i>Clear
                         </button>
                     </div>
@@ -1145,8 +1144,8 @@
             <div class="col-md-2 mb-4">
                 <h6 class="footer-heading">Products</h6>
                 <ul class="footer-list">
-                    <li><a href="products.html">USDA Organic (6)</a></li>
-                    <li><a href="products.html">Coming Soon (1)</a></li>
+                    <li><a href="products.html">USDA Organic (8)</a></li>
+                    <li><a href="products.html">EPA Registered (2)</a></li>
                     <li><a href="products.html">All Products</a></li>
                 </ul>
             </div>
@@ -1210,7 +1209,7 @@
                     <p class="mb-0">&copy; 2025 Organic HypoSolutions. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <span class="footer-badge">6 Products</span>
+                    <span class="footer-badge">8 Products</span>
                     <span class="footer-badge">Family Owned</span>
                     <span class="footer-badge">Patent Pending</span>
                 </div>
@@ -1222,281 +1221,45 @@
 <!-- Bootstrap JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
-<!-- JavaScript -->
+<!-- LOAD EXTERNAL JS FILES - Order matters! Product catalog first, then cart -->
+<script src="shop/js/product-catalog.js"></script>
+<script src="shop/js/cart.js"></script>
+
+<!-- Page-Specific JavaScript -->
 <script>
     // ================================================================
     // SHOPIFY STOREFRONT API CONFIGURATION
     // ================================================================
-    // NOTE: Storefront API tokens are READ-ONLY and designed for client-side use.
-    // They can ONLY read product/inventory data. They CANNOT:
-    // - Process payments
-    // - Access customer data  
-    // - Modify your store
-    // This is different from Admin API keys which must NEVER be exposed.
-    // ================================================================
     
     const SHOPIFY_CONFIG = {
-        domain: '07fjjy-q3.myshopify.com',
+        domain: 'npmv1h-8e.myshopify.com',
         storefrontAccessToken: '24ba1013dc413cb035a6f933b684f4e4',
         apiVersion: '2024-01'
     };
     
     // ================================================================
-    // UNIFIED CART SYSTEM
+    // LOCAL STATE
     // ================================================================
     
-    const CART_STORAGE_KEY = 'ohsCart';
-    let cartItems = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
-    
-    // Inventory cache
+    let cartVisible = false;
+    let productQuantities = {};
     let inventoryCache = {};
     let lastInventoryFetch = null;
     const INVENTORY_CACHE_DURATION = 60000; // 1 minute cache
     
     // ================================================================
-    // PRODUCT CATALOG WITH UPDATED PRICING (JANUARY 2025)
-    // Subscription prices are stored but NOT displayed or used
-    // ================================================================
-    
-    const ENABLE_COMING_SOON_PRODUCTS = {
-        'ohs-32oz-laundry-booster': false,
-        'ohs-organic-wipes': false,
-        'ohs-1gal-laundry-booster': false,
-        'ohs-healing-serum': false
-    };
-
-    const PRODUCT_CATALOG = {
-        // ============================================================
-        // PRODUCT 1: 32oz Organic Ready-to-Use Cleaner
-        // Shopify Product ID: 7249401053255
-        // ============================================================
-        'ohs-32oz-organic-cleaner': {
-            id: 'ohs-32oz-organic-cleaner',
-            shopifyProductId: '7249401053255',
-            shopifyHandle: '32oz-organic-ready-to-use-cleaner',
-            name: '32oz Organic Ready-to-Use Cleaner - USDA Certified',
-            description: 'Professional-strength ready-to-use hypochlorous acid cleaner and disinfectant. USDA Certified Organic (#Z-699995-2008) and EPA registered (#97801-1). Kills 99.9% of pathogens including bacteria viruses and fungi. Safe for food contact surfaces toys and skin. Perfect for homes offices restaurants and healthcare facilities. No harsh chemicals no toxic fumes. Simply spray and wipe. Made in Utah USA.',
-            sku: 'OHS-32OZ-RTU-RETAIL',
-            weight: 2.2,
-            category: 'Commercial Cleaning',
-            certifications: ['USDA Organic', 'EPA Registered', 'Food Safe'],
-            productLine: 'organic',
-            useCase: ['residential', 'commercial', 'professional'],
-            badgeType: 'USDA Organic',
-            badgeColor: '#4ADE80',
-            pricing: {
-                retail: 19.99,
-                wholesale: 13.99
-                // Subscription prices hidden: retailSub: 17.99, wholesaleSub: 12.59
-            },
-            wholesaleThreshold: 25,
-            type: 'organic',
-            emoji: '🧽',
-            image: 'assets/images/products/32oz_organic_ready_to_use_cleaner.jpeg',
-            shopifyVariants: {
-                retail: '41829068537927',
-                wholesale: '41829068603463'
-                // Subscription variants hidden: retailSub: '41829068570695', wholesaleSub: '41829068636231'
-            },
-            status: 'active'
-        },
-        
-        // ============================================================
-        // PRODUCT 2: 1 Gallon Organic Ready-to-Use Solution
-        // Shopify Product ID: 7249401086023
-        // ============================================================
-        'ohs-1gal-organic-solution': {
-            id: 'ohs-1gal-organic-solution',
-            shopifyProductId: '7249401086023',
-            shopifyHandle: '1-gallon-organic-ready-to-use-solution',
-            name: '1 Gallon Organic Ready-to-Use Solution - USDA Certified',
-            description: 'Bulk premium professional-grade hypochlorous acid cleaner and disinfectant for large-scale applications. Advanced formulation with premium packaging. Kills 99.9% of pathogens including bacteria viruses and fungi. Perfect for premium commercial facilities luxury establishments and high-end bulk users. Safe for food contact surfaces and skin. Cost-effective solution for high-volume premium cleaning needs. Made in Utah USA.',
-            sku: 'OHS-1GAL-READY-RTU-RETAIL',
-            weight: 8.5,
-            category: 'Commercial Cleaning',
-            certifications: ['USDA Organic', 'EPA Registered', 'Food Safe'],
-            productLine: 'organic',
-            useCase: ['commercial', 'bulk', 'food-safe'],
-            badgeType: 'USDA Organic',
-            badgeColor: '#4ADE80',
-            pricing: {
-                retail: 32.99,
-                wholesale: 20.99
-                // Subscription prices hidden: retailSub: 29.69, wholesaleSub: 18.89
-            },
-            wholesaleThreshold: 10,
-            type: 'organic',
-            emoji: '🌿',
-            image: 'assets/images/products/1_gallon_organic_ready_to_use_solution.jpg',
-            shopifyVariants: {
-                retail: '41829068701767',
-                wholesale: '41829068767303'
-                // Subscription variants hidden: retailSub: '41829068734535', wholesaleSub: '41829068800071'
-            },
-            status: 'active'
-        },
-        
-        // ============================================================
-        // PRODUCT 3: All in One Hypochlorous Organic Wipes
-        // Shopify Product ID: 7249401315399
-        // Status: Coming Soon
-        // ============================================================
-        'ohs-organic-wipes': {
-            id: 'ohs-organic-wipes',
-            shopifyProductId: '7249401315399',
-            shopifyHandle: 'ohs-organic-wipes',
-            name: 'All in One Hypochlorous Organic Wipes',
-            description: 'Convenient pre-moistened hypochlorous acid wipes. USDA Certified Organic and EPA registered. Kills 99.9% of pathogens. Perfect for quick cleaning and disinfecting on-the-go. Safe for all surfaces including food contact. Ideal for homes offices travel and healthcare. Non-toxic alcohol-free formula. Made in Utah USA.',
-            sku: 'OHS-ALL-IN-ONE-WIPES',
-            weight: 1.5,
-            category: 'Cleaning Supplies',
-            certifications: ['USDA Organic', 'EPA Registered', 'Eco-Friendly'],
-            productLine: 'organic',
-            useCase: ['convenient', 'disinfecting', 'wipes'],
-            badgeType: 'USDA Organic',
-            badgeColor: '#4ADE80',
-            pricing: {
-                retail: 12.99,
-                wholesale: 10.99
-                // Subscription prices hidden: retailSub: 11.69, wholesaleSub: 9.99
-            },
-            wholesaleThreshold: 20,
-            type: 'organic',
-            emoji: '🧻',
-            image: 'assets/images/products/organic_all_in_one_disinfecting_wipes.jpg',
-            shopifyVariants: {
-                retail: '41829069619271',
-                wholesale: '41829069684807'
-                // Subscription variants hidden: retailSub: '41829069652039', wholesaleSub: '41829069717575'
-            },
-            status: 'active'
-        },
-        
-        // ============================================================
-        // PRODUCT 4: 32oz Organic Laundry Booster W/ Cap
-        // Shopify Product ID: 7249400004679
-        // Status: Coming Soon
-        // ============================================================
-        'ohs-32oz-laundry-booster': {
-            id: 'ohs-32oz-laundry-booster',
-            shopifyProductId: '7249400004679',
-            shopifyHandle: 'ohs-32oz-organic-laundry-booster',
-            name: '32oz Organic Laundry Booster W/ Cap - USDA Certified',
-            description: 'Premium laundry enhancement solution using hypochlorous acid technology. USDA Certified Organic. Eliminates odors brightens whites and provides antimicrobial protection to fabrics. Safe for all fabric types and colors. Perfect for households and commercial laundries. Non-toxic non-irritating formula. Eco-friendly alternative to harsh chemicals. Made in Utah USA.',
-            sku: 'HC-32OZ-LAUNDRY-BOOSTER-RETAIL',
-            weight: 2.2,
-            category: 'Laundry Care',
-            certifications: ['USDA Organic', 'EPA Registered', 'Eco-Friendly'],
-            productLine: 'organic',
-            useCase: ['laundry', 'odor-elimination', 'eco-friendly'],
-            badgeType: 'USDA Organic',
-            badgeColor: '#4ADE80',
-            pricing: {
-                retail: 15.99,
-                wholesale: 10.99
-                // Subscription prices hidden: retailSub: 14.39, wholesaleSub: 9.89
-            },
-            wholesaleThreshold: 25,
-            type: 'organic',
-            emoji: '🧺',
-            image: 'assets/images/products/32oz_organic_laundry.jpeg',
-            shopifyVariants: {
-                retail: '41829064572999',
-                wholesale: '41829064638535'
-                // Subscription variants hidden: retailSub: '41829064605767', wholesaleSub: '41829064671303'
-            },
-            status: 'active'
-        },
-        
-        // ============================================================
-        // PRODUCT 5: 1 Gallon Organic Laundry Booster W/ Cap
-        // Shopify Product ID: 7249400037447
-        // Status: Coming Soon
-        // ============================================================
-        'ohs-1gal-laundry-booster': {
-            id: 'ohs-1gal-laundry-booster',
-            shopifyProductId: '7249400037447',
-            shopifyHandle: 'ohs-1-gallon-organic-laundry-booster',
-            name: '1 Gallon Organic Laundry Booster W/ Cap - USDA Certified',
-            description: 'Bulk premium laundry enhancement solution using hypochlorous acid technology. USDA Certified Organic. Eliminates odors brightens whites and provides antimicrobial protection to fabrics. Perfect for commercial laundries hotels and professional cleaning services. Safe for all fabric types and colors. Cost-effective bulk solution for high-volume laundry needs. Eco-friendly alternative to harsh chemicals. Made in Utah USA.',
-            sku: 'HC-1GAL-LAUNDRY-BOOSTER-RETAIL',
-            weight: 8.5,
-            category: 'Laundry Care',
-            certifications: ['USDA Organic', 'EPA Registered', 'Eco-Friendly'],
-            productLine: 'organic',
-            useCase: ['bulk', 'commercial', 'laundry'],
-            badgeType: 'USDA Organic',
-            badgeColor: '#4ADE80',
-            pricing: {
-                retail: 28.99,
-                wholesale: 19.99
-                // Subscription prices hidden: retailSub: 26.09, wholesaleSub: 17.99
-            },
-            wholesaleThreshold: 10,
-            type: 'organic',
-            emoji: '🧺',
-            image: 'assets/images/products/1gallon_organic_laundry_booster.jpg',
-            shopifyVariants: {
-                retail: '41829064704071',
-                wholesale: '41829064769607'
-                // Subscription variants hidden: retailSub: '41829064736839', wholesaleSub: '41829064802375'
-            },
-            status: 'active'
-        },
-        
-        // ============================================================
-        // PRODUCT 6: OHS Pure Healing Skin Serum (NEW)
-        // Shopify Product ID: 7249401348167
-        // Status: Coming Soon - Pricing TBD
-        // ============================================================
-        'ohs-healing-serum': {
-            id: 'ohs-healing-serum',
-            shopifyProductId: '7249401348167',
-            shopifyHandle: 'ohs-pure-healing-skin-serum',
-            name: 'OHS Pure Healing Skin Serum',
-            description: 'Premium hypochlorous acid skin serum for healing and rejuvenation. Gentle yet effective formula supports natural skin healing processes. Perfect for sensitive skin, post-procedure care, and daily skincare routines. Non-irritating, dermatologist-recommended formula. Made in Utah USA.',
-            sku: 'OHS-HEALING-SERUM-RETAIL',
-            weight: 0.5,
-            category: 'Skincare',
-            certifications: ['USDA Organic', 'Dermatologist Tested'],
-            productLine: 'organic',
-            useCase: ['skincare', 'healing', 'sensitive-skin'],
-            badgeType: 'USDA Organic',
-            badgeColor: '#4ADE80',
-            pricing: {
-                retail: null, // TBD
-                wholesale: null // TBD
-            },
-            wholesaleThreshold: null,
-            type: 'organic',
-            emoji: '✨',
-            image: 'assets/images/products/OHS_Skin_Serum.jpeg',
-            shopifyVariants: {
-                retail: '41829069750343',
-                wholesale: '41829069815879'
-            },
-            status: 'coming-soon',
-            availabilityText: 'Coming Soon - Pricing TBD'
-        }
-    };
-
-    let cartVisible = false;
-    let productQuantities = {};
-
-    // ================================================================
     // SHOPIFY STOREFRONT API - INVENTORY FETCHING
     // ================================================================
     
     async function fetchShopifyInventory() {
-        // Check cache first
         if (lastInventoryFetch && (Date.now() - lastInventoryFetch) < INVENTORY_CACHE_DURATION) {
             console.log('📦 Using cached inventory data');
             return inventoryCache;
         }
         
-        const productIds = Object.values(PRODUCT_CATALOG)
-            .filter(p => p.shopifyProductId && p.status === 'active')
-            .map(p => `gid://shopify/Product/${p.shopifyProductId}`);
+        const productIds = Object.values(window.PRODUCT_CATALOG)
+            .filter(p => p.id && p.status !== 'coming-soon')
+            .map(p => `gid://shopify/Product/${p.id}`);
         
         if (productIds.length === 0) {
             console.log('⚠️ No active products with Shopify IDs');
@@ -1553,7 +1316,6 @@
                 throw new Error('GraphQL query failed');
             }
             
-            // Process and cache inventory data
             inventoryCache = {};
             
             data.data.nodes.forEach(product => {
@@ -1561,13 +1323,11 @@
                 
                 const shopifyProductId = product.id.replace('gid://shopify/Product/', '');
                 
-                // Find matching local product
-                const localProduct = Object.values(PRODUCT_CATALOG).find(
-                    p => p.shopifyProductId === shopifyProductId
+                const localProduct = Object.values(window.PRODUCT_CATALOG).find(
+                    p => p.id === shopifyProductId
                 );
                 
                 if (localProduct) {
-                    // Get total inventory and variant-specific data
                     const variantData = {};
                     product.variants.edges.forEach(({ node: variant }) => {
                         const variantId = variant.id.replace('gid://shopify/ProductVariant/', '');
@@ -1593,7 +1353,6 @@
             
         } catch (error) {
             console.error('❌ Failed to fetch Shopify inventory:', error);
-            // Return empty cache on error - products will show without inventory info
             return {};
         }
     }
@@ -1652,57 +1411,24 @@
             };
         }
     }
-    
-    function getVariantInventory(productId, variantId) {
-        const inventory = inventoryCache[productId];
-        if (!inventory || !inventory.variants[variantId]) {
-            return { available: true, quantity: null };
-        }
-        return inventory.variants[variantId];
-    }
 
     // ================================================================
-    // PRICING FUNCTIONS - WHOLESALE THRESHOLD LOGIC
-    // (Subscription pricing removed from display)
+    // PRICING FUNCTIONS - USES EXTERNAL getPricingTier from product-catalog.js
     // ================================================================
-
-    function getPricingTier(product, quantity) {
-        // Skip pricing for products with TBD pricing
-        if (product.pricing.retail === null) {
-            return {
-                isWholesale: false,
-                price: 0,
-                variantId: product.shopifyVariants.retail,
-                tier: 'TBD',
-                savingsPerUnit: 0
-            };
-        }
-        
-        const threshold = product.wholesaleThreshold || 999999;
-        const isWholesale = quantity >= threshold;
-        
-        return {
-            isWholesale: isWholesale,
-            price: isWholesale ? product.pricing.wholesale : product.pricing.retail,
-            variantId: isWholesale ? product.shopifyVariants.wholesale : product.shopifyVariants.retail,
-            tier: isWholesale ? 'Wholesale' : 'Retail',
-            savingsPerUnit: isWholesale ? (product.pricing.retail - product.pricing.wholesale) : 0
-        };
-    }
 
     function displayPricingInfo(productId, quantity) {
-        const product = PRODUCT_CATALOG[productId];
+        const product = window.PRODUCT_CATALOG[productId];
         if (!product || product.pricing.retail === null) return;
         
         const qty = parseInt(quantity) || 1;
-        const pricingInfo = getPricingTier(product, qty);
+        const pricingInfo = window.getPricingTier(productId, qty);
         const priceDisplay = document.querySelector(`[data-product-id="${productId}"] .price-display`);
         
         if (priceDisplay && pricingInfo.isWholesale) {
             priceDisplay.innerHTML = `
                 <div class="current-price text-success">$${pricingInfo.price.toFixed(2)}</div>
                 <div class="price-label text-success">Wholesale Price</div>
-                <small class="text-success">Saving $${pricingInfo.savingsPerUnit.toFixed(2)}/unit!</small>
+                <small class="text-success">Saving $${(pricingInfo.retailPrice - pricingInfo.price).toFixed(2)}/unit!</small>
             `;
         } else if (priceDisplay) {
             priceDisplay.innerHTML = `
@@ -1712,12 +1438,11 @@
             `;
         }
         
-        // Update wholesale indicator
         updateWholesaleIndicator(productId, qty);
     }
     
     function updateWholesaleIndicator(productId, quantity) {
-        const product = PRODUCT_CATALOG[productId];
+        const product = window.PRODUCT_CATALOG[productId];
         if (!product || !product.wholesaleThreshold) return;
         
         const indicator = document.getElementById(`wholesale-indicator-${productId}`);
@@ -1734,16 +1459,13 @@
         const savingsPerUnit = product.pricing.retail - product.pricing.wholesale;
         const totalSavings = savingsPerUnit * qty;
         
-        // Update progress bar
         progressBar.style.width = `${progress}%`;
         
         if (qty >= threshold) {
-            // Wholesale achieved!
             indicator.classList.add('achieved');
             message.innerHTML = `<i class="fas fa-check-circle me-1"></i><strong>Wholesale Pricing Unlocked!</strong>`;
             savings.innerHTML = `You're saving <strong>$${totalSavings.toFixed(2)}</strong> total ($${savingsPerUnit.toFixed(2)}/unit)`;
         } else {
-            // Not yet at wholesale
             indicator.classList.remove('achieved');
             message.innerHTML = `<i class="fas fa-tag me-1"></i>Add <strong>${remaining}</strong> more for wholesale pricing!`;
             savings.innerHTML = `Save <strong>$${savingsPerUnit.toFixed(2)}</strong>/unit at wholesale (${threshold}+ qty)`;
@@ -1751,13 +1473,12 @@
     }
 
     // ================================================================
-    // PRODUCT DISPLAY WITH INVENTORY
+    // PRODUCT DISPLAY
     // ================================================================
 
     async function loadProducts() {
         const container = document.getElementById('productSections');
         
-        // Show loading state
         container.innerHTML = `
             <div class="text-center py-5">
                 <div class="spinner-border text-primary" role="status">
@@ -1767,158 +1488,211 @@
             </div>
         `;
         
-        // Fetch inventory from Shopify
         await fetchShopifyInventory();
         
-        const products = Object.values(PRODUCT_CATALOG);
+        // Get user state for geographic restrictions
+        const userState = window.getUserState ? window.getUserState() : null;
         
-        let html = `
-            <section class="mb-4">
-                <div class="section-header organic">
-                    <h2><i class="fas fa-leaf me-2"></i>USDA Organic Line</h2>
-                    <p>Family-safe USDA Certified Organic Products</p>
-                </div>
-                <div class="row">
-        `;
+        // Separate products by type
+        const epaProducts = window.getEPAProducts ? window.getEPAProducts() : [];
+        const usdaProducts = window.getUSDAProducts ? window.getUSDAProducts() : [];
         
-        products.forEach(product => {
-            const isComingSoon = product.status === 'coming-soon' && !ENABLE_COMING_SOON_PRODUCTS[product.id];
-            const retail = product.pricing?.retail || 0;
-            const hasPricing = product.pricing.retail !== null;
-            productQuantities[product.id] = 1;
-            
-            // Get inventory status
-            const inventoryStatus = getInventoryStatus(product.id);
-            const isOutOfStock = inventoryStatus.status === 'out-of-stock';
-            
+        let html = '';
+        
+        // EPA Products Section (Utah Only)
+        if (epaProducts.length > 0) {
             html += `
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="product-card ${isComingSoon ? 'coming-soon' : ''} ${isOutOfStock ? 'out-of-stock' : ''}" data-product-id="${product.id}">
-                        ${isComingSoon ? `
-                            <div class="coming-soon-badge">
-                                <i class="fas fa-clock me-1"></i>COMING SOON
-                            </div>
-                        ` : ''}
-                        
-                        ${!isComingSoon && inventoryStatus.badgeText ? `
-                            <div class="inventory-badge ${inventoryStatus.badgeClass}">
-                                <i class="fas fa-${inventoryStatus.status === 'out-of-stock' ? 'times-circle' : inventoryStatus.status === 'low-stock' ? 'exclamation-triangle' : 'check-circle'} me-1"></i>${inventoryStatus.badgeText}
-                            </div>
-                        ` : ''}
-                        
-                        <div class="product-badge" style="background: ${product.badgeColor}; color: white;">
-                            <i class="fas fa-leaf me-1"></i>${product.badgeType}
-                        </div>
-                        
-                        <div class="card-body p-3 text-center" style="position: relative; z-index: 2;">
-                            <div class="product-image-container ${isOutOfStock ? 'grayscale' : ''}">
-                                <img src="${product.image}" alt="${product.name}" class="product-image" 
-                                     onerror="this.onerror=null; this.src='https://placehold.co/200x200/2E5EAA/white?text=${encodeURIComponent(product.name.split(' ')[0])}';">
-                            </div>
-                            <h5 class="product-title">${product.name}</h5>
-                            <p class="text-muted small mb-2">${product.description}</p>
-                            
-                            ${isComingSoon ? `
-                                <div class="availability-notice">
-                                    <i class="fas fa-hourglass-half me-2"></i>
-                                    <strong>${product.availabilityText}</strong>
-                                </div>
-                                <div class="text-muted small mb-3">SKU: ${product.sku}</div>
-                                <button class="btn btn-notify w-100 mb-2" disabled>
-                                    <i class="fas fa-bell me-2"></i>Coming Soon - Notify Me
-                                </button>
-                                <small class="text-muted d-block">
-                                    <i class="fas fa-info-circle me-1"></i>This product will be available soon
-                                </small>
-                            ` : isOutOfStock ? `
-                                <div class="price-display mb-3" style="opacity: 0.6;">
-                                    <div class="current-price">$${retail.toFixed(2)}</div>
-                                    <div class="price-label">Retail Price</div>
-                                </div>
-                                <div class="text-muted small mb-2">SKU: ${product.sku}</div>
-                                <div class="alert alert-danger py-2 px-3 mb-2">
-                                    <i class="fas fa-times-circle me-1"></i>
-                                    <strong>Currently Out of Stock</strong>
-                                </div>
-                                <button class="btn btn-secondary w-100 mb-2" disabled>
-                                    <i class="fas fa-times me-2"></i>Out of Stock
-                                </button>
-                                <a href="mailto:OHS@OrganicHypoSolutions.com?subject=Stock%20Notification%20-%20${encodeURIComponent(product.name)}" class="btn btn-sm btn-outline-primary w-100">
-                                    <i class="fas fa-envelope me-1"></i>Notify When Available
-                                </a>
-                            ` : `
-                                <div class="price-display mb-3">
-                                    <div class="current-price">$${retail.toFixed(2)}</div>
-                                    <div class="price-label">Retail Price</div>
-                                    ${product.wholesaleThreshold ? `<small class="text-info">Wholesale at ${product.wholesaleThreshold}+ units</small>` : ''}
-                                </div>
-                                <div class="text-muted small mb-2">SKU: ${product.sku}</div>
-                                
-                                <!-- Wholesale Progress Indicator -->
-                                ${product.wholesaleThreshold ? `
-                                <div id="wholesale-indicator-${product.id}" class="wholesale-indicator mb-2">
-                                    <div class="wholesale-progress-container">
-                                        <div class="wholesale-progress-bar" id="wholesale-progress-${product.id}" style="width: 0%"></div>
-                                    </div>
-                                    <div class="wholesale-message" id="wholesale-message-${product.id}">
-                                        <i class="fas fa-tag me-1"></i>Add <strong>${product.wholesaleThreshold - 1}</strong> more for wholesale pricing!
-                                    </div>
-                                    <div class="wholesale-savings text-muted" id="wholesale-savings-${product.id}">
-                                        Save <strong>$${(retail - product.pricing.wholesale).toFixed(2)}</strong>/unit at wholesale
-                                    </div>
-                                </div>
-                                ` : ''}
-                                
-                                ${inventoryStatus.status === 'low-stock' ? `
-                                    <div class="alert alert-warning py-2 px-3 mb-2" style="font-size: 0.8rem;">
-                                        <i class="fas fa-exclamation-triangle me-1"></i>
-                                        <strong>Low Stock!</strong> Only ${inventoryStatus.quantity} remaining
-                                    </div>
-                                ` : ''}
-                                <ul class="list-unstyled small mb-3">
-                                    <li><i class="fas fa-check text-success me-1"></i>Family & Pet Safe</li>
-                                    <li><i class="fas fa-check text-success me-1"></i>Utah Made</li>
-                                    <li><i class="fas fa-check text-success me-1"></i>USDA Certified</li>
-                                </ul>
-                                <div class="input-group mb-2">
-                                    <button class="btn btn-outline-primary btn-sm" onclick="changeQuantity('${product.id}', -1)">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                    <input type="number" class="form-control form-control-sm text-center" 
-                                           id="qty-${product.id}" value="1" min="1" max="${inventoryStatus.quantity || 999}" style="max-width: 70px;"
-                                           onchange="validateQuantity('${product.id}', this.value); displayPricingInfo('${product.id}', this.value)"
-                                           oninput="updateWholesaleIndicator('${product.id}', this.value)">
-                                    <button class="btn btn-outline-primary btn-sm" onclick="changeQuantity('${product.id}', 1)">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-                                <button class="btn btn-success w-100 mb-2" onclick="addToCart('${product.id}')">
-                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
-                                </button>
-                                <a href="tel:+18017125663" class="btn btn-sm btn-outline-info">
-                                    <i class="fas fa-phone me-1"></i>Questions?
-                                </a>
-                            `}
-                        </div>
+                <section class="mb-4">
+                    <div class="section-header epa">
+                        <h2><i class="fas fa-shield-alt me-2"></i>EPA Registered + USDA Organic</h2>
+                        <p>Dual-Certified Professional Disinfectants - Utah Only</p>
                     </div>
-                </div>
+                    <div class="row">
             `;
-        });
+            
+            epaProducts.forEach(product => {
+                html += renderProductCard(product, userState);
+            });
+            
+            html += '</div></section>';
+        }
         
-        html += '</div></section>';
+        // USDA Products Section (Nationwide)
+        if (usdaProducts.length > 0) {
+            html += `
+                <section class="mb-4">
+                    <div class="section-header organic">
+                        <h2><i class="fas fa-leaf me-2"></i>USDA Organic Line</h2>
+                        <p>Family-safe USDA Certified Organic Products - Ships Nationwide</p>
+                    </div>
+                    <div class="row">
+            `;
+            
+            usdaProducts.forEach(product => {
+                html += renderProductCard(product, userState);
+            });
+            
+            html += '</div></section>';
+        }
+        
         container.innerHTML = html;
         
-        // Update inventory status display periodically
+        // Initialize quantities
+        Object.keys(window.PRODUCT_CATALOG).forEach(id => {
+            productQuantities[id] = 1;
+        });
+        
         setInterval(refreshInventoryDisplay, INVENTORY_CACHE_DURATION);
+    }
+    
+    function renderProductCard(product, userState) {
+        const isComingSoon = product.status === 'coming-soon';
+        const retail = product.pricing?.retail || 0;
+        const hasPricing = product.pricing.retail !== null;
+        const inventoryStatus = getInventoryStatus(product.id);
+        const isOutOfStock = inventoryStatus.status === 'out-of-stock';
+        const isEpaProduct = product.type === 'epa-usda';
+        const isRestricted = isEpaProduct && userState && userState !== 'UT';
+        
+        // Determine badge color and type
+        const badgeColor = isEpaProduct ? '#f59e0b' : '#4ADE80';
+        const badgeType = isEpaProduct ? 'EPA + USDA' : 'USDA Organic';
+        const badgeIcon = isEpaProduct ? 'shield-alt' : 'leaf';
+        
+        return `
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="product-card ${isComingSoon ? 'coming-soon' : ''} ${isOutOfStock ? 'out-of-stock' : ''}" data-product-id="${product.id}">
+                    ${isComingSoon ? `
+                        <div class="coming-soon-badge">
+                            <i class="fas fa-clock me-1"></i>COMING SOON
+                        </div>
+                    ` : ''}
+                    
+                    ${!isComingSoon && inventoryStatus.badgeText ? `
+                        <div class="inventory-badge ${inventoryStatus.badgeClass}">
+                            <i class="fas fa-${inventoryStatus.status === 'out-of-stock' ? 'times-circle' : inventoryStatus.status === 'low-stock' ? 'exclamation-triangle' : 'check-circle'} me-1"></i>${inventoryStatus.badgeText}
+                        </div>
+                    ` : ''}
+                    
+                    <div class="product-badge" style="background: ${badgeColor}; color: white;">
+                        <i class="fas fa-${badgeIcon} me-1"></i>${badgeType}
+                    </div>
+                    
+                    <div class="card-body p-3 text-center" style="position: relative; z-index: 2;">
+                        <div class="product-image-container ${isOutOfStock ? 'grayscale' : ''}">
+                            <img src="${product.image}" alt="${product.name}" class="product-image" 
+                                 onerror="this.onerror=null; this.src='https://placehold.co/200x200/2E5EAA/white?text=${encodeURIComponent(product.name.split(' ')[0])}';">
+                        </div>
+                        <h5 class="product-title">${product.name}</h5>
+                        <p class="text-muted small mb-2">${product.description.substring(0, 150)}...</p>
+                        
+                        ${isEpaProduct ? `
+                            <div class="state-restriction-notice">
+                                <i class="fas fa-map-marker-alt me-1"></i>
+                                <strong>Utah Only</strong> - EPA registered products ship to Utah addresses only
+                            </div>
+                        ` : ''}
+                        
+                        ${isComingSoon ? `
+                            <div class="availability-notice">
+                                <i class="fas fa-hourglass-half me-2"></i>
+                                <strong>Coming Soon - Pricing TBD</strong>
+                            </div>
+                            <div class="text-muted small mb-3">SKU: ${product.skus?.retail || 'N/A'}</div>
+                            <button class="btn btn-notify w-100 mb-2" disabled>
+                                <i class="fas fa-bell me-2"></i>Coming Soon - Notify Me
+                            </button>
+                        ` : isOutOfStock ? `
+                            <div class="price-display mb-3" style="opacity: 0.6;">
+                                <div class="current-price">$${retail.toFixed(2)}</div>
+                                <div class="price-label">Retail Price</div>
+                            </div>
+                            <div class="text-muted small mb-2">SKU: ${product.skus?.retail || 'N/A'}</div>
+                            <div class="alert alert-danger py-2 px-3 mb-2">
+                                <i class="fas fa-times-circle me-1"></i>
+                                <strong>Currently Out of Stock</strong>
+                            </div>
+                            <button class="btn btn-secondary w-100 mb-2" disabled>
+                                <i class="fas fa-times me-2"></i>Out of Stock
+                            </button>
+                        ` : isRestricted ? `
+                            <div class="price-display mb-3">
+                                <div class="current-price">$${retail.toFixed(2)}</div>
+                                <div class="price-label">Retail Price</div>
+                            </div>
+                            <div class="text-muted small mb-2">SKU: ${product.skus?.retail || 'N/A'}</div>
+                            <div class="alert alert-warning py-2 px-3 mb-2">
+                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                <strong>Not available in your state</strong>
+                                <br><small>EPA products only ship to Utah</small>
+                            </div>
+                            <button class="btn btn-secondary w-100 mb-2" disabled>
+                                <i class="fas fa-ban me-2"></i>Utah Only
+                            </button>
+                        ` : `
+                            <div class="price-display mb-3">
+                                <div class="current-price">$${retail.toFixed(2)}</div>
+                                <div class="price-label">Retail Price</div>
+                                ${product.wholesaleThreshold ? `<small class="text-info">Wholesale at ${product.wholesaleThreshold}+ units</small>` : ''}
+                            </div>
+                            <div class="text-muted small mb-2">SKU: ${product.skus?.retail || 'N/A'}</div>
+                            
+                            ${product.wholesaleThreshold ? `
+                            <div id="wholesale-indicator-${product.id}" class="wholesale-indicator mb-2">
+                                <div class="wholesale-progress-container">
+                                    <div class="wholesale-progress-bar" id="wholesale-progress-${product.id}" style="width: 0%"></div>
+                                </div>
+                                <div class="wholesale-message" id="wholesale-message-${product.id}">
+                                    <i class="fas fa-tag me-1"></i>Add <strong>${product.wholesaleThreshold - 1}</strong> more for wholesale pricing!
+                                </div>
+                                <div class="wholesale-savings text-muted" id="wholesale-savings-${product.id}">
+                                    Save <strong>$${(retail - product.pricing.wholesale).toFixed(2)}</strong>/unit at wholesale
+                                </div>
+                            </div>
+                            ` : ''}
+                            
+                            ${inventoryStatus.status === 'low-stock' ? `
+                                <div class="alert alert-warning py-2 px-3 mb-2" style="font-size: 0.8rem;">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>
+                                    <strong>Low Stock!</strong> Only ${inventoryStatus.quantity} remaining
+                                </div>
+                            ` : ''}
+                            <ul class="list-unstyled small mb-3">
+                                <li><i class="fas fa-check text-success me-1"></i>Family & Pet Safe</li>
+                                <li><i class="fas fa-check text-success me-1"></i>Utah Made</li>
+                                <li><i class="fas fa-check text-success me-1"></i>${isEpaProduct ? 'EPA + USDA Certified' : 'USDA Certified'}</li>
+                            </ul>
+                            <div class="input-group mb-2">
+                                <button class="btn btn-outline-primary btn-sm" onclick="changeQuantity('${product.id}', -1)">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="number" class="form-control form-control-sm text-center" 
+                                       id="qty-${product.id}" value="1" min="1" max="${inventoryStatus.quantity || 999}" style="max-width: 70px;"
+                                       onchange="validateQuantity('${product.id}', this.value); displayPricingInfo('${product.id}', this.value)"
+                                       oninput="updateWholesaleIndicator('${product.id}', this.value)">
+                                <button class="btn btn-outline-primary btn-sm" onclick="changeQuantity('${product.id}', 1)">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <button class="btn btn-success w-100 mb-2" onclick="addToCartLocal('${product.id}')">
+                                <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                            </button>
+                            <a href="tel:+18017125663" class="btn btn-sm btn-outline-info">
+                                <i class="fas fa-phone me-1"></i>Questions?
+                            </a>
+                        `}
+                    </div>
+                </div>
+            </div>
+        `;
     }
     
     async function refreshInventoryDisplay() {
         await fetchShopifyInventory();
         
-        // Update inventory badges and stock status
-        Object.keys(PRODUCT_CATALOG).forEach(productId => {
-            const product = PRODUCT_CATALOG[productId];
-            if (product.status !== 'active') return;
+        Object.keys(window.PRODUCT_CATALOG).forEach(productId => {
+            const product = window.PRODUCT_CATALOG[productId];
+            if (product.status === 'coming-soon') return;
             
             const inventoryStatus = getInventoryStatus(productId);
             const card = document.querySelector(`[data-product-id="${productId}"]`);
@@ -1930,7 +1704,6 @@
                     inventoryBadge.innerHTML = `<i class="fas fa-${inventoryStatus.status === 'out-of-stock' ? 'times-circle' : inventoryStatus.status === 'low-stock' ? 'exclamation-triangle' : 'check-circle'} me-1"></i>${inventoryStatus.badgeText}`;
                 }
                 
-                // Update max quantity on input
                 const qtyInput = document.getElementById(`qty-${productId}`);
                 if (qtyInput && inventoryStatus.quantity) {
                     qtyInput.max = inventoryStatus.quantity;
@@ -1949,13 +1722,11 @@
         
         let qty = parseInt(value) || 1;
         
-        // Ensure minimum of 1
         if (qty < 1) qty = 1;
         
-        // Check against inventory if available
         if (inventoryStatus.quantity !== null && qty > inventoryStatus.quantity) {
             qty = inventoryStatus.quantity;
-            showNotification(`Only ${inventoryStatus.quantity} available in stock`, 'warning');
+            showNotificationLocal(`Only ${inventoryStatus.quantity} available in stock`, 'warning');
         }
         
         input.value = qty;
@@ -1971,10 +1742,9 @@
         
         let newValue = Math.max(1, parseInt(input.value) + change);
         
-        // Check against inventory
         if (newValue > maxQty) {
             newValue = maxQty;
-            showNotification(`Only ${maxQty} available in stock`, 'warning');
+            showNotificationLocal(`Only ${maxQty} available in stock`, 'warning');
         }
         
         input.value = newValue;
@@ -1982,132 +1752,73 @@
         displayPricingInfo(productId, newValue);
     }
 
-    async function addToCart(productId) {
-        const product = PRODUCT_CATALOG[productId];
+    // ================================================================
+    // CART FUNCTIONS - Uses external cart.js
+    // ================================================================
+
+    function addToCartLocal(productId) {
+        const product = window.PRODUCT_CATALOG[productId];
         if (!product) {
             console.error(`Product ${productId} not found`);
             return;
         }
         
-        // Don't allow adding products with TBD pricing
         if (product.pricing.retail === null) {
-            showNotification('This product is not yet available for purchase.', 'error');
+            showNotificationLocal('This product is not yet available for purchase.', 'error');
             return;
         }
         
-        // Check inventory before adding
         const inventoryStatus = getInventoryStatus(productId);
         if (!inventoryStatus.canPurchase) {
-            showNotification('Sorry, this product is currently out of stock.', 'error');
+            showNotificationLocal('Sorry, this product is currently out of stock.', 'error');
             return;
         }
         
         const quantity = productQuantities[productId] || 1;
         
-        // Validate against available inventory
         if (inventoryStatus.quantity !== null && quantity > inventoryStatus.quantity) {
-            showNotification(`Only ${inventoryStatus.quantity} available. Adjusted quantity.`, 'warning');
-            productQuantities[productId] = inventoryStatus.quantity;
-            const input = document.getElementById(`qty-${productId}`);
-            if (input) input.value = inventoryStatus.quantity;
+            showNotificationLocal(`Only ${inventoryStatus.quantity} available. Adjusted quantity.`, 'warning');
             return;
         }
         
-        // Check if adding to existing cart item would exceed inventory
-        const existingItem = cartItems.find(item => item.productId === productId);
-        if (existingItem && inventoryStatus.quantity !== null) {
-            const totalQty = existingItem.quantity + quantity;
-            if (totalQty > inventoryStatus.quantity) {
-                const canAdd = inventoryStatus.quantity - existingItem.quantity;
-                if (canAdd <= 0) {
-                    showNotification(`You already have the maximum available quantity (${inventoryStatus.quantity}) in your cart.`, 'warning');
-                    return;
-                }
-                showNotification(`Only ${canAdd} more can be added. You have ${existingItem.quantity} in cart.`, 'warning');
-                return;
-            }
-        }
+        // Use the global addToCart function from cart.js
+        const success = window.addToCart(productId, quantity);
         
-        const pricingInfo = getPricingTier(product, quantity);
-        
-        try {
-            const existingItemIndex = cartItems.findIndex(item => item.productId === productId);
-            
-            if (existingItemIndex !== -1) {
-                const newQuantity = cartItems[existingItemIndex].quantity + quantity;
-                const updatedPricing = getPricingTier(product, newQuantity);
-                
-                cartItems[existingItemIndex].quantity = newQuantity;
-                cartItems[existingItemIndex].price = updatedPricing.price;
-                cartItems[existingItemIndex].variantId = updatedPricing.variantId;
-                cartItems[existingItemIndex].pricingTier = updatedPricing.tier;
-                cartItems[existingItemIndex].isWholesale = updatedPricing.isWholesale;
-            } else {
-                cartItems.push({
-                    productId: productId,
-                    shopifyProductId: product.shopifyProductId,
-                    name: product.name,
-                    price: pricingInfo.price,
-                    category: product.badgeType,
-                    quantity: quantity,
-                    variantId: pricingInfo.variantId,
-                    handle: product.shopifyHandle,
-                    sku: product.sku,
-                    type: product.type,
-                    emoji: product.emoji,
-                    pricingTier: pricingInfo.tier,
-                    isWholesale: pricingInfo.isWholesale,
-                    wholesaleThreshold: product.wholesaleThreshold,
-                    addedAt: new Date().toISOString()
-                });
-            }
-            
-            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
-            window.dispatchEvent(new Event('storage'));
-            
-            updateCartBadges();
-            updateCartPreview();
-            
-            const tierInfo = pricingInfo.isWholesale ? ` at Wholesale Price ($${pricingInfo.savingsPerUnit.toFixed(2)}/unit savings!)` : '';
-            showNotification(`Added ${quantity}x ${product.name}${tierInfo} to cart!`, 'success');
-            
-            console.log(`✅ Added ${quantity}x ${product.name} at ${pricingInfo.tier} price`);
-            
+        if (success) {
+            // Reset quantity input
             const input = document.getElementById(`qty-${productId}`);
             if (input) input.value = 1;
             productQuantities[productId] = 1;
             displayPricingInfo(productId, 1);
             
+            // Update UI
+            updateCartBadges();
+            updateCartPreview();
+            
+            // Analytics
             if (typeof gtag !== 'undefined') {
+                const pricingInfo = window.getPricingTier(productId, quantity);
                 gtag('event', 'add_to_cart', {
                     'currency': 'USD',
                     'value': pricingInfo.price * quantity,
                     'items': [{
                         'item_id': pricingInfo.variantId,
                         'item_name': product.name,
-                        'category': product.badgeType,
+                        'category': product.type === 'epa-usda' ? 'EPA+USDA' : 'USDA Organic',
                         'quantity': quantity,
                         'price': pricingInfo.price,
                         'item_variant': pricingInfo.tier
                     }]
                 });
             }
-            
-        } catch (error) {
-            console.error('Error adding product to cart:', error);
-            showNotification('Failed to add product. Please try again.', 'error');
         }
     }
 
-    // ================================================================
-    // CART FUNCTIONS - WITH WHOLESALE PRICING
-    // ================================================================
-
     function updateCartPreview() {
-        const cartItemsContainer = document.getElementById('cartItems');
+        const cartItemsContainer = document.getElementById('cartItemsPreview');
         const cartSummary = document.getElementById('cartSummary');
         
-        cartItems = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+        const cartItems = window.getCartItems ? window.getCartItems() : [];
         
         if (!Array.isArray(cartItems) || cartItems.length === 0) {
             cartItemsContainer.innerHTML = `
@@ -2137,18 +1848,18 @@
                     <div class="cart-item-info">
                         <div class="cart-item-name">${item.emoji || '📦'} ${item.name}${tierBadge}</div>
                         <div class="cart-item-details">
-                            SKU: ${item.sku || 'N/A'} • $${item.price.toFixed(2)} each
+                            $${item.price.toFixed(2)} each
                         </div>
                     </div>
                     <div class="d-flex align-items-center">
-                        <button class="cart-qty-btn" onclick="updateCartQuantity('${item.productId}', -1)">
+                        <button class="cart-qty-btn" onclick="updateCartQuantityLocal('${item.productId}', -1)">
                             <i class="fas fa-minus"></i>
                         </button>
                         <span class="mx-2 fw-bold">${item.quantity}</span>
-                        <button class="cart-qty-btn" onclick="updateCartQuantity('${item.productId}', 1)">
+                        <button class="cart-qty-btn" onclick="updateCartQuantityLocal('${item.productId}', 1)">
                             <i class="fas fa-plus"></i>
                         </button>
-                        <button class="cart-item-remove" onclick="removeFromCart('${item.productId}')" title="Remove item">
+                        <button class="cart-item-remove" onclick="removeFromCartLocal('${item.productId}')" title="Remove item">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
@@ -2165,68 +1876,44 @@
         }
     }
 
-    function updateCartQuantity(productId, change) {
-        cartItems = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+    function updateCartQuantityLocal(productId, change) {
+        const cartItems = window.getCartItems ? window.getCartItems() : [];
+        const item = cartItems.find(i => i.productId === productId);
         
-        const itemIndex = cartItems.findIndex(item => item.productId === productId);
-        
-        if (itemIndex >= 0) {
-            const newQuantity = cartItems[itemIndex].quantity + change;
+        if (item) {
+            const newQuantity = item.quantity + change;
             
             if (newQuantity <= 0) {
-                cartItems.splice(itemIndex, 1);
+                window.removeFromCart(productId);
             } else {
-                const product = PRODUCT_CATALOG[productId];
-                if (product && product.pricing.retail !== null) {
-                    const wasWholesale = cartItems[itemIndex].isWholesale;
-                    const updatedPricing = getPricingTier(product, newQuantity);
-                    
-                    cartItems[itemIndex].quantity = newQuantity;
-                    cartItems[itemIndex].price = updatedPricing.price;
-                    cartItems[itemIndex].variantId = updatedPricing.variantId;
-                    cartItems[itemIndex].pricingTier = updatedPricing.tier;
-                    cartItems[itemIndex].isWholesale = updatedPricing.isWholesale;
-                    
-                    if (updatedPricing.isWholesale && !wasWholesale) {
-                        showNotification(`🎉 Wholesale pricing activated! Saving $${updatedPricing.savingsPerUnit.toFixed(2)}/unit`, 'success');
-                    } else if (!updatedPricing.isWholesale && wasWholesale) {
-                        showNotification(`Quantity below wholesale threshold. Retail pricing applied.`, 'info');
-                    }
-                } else {
-                    cartItems[itemIndex].quantity = newQuantity;
-                }
+                window.updateCartItemQuantity(productId, newQuantity);
             }
             
-            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
-            window.dispatchEvent(new Event('storage'));
             updateCartPreview();
             updateCartBadges();
         }
     }
 
-    function removeFromCart(productId) {
-        cartItems = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
-        cartItems = cartItems.filter(item => item.productId !== productId);
-        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
-        window.dispatchEvent(new Event('storage'));
-        updateCartPreview();
-        updateCartBadges();
-        showNotification('Item removed from cart', 'info');
-    }
-
-    function clearCart() {
-        if (confirm('Clear all items from cart?')) {
-            cartItems = [];
-            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify([]));
-            window.dispatchEvent(new Event('storage'));
+    function removeFromCartLocal(productId) {
+        if (window.removeFromCart) {
+            window.removeFromCart(productId);
             updateCartPreview();
             updateCartBadges();
-            showNotification('Cart cleared', 'info');
+        }
+    }
+
+    function clearCartLocal() {
+        if (confirm('Clear all items from cart?')) {
+            if (window.clearCart) {
+                window.clearCart();
+                updateCartPreview();
+                updateCartBadges();
+            }
         }
     }
 
     function updateCartBadges() {
-        cartItems = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+        const cartItems = window.getCartItems ? window.getCartItems() : [];
         
         const totalItems = Array.isArray(cartItems) 
             ? cartItems.reduce((sum, item) => sum + (item.quantity || 0), 0) 
@@ -2246,15 +1933,6 @@
         }
     }
 
-    window.addEventListener('storage', function(e) {
-        if (e.key === CART_STORAGE_KEY) {
-            cartItems = JSON.parse(e.newValue || '[]');
-            updateCartBadges();
-            updateCartPreview();
-            console.log('🔄 Cart updated from another page');
-        }
-    });
-
     function toggleCart() {
         const cartPreview = document.getElementById('cartPreview');
         const cartOverlay = document.getElementById('cartOverlay');
@@ -2271,11 +1949,17 @@
         }
     }
 
-    function proceedToCart() {
+    function proceedToCartPage() {
         window.location.href = 'shop/cart.html';
     }
 
-    function showNotification(message, type) {
+    function showNotificationLocal(message, type) {
+        // Use global showNotification if available from cart.js
+        if (window.showNotification) {
+            window.showNotification(message, type);
+            return;
+        }
+        
         const notification = document.createElement('div');
         const alertClass = type === 'success' ? 'success' : type === 'error' ? 'danger' : type === 'warning' ? 'warning' : 'info';
         const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle';
@@ -2305,8 +1989,14 @@
 
     document.addEventListener('DOMContentLoaded', async function() {
         console.log('🎉 OHS Products Page Loading...');
-        console.log('📦 Unified cart loaded with', cartItems.length, 'unique items');
-        console.log('🔗 Shopify Integration: Connecting to', SHOPIFY_CONFIG.domain);
+        
+        // Wait for external scripts to be ready
+        if (!window.PRODUCT_CATALOG) {
+            console.error('❌ Product catalog not loaded!');
+            return;
+        }
+        
+        console.log('📦 Product catalog loaded with', Object.keys(window.PRODUCT_CATALOG).length, 'products');
         
         // Load products with inventory
         await loadProducts();
@@ -2319,9 +2009,10 @@
             if (banner) banner.style.display = 'none';
         }
         
-        const allProducts = Object.values(PRODUCT_CATALOG);
-        const activeProducts = allProducts.filter(p => p.status === 'active');
-        const comingSoonProducts = allProducts.filter(p => p.status === 'coming-soon' && !ENABLE_COMING_SOON_PRODUCTS[p.id]);
+        // Update counts
+        const allProducts = Object.values(window.PRODUCT_CATALOG);
+        const activeProducts = allProducts.filter(p => p.status !== 'coming-soon');
+        const comingSoonProducts = allProducts.filter(p => p.status === 'coming-soon');
         
         const totalCountEl = document.getElementById('totalProductCount');
         const activeCountEl = document.getElementById('activeProductCount');
@@ -2339,42 +2030,40 @@
             }
         });
         
-        // Log inventory status
-        console.log('📊 Inventory Status:');
-        Object.keys(inventoryCache).forEach(productId => {
-            const inv = inventoryCache[productId];
-            const product = PRODUCT_CATALOG[productId];
-            if (product) {
-                console.log(`   ${product.name}: ${inv.totalInventory} in stock`);
-            }
-        });
-        
         if (typeof gtag !== 'undefined') {
             gtag('event', 'page_view', {
                 'page_title': 'Products',
                 'page_location': window.location.href
             });
         }
+        
+        // Listen for cart updates from other pages
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'ohsCart') {
+                updateCartBadges();
+                updateCartPreview();
+                console.log('🔄 Cart updated from another page');
+            }
+        });
     });
     
     // Export functions globally
-    window.addToCart = addToCart;
+    window.addToCartLocal = addToCartLocal;
     window.changeQuantity = changeQuantity;
-    window.updateCartQuantity = updateCartQuantity;
-    window.removeFromCart = removeFromCart;
-    window.clearCart = clearCart;
+    window.updateCartQuantityLocal = updateCartQuantityLocal;
+    window.removeFromCartLocal = removeFromCartLocal;
+    window.clearCartLocal = clearCartLocal;
     window.toggleCart = toggleCart;
-    window.proceedToCart = proceedToCart;
+    window.proceedToCartPage = proceedToCartPage;
     window.scrollToProducts = scrollToProducts;
     window.closeBanner = closeBanner;
     window.displayPricingInfo = displayPricingInfo;
-    window.getPricingTier = getPricingTier;
     window.validateQuantity = validateQuantity;
     window.refreshInventoryDisplay = refreshInventoryDisplay;
     window.fetchShopifyInventory = fetchShopifyInventory;
     window.updateWholesaleIndicator = updateWholesaleIndicator;
     
-    console.log('🚀 Products Page JavaScript Loaded - Shopify Inventory Integration Active');
+    console.log('🚀 Products Page JavaScript Loaded');
     console.log('📧 Contact: OHS@OrganicHypoSolutions.com');
 </script>
 
