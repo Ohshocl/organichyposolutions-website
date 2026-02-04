@@ -5,15 +5,15 @@
  * Features:
  * - Works with product-catalog.js (must be loaded first)
  * - Geographic restrictions (EPA products Utah-only)
- * - Automatic wholesale pricing (25+ units for 32oz, 10+ for 1gal)
+ * - Automatic wholesale pricing at quantity thresholds
  * - Shopify checkout integration
  * - Cross-tab synchronization
- * - State validation
+ * - State validation with cookie persistence
  * 
  * Dependencies:
  * - product-catalog.js (must load before this file)
  * 
- * Last Updated: 2025-02-04
+ * Last Updated: 2025-02-03
  */
 
 (function() {
@@ -25,7 +25,8 @@
     
     const CART_STORAGE_KEY = 'ohsCart';
     const STATE_STORAGE_KEY = 'userState';
-    const SHOPIFY_DOMAIN = 'organichyposolutions.myshopify.com'; // Update with your actual domain
+    const STATE_COOKIE_NAME = 'ohs_user_state';
+    const COOKIE_EXPIRY_DAYS = 365;
     
     // =============================================================================
     // CART STATE
@@ -62,6 +63,82 @@
     }
     
     // =============================================================================
+    // COOKIE HELPERS
+    // =============================================================================
+    
+    /**
+     * Set a cookie
+     */
+    function setCookie(name, value, days) {
+        const expires = new Date();
+        expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+        document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+    }
+    
+    /**
+     * Get a cookie value
+     */
+    function getCookie(name) {
+        const nameEQ = name + "=";
+        const ca = document.cookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+    
+    // =============================================================================
+    // STATE MANAGEMENT
+    // =============================================================================
+    
+    /**
+     * Get user's state from cookie, localStorage, or return null
+     */
+    window.getUserState = function() {
+        // Try cookie first (more persistent)
+        let state = getCookie(STATE_COOKIE_NAME);
+        
+        // Fall back to localStorage
+        if (!state) {
+            state = localStorage.getItem(STATE_STORAGE_KEY);
+        }
+        
+        return state || null;
+    };
+    
+    /**
+     * Set user's state (both cookie and localStorage)
+     */
+    window.setUserState = function(state) {
+        const upperState = state?.toUpperCase();
+        
+        // Save to cookie (persistent across sessions)
+        setCookie(STATE_COOKIE_NAME, upperState, COOKIE_EXPIRY_DAYS);
+        
+        // Also save to localStorage (backup)
+        localStorage.setItem(STATE_STORAGE_KEY, upperState);
+        
+        console.log('📍 User state set to:', upperState);
+        
+        // Validate cart for new state
+        validateCartForState(upperState);
+        
+        // Dispatch event for UI updates
+        window.dispatchEvent(new CustomEvent('stateChanged', { detail: { state: upperState } }));
+        
+        return upperState;
+    };
+    
+    /**
+     * Check if state selector should be shown
+     */
+    window.shouldShowStateSelector = function() {
+        return !window.getUserState();
+    };
+    
+    // =============================================================================
     // CART MANAGEMENT FUNCTIONS
     // =============================================================================
     
@@ -91,8 +168,26 @@
                 cartItems = [];
             }
             
-            // Validate all items
-            cartItems = cartItems.filter(item => validateCartItem(item));
+            // Validate all items and merge duplicates
+            const mergedItems = new Map();
+            
+            cartItems.forEach(item => {
+                const validatedItem = validateCartItem(item);
+                if (validatedItem) {
+                    const existingItem = mergedItems.get(validatedItem.productId);
+                    if (existingItem) {
+                        existingItem.quantity += validatedItem.quantity;
+                        recalculateItemPricing(existingItem);
+                    } else {
+                        mergedItems.set(validatedItem.productId, validatedItem);
+                    }
+                }
+            });
+            
+            cartItems = Array.from(mergedItems.values());
+            
+            // Save merged cart
+            saveCart();
             
             console.log('📦 Loaded', cartItems.length, 'items from cart');
             
@@ -110,7 +205,7 @@
             localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
             
             // Trigger storage event for cross-tab sync
-            window.dispatchEvent(new Event('storage'));
+            window.dispatchEvent(new Event('cartUpdated'));
             
         } catch (error) {
             console.error('Error saving cart:', error);
@@ -118,38 +213,57 @@
     }
     
     /**
-     * Validate cart item has required fields
+     * Validate and normalize cart item
      */
     function validateCartItem(item) {
-        if (!item || !item.productId) {
-            console.warn('Invalid cart item (no productId):', item);
-            return false;
+        if (!item || typeof item !== 'object') {
+            return null;
         }
         
-        const product = window.PRODUCT_CATALOG[item.productId];
+        // Try to find the product
+        const identifier = item.productId || item.id || item.name;
+        if (!identifier) return null;
+        
+        const product = window.findProduct(identifier);
         if (!product) {
-            console.warn('Product not found in catalog:', item.productId);
-            return false;
+            console.warn('Product not found in catalog:', identifier);
+            return null;
         }
         
-        return true;
+        const quantity = Math.max(1, parseInt(item.quantity) || 1);
+        const pricingInfo = window.getPricingTier(product.id, quantity);
+        
+        return {
+            productId: product.id,
+            name: product.name,
+            price: pricingInfo.price,
+            quantity: quantity,
+            variantId: pricingInfo.variantId,
+            tier: pricingInfo.tier,
+            isWholesale: pricingInfo.isWholesale,
+            wholesaleThreshold: product.wholesaleThreshold,
+            emoji: product.emoji,
+            image: product.image,
+            type: product.type,
+            addedAt: item.addedAt || new Date().toISOString()
+        };
     }
     
     /**
      * Add item to cart or update quantity if exists
      */
     window.addToCart = function(productId, quantity = 1) {
-        const product = window.PRODUCT_CATALOG[productId];
+        const product = window.findProduct(productId);
         if (!product) {
             console.error('Product not found:', productId);
-            showNotification('Product not found', 'error');
+            window.showNotification('Product not found', 'error');
             return false;
         }
         
         // Check geographic restrictions
-        const userState = getUserState();
-        if (!isProductAvailableInState(productId, userState)) {
-            showNotification(
+        const userState = window.getUserState();
+        if (userState && !window.isProductAvailableInState(productId, userState)) {
+            window.showNotification(
                 `${product.name} is only available in Utah. Please change your shipping state.`,
                 'warning'
             );
@@ -157,31 +271,49 @@
         }
         
         // Find existing item
-        const existingIndex = cartItems.findIndex(item => item.productId === productId);
+        const existingIndex = cartItems.findIndex(item => item.productId === product.id);
         
         if (existingIndex !== -1) {
             // Update existing item
             cartItems[existingIndex].quantity += quantity;
             recalculateItemPricing(cartItems[existingIndex]);
+            
+            // Check if wholesale activated
+            const wasWholesale = cartItems[existingIndex].isWholesale;
+            if (!wasWholesale && cartItems[existingIndex].isWholesale) {
+                window.showNotification(
+                    `🎉 Wholesale pricing activated for ${product.name}!`,
+                    'success'
+                );
+            }
         } else {
             // Add new item
+            const pricingInfo = window.getPricingTier(product.id, quantity);
+            
             const cartItem = {
-                productId: productId,
+                productId: product.id,
                 name: product.name,
+                price: pricingInfo.price,
                 quantity: quantity,
+                variantId: pricingInfo.variantId,
+                tier: pricingInfo.tier,
+                isWholesale: pricingInfo.isWholesale,
+                wholesaleThreshold: product.wholesaleThreshold,
+                emoji: product.emoji,
+                image: product.image,
+                type: product.type,
                 addedAt: new Date().toISOString()
             };
             
-            recalculateItemPricing(cartItem);
             cartItems.push(cartItem);
         }
         
         saveCart();
         updateCartBadge();
         
-        const pricingInfo = getPricingTier(product, quantity);
+        const pricingInfo = window.getPricingTier(product.id, quantity);
         const tierLabel = pricingInfo.isWholesale ? ' at Wholesale Price' : '';
-        showNotification(`Added ${quantity}x ${product.name}${tierLabel} to cart!`, 'success');
+        window.showNotification(`Added ${quantity}x ${product.name}${tierLabel} to cart!`, 'success');
         
         return true;
     };
@@ -190,13 +322,16 @@
      * Remove item from cart
      */
     window.removeFromCart = function(productId) {
+        const product = window.findProduct(productId);
+        const id = product ? product.id : productId;
+        
         const initialLength = cartItems.length;
-        cartItems = cartItems.filter(item => item.productId !== productId);
+        cartItems = cartItems.filter(item => item.productId !== id);
         
         if (cartItems.length < initialLength) {
             saveCart();
             updateCartBadge();
-            showNotification('Item removed from cart', 'info');
+            window.showNotification('Item removed from cart', 'info');
             return true;
         }
         
@@ -207,15 +342,27 @@
      * Update item quantity
      */
     window.updateCartItemQuantity = function(productId, quantity) {
-        const item = cartItems.find(item => item.productId === productId);
+        const product = window.findProduct(productId);
+        const id = product ? product.id : productId;
+        
+        const item = cartItems.find(item => item.productId === id);
         if (!item) return false;
         
         if (quantity <= 0) {
-            return removeFromCart(productId);
+            return window.removeFromCart(id);
         }
         
+        const wasWholesale = item.isWholesale;
         item.quantity = quantity;
         recalculateItemPricing(item);
+        
+        // Notify about wholesale status change
+        if (!wasWholesale && item.isWholesale) {
+            window.showNotification(`🎉 Wholesale pricing activated for ${item.name}!`, 'success');
+        } else if (wasWholesale && !item.isWholesale) {
+            window.showNotification(`Wholesale pricing removed. Add ${item.wholesaleThreshold - quantity} more for wholesale.`, 'warning');
+        }
+        
         saveCart();
         updateCartBadge();
         
@@ -229,7 +376,7 @@
         cartItems = [];
         saveCart();
         updateCartBadge();
-        showNotification('Cart cleared', 'info');
+        window.showNotification('Cart cleared', 'info');
     };
     
     /**
@@ -255,50 +402,36 @@
         return cartItems.reduce((total, item) => total + item.quantity, 0);
     };
     
+    /**
+     * Get total wholesale savings
+     */
+    window.getCartWholesaleSavings = function() {
+        return cartItems.reduce((total, item) => {
+            if (item.isWholesale) {
+                const product = window.findProduct(item.productId);
+                if (product) {
+                    const savings = (product.pricing.retail - product.pricing.wholesale) * item.quantity;
+                    return total + savings;
+                }
+            }
+            return total;
+        }, 0);
+    };
+    
     // =============================================================================
     // PRICING CALCULATIONS
     // =============================================================================
     
     /**
      * Recalculate item pricing based on quantity
-     * Updates price, tier, variantId, and wholesale status
      */
     function recalculateItemPricing(cartItem) {
-        const product = window.PRODUCT_CATALOG[cartItem.productId];
-        if (!product) return;
-        
-        const pricingInfo = getPricingTier(product, cartItem.quantity);
+        const pricingInfo = window.getPricingTier(cartItem.productId, cartItem.quantity);
         
         cartItem.price = pricingInfo.price;
         cartItem.tier = pricingInfo.tier;
         cartItem.variantId = pricingInfo.variantId;
         cartItem.isWholesale = pricingInfo.isWholesale;
-        cartItem.wholesaleThreshold = product.wholesaleThreshold;
-    }
-    
-    /**
-     * Get pricing tier for a product based on quantity
-     * Returns: { price, tier, variantId, isWholesale, savingsPerUnit }
-     */
-    function getPricingTier(product, quantity) {
-        const threshold = product.wholesaleThreshold || 25;
-        const isWholesale = quantity >= threshold;
-        
-        const price = isWholesale ? product.pricing.wholesale : product.pricing.retail;
-        const tier = isWholesale ? 'wholesale' : 'retail';
-        const variantId = product.shopifyVariants[tier];
-        
-        const savingsPerUnit = isWholesale 
-            ? product.pricing.retail - product.pricing.wholesale 
-            : 0;
-        
-        return {
-            price: price,
-            tier: tier,
-            variantId: variantId,
-            isWholesale: isWholesale,
-            savingsPerUnit: savingsPerUnit
-        };
     }
     
     // =============================================================================
@@ -306,60 +439,19 @@
     // =============================================================================
     
     /**
-     * Get user's state from localStorage or prompt
-     */
-    function getUserState() {
-        let state = localStorage.getItem(STATE_STORAGE_KEY);
-        
-        if (!state) {
-            // Prompt user for state
-            state = promptForState();
-            if (state) {
-                localStorage.setItem(STATE_STORAGE_KEY, state);
-            }
-        }
-        
-        return state || 'UNKNOWN';
-    }
-    
-    /**
-     * Prompt user to select their state
-     */
-    function promptForState() {
-        // This would ideally be a modal, but for now use prompt
-        const state = prompt('Please select your shipping state (2-letter code, e.g., UT, CA):');
-        return state ? state.toUpperCase() : null;
-    }
-    
-    /**
-     * Check if product is available in given state
-     */
-    function isProductAvailableInState(productId, state) {
-        if (typeof window.isProductAvailableInState === 'function') {
-            // Use helper from product-catalog.js
-            return window.isProductAvailableInState(productId, state);
-        }
-        
-        // Fallback implementation
-        const product = window.PRODUCT_CATALOG[productId];
-        if (!product) return false;
-        if (!product.restrictions) return true;
-        if (!product.restrictions.states) return true;
-        
-        return product.restrictions.states.includes(state);
-    }
-    
-    /**
      * Validate cart against user's state
      * Removes items that can't ship to user's state
      */
-    window.validateCartForState = function(state) {
+    function validateCartForState(state) {
+        if (!state) return true;
+        
         const initialLength = cartItems.length;
+        const removedItems = [];
         
         cartItems = cartItems.filter(item => {
-            const available = isProductAvailableInState(item.productId, state);
+            const available = window.isProductAvailableInState(item.productId, state);
             if (!available) {
-                console.log('Removing restricted item:', item.name, 'for state:', state);
+                removedItems.push(item.name);
             }
             return available;
         });
@@ -367,16 +459,18 @@
         if (cartItems.length < initialLength) {
             saveCart();
             updateCartBadge();
-            const removed = initialLength - cartItems.length;
-            showNotification(
-                `${removed} item(s) removed: Not available for shipping to ${state}`,
+            
+            window.showNotification(
+                `${removedItems.length} item(s) removed: Not available for shipping to ${state}`,
                 'warning'
             );
             return false;
         }
         
         return true;
-    };
+    }
+    
+    window.validateCartForState = validateCartForState;
     
     // =============================================================================
     // SHOPIFY CHECKOUT
@@ -387,28 +481,32 @@
      */
     window.proceedToCheckout = async function() {
         if (cartItems.length === 0) {
-            showNotification('Your cart is empty', 'warning');
+            window.showNotification('Your cart is empty', 'warning');
             return;
         }
         
         // Validate cart against user's state
-        const userState = getUserState();
-        if (!validateCartForState(userState)) {
-            showNotification('Please review your cart and try again', 'error');
+        const userState = window.getUserState();
+        if (userState && !validateCartForState(userState)) {
+            window.showNotification('Please review your cart and try again', 'error');
             return;
         }
         
         // Build Shopify checkout URL
         try {
             const checkoutUrl = buildShopifyCheckoutUrl();
-            console.log('Redirecting to Shopify checkout:', checkoutUrl);
+            console.log('🛒 Redirecting to Shopify checkout:', checkoutUrl);
             
-            // Redirect to Shopify
-            window.location.href = checkoutUrl;
+            window.showNotification('Opening secure checkout...', 'success');
+            
+            // Open in new tab
+            setTimeout(() => {
+                window.open(checkoutUrl, '_blank');
+            }, 500);
             
         } catch (error) {
             console.error('Error creating checkout:', error);
-            showNotification('Unable to proceed to checkout. Please try again.', 'error');
+            window.showNotification('Unable to proceed to checkout. Please try again.', 'error');
         }
     };
     
@@ -419,9 +517,14 @@
     function buildShopifyCheckoutUrl() {
         const variants = cartItems.map(item => {
             return `${item.variantId}:${item.quantity}`;
-        }).join(',');
+        }).filter(v => v && !v.includes('undefined'));
         
-        return `https://${SHOPIFY_DOMAIN}/cart/${variants}`;
+        if (variants.length === 0) {
+            throw new Error('No valid variants in cart');
+        }
+        
+        const domain = window.SHOPIFY_DOMAIN || 'npmv1h-8e.myshopify.com';
+        return `https://${domain}/cart/${variants.join(',')}`;
     }
     
     // =============================================================================
@@ -432,105 +535,18 @@
      * Update cart badge in navigation
      */
     function updateCartBadge() {
-        const badge = document.getElementById('cartBadge');
-        if (!badge) return;
+        const badges = document.querySelectorAll('#cartBadge, .cart-badge');
+        const itemCount = window.getCartItemCount();
         
-        const itemCount = getCartItemCount();
-        
-        if (itemCount > 0) {
-            badge.textContent = itemCount;
-            badge.style.display = 'inline-block';
-        } else {
-            badge.style.display = 'none';
-        }
-    }
-    
-    /**
-     * Display cart on cart.html page
-     */
-    window.displayCart = function() {
-        const container = document.getElementById('cartContainer');
-        if (!container) return;
-        
-        if (cartItems.length === 0) {
-            container.innerHTML = `
-                <div class="empty-cart text-center py-5">
-                    <i class="fas fa-shopping-cart fa-4x mb-3 text-muted"></i>
-                    <h3>Your cart is empty</h3>
-                    <p class="text-muted">Add some products to get started!</p>
-                    <a href="/products.html" class="btn btn-primary mt-3">Shop Products</a>
-                </div>
-            `;
-            return;
-        }
-        
-        let html = '<div class="cart-items">';
-        let subtotal = 0;
-        
-        cartItems.forEach(item => {
-            const product = window.PRODUCT_CATALOG[item.productId];
-            if (!product) return;
-            
-            const itemTotal = item.price * item.quantity;
-            subtotal += itemTotal;
-            
-            const tierBadge = item.isWholesale 
-                ? '<span class="badge bg-success">Wholesale</span>' 
-                : '<span class="badge bg-primary">Retail</span>';
-            
-            html += `
-                <div class="cart-item mb-3 p-3 border rounded">
-                    <div class="row align-items-center">
-                        <div class="col-md-6">
-                            <h5>${item.name}</h5>
-                            <p class="text-muted mb-1">${tierBadge} $${item.price.toFixed(2)} each</p>
-                            ${item.isWholesale ? `<p class="text-success small mb-0">Wholesale pricing activated!</p>` : ''}
-                        </div>
-                        <div class="col-md-3">
-                            <div class="input-group">
-                                <button class="btn btn-outline-secondary" onclick="updateCartItemQuantity('${item.productId}', ${item.quantity - 1})">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                                <input type="number" class="form-control text-center" value="${item.quantity}" 
-                                       onchange="updateCartItemQuantity('${item.productId}', parseInt(this.value))" min="1">
-                                <button class="btn btn-outline-secondary" onclick="updateCartItemQuantity('${item.productId}', ${item.quantity + 1})">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                            ${!item.isWholesale && item.wholesaleThreshold ? 
-                                `<small class="text-muted">${item.wholesaleThreshold - item.quantity} more for wholesale</small>` : ''}
-                        </div>
-                        <div class="col-md-2 text-end">
-                            <strong>$${itemTotal.toFixed(2)}</strong>
-                        </div>
-                        <div class="col-md-1 text-end">
-                            <button class="btn btn-sm btn-danger" onclick="removeFromCart('${item.productId}')">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
+        badges.forEach(badge => {
+            if (itemCount > 0) {
+                badge.textContent = itemCount;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
         });
-        
-        html += '</div>';
-        
-        // Add cart summary
-        html += `
-            <div class="cart-summary mt-4 p-4 bg-light rounded">
-                <div class="d-flex justify-content-between mb-3">
-                    <h4>Subtotal:</h4>
-                    <h4>$${subtotal.toFixed(2)}</h4>
-                </div>
-                <p class="text-muted small">Shipping and taxes calculated at checkout</p>
-                <button class="btn btn-primary btn-lg w-100" onclick="proceedToCheckout()">
-                    Proceed to Checkout
-                </button>
-            </div>
-        `;
-        
-        container.innerHTML = html;
-    };
+    }
     
     // =============================================================================
     // NOTIFICATIONS
@@ -539,24 +555,75 @@
     /**
      * Show notification to user
      */
-    function showNotification(message, type = 'info') {
+    window.showNotification = function(message, type = 'info') {
+        // Check for existing notification container
+        let container = document.getElementById('notificationContainer');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'notificationContainer';
+            container.style.cssText = 'position: fixed; top: 100px; right: 20px; z-index: 9999;';
+            document.body.appendChild(container);
+        }
+        
         // Create notification element
         const notification = document.createElement('div');
-        notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-        notification.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        notification.className = `notification ${type}`;
+        
+        const iconMap = {
+            success: 'check-circle',
+            error: 'times-circle',
+            warning: 'exclamation-triangle',
+            info: 'info-circle'
+        };
+        
+        const colorMap = {
+            success: 'linear-gradient(135deg, #22C55E, #16A34A)',
+            error: 'linear-gradient(135deg, #EF4444, #DC2626)',
+            warning: 'linear-gradient(135deg, #F59E0B, #D97706)',
+            info: 'linear-gradient(135deg, #3B82F6, #2563EB)'
+        };
+        
+        notification.style.cssText = `
+            background: ${colorMap[type] || colorMap.info};
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            margin-bottom: 10px;
+            min-width: 300px;
+            max-width: 400px;
+            transform: translateX(450px);
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         `;
         
-        document.body.appendChild(notification);
+        notification.innerHTML = `
+            <i class="fas fa-${iconMap[type] || 'info-circle'}"></i>
+            <div style="flex: 1;">${message}</div>
+            <button onclick="this.parentElement.remove()" style="background: none; border: none; color: white; cursor: pointer; padding: 0;">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        
+        container.appendChild(notification);
+        
+        // Animate in
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 10);
         
         // Auto-remove after 5 seconds
         setTimeout(() => {
-            notification.classList.remove('show');
-            setTimeout(() => notification.remove(), 300);
+            notification.style.transform = 'translateX(450px)';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
         }, 5000);
-    }
+    };
     
     // =============================================================================
     // EVENT HANDLERS
@@ -570,10 +637,8 @@
             loadCart();
             updateCartBadge();
             
-            // Refresh cart display if on cart page
-            if (typeof window.displayCart === 'function') {
-                window.displayCart();
-            }
+            // Dispatch event for cart page to update
+            window.dispatchEvent(new Event('cartUpdated'));
         }
     }
     
