@@ -193,14 +193,14 @@
             background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(5px);
             z-index: 9999;
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
             padding: 1rem;
         }
 
-        .state-modal.hidden {
-            display: none;
+        .state-modal.show {
+            display: flex;
         }
 
         .state-modal-content {
@@ -1085,7 +1085,7 @@
 <body>
 
 <!-- State Selector Modal -->
-<div class="state-modal hidden" id="stateModal">
+<div class="state-modal" id="stateModal">
     <div class="state-modal-content">
         <div class="state-modal-icon">
             <i class="fas fa-map-marker-alt"></i>
@@ -1493,21 +1493,27 @@
     const INVENTORY_CACHE_DURATION = 60000; // 1 minute cache
     
     // ================================================================
-    // STATE MANAGEMENT
+    // STATE MANAGEMENT - Uses global functions from cart.js
     // ================================================================
     
-    function getUserState() {
-        return localStorage.getItem('ohsUserState') || null;
+    // Wrapper to get state - uses global function from cart.js
+    function getUserStateLocal() {
+        return window.getUserState ? window.getUserState() : localStorage.getItem('ohsUserState');
     }
     
-    function setUserState(stateCode) {
-        localStorage.setItem('ohsUserState', stateCode);
+    // Wrapper to set state - uses global function from cart.js
+    function setUserStateLocal(stateCode) {
+        if (window.setUserState) {
+            window.setUserState(stateCode);
+        } else {
+            localStorage.setItem('ohsUserState', stateCode);
+        }
         updateStateDisplay();
         loadProducts(); // Reload products based on new state
     }
     
     function isUtahUser() {
-        return getUserState() === 'UT';
+        return getUserStateLocal() === 'UT';
     }
     
     function populateStateSelects() {
@@ -1576,7 +1582,7 @@
             });
             
             // Pre-select if state already saved
-            const savedState = getUserState();
+            const savedState = getUserStateLocal();
             if (savedState) {
                 modalSelect.value = savedState;
             }
@@ -1586,10 +1592,10 @@
     function showStateModal() {
         const modal = document.getElementById('stateModal');
         if (modal) {
-            modal.classList.remove('hidden');
+            modal.classList.add('show');
             
             // Pre-select current state
-            const savedState = getUserState();
+            const savedState = getUserStateLocal();
             const select = document.getElementById('modalStateSelect');
             if (savedState && select) {
                 select.value = savedState;
@@ -1601,12 +1607,12 @@
     function hideStateModal() {
         const modal = document.getElementById('stateModal');
         if (modal) {
-            modal.classList.add('hidden');
+            modal.classList.remove('show');
         }
     }
     
     function updateStateDisplay() {
-        const userState = getUserState();
+        const userState = getUserStateLocal();
         const states = window.US_STATES || [];
         const stateName = states.find(s => s.code === userState)?.name || 'Select State';
         const isUtah = userState === 'UT';
@@ -1641,7 +1647,7 @@
     
     function updateProductCounts() {
         const isUtah = isUtahUser();
-        const hasState = getUserState() !== null;
+        const hasState = getUserStateLocal() !== null;
         
         // Calculate counts
         const totalProducts = isUtah || !hasState ? 8 : 6;
@@ -1679,7 +1685,7 @@
     function getAvailableProducts() {
         if (!window.PRODUCT_CATALOG) return [];
         
-        const userState = getUserState();
+        const userState = getUserStateLocal();
         const isUtah = userState === 'UT';
         
         return Object.values(window.PRODUCT_CATALOG).filter(product => {
@@ -1697,7 +1703,7 @@
     }
     
     function getEPAProductsFiltered() {
-        const userState = getUserState();
+        const userState = getUserStateLocal();
         if (!userState || userState === 'UT') {
             return window.getEPAProducts ? window.getEPAProducts() : [];
         }
@@ -1952,7 +1958,7 @@
         
         await fetchShopifyInventory();
         
-        const userState = getUserState();
+        const userState = getUserStateLocal();
         const isUtah = userState === 'UT';
         
         // Get filtered products
@@ -2236,7 +2242,7 @@
         }
         
         // Check state restriction for EPA products
-        if (product.type === 'epa-usda' && getUserState() !== 'UT') {
+        if (product.type === 'epa-usda' && getUserStateLocal() !== 'UT') {
             showNotificationLocal('EPA products are only available for shipping within Utah.', 'error');
             return;
         }
@@ -2474,13 +2480,16 @@
         // Populate state selects
         populateStateSelects();
         
-        // Check if state is already selected
-        const savedState = getUserState();
-        if (!savedState) {
-            // Show state modal if no state selected
+        // Check if state modal should show (uses cart.js function if available)
+        if (window.shouldShowStateSelector && window.shouldShowStateSelector()) {
             showStateModal();
         } else {
-            updateStateDisplay();
+            const savedState = getUserStateLocal();
+            if (!savedState) {
+                showStateModal();
+            } else {
+                updateStateDisplay();
+            }
         }
         
         // Set up modal event listeners
@@ -2497,8 +2506,11 @@
             confirmBtn.addEventListener('click', function() {
                 const selectedState = modalSelect.value;
                 if (selectedState) {
-                    setUserState(selectedState);
+                    setUserStateLocal(selectedState);
                     hideStateModal();
+                    
+                    // Dispatch event for cross-page sync (like cart.html does)
+                    window.dispatchEvent(new CustomEvent('stateChanged', { detail: { state: selectedState } }));
                 }
             });
         }
@@ -2515,7 +2527,7 @@
         }
         
         console.log('✅ Products page initialization complete');
-        console.log('📍 User State:', savedState || 'Not selected');
+        console.log('📍 User State:', getUserStateLocal() || 'Not selected');
         console.log('🏷️ EPA Products visible:', getEPAProductsFiltered().length);
         console.log('🌿 USDA Products visible:', getUSDAProductsFiltered().length);
         
@@ -2539,6 +2551,13 @@
                 console.log('🔄 State updated from another page');
             }
         });
+        
+        // Listen for state changes from same page
+        window.addEventListener('stateChanged', function(e) {
+            updateStateDisplay();
+            loadProducts();
+            console.log('🔄 State changed:', e.detail?.state);
+        });
     });
     
     // Export functions globally
@@ -2558,8 +2577,8 @@
     window.updateWholesaleIndicator = updateWholesaleIndicator;
     window.showStateModal = showStateModal;
     window.hideStateModal = hideStateModal;
-    window.setUserState = setUserState;
-    window.getUserState = getUserState;
+    window.setUserStateLocal = setUserStateLocal;
+    window.getUserStateLocal = getUserStateLocal;
     window.isUtahUser = isUtahUser;
     
     console.log('🚀 Products Page JavaScript Loaded');
