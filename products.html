@@ -150,6 +150,157 @@
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
         }
 
+        /* State Selector in Navbar */
+        .state-selector-nav {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 0.4rem 0.8rem;
+            color: white;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .state-selector-nav:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .state-selector-nav select {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 0.85rem;
+            cursor: pointer;
+            padding-right: 1rem;
+        }
+
+        .state-selector-nav select option {
+            color: #2E5EAA;
+            background: white;
+        }
+
+        /* State Modal */
+        .state-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .state-modal.hidden {
+            display: none;
+        }
+
+        .state-modal-content {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .state-modal-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .state-modal h3 {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .state-modal p {
+            color: var(--gray-600);
+            margin-bottom: 1.5rem;
+        }
+
+        .state-select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--gray-200);
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .state-select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .state-modal-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .state-modal-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(46, 94, 170, 0.4);
+        }
+
+        .state-modal-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .state-info {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #f0f9ff;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            text-align: left;
+        }
+
+        .state-info i {
+            color: var(--primary-blue);
+            margin-right: 0.5rem;
+        }
+
         /* GREEN Promotional Banner */
         .promo-banner {
             background: linear-gradient(90deg, #22C55E 0%, #4ADE80 50%, #22C55E 100%);
@@ -296,6 +447,54 @@
             margin: 1rem auto 0;
             border: 2px solid rgba(146, 64, 14, 0.2);
             box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+        }
+
+        /* State Badge in Hero */
+        .state-badge {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .state-badge:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .state-badge i {
+            margin-right: 0.5rem;
+        }
+
+        .state-badge .change-state {
+            margin-left: 0.5rem;
+            text-decoration: underline;
+            opacity: 0.8;
+        }
+
+        /* Utah Banner */
+        .utah-exclusive-banner {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .utah-exclusive-banner h5 {
+            color: #92400e;
+            margin-bottom: 0.5rem;
+        }
+
+        .utah-exclusive-banner p {
+            color: #78350f;
+            margin: 0;
+            font-size: 0.9rem;
         }
 
         /* FLOATING CART BUTTON */
@@ -871,10 +1070,40 @@
             .cart-preview.show {
                 right: 10px;
             }
+
+            .state-selector-nav {
+                font-size: 0.75rem;
+                padding: 0.3rem 0.6rem;
+            }
+
+            .state-modal-content {
+                padding: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
+
+<!-- State Selector Modal -->
+<div class="state-modal hidden" id="stateModal">
+    <div class="state-modal-content">
+        <div class="state-modal-icon">
+            <i class="fas fa-map-marker-alt"></i>
+        </div>
+        <h3>Welcome to Organic HypoSolutions!</h3>
+        <p>Please select your shipping state to see available products and accurate pricing.</p>
+        <select class="state-select" id="modalStateSelect">
+            <option value="">-- Select Your State --</option>
+        </select>
+        <button class="state-modal-btn" id="confirmStateBtn" disabled>
+            <i class="fas fa-check me-2"></i>Confirm Location
+        </button>
+        <div class="state-info">
+            <i class="fas fa-info-circle"></i>
+            <strong>Why do we ask?</strong> Some products (EPA registered disinfectants) are currently only available in Utah due to regulatory requirements. USDA Certified Organic products ship nationwide.
+        </div>
+    </div>
+</div>
 
 <!-- GREEN Promotional Banner -->
 <div class="promo-banner text-center" id="promoBanner">
@@ -906,6 +1135,15 @@
         
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-center">
+                <!-- State Selector in Navbar -->
+                <li class="nav-item me-2">
+                    <div class="state-selector-nav" onclick="showStateModal()">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span id="navStateName">Select State</span>
+                        <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+                    </div>
+                </li>
+                
                 <li class="nav-item">
                     <a class="nav-link" href="index.html">
                         <i class="fas fa-home me-1"></i>Home
@@ -974,8 +1212,15 @@
 <!-- Hero Section -->
 <section class="hero-section">
     <div class="container text-center">
+        <!-- State Badge -->
+        <div class="state-badge" onclick="showStateModal()" id="heroStateBadge">
+            <i class="fas fa-map-marker-alt"></i>
+            <span id="heroStateName">Shipping to: Select State</span>
+            <span class="change-state">Change</span>
+        </div>
+        
         <h1 class="display-4 fw-bold mb-3">Professional Hypochlorous Acid Products</h1>
-        <p class="lead mb-4">EPA Premium & USDA Organic - Utah Manufactured</p>
+        <p class="lead mb-4" id="heroSubtitle">EPA Premium & USDA Organic - Utah Manufactured</p>
         
         <div class="patent-badge">
             <i class="fas fa-certificate me-2"></i>
@@ -991,13 +1236,13 @@
                 <span class="stat-number" id="activeProductCount">8</span>
                 <span class="stat-label">Available Now</span>
             </div>
-            <div class="stat-item">
-                <span class="stat-number" id="comingSoonCount">0</span>
-                <span class="stat-label">Coming Soon</span>
+            <div class="stat-item" id="epaProductStat">
+                <span class="stat-number" id="epaProductCount">2</span>
+                <span class="stat-label">EPA + USDA</span>
             </div>
             <div class="stat-item">
-                <span class="stat-number">FAMILY</span>
-                <span class="stat-label">Owned</span>
+                <span class="stat-number" id="usdaProductCount">6</span>
+                <span class="stat-label">USDA Organic</span>
             </div>
         </div>
 
@@ -1144,9 +1389,9 @@
             <div class="col-md-2 mb-4">
                 <h6 class="footer-heading">Products</h6>
                 <ul class="footer-list">
-                    <li><a href="products.html">USDA Organic (8)</a></li>
-                    <li><a href="products.html">EPA Registered (2)</a></li>
-                    <li><a href="products.html">All Products</a></li>
+                    <li><a href="products.html" id="footerUsdaCount">USDA Organic (6)</a></li>
+                    <li><a href="products.html" id="footerEpaCount">EPA Registered (2)</a></li>
+                    <li><a href="products.html" id="footerAllCount">All Products</a></li>
                 </ul>
             </div>
             
@@ -1209,7 +1454,7 @@
                     <p class="mb-0">&copy; 2025 Organic HypoSolutions. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <span class="footer-badge">8 Products</span>
+                    <span class="footer-badge" id="footerProductBadge">8 Products</span>
                     <span class="footer-badge">Family Owned</span>
                     <span class="footer-badge">Patent Pending</span>
                 </div>
@@ -1248,6 +1493,222 @@
     const INVENTORY_CACHE_DURATION = 60000; // 1 minute cache
     
     // ================================================================
+    // STATE MANAGEMENT
+    // ================================================================
+    
+    function getUserState() {
+        return localStorage.getItem('ohsUserState') || null;
+    }
+    
+    function setUserState(stateCode) {
+        localStorage.setItem('ohsUserState', stateCode);
+        updateStateDisplay();
+        loadProducts(); // Reload products based on new state
+    }
+    
+    function isUtahUser() {
+        return getUserState() === 'UT';
+    }
+    
+    function populateStateSelects() {
+        const states = window.US_STATES || [
+            { code: 'AL', name: 'Alabama' },
+            { code: 'AK', name: 'Alaska' },
+            { code: 'AZ', name: 'Arizona' },
+            { code: 'AR', name: 'Arkansas' },
+            { code: 'CA', name: 'California' },
+            { code: 'CO', name: 'Colorado' },
+            { code: 'CT', name: 'Connecticut' },
+            { code: 'DE', name: 'Delaware' },
+            { code: 'FL', name: 'Florida' },
+            { code: 'GA', name: 'Georgia' },
+            { code: 'HI', name: 'Hawaii' },
+            { code: 'ID', name: 'Idaho' },
+            { code: 'IL', name: 'Illinois' },
+            { code: 'IN', name: 'Indiana' },
+            { code: 'IA', name: 'Iowa' },
+            { code: 'KS', name: 'Kansas' },
+            { code: 'KY', name: 'Kentucky' },
+            { code: 'LA', name: 'Louisiana' },
+            { code: 'ME', name: 'Maine' },
+            { code: 'MD', name: 'Maryland' },
+            { code: 'MA', name: 'Massachusetts' },
+            { code: 'MI', name: 'Michigan' },
+            { code: 'MN', name: 'Minnesota' },
+            { code: 'MS', name: 'Mississippi' },
+            { code: 'MO', name: 'Missouri' },
+            { code: 'MT', name: 'Montana' },
+            { code: 'NE', name: 'Nebraska' },
+            { code: 'NV', name: 'Nevada' },
+            { code: 'NH', name: 'New Hampshire' },
+            { code: 'NJ', name: 'New Jersey' },
+            { code: 'NM', name: 'New Mexico' },
+            { code: 'NY', name: 'New York' },
+            { code: 'NC', name: 'North Carolina' },
+            { code: 'ND', name: 'North Dakota' },
+            { code: 'OH', name: 'Ohio' },
+            { code: 'OK', name: 'Oklahoma' },
+            { code: 'OR', name: 'Oregon' },
+            { code: 'PA', name: 'Pennsylvania' },
+            { code: 'RI', name: 'Rhode Island' },
+            { code: 'SC', name: 'South Carolina' },
+            { code: 'SD', name: 'South Dakota' },
+            { code: 'TN', name: 'Tennessee' },
+            { code: 'TX', name: 'Texas' },
+            { code: 'UT', name: 'Utah' },
+            { code: 'VT', name: 'Vermont' },
+            { code: 'VA', name: 'Virginia' },
+            { code: 'WA', name: 'Washington' },
+            { code: 'WV', name: 'West Virginia' },
+            { code: 'WI', name: 'Wisconsin' },
+            { code: 'WY', name: 'Wyoming' },
+            { code: 'DC', name: 'District of Columbia' }
+        ];
+        
+        const modalSelect = document.getElementById('modalStateSelect');
+        if (modalSelect) {
+            modalSelect.innerHTML = '<option value="">-- Select Your State --</option>';
+            states.forEach(state => {
+                const option = document.createElement('option');
+                option.value = state.code;
+                option.textContent = state.name;
+                modalSelect.appendChild(option);
+            });
+            
+            // Pre-select if state already saved
+            const savedState = getUserState();
+            if (savedState) {
+                modalSelect.value = savedState;
+            }
+        }
+    }
+    
+    function showStateModal() {
+        const modal = document.getElementById('stateModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            
+            // Pre-select current state
+            const savedState = getUserState();
+            const select = document.getElementById('modalStateSelect');
+            if (savedState && select) {
+                select.value = savedState;
+                document.getElementById('confirmStateBtn').disabled = false;
+            }
+        }
+    }
+    
+    function hideStateModal() {
+        const modal = document.getElementById('stateModal');
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    }
+    
+    function updateStateDisplay() {
+        const userState = getUserState();
+        const states = window.US_STATES || [];
+        const stateName = states.find(s => s.code === userState)?.name || 'Select State';
+        const isUtah = userState === 'UT';
+        
+        // Update navbar
+        const navStateName = document.getElementById('navStateName');
+        if (navStateName) {
+            navStateName.textContent = stateName;
+        }
+        
+        // Update hero badge
+        const heroStateName = document.getElementById('heroStateName');
+        if (heroStateName) {
+            heroStateName.textContent = userState ? `Shipping to: ${stateName}` : 'Shipping to: Select State';
+        }
+        
+        // Update hero subtitle
+        const heroSubtitle = document.getElementById('heroSubtitle');
+        if (heroSubtitle) {
+            if (isUtah) {
+                heroSubtitle.textContent = 'EPA Premium & USDA Organic - All 8 Products Available';
+            } else if (userState) {
+                heroSubtitle.textContent = 'USDA Organic Products - Ships Nationwide';
+            } else {
+                heroSubtitle.textContent = 'EPA Premium & USDA Organic - Utah Manufactured';
+            }
+        }
+        
+        // Update product counts
+        updateProductCounts();
+    }
+    
+    function updateProductCounts() {
+        const isUtah = isUtahUser();
+        const hasState = getUserState() !== null;
+        
+        // Calculate counts
+        const totalProducts = isUtah || !hasState ? 8 : 6;
+        const epaProducts = isUtah || !hasState ? 2 : 0;
+        const usdaProducts = 6;
+        
+        // Update hero stats
+        document.getElementById('totalProductCount').textContent = totalProducts;
+        document.getElementById('activeProductCount').textContent = totalProducts;
+        document.getElementById('epaProductCount').textContent = epaProducts;
+        document.getElementById('usdaProductCount').textContent = usdaProducts;
+        
+        // Show/hide EPA stat
+        const epaStat = document.getElementById('epaProductStat');
+        if (epaStat) {
+            epaStat.style.display = (isUtah || !hasState) ? 'block' : 'none';
+        }
+        
+        // Update footer
+        const footerBadge = document.getElementById('footerProductBadge');
+        if (footerBadge) {
+            footerBadge.textContent = `${totalProducts} Products`;
+        }
+        
+        const footerEpaCount = document.getElementById('footerEpaCount');
+        if (footerEpaCount) {
+            footerEpaCount.textContent = isUtah ? 'EPA Registered (2)' : 'EPA Registered (Utah Only)';
+        }
+    }
+    
+    // ================================================================
+    // PRODUCT FILTERING
+    // ================================================================
+    
+    function getAvailableProducts() {
+        if (!window.PRODUCT_CATALOG) return [];
+        
+        const userState = getUserState();
+        const isUtah = userState === 'UT';
+        
+        return Object.values(window.PRODUCT_CATALOG).filter(product => {
+            // If no state selected, show all products
+            if (!userState) return true;
+            
+            // USDA-only products are available everywhere
+            if (product.type === 'usda-only') return true;
+            
+            // EPA products only available in Utah
+            if (product.type === 'epa-usda') return isUtah;
+            
+            return true;
+        });
+    }
+    
+    function getEPAProductsFiltered() {
+        const userState = getUserState();
+        if (!userState || userState === 'UT') {
+            return window.getEPAProducts ? window.getEPAProducts() : [];
+        }
+        return [];
+    }
+    
+    function getUSDAProductsFiltered() {
+        return window.getUSDAOnlyProducts ? window.getUSDAOnlyProducts() : [];
+    }
+    
+    // ================================================================
     // SHOPIFY STOREFRONT API - INVENTORY FETCHING
     // ================================================================
     
@@ -1257,7 +1718,8 @@
             return inventoryCache;
         }
         
-        const productIds = Object.values(window.PRODUCT_CATALOG)
+        const availableProducts = getAvailableProducts();
+        const productIds = availableProducts
             .filter(p => p.id && p.status !== 'coming-soon')
             .map(p => `gid://shopify/Product/${p.id}`);
         
@@ -1490,12 +1952,12 @@
         
         await fetchShopifyInventory();
         
-        // Get user state for geographic restrictions
-        const userState = window.getUserState ? window.getUserState() : null;
+        const userState = getUserState();
+        const isUtah = userState === 'UT';
         
-        // Separate products by type
-        const epaProducts = window.getEPAProducts ? window.getEPAProducts() : [];
-        const usdaProducts = window.getUSDAProducts ? window.getUSDAProducts() : [];
+        // Get filtered products
+        const epaProducts = getEPAProductsFiltered();
+        const usdaProducts = getUSDAProductsFiltered();
         
         let html = '';
         
@@ -1505,7 +1967,8 @@
                 <section class="mb-4">
                     <div class="section-header epa">
                         <h2><i class="fas fa-shield-alt me-2"></i>EPA Registered + USDA Organic</h2>
-                        <p>Dual-Certified Professional Disinfectants - Utah Only</p>
+                        <p>Dual-Certified Professional Disinfectants - Utah Exclusive</p>
+                        <small class="text-muted">EPA Registration #97801-1 • USDA Certificate #Z-699995-2008</small>
                     </div>
                     <div class="row">
             `;
@@ -1517,6 +1980,16 @@
             html += '</div></section>';
         }
         
+        // Utah Exclusive Banner for non-Utah users
+        if (!isUtah && userState) {
+            html += `
+                <div class="utah-exclusive-banner">
+                    <h5><i class="fas fa-map-marker-alt me-2"></i>EPA Premium Products Available in Utah Only</h5>
+                    <p>Our EPA registered disinfectants are currently only available for shipping within Utah due to regulatory requirements. <a href="#" onclick="setUserState('UT'); return false;">Switch to Utah</a> to view these products.</p>
+                </div>
+            `;
+        }
+        
         // USDA Products Section (Nationwide)
         if (usdaProducts.length > 0) {
             html += `
@@ -1524,6 +1997,7 @@
                     <div class="section-header organic">
                         <h2><i class="fas fa-leaf me-2"></i>USDA Organic Line</h2>
                         <p>Family-safe USDA Certified Organic Products - Ships Nationwide</p>
+                        <small class="text-muted">USDA Certificate #Z-699995-2008</small>
                     </div>
                     <div class="row">
             `;
@@ -1542,6 +2016,9 @@
             productQuantities[id] = 1;
         });
         
+        // Update counts
+        updateProductCounts();
+        
         setInterval(refreshInventoryDisplay, INVENTORY_CACHE_DURATION);
     }
     
@@ -1552,7 +2029,6 @@
         const inventoryStatus = getInventoryStatus(product.id);
         const isOutOfStock = inventoryStatus.status === 'out-of-stock';
         const isEpaProduct = product.type === 'epa-usda';
-        const isRestricted = isEpaProduct && userState && userState !== 'UT';
         
         // Determine badge color and type
         const badgeColor = isEpaProduct ? '#f59e0b' : '#4ADE80';
@@ -1591,7 +2067,12 @@
                                 <i class="fas fa-map-marker-alt me-1"></i>
                                 <strong>Utah Only</strong> - EPA registered products ship to Utah addresses only
                             </div>
-                        ` : ''}
+                        ` : `
+                            <div class="state-restriction-notice" style="background: linear-gradient(135deg, #dcfce7, #bbf7d0); border-color: #86efac; color: #166534;">
+                                <i class="fas fa-truck me-1"></i>
+                                <strong>Ships Nationwide</strong> - Available in all 50 states
+                            </div>
+                        `}
                         
                         ${isComingSoon ? `
                             <div class="availability-notice">
@@ -1614,20 +2095,6 @@
                             </div>
                             <button class="btn btn-secondary w-100 mb-2" disabled>
                                 <i class="fas fa-times me-2"></i>Out of Stock
-                            </button>
-                        ` : isRestricted ? `
-                            <div class="price-display mb-3">
-                                <div class="current-price">$${retail.toFixed(2)}</div>
-                                <div class="price-label">Retail Price</div>
-                            </div>
-                            <div class="text-muted small mb-2">SKU: ${product.skus?.retail || 'N/A'}</div>
-                            <div class="alert alert-warning py-2 px-3 mb-2">
-                                <i class="fas fa-exclamation-triangle me-1"></i>
-                                <strong>Not available in your state</strong>
-                                <br><small>EPA products only ship to Utah</small>
-                            </div>
-                            <button class="btn btn-secondary w-100 mb-2" disabled>
-                                <i class="fas fa-ban me-2"></i>Utah Only
                             </button>
                         ` : `
                             <div class="price-display mb-3">
@@ -1690,12 +2157,12 @@
     async function refreshInventoryDisplay() {
         await fetchShopifyInventory();
         
-        Object.keys(window.PRODUCT_CATALOG).forEach(productId => {
-            const product = window.PRODUCT_CATALOG[productId];
+        const availableProducts = getAvailableProducts();
+        availableProducts.forEach(product => {
             if (product.status === 'coming-soon') return;
             
-            const inventoryStatus = getInventoryStatus(productId);
-            const card = document.querySelector(`[data-product-id="${productId}"]`);
+            const inventoryStatus = getInventoryStatus(product.id);
+            const card = document.querySelector(`[data-product-id="${product.id}"]`);
             
             if (card) {
                 const inventoryBadge = card.querySelector('.inventory-badge');
@@ -1704,7 +2171,7 @@
                     inventoryBadge.innerHTML = `<i class="fas fa-${inventoryStatus.status === 'out-of-stock' ? 'times-circle' : inventoryStatus.status === 'low-stock' ? 'exclamation-triangle' : 'check-circle'} me-1"></i>${inventoryStatus.badgeText}`;
                 }
                 
-                const qtyInput = document.getElementById(`qty-${productId}`);
+                const qtyInput = document.getElementById(`qty-${product.id}`);
                 if (qtyInput && inventoryStatus.quantity) {
                     qtyInput.max = inventoryStatus.quantity;
                 }
@@ -1765,6 +2232,12 @@
         
         if (product.pricing.retail === null) {
             showNotificationLocal('This product is not yet available for purchase.', 'error');
+            return;
+        }
+        
+        // Check state restriction for EPA products
+        if (product.type === 'epa-usda' && getUserState() !== 'UT') {
+            showNotificationLocal('EPA products are only available for shipping within Utah.', 'error');
             return;
         }
         
@@ -1998,6 +2471,38 @@
         
         console.log('📦 Product catalog loaded with', Object.keys(window.PRODUCT_CATALOG).length, 'products');
         
+        // Populate state selects
+        populateStateSelects();
+        
+        // Check if state is already selected
+        const savedState = getUserState();
+        if (!savedState) {
+            // Show state modal if no state selected
+            showStateModal();
+        } else {
+            updateStateDisplay();
+        }
+        
+        // Set up modal event listeners
+        const modalSelect = document.getElementById('modalStateSelect');
+        const confirmBtn = document.getElementById('confirmStateBtn');
+        
+        if (modalSelect) {
+            modalSelect.addEventListener('change', function() {
+                confirmBtn.disabled = !this.value;
+            });
+        }
+        
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', function() {
+                const selectedState = modalSelect.value;
+                if (selectedState) {
+                    setUserState(selectedState);
+                    hideStateModal();
+                }
+            });
+        }
+        
         // Load products with inventory
         await loadProducts();
         
@@ -2009,26 +2514,10 @@
             if (banner) banner.style.display = 'none';
         }
         
-        // Update counts
-        const allProducts = Object.values(window.PRODUCT_CATALOG);
-        const activeProducts = allProducts.filter(p => p.status !== 'coming-soon');
-        const comingSoonProducts = allProducts.filter(p => p.status === 'coming-soon');
-        
-        const totalCountEl = document.getElementById('totalProductCount');
-        const activeCountEl = document.getElementById('activeProductCount');
-        const comingSoonCountEl = document.getElementById('comingSoonCount');
-        
-        if (totalCountEl) totalCountEl.textContent = allProducts.length;
-        if (activeCountEl) activeCountEl.textContent = activeProducts.length;
-        if (comingSoonCountEl) comingSoonCountEl.textContent = comingSoonProducts.length;
-        
         console.log('✅ Products page initialization complete');
-        console.log('💰 Wholesale Pricing Thresholds:');
-        allProducts.forEach(p => {
-            if (p.wholesaleThreshold && p.pricing.retail !== null) {
-                console.log(`   ${p.name}: ${p.wholesaleThreshold}+ units → $${p.pricing.wholesale} (save $${(p.pricing.retail - p.pricing.wholesale).toFixed(2)}/unit)`);
-            }
-        });
+        console.log('📍 User State:', savedState || 'Not selected');
+        console.log('🏷️ EPA Products visible:', getEPAProductsFiltered().length);
+        console.log('🌿 USDA Products visible:', getUSDAProductsFiltered().length);
         
         if (typeof gtag !== 'undefined') {
             gtag('event', 'page_view', {
@@ -2043,6 +2532,11 @@
                 updateCartBadges();
                 updateCartPreview();
                 console.log('🔄 Cart updated from another page');
+            }
+            if (e.key === 'ohsUserState') {
+                updateStateDisplay();
+                loadProducts();
+                console.log('🔄 State updated from another page');
             }
         });
     });
@@ -2062,6 +2556,11 @@
     window.refreshInventoryDisplay = refreshInventoryDisplay;
     window.fetchShopifyInventory = fetchShopifyInventory;
     window.updateWholesaleIndicator = updateWholesaleIndicator;
+    window.showStateModal = showStateModal;
+    window.hideStateModal = hideStateModal;
+    window.setUserState = setUserState;
+    window.getUserState = getUserState;
+    window.isUtahUser = isUtahUser;
     
     console.log('🚀 Products Page JavaScript Loaded');
     console.log('📧 Contact: OHS@OrganicHypoSolutions.com');
