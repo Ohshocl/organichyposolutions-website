@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OHS Hypochlorous Healing Skin Serum - 100ml Label</title>
+    <title>OHS Hypochlorous Skin Serum - 100ml Label</title>
     <style>
         * {
             margin: 0;
@@ -38,7 +38,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: row;
-            gap: 0.15in;
+            gap: 0;
         }
 
         @media screen {
@@ -53,209 +53,262 @@
         }
 
         @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-            .page {
-                margin: 0;
-                box-shadow: none;
-            }
+            body { background: white; padding: 0; }
+            .page { margin: 0; box-shadow: none; }
         }
 
         /* ========================================
-           FRONT PANEL
+           FRONT PANEL - LEFT SIDE
            ======================================== */
         .front-panel {
             background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%);
             color: white;
-            padding: 5px 6px 3px 6px;
-            flex: 1;
+            padding: 4px 8px 3px 8px;
+            width: 50%;
             height: 100%;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 3px;
+            justify-content: flex-start;
+            gap: 0;
             position: relative;
-            border-radius: 3px;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             color-adjust: exact;
         }
 
-        .front-top-row {
-            width: 100%;
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 0px;
+        /* Large spacer above logo — floats it down from top */
+        .front-spacer-top {
+            flex: 1;
         }
 
-        .warning-box {
-            background: #E8723A;
-            color: white;
-            padding: 1.5px 3px;
-            border-radius: 2px;
-            font-weight: bold;
-            font-size: 3px;
-            max-width: 42px;
+        /* Small fixed gap between logo and content below */
+        .front-spacer-bottom {
+            flex: 0 0 4px;
+        }
+
+        .logo-center {
             text-align: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-            border: 1px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-image {
+            max-width: 220px;
+            max-height: 0.75in;
+            width: auto;
+            height: auto;
+            background: white;
+            padding: 4px;
+            border-radius: 3px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            color-adjust: exact;
+        }
+
+        /* Title row: product name + feature circle */
+        .title-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 1.5px;
+        }
+
+        .product-title {
+            text-align: center;
+            flex: 1;
+        }
+
+        .product-name {
+            font-size: 9px;
+            font-weight: bold;
+            letter-spacing: 0.3px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            line-height: 1;
+        }
+
+        .product-subtitle {
+            font-size: 5px;
+            font-weight: 500;
+            margin-top: 1px;
+            letter-spacing: 0.2px;
+            opacity: 0.95;
+        }
+
+        .product-size {
+            font-size: 4.5px;
+            margin-top: 0.5px;
+            opacity: 0.85;
+        }
+
+        /* Feature circle badge */
+        .feature-badge-circle {
+            background: rgba(255,255,255,0.95);
+            color: #2E7D32;
+            border: 2px solid #4CAF50;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            min-width: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            color-adjust: exact;
+        }
+
+        .feature-badge-circle-text {
+            font-size: 4px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.3;
+            color: #2E7D32;
+        }
+
+        /* Feature badges row */
+        .badge-container {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin: 1px 0;
+        }
+
+        .feature-badge {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 1.5px 3px;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+            flex: 1;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            color-adjust: exact;
+        }
+
+        .feature-badge-title {
+            font-size: 5.5px;
+            margin-bottom: 0.5px;
+            line-height: 1.1;
+        }
+
+        .feature-badge-text {
+            font-size: 3.5px;
+            color: #555;
+            line-height: 1.1;
+            font-weight: normal;
+        }
+
+        /* Main claim bar */
+        .main-claim {
+            font-size: 5px;
+            font-weight: bold;
+            margin: 1px 0;
+            text-align: center;
+            background: rgba(255,255,255,0.2);
+            padding: 1.5px 3px;
+            border-radius: 3px;
             line-height: 1.2;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             color-adjust: exact;
         }
 
-        .logo-image {
-            max-width: 95px;
-            height: auto;
-            background: white;
-            padding: 3px;
-            border-radius: 2px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.25);
-        }
-
-        .badge-container {
-            display: flex;
-            justify-content: center;
-            gap: 4px;
-            margin: 1.5px 0;
-        }
-
-        .badge {
-            background: #B8E8D0;
-            color: #2E7D32;
-            padding: 2.5px;
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            border: 1.5px solid #4CAF50;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
-        }
-
-        .badge-large {
-            font-size: 5.5px;
-            margin-bottom: 0.5px;
-            line-height: 1;
-            text-align: center;
-        }
-
-        .badge-small {
-            font-size: 3.5px;
-            text-align: center;
-            line-height: 1.1;
-        }
-
-        .main-claim {
-            font-size: 7.5px;
-            font-weight: bold;
-            margin: 2px 0;
-            text-align: center;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-            background: #3DA8D5;
-            padding: 3px 5px;
-            border-radius: 2px;
-            color: white;
-            width: 100%;
-            line-height: 1.15;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
-        }
-
-        .sub-claim {
-            font-size: 5.5px;
+        /* Info grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3px;
             margin: 1px 0;
-            text-align: center;
-            font-weight: 500;
-            background: #3DA8D5;
-            padding: 2px 5px;
-            border-radius: 2px;
-            width: 100%;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
-        .front-bottom {
-            margin-top: auto;
-            width: 100%;
-            text-align: center;
-        }
-
-        .front-size {
-            font-size: 5px;
-            padding: 2px 4px;
+        .info-box {
             background: rgba(255,255,255,0.95);
             color: #333;
-            border-radius: 2px;
+            padding: 1.5px 2.5px;
+            border-radius: 3px;
+            font-size: 3.5px;
+            line-height: 1.2;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            color-adjust: exact;
+        }
+
+        .info-box-title {
+            font-weight: bold;
+            font-size: 4px;
+            margin-bottom: 1px;
+            color: #5BBFC2;
+            border-bottom: 1px solid #5BBFC2;
+            padding-bottom: 0.5px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            color-adjust: exact;
+        }
+
+        .info-box ul {
+            margin-left: 4px;
+            margin-top: 0;
+        }
+
+        .info-box li {
+            margin-bottom: 0.3px;
+            font-size: 3.5px;
+        }
+
+        .info-box p {
+            margin-bottom: 0.5px;
+        }
+
+        /* Net contents */
+        .net-contents {
+            font-size: 5px;
+            padding: 1.5px;
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            border-radius: 3px;
             text-align: center;
             font-weight: bold;
+            margin-top: 1.5px;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             color-adjust: exact;
         }
 
         /* ========================================
-           BACK PANEL
+           BACK PANEL - RIGHT SIDE
            ======================================== */
         .back-panel {
-            padding: 3px 5px 2px 5px;
+            padding: 4px 6px 3px 6px;
             background: white;
-            flex: 1;
+            width: 50%;
             height: 100%;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            border-radius: 3px;
-            border: 1px solid #7AD4D6;
+            border-left: 1.5px solid #7AD4D6;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             color-adjust: exact;
         }
 
-        .active-ingredient-box {
-            background: #f9f9f9;
-            border: 1px solid #7AD4D6;
-            padding: 2px 3px;
+        .back-header {
+            background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%);
+            color: white;
+            padding: 2px 4px;
+            font-weight: bold;
+            font-size: 6px;
+            text-align: center;
             border-radius: 2px;
-            font-size: 3.5px;
-            line-height: 1.3;
-            margin-bottom: 1.5px;
+            margin-bottom: 2px;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             color-adjust: exact;
-        }
-
-        .active-ingredient-box .ai-title {
-            font-weight: bold;
-            font-size: 4px;
-            color: #5BBFC2;
-            margin-bottom: 0.5px;
-        }
-
-        .active-ingredient-box .ai-row {
-            font-size: 3.5px;
-            font-family: 'Courier New', monospace;
-        }
-
-        .active-ingredient-box .ai-total {
-            font-size: 3.5px;
-            font-weight: bold;
-            font-family: 'Courier New', monospace;
-            border-top: 0.5px solid #ccc;
-            padding-top: 0.5px;
-            margin-top: 0.5px;
         }
 
         .section-compact {
@@ -267,7 +320,7 @@
             color: white;
             padding: 1px 3px;
             font-weight: bold;
-            font-size: 4px;
+            font-size: 4.5px;
             margin-bottom: 1px;
             border-radius: 2px;
             -webkit-print-color-adjust: exact;
@@ -277,40 +330,39 @@
 
         .section-content {
             padding: 0 2px;
-            line-height: 1.15;
-            font-size: 3.5px;
+            line-height: 1.2;
+            font-size: 4px;
         }
 
         .section-content p {
             margin-bottom: 1px;
         }
 
-        .bold {
-            font-weight: bold;
-        }
+        .bold { font-weight: bold; }
 
         .two-column {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 3px;
+            margin-bottom: 1.5px;
         }
 
-        ul {
+        .two-column ul {
             margin-left: 5px;
-            margin-top: 0.5px;
+            margin-top: 0;
         }
 
-        li {
+        .two-column li {
             margin-bottom: 0.3px;
-            line-height: 1.15;
-            font-size: 3.5px;
+            font-size: 4px;
+            line-height: 1.2;
         }
 
         .footer {
             background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%);
             color: white;
-            padding: 2px 3px;
-            font-size: 3.5px;
+            padding: 2px 4px;
+            font-size: 4px;
             margin-top: auto;
             border-radius: 2px;
             display: flex;
@@ -321,83 +373,95 @@
             color-adjust: exact;
         }
 
-        .footer-left {
-            text-align: left;
-        }
-
-        .footer-right {
-            text-align: right;
-        }
-
-        .footer p {
-            margin: 0.3px 0;
-        }
-
-        .net-contents-back {
-            font-size: 4px;
-            padding: 1.5px 3px;
-            background: #f5f5f5;
-            color: #333;
-            border-radius: 2px;
-            text-align: center;
-            font-weight: bold;
-            margin-top: 1px;
-            border: 0.5px solid #7AD4D6;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
-        }
+        .footer p { margin: 0.3px 0; }
+        .footer-left { text-align: left; }
+        .footer-right { text-align: right; }
     </style>
 </head>
 <body>
-    <!-- SINGLE PAGE - 5.75" x 2" - WRAP-AROUND LABEL -->
     <div class="page">
+
         <!-- FRONT PANEL -->
         <div class="front-panel">
-            <img src="assets/images/logos/epa OHS Brand Image.jpg" alt="OHS Logo" class="logo-image">
 
+            <div class="front-spacer-top"></div>
+
+            <div class="logo-center">
+                <img src="assets/images/logos/epa OHS Brand Image.jpg" alt="OHS Logo" class="logo-image">
+            </div>
+
+            <div class="front-spacer-bottom"></div>
+
+            <!-- Product Title + Feature Circle -->
+            <div class="title-row">
+                <div class="product-title">
+                    <div class="product-name">Hypochlorous Skin Serum</div>
+                    <div class="product-subtitle">Soothing &amp; Conditioning Skin Care</div>
+                    <div class="product-size">Net Contents: 100ml (3.4 fl oz)</div>
+                </div>
+                <div class="feature-badge-circle">
+                    <div class="feature-badge-circle-text">
+                        ALL<br>NATURAL<br>FORMULA
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Badges -->
             <div class="badge-container">
-                <div class="badge">
-                    <div class="badge-large">0.03%</div>
-                    <div class="badge-large">HOCl</div>
-                    <div class="badge-small">Faster Healing<br>Formula</div>
+                <div class="feature-badge">
+                    <div class="feature-badge-title">Soothes<br>Skin</div>
+                    <div class="feature-badge-text">Gentle &amp; non-irritating</div>
                 </div>
-                <div class="badge">
-                    <div class="badge-large">All Natural</div>
-                    <div class="badge-small">Thicker Texture<br>Stays Longer</div>
+                <div class="feature-badge">
+                    <div class="feature-badge-title">pH<br>Balanced</div>
+                    <div class="feature-badge-text">Safe for face &amp; body</div>
                 </div>
             </div>
 
+            <!-- Main Claim -->
             <div class="main-claim">
-                Natural Healing for Acne, Wounds,<br>Athlete's Foot & More
+                The same molecule your body naturally produces — now as a skin serum
             </div>
 
-            <div class="sub-claim">
-                Supports Your Skin's Natural Healing Process
+            <!-- Info Grid -->
+            <div class="info-grid">
+                <div class="info-box">
+                    <div class="info-box-title">PERFECT FOR:</div>
+                    <ul>
+                        <li>Sensitive &amp; irritated skin</li>
+                        <li>Post-shave skin care</li>
+                        <li>Dry or problem skin</li>
+                        <li>Face, body &amp; scalp</li>
+                        <li>All skin types &amp; ages</li>
+                    </ul>
+                </div>
+                <div class="info-box">
+                    <div class="info-box-title">INGREDIENTS:</div>
+                    <p><strong>Hypochlorous Acid … 0.03%</strong></p>
+                    <p>Pure Water &amp; Natural<br>Minerals … 99.97%</p>
+                    <p><strong>TOTAL … 100.00%</strong></p>
+                    <p style="margin-top: 2px; font-size: 4px; color: #555;">USDA Cert. Organic<br>#Z-699995-2008</p>
+                </div>
             </div>
 
-            <div class="sub-claim">
-                Ready to Use • Safe for All Ages
+            <!-- Net Contents -->
+            <div class="net-contents">
+                Net Contents: 100ml (3.4 fl oz)
             </div>
 
-            <div class="front-bottom">
-                <div class="front-size">Net Contents: 100ml (3.4 fl oz)</div>
-            </div>
         </div>
 
         <!-- BACK PANEL -->
         <div class="back-panel">
-            <div class="active-ingredient-box">
-                <div class="ai-title">INGREDIENTS</div>
-                <div class="ai-row">Hypochlorous Acid ……………………… 0.03%</div>
-                <div class="ai-row">Pure Water & Natural Minerals …… 99.97%</div>
-                <div class="ai-total">TOTAL …... 100.00%</div>
+            <div class="back-header">
+                Hypochlorous Skin Serum — Directions &amp; Product Information
             </div>
 
             <div class="section-compact">
-                <div class="section-title">HOW TO USE</div>
+                <div class="section-title">DIRECTIONS FOR USE</div>
                 <div class="section-content">
-                    <p><span class="bold">ACNE & BLEMISHES:</span> Apply to affected areas after cleansing. Use twice daily. <span class="bold">WOUNDS & CUTS:</span> Clean area, apply directly, cover if needed. Use 2-3x daily. <span class="bold">ATHLETE'S FOOT:</span> Apply to affected areas morning and night. <span class="bold">ECZEMA:</span> Apply thin layer as needed.</p>
+                    <p><span class="bold">GENERAL USE:</span> Apply a small amount to clean, dry skin. Gently massage into affected area. Allow to absorb fully. No rinsing required. Use as needed throughout the day.</p>
+                    <p style="margin-top: 1px;"><span class="bold">FACE:</span> Apply after cleansing as part of daily skin care routine. <span class="bold">BODY:</span> Apply directly to skin as needed. Safe for sensitive areas. <span class="bold">DRY SKIN:</span> Apply thin layer to dry or irritated areas for soothing relief.</p>
                 </div>
             </div>
 
@@ -406,13 +470,13 @@
                     <div class="section-title">KEY BENEFITS</div>
                     <div class="section-content">
                         <ul>
-                            <li>Promotes faster wound healing</li>
-                            <li>Reduces acne & blemishes</li>
                             <li>Soothes irritated skin</li>
-                            <li>Thicker than spray formulas</li>
-                            <li>Stays on affected areas longer</li>
+                            <li>Conditions &amp; refreshes</li>
+                            <li>Thicker serum texture</li>
+                            <li>Stays on skin longer</li>
                             <li>No harsh chemicals</li>
-                            <li>Safe for face and body</li>
+                            <li>Safe for all skin types</li>
+                            <li>Fragrance &amp; dye free</li>
                         </ul>
                     </div>
                 </div>
@@ -421,22 +485,22 @@
                     <div class="section-title">WHY IT WORKS</div>
                     <div class="section-content">
                         <ul>
-                            <li>Contains hypochlorous acid (HOCl)</li>
-                            <li>Same molecule your body produces</li>
-                            <li>Supports cellular healing</li>
+                            <li>HOCl naturally produced by body</li>
                             <li>pH balanced for skin</li>
-                            <li>Non-toxic & non-irritating</li>
+                            <li>Non-toxic &amp; non-irritating</li>
                             <li>Derived from natural minerals</li>
-                            <li>Eco-friendly & biodegradable</li>
+                            <li>Eco-friendly &amp; biodegradable</li>
+                            <li>Hypoallergenic formula</li>
+                            <li>USDA Certified Organic</li>
                         </ul>
                     </div>
                 </div>
             </div>
 
             <div class="section-compact">
-                <div class="section-title">PRECAUTIONS & STORAGE</div>
+                <div class="section-title">PRECAUTIONS &amp; STORAGE</div>
                 <div class="section-content">
-                    <p><strong>PRECAUTIONS:</strong> External use only. Avoid eyes. If irritation develops, discontinue use. <strong>STORAGE:</strong> Store at room temp (60–85°F) away from sunlight. Keep closed when not in use. Effective for 12 months from manufacture date.</p>
+                    <p><strong>PRECAUTIONS:</strong> External use only. Avoid direct contact with eyes. If irritation develops, discontinue use. Keep out of reach of children. <strong>STORAGE:</strong> Store at room temperature (60–85°F) away from direct sunlight. Keep closed when not in use. Best if used within 12 months of manufacture date.</p>
                 </div>
             </div>
 
@@ -445,21 +509,19 @@
                     <p><strong>DISTRIBUTED BY:</strong></p>
                     <p>Organic HypoSolutions LLC</p>
                     <p>Salt Lake City, UT 84101</p>
+                    <p>Made in Utah, USA</p>
                 </div>
                 <div class="footer-right">
                     <div style="display: flex; justify-content: flex-end; margin-bottom: 1px;">
-                        <img src="documents/qrcodes/OHS_Products_QR.png" alt="Scan for Products" style="width: 18px; height: 18px;">
+                        <img src="documents/qrcodes/OHS_Products_QR.png" alt="Scan for Products" style="width: 20px; height: 20px; background: white; padding: 1px; border-radius: 1px;">
                     </div>
                     <p>www.organichyposolutions.com</p>
+                    <p>OHS@OrganicHypoSolutions.com</p>
                     <p>(801) 712-5663</p>
                 </div>
             </div>
 
-            <div class="net-contents-back">
-                Net Contents: 100ml (3.4 fl oz)
-            </div>
         </div>
     </div>
-
 </body>
 </html>
