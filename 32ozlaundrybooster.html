@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>32oz Laundry Booster - OHS Label</title>
+    <title>32oz Laundry Booster - OHS Label (Compliant - No EPA)</title>
     <style>
         * {
             margin: 0;
@@ -23,6 +23,7 @@
             color-adjust: exact;
         }
 
+        /* Print-specific styles - EXACT PROOF DIMENSIONS: 10.325" x 4.875" */
         @page {
             size: 10.325in 4.875in;
             margin: 0;
@@ -38,9 +39,9 @@
             overflow: hidden;
             display: flex;
             flex-direction: row;
-            gap: 0.35in;
         }
 
+        /* Screen view only */
         @media screen {
             body {
                 background: #e0e0e0;
@@ -64,162 +65,250 @@
         }
 
         /* ========================================
-           FRONT PANEL
+           FRONT PANEL - LEFT SIDE
            ======================================== */
         .front-panel {
             background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%);
             color: white;
-            padding: 12px 14px 10px 14px;
-            flex: 1;
+            padding: 6px 12px 4px 12px;
+            width: 50%;
             height: 100%;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            gap: 4px;
+            justify-content: flex-start;
+            gap: 0px;
             position: relative;
-            border-radius: 6px;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             color-adjust: exact;
         }
 
-        .front-top-row {
-            width: 100%;
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 4px;
-        }
-
-        .warning-box {
-            background: #E8723A;
-            color: white;
-            padding: 4px 6px;
-            border-radius: 5px;
-            font-weight: bold;
-            font-size: 7px;
-            max-width: 75px;
+        /* Logo - Centered at Top */
+        .logo-center {
             text-align: center;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
-            border: 2px solid white;
-            line-height: 1.2;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        /* Spacer pushes everything below logo to the bottom */
+        .front-spacer {
+            flex: 1;
         }
 
         .logo-image {
-            max-width: 300px;
+            max-width: 280px;
             height: auto;
             background: white;
-            padding: 10px;
+            padding: 8px;
             border-radius: 6px;
             box-shadow: 0 3px 8px rgba(0,0,0,0.25);
-            margin-bottom: 6px;
         }
 
+        /* Title Row - Product Name + Feature Circle side by side */
+        .title-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 3px;
+        }
+
+        .feature-badge-circle {
+            background: rgba(255,255,255,0.95);
+            color: #2E7D32;
+            border: 2px solid #4CAF50;
+            border-radius: 50%;
+            width: 68px;
+            height: 68px;
+            min-width: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            color-adjust: exact;
+        }
+
+        .feature-badge-circle-text {
+            font-size: 6px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.25;
+            color: #2E7D32;
+        }
+
+        /* Product Title Block */
+        .product-title {
+            text-align: center;
+        }
+
+        .product-name {
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            line-height: 1;
+        }
+
+        .product-subtitle {
+            font-size: 8px;
+            font-weight: 500;
+            margin-top: 1px;
+            letter-spacing: 0.5px;
+        }
+
+        .product-size {
+            font-size: 7.5px;
+            margin-top: 0px;
+            opacity: 0.9;
+        }
+
+        /* Feature Badges Row */
         .badge-container {
             display: flex;
             justify-content: center;
-            gap: 14px;
-            margin: 6px 0;
+            gap: 8px;
+            margin: 2px 0;
         }
 
-        .badge {
-            background: #B8E8D0;
-            color: #2E7D32;
-            padding: 7px;
-            border-radius: 50%;
-            width: 85px;
-            height: 85px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        .feature-badge {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 3px 6px;
+            border-radius: 8px;
+            text-align: center;
             font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            border: 3px solid #4CAF50;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            flex: 1;
+            max-width: 110px;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             color-adjust: exact;
         }
 
-        .badge-large {
-            font-size: 10px;
+        .feature-badge-title {
+            font-size: 9px;
             margin-bottom: 1px;
-            line-height: 1;
-            text-align: center;
+            line-height: 1.1;
         }
 
-        .badge-small {
+        .feature-badge-text {
             font-size: 5.5px;
-            text-align: center;
-            line-height: 1.2;
+            color: #555;
+            line-height: 1.1;
+            font-weight: normal;
         }
 
+        /* Main Claim Bar - COMPLIANCE SAFE */
         .main-claim {
-            font-size: 12px;
+            font-size: 8.5px;
             font-weight: bold;
-            margin: 4px 0;
-            text-align: center;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-            background: #3DA8D5;
-            padding: 5px 10px;
-            border-radius: 5px;
-            color: white;
-            width: 100%;
-            line-height: 1.2;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
-        }
-
-        .sub-claim {
-            font-size: 9.5px;
             margin: 2px 0;
             text-align: center;
-            font-weight: 500;
-            background: #3DA8D5;
-            padding: 4px 10px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+            background: rgba(255,255,255,0.2);
+            padding: 3px 6px;
             border-radius: 5px;
-            width: 100%;
+            line-height: 1.15;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             color-adjust: exact;
         }
 
-        .front-bottom {
-            margin-top: auto;
-            width: 100%;
-            text-align: center;
+        /* Info Grid - PERFECT FOR + INGREDIENTS */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            margin: 2px 0;
         }
 
-        .front-size {
-            font-size: 9px;
-            padding: 3px 5px;
+        .info-box {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 3px 4px;
+            border-radius: 4px;
+            font-size: 5.5px;
+            line-height: 1.15;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            color-adjust: exact;
+        }
+
+        .info-box-title {
+            font-weight: bold;
+            font-size: 6.5px;
+            margin-bottom: 1px;
+            color: #5BBFC2;
+            border-bottom: 1.5px solid #5BBFC2;
+            padding-bottom: 1px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            color-adjust: exact;
+        }
+
+        .info-box ul {
+            margin-left: 7px;
+            margin-top: 0px;
+        }
+
+        .info-box li {
+            margin-bottom: 0px;
+            font-size: 5.5px;
+        }
+
+        .info-box p {
+            margin-bottom: 0.5px;
+        }
+
+        /* Warning Box on Front */
+        .front-warning-box {
+            background: #FF5722;
+            color: white;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 6px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            border: 1.5px solid white;
+            line-height: 1.1;
+            margin: 2px 0;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            color-adjust: exact;
+        }
+
+        /* Net Contents Front */
+        .net-contents {
+            font-size: 7px;
+            padding: 2px;
             background: rgba(255,255,255,0.95);
             color: #333;
             border-radius: 4px;
             text-align: center;
             font-weight: bold;
+            margin-top: 2px;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             color-adjust: exact;
         }
 
         /* ========================================
-           BACK PANEL
+           BACK PANEL - RIGHT SIDE
            ======================================== */
         .back-panel {
             padding: 8px 10px 6px 10px;
             background: white;
-            flex: 1;
+            width: 50%;
             height: 100%;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            border-radius: 6px;
-            border: 2px solid #7AD4D6;
+            border-left: 1px dashed #ccc;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             color-adjust: exact;
@@ -230,26 +319,26 @@
             color: white;
             padding: 3px 6px;
             font-weight: bold;
-            font-size: 8px;
+            font-size: 8.5px;
             text-align: center;
             border-radius: 4px;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             color-adjust: exact;
         }
 
         .section-compact {
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
         .section-title {
             background: #7AD4D6;
             color: white;
-            padding: 2px 5px;
+            padding: 1.5px 5px;
             font-weight: bold;
             font-size: 7px;
-            margin-bottom: 2px;
+            margin-bottom: 1.5px;
             border-radius: 3px;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
@@ -258,45 +347,43 @@
 
         .section-content {
             padding: 0 3px;
-            line-height: 1.25;
+            line-height: 1.2;
             font-size: 5.5px;
         }
 
         .section-content p {
-            margin-bottom: 1.5px;
+            margin-bottom: 1px;
         }
 
-        .bold {
-            font-weight: bold;
-        }
-
+        /* Fabric Warning */
         .back-warning {
             background: #FFF3E0;
             border: 1px solid #E8723A;
-            border-radius: 4px;
-            padding: 3px 5px;
-            margin-bottom: 3px;
+            border-radius: 3px;
+            padding: 2px 4px;
+            margin-bottom: 2px;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             color-adjust: exact;
         }
 
         .back-warning h6 {
-            font-size: 6.5px;
+            font-size: 6px;
             color: #E8723A;
             margin-bottom: 1px;
         }
 
         .back-warning p {
             font-size: 5.5px;
-            line-height: 1.25;
+            line-height: 1.2;
         }
 
+        /* Two Column - Benefits + Why */
         .two-column {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 5px;
-            margin-bottom: 3px;
+            gap: 4px;
+            margin-bottom: 2px;
         }
 
         .two-column .section-content ul {
@@ -310,21 +397,28 @@
             line-height: 1.2;
         }
 
+        /* Storage Section */
+        .storage-section .section-content {
+            font-size: 5.5px;
+        }
+
+        /* Keep Out Box */
         .koorch-box {
             background: #E8723A;
             color: white;
-            padding: 3px 6px;
+            padding: 2px 6px;
             border-radius: 4px;
             font-weight: bold;
-            font-size: 6.5px;
+            font-size: 6px;
             text-align: center;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
             border: 1.5px solid white;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             color-adjust: exact;
         }
 
+        /* Footer */
         .footer {
             background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%);
             color: white;
@@ -346,81 +440,167 @@
 
         .footer-right {
             text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
         }
 
         .footer p {
             margin: 0.5px 0;
         }
+
+        .qr-placeholder {
+            width: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 4px;
+            text-align: center;
+            margin-left: 6px;
+            color: white;
+        }
+
+        .qr-placeholder img {
+            width: 40px;
+            height: 40px;
+            border-radius: 2px;
+            background: white;
+            padding: 1px;
+        }
+
+        .footer-center {
+            text-align: center;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
+    <!-- SINGLE PAGE - 10.325" x 4.875" - WRAP-AROUND LABEL -->
+    <!-- COMPLIANCE NOTE: This is a USDA-only product (no EPA registration).
+         ALL antimicrobial/pesticidal claims have been removed per FIFRA requirements.
+         No claims of killing, destroying, or combating bacteria, viruses, or pathogens.
+         Focus: odor elimination, cleaning, brightening, freshening. -->
     <div class="page">
-        <!-- FRONT PANEL -->
+        <!-- ============================================
+             FRONT PANEL - LEFT SIDE
+             ============================================ -->
         <div class="front-panel">
-            <div class="front-top-row">
-                <div class="warning-box">
-                    KEEP OUT OF THE REACH OF CHILDREN
+            <!-- Spacer: centers logo vertically above content -->
+            <div class="front-spacer"></div>
+
+            <!-- Logo - Front and Center -->
+            <div class="logo-center">
+                <img src="assets/images/logos/epa OHS Brand Image.jpg" alt="OHS Logo" class="logo-image">
+            </div>
+
+            <!-- Spacer: absorbs gap between logo and content below -->
+            <div class="front-spacer"></div>
+
+            <!-- Product Title + Feature Circle Row -->
+            <div class="title-row">
+                <div class="product-title">
+                    <div class="product-name">Laundry Booster</div>
+                    <div class="product-subtitle">Natural Washing Machine Additive</div>
+                    <div class="product-size">32 oz (946 mL)</div>
+                </div>
+                <div class="feature-badge-circle">
+                    <div class="feature-badge-circle-text">
+                        HYPOALLERGENIC<br>
+                        CLEAN &amp; FRESH<br>
+                        NO ADDED<br>
+                        FRAGRANCES
+                    </div>
                 </div>
             </div>
 
-            <img src="assets/images/logos/epa OHS Brand Image.jpg" alt="Company Logo" class="logo-image">
-
+            <!-- Feature Badges - COMPLIANCE SAFE: No antimicrobial claims -->
             <div class="badge-container">
-                <div class="badge">
-                    <div class="badge-large">Eliminates</div>
-                    <div class="badge-large">Odors</div>
-                    <div class="badge-small">Removes bacteria & allergens from fabric</div>
+                <div class="feature-badge">
+                    <div class="feature-badge-title">Eliminates<br>Odors</div>
+                    <div class="feature-badge-text">Freshens and deodorizes fabric naturally</div>
                 </div>
-                <div class="badge">
-                    <div class="badge-large">Brightens &</div>
-                    <div class="badge-large">Cleans</div>
-                    <div class="badge-small">No harsh chemicals or fragrances</div>
+                <div class="feature-badge">
+                    <div class="feature-badge-title">Brightens &amp;<br>Cleans</div>
+                    <div class="feature-badge-text">No harsh chemicals or fragrances</div>
                 </div>
             </div>
 
+            <!-- Main Claim - COMPLIANCE SAFE: Removed "combat viruses, bacteria" -->
             <div class="main-claim">
-                The same molecule your body produces to combat viruses, bacteria, and allergens in a Laundry Booster!
+                The same molecule your body naturally produces &mdash; now in a Laundry Booster!
             </div>
 
-            <div class="sub-claim">
-                Hypoallergenic • No Added Fragrances • All Natural
+            <!-- Info Grid: Perfect For + Ingredients (matches proof) -->
+            <div class="info-grid">
+                <div class="info-box">
+                    <div class="info-box-title">PERFECT FOR:</div>
+                    <ul>
+                        <li>All bedding (human &amp; animal)</li>
+                        <li>Heavily soiled or odorous clothes</li>
+                        <li>Cold or warm water washing</li>
+                        <li>HE &amp; standard machines</li>
+                        <li>Use with any detergent</li>
+                    </ul>
+                </div>
+                
+                <div class="info-box">
+                    <div class="info-box-title">INGREDIENTS:</div>
+                    <p><strong>pH: 4.9 (optimized for laundry)</strong></p>
+                    <p><strong>Hypochlorous Acid:</strong> 0.01%</p>
+                    <p>Pure Water, Ethanoic Acid &amp; other Natural Minerals: 99.97%</p>
+                </div>
             </div>
 
-            <div class="front-bottom">
-                <div class="front-size">Net Contents: 32 Fluid Ounces (946 mL)</div>
+            <!-- Front Warning Banner (matches proof) -->
+            <div class="front-warning-box">
+                TEST FABRICS FIRST &bull; Do not use with bleach or fabric softener
+            </div>
+
+            <!-- Net Contents -->
+            <div class="net-contents">
+                Net Contents: 32 Fluid Ounces (946 mL)
             </div>
         </div>
 
-        <!-- BACK PANEL -->
+        <!-- ============================================
+             BACK PANEL - RIGHT SIDE
+             ============================================ -->
         <div class="back-panel">
             <div class="back-header">
                 32oz Laundry Booster - Natural Additive Solution
             </div>
             
+            <!-- Directions -->
             <div class="section-compact">
                 <div class="section-title">DIRECTIONS FOR USE</div>
                 <div class="section-content">
                     <p><strong>STANDARD LOAD:</strong> Pour 1-2 oz of Hypochlorous Laundry Booster into the fabric softener dispensing cup of your washing machine.</p>
                     
-                    <p style="margin-top: 1.5px;"><strong>HEAVILY SOILED/ODOROUS LOADS:</strong> Pour 1-2 oz into fabric softener cup, PLUS an additional 2 oz into the bleach dispensing cup. Wash in warm water for best results.</p>
+                    <p style="margin-top: 1px;"><strong>HEAVILY SOILED/ODOROUS LOADS:</strong> Pour 1-2 oz into fabric softener cup, PLUS an additional 2 oz into the bleach dispensing cup. Wash in warm water for best results.</p>
                     
-                    <p style="margin-top: 1.5px;"><strong>IMPORTANT:</strong> No presoak or pretreat necessary. Use your regular laundry detergent as normal. Run load on any cycle, but for best results use warm and/or cold water. Dry as normal.</p>
+                    <p style="margin-top: 1px;"><strong>IMPORTANT:</strong> No presoak or pretreat necessary. Use your regular laundry detergent as normal. Run load on any cycle, but for best results use warm and/or cold water. Dry as normal.</p>
                     
-                    <p style="margin-top: 1.5px;"><strong>Each 32oz bottle contains approximately 16 loads (2oz per load).</strong></p>
+                    <p style="margin-top: 1px;"><strong>Each 32oz bottle contains approximately 16 loads (2oz per load).</strong></p>
                 </div>
             </div>
 
+            <!-- Fabric Warning -->
             <div class="back-warning">
                 <h6>⚠ FABRIC COMPATIBILITY WARNING</h6>
                 <p><strong>TEST FABRICS TO ASSURE COMPATIBILITY BEFORE USE.</strong> Do not use bleach or fabric softener when using Hypochlorous Laundry Booster. Do not use any other laundry products other than normal laundry detergent when using Laundry Booster.</p>
             </div>
 
+            <!-- Two Column: Benefits + Why Hypochlorous - COMPLIANCE SAFE -->
             <div class="two-column">
                 <div class="section-compact">
                     <div class="section-title">KEY BENEFITS</div>
                     <div class="section-content">
                         <ul>
-                            <li>Eliminates moldy bacteria</li>
+                            <li>Eliminates musty &amp; mildew odors</li>
                             <li>Deodorizes heavily soiled clothes</li>
                             <li>Safe for all bedding types</li>
                             <li>Works in cold or warm water</li>
@@ -438,10 +618,10 @@
                     <div class="section-content">
                         <ul>
                             <li>Naturally produced by your body</li>
-                            <li>Powerful against bacteria & odors</li>
+                            <li>Powerful against tough odors</li>
                             <li>Safe for sensitive skin</li>
                             <li>Breaks down to harmless salt water</li>
-                            <li>Eco-friendly & sustainable</li>
+                            <li>Eco-friendly &amp; sustainable</li>
                             <li>No toxic residues</li>
                             <li>Unmatched by other products</li>
                         </ul>
@@ -449,18 +629,21 @@
                 </div>
             </div>
 
-            <div class="section-compact">
+            <!-- Storage -->
+            <div class="section-compact storage-section">
                 <div class="section-title">STORAGE AND CARE</div>
                 <div class="section-content">
                     <p><strong>STORAGE:</strong> Store in a cool, dry place away from direct sunlight. Keep container closed when not in use.</p>
-                    <p style="margin-top: 1.5px;"><strong>SHELF LIFE:</strong> For optimal effectiveness, use within 120 days of opening. Product breaks down naturally over time.</p>
+                    <p style="margin-top: 1px;"><strong>SHELF LIFE:</strong> For optimal effectiveness, use within 120 days of opening. Product breaks down naturally over time.</p>
                 </div>
             </div>
 
+            <!-- Keep Out of Reach -->
             <div class="koorch-box">
                 ⚠ KEEP OUT OF THE REACH OF CHILDREN
             </div>
 
+            <!-- Footer with QR code area -->
             <div class="footer">
                 <div class="footer-left">
                     <p><strong>DISTRIBUTED BY:</strong></p>
@@ -468,17 +651,17 @@
                     <p>Salt Lake City, UT 84101</p>
                     <p>Made in Utah, USA</p>
                 </div>
-                <div class="footer-right">
-                    <div style="display: flex; justify-content: flex-end; margin-bottom: 2px;">
-                        <img src="documents/qrcodes/OHS_Products_QR.png" alt="Scan for Products" style="width: 32px; height: 32px;">
-                    </div>
+                <div class="footer-center">
                     <p>www.organichyposolutions.com</p>
                     <p>OHS@OrganicHypoSolutions.com | (801) 712-5663</p>
                     <p style="margin-top: 2px;"><strong>Net Contents: 32 Fluid Ounces (946 mL)</strong></p>
                 </div>
+                <div class="qr-placeholder">
+                    <img src="documents/qrcodes/OHS_Products_QR.png" alt="Scan for Products" style="width:100%;height:100%;border-radius:2px;">
+                    <span style="display:block;margin-top:1px;">Scan for<br>Products</span>
+                </div>
             </div>
         </div>
     </div>
-
 </body>
 </html>
