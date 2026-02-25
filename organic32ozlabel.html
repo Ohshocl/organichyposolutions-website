@@ -9,18 +9,12 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         body {
             font-family: 'Arial', 'Helvetica', sans-serif;
             background: white;
             color: #000;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         @page {
@@ -53,21 +47,16 @@
         }
 
         @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-            .page {
-                margin: 0;
-                box-shadow: none;
-            }
+            body { background: white; padding: 0; }
+            .page { margin: 0; box-shadow: none; }
         }
 
-        /* ========================================
-           FRONT PANEL
-           ======================================== */
+        /* =============================================
+           FRONT PANEL — teal fill via box-shadow inset
+           ============================================= */
         .front-panel {
-            background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%);
+            /* inset box-shadow fills the entire panel with teal — renders as foreground, not background */
+            box-shadow: inset 0 0 0 9999px #7AD4D6;
             color: white;
             padding: 10px 14px 8px 14px;
             flex: 1;
@@ -79,20 +68,20 @@
             gap: 0px;
             position: relative;
             border-radius: 6px;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
+            /* outline border gives the panel edge definition */
+            outline: 3px solid #5BBFC2;
+            outline-offset: -3px;
         }
 
         .logo-image {
             max-width: 90%;
-            max-height: 140px;
+            max-height: 150px;
             height: auto;
-            background: white;
             padding: 8px;
             object-fit: contain;
             border-radius: 6px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+            /* white fill behind logo via box-shadow */
+            box-shadow: 0 3px 8px rgba(0,0,0,0.25), inset 0 0 0 9999px white;
             margin-top: auto;
             margin-bottom: auto;
         }
@@ -105,7 +94,8 @@
         }
 
         .badge {
-            background: #B8E8D0;
+            /* light green fill via box-shadow */
+            box-shadow: inset 0 0 0 9999px #B8E8D0, 0 4px 8px rgba(0,0,0,0.3);
             color: #2E7D32;
             padding: 7px;
             border-radius: 50%;
@@ -116,11 +106,7 @@
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
             border: 3px solid #4CAF50;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .badge-large {
@@ -154,36 +140,33 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.95);
+            /* white fill via box-shadow */
+            box-shadow: inset 0 0 0 9999px rgba(255,255,255,0.95), 0 2px 4px rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 18px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .safe-icon-text {
             font-size: 7px;
             font-weight: bold;
             text-align: center;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            color: white;
         }
 
+        /* Claim bars: use border + colored outline trick */
         .main-claim {
             font-size: 13px;
             font-weight: bold;
             margin: 0;
             text-align: center;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-            background: #3DA8D5;
-            padding: 2px 10px;
+            box-shadow: inset 0 0 0 9999px #3DA8D5;
+            padding: 3px 10px;
             border-radius: 5px;
             color: white;
             width: 100%;
-            line-height: 1;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
+            line-height: 1.1;
         }
 
         .sub-claim {
@@ -191,55 +174,54 @@
             margin: 0;
             text-align: center;
             font-weight: 500;
-            background: #3DA8D5;
-            padding: 1.5px 10px;
+            box-shadow: inset 0 0 0 9999px #3DA8D5;
+            padding: 2px 10px;
             border-radius: 5px;
+            color: white;
             width: 100%;
-            line-height: 1;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
+            line-height: 1.1;
         }
 
         .usda-badge {
-            background: rgba(255,255,255,0.95);
+            /* white fill via box-shadow */
+            box-shadow: inset 0 0 0 9999px white, 0 2px 4px rgba(0,0,0,0.2);
             color: #2E7D32;
-            padding: 1.5px 8px;
+            padding: 3px 8px;
             border-radius: 4px;
             font-size: 7px;
             font-weight: bold;
             text-align: center;
-            line-height: 1;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
+            line-height: 1.5;
+            border: 1px solid #4CAF50;
         }
 
-        .front-bottom {
-            width: 100%;
-            text-align: center;
+        .usda-badge .usda-cert-num {
+            font-size: 5.5px;
+            font-weight: normal;
+            color: #555;
+            display: block;
+            line-height: 1.3;
         }
+
+        .front-bottom { width: 100%; text-align: center; }
 
         .front-size {
             font-size: 8px;
             padding: 1.5px 5px;
-            background: rgba(255,255,255,0.95);
+            box-shadow: inset 0 0 0 9999px white;
             color: #333;
             border-radius: 4px;
             text-align: center;
             font-weight: bold;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
+            border: 1px solid #ccc;
+            display: inline-block;
         }
 
-        /* ========================================
+        /* =============================================
            BACK PANEL
-           ======================================== */
+           ============================================= */
         .back-panel {
             padding: 8px 12px 8px 12px;
-            background: white;
             flex: 1;
             height: 100%;
             overflow: hidden;
@@ -247,13 +229,11 @@
             flex-direction: column;
             border-radius: 6px;
             border: 2px solid #7AD4D6;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
+        /* Header and section titles: teal via box-shadow inset */
         .back-header {
-            background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%);
+            box-shadow: inset 0 0 0 9999px #7AD4D6;
             color: white;
             padding: 3px 6px;
             font-weight: bold;
@@ -261,26 +241,18 @@
             text-align: center;
             border-radius: 3px;
             margin-bottom: 3px;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
-        .section-compact {
-            margin-bottom: 3px;
-        }
+        .section-compact { margin-bottom: 3px; }
 
         .section-title {
-            background: #7AD4D6;
+            box-shadow: inset 0 0 0 9999px #7AD4D6;
             color: white;
             padding: 2px 5px;
             font-weight: bold;
             font-size: 7px;
             margin-bottom: 2px;
             border-radius: 3px;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .section-content {
@@ -289,25 +261,17 @@
             font-size: 5.5px;
         }
 
-        .section-content p {
-            margin-bottom: 1.5px;
-        }
+        .section-content p { margin-bottom: 1.5px; }
 
-        .bold {
-            font-weight: bold;
-        }
+        .bold { font-weight: bold; }
 
         .active-ingredient-box {
-            background: #f9f9f9;
             border: 1px solid #7AD4D6;
             padding: 4px 6px;
             border-radius: 4px;
             font-size: 6px;
             line-height: 1.4;
             margin-bottom: 3px;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .active-ingredient-box .ai-title {
@@ -335,20 +299,15 @@
             font-size: 5.5px;
             font-weight: bold;
             margin-top: 2px;
-            font-family: 'Arial', sans-serif;
         }
 
         .safety-statement {
-            background: #f0fdf4;
             border: 1px solid #86efac;
             border-radius: 3px;
             padding: 3px 5px;
             margin-bottom: 3px;
             font-size: 5.5px;
             line-height: 1.25;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .safety-statement strong {
@@ -374,8 +333,9 @@
             line-height: 1.2;
         }
 
+        /* Footer: teal via box-shadow inset */
         .footer {
-            background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%);
+            box-shadow: inset 0 0 0 9999px #7AD4D6;
             color: white;
             padding: 3px 6px;
             font-size: 5.5px;
@@ -384,22 +344,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
-        .footer-left {
-            text-align: left;
-        }
-
-        .footer-right {
-            text-align: right;
-        }
-
-        .footer p {
-            margin: 0.5px 0;
-        }
+        .footer-left { text-align: left; }
+        .footer-right { text-align: right; }
+        .footer p { margin: 0.5px 0; }
     </style>
 </head>
 <body>
@@ -407,7 +356,7 @@
         <!-- FRONT PANEL -->
         <div class="front-panel">
 
-            <img src="assets/images/logos/organiclogo.png" alt="Company Logo" class="logo-image">
+            <img src="assets/images/logos/epa OHS Brand Image.jpg" alt="Company Logo" class="logo-image">
 
             <div style="width: 100%; display: flex; flex-direction: column; gap: 7px; margin-top: auto; align-items: center;">
                 <div class="badge-container">
@@ -439,7 +388,7 @@
                 </div>
 
                 <div class="main-claim">
-                    Multi-Use Organic Cleaner & Deodorizer
+                    Multi-Use Organic Cleaner &amp; Deodorizer
                 </div>
 
                 <div class="sub-claim">
@@ -451,11 +400,12 @@
                 </div>
 
                 <div class="usda-badge">
-                    🌿 USDA Certified Organic • Certificate #Z-699995-2008
+                    🌿 USDA Certified Organic — Certified by OTCO
+                    <span class="usda-cert-num">Certificate #8150019050 | Verify: organic.ams.usda.gov</span>
                 </div>
 
                 <div class="front-bottom">
-                    <div class="front-size">NET CONTENTS: 32 FL. OZ. (946 mL)</div>
+                    <div class="front-size">NET CONTENTS: 32 FL OZ (946 mL)</div>
                 </div>
             </div>
         </div>
@@ -463,13 +413,13 @@
         <!-- BACK PANEL -->
         <div class="back-panel">
             <div class="back-header">
-                Hypochlorous Multi-Use Organic Cleaner — USDA Certified
+                32oz Hypochlorous Multi-Use Organic Cleaner — USDA Certified Organic by OTCO | Cert. #8150019050
             </div>
 
             <div class="active-ingredient-box">
                 <div class="ai-title">INGREDIENTS</div>
                 <div class="ai-row">Hypochlorous Acid ………………………………………………… 0.01%</div>
-                <div class="ai-row">Pure Water, Organic Ethanoic Acid &</div>
+                <div class="ai-row">Pure Water, Organic Ethanoic Acid &amp;</div>
                 <div class="ai-row">Other Natural Minerals ………………………………………… 99.99%</div>
                 <div class="ai-total">TOTAL …... 100.00%</div>
                 <div class="shelf-life-note">
@@ -484,10 +434,8 @@
             <div class="section-compact">
                 <div class="section-title">HOW TO USE</div>
                 <div class="section-content">
-                    <p><span class="bold">GENERAL CLEANING & DEODORIZING:</span> For the best cleaning and deodorizing results, spray on any hard or soft surface and allow to sit 10 minutes. Wipe dry with a clean cloth or paper towel or allow to air dry. No rinsing required. <em>Test fabric section before use.</em></p>
-
+                    <p><span class="bold">GENERAL CLEANING &amp; DEODORIZING:</span> For the best cleaning and deodorizing results, spray on any hard or soft surface and allow to sit 10 minutes. Wipe dry with a clean cloth or paper towel or allow to air dry. No rinsing required. <em>Test fabric section before use.</em></p>
                     <p style="margin-top: 1.5px;"><span class="bold">DO NOT MIX OR USE WITH OTHER HOUSEHOLD CHEMICALS.</span></p>
-
                     <p style="margin-top: 1.5px;"><span class="bold">WHERE TO USE:</span> High-touch points such as food staging areas, food washing, hand washing, appliances/equipment, utensils, kitchen tools, countertops, tables, sinks, dishes, fixtures, aprons, drains, floors, trash cans, and more.</p>
                 </div>
             </div>
@@ -497,15 +445,15 @@
                     <div class="section-title">KEY FEATURES</div>
                     <div class="section-content">
                         <ul>
-                            <li>USDA Certified Organic</li>
+                            <li>USDA Certified Organic by OTCO</li>
                             <li>All natural ingredients</li>
-                            <li>Child, pet & food safe</li>
+                            <li>Child, pet &amp; food safe</li>
                             <li>Eliminates odors at their source</li>
-                            <li>Derived from natural minerals & water</li>
+                            <li>Derived from natural minerals &amp; water</li>
                             <li>No harsh chemicals, fumes, or odors</li>
                             <li>Non-abrasive, non-greasy</li>
                             <li>Leaves no chemical residue</li>
-                            <li>Fragrance & dye free</li>
+                            <li>Fragrance &amp; dye free</li>
                         </ul>
                     </div>
                 </div>
@@ -514,15 +462,15 @@
                     <div class="section-title">RECOMMENDED USES</div>
                     <div class="section-content">
                         <ul>
-                            <li>Kitchens & food prep surfaces</li>
-                            <li>Bathrooms & fixtures</li>
-                            <li>Children's toys & play areas</li>
-                            <li>Pet areas & feeding bowls</li>
+                            <li>Kitchens &amp; food prep surfaces</li>
+                            <li>Bathrooms &amp; fixtures</li>
+                            <li>Children's toys &amp; play areas</li>
+                            <li>Pet areas &amp; feeding bowls</li>
                             <li>High-touch surfaces</li>
-                            <li>Electronics & devices</li>
-                            <li>Restaurant & commercial</li>
+                            <li>Electronics &amp; devices</li>
+                            <li>Restaurant &amp; commercial</li>
                             <li>Healthcare facilities</li>
-                            <li>Gym equipment & yoga mats</li>
+                            <li>Gym equipment &amp; yoga mats</li>
                         </ul>
                     </div>
                 </div>
@@ -541,19 +489,18 @@
                     <p><strong>MANUFACTURED BY:</strong></p>
                     <p>Sani-TEST LLC</p>
                     <p>PO Box 461, Perkasie, PA 18944</p>
-                    <p>Certified Organic by OTCO</p>
+                    <p>Certified Organic by OTCO | Cert. #8150019050</p>
                 </div>
                 <div class="footer-right">
                     <div style="display: flex; justify-content: flex-end; margin-bottom: 2px;">
                         <img src="documents/qrcodes/OHS_Products_QR.png" alt="Scan for Products" style="width: 32px; height: 32px;">
                     </div>
                     <p>www.organichyposolutions.com</p>
-                    <p>OHS@OrganicHypoSolutions.com | (801) 712-5663</p>
-                    <p style="margin-top: 2px;"><strong>NET CONTENTS: 32 FL. OZ. (946 mL)</strong></p>
+                    <p>info@organichyposolutions.com | (801) 712-5663</p>
+                    <p style="margin-top: 2px;"><strong>NET CONTENTS: 32 FL OZ (946 mL)</strong></p>
                 </div>
             </div>
         </div>
     </div>
-
 </body>
 </html>
