@@ -23,6 +23,7 @@
             color-adjust: exact;
         }
 
+        /* Print-specific styles - 10.325" x 4.875" */
         @page {
             size: 10.325in 4.875in;
             margin: 0;
@@ -41,6 +42,7 @@
             gap: 0.35in;
         }
 
+        /* Screen view only */
         @media screen {
             body {
                 background: #e0e0e0;
@@ -64,21 +66,22 @@
         }
 
         /* ========================================
-           FRONT PANEL
+           FRONT PANEL - LEFT SIDE
            ======================================== */
         .front-panel {
             background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%);
             color: white;
-            padding: 12px 14px 10px 14px;
+            padding: 5px 12px 5px 12px;
             flex: 1;
             height: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-            gap: 4px;
+            justify-content: flex-start;
+            gap: 0px;
             position: relative;
             border-radius: 6px;
+            overflow: hidden;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             color-adjust: exact;
@@ -88,7 +91,7 @@
             width: 100%;
             display: flex;
             justify-content: flex-end;
-            margin-bottom: 4px;
+            margin-bottom: 1px;
         }
 
         .warning-box {
@@ -109,81 +112,63 @@
         }
 
         .logo-image {
-            max-width: 300px;
+            max-width: 340px;
+            width: 90%;
             height: auto;
             background: white;
-            padding: 10px;
+            padding: 5px 8px;
             border-radius: 6px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.25);
-            margin-bottom: 6px;
-        }
-
-        .product-title {
-            text-align: center;
-            margin: 8px 0;
-        }
-
-        .product-name {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 1px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-            line-height: 1;
-        }
-
-        .product-subtitle {
-            font-size: 10px;
-            font-weight: 300;
-            letter-spacing: 0.5px;
+            margin-bottom: 4px;
         }
 
         .badge-container {
             display: flex;
             justify-content: center;
-            gap: 14px;
-            margin: 8px 0;
+            gap: 12px;
+            margin: 3px 0;
+            margin-top: auto;
         }
 
         .badge {
             background: #B8E8D0;
             color: #2E7D32;
-            padding: 7px;
+            padding: 4px;
             border-radius: 50%;
-            width: 85px;
-            height: 85px;
+            width: 60px;
+            height: 60px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            border: 3px solid #4CAF50;
+            border: 2px solid #4CAF50;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             color-adjust: exact;
         }
 
         .badge-large {
-            font-size: 11px;
-            margin-bottom: 2px;
+            font-size: 8px;
+            margin-bottom: 1px;
             line-height: 1;
             text-align: center;
         }
 
         .badge-small {
-            font-size: 6.5px;
+            font-size: 5px;
             text-align: center;
             line-height: 1.2;
         }
 
         .main-claim {
-            font-size: 15px;
+            font-size: 12px;
             font-weight: bold;
-            margin: 6px 0;
+            margin: 2px 0;
             text-align: center;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
             background: #3DA8D5;
-            padding: 5px 10px;
+            padding: 3px 10px;
             border-radius: 5px;
             color: white;
             width: 100%;
@@ -193,20 +178,86 @@
         }
 
         .sub-claim {
-            font-size: 9.5px;
+            font-size: 8px;
             margin: 2px 0;
             text-align: center;
             font-weight: 500;
+            background: #3DA8D5;
+            padding: 3px 10px;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        /* ========================================
+           ACTIVE INGREDIENT BOX - FRONT PANEL
+           Required by FIFRA on principal display panel
+           ======================================== */
+        .active-ingredient-front {
+            background: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            width: 100%;
+            font-size: 5.5px;
+            line-height: 1.3;
+            color: #000;
+            margin-top: 3px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            color-adjust: exact;
+        }
+
+        .active-ingredient-front .ai-title {
+            font-weight: bold;
+            font-size: 6.5px;
+            color: #000;
+            margin-bottom: 1px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .active-ingredient-front .ai-row {
+            font-size: 5.5px;
+            font-family: 'Courier New', monospace;
+            color: #000;
+        }
+
+        .active-ingredient-front .ai-row.bold {
+            font-weight: bold;
+        }
+
+        .active-ingredient-front .ai-total {
+            font-size: 5.5px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            border-top: 1px solid #333;
+            padding-top: 1px;
+            margin-top: 1px;
+            color: #000;
+        }
+
+        .active-ingredient-front .shelf-life-note {
+            font-size: 5px;
+            font-weight: bold;
+            margin-top: 2px;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+
+        .active-ingredient-front .epa-reg {
+            font-size: 5px;
+            color: #333;
+            margin-top: 2px;
+            font-weight: bold;
         }
 
         .front-bottom {
-            margin-top: auto;
             width: 100%;
             text-align: center;
+            margin-top: 2px;
         }
 
         .front-size {
-            font-size: 9px;
+            font-size: 8px;
             padding: 3px 5px;
             background: rgba(255,255,255,0.95);
             color: #333;
@@ -219,7 +270,7 @@
         }
 
         /* ========================================
-           BACK PANEL
+           BACK PANEL - RIGHT SIDE
            ======================================== */
         .back-panel {
             padding: 8px 12px 8px 12px;
@@ -267,6 +318,12 @@
             font-weight: bold;
         }
 
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -290,45 +347,15 @@
             font-size: 5.5px;
         }
 
-        .active-ingredient-box {
-            background: #f9f9f9;
-            border: 1px solid #7AD4D6;
-            padding: 4px 6px;
-            border-radius: 4px;
-            font-size: 6px;
-            line-height: 1.4;
-            margin-bottom: 3px;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
+        ul {
+            margin-left: 10px;
+            margin-top: 1.5px;
         }
 
-        .active-ingredient-box .ai-title {
-            font-weight: bold;
-            font-size: 6.5px;
-            color: #5BBFC2;
-            margin-bottom: 2px;
-        }
-
-        .active-ingredient-box .ai-row {
-            font-size: 6px;
-            font-family: 'Courier New', monospace;
-        }
-
-        .active-ingredient-box .ai-total {
-            font-size: 6px;
-            font-weight: bold;
-            font-family: 'Courier New', monospace;
-            border-top: 1px solid #ccc;
-            padding-top: 1px;
-            margin-top: 1px;
-        }
-
-        .shelf-life-note {
+        li {
+            margin-bottom: 1px;
+            line-height: 1.2;
             font-size: 5.5px;
-            font-weight: bold;
-            margin-top: 2px;
-            font-family: 'Arial', sans-serif;
         }
 
         .footer {
@@ -348,14 +375,30 @@
             margin: 1px 0;
         }
 
+        .net-contents-back {
+            font-size: 8px;
+            padding: 3px;
+            background: #f5f5f5;
+            color: #333;
+            border-radius: 3px;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 3px;
+            border: 1px solid #7AD4D6;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            color-adjust: exact;
+        }
+
         .back-panel .section-content strong {
             font-size: 5.5px;
         }
     </style>
 </head>
 <body>
+    <!-- SINGLE PAGE - 10.325" x 4.875" - WRAP-AROUND LABEL -->
     <div class="page">
-        <!-- FRONT PANEL -->
+        <!-- FRONT PANEL - LEFT SIDE -->
         <div class="front-panel">
             <div class="front-top-row">
                 <div class="warning-box">
@@ -380,8 +423,20 @@
                 Kills 99.9% of Bacteria & Viruses
             </div>
 
-            <div class="sub-claim" style="background: #3DA8D5; padding: 4px 10px; border-radius: 5px; width: 100%; font-size: 9.5px;">
+            <div class="sub-claim">
                 Ready to Use • No Dilution Required • No Rinsing Required
+            </div>
+
+            <!-- ACTIVE INGREDIENT - Front panel per FIFRA requirements -->
+            <div class="active-ingredient-front">
+                <div class="ai-title">ACTIVE INGREDIENT</div>
+                <div class="ai-row">Hypochlorous Acid ………………………………………… 0.0134%</div>
+                <div class="ai-row bold">OTHER INGREDIENTS………………………………………. 99.9866%</div>
+                <div class="ai-total">TOTAL …... 100.0000%</div>
+                <div class="shelf-life-note">
+                    Use within 120 days or test with chlorine test strip to verify minimum concentration of 163 ppm FAC before use.
+                </div>
+                <div class="epa-reg">EPA Reg. No. 97801-1 • EPA Est. No. 97801-UT-1</div>
             </div>
 
             <div class="front-bottom">
@@ -389,18 +444,8 @@
             </div>
         </div>
 
-        <!-- BACK PANEL -->
+        <!-- BACK PANEL - RIGHT SIDE -->
         <div class="back-panel">
-
-            <div class="active-ingredient-box">
-                <div class="ai-title">ACTIVE INGREDIENT</div>
-                <div class="ai-row">Hypochlorous Acid ………………………………………… 0.0134%</div>
-                <div class="ai-row">OTHER INGREDIENTS………………………………………. 99.9866%</div>
-                <div class="ai-total">TOTAL …... 100.0000%</div>
-                <div class="shelf-life-note">
-                    Use within 120 days or test with chlorine test strip to verify minimum concentration of 163 ppm FAC before use.
-                </div>
-            </div>
 
             <div class="section-compact">
                 <div class="section-title">PRECAUTIONARY STATEMENTS</div>
@@ -422,31 +467,49 @@
                 </div>
             </div>
 
-            <div class="section-compact">
-                <div class="section-title">ORGANISM TABLE</div>
-                <div class="section-content">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Organism</th>
-                                <th>Time</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>*Staphylococcus aureus</strong> [ATCC 6538]</td>
-                                <td>10 min</td>
-                            </tr>
-                            <tr>
-                                <td><strong>*Pseudomonas aeruginosa</strong> [ATCC 15442]</td>
-                                <td>10 min</td>
-                            </tr>
-                            <tr>
-                                <td><strong>**Human Coronavirus 229E</strong> [VR-740]</td>
-                                <td>10 min</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="two-column">
+                <div class="section-compact">
+                    <div class="section-title">ORGANISM TABLE</div>
+                    <div class="section-content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Organism</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>*Staphylococcus aureus</strong> [ATCC 6538]</td>
+                                    <td>10 min</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>*Pseudomonas aeruginosa</strong> [ATCC 15442]</td>
+                                    <td>10 min</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>**Human Coronavirus 229E</strong> [VR-740]</td>
+                                    <td>10 min</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="section-compact">
+                    <div class="section-title">KEY FEATURES</div>
+                    <div class="section-content">
+                        <ul>
+                            <li>3-in-1: Disinfectant/Cleaner/Deodorizer</li>
+                            <li>Broad Spectrum Virucidal & Bactericidal</li>
+                            <li>Hospital, Commercial & Household use</li>
+                            <li>One-step cleaner & disinfectant</li>
+                            <li>Derived from natural minerals & pure water</li>
+                            <li>Turns into harmless dilute saline after use</li>
+                            <li>Non-abrasive, Non-greasy, Non-flammable</li>
+                            <li>Leaves no chemical residue</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
@@ -465,6 +528,10 @@
                 <p><strong>MANUFACTURED BY OR UNDER LICENSE FROM: Sani-TEST LLC</strong></p>
                 <p>7911 7th St., Slatington, PA 18080</p>
                 <p style="margin-top: 2px;">EPA Reg. No. 97801-1 • EPA Est. No. 97801-UT-1</p>
+            </div>
+            
+            <div class="net-contents-back">
+                Net Contents: 32 fl oz (946 mL)
             </div>
         </div>
     </div>
