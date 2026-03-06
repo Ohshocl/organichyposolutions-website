@@ -1,238 +1,239 @@
 /**
- * OHS Global Scripts - Core JavaScript functionality for all pages
- * File: /assets/js/global-scripts.js
- * Dependencies: Bootstrap 5.3.0, Font Awesome 6.0.0
- * Shopify Integration: Ready for API integration with shopify-client.js
- * Last Updated: August 2025
- * 
- * SHOPIFY INTEGRATION FEATURES:
- * - Compatible with existing cart.js and shopify-client.js
- * - Supports variant IDs and SKUs for Shopify products
- * - Automatic wholesale threshold detection (25+ items)
- * - GraphQL checkout creation through API endpoints
- * - Cross-browser cart synchronization
- * - Analytics tracking for Shopify events
- * - Fallback to local cart if Shopify unavailable
+ * OHS Global Scripts
+ * File: assets/js/global-scripts.js
+ * Dependencies: Bootstrap 5.3.0, Font Awesome 6.0.0, product-catalog.js
+ *
+ * RESPONSIBILITIES:
+ *  - Nav/footer dynamic loader
+ *  - Cart badge (ohsCart array format only)
+ *  - Smooth scrolling, mobile menu, scroll animations
+ *  - Banner management
+ *  - Service booking helpers
+ *  - Form UX enhancements
+ *  - Utility functions (debounce, throttle, isInViewport)
+ *
+ * CART FORMAT (enforced everywhere):
+ *  localStorage key: 'ohsCart'
+ *  value: Array of { productId, variantId, name, price, quantity,
+ *                    sku, tier, type, isSubscription, image }
+ *
+ * NOTIFICATION SYSTEM:
+ *  showNotification() is defined in shop/js/cart.js (gradient style, stacked).
+ *  global-scripts.js does NOT define showNotification — cart.js always wins.
+ *  On pages that don't load cart.js, notifications are not needed from here.
+ *
+ * CART WRITES:
+ *  addItemToCart() here writes directly to localStorage.
+ *  It is ONLY for pages that do NOT load cart.js (e.g. homepage quick-add).
+ *  On any page that loads cart.js, use window.addToCart() instead —
+ *  cart.js maintains an internal array that stays in sync with localStorage.
+ *
+ * Last Updated: March 5, 2026
  */
 
-console.log('🚀 OHS Global Scripts Loading... (Shopify-Ready Version)');
+console.log('🚀 OHS Global Scripts Loading...');
 
 // ==========================================================================
-// GLOBAL VARIABLES AND CONFIGURATION
+// CONSTANTS
 // ==========================================================================
 
-// Cart configuration
-const CART_STORAGE_KEY = 'ohsCart';
-const CART_BADGE_ID = 'cartBadge';
-
-// Animation configuration
-const ANIMATION_CONFIG = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
+const CART_KEY         = 'ohsCart';
+const ANIMATION_CONFIG = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
 
 // ==========================================================================
-// CART MANAGEMENT FUNCTIONS - SHOPIFY COMPATIBLE
+// NAV / FOOTER DYNAMIC LOADER
+// Reads #nav-placeholder and #footer-placeholder on every page,
+// fetches templates/standard-nav.html and templates/standard-footer.html,
+// rewrites absolute paths for subdirectory pages, sets active nav state.
+// ==========================================================================
+
+(function loadTemplates() {
+    'use strict';
+
+    // Determine how many directory levels deep this page is.
+    // e.g. /shop/cart.html → depth 1 → basePath = '../'
+    const pathParts   = window.location.pathname.split('/').filter(p => p && !p.includes('.'));
+    const basePath    = pathParts.length > 0 ? '../'.repeat(pathParts.length) : '';
+    const currentPage = window.location.pathname.split('/').pop().replace('.html', '') || 'index';
+
+    function loadTemplate(placeholderId, templateFile) {
+        const el = document.getElementById(placeholderId);
+        if (!el) return;
+
+        fetch(basePath + 'templates/' + templateFile)
+            .then(r => {
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                return r.text();
+            })
+            .then(html => {
+                // Rewrite root-relative paths so they resolve correctly from subdirs
+                if (basePath) {
+                    html = html.replace(/href="\//g,   'href="'   + basePath);
+                    html = html.replace(/src="\//g,    'src="'    + basePath);
+                    html = html.replace(/action="\//g, 'action="' + basePath);
+                }
+
+                el.innerHTML = html;
+
+                // Mark the current page's nav link as active
+                const activeLink = el.querySelector(`[data-page="${currentPage}"]`);
+                if (activeLink) activeLink.classList.add('active', 'fw-semibold');
+
+                // Update cart badge now that the badge element exists in the DOM
+                updateCartBadge();
+            })
+            .catch(err => console.warn(`Template load failed (${templateFile}):`, err));
+    }
+
+    loadTemplate('nav-placeholder',    'standard-nav.html');
+    loadTemplate('footer-placeholder', 'standard-footer.html');
+})();
+
+// ==========================================================================
+// CART BADGE
+// Reads ohsCart (array format). Targets both #cartBadge and .cart-badge
+// to match cart.js's selector. cart.js overwrites window.updateCartBadge
+// on pages where it loads — that is intentional and correct.
 // ==========================================================================
 
 /**
- * Updates the cart badge count in the navigation
- * Compatible with both localStorage cart and Shopify cart structures
+ * Reads ohsCart from localStorage and updates every nav/cart badge element.
+ * ohsCart is always an Array of cart item objects.
  */
 function updateCartBadge() {
-    const cartBadge = document.getElementById(CART_BADGE_ID);
-    if (!cartBadge) return;
+    const badges = document.querySelectorAll('#cartBadge, .cart-badge');
+    if (!badges.length) return;
 
     try {
-        // Try to get cart from multiple sources for compatibility
-        let cart = {};
-        let totalItems = 0;
-        
-        // Check for OHS cart format (current)
-        const ohsCart = localStorage.getItem(CART_STORAGE_KEY);
-        if (ohsCart) {
-            cart = JSON.parse(ohsCart);
-            // Calculate total items in OHS cart format
-            for (const productId in cart) {
-                if (cart[productId] && cart[productId].quantity) {
-                    totalItems += cart[productId].quantity;
-                }
+        const cart  = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+        const total = Array.isArray(cart)
+            ? cart.reduce((sum, item) => sum + (item.quantity || 0), 0)
+            : 0;
+
+        badges.forEach(badge => {
+            if (total > 0) {
+                badge.textContent   = total;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
             }
-        }
-        
-        // Also check for legacy cartItems format for backward compatibility
-        const legacyCart = localStorage.getItem('cartItems');
-        if (legacyCart && !ohsCart) {
-            const cartItems = JSON.parse(legacyCart);
-            totalItems = Array.isArray(cartItems) ? cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0) : 0;
-        }
-        
-        if (totalItems > 0) {
-            cartBadge.textContent = totalItems;
-            cartBadge.style.display = 'inline-block';
-        } else {
-            cartBadge.style.display = 'none';
-        }
-    } catch (error) {
-        console.error('Error updating cart badge:', error);
-        cartBadge.style.display = 'none';
+        });
+    } catch (err) {
+        console.error('updateCartBadge error:', err);
+        badges.forEach(badge => { badge.style.display = 'none'; });
     }
 }
 
+// ==========================================================================
+// CART HELPERS
+// All cart writes use the Array format keyed by 'ohsCart'.
+// Higher-level add/update/checkout logic lives in shop/js/cart.js.
+//
+// ⚠️  addItemToCart() is ONLY for pages that do NOT load cart.js
+//     (e.g. homepage quick-add widget).
+//     On pages that load cart.js, use window.addToCart() instead so
+//     cart.js's internal cartItems array stays in sync.
+// ==========================================================================
+
 /**
- * Adds item to cart with Shopify-compatible structure
- * Supports both local cart and Shopify integration
- * @param {string} productId - Product identifier (handle or variant ID)
- * @param {string} productName - Product display name
- * @param {number} price - Product price
- * @param {string} emoji - Product emoji
- * @param {number} quantity - Quantity to add (default: 1)
- * @param {string} variantId - Shopify variant ID (optional)
- * @param {string} sku - Product SKU (optional)
+ * Add a single item to the ohsCart array.
+ * Merges quantity if the same variantId already exists.
+ *
+ * @param {Object} item - Must include: productId, variantId, name, price,
+ *                        quantity, sku, tier, type, isSubscription, image
  */
-function addToCart(productId, productName, price, emoji = '🧽', quantity = 1, variantId = null, sku = null) {
+function addItemToCart(item) {
+    if (!item || !item.variantId) {
+        console.error('addItemToCart: item must have a variantId', item);
+        return false;
+    }
+
     try {
-        const cart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || {};
-        
-        // Create Shopify-compatible cart item structure
-        const cartItem = {
-            name: productName,
-            price: price,
-            quantity: quantity,
-            emoji: emoji,
-            // Shopify-specific fields
-            variantId: variantId || productId, // Use variantId if provided, fallback to productId
-            sku: sku,
-            handle: productId,
-            // Additional metadata for wholesale logic
-            originalPrice: price,
-            addedAt: new Date().toISOString()
-        };
-        
-        if (cart[productId]) {
-            // Update existing item
-            cart[productId].quantity += quantity;
-            cart[productId].addedAt = new Date().toISOString(); // Update timestamp
-        } else {
-            // Add new item
-            cart[productId] = cartItem;
+        const cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+        if (!Array.isArray(cart)) {
+            throw new Error('ohsCart is not an array — localStorage may be corrupted.');
         }
-        
-        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
-        updateCartBadge();
-        
-        // Show success notification
-        showNotification(`${emoji} ${productName} added to cart!`, 'success');
-        
-        // Track analytics if available
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'add_to_cart', {
-                'event_category': 'E-commerce',
-                'event_label': productName,
-                'value': price,
-                'items': [{
-                    'item_id': variantId || productId,
-                    'item_name': productName,
-                    'quantity': quantity,
-                    'price': price
-                }]
+
+        const idx = cart.findIndex(c => c.variantId === item.variantId);
+        if (idx >= 0) {
+            cart[idx].quantity += item.quantity || 1;
+        } else {
+            cart.push({
+                productId:      item.productId,
+                variantId:      item.variantId,
+                name:           item.name,
+                price:          item.price,
+                quantity:       item.quantity || 1,
+                sku:            item.sku            || '',
+                tier:           item.tier           || 'retail',
+                type:           item.type           || 'usda-only',
+                isSubscription: item.isSubscription || false,
+                image:          item.image          || ''
             });
         }
-        
-        // Trigger cart update event for other scripts
-        window.dispatchEvent(new CustomEvent('cartUpdated', { 
-            detail: { 
-                productId, 
-                cartItem, 
-                totalItems: Object.values(cart).reduce((sum, item) => sum + item.quantity, 0) 
-            } 
+
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+        updateCartBadge();
+
+        // Notify other tabs / scripts
+        window.dispatchEvent(new CustomEvent('cartUpdated', {
+            detail: { item, cart }
         }));
-        
-        console.log('Product added to cart:', productId, cartItem);
+
         return true;
-    } catch (error) {
-        console.error('Error adding to cart:', error);
-        showNotification('Error adding item to cart', 'error');
+    } catch (err) {
+        console.error('addItemToCart error:', err);
         return false;
     }
 }
 
 /**
- * Get cart total for wholesale threshold checking
- * @return {number} Total quantity of items in cart
+ * Return total item quantity across the whole cart.
+ * @returns {number}
  */
 function getCartTotalQuantity() {
     try {
-        const cart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || {};
-        return Object.values(cart).reduce((sum, item) => sum + (item.quantity || 0), 0);
-    } catch (error) {
-        console.error('Error calculating cart total:', error);
+        const cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+        return Array.isArray(cart)
+            ? cart.reduce((sum, item) => sum + (item.quantity || 0), 0)
+            : 0;
+    } catch (err) {
+        console.error('getCartTotalQuantity error:', err);
         return 0;
     }
 }
 
 /**
- * Check if cart qualifies for wholesale pricing
- * @param {number} threshold - Wholesale threshold (default: 25)
- * @return {boolean} True if cart qualifies for wholesale
+ * Returns true when the cart's total quantity meets the given threshold.
+ * @param {number} threshold
+ * @returns {boolean}
  */
 function isWholesaleEligible(threshold = 25) {
     return getCartTotalQuantity() >= threshold;
 }
 
 /**
- * Get cart contents in Shopify-compatible format
- * @return {Array} Array of cart items formatted for Shopify
+ * Redirect to the cart page (shop/cart.html).
+ * Called from CTA buttons. Shopify checkout is initiated from cart.js.
  */
-function getShopifyCartItems() {
-    try {
-        const cart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || {};
-        return Object.entries(cart).map(([productId, item]) => ({
-            variantId: item.variantId || productId,
-            quantity: item.quantity || 1,
-            properties: {
-                productHandle: item.handle || productId,
-                sku: item.sku,
-                originalPrice: item.originalPrice
-            }
-        }));
-    } catch (error) {
-        console.error('Error getting Shopify cart items:', error);
-        return [];
-    }
+function goToCart() {
+    const depth  = window.location.pathname.split('/').filter(p => p && !p.includes('.')).length;
+    const prefix = depth > 0 ? '../'.repeat(depth) : '';
+    window.location.href = prefix + 'shop/cart.html';
 }
 
 // ==========================================================================
 // BANNER MANAGEMENT
 // ==========================================================================
 
-/**
- * Closes the promotional banner with animation
- */
 function closeBanner() {
     const banner = document.getElementById('promoBanner');
     if (!banner) return;
-    
     banner.style.transform = 'translateY(-100%)';
-    setTimeout(() => {
-        banner.style.display = 'none';
-    }, 300);
-    
-    // Store in localStorage so it stays closed for the session
+    setTimeout(() => { banner.style.display = 'none'; }, 300);
     localStorage.setItem('promoBannerClosed', 'true');
-    
-    // Track banner close
-    if (typeof gtag !== 'undefined') {
-        gtag('event', 'banner_close', {
-            'event_category': 'User Interaction',
-            'event_label': 'Promotional Banner'
-        });
-    }
 }
 
-/**
- * Checks if banner should be shown on page load
- */
 function checkBanner() {
     const banner = document.getElementById('promoBanner');
     if (banner && localStorage.getItem('promoBannerClosed') === 'true') {
@@ -241,456 +242,137 @@ function checkBanner() {
 }
 
 // ==========================================================================
-// NAVIGATION AND SCROLLING
+// NAVIGATION & SCROLLING
 // ==========================================================================
 
-/**
- * Initializes smooth scrolling for anchor links
- */
 function initSmoothScrolling() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', e => {
+            const href   = a.getAttribute('href');
+            if (!href || href === '#' || href.length <= 1) return;
+            try {
+                const target = document.querySelector(href);
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            } catch (err) {
+                console.warn('initSmoothScrolling: invalid selector', href);
             }
         });
     });
 }
 
-/**
- * Mobile menu toggle functionality
- */
 function initMobileMenu() {
-    const navbarToggler = document.querySelector('.navbar-toggler');
-    const navbarCollapse = document.querySelector('.navbar-collapse');
-    
-    if (navbarToggler && navbarCollapse) {
-        // Close mobile menu when clicking on nav links
-        navbarCollapse.addEventListener('click', function(e) {
-            if (e.target.classList.contains('nav-link')) {
-                const bsCollapse = new bootstrap.Collapse(navbarCollapse, {
-                    toggle: false
-                });
-                bsCollapse.hide();
-            }
-        });
-    }
+    const collapse = document.querySelector('.navbar-collapse');
+    if (!collapse) return;
+
+    collapse.addEventListener('click', e => {
+        if (e.target.classList.contains('nav-link') || e.target.closest('.nav-link')) {
+            const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapse);
+            bsCollapse.hide();
+        }
+    });
 }
 
 // ==========================================================================
-// ANIMATIONS AND VISUAL EFFECTS
+// SCROLL ANIMATIONS
 // ==========================================================================
 
-/**
- * Initializes scroll-based animations using Intersection Observer
- */
 function initAnimations() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
+                entry.target.style.opacity   = '1';
                 entry.target.style.transform = 'translateY(0)';
                 entry.target.classList.add('animate-in');
+                observer.unobserve(entry.target);
             }
         });
     }, ANIMATION_CONFIG);
 
-    // Observe all cards and elements for animation
-    const animatedElements = document.querySelectorAll(`
-        .service-card, 
-        .standard-card, 
-        .process-step, 
-        .product-line-card,
-        .card,
-        .hero-stats,
-        .feature-card
-    `);
-    
-    animatedElements.forEach(element => {
-        // Set initial state for animation
-        element.style.opacity = '0';
-        element.style.transform = 'translateY(20px)';
-        element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        
-        observer.observe(element);
+    document.querySelectorAll(
+        '.service-card, .standard-card, .process-step, ' +
+        '.product-line-card, .card, .hero-stats, .feature-card'
+    ).forEach(el => {
+        el.style.opacity    = '0';
+        el.style.transform  = 'translateY(20px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
     });
 }
 
 // ==========================================================================
-// NOTIFICATION SYSTEM
+// PRODUCT CATALOG READINESS CHECK
+// Replaces the old window.shopifyIntegration check.
+// Fires a 'productCatalogReady' event that cart.js and page scripts can
+// listen to instead of polling.
 // ==========================================================================
 
-/**
- * Shows a notification to the user
- * @param {string} message - Message to display
- * @param {string} type - Type of notification (success, error, info, warning)
- * @param {number} duration - Duration in milliseconds (default: 3000)
- */
-function showNotification(message, type = 'info', duration = 3000) {
-    // Remove existing notifications
-    const existingNotifications = document.querySelectorAll('.ohs-notification');
-    existingNotifications.forEach(notification => notification.remove());
-    
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `ohs-notification alert alert-${type === 'error' ? 'danger' : type}`;
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 9999;
-        min-width: 300px;
-        max-width: 400px;
-        opacity: 0;
-        transform: translateX(100%);
-        transition: all 0.3s ease;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    `;
-    
-    // Set icon based on type
-    let icon = '';
-    switch (type) {
-        case 'success':
-            icon = '<i class="fas fa-check-circle me-2"></i>';
-            break;
-        case 'error':
-            icon = '<i class="fas fa-exclamation-triangle me-2"></i>';
-            break;
-        case 'warning':
-            icon = '<i class="fas fa-exclamation-circle me-2"></i>';
-            break;
-        default:
-            icon = '<i class="fas fa-info-circle me-2"></i>';
-    }
-    
-    notification.innerHTML = `
-        <div class="d-flex align-items-center">
-            ${icon}
-            <span>${message}</span>
-            <button type="button" class="btn-close ms-auto" aria-label="Close"></button>
-        </div>
-    `;
-    
-    // Add to page
-    document.body.appendChild(notification);
-    
-    // Animate in
-    setTimeout(() => {
-        notification.style.opacity = '1';
-        notification.style.transform = 'translateX(0)';
-    }, 10);
-    
-    // Auto remove
-    setTimeout(() => {
-        notification.style.opacity = '0';
-        notification.style.transform = 'translateX(100%)';
-        setTimeout(() => notification.remove(), 300);
-    }, duration);
-    
-    // Manual close
-    notification.querySelector('.btn-close').addEventListener('click', () => {
-        notification.style.opacity = '0';
-        notification.style.transform = 'translateX(100%)';
-        setTimeout(() => notification.remove(), 300);
-    });
-}
-
-// ==========================================================================
-// SHOPIFY INTEGRATION FUNCTIONS
-// ==========================================================================
-
-/**
- * Initialize Shopify integration if available
- * Works with existing shopify-client.js and API endpoints
- */
-function initShopifyIntegration() {
-    // Check if Shopify client is available
-    if (typeof window.shopifyIntegration !== 'undefined') {
-        console.log('🛍️ Shopify integration detected and ready');
-        
-        // Listen for Shopify-specific events
-        window.addEventListener('shopifyCheckoutReady', function(event) {
-            console.log('✅ Shopify checkout ready:', event.detail);
-        });
-        
-        window.addEventListener('shopifyError', function(event) {
-            console.error('❌ Shopify error:', event.detail);
-            showNotification('Shopify service temporarily unavailable', 'warning');
-        });
-        
+function checkProductCatalog() {
+    if (typeof window.PRODUCT_CATALOG !== 'undefined' &&
+        typeof window.findProduct      === 'function'  &&
+        typeof window.getPricingTier   === 'function') {
+        console.log('✅ Product catalog ready —',
+            Object.keys(window.PRODUCT_CATALOG).length, 'products loaded.');
+        window.dispatchEvent(new CustomEvent('productCatalogReady'));
         return true;
-    } else {
-        console.log('📦 Running in local cart mode (Shopify not connected)');
-        return false;
     }
-}
-
-/**
- * Enhanced add to cart function that works with Shopify API
- * Falls back to local storage if Shopify is not available
- * @param {string} productId - Product handle
- * @param {string} productName - Product name
- * @param {number} price - Product price
- * @param {string} emoji - Product emoji
- * @param {number} quantity - Quantity to add
- * @param {Object} options - Additional options (variantId, sku, etc.)
- */
-function addToCartWithShopify(productId, productName, price, emoji = '🧽', quantity = 1, options = {}) {
-    // Try Shopify integration first if available
-    if (typeof window.shopifyIntegration !== 'undefined' && typeof window.addToCartFromProducts === 'function') {
-        try {
-            // Use existing Shopify cart function
-            const result = window.addToCartFromProducts(productId, productName, price, quantity, options.variantId);
-            
-            if (result) {
-                // Also update local cart for consistency
-                addToCart(productId, productName, price, emoji, quantity, options.variantId, options.sku);
-                return true;
-            }
-        } catch (error) {
-            console.warn('Shopify add to cart failed, falling back to local cart:', error);
-        }
-    }
-    
-    // Fallback to local cart
-    return addToCart(productId, productName, price, emoji, quantity, options.variantId, options.sku);
-}
-
-/**
- * Proceed to checkout - Shopify or local
- * Automatically chooses between Shopify checkout and local cart page
- */
-function proceedToCheckout() {
-    try {
-        // Check if Shopify checkout is available
-        if (typeof window.shopifyIntegration !== 'undefined' && typeof window.proceedToCheckout === 'function') {
-            console.log('🛍️ Redirecting to Shopify checkout...');
-            
-            // Track checkout initiation
-            if (typeof gtag !== 'undefined') {
-                const cartItems = getShopifyCartItems();
-                const totalValue = cartItems.reduce((sum, item) => sum + (item.properties.originalPrice * item.quantity), 0);
-                
-                gtag('event', 'begin_checkout', {
-                    'currency': 'USD',
-                    'value': totalValue,
-                    'items': cartItems.map(item => ({
-                        'item_id': item.variantId,
-                        'item_name': item.properties.productHandle,
-                        'quantity': item.quantity,
-                        'price': item.properties.originalPrice
-                    }))
-                });
-            }
-            
-            return window.proceedToCheckout();
-        } else {
-            // Fallback to local cart page
-            console.log('📦 Redirecting to local cart page...');
-            window.location.href = '/shop/cart.html';
-            return true;
-        }
-    } catch (error) {
-        console.error('Error proceeding to checkout:', error);
-        showNotification('Error accessing checkout. Please try again.', 'error');
-        
-        // Ultimate fallback
-        window.location.href = '/shop/cart.html';
-        return false;
-    }
-}
-
-/**
- * Get cart for display purposes
- * Returns cart in a consistent format regardless of storage method
- */
-function getDisplayCart() {
-    try {
-        const cart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || {};
-        const cartArray = Object.entries(cart).map(([productId, item]) => ({
-            id: productId,
-            name: item.name,
-            price: item.price,
-            quantity: item.quantity,
-            emoji: item.emoji || '🧽',
-            variantId: item.variantId,
-            sku: item.sku,
-            total: item.price * item.quantity
-        }));
-        
-        const totalQuantity = cartArray.reduce((sum, item) => sum + item.quantity, 0);
-        const totalPrice = cartArray.reduce((sum, item) => sum + item.total, 0);
-        const isWholesale = isWholesaleEligible();
-        
-        return {
-            items: cartArray,
-            totalQuantity,
-            totalPrice,
-            isWholesale,
-            wholesaleThreshold: 25
-        };
-    } catch (error) {
-        console.error('Error getting display cart:', error);
-        return {
-            items: [],
-            totalQuantity: 0,
-            totalPrice: 0,
-            isWholesale: false,
-            wholesaleThreshold: 25
-        };
-    }
+    console.warn('⚠️ product-catalog.js not loaded yet — cart and pricing features unavailable.');
+    return false;
 }
 
 // ==========================================================================
-// SERVICE BOOKING FUNCTIONS - ENHANCED
+// SERVICE BOOKING HELPERS
 // ==========================================================================
 
-/**
- * Opens residential service booking form with enhanced tracking
- */
+const BOOKING_FORM_BASE = 'https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform';
+
 function bookResidentialService() {
-    try {
-        // Enhanced analytics tracking
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'book_residential_service', {
-                'event_category': 'Service Booking',
-                'event_label': 'Residential Service',
-                'custom_parameters': {
-                    'cart_items': getCartTotalQuantity(),
-                    'is_wholesale': isWholesaleEligible(),
-                    'page_url': window.location.href
-                }
-            });
-        }
-        
-        // Check if user has items in cart for upselling
-        const cartQuantity = getCartTotalQuantity();
-        let formUrl = 'https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform?entry.service_type=Residential&entry.source=Website';
-        
-        if (cartQuantity > 0) {
-            formUrl += `&entry.cart_items=${cartQuantity}`;
-            if (isWholesaleEligible()) {
-                formUrl += '&entry.customer_type=Wholesale';
-            }
-        }
-        
-        // Open form
-        window.open(formUrl, '_blank');
-        
-        // Show confirmation
-        showNotification('🏠 Opening residential service booking form...', 'info', 2000);
-        
-    } catch (error) {
-        console.error('Error opening residential booking form:', error);
-        showNotification('Error opening booking form. Please try again.', 'error');
+    window.open(`${BOOKING_FORM_BASE}?entry.service_type=Residential&entry.source=Website`, '_blank');
+    if (typeof window.showNotification === 'function') {
+        window.showNotification('🏠 Opening residential service booking form…', 'info');
+    }
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'book_residential_service', { event_category: 'Service Booking' });
     }
 }
 
-/**
- * Opens commercial service booking form with enhanced tracking
- */
 function bookCommercialService() {
-    try {
-        // Enhanced analytics tracking
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'book_commercial_service', {
-                'event_category': 'Service Booking',
-                'event_label': 'Commercial Service',
-                'custom_parameters': {
-                    'cart_items': getCartTotalQuantity(),
-                    'is_wholesale': isWholesaleEligible(),
-                    'page_url': window.location.href
-                }
-            });
-        }
-        
-        // Check if user has items in cart for upselling
-        const cartQuantity = getCartTotalQuantity();
-        let formUrl = 'https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform?entry.service_type=Commercial&entry.source=Website';
-        
-        if (cartQuantity > 0) {
-            formUrl += `&entry.cart_items=${cartQuantity}`;
-            formUrl += '&entry.customer_type=Commercial'; // Commercial customers are typically wholesale
-        }
-        
-        // Open form
-        window.open(formUrl, '_blank');
-        
-        // Show confirmation
-        showNotification('🏢 Opening commercial service booking form...', 'info', 2000);
-        
-    } catch (error) {
-        console.error('Error opening commercial booking form:', error);
-        showNotification('Error opening booking form. Please try again.', 'error');
+    window.open(`${BOOKING_FORM_BASE}?entry.service_type=Commercial&entry.source=Website`, '_blank');
+    if (typeof window.showNotification === 'function') {
+        window.showNotification('🏢 Opening commercial service booking form…', 'info');
+    }
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'book_commercial_service', { event_category: 'Service Booking' });
     }
 }
 
-/**
- * Initiates phone call
- */
 function callNow() {
-    try {
-        // Track call intent
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'phone_call', {
-                'event_category': 'Contact',
-                'event_label': 'Phone Call Initiated'
-            });
-        }
-        
-        window.open('tel:+18017125663');
-    } catch (error) {
-        console.error('Error initiating phone call:', error);
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'phone_call', { event_category: 'Contact', event_label: 'Call Now' });
     }
+    window.location.href = 'tel:+18017125663';
 }
 
 // ==========================================================================
-// FORM ENHANCEMENT
+// FORM ENHANCEMENTS
 // ==========================================================================
 
-/**
- * Enhances forms with validation and UX improvements
- */
 function initFormEnhancements() {
-    const forms = document.querySelectorAll('form');
-    
-    forms.forEach(form => {
-        // Add loading states to submit buttons
-        form.addEventListener('submit', function(e) {
-            const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                const originalText = submitBtn.textContent;
-                submitBtn.textContent = 'Submitting...';
-                
-                // Re-enable after 5 seconds (fallback)
-                setTimeout(() => {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = originalText;
-                }, 5000);
-            }
-        });
-        
-        // Add floating labels effect
-        const inputs = form.querySelectorAll('input, textarea, select');
-        inputs.forEach(input => {
-            if (input.placeholder) {
-                input.addEventListener('focus', function() {
-                    this.classList.add('focused');
-                });
-                
-                input.addEventListener('blur', function() {
-                    if (!this.value) {
-                        this.classList.remove('focused');
-                    }
-                });
-            }
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', () => {
+            const btn = form.querySelector('button[type="submit"], input[type="submit"]');
+            if (!btn) return;
+            const original  = btn.textContent;
+            btn.disabled    = true;
+            btn.textContent = 'Submitting…';
+            setTimeout(() => {
+                btn.disabled    = false;
+                btn.textContent = original;
+            }, 6000);
         });
     });
 }
@@ -699,208 +381,114 @@ function initFormEnhancements() {
 // UTILITY FUNCTIONS
 // ==========================================================================
 
-/**
- * Debounce function to limit function calls
- * @param {Function} func - Function to debounce
- * @param {number} wait - Wait time in milliseconds
- * @param {boolean} immediate - Execute immediately
- */
-function debounce(func, wait, immediate) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            timeout = null;
-            if (!immediate) func(...args);
-        };
-        const callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func(...args);
+function debounce(fn, wait, immediate) {
+    let t;
+    return function (...args) {
+        const later = () => { t = null; if (!immediate) fn(...args); };
+        const now   = immediate && !t;
+        clearTimeout(t);
+        t = setTimeout(later, wait);
+        if (now) fn(...args);
     };
 }
 
-/**
- * Throttle function to limit function calls
- * @param {Function} func - Function to throttle
- * @param {number} limit - Time limit in milliseconds
- */
-function throttle(func, limit) {
-    let inThrottle;
-    return function(...args) {
-        if (!inThrottle) {
-            func.apply(this, args);
-            inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
+function throttle(fn, limit) {
+    let active = false;
+    return function (...args) {
+        if (!active) {
+            fn.apply(this, args);
+            active = true;
+            setTimeout(() => { active = false; }, limit);
         }
     };
 }
 
-/**
- * Check if element is in viewport
- * @param {Element} element - Element to check
- * @return {boolean} - True if element is in viewport
- */
-function isInViewport(element) {
-    const rect = element.getBoundingClientRect();
-    return (
-        rect.top >= 0 &&
-        rect.left >= 0 &&
-        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-    );
-}
-
-// ==========================================================================
-// PERFORMANCE MONITORING
-// ==========================================================================
-
-/**
- * Log performance metrics
- */
-function logPerformanceMetrics() {
-    if ('performance' in window) {
-        window.addEventListener('load', function() {
-            setTimeout(() => {
-                const perfData = performance.getEntriesByType('navigation')[0];
-                console.log('🚀 Page Load Performance:', {
-                    'DNS Lookup': perfData.domainLookupEnd - perfData.domainLookupStart,
-                    'Connection': perfData.connectEnd - perfData.connectStart,
-                    'Response': perfData.responseEnd - perfData.responseStart,
-                    'DOM Complete': perfData.domComplete - perfData.navigationStart,
-                    'Load Complete': perfData.loadEventEnd - perfData.navigationStart
-                });
-            }, 0);
-        });
-    }
+function isInViewport(el) {
+    const r = el.getBoundingClientRect();
+    return r.top    >= 0 &&
+           r.left   >= 0 &&
+           r.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+           r.right  <= (window.innerWidth  || document.documentElement.clientWidth);
 }
 
 // ==========================================================================
 // INITIALIZATION
 // ==========================================================================
 
-/**
- * Initialize all global functionality including Shopify integration
- */
-function initializeGlobalScripts() {
-    console.log('🔧 Initializing OHS Global Scripts...');
-    
-    // Core functionality
+function init() {
+    console.log('🔧 Initializing OHS Global Scripts…');
     updateCartBadge();
     checkBanner();
     initSmoothScrolling();
     initMobileMenu();
     initAnimations();
     initFormEnhancements();
-    
-    // Initialize Shopify integration if available
-    initShopifyIntegration();
-    
-    // Performance monitoring (development only)
-    if (window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1')) {
-        logPerformanceMetrics();
-    }
-    
-    console.log('✅ OHS Global Scripts Initialized Successfully');
+    checkProductCatalog();
+    console.log('✅ OHS Global Scripts initialized.');
 }
 
+document.addEventListener('DOMContentLoaded', init);
+
 // ==========================================================================
-// EVENT LISTENERS - ENHANCED FOR SHOPIFY
+// EVENT LISTENERS
 // ==========================================================================
 
-// Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', initializeGlobalScripts);
+// Sync cart badge across tabs
+window.addEventListener('storage', e => {
+    if (e.key === CART_KEY) updateCartBadge();
+});
 
-// Listen for cart updates from multiple sources
-window.addEventListener('storage', function(e) {
-    if (e.key === CART_STORAGE_KEY || e.key === 'cartItems') {
+// Refresh badge when tab regains focus
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) updateCartBadge();
+});
+
+// Internal cartUpdated event (fired by addItemToCart and cart.js)
+window.addEventListener('cartUpdated', () => updateCartBadge());
+
+// Clear cart if returning from successful Shopify checkout
+window.addEventListener('focus', () => {
+    if (new URLSearchParams(window.location.search).get('checkout') === 'success') {
+        localStorage.removeItem(CART_KEY);
         updateCartBadge();
-    }
-});
-
-// Handle page visibility changes
-document.addEventListener('visibilitychange', function() {
-    if (!document.hidden) {
-        updateCartBadge(); // Refresh cart badge when page becomes visible
-    }
-});
-
-// Listen for custom cart events from Shopify integration
-window.addEventListener('cartUpdated', function(e) {
-    console.log('🛒 Cart updated:', e.detail);
-    updateCartBadge();
-});
-
-// Listen for Shopify integration events
-window.addEventListener('shopifyReady', function(e) {
-    console.log('🛍️ Shopify integration ready:', e.detail);
-    updateCartBadge(); // Sync cart badge with Shopify cart
-});
-
-// Handle window resize for responsive adjustments
-window.addEventListener('resize', debounce(function() {
-    // Recalculate any responsive elements if needed
-    console.log('Window resized, adjusting responsive elements...');
-}, 250));
-
-// Listen for checkout completion (if user returns from Shopify)
-window.addEventListener('focus', function() {
-    // Check if cart should be cleared (user might have completed checkout)
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('checkout') === 'success') {
-        // Clear local cart after successful checkout
-        localStorage.removeItem(CART_STORAGE_KEY);
-        updateCartBadge();
-        showNotification('🎉 Order completed successfully!', 'success', 5000);
+        if (typeof window.showNotification === 'function') {
+            window.showNotification('🎉 Order completed! Thank you.', 'success');
+        }
     }
 });
 
 // ==========================================================================
-// GLOBAL FUNCTION EXPOSURE - ENHANCED
+// PUBLIC API
 // ==========================================================================
 
-// Expose functions to global scope for use in inline scripts and other files
-window.OHS = window.OHS || {};
+window.OHS = {
+    updateCartBadge,
+    addItemToCart,
+    getCartTotalQuantity,
+    isWholesaleEligible,
+    goToCart,
+    closeBanner,
+    bookResidentialService,
+    bookCommercialService,
+    callNow,
+    debounce,
+    throttle,
+    isInViewport,
+    checkProductCatalog
+};
 
-// Core functions
-window.OHS.updateCartBadge = updateCartBadge;
-window.OHS.addToCart = addToCart;
-window.OHS.addToCartWithShopify = addToCartWithShopify;
-window.OHS.proceedToCheckout = proceedToCheckout;
-window.OHS.getDisplayCart = getDisplayCart;
-window.OHS.getCartTotalQuantity = getCartTotalQuantity;
-window.OHS.isWholesaleEligible = isWholesaleEligible;
-window.OHS.getShopifyCartItems = getShopifyCartItems;
-
-// UI functions
-window.OHS.closeBanner = closeBanner;
-window.OHS.showNotification = showNotification;
-
-// Service booking
-window.OHS.bookResidentialService = bookResidentialService;
-window.OHS.bookCommercialService = bookCommercialService;
-window.OHS.callNow = callNow;
-
-// Utility functions
-window.OHS.debounce = debounce;
-window.OHS.throttle = throttle;
-window.OHS.isInViewport = isInViewport;
-
-// Shopify integration
-window.OHS.initShopifyIntegration = initShopifyIntegration;
-
-// Legacy function names for backward compatibility with existing code
-window.updateCartBadge = updateCartBadge;
-window.addToCart = addToCart;
-window.addToCartWithShopify = addToCartWithShopify;
-window.proceedToCheckout = proceedToCheckout;
-window.closeBanner = closeBanner;
-window.bookResidentialService = bookResidentialService;
-window.bookCommercialService = bookCommercialService;
-window.callNow = callNow;
-
-// Enhanced cart functions for integration
-window.getDisplayCart = getDisplayCart;
+// Flat globals for backward compat with inline onclick handlers
+window.updateCartBadge      = updateCartBadge;
+window.addItemToCart        = addItemToCart;
 window.getCartTotalQuantity = getCartTotalQuantity;
-window.isWholesaleEligible = isWholesaleEligible;
+window.isWholesaleEligible  = isWholesaleEligible;
+window.goToCart             = goToCart;
+window.closeBanner          = closeBanner;
+window.bookResidentialService = bookResidentialService;
+window.bookCommercialService  = bookCommercialService;
+window.callNow              = callNow;
+window.debounce             = debounce;
+window.throttle             = throttle;
+window.isInViewport         = isInViewport;
 
-console.log('🎉 OHS Global Scripts Loaded Successfully - Shopify Integration Ready');
+console.log('🎉 OHS Global Scripts loaded.');
