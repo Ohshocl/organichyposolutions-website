@@ -1,266 +1,244 @@
 /**
  * ORGANIC HYPOSOLUTIONS - SHOPPING CART SYSTEM
  * File: /shop/js/cart.js
- * 
+ *
  * Features:
  * - Works with product-catalog.js (must be loaded first)
  * - Geographic restrictions (EPA products Utah-only)
  * - Automatic wholesale pricing at quantity thresholds
- * - Shopify checkout integration
+ * - Subscription variant support (all 4 tiers: retail, retailSub, wholesale, wholesaleSub)
+ * - Shopify checkout via Storefront API (shopify-client.js)
  * - Cross-tab synchronization
  * - State validation with cookie persistence
- * 
+ *
  * Dependencies:
  * - product-catalog.js (must load before this file)
- * 
- * Last Updated: 2025-02-03
+ * - shopify-client.js (must load before this file for checkout)
+ *
+ * Cart item format:
+ * { productId, variantId, name, price, quantity, sku, tier, type, isSubscription, image }
+ *
+ * Storage key: ohsCart (array format — NEVER cartItems, NEVER object format)
+ *
+ * Last Updated: 2026-03-05
  */
 
 (function() {
     'use strict';
-    
+
     // =============================================================================
     // CONFIGURATION
     // =============================================================================
-    
-    const CART_STORAGE_KEY = 'ohsCart';
-    const STATE_STORAGE_KEY = 'userState';
-    const STATE_COOKIE_NAME = 'ohs_user_state';
+
+    const CART_STORAGE_KEY   = 'ohsCart';           // NEVER cartItems
+    const STATE_STORAGE_KEY  = 'ohsUserState';      // matches geo-filter modal
+    const STATE_COOKIE_NAME  = 'ohs_user_state';
     const COOKIE_EXPIRY_DAYS = 365;
-    
+
     // =============================================================================
     // CART STATE
     // =============================================================================
-    
-    let cartItems = [];
-    
+
+    let cartItems = [];  // Always an array of cart item objects
+
     // =============================================================================
     // INITIALIZATION
     // =============================================================================
-    
-    /**
-     * Initialize cart system when page loads
-     */
+
     function initCart() {
         console.log('🛒 Initializing OHS Cart System...');
-        
-        // Check dependencies
+
         if (!window.PRODUCT_CATALOG) {
             console.error('❌ CRITICAL: product-catalog.js must be loaded before cart.js!');
             return;
         }
-        
-        // Load cart from localStorage
+
         loadCart();
-        
-        // Update UI
         updateCartBadge();
-        
-        // Listen for storage events (cross-tab sync)
         window.addEventListener('storage', handleStorageChange);
-        
+
         console.log('✅ Cart system initialized with', cartItems.length, 'items');
     }
-    
+
     // =============================================================================
     // COOKIE HELPERS
     // =============================================================================
-    
-    /**
-     * Set a cookie
-     */
+
     function setCookie(name, value, days) {
         const expires = new Date();
         expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
         document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
     }
-    
-    /**
-     * Get a cookie value
-     */
+
     function getCookie(name) {
-        const nameEQ = name + "=";
+        const nameEQ = name + '=';
         const ca = document.cookie.split(';');
         for (let i = 0; i < ca.length; i++) {
             let c = ca[i];
-            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            while (c.charAt(0) === ' ') c = c.substring(1);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length);
         }
         return null;
     }
-    
+
     // =============================================================================
     // STATE MANAGEMENT
     // =============================================================================
-    
+
     /**
-     * Get user's state from cookie, localStorage, or return null
+     * Get user's state from cookie or localStorage (ohsUserState key)
      */
     window.getUserState = function() {
-        // Try cookie first (more persistent)
-        let state = getCookie(STATE_COOKIE_NAME);
-        
-        // Fall back to localStorage
-        if (!state) {
-            state = localStorage.getItem(STATE_STORAGE_KEY);
-        }
-        
-        return state || null;
+        return getCookie(STATE_COOKIE_NAME) || localStorage.getItem(STATE_STORAGE_KEY) || null;
     };
-    
+
     /**
-     * Set user's state (both cookie and localStorage)
+     * Set user's state — persists to cookie + localStorage
      */
     window.setUserState = function(state) {
         const upperState = state?.toUpperCase();
-        
-        // Save to cookie (persistent across sessions)
         setCookie(STATE_COOKIE_NAME, upperState, COOKIE_EXPIRY_DAYS);
-        
-        // Also save to localStorage (backup)
         localStorage.setItem(STATE_STORAGE_KEY, upperState);
-        
         console.log('📍 User state set to:', upperState);
-        
-        // Validate cart for new state
         validateCartForState(upperState);
-        
-        // Dispatch event for UI updates
         window.dispatchEvent(new CustomEvent('stateChanged', { detail: { state: upperState } }));
-        
         return upperState;
     };
-    
-    /**
-     * Check if state selector should be shown
-     */
+
     window.shouldShowStateSelector = function() {
         return !window.getUserState();
     };
-    
+
     // =============================================================================
-    // CART MANAGEMENT FUNCTIONS
+    // CART PERSISTENCE
     // =============================================================================
-    
-    /**
-     * Load cart from localStorage
-     */
+
     function loadCart() {
         try {
             const stored = localStorage.getItem(CART_STORAGE_KEY);
-            if (!stored) {
-                cartItems = [];
-                return;
-            }
-            
+            if (!stored) { cartItems = []; return; }
+
             const parsed = JSON.parse(stored);
-            
-            // Handle different cart formats
-            if (Array.isArray(parsed)) {
-                cartItems = parsed;
-            } else if (typeof parsed === 'object') {
-                // Convert object format to array
-                cartItems = Object.entries(parsed).map(([productId, data]) => ({
-                    productId: productId,
-                    ...data
-                }));
-            } else {
-                cartItems = [];
-            }
-            
-            // Validate all items and merge duplicates
-            const mergedItems = new Map();
-            
-            cartItems.forEach(item => {
-                const validatedItem = validateCartItem(item);
-                if (validatedItem) {
-                    const existingItem = mergedItems.get(validatedItem.productId);
-                    if (existingItem) {
-                        existingItem.quantity += validatedItem.quantity;
-                        recalculateItemPricing(existingItem);
-                    } else {
-                        mergedItems.set(validatedItem.productId, validatedItem);
-                    }
+
+            // Normalise to array — guard against any legacy object format
+            const rawItems = Array.isArray(parsed)
+                ? parsed
+                : Object.entries(parsed).map(([productId, data]) => ({ productId, ...data }));
+
+            // Validate each item against the catalog, merge duplicates by variantId
+            const mergedMap = new Map();
+            rawItems.forEach(item => {
+                const valid = validateCartItem(item);
+                if (!valid) return;
+                const key = valid.variantId; // unique key = variant (handles sub vs non-sub)
+                if (mergedMap.has(key)) {
+                    mergedMap.get(key).quantity += valid.quantity;
+                    recalculateItemPricing(mergedMap.get(key));
+                } else {
+                    mergedMap.set(key, valid);
                 }
             });
-            
-            cartItems = Array.from(mergedItems.values());
-            
-            // Save merged cart
+
+            cartItems = Array.from(mergedMap.values());
             saveCart();
-            
             console.log('📦 Loaded', cartItems.length, 'items from cart');
-            
+
         } catch (error) {
             console.error('Error loading cart:', error);
             cartItems = [];
         }
     }
-    
-    /**
-     * Save cart to localStorage
-     */
+
     function saveCart() {
         try {
             localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
-            
-            // Trigger storage event for cross-tab sync
             window.dispatchEvent(new Event('cartUpdated'));
-            
         } catch (error) {
             console.error('Error saving cart:', error);
         }
     }
-    
+
+    // =============================================================================
+    // CART ITEM VALIDATION & NORMALISATION
+    // =============================================================================
+
     /**
-     * Validate and normalize cart item
+     * Validates an item against the product catalog and returns a normalised cart item.
+     * Preserves isSubscription so subscriptions survive a page reload.
+     *
+     * @param {Object} item - Raw item from localStorage
+     * @returns {Object|null} - Normalised cart item or null if invalid
      */
     function validateCartItem(item) {
-        if (!item || typeof item !== 'object') {
-            return null;
-        }
-        
-        // Try to find the product
+        if (!item || typeof item !== 'object') return null;
+
         const identifier = item.productId || item.id || item.name;
         if (!identifier) return null;
-        
+
         const product = window.findProduct(identifier);
         if (!product) {
             console.warn('Product not found in catalog:', identifier);
             return null;
         }
-        
-        const quantity = Math.max(1, parseInt(item.quantity) || 1);
-        const pricingInfo = window.getPricingTier(product.id, quantity);
-        
+
+        const quantity       = Math.max(1, parseInt(item.quantity) || 1);
+        const isSubscription = item.isSubscription === true;
+        const pricingInfo    = window.getPricingTier(product.id, quantity, isSubscription);
+
         return {
-            productId: product.id,
-            name: product.name,
-            price: pricingInfo.price,
-            quantity: quantity,
-            variantId: pricingInfo.variantId,
-            tier: pricingInfo.tier,
-            isWholesale: pricingInfo.isWholesale,
-            wholesaleThreshold: product.wholesaleThreshold,
-            emoji: product.emoji,
-            image: product.image,
-            type: product.type,
-            addedAt: item.addedAt || new Date().toISOString()
+            productId:      product.id,
+            variantId:      pricingInfo.variantId,
+            name:           product.name,
+            price:          pricingInfo.price,
+            quantity:       quantity,
+            sku:            product.skus[pricingInfo.tierKey],
+            tier:           pricingInfo.tier,             // 'retail' | 'wholesale'
+            type:           product.type,                 // 'epa-usda' | 'usda-only'
+            isSubscription: isSubscription,
+            image:          product.image,
+            addedAt:        item.addedAt || new Date().toISOString()
         };
     }
-    
+
     /**
-     * Add item to cart or update quantity if exists
+     * Re-prices an existing cart item in place.
+     * Reads item.isSubscription so the subscription flag is never lost.
+     *
+     * @param {Object} cartItem - Item from cartItems array (mutated in place)
      */
-    window.addToCart = function(productId, quantity = 1) {
+    function recalculateItemPricing(cartItem) {
+        const pricingInfo      = window.getPricingTier(cartItem.productId, cartItem.quantity, cartItem.isSubscription);
+        cartItem.price         = pricingInfo.price;
+        cartItem.tier          = pricingInfo.tier;
+        cartItem.tierKey       = pricingInfo.tierKey;
+        cartItem.variantId     = pricingInfo.variantId;
+        cartItem.isWholesale   = pricingInfo.isWholesale;
+
+        // Keep SKU in sync with tier
+        const product = window.findProduct(cartItem.productId);
+        if (product) cartItem.sku = product.skus[pricingInfo.tierKey];
+    }
+
+    // =============================================================================
+    // PUBLIC CART API
+    // =============================================================================
+
+    /**
+     * Add a product to the cart.
+     *
+     * @param {string}  productId      - Shopify product ID
+     * @param {number}  quantity       - Units to add (default 1)
+     * @param {boolean} isSubscription - true if Subscribe & Save selected (default false)
+     */
+    window.addToCart = function(productId, quantity = 1, isSubscription = false) {
         const product = window.findProduct(productId);
         if (!product) {
             console.error('Product not found:', productId);
             window.showNotification('Product not found', 'error');
             return false;
         }
-        
-        // Check geographic restrictions
+
+        // Geographic restriction check
         const userState = window.getUserState();
         if (userState && !window.isProductAvailableInState(productId, userState)) {
             window.showNotification(
@@ -269,390 +247,381 @@
             );
             return false;
         }
-        
-        // Find existing item
-        const existingIndex = cartItems.findIndex(item => item.productId === product.id);
-        
+
+        const pricingInfo = window.getPricingTier(product.id, quantity, isSubscription);
+
+        // Match on variantId so retail + subscription are stored separately
+        const existingIndex = cartItems.findIndex(item => item.variantId === pricingInfo.variantId);
+
         if (existingIndex !== -1) {
-            // Update existing item
-            cartItems[existingIndex].quantity += quantity;
-            recalculateItemPricing(cartItems[existingIndex]);
-            
-            // Check if wholesale activated
-            const wasWholesale = cartItems[existingIndex].isWholesale;
-            if (!wasWholesale && cartItems[existingIndex].isWholesale) {
-                window.showNotification(
-                    `🎉 Wholesale pricing activated for ${product.name}!`,
-                    'success'
-                );
+            const existing = cartItems[existingIndex];
+            const wasWholesale = existing.isWholesale;
+            existing.quantity += quantity;
+            recalculateItemPricing(existing);
+            if (!wasWholesale && existing.isWholesale) {
+                window.showNotification(`🎉 Wholesale pricing activated for ${product.name}!`, 'success');
             }
         } else {
-            // Add new item
-            const pricingInfo = window.getPricingTier(product.id, quantity);
-            
-            const cartItem = {
-                productId: product.id,
-                name: product.name,
-                price: pricingInfo.price,
-                quantity: quantity,
-                variantId: pricingInfo.variantId,
-                tier: pricingInfo.tier,
-                isWholesale: pricingInfo.isWholesale,
-                wholesaleThreshold: product.wholesaleThreshold,
-                emoji: product.emoji,
-                image: product.image,
-                type: product.type,
-                addedAt: new Date().toISOString()
-            };
-            
-            cartItems.push(cartItem);
+            cartItems.push({
+                productId:      product.id,
+                variantId:      pricingInfo.variantId,
+                name:           product.name,
+                price:          pricingInfo.price,
+                quantity:       quantity,
+                sku:            product.skus[pricingInfo.tierKey],
+                tier:           pricingInfo.tier,
+                type:           product.type,
+                isSubscription: isSubscription,
+                image:          product.image,
+                addedAt:        new Date().toISOString()
+            });
         }
-        
+
         saveCart();
         updateCartBadge();
-        
-        const pricingInfo = window.getPricingTier(product.id, quantity);
+
         const tierLabel = pricingInfo.isWholesale ? ' at Wholesale Price' : '';
-        window.showNotification(`Added ${quantity}x ${product.name}${tierLabel} to cart!`, 'success');
-        
+        const subLabel  = isSubscription ? ' (Subscribe & Save)' : '';
+        window.showNotification(`Added ${quantity}x ${product.name}${tierLabel}${subLabel} to cart!`, 'success');
+
         return true;
     };
-    
+
     /**
-     * Remove item from cart
+     * Remove ALL line items for a given productId from the cart.
+     * If you need to remove a specific variant only, use removeVariantFromCart().
      */
     window.removeFromCart = function(productId) {
         const product = window.findProduct(productId);
         const id = product ? product.id : productId;
-        
-        const initialLength = cartItems.length;
+
+        const before = cartItems.length;
         cartItems = cartItems.filter(item => item.productId !== id);
-        
-        if (cartItems.length < initialLength) {
+
+        if (cartItems.length < before) {
             saveCart();
             updateCartBadge();
             window.showNotification('Item removed from cart', 'info');
             return true;
         }
-        
         return false;
     };
-    
+
     /**
-     * Update item quantity
+     * Remove a specific variant line item (e.g. only the subscription entry).
+     *
+     * @param {string} variantId - Shopify variant ID
      */
-    window.updateCartItemQuantity = function(productId, quantity) {
-        const product = window.findProduct(productId);
-        const id = product ? product.id : productId;
-        
-        const item = cartItems.find(item => item.productId === id);
-        if (!item) return false;
-        
-        if (quantity <= 0) {
-            return window.removeFromCart(id);
+    window.removeVariantFromCart = function(variantId) {
+        const before = cartItems.length;
+        cartItems = cartItems.filter(item => item.variantId !== variantId);
+        if (cartItems.length < before) {
+            saveCart();
+            updateCartBadge();
+            window.showNotification('Item removed from cart', 'info');
+            return true;
         }
-        
+        return false;
+    };
+
+    /**
+     * Update quantity for a specific variant.
+     * Pass quantity ≤ 0 to remove the item.
+     *
+     * @param {string}  variantId - Shopify variant ID
+     * @param {number}  quantity  - New total quantity
+     */
+    window.updateCartItemQuantity = function(variantId, quantity) {
+        const item = cartItems.find(item => item.variantId === variantId);
+        if (!item) return false;
+
+        if (quantity <= 0) {
+            return window.removeVariantFromCart(variantId);
+        }
+
         const wasWholesale = item.isWholesale;
         item.quantity = quantity;
         recalculateItemPricing(item);
-        
-        // Notify about wholesale status change
+
         if (!wasWholesale && item.isWholesale) {
             window.showNotification(`🎉 Wholesale pricing activated for ${item.name}!`, 'success');
         } else if (wasWholesale && !item.isWholesale) {
-            window.showNotification(`Wholesale pricing removed. Add ${item.wholesaleThreshold - quantity} more for wholesale.`, 'warning');
+            const product = window.findProduct(item.productId);
+            const threshold = product ? product.wholesaleThreshold : 25;
+            window.showNotification(
+                `Wholesale pricing removed. Add ${threshold - quantity} more for wholesale pricing.`,
+                'warning'
+            );
         }
-        
+
         saveCart();
         updateCartBadge();
-        
         return true;
     };
-    
+
     /**
-     * Clear entire cart
+     * Toggle subscribe & save on a cart line item.
+     * Swaps the variantId and reprices accordingly.
+     *
+     * @param {string}  variantId      - Current Shopify variant ID
+     * @param {boolean} isSubscription - New subscription state
      */
+    window.updateCartItemSubscription = function(variantId, isSubscription) {
+        const item = cartItems.find(item => item.variantId === variantId);
+        if (!item) return false;
+
+        item.isSubscription = isSubscription;
+        recalculateItemPricing(item);
+
+        saveCart();
+        updateCartBadge();
+
+        const label = isSubscription ? 'Subscription activated' : 'Switched to one-time purchase';
+        window.showNotification(label, 'info');
+        return true;
+    };
+
     window.clearCart = function() {
         cartItems = [];
         saveCart();
         updateCartBadge();
         window.showNotification('Cart cleared', 'info');
     };
-    
-    /**
-     * Get cart items
-     */
-    window.getCartItems = function() {
-        return [...cartItems]; // Return copy to prevent external modification
-    };
-    
-    /**
-     * Get cart total
-     */
+
+    /** Returns a shallow copy of the cart array */
+    window.getCartItems = function() { return [...cartItems]; };
+
     window.getCartTotal = function() {
-        return cartItems.reduce((total, item) => {
-            return total + (item.price * item.quantity);
-        }, 0);
+        return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
     };
-    
-    /**
-     * Get cart item count
-     */
+
     window.getCartItemCount = function() {
         return cartItems.reduce((total, item) => total + item.quantity, 0);
     };
-    
-    /**
-     * Get total wholesale savings
-     */
+
     window.getCartWholesaleSavings = function() {
         return cartItems.reduce((total, item) => {
             if (item.isWholesale) {
                 const product = window.findProduct(item.productId);
                 if (product) {
-                    const savings = (product.pricing.retail - product.pricing.wholesale) * item.quantity;
-                    return total + savings;
+                    return total + (product.pricing.retail - item.price) * item.quantity;
                 }
             }
             return total;
         }, 0);
     };
-    
-    // =============================================================================
-    // PRICING CALCULATIONS
-    // =============================================================================
-    
-    /**
-     * Recalculate item pricing based on quantity
-     */
-    function recalculateItemPricing(cartItem) {
-        const pricingInfo = window.getPricingTier(cartItem.productId, cartItem.quantity);
-        
-        cartItem.price = pricingInfo.price;
-        cartItem.tier = pricingInfo.tier;
-        cartItem.variantId = pricingInfo.variantId;
-        cartItem.isWholesale = pricingInfo.isWholesale;
-    }
-    
+
     // =============================================================================
     // GEOGRAPHIC RESTRICTIONS
     // =============================================================================
-    
+
     /**
-     * Validate cart against user's state
-     * Removes items that can't ship to user's state
+     * Validate entire cart against a state code.
+     * Removes any EPA products if the state is not Utah.
+     * Returns true if cart is clean, false if items were removed.
+     *
+     * @param {string} state - Two-letter state code
      */
     function validateCartForState(state) {
         if (!state) return true;
-        
-        const initialLength = cartItems.length;
-        const removedItems = [];
-        
+
+        const before       = cartItems.length;
+        const removedNames = [];
+
         cartItems = cartItems.filter(item => {
             const available = window.isProductAvailableInState(item.productId, state);
-            if (!available) {
-                removedItems.push(item.name);
-            }
+            if (!available) removedNames.push(item.name);
             return available;
         });
-        
-        if (cartItems.length < initialLength) {
+
+        if (cartItems.length < before) {
             saveCart();
             updateCartBadge();
-            
             window.showNotification(
-                `${removedItems.length} item(s) removed: Not available for shipping to ${state}`,
+                `${removedNames.length} item(s) removed — not available for shipping to ${state}`,
                 'warning'
             );
             return false;
         }
-        
         return true;
     }
-    
+
     window.validateCartForState = validateCartForState;
-    
+
     // =============================================================================
-    // SHOPIFY CHECKOUT
+    // SHOPIFY CHECKOUT (via Storefront API)
     // =============================================================================
-    
+
     /**
-     * Proceed to Shopify checkout
+     * Build line items array for the Storefront API checkoutCreate mutation.
+     * Each line item uses the correct variantId for the selected tier + subscription.
+     */
+    function buildLineItems() {
+        return cartItems
+            .filter(item => item.variantId && !item.variantId.includes('undefined'))
+            .map(item => ({
+                variantId: `gid://shopify/ProductVariant/${item.variantId}`,
+                quantity:  item.quantity
+            }));
+    }
+
+    /**
+     * Proceed to Shopify checkout.
+     * Uses shopify-client.js createCheckout() if available,
+     * falls back to the direct /cart/ URL method.
      */
     window.proceedToCheckout = async function() {
         if (cartItems.length === 0) {
             window.showNotification('Your cart is empty', 'warning');
             return;
         }
-        
-        // Validate cart against user's state
+
+        // Geo-validate before checkout
         const userState = window.getUserState();
         if (userState && !validateCartForState(userState)) {
-            window.showNotification('Please review your cart and try again', 'error');
+            window.showNotification('Please review your cart — some items are not available in your state.', 'error');
             return;
         }
-        
-        // Build Shopify checkout URL
+
+        // Re-check cart still has items after geo-validation
+        if (cartItems.length === 0) {
+            window.showNotification('No eligible items remain in your cart.', 'warning');
+            return;
+        }
+
         try {
-            const checkoutUrl = buildShopifyCheckoutUrl();
-            console.log('🛒 Redirecting to Shopify checkout:', checkoutUrl);
-            
-            window.showNotification('Opening secure checkout...', 'success');
-            
-            // Open in new tab
-            setTimeout(() => {
-                window.open(checkoutUrl, '_blank');
-            }, 500);
-            
+            window.showNotification('Preparing your secure checkout…', 'info');
+
+            // Preferred: Storefront API via shopify-client.js
+            if (typeof window.createCheckout === 'function') {
+                const lineItems   = buildLineItems();
+                const checkoutUrl = await window.createCheckout(lineItems);
+
+                if (checkoutUrl) {
+                    console.log('🛒 Shopify Storefront checkout URL:', checkoutUrl);
+                    window.showNotification('Opening secure checkout…', 'success');
+                    setTimeout(() => { window.location.href = checkoutUrl; }, 600);
+                    return;
+                }
+                // Fall through to URL method if createCheckout returned nothing
+                console.warn('⚠️ createCheckout returned no URL — falling back to cart URL method');
+            }
+
+            // Fallback: direct Shopify cart URL (still passes correct variant IDs)
+            const domain    = window.SHOPIFY_DOMAIN || 'npmv1h-8e.myshopify.com';
+            const variantStr = cartItems
+                .filter(item => item.variantId && !item.variantId.includes('undefined'))
+                .map(item => `${item.variantId}:${item.quantity}`)
+                .join(',');
+
+            if (!variantStr) throw new Error('No valid variant IDs in cart');
+
+            const fallbackUrl = `https://${domain}/cart/${variantStr}`;
+            console.log('🛒 Fallback checkout URL:', fallbackUrl);
+            window.showNotification('Opening secure checkout…', 'success');
+            setTimeout(() => { window.location.href = fallbackUrl; }, 600);
+
         } catch (error) {
-            console.error('Error creating checkout:', error);
+            console.error('Checkout error:', error);
             window.showNotification('Unable to proceed to checkout. Please try again.', 'error');
         }
     };
-    
-    /**
-     * Build Shopify checkout URL from cart items
-     * Format: https://store.myshopify.com/cart/VARIANT_ID:QUANTITY,VARIANT_ID:QUANTITY
-     */
-    function buildShopifyCheckoutUrl() {
-        const variants = cartItems.map(item => {
-            return `${item.variantId}:${item.quantity}`;
-        }).filter(v => v && !v.includes('undefined'));
-        
-        if (variants.length === 0) {
-            throw new Error('No valid variants in cart');
-        }
-        
-        const domain = window.SHOPIFY_DOMAIN || 'npmv1h-8e.myshopify.com';
-        return `https://${domain}/cart/${variants.join(',')}`;
-    }
-    
+
     // =============================================================================
-    // UI UPDATES
+    // CART BADGE
     // =============================================================================
-    
-    /**
-     * Update cart badge in navigation
-     */
+
     function updateCartBadge() {
-        const badges = document.querySelectorAll('#cartBadge, .cart-badge');
+        const badges    = document.querySelectorAll('#cartBadge, .cart-badge');
         const itemCount = window.getCartItemCount();
-        
+
         badges.forEach(badge => {
             if (itemCount > 0) {
-                badge.textContent = itemCount;
-                badge.style.display = 'inline-block';
+                badge.textContent    = itemCount;
+                badge.style.display  = 'inline-block';
             } else {
                 badge.style.display = 'none';
             }
         });
     }
-    
+
+    // Expose so global-scripts.js can call it after nav template loads
+    window.updateCartBadge = updateCartBadge;
+
     // =============================================================================
     // NOTIFICATIONS
     // =============================================================================
-    
-    /**
-     * Show notification to user
-     */
+
     window.showNotification = function(message, type = 'info') {
-        // Check for existing notification container
         let container = document.getElementById('notificationContainer');
         if (!container) {
             container = document.createElement('div');
             container.id = 'notificationContainer';
-            container.style.cssText = 'position: fixed; top: 100px; right: 20px; z-index: 9999;';
+            container.style.cssText = 'position:fixed;top:100px;right:20px;z-index:9999;';
             document.body.appendChild(container);
         }
-        
-        // Create notification element
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        
-        const iconMap = {
-            success: 'check-circle',
-            error: 'times-circle',
-            warning: 'exclamation-triangle',
-            info: 'info-circle'
-        };
-        
+
         const colorMap = {
             success: 'linear-gradient(135deg, #22C55E, #16A34A)',
-            error: 'linear-gradient(135deg, #EF4444, #DC2626)',
+            error:   'linear-gradient(135deg, #EF4444, #DC2626)',
             warning: 'linear-gradient(135deg, #F59E0B, #D97706)',
-            info: 'linear-gradient(135deg, #3B82F6, #2563EB)'
+            info:    'linear-gradient(135deg, #3B82F6, #2563EB)'
         };
-        
+        const iconMap = {
+            success: 'check-circle',
+            error:   'times-circle',
+            warning: 'exclamation-triangle',
+            info:    'info-circle'
+        };
+
+        const notification = document.createElement('div');
         notification.style.cssText = `
-            background: ${colorMap[type] || colorMap.info};
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            margin-bottom: 10px;
-            min-width: 300px;
-            max-width: 400px;
-            transform: translateX(450px);
-            transition: transform 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            background:${colorMap[type] || colorMap.info};
+            color:white;padding:1rem 1.5rem;border-radius:12px;
+            box-shadow:0 8px 25px rgba(0,0,0,0.15);margin-bottom:10px;
+            min-width:300px;max-width:400px;
+            transform:translateX(450px);transition:transform 0.3s ease;
+            display:flex;align-items:center;gap:10px;
         `;
-        
         notification.innerHTML = `
             <i class="fas fa-${iconMap[type] || 'info-circle'}"></i>
-            <div style="flex: 1;">${message}</div>
-            <button onclick="this.parentElement.remove()" style="background: none; border: none; color: white; cursor: pointer; padding: 0;">
+            <div style="flex:1;">${message}</div>
+            <button onclick="this.parentElement.remove()"
+                    style="background:none;border:none;color:white;cursor:pointer;padding:0;">
                 <i class="fas fa-times"></i>
             </button>
         `;
-        
         container.appendChild(notification);
-        
-        // Animate in
-        setTimeout(() => {
-            notification.style.transform = 'translateX(0)';
-        }, 10);
-        
-        // Auto-remove after 5 seconds
+
+        setTimeout(() => { notification.style.transform = 'translateX(0)'; }, 10);
         setTimeout(() => {
             notification.style.transform = 'translateX(450px)';
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.parentNode.removeChild(notification);
-                }
-            }, 300);
+            setTimeout(() => { if (notification.parentNode) notification.parentNode.removeChild(notification); }, 300);
         }, 5000);
     };
-    
+
     // =============================================================================
-    // EVENT HANDLERS
+    // CROSS-TAB SYNC
     // =============================================================================
-    
-    /**
-     * Handle storage changes (cross-tab sync)
-     */
+
     function handleStorageChange(e) {
         if (e.key === CART_STORAGE_KEY) {
             loadCart();
             updateCartBadge();
-            
-            // Dispatch event for cart page to update
             window.dispatchEvent(new Event('cartUpdated'));
         }
     }
-    
+
     // =============================================================================
     // AUTO-INITIALIZE
     // =============================================================================
-    
-    // Initialize when DOM is ready
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initCart);
     } else {
         initCart();
     }
-    
-    console.log('✅ Cart.js loaded successfully');
-    
+
+    console.log('✅ cart.js loaded successfully');
+
 })();
