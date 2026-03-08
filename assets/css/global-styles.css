@@ -9,7 +9,7 @@
                                 .alert-*, .modal-*, service-card, enhanced-add-button
    ❌ MOVED TO pages.css: all scoped page overrides (.page-home .hero-section { ... })
    
-   Last Updated: March 5, 2026
+   Last Updated: March 8, 2026
    ========================================================================== */
 
 /* ==========================================================================
@@ -157,9 +157,14 @@ a:hover {
     align-items: center !important;
 }
 
+/* [ADDED] Navbar brand image — uses OHS Brand Image.jpg in nav template
+   60px desktop, 50px mobile per migration guide spec */
 .navbar-brand img {
-    height: 36px;
-    margin-right: 8px;
+    height: 60px !important;
+    width: auto !important;
+    margin-right: 0.5rem !important;
+    object-fit: contain;
+    align-self: center;
 }
 
 .navbar-brand:hover {
@@ -264,10 +269,12 @@ footer {
     margin-top: 0.5rem;
 }
 
+/* [FIXED] Footer heading color — accent blue per migration guide, not white.
+   Matches how old inline-styled pages rendered footer column headings. */
 .footer-heading,
 footer h5,
 footer h6 {
-    color: white;
+    color: var(--ohs-accent-blue);  /* #7DD3FC — matches old pages */
     font-weight: 700;
     font-size: 1rem;
     margin-bottom: 1rem;
@@ -388,9 +395,22 @@ footer a:hover {
 .hero-section {
     background: linear-gradient(135deg, var(--ohs-primary-blue) 0%, var(--ohs-accent-blue) 100%);
     color: white;
-    padding: 60px 0;
+    padding: 40px 0;
     position: relative;
     overflow: hidden;
+}
+
+/* Subtle pattern overlay — adds depth without distracting from content */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20l20-10v20L20 20zM0 10l20 10L0 30V10z' fill='rgba(255,255,255,0.03)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
 }
 
 .hero-section .hero-title {
@@ -723,6 +743,11 @@ footer a:hover {
 
     .hero-section .hero-title {
         font-size: var(--font-size-3xl);
+    }
+
+    /* [ADDED] Navbar brand image — 50px on mobile per migration guide */
+    .navbar-brand img {
+        height: 50px !important;
     }
 
     .contact-btn {
