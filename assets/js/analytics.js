@@ -1,995 +1,955 @@
 /**
- * Organic HypoSolutions - Analytics & Tracking (Enhanced)
- * Comprehensive analytics setup for organichyposolutions.com
- * Google Analytics 4 Implementation with Custom Event Tracking
- * Shopify E-commerce Integration Ready
- * Last Updated: August 2025
+ * Organic HypoSolutions - Analytics & Tracking
+ * GA4 Implementation with Shopify E-commerce Integration
+ * organichyposolutions.com
+ *
+ * Integrates with product-catalog.js (must load first):
+ *   - window.PRODUCT_CATALOG for product data
+ *   - window.findProduct() for lookups
+ *   - window.getPricingTier() for dynamic wholesale thresholds
+ *
+ * Cart storage: ohsCart key, ARRAY format
+ *   [{productId, variantId, name, price, quantity, sku, tier, type, isSubscription, image}]
+ *
+ * Last Updated: 2026-03-08
  */
 
-// Global Analytics Configuration
+// =============================================================================
+// CONFIGURATION
+// =============================================================================
+
 const ANALYTICS_CONFIG = {
     GA4_ID: 'G-HEKE217WEY',
-    DEBUG_MODE: false, // Set to true for development
-    COOKIE_CONSENT: true, // GDPR compliance
-    SESSION_TIMEOUT: 30, // minutes
-    SHOPIFY_READY: true, // Enhanced for Shopify integration
-    WHOLESALE_THRESHOLD: 25 // Items threshold for wholesale tracking
+    DEBUG_MODE: false,
+    COOKIE_CONSENT: true,
+    SESSION_TIMEOUT: 30,
+    PRODUCT_COUNT: 10
 };
 
-/**
- * Initialize Google Analytics 4 with Enhanced Configuration
- */
+// =============================================================================
+// GA4 INITIALIZATION
+// =============================================================================
+
 function initializeGA4() {
-    // Load gtag script
-    const gtagScript = document.createElement('script');
+    var gtagScript = document.createElement('script');
     gtagScript.async = true;
-    gtagScript.src = `https://www.googletagmanager.com/gtag/js?id=${ANALYTICS_CONFIG.GA4_ID}`;
+    gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + ANALYTICS_CONFIG.GA4_ID;
     document.head.appendChild(gtagScript);
 
-    // Initialize dataLayer and gtag
     window.dataLayer = window.dataLayer || [];
     window.gtag = function() {
         dataLayer.push(arguments);
     };
 
     gtag('js', new Date());
-    
-    // Configure GA4 with enhanced settings for e-commerce
+
     gtag('config', ANALYTICS_CONFIG.GA4_ID, {
-        // Enhanced E-commerce
         send_page_view: true,
-        
-        // Privacy settings
         anonymize_ip: true,
         allow_google_signals: true,
         allow_ad_personalization_signals: true,
-        
-        // Custom dimensions for business insights
         custom_map: {
-            'dimension1': 'user_type', // retail/wholesale/business
-            'dimension2': 'product_line', // organic/premium
-            'dimension3': 'certification_interest', // USDA/EPA/Food Safe
-            'dimension4': 'cart_value_tier', // low/medium/high/wholesale
-            'dimension5': 'customer_segment' // residential/commercial
+            'dimension1': 'user_type',
+            'dimension2': 'product_line',
+            'dimension3': 'certification_interest',
+            'dimension4': 'cart_value_tier',
+            'dimension5': 'customer_segment'
         },
-        
-        // Enhanced measurement
-        enhanced_measurement: {
-            scrolls: true,
-            outbound_clicks: true,
-            site_search: true,
-            video_engagement: true,
-            file_downloads: true
-        },
-        
-        // Debug mode
         debug_mode: ANALYTICS_CONFIG.DEBUG_MODE
     });
 
     if (ANALYTICS_CONFIG.DEBUG_MODE) {
-        console.log('🔍 Google Analytics 4 initialized with ID:', ANALYTICS_CONFIG.GA4_ID);
-        console.log('🛍️ Shopify e-commerce tracking enabled');
+        console.log('[OHS Analytics] GA4 initialized:', ANALYTICS_CONFIG.GA4_ID);
     }
 }
 
-/**
- * Enhanced Page View Tracking with Context
- */
-function trackPageView(pagePath, pageTitle, customParams = {}) {
-    if (typeof gtag !== 'undefined') {
-        // Get cart context for page views
-        const cartContext = getCartContext();
-        
-        gtag('event', 'page_view', {
-            page_title: pageTitle || document.title,
-            page_location: window.location.href,
-            page_path: pagePath || window.location.pathname,
-            // Add cart context
-            cart_items_count: cartContext.totalItems,
-            cart_value: cartContext.totalValue,
-            is_wholesale_eligible: cartContext.isWholesale,
-            // Custom parameters
-            ...customParams
-        });
-        
-        if (ANALYTICS_CONFIG.DEBUG_MODE) {
-            console.log('📊 Page view tracked:', pagePath || window.location.pathname, cartContext);
-        }
-    }
-}
+// =============================================================================
+// CART CONTEXT HELPER
+// Reads ohsCart (ARRAY format) from localStorage.
+// Uses per-product wholesaleThreshold from product-catalog.js.
+// =============================================================================
 
-/**
- * Enhanced E-commerce Tracking with Shopify Support
- */
-const EcommerceTracking = {
-    // View item with enhanced data
-    viewItem: function(item, source = 'unknown') {
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'view_item', {
-                currency: 'USD',
-                value: item.price,
-                items: [{
-                    item_id: item.variantId || item.id,
-                    item_name: item.name,
-                    item_category: item.category || this.getProductCategory(item),
-                    item_variant: item.variant || 'default',
-                    price: item.price,
-                    quantity: 1,
-                    // Enhanced attributes
-                    item_brand: 'Organic HypoSolutions',
-                    item_list_name: source,
-                    item_list_id: item.collection || 'general'
-                }]
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('👁️ Item viewed:', item.name);
-            }
-        }
-    },
-
-    // Enhanced add to cart with wholesale detection
-    addToCart: function(item, quantity = 1, source = 'unknown') {
-        if (typeof gtag !== 'undefined') {
-            const cartContext = getCartContext();
-            const isWholesaleItem = quantity >= ANALYTICS_CONFIG.WHOLESALE_THRESHOLD;
-            
-            gtag('event', 'add_to_cart', {
-                currency: 'USD',
-                value: item.price * quantity,
-                items: [{
-                    item_id: item.variantId || item.id,
-                    item_name: item.name,
-                    item_category: item.category || this.getProductCategory(item),
-                    item_variant: item.variant || 'default',
-                    price: item.price,
-                    quantity: quantity,
-                    // Enhanced e-commerce attributes
-                    item_brand: 'Organic HypoSolutions',
-                    item_list_name: source,
-                    item_list_id: item.collection || 'general'
-                }],
-                // Custom parameters
-                cart_total_items: cartContext.totalItems + quantity,
-                cart_total_value: cartContext.totalValue + (item.price * quantity),
-                wholesale_eligible: cartContext.isWholesale || isWholesaleItem,
-                source_page: window.location.pathname
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('🛒 Added to cart:', item.name, 'Qty:', quantity, 'Wholesale:', isWholesaleItem);
-            }
-        }
-    },
-
-    // Remove from cart
-    removeFromCart: function(item, quantity = 1) {
-        if (typeof gtag !== 'undefined') {
-            const cartContext = getCartContext();
-            
-            gtag('event', 'remove_from_cart', {
-                currency: 'USD',
-                value: item.price * quantity,
-                items: [{
-                    item_id: item.variantId || item.id,
-                    item_name: item.name,
-                    item_category: item.category || this.getProductCategory(item),
-                    item_variant: item.variant || 'default',
-                    price: item.price,
-                    quantity: quantity,
-                    item_brand: 'Organic HypoSolutions'
-                }],
-                cart_total_items: Math.max(0, cartContext.totalItems - quantity),
-                cart_total_value: Math.max(0, cartContext.totalValue - (item.price * quantity))
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('❌ Removed from cart:', item.name, 'Qty:', quantity);
-            }
-        }
-    },
-
-    // Enhanced begin checkout with customer segmentation
-    beginCheckout: function(items, totalValue, checkoutType = 'shopify') {
-        if (typeof gtag !== 'undefined') {
-            const cartContext = getCartContext();
-            
-            gtag('event', 'begin_checkout', {
-                currency: 'USD',
-                value: totalValue,
-                items: items.map(item => ({
-                    item_id: item.variantId || item.id,
-                    item_name: item.name,
-                    item_category: item.category || this.getProductCategory(item),
-                    item_variant: item.variant || 'default',
-                    price: item.price,
-                    quantity: item.quantity,
-                    item_brand: 'Organic HypoSolutions'
-                })),
-                // Enhanced checkout data
-                checkout_type: checkoutType,
-                customer_type: cartContext.isWholesale ? 'wholesale' : 'retail',
-                total_items: cartContext.totalItems,
-                avg_item_value: cartContext.totalItems > 0 ? totalValue / cartContext.totalItems : 0,
-                source_page: window.location.pathname
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('💳 Checkout began:', checkoutType, 'Value:', totalValue, 'Type:', cartContext.isWholesale ? 'Wholesale' : 'Retail');
-            }
-        }
-    },
-
-    // Purchase with enhanced attribution
-    purchase: function(transactionId, items, totalValue, shipping = 0, tax = 0, customerType = 'retail') {
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'purchase', {
-                transaction_id: transactionId,
-                currency: 'USD',
-                value: totalValue,
-                shipping: shipping,
-                tax: tax,
-                items: items.map(item => ({
-                    item_id: item.variantId || item.id,
-                    item_name: item.name,
-                    item_category: item.category || this.getProductCategory(item),
-                    item_variant: item.variant || 'default',
-                    price: item.price,
-                    quantity: item.quantity,
-                    item_brand: 'Organic HypoSolutions'
-                })),
-                // Enhanced purchase data
-                customer_type: customerType,
-                order_type: totalValue >= 500 ? 'bulk' : 'standard',
-                payment_method: 'shopify_checkout'
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('✅ Purchase completed:', transactionId, 'Value:', totalValue);
-            }
-        }
-    },
-
-    // Helper function to determine product category
-    getProductCategory: function(item) {
-        const name = (item.name || '').toLowerCase();
-        if (name.includes('organic')) return 'Organic Line';
-        if (name.includes('premium') || name.includes('pro')) return 'Premium Line';
-        if (name.includes('commercial')) return 'Commercial';
-        return 'General Products';
-    }
-};
-
-/**
- * Enhanced Conversion Tracking with Lead Scoring
- */
-const ConversionTracking = {
-    // Lead generation with value estimation
-    generateLead: function(method, estimatedValue = 0, leadQuality = 'medium') {
-        if (typeof gtag !== 'undefined') {
-            const cartContext = getCartContext();
-            
-            gtag('event', 'generate_lead', {
-                currency: 'USD',
-                value: estimatedValue,
-                method: method,
-                lead_quality: leadQuality,
-                cart_context: cartContext.totalItems > 0 ? 'with_cart' : 'no_cart',
-                cart_value: cartContext.totalValue,
-                source_page: window.location.pathname
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('🎯 Lead generated:', method, 'Quality:', leadQuality, 'Value:', estimatedValue);
-            }
-        }
-    },
-
-    // Enhanced quote requests with service context
-    requestQuote: function(serviceType, estimatedValue = 0, urgency = 'normal') {
-        if (typeof gtag !== 'undefined') {
-            const cartContext = getCartContext();
-            
-            gtag('event', 'request_quote', {
-                event_category: 'Lead Generation',
-                event_label: serviceType,
-                value: estimatedValue,
-                service_type: serviceType,
-                urgency_level: urgency,
-                customer_type: cartContext.isWholesale ? 'wholesale' : 'retail',
-                has_cart_items: cartContext.totalItems > 0,
-                referrer: document.referrer || 'direct'
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('📋 Quote requested:', serviceType, 'Urgency:', urgency);
-            }
-        }
-    },
-
-    // Phone calls with enhanced context
-    phoneCall: function(source = 'header', context = {}) {
-        if (typeof gtag !== 'undefined') {
-            const cartContext = getCartContext();
-            
-            gtag('event', 'phone_call', {
-                event_category: 'Contact',
-                event_label: 'Phone Number Click',
-                call_source: source,
-                cart_items: cartContext.totalItems,
-                cart_value: cartContext.totalValue,
-                customer_intent: cartContext.totalItems > 0 ? 'purchase_ready' : 'information_seeking',
-                page_context: window.location.pathname,
-                ...context
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('📞 Phone call initiated from:', source);
-            }
-        }
-    },
-
-    // Enhanced form submissions
-    formSubmit: function(formName, formId = null, leadValue = 0) {
-        if (typeof gtag !== 'undefined') {
-            const cartContext = getCartContext();
-            
-            gtag('event', 'form_submit', {
-                event_category: 'Form',
-                event_label: formName,
-                form_id: formId,
-                form_name: formName,
-                lead_value: leadValue,
-                cart_context: cartContext.totalItems > 0 ? 'with_cart' : 'no_cart',
-                submission_time: new Date().toISOString()
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('📝 Form submitted:', formName);
-            }
-        }
-    },
-
-    // Newsletter signup with segmentation
-    newsletterSignup: function(method, segment = 'general') {
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'sign_up', {
-                method: method,
-                event_category: 'Newsletter',
-                customer_segment: segment,
-                signup_source: window.location.pathname
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('📧 Newsletter signup:', method, 'Segment:', segment);
-            }
-        }
-    }
-};
-
-/**
- * Enhanced User Interaction Tracking
- */
-const InteractionTracking = {
-    // CTA button clicks with conversion attribution
-    ctaClick: function(buttonText, location, expectedValue = 0) {
-        if (typeof gtag !== 'undefined') {
-            const cartContext = getCartContext();
-            
-            gtag('event', 'cta_click', {
-                event_category: 'CTA',
-                event_label: buttonText,
-                location: location,
-                button_text: buttonText,
-                expected_value: expectedValue,
-                cart_items: cartContext.totalItems,
-                customer_journey_stage: this.getJourneyStage(cartContext)
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('🔘 CTA clicked:', buttonText, 'Location:', location);
-            }
-        }
-    },
-
-    // Video interactions with engagement tracking
-    videoPlay: function(videoTitle, duration = null, videoType = 'educational') {
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'video_play', {
-                event_category: 'Video',
-                event_label: videoTitle,
-                video_title: videoTitle,
-                video_duration: duration,
-                video_type: videoType,
-                engagement_context: window.location.pathname
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('▶️ Video played:', videoTitle);
-            }
-        }
-    },
-
-    // PDF downloads with content tracking
-    pdfDownload: function(fileName, contentType = 'general') {
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'file_download', {
-                event_category: 'Download',
-                event_label: fileName,
-                file_extension: 'pdf',
-                file_name: fileName,
-                content_type: contentType,
-                download_source: window.location.pathname
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('📄 PDF downloaded:', fileName);
-            }
-        }
-    },
-
-    // External link clicks
-    externalLink: function(url, linkText, category = 'general') {
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'click', {
-                event_category: 'External Link',
-                event_label: linkText,
-                link_url: url,
-                link_category: category,
-                source_page: window.location.pathname
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('🔗 External link clicked:', url);
-            }
-        }
-    },
-
-    // Enhanced site search
-    siteSearch: function(searchTerm, results = null, searchType = 'products') {
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'search', {
-                search_term: searchTerm,
-                event_category: 'Site Search',
-                search_results: results,
-                search_type: searchType,
-                no_results: results === 0
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('🔍 Site search:', searchTerm, 'Results:', results);
-            }
-        }
-    },
-
-    // Helper to determine customer journey stage
-    getJourneyStage: function(cartContext) {
-        if (cartContext.totalItems === 0) return 'awareness';
-        if (cartContext.totalItems < 5) return 'consideration';
-        if (cartContext.isWholesale) return 'wholesale_decision';
-        return 'purchase_ready';
-    }
-};
-
-/**
- * Enhanced Service-Specific Tracking
- */
-const ServiceTracking = {
-    // Calculator usage with detailed metrics
-    calculatorUse: function(serviceType, estimatedCost, inputs = {}) {
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'calculator_use', {
-                event_category: 'Calculator',
-                event_label: serviceType,
-                value: estimatedCost,
-                service_type: serviceType,
-                estimated_cost: estimatedCost,
-                calculation_inputs: JSON.stringify(inputs),
-                high_value_calculation: estimatedCost > 1000
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('🧮 Calculator used:', serviceType, 'Cost:', estimatedCost);
-            }
-        }
-    },
-
-    // Service interest with intent scoring
-    serviceInterest: function(serviceType, actionType, intentScore = 5) {
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'service_interest', {
-                event_category: 'Service',
-                event_label: serviceType,
-                action_type: actionType,
-                service_type: serviceType,
-                intent_score: intentScore,
-                customer_segment: this.getCustomerSegment()
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('🎯 Service interest:', serviceType, 'Action:', actionType);
-            }
-        }
-    },
-
-    // Certification views with compliance tracking
-    certificationView: function(certificationType, documentType = 'page') {
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'certification_view', {
-                event_category: 'Certification',
-                event_label: certificationType,
-                certification_type: certificationType,
-                document_type: documentType,
-                compliance_interest: true
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('🏆 Certification viewed:', certificationType);
-            }
-        }
-    },
-
-    // Product line interest with preference tracking
-    productLineInterest: function(productLine, actionType, preference = null) {
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'product_line_interest', {
-                event_category: 'Product Line',
-                event_label: productLine,
-                action_type: actionType,
-                product_line: productLine,
-                customer_preference: preference,
-                organic_preference: productLine.toLowerCase().includes('organic')
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('🧽 Product line interest:', productLine, 'Action:', actionType);
-            }
-        }
-    },
-
-    // Helper to determine customer segment
-    getCustomerSegment: function() {
-        const path = window.location.pathname;
-        if (path.includes('commercial') || path.includes('business')) return 'commercial';
-        if (path.includes('residential') || path.includes('home')) return 'residential';
-        return 'general';
-    }
-};
-
-/**
- * Error Tracking with Enhanced Context
- */
-const ErrorTracking = {
-    // JavaScript errors with stack traces
-    jsError: function(error, source, line, stack = null) {
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'exception', {
-                description: `${error} at ${source}:${line}`,
-                fatal: false,
-                error_source: source,
-                error_line: line,
-                error_stack: stack,
-                page_context: window.location.pathname
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('❌ JS Error:', error, 'Source:', source);
-            }
-        }
-    },
-
-    // 404 errors with referrer tracking
-    pageNotFound: function(attemptedUrl, referrer = null) {
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'page_not_found', {
-                event_category: 'Error',
-                event_label: attemptedUrl,
-                attempted_url: attemptedUrl,
-                referrer: referrer || document.referrer,
-                user_agent: navigator.userAgent
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('🚫 404 Error:', attemptedUrl);
-            }
-        }
-    },
-
-    // Form errors with field tracking
-    formError: function(formName, errorType, fieldName = null) {
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'form_error', {
-                event_category: 'Form Error',
-                event_label: formName,
-                form_name: formName,
-                error_type: errorType,
-                error_field: fieldName,
-                page_context: window.location.pathname
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('📝❌ Form error:', formName, 'Type:', errorType);
-            }
-        }
-    }
-};
-
-/**
- * Enhanced Session and User Tracking
- */
-const SessionTracking = {
-    // Session start with device context
-    sessionStart: function() {
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'session_start', {
-                event_category: 'Session',
-                device_type: this.getDeviceType(),
-                session_source: document.referrer || 'direct',
-                landing_page: window.location.pathname
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('🚀 Session started');
-            }
-        }
-    },
-
-    // Enhanced user type identification
-    setUserType: function(userType, segment = null) {
-        if (typeof gtag !== 'undefined') {
-            gtag('config', ANALYTICS_CONFIG.GA4_ID, {
-                custom_map: {
-                    'dimension1': userType,
-                    'dimension5': segment || this.inferCustomerSegment()
-                }
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('👤 User type set:', userType, 'Segment:', segment);
-            }
-        }
-    },
-
-    // Time on page with engagement scoring
-    timeOnPage: function(seconds, pageName, interactions = 0) {
-        if (typeof gtag !== 'undefined' && seconds > 30) {
-            const engagementScore = this.calculateEngagementScore(seconds, interactions);
-            
-            gtag('event', 'time_on_page', {
-                event_category: 'Engagement',
-                event_label: pageName,
-                value: Math.round(seconds),
-                time_seconds: seconds,
-                interaction_count: interactions,
-                engagement_score: engagementScore,
-                high_engagement: engagementScore > 7
-            });
-            
-            if (ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('⏱️ Time on page:', pageName, seconds + 's', 'Score:', engagementScore);
-            }
-        }
-    },
-
-    // Helper functions
-    getDeviceType: function() {
-        const width = window.innerWidth;
-        if (width < 768) return 'mobile';
-        if (width < 1024) return 'tablet';
-        return 'desktop';
-    },
-
-    inferCustomerSegment: function() {
-        const path = window.location.pathname;
-        if (path.includes('commercial') || path.includes('business')) return 'commercial';
-        if (path.includes('calculator')) return 'service_seeker';
-        if (path.includes('products')) return 'product_buyer';
-        return 'general';
-    },
-
-    calculateEngagementScore: function(timeSeconds, interactions) {
-        let score = Math.min(timeSeconds / 60, 5); // Up to 5 points for time
-        score += Math.min(interactions * 0.5, 5); // Up to 5 points for interactions
-        return Math.round(score * 10) / 10; // Round to 1 decimal
-    }
-};
-
-/**
- * Cart Context Helper Function
- */
 function getCartContext() {
     try {
-        // Try to get cart data from global functions if available
-        if (typeof window.getDisplayCart === 'function') {
-            return window.getDisplayCart();
+        // ohsCart is always an ARRAY — never an object
+        var cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
+        if (!Array.isArray(cart)) cart = [];
+
+        var totalItems = 0;
+        var totalValue = 0;
+        var hasSubscription = false;
+        var hasEPA = false;
+        var hasUSDA = false;
+        var has500ppm = false;
+        var wholesaleItemCount = 0;
+
+        for (var i = 0; i < cart.length; i++) {
+            var item = cart[i];
+            var qty = item.quantity || 0;
+            var price = item.price || 0;
+            totalItems += qty;
+            totalValue += price * qty;
+
+            if (item.isSubscription) hasSubscription = true;
+            if (item.type === 'epa-usda') hasEPA = true;
+            if (item.type === 'usda-only') hasUSDA = true;
+
+            // Check per-product wholesale threshold
+            var product = (typeof window.findProduct === 'function') ? window.findProduct(item.productId) : null;
+            if (product) {
+                var threshold = product.wholesaleThreshold || 25;
+                if (qty >= threshold) wholesaleItemCount++;
+                if (product.ppm === 500) has500ppm = true;
+            } else {
+                if (item.tier === 'wholesale') wholesaleItemCount++;
+            }
         }
-        
-        // Fallback to localStorage parsing
-        const cart = JSON.parse(localStorage.getItem('ohsCart') || '{}');
-        const items = Object.values(cart);
-        const totalItems = items.reduce((sum, item) => sum + (item.quantity || 0), 0);
-        const totalValue = items.reduce((sum, item) => sum + ((item.price || 0) * (item.quantity || 0)), 0);
-        
+
         return {
-            totalItems,
-            totalValue,
-            isWholesale: totalItems >= ANALYTICS_CONFIG.WHOLESALE_THRESHOLD,
-            items: items.length
+            totalItems: totalItems,
+            totalValue: Math.round(totalValue * 100) / 100,
+            uniqueProducts: cart.length,
+            hasWholesaleItems: wholesaleItemCount > 0,
+            wholesaleItemCount: wholesaleItemCount,
+            hasSubscription: hasSubscription,
+            hasEPA: hasEPA,
+            hasUSDA: hasUSDA,
+            has500ppm: has500ppm
         };
     } catch (error) {
         if (ANALYTICS_CONFIG.DEBUG_MODE) {
-            console.warn('Could not get cart context:', error);
+            console.warn('[OHS Analytics] Cart context error:', error);
         }
         return {
             totalItems: 0,
             totalValue: 0,
-            isWholesale: false,
-            items: 0
+            uniqueProducts: 0,
+            hasWholesaleItems: false,
+            wholesaleItemCount: 0,
+            hasSubscription: false,
+            hasEPA: false,
+            hasUSDA: false,
+            has500ppm: false
         };
     }
 }
 
-/**
- * Enhanced Automatic Event Tracking Setup
- */
+// =============================================================================
+// PRODUCT DETAIL HELPER
+// Builds GA4 item object from product-catalog.js data
+// =============================================================================
+
+function buildGA4Item(item, quantity, source) {
+    var product = (typeof window.findProduct === 'function') ? window.findProduct(item.productId || item.id) : null;
+    var ppmLabel = product && product.ppm ? product.ppm + 'ppm' : '';
+    var certType = product ? product.type : (item.type || 'unknown');
+
+    return {
+        item_id: item.variantId || item.productId || item.id,
+        item_name: item.name || (product ? product.name : 'Unknown'),
+        item_brand: 'Organic HypoSolutions',
+        item_category: certType === 'epa-usda' ? 'EPA+USDA Certified' : 'USDA Organic',
+        item_category2: product ? product.category : '',
+        item_category3: ppmLabel,
+        item_category4: item.isSubscription ? 'subscription' : 'one-time',
+        item_variant: item.tier || 'retail',
+        price: item.price || 0,
+        quantity: quantity || item.quantity || 1,
+        item_list_name: source || 'website'
+    };
+}
+
+// =============================================================================
+// PAGE VIEW TRACKING
+// =============================================================================
+
+function trackPageView(pagePath, pageTitle, customParams) {
+    if (typeof gtag === 'undefined') return;
+    var ctx = getCartContext();
+
+    gtag('event', 'page_view', {
+        page_title: pageTitle || document.title,
+        page_location: window.location.href,
+        page_path: pagePath || window.location.pathname,
+        cart_items_count: ctx.totalItems,
+        cart_value: ctx.totalValue,
+        has_wholesale_items: ctx.hasWholesaleItems,
+        has_subscription_items: ctx.hasSubscription,
+        has_epa_products: ctx.hasEPA,
+        has_500ppm: ctx.has500ppm
+    });
+
+    if (ANALYTICS_CONFIG.DEBUG_MODE) {
+        console.log('[OHS Analytics] Page view:', pagePath || window.location.pathname);
+    }
+}
+
+// =============================================================================
+// E-COMMERCE TRACKING
+// =============================================================================
+
+var EcommerceTracking = {
+
+    viewItem: function(item, source) {
+        if (typeof gtag === 'undefined') return;
+        var product = (typeof window.findProduct === 'function') ? window.findProduct(item.productId || item.id) : null;
+
+        gtag('event', 'view_item', {
+            currency: 'USD',
+            value: item.price || (product ? product.pricing.retail : 0),
+            items: [buildGA4Item(item, 1, source)],
+            product_type: product ? product.type : 'unknown',
+            product_ppm: product ? product.ppm : null,
+            product_line: product ? product.productLine : 'unknown'
+        });
+
+        if (ANALYTICS_CONFIG.DEBUG_MODE) {
+            console.log('[OHS Analytics] Item viewed:', item.name, product ? product.ppm + 'ppm' : '');
+        }
+    },
+
+    addToCart: function(item, quantity, source) {
+        if (typeof gtag === 'undefined') return;
+        quantity = quantity || 1;
+        var ctx = getCartContext();
+        var product = (typeof window.findProduct === 'function') ? window.findProduct(item.productId || item.id) : null;
+
+        gtag('event', 'add_to_cart', {
+            currency: 'USD',
+            value: (item.price || 0) * quantity,
+            items: [buildGA4Item(item, quantity, source)],
+            // Cart context after add
+            cart_total_items: ctx.totalItems,
+            cart_total_value: ctx.totalValue,
+            // Product specifics
+            product_type: product ? product.type : item.type,
+            product_ppm: product ? product.ppm : null,
+            is_subscription: item.isSubscription || false,
+            pricing_tier: item.tier || 'retail',
+            is_wholesale: item.tier === 'wholesale',
+            source_page: window.location.pathname
+        });
+
+        if (ANALYTICS_CONFIG.DEBUG_MODE) {
+            console.log('[OHS Analytics] Add to cart:', item.name,
+                'Qty:', quantity,
+                'Tier:', item.tier,
+                'Sub:', item.isSubscription);
+        }
+    },
+
+    removeFromCart: function(item, quantity) {
+        if (typeof gtag === 'undefined') return;
+        quantity = quantity || 1;
+
+        gtag('event', 'remove_from_cart', {
+            currency: 'USD',
+            value: (item.price || 0) * quantity,
+            items: [buildGA4Item(item, quantity)]
+        });
+
+        if (ANALYTICS_CONFIG.DEBUG_MODE) {
+            console.log('[OHS Analytics] Remove from cart:', item.name);
+        }
+    },
+
+    // Fired when subscription toggle changes on a product card
+    subscriptionToggle: function(productId, isSubscription, newPrice, tier) {
+        if (typeof gtag === 'undefined') return;
+        var product = (typeof window.findProduct === 'function') ? window.findProduct(productId) : null;
+
+        gtag('event', 'subscription_toggle', {
+            event_category: 'Subscription',
+            product_id: productId,
+            product_name: product ? product.name : 'Unknown',
+            product_ppm: product ? product.ppm : null,
+            subscription_enabled: isSubscription,
+            new_price: newPrice,
+            pricing_tier: tier || 'retail',
+            savings: product ? (product.pricing.retail - newPrice).toFixed(2) : 0
+        });
+
+        if (ANALYTICS_CONFIG.DEBUG_MODE) {
+            console.log('[OHS Analytics] Subscription toggle:', isSubscription ? 'ON' : 'OFF',
+                product ? product.shortName : productId);
+        }
+    },
+
+    // Fired when quantity crosses a wholesale threshold
+    wholesaleThresholdCrossed: function(productId, quantity, direction) {
+        if (typeof gtag === 'undefined') return;
+        var product = (typeof window.findProduct === 'function') ? window.findProduct(productId) : null;
+        var threshold = product ? product.wholesaleThreshold : 25;
+
+        gtag('event', 'wholesale_threshold', {
+            event_category: 'Pricing',
+            product_id: productId,
+            product_name: product ? product.name : 'Unknown',
+            quantity: quantity,
+            threshold: threshold,
+            direction: direction, // 'entered' or 'exited'
+            wholesale_price: product ? product.pricing.wholesale : 0,
+            retail_price: product ? product.pricing.retail : 0
+        });
+
+        if (ANALYTICS_CONFIG.DEBUG_MODE) {
+            console.log('[OHS Analytics] Wholesale threshold', direction, ':', product ? product.shortName : productId, 'qty:', quantity, 'threshold:', threshold);
+        }
+    },
+
+    beginCheckout: function(items, totalValue) {
+        if (typeof gtag === 'undefined') return;
+        var ctx = getCartContext();
+        var ga4Items = [];
+
+        for (var i = 0; i < items.length; i++) {
+            ga4Items.push(buildGA4Item(items[i], items[i].quantity, 'checkout'));
+        }
+
+        gtag('event', 'begin_checkout', {
+            currency: 'USD',
+            value: totalValue || ctx.totalValue,
+            items: ga4Items,
+            checkout_type: 'shopify',
+            customer_type: ctx.hasWholesaleItems ? 'wholesale' : 'retail',
+            has_subscription: ctx.hasSubscription,
+            has_epa_products: ctx.hasEPA,
+            has_500ppm: ctx.has500ppm,
+            total_items: ctx.totalItems,
+            unique_products: ctx.uniqueProducts
+        });
+
+        if (ANALYTICS_CONFIG.DEBUG_MODE) {
+            console.log('[OHS Analytics] Checkout started — Value:', totalValue || ctx.totalValue,
+                'Wholesale:', ctx.hasWholesaleItems, 'Subs:', ctx.hasSubscription);
+        }
+    },
+
+    purchase: function(transactionId, items, totalValue, shipping, tax) {
+        if (typeof gtag === 'undefined') return;
+        var ctx = getCartContext();
+        var ga4Items = [];
+
+        for (var i = 0; i < items.length; i++) {
+            ga4Items.push(buildGA4Item(items[i], items[i].quantity, 'purchase'));
+        }
+
+        gtag('event', 'purchase', {
+            transaction_id: transactionId,
+            currency: 'USD',
+            value: totalValue,
+            shipping: shipping || 0,
+            tax: tax || 0,
+            items: ga4Items,
+            customer_type: ctx.hasWholesaleItems ? 'wholesale' : 'retail',
+            has_subscription: ctx.hasSubscription,
+            payment_method: 'shopify_checkout'
+        });
+
+        if (ANALYTICS_CONFIG.DEBUG_MODE) {
+            console.log('[OHS Analytics] Purchase:', transactionId, 'Value:', totalValue);
+        }
+    }
+};
+
+// =============================================================================
+// GEO-FILTER / STATE TRACKING
+// EPA products restricted to Utah — state selection is a key funnel event
+// =============================================================================
+
+var GeoTracking = {
+
+    stateSelected: function(stateCode, source) {
+        if (typeof gtag === 'undefined') return;
+        var isUtah = stateCode === 'UT';
+        var availableProducts = (typeof window.getAvailableProducts === 'function')
+            ? window.getAvailableProducts(stateCode).length
+            : (isUtah ? 10 : 6);
+
+        gtag('event', 'state_selected', {
+            event_category: 'GeoFilter',
+            state_code: stateCode,
+            is_utah: isUtah,
+            epa_products_visible: isUtah,
+            available_products: availableProducts,
+            selection_source: source || 'modal'
+        });
+
+        if (ANALYTICS_CONFIG.DEBUG_MODE) {
+            console.log('[OHS Analytics] State selected:', stateCode,
+                'Products available:', availableProducts);
+        }
+    },
+
+    stateChanged: function(oldState, newState) {
+        if (typeof gtag === 'undefined') return;
+
+        gtag('event', 'state_changed', {
+            event_category: 'GeoFilter',
+            old_state: oldState,
+            new_state: newState,
+            lost_epa_access: oldState === 'UT' && newState !== 'UT',
+            gained_epa_access: oldState !== 'UT' && newState === 'UT'
+        });
+    },
+
+    epaProductBlocked: function(productId, userState) {
+        if (typeof gtag === 'undefined') return;
+        var product = (typeof window.findProduct === 'function') ? window.findProduct(productId) : null;
+
+        gtag('event', 'epa_product_blocked', {
+            event_category: 'GeoFilter',
+            product_id: productId,
+            product_name: product ? product.name : 'Unknown',
+            user_state: userState,
+            reason: 'EPA registration limited to Utah'
+        });
+    }
+};
+
+// =============================================================================
+// CONVERSION TRACKING
+// =============================================================================
+
+var ConversionTracking = {
+
+    generateLead: function(method, estimatedValue, leadQuality) {
+        if (typeof gtag === 'undefined') return;
+        var ctx = getCartContext();
+
+        gtag('event', 'generate_lead', {
+            currency: 'USD',
+            value: estimatedValue || 0,
+            method: method,
+            lead_quality: leadQuality || 'medium',
+            cart_context: ctx.totalItems > 0 ? 'with_cart' : 'no_cart',
+            cart_value: ctx.totalValue,
+            source_page: window.location.pathname
+        });
+
+        if (ANALYTICS_CONFIG.DEBUG_MODE) {
+            console.log('[OHS Analytics] Lead:', method, 'Quality:', leadQuality);
+        }
+    },
+
+    requestQuote: function(serviceType, estimatedValue, urgency) {
+        if (typeof gtag === 'undefined') return;
+
+        gtag('event', 'request_quote', {
+            event_category: 'Lead Generation',
+            event_label: serviceType,
+            value: estimatedValue || 0,
+            service_type: serviceType,
+            urgency_level: urgency || 'normal',
+            referrer: document.referrer || 'direct'
+        });
+    },
+
+    phoneCall: function(source, context) {
+        if (typeof gtag === 'undefined') return;
+        var ctx = getCartContext();
+
+        gtag('event', 'phone_call', {
+            event_category: 'Contact',
+            call_source: source || 'content',
+            cart_items: ctx.totalItems,
+            cart_value: ctx.totalValue,
+            customer_intent: ctx.totalItems > 0 ? 'purchase_ready' : 'information_seeking',
+            page_context: window.location.pathname
+        });
+    },
+
+    formSubmit: function(formName, formId, leadValue) {
+        if (typeof gtag === 'undefined') return;
+
+        gtag('event', 'form_submit', {
+            event_category: 'Form',
+            event_label: formName,
+            form_id: formId,
+            form_name: formName,
+            lead_value: leadValue || 0,
+            submission_time: new Date().toISOString()
+        });
+    },
+
+    newsletterSignup: function(method, segment) {
+        if (typeof gtag === 'undefined') return;
+
+        gtag('event', 'sign_up', {
+            method: method,
+            event_category: 'Newsletter',
+            customer_segment: segment || 'general',
+            signup_source: window.location.pathname
+        });
+    }
+};
+
+// =============================================================================
+// INTERACTION TRACKING
+// =============================================================================
+
+var InteractionTracking = {
+
+    ctaClick: function(buttonText, location, expectedValue) {
+        if (typeof gtag === 'undefined') return;
+        var ctx = getCartContext();
+
+        gtag('event', 'cta_click', {
+            event_category: 'CTA',
+            event_label: buttonText,
+            location: location,
+            button_text: buttonText,
+            expected_value: expectedValue || 0,
+            cart_items: ctx.totalItems,
+            customer_journey_stage: getJourneyStage(ctx)
+        });
+    },
+
+    videoPlay: function(videoTitle, duration, videoType) {
+        if (typeof gtag === 'undefined') return;
+
+        gtag('event', 'video_play', {
+            event_category: 'Video',
+            event_label: videoTitle,
+            video_title: videoTitle,
+            video_duration: duration || null,
+            video_type: videoType || 'educational'
+        });
+    },
+
+    pdfDownload: function(fileName, contentType) {
+        if (typeof gtag === 'undefined') return;
+
+        gtag('event', 'file_download', {
+            event_category: 'Download',
+            event_label: fileName,
+            file_extension: 'pdf',
+            file_name: fileName,
+            content_type: contentType || 'general',
+            download_source: window.location.pathname
+        });
+    },
+
+    externalLink: function(url, linkText, category) {
+        if (typeof gtag === 'undefined') return;
+
+        gtag('event', 'click', {
+            event_category: 'External Link',
+            event_label: linkText,
+            link_url: url,
+            link_category: category || 'general',
+            source_page: window.location.pathname
+        });
+    },
+
+    siteSearch: function(searchTerm, results, searchType) {
+        if (typeof gtag === 'undefined') return;
+
+        gtag('event', 'search', {
+            search_term: searchTerm,
+            event_category: 'Site Search',
+            search_results: results,
+            search_type: searchType || 'products',
+            no_results: results === 0
+        });
+    }
+};
+
+// =============================================================================
+// SERVICE TRACKING
+// =============================================================================
+
+var ServiceTracking = {
+
+    calculatorUse: function(serviceType, estimatedCost, inputs) {
+        if (typeof gtag === 'undefined') return;
+
+        gtag('event', 'calculator_use', {
+            event_category: 'Calculator',
+            event_label: serviceType,
+            value: estimatedCost,
+            service_type: serviceType,
+            estimated_cost: estimatedCost,
+            high_value_calculation: estimatedCost > 1000
+        });
+    },
+
+    serviceInterest: function(serviceType, actionType, intentScore) {
+        if (typeof gtag === 'undefined') return;
+
+        gtag('event', 'service_interest', {
+            event_category: 'Service',
+            event_label: serviceType,
+            action_type: actionType,
+            service_type: serviceType,
+            intent_score: intentScore || 5
+        });
+    },
+
+    certificationView: function(certificationType, documentType) {
+        if (typeof gtag === 'undefined') return;
+
+        gtag('event', 'certification_view', {
+            event_category: 'Certification',
+            event_label: certificationType,
+            certification_type: certificationType,
+            document_type: documentType || 'page'
+        });
+    },
+
+    productLineInterest: function(productLine, actionType) {
+        if (typeof gtag === 'undefined') return;
+
+        gtag('event', 'product_line_interest', {
+            event_category: 'Product Line',
+            event_label: productLine,
+            action_type: actionType,
+            product_line: productLine,
+            is_epa_line: productLine.toLowerCase().includes('epa')
+        });
+    }
+};
+
+// =============================================================================
+// ERROR TRACKING
+// =============================================================================
+
+var ErrorTracking = {
+
+    jsError: function(error, source, line, stack) {
+        if (typeof gtag === 'undefined') return;
+
+        gtag('event', 'exception', {
+            description: error + ' at ' + source + ':' + line,
+            fatal: false,
+            error_source: source,
+            error_line: line,
+            page_context: window.location.pathname
+        });
+    },
+
+    pageNotFound: function(attemptedUrl, referrer) {
+        if (typeof gtag === 'undefined') return;
+
+        gtag('event', 'page_not_found', {
+            event_category: 'Error',
+            event_label: attemptedUrl,
+            attempted_url: attemptedUrl,
+            referrer: referrer || document.referrer
+        });
+    },
+
+    formError: function(formName, errorType, fieldName) {
+        if (typeof gtag === 'undefined') return;
+
+        gtag('event', 'form_error', {
+            event_category: 'Form Error',
+            event_label: formName,
+            form_name: formName,
+            error_type: errorType,
+            error_field: fieldName || null
+        });
+    },
+
+    shopifyApiError: function(endpoint, statusCode, errorMessage) {
+        if (typeof gtag === 'undefined') return;
+
+        gtag('event', 'shopify_api_error', {
+            event_category: 'Error',
+            event_label: endpoint,
+            status_code: statusCode,
+            error_message: errorMessage,
+            page_context: window.location.pathname
+        });
+    }
+};
+
+// =============================================================================
+// SESSION TRACKING
+// =============================================================================
+
+var SessionTracking = {
+
+    sessionStart: function() {
+        if (typeof gtag === 'undefined') return;
+
+        gtag('event', 'session_start', {
+            event_category: 'Session',
+            device_type: getDeviceType(),
+            session_source: document.referrer || 'direct',
+            landing_page: window.location.pathname
+        });
+    },
+
+    setUserType: function(userType, segment) {
+        if (typeof gtag === 'undefined') return;
+
+        gtag('config', ANALYTICS_CONFIG.GA4_ID, {
+            custom_map: {
+                'dimension1': userType,
+                'dimension5': segment || inferCustomerSegment()
+            }
+        });
+    },
+
+    timeOnPage: function(seconds, pageName, interactions) {
+        if (typeof gtag === 'undefined' || seconds <= 30) return;
+        var score = calculateEngagementScore(seconds, interactions || 0);
+
+        gtag('event', 'time_on_page', {
+            event_category: 'Engagement',
+            event_label: pageName,
+            value: Math.round(seconds),
+            time_seconds: seconds,
+            interaction_count: interactions || 0,
+            engagement_score: score,
+            high_engagement: score > 7
+        });
+    }
+};
+
+// =============================================================================
+// HELPER FUNCTIONS
+// =============================================================================
+
+function getDeviceType() {
+    var w = window.innerWidth;
+    if (w < 768) return 'mobile';
+    if (w < 1024) return 'tablet';
+    return 'desktop';
+}
+
+function inferCustomerSegment() {
+    var path = window.location.pathname;
+    if (path.includes('calculator')) return 'service_seeker';
+    if (path.includes('products') || path.includes('shop')) return 'product_buyer';
+    if (path.includes('wholesale')) return 'wholesale_prospect';
+    if (path.includes('book-service')) return 'service_seeker';
+    return 'general';
+}
+
+function calculateEngagementScore(timeSeconds, interactions) {
+    var score = Math.min(timeSeconds / 60, 5);
+    score += Math.min(interactions * 0.5, 5);
+    return Math.round(score * 10) / 10;
+}
+
+function getJourneyStage(ctx) {
+    if (ctx.totalItems === 0) return 'awareness';
+    if (ctx.totalItems < 5) return 'consideration';
+    if (ctx.hasWholesaleItems) return 'wholesale_decision';
+    return 'purchase_ready';
+}
+
+// =============================================================================
+// AUTOMATIC EVENT TRACKING
+// =============================================================================
+
 function setupAutomaticTracking() {
-    // Track all CTA button clicks with enhanced context
+
+    // --- Click tracking ---
     document.addEventListener('click', function(event) {
-        const element = event.target.closest('button, a');
+        var element = event.target.closest('button, a');
         if (!element) return;
 
-        const classes = element.className;
-        const text = element.textContent.trim();
-        const href = element.href;
+        var classes = element.className || '';
+        var text = (element.textContent || '').trim();
+        var href = element.href || '';
 
-        // Enhanced CTA tracking
+        // CTA buttons
         if (classes.includes('btn-calculate') || classes.includes('btn-service')) {
-            const expectedValue = classes.includes('btn-calculate') ? 500 : 0;
-            InteractionTracking.ctaClick(text, 'Hero Section', expectedValue);
+            InteractionTracking.ctaClick(text, 'content', classes.includes('btn-calculate') ? 500 : 0);
         }
 
-        // Enhanced phone number tracking
-        if (href && href.startsWith('tel:')) {
-            const source = element.closest('header') ? 'header' : 
-                          element.closest('footer') ? 'footer' : 'content';
-            ConversionTracking.phoneCall(source);
+        // Phone clicks
+        if (href.startsWith('tel:')) {
+            var callSource = element.closest('footer') ? 'footer' : 'content';
+            ConversionTracking.phoneCall(callSource);
         }
 
-        // External links with categorization
-        if (href && !href.includes('organichyposolutions.com') && href.startsWith('http')) {
-            const category = href.includes('google.com') ? 'forms' : 
-                           href.includes('certification') ? 'compliance' : 'general';
+        // External links (not organichyposolutions.com)
+        if (href.startsWith('http') && !href.includes('organichyposolutions.com')) {
+            var category = 'general';
+            if (href.includes('google.com')) category = 'forms';
+            if (href.includes('myshopify.com')) category = 'shopify';
             InteractionTracking.externalLink(href, text, category);
         }
 
-        // PDF downloads with content type detection
-        if (href && href.endsWith('.pdf')) {
-            const contentType = href.includes('sds') ? 'safety_data' :
-                              href.includes('cert') ? 'certification' : 'general';
-            InteractionTracking.pdfDownload(text, contentType);
+        // PDF downloads
+        if (href.endsWith('.pdf')) {
+            var contentType = 'general';
+            if (href.includes('sds') || href.includes('SDS')) contentType = 'safety_data';
+            if (href.includes('cert') || href.includes('epa') || href.includes('usda')) contentType = 'certification';
+            if (href.includes('fsis') || href.includes('FSIS')) contentType = 'compliance';
+            InteractionTracking.pdfDownload(text || href.split('/').pop(), contentType);
         }
 
-        // Quote buttons with urgency detection
-        if (classes.includes('btn-quote') || text.toLowerCase().includes('quote')) {
-            const urgency = classes.includes('urgent') || text.includes('now') ? 'high' : 'normal';
-            ConversionTracking.requestQuote('General', 0, urgency);
+        // Quote/booking buttons
+        if (classes.includes('btn-quote') || text.toLowerCase().includes('quote') || text.toLowerCase().includes('book')) {
+            ConversionTracking.requestQuote('General', 0, 'normal');
         }
 
         // Product line switching
-        if (classes.includes('product-line-btn')) {
-            const productLine = text.toLowerCase().includes('organic') ? 'Organic' : 'Premium';
-            ServiceTracking.productLineInterest(productLine, 'view_switch');
+        if (classes.includes('product-line-btn') || classes.includes('filter-btn')) {
+            var line = text.toLowerCase().includes('epa') ? 'EPA+USDA' :
+                       text.toLowerCase().includes('organic') ? 'USDA Organic' : text;
+            ServiceTracking.productLineInterest(line, 'filter');
         }
     });
 
-    // Enhanced form tracking
+    // --- Form tracking ---
     document.addEventListener('submit', function(event) {
-        const form = event.target;
-        const formName = form.id || form.name || 'Unknown Form';
-        const isContactForm = formName.toLowerCase().includes('contact');
-        const leadValue = isContactForm ? 100 : 50;
-        
-        ConversionTracking.formSubmit(formName, form.id, leadValue);
+        var form = event.target;
+        var formName = form.id || form.name || 'Unknown Form';
+        var isContact = formName.toLowerCase().includes('contact');
+        ConversionTracking.formSubmit(formName, form.id, isContact ? 100 : 50);
     });
 
-    // Enhanced scroll depth tracking
-    let scrollDepth = 0;
-    let scrollTimer;
-    let interactionCount = 0;
-    
+    // --- Scroll depth ---
+    var scrollDepth = 0;
+    var scrollTimer;
+
     window.addEventListener('scroll', function() {
         clearTimeout(scrollTimer);
         scrollTimer = setTimeout(function() {
-            const currentScroll = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
-            
-            if (currentScroll > scrollDepth && currentScroll >= 25) {
-                if (currentScroll >= 25 && scrollDepth < 25) {
-                    gtag('event', 'scroll', { percent_scrolled: 25, engagement_level: 'low' });
+            var maxScroll = document.body.scrollHeight - window.innerHeight;
+            if (maxScroll <= 0) return;
+            var current = Math.round((window.scrollY / maxScroll) * 100);
+
+            var milestones = [25, 50, 75, 90];
+            for (var i = 0; i < milestones.length; i++) {
+                if (current >= milestones[i] && scrollDepth < milestones[i]) {
+                    gtag('event', 'scroll', {
+                        percent_scrolled: milestones[i],
+                        page_path: window.location.pathname
+                    });
                 }
-                if (currentScroll >= 50 && scrollDepth < 50) {
-                    gtag('event', 'scroll', { percent_scrolled: 50, engagement_level: 'medium' });
-                }
-                if (currentScroll >= 75 && scrollDepth < 75) {
-                    gtag('event', 'scroll', { percent_scrolled: 75, engagement_level: 'high' });
-                }
-                if (currentScroll >= 90 && scrollDepth < 90) {
-                    gtag('event', 'scroll', { percent_scrolled: 90, engagement_level: 'very_high' });
-                }
-                scrollDepth = currentScroll;
-                interactionCount++;
             }
+            if (current > scrollDepth) scrollDepth = current;
         }, 250);
     });
 
-    // Enhanced time on page tracking
-    const startTime = Date.now();
-    let pageInteractions = 0;
-    
-    // Count user interactions
-    ['click', 'scroll', 'keydown', 'mousemove'].forEach(eventType => {
-        document.addEventListener(eventType, function() {
-            pageInteractions++;
-        }, { passive: true, once: false });
-    });
-    
-    window.addEventListener('beforeunload', function() {
-        const timeSpent = (Date.now() - startTime) / 1000;
-        const pageName = document.title.replace(' - Organic HypoSolutions', '');
-        SessionTracking.timeOnPage(timeSpent, pageName, pageInteractions);
+    // --- Time on page ---
+    var startTime = Date.now();
+    var pageInteractions = 0;
+
+    ['click', 'scroll', 'keydown'].forEach(function(evt) {
+        document.addEventListener(evt, function() { pageInteractions++; }, { passive: true });
     });
 
-    // Cart event listeners
+    window.addEventListener('beforeunload', function() {
+        var seconds = (Date.now() - startTime) / 1000;
+        var pageName = document.title.replace(' | Organic HypoSolutions', '');
+        SessionTracking.timeOnPage(seconds, pageName, pageInteractions);
+    });
+
+    // --- Cart events (dispatched by cart.js / products page) ---
     window.addEventListener('cartUpdated', function(event) {
-        if (event.detail && event.detail.productId) {
-            const item = {
-                id: event.detail.productId,
-                variantId: event.detail.cartItem?.variantId,
-                name: event.detail.cartItem?.name,
-                price: event.detail.cartItem?.price,
-                category: EcommerceTracking.getProductCategory(event.detail.cartItem)
-            };
-            
-            EcommerceTracking.addToCart(item, event.detail.cartItem?.quantity || 1, 'website');
+        if (!event.detail || !event.detail.cartItem) return;
+        var ci = event.detail.cartItem;
+        EcommerceTracking.addToCart(ci, ci.quantity || 1, 'website');
+    });
+
+    window.addEventListener('cartItemRemoved', function(event) {
+        if (!event.detail || !event.detail.cartItem) return;
+        EcommerceTracking.removeFromCart(event.detail.cartItem, event.detail.cartItem.quantity || 1);
+    });
+
+    // --- State selection events (dispatched by geo-filter) ---
+    window.addEventListener('stateSelected', function(event) {
+        if (event.detail && event.detail.state) {
+            GeoTracking.stateSelected(event.detail.state, event.detail.source || 'modal');
         }
     });
 
     if (ANALYTICS_CONFIG.DEBUG_MODE) {
-        console.log('🔧 Enhanced automatic tracking setup complete');
+        console.log('[OHS Analytics] Automatic tracking ready');
     }
 }
 
-/**
- * Initialize Enhanced Analytics
- */
+// =============================================================================
+// INITIALIZATION
+// =============================================================================
+
 function initializeAnalytics() {
     try {
-        // Check for cookie consent
         if (ANALYTICS_CONFIG.COOKIE_CONSENT) {
-            // Basic consent check - you can enhance this with a proper cookie banner
-            const hasConsent = localStorage.getItem('analytics_consent') !== 'false';
+            var hasConsent = localStorage.getItem('analytics_consent') !== 'false';
             if (!hasConsent && ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('📊 Analytics consent not given, tracking limited');
+                console.log('[OHS Analytics] Consent not given — tracking limited');
             }
         }
 
-        // Initialize GA4
         initializeGA4();
 
-        // Setup automatic tracking after DOM is loaded
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', setupAutomaticTracking);
         } else {
             setupAutomaticTracking();
         }
 
-        // Track session start
         SessionTracking.sessionStart();
 
-        // Enhanced error tracking
+        // Global error handler
         window.addEventListener('error', function(event) {
             ErrorTracking.jsError(
-                event.error?.message || 'Unknown error',
+                event.error ? event.error.message : 'Unknown error',
                 event.filename,
                 event.lineno,
-                event.error?.stack
+                event.error ? event.error.stack : null
             );
         });
 
-        // Unhandled promise rejection tracking
         window.addEventListener('unhandledrejection', function(event) {
             ErrorTracking.jsError(
                 'Unhandled Promise Rejection: ' + event.reason,
                 'Promise',
                 0,
-                event.reason?.stack
+                event.reason ? event.reason.stack : null
             );
         });
 
         if (ANALYTICS_CONFIG.DEBUG_MODE) {
-            console.log('🎯 OHS Enhanced Analytics initialized successfully');
-            console.log('🛍️ Shopify e-commerce tracking ready');
-            console.log('📊 Wholesale threshold set to:', ANALYTICS_CONFIG.WHOLESALE_THRESHOLD, 'items');
+            console.log('[OHS Analytics] Initialized — 10 products, per-product thresholds, subscription + geo tracking');
         }
-
     } catch (error) {
-        console.error('Analytics initialization error:', error);
+        console.error('[OHS Analytics] Init error:', error);
     }
 }
 
-/**
- * Enhanced Public API
- */
+// =============================================================================
+// PUBLIC API
+// =============================================================================
+
 window.OHSAnalytics = {
-    // Core tracking
-    trackPageView,
-    
-    // E-commerce
+    trackPageView: trackPageView,
     ecommerce: EcommerceTracking,
-    
-    // Conversions
+    geo: GeoTracking,
     conversions: ConversionTracking,
-    
-    // Interactions
     interactions: InteractionTracking,
-    
-    // Services
     services: ServiceTracking,
-    
-    // Errors
     errors: ErrorTracking,
-    
-    // Sessions
     sessions: SessionTracking,
-    
-    // Utilities
-    getCartContext,
-    
-    // Configuration
+    getCartContext: getCartContext,
     config: ANALYTICS_CONFIG,
-    
-    // Manual initialization
-    init: initializeAnalytics,
-    
-    // Debug helpers
-    debug: {
-        logCartContext: () => console.log('Cart Context:', getCartContext()),
-        logConfig: () => console.log('Analytics Config:', ANALYTICS_CONFIG)
-    }
+    init: initializeAnalytics
 };
 
-// Auto-initialize when script loads
+// Data layer helper
+window.pushToDataLayer = function(eventName, eventData) {
+    if (!window.dataLayer) return;
+    window.dataLayer.push({
+        event: eventName,
+        timestamp: new Date().toISOString(),
+        page_path: window.location.pathname,
+        ...eventData
+    });
+};
+
+// Auto-init
 initializeAnalytics();
 
-/**
- * Enhanced Data Layer Helper
- */
-window.pushToDataLayer = function(eventName, eventData) {
-    if (window.dataLayer) {
-        const enhancedData = {
-            event: eventName,
-            timestamp: new Date().toISOString(),
-            page_path: window.location.pathname,
-            ...eventData
-        };
-        
-        window.dataLayer.push(enhancedData);
-        
-        if (ANALYTICS_CONFIG.DEBUG_MODE) {
-            console.log('📤 Data Layer Push:', eventName, enhancedData);
-        }
-    }
-};
-
-// Export for module systems
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = window.OHSAnalytics;
-}
-
-// Integration with global scripts
+// Integration hook
 if (typeof window.OHS !== 'undefined') {
     window.OHS.analytics = window.OHSAnalytics;
-    
-    if (ANALYTICS_CONFIG.DEBUG_MODE) {
-        console.log('🔗 Analytics integrated with OHS global scripts');
-    }
 }
