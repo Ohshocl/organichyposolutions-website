@@ -1,362 +1,166 @@
 # ================================================================
-# ORGANIC HYPOSOLUTIONS - UPDATED .GITIGNORE
-# Repository Structure: 2025 Standards with Shopify API Integration
+# ORGANIC HYPOSOLUTIONS - .GITIGNORE
+# Static site: GitHub Pages + Shopify Storefront API
+# Last Updated: 2026-03-08
 # ================================================================
 
+
 # ================================================================
-# ENVIRONMENT & SECURITY FILES
+# ENVIRONMENT & SECRETS (CRITICAL)
 # ================================================================
-# Environment variables (CRITICAL - contains API keys)
+# Environment variable files — contain API keys, NEVER commit
 .env
-.env.local
-.env.development
-.env.staging
-.env.production
-.env.test
-*.env
+.env.*
+!.env.example
 
-# Shopify credentials and configuration
+# Shopify config with Storefront token (gitignored for local dev)
 shop/js/shopify-config.js
 shopify-config.js
+
+# Other sensitive config
 config.json
 secrets.json
 
-# API keys and tokens (all formats)
-*api-key*
-*token*
-*secret*
-*credentials*
+# SSL / signing certificates
 *.pem
 *.key
 *.crt
 *.p12
 *.pfx
 
+
 # ================================================================
-# NODE.JS & NPM
+# NODE.JS & DEPENDENCIES
 # ================================================================
-# Dependencies
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 package-lock.json
 yarn.lock
-pnpm-lock.yaml
 
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
-coverage/
-*.lcov
-
-# nyc test coverage
-.nyc_output
 
 # ================================================================
 # BUILD & DEPLOYMENT ARTIFACTS
 # ================================================================
-# Build outputs
-build/
-dist/
-out/
-.output/
-.nuxt/
-.next/
-.cache/
-
-# Vercel deployment files
-.vercel/
-*.vercel-build-output
-
-# GitHub Pages build artifacts
+# GitHub Pages build output
 _site/
 
-# Static site generators
-public/
+# Vercel
+.vercel/
+
+# Generic build outputs
+build/
+dist/
+.cache/
+
 
 # ================================================================
-# BACKUP & OLD FILES (TO BE DELETED)
+# DEPRECATED FILES (deleted from site, block if re-added)
 # ================================================================
-# Backup directories and files
+# Checkout pages — Shopify handles checkout via Storefront API
+shop/checkout.html
+shop/confirmation.html
+
+# Old JS files replaced during migration
+shop/js/cart-backup.js
+shop/js/shopify-api-bridge.js
+shop/js/shopify-integration.js
+
+# Old API structure
+API/
+api-old/
+shopify-api-old/
+
+
+# ================================================================
+# BACKUPS & OLD FILES
+# ================================================================
 Backups/
 backups/
 backup/
 *-backup/
 *.backup
-*-backup.*
-*_backup*
 *.bak
 *.old
 *.orig
 
-# Old API structure (replaced by /api/)
-API/
-api-old/
-shopify-api-old/
-
-# Deprecated files mentioned in checklist
-shop/checkout.html
-shop/confirmation.html
-shop/js/cart-backup.js
-shop/js/shopify-api-bridge.js
-shop/js/shopify-integration.js
 
 # ================================================================
-# DEVELOPMENT & TESTING
+# IDE & EDITOR FILES
 # ================================================================
-# IDE and editor files
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 .project
-.classpath
 .settings/
 
-# OS generated files
+
+# ================================================================
+# OS GENERATED FILES
+# ================================================================
 .DS_Store
 .DS_Store?
 ._*
 .Spotlight-V100
 .Trashes
-ehthumbs.db
 Thumbs.db
 desktop.ini
 
-# Temporary files
+
+# ================================================================
+# TEMPORARY & LOG FILES
+# ================================================================
 *.tmp
 *.temp
 tmp/
 temp/
-
-# ================================================================
-# LOGS & MONITORING
-# ================================================================
-# Log files
 logs/
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
 
-# Runtime logs
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Error logs
-error.log
-access.log
-combined.log
 
 # ================================================================
-# SHOPIFY API SPECIFIC
+# LARGE MEDIA FILES (not for git — use Git LFS if needed)
 # ================================================================
-# Shopify generated files (these should be in GitHub Secrets)
-.shopify/
-shopify-app-cli.log
-
-# Local Shopify development
-.shopify-cli/
-shopify.app.*.toml
-
-# Partner dashboard exports
-*-export-*.csv
-products_export_*.csv
-
-scripts/shopify-config.js
-
-# ================================================================
-# SECURITY & COMPLIANCE
-# ================================================================
-# SSL certificates and keys
-*.crt
-*.key
-*.pem
-*.p12
-*.pfx
-ssl/
-certificates/
-
-# Database files (if using local development)
-*.db
-*.sqlite
-*.sqlite3
-
-# Configuration files with sensitive data
-config/production.json
-config/staging.json
-.aws/
-.gcp/
-
-# ================================================================
-# ANALYTICS & TRACKING
-# ================================================================
-# Google Analytics files
-google-analytics.json
-ga-*.json
-
-# Tracking pixels and analytics data
-analytics/
-tracking/
-pixel-data/
-
-# ================================================================
-# PERFORMANCE & OPTIMIZATION
-# ================================================================
-# Image optimization cache
-.imageoptim-cache/
-.cache-images/
-
-# CSS/JS minification cache
-.sass-cache/
-*.css.map
-*.js.map
-
-# Performance monitoring data
-lighthouse-reports/
-pagespeed-reports/
-
-# ================================================================
-# TESTING & QA
-# ================================================================
-# Test results
-test-results/
-coverage/
-.jest/
-.mocha/
-
-# End-to-end testing
-/test-results/
-/playwright-report/
-/playwright/.cache/
-
-# Visual regression testing
-__image_snapshots__/
-visual-regression/
-
-# ================================================================
-# DOCUMENTATION & ASSETS (CONDITIONAL)
-# ================================================================
-# Large asset files (handle via Git LFS if needed)
 *.psd
 *.ai
 *.sketch
 *.fig
-
-# Video files (usually too large for git)
 *.mov
 *.mp4
 *.avi
-*.mkv
-
-# Large images (consider Git LFS)
 *.tiff
 *.bmp
-# Note: Keep JPG, PNG, SVG for web assets
+
 
 # ================================================================
-# DEPLOYMENT SPECIFIC
+# TESTING & COVERAGE
 # ================================================================
-# Serverless deployment artifacts
-.serverless/
-serverless.yml.bak
+coverage/
+.nyc_output
+test-results/
 
-# Docker files (if using containerization)
-.dockerignore
-Dockerfile.dev
-docker-compose.override.yml
-
-# Kubernetes configs with secrets
-k8s-secrets/
-helm-secrets/
 
 # ================================================================
-# CONTENT MANAGEMENT
+# IMPORTANT: FILES THAT MUST NOT BE IGNORED
 # ================================================================
-# Draft content
-drafts/
-*.draft
-content-draft/
+# templates/ — nav and footer loaded dynamically at runtime by JS.
+#   If templates/ is gitignored, the site navigation breaks completely.
+#   DO NOT add templates/ to this file.
+#
+# assets/ — CSS, JS, images served to the browser.
+#   DO NOT ignore assets/ or any subdirectory of it.
+#
+# shop/js/product-catalog.js — single source of truth for product data.
+#   DO NOT ignore this file.
 
-# User uploaded content (handle separately)
-uploads/
-user-content/
-media-uploads/
-
-# ================================================================
-# COMPLIANCE & LEGAL
-# ================================================================
-# GDPR/Privacy related logs
-privacy-logs/
-gdpr-exports/
-user-data-exports/
-
-# Audit trails (should be in secure location)
-audit-logs/
-security-logs/
-
-# ================================================================
-# DEVELOPMENT UTILITIES
-# ================================================================
-# Package manager caches
-.npm/
-.yarn/
-.pnpm/
-
-# ESLint cache
-.eslintcache
-
-# Prettier cache
-.prettiercache
-
-# TypeScript cache
-*.tsbuildinfo
-
-# ================================================================
-# CUSTOM PROJECT EXCLUSIONS
-# ================================================================
-# Templates folder (reference only, not deployed)
-templates/
-
-# Development notes and TODO files
-TODO.md
-NOTES.md
-DEV-NOTES.md
-dev-notes/
-
-# Local configuration overrides
-local-config/
-dev-config/
 
 # ================================================================
 # WHITELIST OVERRIDES
 # ================================================================
-# Force include important files even if they match patterns above
 !.env.example
 !.gitignore
 !README.md
 !package.json
-!vercel.json
-
-# Force include essential API structure
-!api/
-!api/**/*.js
-
-# Force include essential assets
-!assets/
-!assets/**/*
-
-
-
-# ================================================================
-# END OF .GITIGNORE
-# ================================================================
