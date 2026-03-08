@@ -6,14 +6,16 @@
    ✅ THIS FILE OWNS: .dropdown-*, .btn-*, .badge-*, .card-*, .form-*,
                       .modal-*, .alert-*, tables, tooltips, tabs, accordion,
                       testimonials, quick-add widget, product line cards,
-                      process steps, section headers, toast notifications
+                      process steps, section headers, toast notifications,
+                      state-modal, state-selector-nav, certification-badge,
+                      subscription-highlight, service-tag pills, notification toasts
    ❌ NOT HERE: :root variables, .navbar, .footer, .hero-section,
                 .promo-banner, animations, utility classes, section layouts
                 → those live in global-styles.css
    ❌ NOT HERE: page-scoped overrides → those live in pages.css
 
    Loads after global-styles.css, before pages.css.
-   Last Updated: March 5, 2026
+   Last Updated: March 8, 2026
    ========================================================================== */
 
 /* ==========================================================================
@@ -322,6 +324,61 @@
 
 .cert-badge-card.epa  { border-color: var(--ohs-premium-gold);  background: rgba(245, 158, 11, 0.1); }
 .cert-badge-card.usda { border-color: var(--ohs-organic-green); background: rgba(74, 222, 128, 0.1); }
+
+/* ==========================================================================
+   [ADDED] CERTIFICATION BADGE — blue gradient pill
+   Used on: services, about, legal pages
+   Extracted from services.html inline styles
+   ========================================================================== */
+
+.certification-badge {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin: 2px;
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+/* ==========================================================================
+   [ADDED] SUBSCRIPTION HIGHLIGHT — teal gradient pill
+   Used on: services, calculator pages
+   Extracted from services.html inline styles
+   ========================================================================== */
+
+.subscription-highlight {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   [ADDED] SERVICE TAGS — colored pills for service cards
+   Used on: home (index.html), services pages
+   Extracted from index.html inline styles
+   ========================================================================== */
+
+.service-tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    color: white;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.tag-red    { background: #dc2626; }
+.tag-blue   { background: #2563eb; }
+.tag-green  { background: #059669; }
+.tag-orange { background: #ea580c; }
+.tag-gray   { background: #6b7280; }
 
 /* ==========================================================================
    CARD COMPONENTS
@@ -668,26 +725,56 @@
 
 /* ==========================================================================
    TOAST NOTIFICATION — shared across all pages
+   (Also defined in global-styles.css for #quick-add-feedback specifically;
+    this section covers the generic notification container used by cart.js)
    ========================================================================== */
 
-#quick-add-feedback {
+#notificationContainer {
     position: fixed;
     top: 100px;
     right: 20px;
     z-index: 9999;
-    min-width: 300px;
-    box-shadow: 0 8px 25px rgba(74, 222, 128, 0.4);
-    border: none;
-    border-radius: 15px;
-    background: linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green));
-    color: white;
-    transform: translateX(400px);
-    transition: all 0.3s ease;
-    padding: var(--spacing-md) var(--spacing-lg);
 }
 
-#quick-add-feedback.show {
+.notification {
+    min-width: 300px;
+    max-width: 400px;
+    padding: 1rem 1.5rem;
+    border-radius: 15px;
+    color: white;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    transform: translateX(400px);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.notification.show {
     transform: translateX(0);
+}
+
+.notification.success {
+    background: linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green));
+}
+
+.notification.error {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.notification.warning {
+    background: linear-gradient(135deg, var(--ohs-premium-gold), #d97706);
+}
+
+.notification.info {
+    background: linear-gradient(135deg, var(--ohs-primary-blue), var(--ohs-accent-blue));
+}
+
+.notification i {
+    font-size: 1.2rem;
+    flex-shrink: 0;
 }
 
 /* Generic alert overrides */
@@ -713,6 +800,165 @@
     background-color: var(--ohs-accent-blue);
     border-color: var(--ohs-primary-blue);
     color: var(--ohs-dark-navy);
+}
+
+/* ==========================================================================
+   [ADDED] STATE MODAL — geo-filter for EPA product restrictions
+   Used on: products, cart pages
+   Extracted from products.html and cart.html inline styles
+   ========================================================================== */
+
+.state-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.state-modal.show {
+    display: flex;
+}
+
+.state-modal-content {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    max-width: 450px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.state-modal-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--ohs-primary-blue), var(--ohs-accent-blue));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+    color: white;
+}
+
+.state-modal h3 {
+    color: var(--ohs-primary-blue);
+    margin-bottom: 0.5rem;
+}
+
+.state-modal p {
+    color: #64748b;
+    margin-bottom: 1.5rem;
+}
+
+.state-select {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.state-select:focus {
+    outline: none;
+    border-color: var(--ohs-primary-blue);
+    box-shadow: 0 0 0 3px rgba(46, 94, 170, 0.1);
+}
+
+.state-modal-btn {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--ohs-primary-blue), var(--ohs-accent-blue));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.state-modal-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(46, 94, 170, 0.3);
+}
+
+.state-modal-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.state-info {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-top: 1rem;
+    text-align: left;
+    font-size: 0.85rem;
+    color: #166534;
+}
+
+/* ==========================================================================
+   [ADDED] STATE SELECTOR NAV — inline state pill in navbar area
+   Used on: products, cart pages
+   Extracted from products.html inline styles
+   ========================================================================== */
+
+.state-selector-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 20px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.state-selector-nav:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.state-selector-nav select {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding-right: 1rem;
+}
+
+.state-selector-nav select option {
+    color: var(--ohs-primary-blue);
+    background: white;
 }
 
 /* ==========================================================================
@@ -836,7 +1082,7 @@
 }
 
 .tooltip-fact::before {
-    content: '💡';
+    content: '\01F4A1';
     position: absolute;
     left: 0; top: 0;
 }
@@ -863,7 +1109,7 @@
 }
 
 .testimonial-card::before {
-    content: '"';
+    content: '\201C';
     position: absolute;
     top: -10px;
     left: var(--spacing-lg);
@@ -1111,6 +1357,24 @@
     }
 
     .product-line-card { padding: 24px; }
+
+    /* State modal mobile */
+    .state-modal-content {
+        padding: 1.5rem;
+    }
+
+    .state-selector-nav {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.6rem;
+    }
+
+    /* Notification mobile */
+    .notification {
+        right: 10px;
+        left: 10px;
+        min-width: auto;
+        max-width: calc(100vw - 20px);
+    }
 }
 
 @media (max-width: 576px) {
@@ -1131,4 +1395,9 @@
     }
 
     #quick-add-feedback.show { transform: translateY(0); }
+
+    .state-selector-nav {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.6rem;
+    }
 }
