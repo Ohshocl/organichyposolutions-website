@@ -8,6 +8,7 @@
  *  - Cart badge (ohsCart array format only)
  *  - Smooth scrolling, mobile menu, scroll animations
  *  - Banner management
+ *  - showNotification() fallback (cart.js overrides on pages that load it)
  *  - Service booking helpers
  *  - Form UX enhancements
  *  - Utility functions (debounce, throttle, isInViewport)
@@ -18,9 +19,10 @@
  *                    sku, tier, type, isSubscription, image }
  *
  * NOTIFICATION SYSTEM:
- *  showNotification() is defined in shop/js/cart.js (gradient style, stacked).
- *  global-scripts.js does NOT define showNotification — cart.js always wins.
- *  On pages that don't load cart.js, notifications are not needed from here.
+ *  This file defines a lightweight showNotification() fallback.
+ *  shop/js/cart.js defines a richer version and overwrites window.showNotification.
+ *  On pages that load cart.js, cart.js's version wins automatically.
+ *  On pages that don't load cart.js, the fallback here provides toast alerts.
  *
  * CART WRITES:
  *  addItemToCart() here writes directly to localStorage.
@@ -28,7 +30,7 @@
  *  On any page that loads cart.js, use window.addToCart() instead —
  *  cart.js maintains an internal array that stays in sync with localStorage.
  *
- * Last Updated: March 5, 2026
+ * Last Updated: March 8, 2026
  */
 
 console.log('🚀 OHS Global Scripts Loading...');
@@ -125,6 +127,59 @@ function updateCartBadge() {
 }
 
 // ==========================================================================
+// NOTIFICATION SYSTEM (FALLBACK)
+// Lightweight toast notification for pages that do NOT load cart.js.
+// cart.js defines a richer showNotification() and overwrites this on
+// pages where it loads (products, cart). This fallback uses the
+// #notificationContainer + .notification CSS classes from components.css.
+// ==========================================================================
+
+/**
+ * Show a toast notification. Types: 'success', 'error', 'warning', 'info'.
+ * cart.js overrides this with its own version on pages that load it.
+ */
+function showNotification(message, type) {
+    type = type || 'info';
+
+    let container = document.getElementById('notificationContainer');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'notificationContainer';
+        document.body.appendChild(container);
+    }
+
+    const iconMap = {
+        success: 'check-circle',
+        error:   'times-circle',
+        warning: 'exclamation-triangle',
+        info:    'info-circle'
+    };
+
+    const notification = document.createElement('div');
+    notification.className = 'notification ' + type;
+
+    notification.innerHTML =
+        '<i class="fas fa-' + (iconMap[type] || 'info-circle') + '"></i>' +
+        '<div style="flex:1;">' + message + '</div>' +
+        '<button onclick="this.parentElement.remove()" ' +
+        'style="background:none;border:none;color:white;font-size:1.2rem;cursor:pointer;padding:0;opacity:0.8;">' +
+        '&times;</button>';
+
+    container.appendChild(notification);
+
+    // Slide in
+    requestAnimationFrame(function() {
+        notification.classList.add('show');
+    });
+
+    // Auto-remove after 4 seconds
+    setTimeout(function() {
+        notification.classList.remove('show');
+        setTimeout(function() { notification.remove(); }, 300);
+    }, 4000);
+}
+
+// ==========================================================================
 // CART HELPERS
 // All cart writes use the Array format keyed by 'ohsCart'.
 // Higher-level add/update/checkout logic lives in shop/js/cart.js.
@@ -208,8 +263,8 @@ function getCartTotalQuantity() {
  * @param {number} threshold
  * @returns {boolean}
  */
-function isWholesaleEligible(threshold = 25) {
-    return getCartTotalQuantity() >= threshold;
+function isWholesaleEligible(threshold) {
+    return getCartTotalQuantity() >= (threshold || 25);
 }
 
 /**
@@ -230,7 +285,7 @@ function closeBanner() {
     const banner = document.getElementById('promoBanner');
     if (!banner) return;
     banner.style.transform = 'translateY(-100%)';
-    setTimeout(() => { banner.style.display = 'none'; }, 300);
+    setTimeout(function() { banner.style.display = 'none'; }, 300);
     localStorage.setItem('promoBannerClosed', 'true');
 }
 
@@ -246,12 +301,12 @@ function checkBanner() {
 // ==========================================================================
 
 function initSmoothScrolling() {
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-        a.addEventListener('click', e => {
-            const href   = a.getAttribute('href');
+    document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+        a.addEventListener('click', function(e) {
+            var href = a.getAttribute('href');
             if (!href || href === '#' || href.length <= 1) return;
             try {
-                const target = document.querySelector(href);
+                var target = document.querySelector(href);
                 if (target) {
                     e.preventDefault();
                     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -264,12 +319,12 @@ function initSmoothScrolling() {
 }
 
 function initMobileMenu() {
-    const collapse = document.querySelector('.navbar-collapse');
+    var collapse = document.querySelector('.navbar-collapse');
     if (!collapse) return;
 
-    collapse.addEventListener('click', e => {
+    collapse.addEventListener('click', function(e) {
         if (e.target.classList.contains('nav-link') || e.target.closest('.nav-link')) {
-            const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapse);
+            var bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapse);
             bsCollapse.hide();
         }
     });
@@ -282,8 +337,8 @@ function initMobileMenu() {
 function initAnimations() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
             if (entry.isIntersecting) {
                 entry.target.style.opacity   = '1';
                 entry.target.style.transform = 'translateY(0)';
@@ -296,7 +351,7 @@ function initAnimations() {
     document.querySelectorAll(
         '.service-card, .standard-card, .process-step, ' +
         '.product-line-card, .card, .hero-stats, .feature-card'
-    ).forEach(el => {
+    ).forEach(function(el) {
         el.style.opacity    = '0';
         el.style.transform  = 'translateY(20px)';
         el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
@@ -328,23 +383,19 @@ function checkProductCatalog() {
 // SERVICE BOOKING HELPERS
 // ==========================================================================
 
-const BOOKING_FORM_BASE = 'https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform';
+var BOOKING_FORM_BASE = 'https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform';
 
 function bookResidentialService() {
-    window.open(`${BOOKING_FORM_BASE}?entry.service_type=Residential&entry.source=Website`, '_blank');
-    if (typeof window.showNotification === 'function') {
-        window.showNotification('🏠 Opening residential service booking form…', 'info');
-    }
+    window.open(BOOKING_FORM_BASE + '?entry.service_type=Residential&entry.source=Website', '_blank');
+    showNotification('🏠 Opening residential service booking form…', 'info');
     if (typeof gtag !== 'undefined') {
         gtag('event', 'book_residential_service', { event_category: 'Service Booking' });
     }
 }
 
 function bookCommercialService() {
-    window.open(`${BOOKING_FORM_BASE}?entry.service_type=Commercial&entry.source=Website`, '_blank');
-    if (typeof window.showNotification === 'function') {
-        window.showNotification('🏢 Opening commercial service booking form…', 'info');
-    }
+    window.open(BOOKING_FORM_BASE + '?entry.service_type=Commercial&entry.source=Website', '_blank');
+    showNotification('🏢 Opening commercial service booking form…', 'info');
     if (typeof gtag !== 'undefined') {
         gtag('event', 'book_commercial_service', { event_category: 'Service Booking' });
     }
@@ -362,14 +413,14 @@ function callNow() {
 // ==========================================================================
 
 function initFormEnhancements() {
-    document.querySelectorAll('form').forEach(form => {
-        form.addEventListener('submit', () => {
-            const btn = form.querySelector('button[type="submit"], input[type="submit"]');
+    document.querySelectorAll('form').forEach(function(form) {
+        form.addEventListener('submit', function() {
+            var btn = form.querySelector('button[type="submit"], input[type="submit"]');
             if (!btn) return;
-            const original  = btn.textContent;
+            var original    = btn.textContent;
             btn.disabled    = true;
             btn.textContent = 'Submitting…';
-            setTimeout(() => {
+            setTimeout(function() {
                 btn.disabled    = false;
                 btn.textContent = original;
             }, 6000);
@@ -382,29 +433,31 @@ function initFormEnhancements() {
 // ==========================================================================
 
 function debounce(fn, wait, immediate) {
-    let t;
-    return function (...args) {
-        const later = () => { t = null; if (!immediate) fn(...args); };
-        const now   = immediate && !t;
+    var t;
+    return function() {
+        var args  = arguments;
+        var ctx   = this;
+        var later = function() { t = null; if (!immediate) fn.apply(ctx, args); };
+        var now   = immediate && !t;
         clearTimeout(t);
         t = setTimeout(later, wait);
-        if (now) fn(...args);
+        if (now) fn.apply(ctx, args);
     };
 }
 
 function throttle(fn, limit) {
-    let active = false;
-    return function (...args) {
+    var active = false;
+    return function() {
         if (!active) {
-            fn.apply(this, args);
+            fn.apply(this, arguments);
             active = true;
-            setTimeout(() => { active = false; }, limit);
+            setTimeout(function() { active = false; }, limit);
         }
     };
 }
 
 function isInViewport(el) {
-    const r = el.getBoundingClientRect();
+    var r = el.getBoundingClientRect();
     return r.top    >= 0 &&
            r.left   >= 0 &&
            r.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
@@ -434,26 +487,24 @@ document.addEventListener('DOMContentLoaded', init);
 // ==========================================================================
 
 // Sync cart badge across tabs
-window.addEventListener('storage', e => {
+window.addEventListener('storage', function(e) {
     if (e.key === CART_KEY) updateCartBadge();
 });
 
 // Refresh badge when tab regains focus
-document.addEventListener('visibilitychange', () => {
+document.addEventListener('visibilitychange', function() {
     if (!document.hidden) updateCartBadge();
 });
 
 // Internal cartUpdated event (fired by addItemToCart and cart.js)
-window.addEventListener('cartUpdated', () => updateCartBadge());
+window.addEventListener('cartUpdated', function() { updateCartBadge(); });
 
 // Clear cart if returning from successful Shopify checkout
-window.addEventListener('focus', () => {
+window.addEventListener('focus', function() {
     if (new URLSearchParams(window.location.search).get('checkout') === 'success') {
         localStorage.removeItem(CART_KEY);
         updateCartBadge();
-        if (typeof window.showNotification === 'function') {
-            window.showNotification('🎉 Order completed! Thank you.', 'success');
-        }
+        showNotification('🎉 Order completed! Thank you.', 'success');
     }
 });
 
@@ -462,33 +513,35 @@ window.addEventListener('focus', () => {
 // ==========================================================================
 
 window.OHS = {
-    updateCartBadge,
-    addItemToCart,
-    getCartTotalQuantity,
-    isWholesaleEligible,
-    goToCart,
-    closeBanner,
-    bookResidentialService,
-    bookCommercialService,
-    callNow,
-    debounce,
-    throttle,
-    isInViewport,
-    checkProductCatalog
+    updateCartBadge:        updateCartBadge,
+    addItemToCart:           addItemToCart,
+    getCartTotalQuantity:   getCartTotalQuantity,
+    isWholesaleEligible:    isWholesaleEligible,
+    goToCart:                goToCart,
+    closeBanner:            closeBanner,
+    showNotification:       showNotification,
+    bookResidentialService: bookResidentialService,
+    bookCommercialService:  bookCommercialService,
+    callNow:                callNow,
+    debounce:               debounce,
+    throttle:               throttle,
+    isInViewport:           isInViewport,
+    checkProductCatalog:    checkProductCatalog
 };
 
 // Flat globals for backward compat with inline onclick handlers
-window.updateCartBadge      = updateCartBadge;
-window.addItemToCart        = addItemToCart;
-window.getCartTotalQuantity = getCartTotalQuantity;
-window.isWholesaleEligible  = isWholesaleEligible;
-window.goToCart             = goToCart;
-window.closeBanner          = closeBanner;
+window.updateCartBadge        = updateCartBadge;
+window.addItemToCart          = addItemToCart;
+window.getCartTotalQuantity   = getCartTotalQuantity;
+window.isWholesaleEligible    = isWholesaleEligible;
+window.goToCart               = goToCart;
+window.closeBanner            = closeBanner;
+window.showNotification       = showNotification;
 window.bookResidentialService = bookResidentialService;
 window.bookCommercialService  = bookCommercialService;
-window.callNow              = callNow;
-window.debounce             = debounce;
-window.throttle             = throttle;
-window.isInViewport         = isInViewport;
+window.callNow                = callNow;
+window.debounce               = debounce;
+window.throttle               = throttle;
+window.isInViewport           = isInViewport;
 
 console.log('🎉 OHS Global Scripts loaded.');
