@@ -1,8 +1,20 @@
 # ================================================================
-# ORGANIC HYPOSOLUTIONS - SIMPLIFIED DEPLOYMENT WORKFLOW
+# ORGANIC HYPOSOLUTIONS - DEPLOYMENT WORKFLOW
 # ================================================================
-# Fixed: Node version, caching issues, and over-complex validation
-# Purpose: Deploy static site to GitHub Pages (simple and reliable)
+# Deploys static site to GitHub Pages on push to main.
+#
+# Critical files that MUST be in _site/:
+#   - index.html
+#   - shop/js/product-catalog.js  (single source of truth for products)
+#   - templates/standard-nav.html (loaded dynamically by JS at runtime)
+#   - templates/standard-footer.html
+#
+# Files EXCLUDED from _site/ (dev-only):
+#   - .env.example, README.md, package.json, package-lock.json
+#   - node_modules, .git, .github
+#   - api/ (Vercel serverless functions — deployed separately)
+#
+# Last Updated: 2026-03-08
 # ================================================================
 
 name: Deploy OHS Website
@@ -11,126 +23,144 @@ on:
   push:
     branches: [ main ]
 
-# Permissions for GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Prevent concurrent deployments
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  # ================================================================
-  # BUILD AND DEPLOY TO GITHUB PAGES
-  # ================================================================
   deploy:
     name: Build & Deploy to GitHub Pages
     runs-on: ubuntu-latest
-    
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    
+
     steps:
     # ----------------------------------------
-    # Checkout Repository
+    # Checkout
     # ----------------------------------------
-    - name: 🔍 Checkout Repository
+    - name: Checkout Repository
       uses: actions/checkout@v4
 
     # ----------------------------------------
-    # Setup Node.js (Fixed Version)
+    # Node.js 20 (only needed if package.json exists)
     # ----------------------------------------
-    - name: 🟢 Setup Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        # Removed problematic caching
 
-    # ----------------------------------------
-    # Install Dependencies (Only if package.json exists)
-    # ----------------------------------------
-    - name: 📦 Install Dependencies
+    - name: Install Dependencies
       run: |
         if [ -f package.json ]; then
-          echo "📦 Installing dependencies..."
+          echo "Installing dependencies..."
           npm install
         else
-          echo "📝 No package.json found - skipping dependencies"
+          echo "No package.json — skipping"
         fi
 
     # ----------------------------------------
-    # Basic Validation
+    # Update sitemap lastmod dates to today
     # ----------------------------------------
-    - name: 🔍 Basic Validation
+    - name: Update Sitemap Dates
       run: |
-        echo "🔍 Checking basic files..."
-        
-        # Check if critical files exist
-        if [ ! -f "index.html" ]; then
-          echo "❌ index.html not found!"
-          exit 1
+        if [ -f "sitemap.xml" ]; then
+          TODAY=$(date -u +"%Y-%m-%d")
+          echo "Updating sitemap lastmod dates to ${TODAY}"
+          sed -i "s|<lastmod>[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}</lastmod>|<lastmod>${TODAY}</lastmod>|g" sitemap.xml
+          echo "Sitemap dates updated"
+        else
+          echo "No sitemap.xml found — skipping"
         fi
-        
-        echo "✅ Basic validation passed"
 
     # ----------------------------------------
-    # Prepare Static Site
+    # Prepare static site
     # ----------------------------------------
-    - name: 📁 Prepare Static Site
+    - name: Prepare Static Site
       run: |
-        echo "📁 Preparing static site..."
-        
-        # Create build directory
         mkdir -p _site
-        
-        # Copy all necessary files
+
+        # Copy everything into _site/
         cp -r * _site/ 2>/dev/null || true
-        
-        # Remove unnecessary files from build
-        rm -rf _site/node_modules _site/.git _site/_site _site/.github 2>/dev/null || true
-        
-        # Ensure index.html exists in build
+
+        # ---- Remove dev/build files (NEVER deploy these) ----
+        rm -rf _site/node_modules
+        rm -rf _site/.git
+        rm -rf _site/_site
+        rm -rf _site/.github
+        rm -rf _site/.env.example
+        rm -rf _site/README.md
+        rm -rf _site/package.json
+        rm -rf _site/package-lock.json
+
+        # ---- Remove Vercel API directory (deployed separately) ----
+        rm -rf _site/api
+
+        # ---- DO NOT remove _site/templates/ ----
+        # Nav and footer are fetched at runtime by global-scripts.js.
+        # Removing templates/ would break the entire site navigation.
+
+        echo "Static site prepared"
+
+    # ----------------------------------------
+    # Validate critical files exist
+    # ----------------------------------------
+    - name: Validate Build
+      run: |
+        PASS=true
+
+        # index.html — homepage
         if [ ! -f "_site/index.html" ]; then
-          echo "❌ index.html missing from build!"
+          echo "FAIL: index.html missing from build"
+          PASS=false
+        fi
+
+        # product-catalog.js — single source of truth for all product data
+        if [ ! -f "_site/shop/js/product-catalog.js" ]; then
+          echo "FAIL: shop/js/product-catalog.js missing from build"
+          PASS=false
+        fi
+
+        # standard-nav.html — loaded dynamically, site breaks without it
+        if [ ! -f "_site/templates/standard-nav.html" ]; then
+          echo "FAIL: templates/standard-nav.html missing from build"
+          PASS=false
+        fi
+
+        # standard-footer.html
+        if [ ! -f "_site/templates/standard-footer.html" ]; then
+          echo "WARN: templates/standard-footer.html missing (footer won't load)"
+        fi
+
+        if [ "$PASS" = false ]; then
+          echo ""
+          echo "Build validation FAILED — aborting deploy"
           exit 1
         fi
-        
-        echo "✅ Static site prepared"
 
-    # ----------------------------------------
-    # Setup GitHub Pages
-    # ----------------------------------------
-    - name: 🔧 Setup Pages
-      uses: actions/configure-pages@v4
-
-    # ----------------------------------------
-    # Upload to GitHub Pages
-    # ----------------------------------------
-    - name: 📤 Upload to Pages
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: '_site'
+        echo "Build validation passed"
 
     # ----------------------------------------
     # Deploy to GitHub Pages
     # ----------------------------------------
-    - name: 🚀 Deploy to GitHub Pages
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: Upload to Pages
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: '_site'
+
+    - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v4
 
-    # ----------------------------------------
-    # Success Summary
-    # ----------------------------------------
-    - name: ✅ Deployment Summary
+    - name: Deployment Summary
       run: |
-        echo "🎉 Deployment completed successfully!"
-        echo "🌐 Your site is available at: ${{ steps.deployment.outputs.page_url }}"
-        echo ""
-        echo "Next steps:"
-        echo "1. 🔌 Deploy API functions to Vercel separately"
-        echo "2. 🔧 Set up environment variables in Vercel"
-        echo "3. 🧪 Test your live site"
+        echo "Deployment complete: ${{ steps.deployment.outputs.page_url }}"
