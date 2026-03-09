@@ -1014,7 +1014,7 @@
             document.querySelectorAll('.stat-card').forEach(function(c) { c.classList.remove('active'); });
         }
 
-        function initMobileTooltips() {
+function initMobileTooltips() {
             var statCards = document.querySelectorAll('.stat-card');
 
             statCards.forEach(function(card) {
@@ -1022,8 +1022,13 @@
                 card.addEventListener('mouseenter', function() {
                     if (window.innerWidth > 768) showTooltipPortal(card);
                 });
-                card.addEventListener('mouseleave', function() {
-                    if (window.innerWidth > 768) dismissTooltipPortal();
+                card.addEventListener('mouseleave', function(e) {
+                    if (window.innerWidth > 768) {
+                        // Don't dismiss if mouse moved to the portal or backdrop
+                        var related = e.relatedTarget;
+                        if (related && (related.closest('.ohs-tooltip-portal') || related.closest('.ohs-tooltip-backdrop'))) return;
+                        dismissTooltipPortal();
+                    }
                 });
 
                 // Mobile: show on click
@@ -1044,12 +1049,18 @@
                 }
             });
 
+            // Desktop: dismiss when mouse leaves the portal tooltip itself
+            document.addEventListener('mouseleave', function(e) {
+                if (e.target.classList && e.target.classList.contains('ohs-tooltip-portal')) {
+                    dismissTooltipPortal();
+                }
+            }, true);
+
             // Close on Escape key
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') dismissTooltipPortal();
             });
         }
-
         // =================================================================
         // SCROLL ANIMATIONS
         // =================================================================
