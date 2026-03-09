@@ -5,19 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart | Organic HypoSolutions</title>
     <meta name="description" content="Complete your order of premium USDA Certified Organic and EPA registered hypochlorous acid products. Professional disinfectant supplies and organic cleaning solutions from Utah's trusted sanitization company.">
-    <meta name="keywords" content="organic cleaning product cart, professional disinfectant ordering, bulk sanitizer purchasing, subscription cleaning products, Utah cleaning supply order">
-    <meta name="author" content="Organic HypoSolutions">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://organichyposolutions.com/shop/cart.html">
-    <meta name="geo.region" content="US-UT">
-    <meta name="business.phone" content="+1-801-712-5663">
-    <meta name="business.email" content="OHS@OrganicHypoSolutions.com">
-
     <meta property="og:title" content="Shopping Cart | Organic HypoSolutions">
     <meta property="og:description" content="Review your USDA Organic and EPA registered hypochlorous acid products before checkout.">
     <meta property="og:url" content="https://organichyposolutions.com/shop/cart.html">
     <meta property="og:type" content="website">
-
     <link rel="icon" type="image/png" href="../assets/images/logos/ohs-organic-logo.png">
 
     <!-- CSS — exact required load order (subdirectory: ../ prefix) -->
@@ -27,7 +20,10 @@
     <link rel="stylesheet" href="../assets/css/components.css">
     <link rel="stylesheet" href="../assets/css/pages.css">
 
-    <!-- Product catalog always loads early -->
+    <!--
+        product-catalog.js MUST load in <head> before everything else.
+        cart.js checks window.PRODUCT_CATALOG at init time.
+    -->
     <script src="js/product-catalog.js"></script>
 
     <!-- Google Analytics -->
@@ -41,15 +37,10 @@
 </head>
 <body class="page-cart">
 
-    <!-- Nav loaded dynamically by global-scripts.js -->
     <div id="nav-placeholder"></div>
-
-    <!-- Notification container (used by cart.js) -->
     <div id="notificationContainer"></div>
 
-    <!-- ================================================================
-         HERO SECTION
-         ================================================================ -->
+    <!-- HERO -->
     <section class="hero-section">
         <div class="container">
             <div class="row align-items-center">
@@ -61,25 +52,23 @@
                         <span class="cert-badge"><i class="fas fa-shield-alt me-1"></i>EPA Registered</span>
                         <span class="cert-badge"><i class="fas fa-box-open me-1"></i>Wholesale Pricing</span>
                     </div>
-                    <div class="patent-badge mt-3">
+                    <div class="patent-badge mt-3 d-inline-block">
                         <i class="fas fa-star me-1"></i>World's Only Organic Hypochlorous Solution — Patent Pending
                     </div>
                 </div>
                 <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-                    <h3 class="mb-1" id="heroCartTotal">$0.00</h3>
+                    <h3 class="mb-1 text-white" id="heroCartTotal">$0.00</h3>
                     <small class="text-white-50">Cart Total</small>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ================================================================
-         MAIN CART CONTENT
-         ================================================================ -->
+    <!-- MAIN CONTENT -->
     <div class="container py-4">
         <div class="cart-container">
 
-            <!-- Loading state -->
+            <!-- Loading -->
             <div id="cartLoading" class="text-center py-5">
                 <div class="spinner-border text-primary mb-3" role="status">
                     <span class="visually-hidden">Loading…</span>
@@ -88,18 +77,18 @@
                 <p class="text-muted">Please wait while we load your products.</p>
             </div>
 
-            <!-- Cart content -->
+            <!-- Content -->
             <div id="cartContent" style="display:none;">
+
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h3 class="mb-0">
                         <i class="fas fa-shopping-cart me-2 text-primary"></i>Cart Items
                     </h3>
-                    <button class="btn btn-outline-danger btn-sm" onclick="handleClearCart()" id="clearCartBtn">
+                    <button class="btn btn-outline-danger btn-sm" onclick="handleClearCart()">
                         <i class="fas fa-trash me-1"></i>Clear Cart
                     </button>
                 </div>
 
-                <!-- EPA state warning -->
                 <div id="epaWarning" class="epa-warning" style="display:none;">
                     <i class="fas fa-exclamation-triangle"></i>
                     <div class="epa-warning-text">
@@ -108,10 +97,8 @@
                     </div>
                 </div>
 
-                <!-- Cart items rendered by JS -->
                 <div id="cartItems"></div>
 
-                <!-- Empty cart -->
                 <div id="emptyCartMessage" class="empty-cart text-center py-5" style="display:none;">
                     <i class="fas fa-shopping-cart fa-4x mb-3 text-muted" style="opacity:.3;"></i>
                     <h4 class="mt-3 mb-3">Your cart is empty</h4>
@@ -121,15 +108,13 @@
                     </a>
                 </div>
 
-                <!-- Wholesale tip -->
                 <div class="wholesale-tip" id="wholesaleTip" style="display:none;">
                     <i class="fas fa-info-circle"></i>
                     <div class="wholesale-tip-text">
-                        <strong>Wholesale Tip:</strong> Products offer wholesale pricing at specific quantity thresholds! Look for progress bars showing how close you are to unlocking savings.
+                        <strong>Wholesale Tip:</strong> Products offer wholesale pricing at specific quantity thresholds. Look for progress bars showing how close you are to unlocking savings.
                     </div>
                 </div>
 
-                <!-- Order summary -->
                 <div class="order-summary-bottom" id="cartSummary" style="display:none;">
                     <h4 class="text-center mb-3">Order Summary</h4>
                     <div class="summary-grid">
@@ -158,14 +143,15 @@
                         <i class="fas fa-lock me-2"></i>SECURE CHECKOUT
                     </button>
                 </div>
-            </div>
 
-            <!-- Error state -->
+            </div><!-- /cartContent -->
+
+            <!-- Error -->
             <div id="cartError" class="text-center py-5" style="display:none;">
                 <i class="fas fa-exclamation-triangle fa-3x mb-3 text-danger"></i>
                 <h4 class="mt-3 mb-3">Cart Loading Error</h4>
                 <p class="text-muted mb-4">There was an error loading your cart. Please try refreshing the page.</p>
-                <div class="d-flex gap-3 justify-content-center">
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
                     <button class="btn btn-primary" onclick="window.location.reload()">
                         <i class="fas fa-refresh me-2"></i>Refresh Page
                     </button>
@@ -178,326 +164,297 @@
         </div>
     </div>
 
-    <!-- Footer loaded dynamically by global-scripts.js -->
     <div id="footer-placeholder"></div>
 
-    <!-- ================================================================
-         SCRIPTS — exact required load order (subdirectory: ../ prefix)
-         ================================================================ -->
+    <!--
+        SCRIPT LOAD ORDER — order matters, do not rearrange:
+          1. product-catalog.js  (already in <head>)
+          2. Bootstrap JS
+          3. cart.js             (depends on product-catalog.js)
+          4. shopify-client.js   (depends on product-catalog.js; cart.js calls window.proceedToCheckout which comes from here)
+          5. global-scripts.js   (nav/footer loader; must come after Bootstrap)
+          6. analytics.js
+          7. inline page script  (depends on all of the above)
+
+        All paths use ../ because this page lives in shop/ subdirectory.
+    -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../assets/js/global-scripts.js"></script>
-    <script src="../assets/js/analytics.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/shopify-client.js"></script>
+    <script src="../assets/js/global-scripts.js"></script>
+    <script src="../assets/js/analytics.js"></script>
 
-    <!-- ================================================================
-         PAGE-SPECIFIC JAVASCRIPT
-         ================================================================ -->
     <script>
-        let mobileQuantityTimer = null;
+        'use strict';
 
-        // ================================================================
-        // STATE — delegates to global showStateModal in global-scripts.js
-        // updateNavStateDisplay is also handled globally; kept here for
-        // any cart-specific state-change reaction (EPA warning etc.)
-        // ================================================================
-        function initStateSelector() {
-            // Show modal if no state saved (uses global showStateModal)
-            if (window.shouldShowStateSelector && window.shouldShowStateSelector()) {
-                if (window.showStateModal) window.showStateModal();
-            } else if (!localStorage.getItem('ohsUserState')) {
-                if (window.showStateModal) window.showStateModal();
-            }
-        }
+        var mobileQtyTimer = null;
 
-        // ================================================================
+        // ============================================================
         // CART DISPLAY
-        // ================================================================
+        // ============================================================
         function updateCartDisplay() {
             try {
-                const cartItems = window.getCartItems();
-                const cartContainer      = document.getElementById('cartItems');
-                const emptyCartMessage   = document.getElementById('emptyCartMessage');
-                const cartSummary        = document.getElementById('cartSummary');
-                const wholesaleTip       = document.getElementById('wholesaleTip');
-                const epaWarning         = document.getElementById('epaWarning');
+                var items       = window.getCartItems();
+                var container   = document.getElementById('cartItems');
+                var emptyMsg    = document.getElementById('emptyCartMessage');
+                var summary     = document.getElementById('cartSummary');
+                var tip         = document.getElementById('wholesaleTip');
+                var epaWarn     = document.getElementById('epaWarning');
 
-                const userState = localStorage.getItem('ohsUserState');
-                const hasEpaProducts = cartItems.some(item => {
-                    const product = window.findProduct(item.productId);
-                    return product && product.type === 'epa-usda';
+                // EPA geographic warning
+                var userState    = (window.getUserState ? window.getUserState() : null)
+                                   || localStorage.getItem('ohsUserState');
+                var hasEpa       = items.some(function(item) {
+                    var p = window.findProduct(item.productId);
+                    return p && p.type === 'epa-usda';
                 });
 
-                if (hasEpaProducts && userState && userState !== 'UT') {
-                    epaWarning.style.display = 'flex';
+                if (hasEpa && userState && userState !== 'UT') {
+                    epaWarn.style.display = 'flex';
                     document.getElementById('epaWarningState').textContent =
-                        `Your selected state (${userState}) cannot receive EPA registered products.`;
+                        'Your selected state (' + userState + ') cannot receive EPA registered products.';
                 } else {
-                    epaWarning.style.display = 'none';
+                    epaWarn.style.display = 'none';
                 }
 
-                if (!cartItems || cartItems.length === 0) {
-                    cartContainer.innerHTML = '';
-                    if (emptyCartMessage) emptyCartMessage.style.display = 'block';
-                    if (cartSummary)      cartSummary.style.display      = 'none';
-                    if (wholesaleTip)     wholesaleTip.style.display     = 'none';
-                    updateHeroTotal(0);
+                if (!items || items.length === 0) {
+                    container.innerHTML  = '';
+                    emptyMsg.style.display  = 'block';
+                    summary.style.display   = 'none';
+                    tip.style.display       = 'none';
+                    setHeroTotal(0);
                     return;
                 }
 
-                if (emptyCartMessage) emptyCartMessage.style.display = 'none';
-                if (cartSummary)      cartSummary.style.display      = 'block';
-                if (wholesaleTip)     wholesaleTip.style.display     = 'flex';
+                emptyMsg.style.display  = 'none';
+                summary.style.display   = 'block';
+                tip.style.display       = 'flex';
 
-                let cartHTML = '';
-                let subtotal = 0;
-
-                cartItems.forEach((item, index) => {
-                    const pricingInfo = window.getPricingTier(item.productId, item.quantity, item.isSubscription || false);
-                    subtotal += pricingInfo.price * item.quantity;
-                    cartHTML += createCartItemHTML(item, pricingInfo, index);
+                var html     = '';
+                var subtotal = 0;
+                items.forEach(function(item, idx) {
+                    var pricing = window.getPricingTier(item.productId, item.quantity, item.isSubscription || false);
+                    subtotal += pricing.price * item.quantity;
+                    html += buildItemHTML(item, pricing, idx);
                 });
+                container.innerHTML = html;
 
-                cartContainer.innerHTML = cartHTML;
+                var savings = window.getCartWholesaleSavings ? window.getCartWholesaleSavings() : 0;
+                setSummary(subtotal, savings);
+                setHeroTotal(subtotal);
 
-                const totalSavings = window.getCartWholesaleSavings ? window.getCartWholesaleSavings() : 0;
-                updateCartSummary(subtotal, totalSavings);
-                updateHeroTotal(subtotal);
-
-            } catch (error) {
-                console.error('Error updating cart display:', error);
+            } catch (err) {
+                console.error('updateCartDisplay error:', err);
             }
         }
 
-        function createCartItemHTML(item, pricingInfo, index) {
-            const product       = window.findProduct(item.productId);
-            const threshold     = product?.wholesaleThreshold || 25;
-            const moreNeeded    = Math.max(0, threshold - item.quantity);
-            const progress      = Math.min(100, (item.quantity / threshold) * 100);
-            const retailPrice   = product?.pricing?.retail || item.price;
-            const wholesalePrice= product?.pricing?.wholesale || item.price;
-            const savingsPct    = product?.pricing
-                ? Math.round(((retailPrice - wholesalePrice) / retailPrice) * 100)
-                : 0;
-            const itemSavings   = pricingInfo.isWholesale
-                ? (retailPrice - wholesalePrice) * item.quantity
-                : 0;
-            const isEpa         = product?.type === 'epa-usda';
-            const badgeClass    = isEpa ? 'bg-warning text-dark' : 'bg-success';
-            const badgeText     = isEpa ? 'EPA + USDA' : 'USDA Organic';
+        function buildItemHTML(item, pricing, idx) {
+            var product    = window.findProduct(item.productId);
+            var threshold  = (product && product.wholesaleThreshold) || 25;
+            var moreNeeded = Math.max(0, threshold - item.quantity);
+            var progress   = Math.min(100, (item.quantity / threshold) * 100);
+            var retail     = (product && product.pricing && product.pricing.retail)   || item.price;
+            var wholesale  = (product && product.pricing && product.pricing.wholesale) || item.price;
+            var pct        = product && product.pricing
+                             ? Math.round(((retail - wholesale) / retail) * 100) : 0;
+            var itemSave   = pricing.isWholesale ? (retail - wholesale) * item.quantity : 0;
+            var isEpa      = product && product.type === 'epa-usda';
+            var badgeCls   = isEpa ? 'bg-warning text-dark' : 'bg-success';
+            var badgeTxt   = isEpa ? 'EPA + USDA' : 'USDA Organic';
+            var imgSrc     = (product && product.image) ? ('../' + product.image) : '';
+            var fallback   = item.emoji || (isEpa ? '🧴' : '🌿');
 
-            // Image: prepend ../ since we're in shop/ subdirectory
-            const imgSrc = product?.image ? `../${product.image}` : '';
-            const imgFallback = item.emoji || (isEpa ? '🧴' : '🌿');
+            return '<div class="cart-item" data-product-id="' + item.productId + '" data-index="' + idx + '">' +
+                '<div class="row align-items-center g-2">' +
 
-            return `
-                <div class="cart-item" data-product-id="${item.productId}" data-index="${index}">
-                    <div class="row align-items-center">
-                        <div class="col-md-2 col-4 text-center mb-3 mb-md-0">
-                            <div class="product-image ${isEpa ? 'epa' : 'organic'} mx-auto">
-                                ${imgSrc
-                                    ? `<img src="${imgSrc}" alt="${item.name}"
-                                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                       <span style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:2.5rem;">${imgFallback}</span>`
-                                    : `<span style="font-size:2.5rem;">${imgFallback}</span>`
-                                }
-                            </div>
-                        </div>
+                  '<div class="col-md-2 col-4 text-center">' +
+                    '<div class="product-image ' + (isEpa ? 'epa' : 'organic') + ' mx-auto">' +
+                      (imgSrc
+                        ? '<img src="' + imgSrc + '" alt="' + item.name + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';">' +
+                          '<span style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:2.5rem;">' + fallback + '</span>'
+                        : '<span style="font-size:2.5rem;">' + fallback + '</span>') +
+                    '</div>' +
+                  '</div>' +
 
-                        <div class="col-md-4 col-8 mb-3 mb-md-0">
-                            <h6 class="fw-bold mb-1">${item.name || 'Unknown Product'}</h6>
-                            <span class="badge ${badgeClass} mb-2">${badgeText}</span>
-                            ${pricingInfo.isWholesale ? `
-                                <div class="mt-2">
-                                    <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Wholesale Active!</span>
-                                    <small class="text-success d-block mt-1">
-                                        <strong>Saving ${savingsPct}% per item ($${itemSavings.toFixed(2)} total)</strong>
-                                    </small>
-                                </div>
-                            ` : `
-                                <div class="mt-2">
-                                    <small class="text-muted d-block">
-                                        <i class="fas fa-info-circle me-1"></i>Add ${moreNeeded} more for wholesale pricing
-                                    </small>
-                                    <div class="wholesale-progress mt-1">
-                                        <div class="wholesale-progress-bar pending" style="width:${progress}%;"></div>
-                                    </div>
-                                    <small class="text-muted">
-                                        Save ${savingsPct}% at $${wholesalePrice.toFixed(2)} each (${threshold}+ units)
-                                    </small>
-                                </div>
-                            `}
-                            ${item.isSubscription
-                                ? `<div class="mt-1"><span class="badge bg-primary"><i class="fas fa-sync-alt me-1"></i>Subscribe &amp; Save</span></div>`
-                                : ''
-                            }
-                        </div>
+                  '<div class="col-md-4 col-8">' +
+                    '<h6 class="fw-bold mb-1">' + (item.name || 'Unknown Product') + '</h6>' +
+                    '<span class="badge ' + badgeCls + ' mb-2">' + badgeTxt + '</span>' +
+                    (item.isSubscription ? '<div class="mb-1"><span class="badge bg-primary"><i class="fas fa-sync-alt me-1"></i>Subscribe &amp; Save</span></div>' : '') +
+                    (pricing.isWholesale
+                      ? '<div><span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Wholesale Active!</span>' +
+                        '<small class="text-success d-block mt-1"><strong>Saving ' + pct + '% per item ($' + itemSave.toFixed(2) + ' total)</strong></small></div>'
+                      : '<div><small class="text-muted d-block"><i class="fas fa-info-circle me-1"></i>Add ' + moreNeeded + ' more for wholesale pricing</small>' +
+                        '<div class="wholesale-progress mt-1"><div class="wholesale-progress-bar pending" style="width:' + progress + '%;"></div></div>' +
+                        '<small class="text-muted">Save ' + pct + '% at $' + wholesale.toFixed(2) + ' each (' + threshold + '+ units)</small></div>') +
+                  '</div>' +
 
-                        <div class="col-md-3 col-6 mb-3 mb-md-0">
-                            <div class="quantity-controls">
-                                <button class="quantity-btn" onclick="handleQuantityChange(${index}, -1)"
-                                        ${item.quantity <= 1 ? 'disabled' : ''}>
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                                <input type="number" class="quantity-input"
-                                       value="${item.quantity}" min="1" max="999"
-                                       onchange="handleSetQuantity(${index}, this.value)"
-                                       oninput="handleMobileQuantityInput(${index}, this.value)">
-                                <button class="quantity-btn" onclick="handleQuantityChange(${index}, 1)">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
+                  '<div class="col-md-3 col-6">' +
+                    '<div class="quantity-controls">' +
+                      '<button class="quantity-btn" onclick="handleQtyChange(' + idx + ',-1)"' + (item.quantity <= 1 ? ' disabled' : '') + '><i class="fas fa-minus"></i></button>' +
+                      '<input type="number" class="quantity-input" value="' + item.quantity + '" min="1" max="999" onchange="handleSetQty(' + idx + ',this.value)" oninput="handleMobileQty(' + idx + ',this.value)">' +
+                      '<button class="quantity-btn" onclick="handleQtyChange(' + idx + ',1)"><i class="fas fa-plus"></i></button>' +
+                    '</div>' +
+                  '</div>' +
 
-                        <div class="col-md-2 col-4 text-center mb-3 mb-md-0">
-                            <div class="price-display">
-                                $${pricingInfo.price.toFixed(2)}
-                                ${pricingInfo.isWholesale && retailPrice !== pricingInfo.price
-                                    ? `<span class="original-price">$${retailPrice.toFixed(2)}</span>`
-                                    : ''
-                                }
-                            </div>
-                            <small class="text-muted">each</small>
-                            ${pricingInfo.isWholesale
-                                ? `<div class="mt-1"><span class="savings-badge">-${savingsPct}%</span></div>`
-                                : ''
-                            }
-                        </div>
+                  '<div class="col-md-2 col-4 text-center">' +
+                    '<div class="price-display">$' + pricing.price.toFixed(2) +
+                      (pricing.isWholesale && retail !== pricing.price
+                        ? '<span class="original-price">$' + retail.toFixed(2) + '</span>' : '') +
+                    '</div>' +
+                    '<small class="text-muted">each</small>' +
+                    (pricing.isWholesale ? '<div class="mt-1"><span class="savings-badge">-' + pct + '%</span></div>' : '') +
+                  '</div>' +
 
-                        <div class="col-md-1 col-2 text-center">
-                            <button class="btn btn-sm btn-outline-danger" onclick="handleRemoveItem(${index})"
-                                    title="Remove item">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
+                  '<div class="col-md-1 col-2 text-center">' +
+                    '<button class="btn btn-sm btn-outline-danger" onclick="handleRemove(' + idx + ')" title="Remove item"><i class="fas fa-trash"></i></button>' +
+                  '</div>' +
+
+                '</div></div>';
         }
 
-        function updateCartSummary(subtotal, totalSavings) {
-            const subtotalEl = document.getElementById('cartSubtotal');
-            const savingsEl  = document.getElementById('wholesaleSavingsAmount');
-            if (subtotalEl) subtotalEl.textContent = '$' + subtotal.toFixed(2);
-            if (savingsEl) {
-                savingsEl.textContent    = totalSavings > 0 ? '$' + totalSavings.toFixed(2) : '$0.00';
-                savingsEl.style.color    = totalSavings > 0 ? '#22C55E' : 'rgba(255,255,255,0.7)';
+        function setSummary(subtotal, savings) {
+            var el = document.getElementById('cartSubtotal');
+            var se = document.getElementById('wholesaleSavingsAmount');
+            if (el) el.textContent = '$' + subtotal.toFixed(2);
+            if (se) {
+                se.textContent = savings > 0 ? '$' + savings.toFixed(2) : '$0.00';
+                se.style.color = savings > 0 ? '#22C55E' : 'rgba(255,255,255,0.7)';
             }
         }
 
-        function updateHeroTotal(total) {
-            const el = document.getElementById('heroCartTotal');
+        function setHeroTotal(total) {
+            var el = document.getElementById('heroCartTotal');
             if (el) el.textContent = '$' + total.toFixed(2);
         }
 
-        // ================================================================
+        // ============================================================
         // QUANTITY HANDLERS
-        // ================================================================
-        function handleQuantityChange(index, change) {
-            const cartItems = window.getCartItems();
-            if (!cartItems[index]) return;
-            const newQty = Math.max(1, cartItems[index].quantity + change);
-            window.updateCartItemQuantity(cartItems[index].productId, newQty);
+        // ============================================================
+        function handleQtyChange(idx, delta) {
+            var items = window.getCartItems();
+            if (!items[idx]) return;
+            window.updateCartItemQuantity(items[idx].productId, Math.max(1, items[idx].quantity + delta));
             updateCartDisplay();
         }
 
-        function handleSetQuantity(index, value) {
-            const cartItems = window.getCartItems();
-            if (!cartItems[index]) return;
-            const newQty = Math.max(1, Math.min(999, parseInt(value) || 1));
-            window.updateCartItemQuantity(cartItems[index].productId, newQty);
+        function handleSetQty(idx, val) {
+            var items = window.getCartItems();
+            if (!items[idx]) return;
+            window.updateCartItemQuantity(items[idx].productId, Math.max(1, Math.min(999, parseInt(val) || 1)));
             updateCartDisplay();
         }
 
-        function handleMobileQuantityInput(index, value) {
-            if (mobileQuantityTimer) clearTimeout(mobileQuantityTimer);
-            mobileQuantityTimer = setTimeout(() => handleSetQuantity(index, value), 800);
+        function handleMobileQty(idx, val) {
+            if (mobileQtyTimer) clearTimeout(mobileQtyTimer);
+            mobileQtyTimer = setTimeout(function() { handleSetQty(idx, val); }, 800);
         }
 
-        function handleRemoveItem(index) {
-            const cartItems = window.getCartItems();
-            if (cartItems[index] && confirm('Remove this item from cart?')) {
-                window.removeFromCart(cartItems[index].productId);
+        function handleRemove(idx) {
+            var items = window.getCartItems();
+            if (items[idx] && confirm('Remove this item from your cart?')) {
+                window.removeFromCart(items[idx].productId);
                 updateCartDisplay();
             }
         }
 
         function handleClearCart() {
-            const cartItems = window.getCartItems();
-            if (cartItems.length === 0) {
+            var items = window.getCartItems();
+            if (items.length === 0) {
                 if (window.showNotification) window.showNotification('Cart is already empty', 'warning');
                 return;
             }
-            if (confirm(`Clear all ${cartItems.length} item(s) from cart?`)) {
+            if (confirm('Clear all ' + items.length + ' item(s) from cart?')) {
                 window.clearCart();
                 updateCartDisplay();
             }
         }
 
-        // ================================================================
+        // ============================================================
         // CHECKOUT
-        // ================================================================
+        // ============================================================
         function handleCheckout() {
-            const btn = document.getElementById('checkoutBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Preparing checkout…';
-            setTimeout(() => {
-                window.proceedToCheckout();
-                btn.disabled = false;
+            var btn = document.getElementById('checkoutBtn');
+            if (!btn) return;
+            btn.disabled   = true;
+            btn.innerHTML  = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Preparing checkout…';
+            setTimeout(function() {
+                if (window.proceedToCheckout) {
+                    window.proceedToCheckout();
+                } else if (window.showNotification) {
+                    window.showNotification('Checkout unavailable. Please try again.', 'error');
+                }
+                btn.disabled  = false;
                 btn.innerHTML = '<i class="fas fa-lock me-2"></i>SECURE CHECKOUT';
             }, 500);
         }
 
-        // ================================================================
+        // ============================================================
         // INITIALIZE
-        // ================================================================
-        document.addEventListener('DOMContentLoaded', async function () {
-            console.log('🚀 Initializing OHS Cart Page…');
+        //
+        // cart.js registers its OWN DOMContentLoaded listener (or runs
+        // immediately if DOM is already loaded). Because cart.js <script>
+        // tag appears before this inline block in the HTML, its listener
+        // is registered first and fires first — so window.getCartItems
+        // will exist by the time our listener runs.
+        //
+        // We still add a polling fallback for safety.
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Cart page DOMContentLoaded');
 
-            try {
-                const cartLoading = document.getElementById('cartLoading');
-                const cartContent = document.getElementById('cartContent');
+            var loading = document.getElementById('cartLoading');
+            var content = document.getElementById('cartContent');
+            var error   = document.getElementById('cartError');
 
-                if (cartLoading) cartLoading.style.display = 'block';
-                if (cartContent) cartContent.style.display = 'none';
+            function showError(msg) {
+                console.error('❌', msg);
+                if (loading) loading.style.display = 'none';
+                if (error)   error.style.display   = 'block';
+            }
 
-                // State selector (global showStateModal handles UI)
-                initStateSelector();
-
-                if (!window.PRODUCT_CATALOG) throw new Error('Product catalog not loaded');
-
-                // Small delay for cart.js to finish initializing
-                await new Promise(resolve => setTimeout(resolve, 100));
-
-                if (cartLoading) cartLoading.style.display = 'none';
-                if (cartContent) cartContent.style.display = 'block';
+            function showCart() {
+                if (loading) loading.style.display = 'none';
+                if (content) content.style.display = 'block';
 
                 updateCartDisplay();
 
-                // Listen for cart and state changes
                 window.addEventListener('cartUpdated',  updateCartDisplay);
                 window.addEventListener('stateChanged', updateCartDisplay);
-
-                // Cross-tab cart sync
-                window.addEventListener('storage', function (e) {
-                    if (e.key === 'ohsCart')      updateCartDisplay();
-                    if (e.key === 'ohsUserState') updateCartDisplay();
+                window.addEventListener('storage', function(e) {
+                    if (e.key === 'ohsCart' || e.key === 'ohsUserState') updateCartDisplay();
                 });
 
-                // GA4
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'page_view', {
-                        page_title: 'Cart',
-                        page_location: window.location.href
-                    });
+                // Prompt state selection if not yet set
+                if (!localStorage.getItem('ohsUserState') && !document.cookie.includes('ohs_user_state')) {
+                    if (window.showStateModal) window.showStateModal();
                 }
 
-                console.log('✅ Cart page initialized');
+                console.log('✅ Cart ready —', window.getCartItems().length, 'item(s)');
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'page_view', { page_title: 'Cart', page_location: window.location.href });
+                }
+            }
 
-            } catch (error) {
-                console.error('❌ Cart init error:', error);
-                document.getElementById('cartLoading').style.display = 'none';
-                document.getElementById('cartError').style.display   = 'block';
+            if (!window.PRODUCT_CATALOG) {
+                showError('product-catalog.js not loaded');
+                return;
+            }
+
+            if (typeof window.getCartItems === 'function') {
+                showCart();
+            } else {
+                // Poll up to 2s for cart.js to finish init
+                var tries = 0;
+                var poll  = setInterval(function() {
+                    tries++;
+                    if (typeof window.getCartItems === 'function') {
+                        clearInterval(poll);
+                        showCart();
+                    } else if (tries >= 20) {
+                        clearInterval(poll);
+                        showError('cart.js did not initialize within 2s');
+                    }
+                }, 100);
             }
         });
     </script>
