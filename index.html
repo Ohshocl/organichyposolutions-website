@@ -993,11 +993,13 @@
             var tooltipSource = card.querySelector('.tooltip-content');
             if (!tooltipSource) return;
 
-            // Create dark backdrop
-            activeTooltipBackdrop = document.createElement('div');
-            activeTooltipBackdrop.className = 'ohs-tooltip-backdrop';
-            activeTooltipBackdrop.addEventListener('click', dismissTooltipPortal);
-            document.body.appendChild(activeTooltipBackdrop);
+            // Create dark backdrop (mobile only — desktop doesn't need it)
+            if (window.innerWidth <= 768) {
+                activeTooltipBackdrop = document.createElement('div');
+                activeTooltipBackdrop.className = 'ohs-tooltip-backdrop';
+                activeTooltipBackdrop.addEventListener('click', dismissTooltipPortal);
+                document.body.appendChild(activeTooltipBackdrop);
+            }
 
             // Create portal tooltip directly on <body> — escapes ALL parent clipping
             activeTooltipPortal = document.createElement('div');
