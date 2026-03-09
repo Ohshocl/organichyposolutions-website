@@ -26,7 +26,7 @@
      .page-salesguide    salesguide.html
      .page-cart          shop/cart.html
 
-   Last Updated: March 6 2026
+   Last Updated: March 9, 2026
    ========================================================================== */
 
 
@@ -147,7 +147,7 @@
     border: none;
 }
 
-/* --- Quick-add widget --- */
+/* --- Quick-add widget container --- */
 .page-home .quick-add-widget {
     background: rgba(255,255,255,0.08);
     backdrop-filter: blur(10px);
@@ -173,48 +173,94 @@
 .page-home .quick-products {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 15px;
+    gap: 12px;
 }
 
+/* --- Quick-add product cards (UPDATED: cleaner layout) --- */
 .page-home .quick-product-card {
     background: rgba(255,255,255,0.1);
-    border-radius: 15px;
-    padding: 15px;
+    border-radius: 12px;
+    padding: 14px 16px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
+    gap: 16px;
     transition: all 0.3s ease;
 }
 
 .page-home .quick-product-card:hover {
     background: rgba(255,255,255,0.15);
-    transform: translateX(5px);
 }
 
-.page-home .product-info { flex: 1; }
+.page-home .product-info {
+    flex: 1;
+    min-width: 0;
+}
 
 .page-home .product-name {
     font-weight: 600;
     font-size: 0.95rem;
-    margin-bottom: 4px;
+    line-height: 1.3;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* Inventory badge: inline with product name */
+.page-home .quick-product-card .inventory-badge {
+    display: inline-block;
+    font-size: 0.6rem;
+    padding: 1px 6px;
+    border-radius: 6px;
+    font-weight: 600;
+    white-space: nowrap;
+    vertical-align: middle;
+    line-height: 1.4;
 }
 
 .page-home .product-price {
     color: var(--ohs-accent-blue);
     font-size: 1.1rem;
     font-weight: bold;
-}
-
-.page-home .product-controls {
+    margin-top: 2px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+/* Subscribe toggle: compact single line */
+.page-home .quick-product-card .subscribe-toggle {
+    margin-top: 4px;
+}
+
+.page-home .quick-product-card .subscribe-toggle label {
+    font-size: 0.72rem !important;
+    opacity: 0.85;
+    gap: 4px !important;
+}
+
+/* Wholesale hint: compact */
+.page-home .quick-product-card [id^="qa-w-"] {
+    font-size: 0.68rem !important;
+    margin-top: 2px !important;
+    line-height: 1.3;
+}
+
+/* Controls: stack quantity + button vertically, aligned right */
+.page-home .product-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    flex-shrink: 0;
 }
 
 .page-home .qty-control {
     display: flex;
     align-items: center;
-    background: rgba(0,0,0,0.2);
+    background: rgba(0,0,0,0.25);
     border-radius: 20px;
     padding: 2px;
 }
@@ -232,6 +278,7 @@
     justify-content: center;
     transition: all 0.2s ease;
     font-weight: bold;
+    font-size: 0.9rem;
 }
 
 .page-home .qty-btn:hover:not(:disabled) {
@@ -244,19 +291,20 @@
 }
 
 .page-home .qty-display {
-    min-width: 30px;
+    min-width: 28px;
     text-align: center;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 0.9rem;
 }
 
 .page-home .add-btn {
     background: linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green));
     border: none;
     color: white;
-    padding: 8px 20px;
-    border-radius: 20px;
+    padding: 6px 16px;
+    border-radius: 18px;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     cursor: pointer;
     transition: all 0.3s ease;
     white-space: nowrap;
@@ -264,7 +312,13 @@
 
 .page-home .add-btn:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3);
+    box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3);
+}
+
+.page-home .add-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
 }
 
 .page-home .add-btn.loading {
@@ -306,7 +360,8 @@
     z-index: auto;
 }
 
-.page-home .stat-card:hover {
+.page-home .stat-card:hover,
+.page-home .stat-card.active {
     background: rgba(255,255,255,0.15);
     transform: scale(1.05);
     z-index: 10600;
@@ -325,29 +380,59 @@
 .page-home .stat-value { font-size: 1.8rem; font-weight: 800; margin-bottom: 5px; }
 .page-home .stat-label { font-size: 0.9rem; opacity: 0.9; }
 
-/* --- Tooltip system --- */
+/* --- Tooltip system (FIXED: solid dark bg, proper z-index) --- */
 .page-home .tooltip-content {
-    position: fixed;
-    top: 150px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.95);
+    background: rgba(15, 23, 42, 0.97);
     color: white;
     padding: 20px;
     border-radius: 12px;
-    min-width: 280px;
-    max-width: 90vw;
-    z-index: 10500;
+    min-width: 300px;
+    max-width: 380px;
+    z-index: 10700;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
     font-size: 0.9em;
     text-align: left;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(125, 211, 252, 0.3);
     pointer-events: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
 }
 
+/* Desktop: position above card */
+@media (min-width: 769px) {
+    .page-home .tooltip-content {
+        position: absolute;
+        bottom: calc(100% + 12px);
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .page-home .tooltip-content::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 8px solid transparent;
+        border-top-color: rgba(15, 23, 42, 0.97);
+    }
+}
+
+/* Mobile: centered overlay */
+@media (max-width: 768px) {
+    .page-home .tooltip-content {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 85vw;
+        max-width: 360px;
+    }
+}
+
+/* Show tooltip on active (hover on desktop, click on mobile) */
 .page-home .stat-card.active .tooltip-content {
     opacity: 1;
     visibility: visible;
@@ -355,18 +440,20 @@
 }
 
 .page-home .tooltip-title {
-    font-weight: bold;
+    font-weight: 700;
     margin-bottom: 12px;
     color: var(--ohs-accent-blue);
-    font-size: 1.1em;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
+    font-size: 1.05rem;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
     padding-bottom: 8px;
 }
 
 .page-home .tooltip-fact {
     margin-bottom: 8px;
-    padding-left: 16px;
+    padding-left: 22px;
     position: relative;
+    line-height: 1.4;
+    font-size: 0.88rem;
 }
 
 .page-home .tooltip-fact::before {
@@ -377,11 +464,11 @@
 }
 
 .page-home .tooltip-reference {
-    font-size: 0.8em;
-    color: #ccc;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
     font-style: italic;
     margin-top: 12px;
-    border-top: 1px solid #444;
+    border-top: 1px solid rgba(255,255,255,0.1);
     padding-top: 8px;
 }
 
@@ -419,6 +506,91 @@
     color: var(--ohs-organic-green);
     font-size: 1.5rem;
     margin-right: 10px;
+}
+
+/* --- Floating cart button --- */
+.page-home .floating-cart {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--ohs-primary-blue), var(--ohs-accent-blue));
+    color: white;
+    border: none;
+    box-shadow: 0 8px 25px rgba(46, 94, 170, 0.4);
+    z-index: 1030;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.page-home .floating-cart:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 35px rgba(46, 94, 170, 0.5);
+}
+
+.page-home .floating-cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ef4444;
+    color: white;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 700;
+    min-width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- Cart preview slide panel --- */
+.page-home .cart-preview {
+    position: fixed;
+    top: 100px;
+    right: -420px;
+    width: 400px;
+    max-height: 80vh;
+    background: white;
+    border-radius: 1rem 0 0 1rem;
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
+    padding: 1.5rem;
+    z-index: 1050;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+    border: 2px solid var(--ohs-primary-blue);
+    border-right: none;
+}
+
+.page-home .cart-preview.show { right: 0; }
+
+.page-home .cart-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1040;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.page-home .cart-overlay.show { opacity: 1; visibility: visible; }
+
+.page-home .cart-title {
+    color: var(--ohs-primary-blue);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.page-home .cart-summary-inline {
+    border-top: 2px solid #e2e8f0;
+    padding-top: 1rem;
+    margin-top: 0.5rem;
 }
 
 /* --- Service detail cards (homepage preview) --- */
@@ -659,6 +831,7 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
     border-left: 4px solid var(--ohs-premium-gold);
 }
+
 
 /* ==========================================================================
    SERVICES PAGE (.page-services)
@@ -1790,6 +1963,9 @@
     .page-home .btn-hero { width: 100%; justify-content: center; }
     .page-home .quick-products { grid-template-columns: 1fr; }
     .page-home .product-line-card { padding: 24px; }
+    .page-home .floating-cart { display: none !important; }
+    .page-home .cart-preview { width: calc(100vw - 20px); right: -100vw; top: 80px; }
+    .page-home .cart-preview.show { right: 10px; }
 
     /* Services */
     .page-services .hero-section { padding: 3rem 0; }
@@ -1826,35 +2002,9 @@
     /* Home */
     .page-home .stats-grid { grid-template-columns: 1fr; }
 
-    /* Home tooltip mobile */
-    .page-home .tooltip-content {
-        position: fixed;
-        bottom: auto !important;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 85vw;
-        max-width: 350px;
-    }
-
-    .page-home .tooltip-content::before {
-        content: '✕';
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        font-size: 20px;
-        cursor: pointer;
-        color: #fff;
-        z-index: 1001;
-    }
-
-    /* Desktop tooltip on hover */
-    @media (min-width: 769px) {
-        .page-home .stat-card:hover .tooltip-content {
-            opacity: 1;
-            visibility: visible;
-        }
-    }
+    /* Quick-add: stack vertically on small screens */
+    .page-home .quick-product-card { flex-direction: column; gap: 10px; }
+    .page-home .product-controls { flex-direction: row; align-items: center; width: 100%; justify-content: space-between; }
 
     /* About */
     .page-about .timeline::before { left: 20px; }
@@ -1919,7 +2069,10 @@
     .page-calculator .calculator-actions,
     .page-cart .cart-summary,
     .page-cart .quantity-controls,
-    .page-cart .cart-remove-btn {
+    .page-cart .cart-remove-btn,
+    .page-home .floating-cart,
+    .page-home .cart-preview,
+    .page-home .cart-overlay {
         display: none !important;
     }
 
