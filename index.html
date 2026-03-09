@@ -66,6 +66,43 @@
     <!-- Overlay for mobile tooltips -->
     <div class="tooltip-overlay" id="tooltipOverlay"></div>
 
+    <!-- ============================================================ -->
+    <!-- [NEW] STATE SELECTOR MODAL                                   -->
+    <!-- ============================================================ -->
+    <div class="state-modal" id="stateModal">
+        <div class="state-modal-content">
+            <div class="state-modal-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <h3>Welcome to Organic HypoSolutions!</h3>
+            <p>Please select your shipping state to see available products and accurate pricing.</p>
+            <select class="state-select" id="stateSelect"><option value="">-- Select Your State --</option></select>
+            <button class="state-modal-btn" id="confirmStateBtn" disabled><i class="fas fa-check me-2"></i>Confirm Location</button>
+            <div class="state-info"><i class="fas fa-info-circle"></i> <strong>Why do we ask?</strong> Some products (EPA registered disinfectants) are currently only available in Utah due to regulatory requirements. USDA Certified Organic products ship nationwide.</div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- [NEW] FLOATING CART BUTTON + CART PREVIEW PANEL              -->
+    <!-- ============================================================ -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <button class="floating-cart" id="floatingCartBtn" onclick="toggleCartPreview()" style="display:none;">
+        <i class="fas fa-shopping-cart cart-icon"></i>
+        <span class="floating-cart-badge" id="floatingCartBadge">0</span>
+    </button>
+    <div id="cartPreview" class="cart-preview">
+        <div class="cart-header d-flex justify-content-between align-items-center mb-3">
+            <h6 class="cart-title mb-0"><i class="fas fa-shopping-cart me-2"></i>Shopping Cart</h6>
+            <button class="btn-close" onclick="toggleCartPreview()"></button>
+        </div>
+        <div id="cartItemsPreview" class="cart-items">
+            <div class="empty-cart text-center py-4"><i class="fas fa-shopping-cart fa-3x mb-3 text-muted"></i><h6 class="text-muted">Your cart is empty</h6><p class="text-muted small">Add products to get started</p></div>
+        </div>
+        <div id="cartSummary" class="cart-summary-inline" style="display:none;">
+            <div class="d-flex justify-content-between fw-bold mb-2"><span>Subtotal:</span><span id="cartSubtotal">$0.00</span></div>
+            <a href="shop/cart.html" class="btn btn-primary w-100 mb-2"><i class="fas fa-shopping-cart me-1"></i>View Full Cart</a>
+            <button class="btn btn-sm btn-outline-danger w-100" onclick="clearCartLocal()"><i class="fas fa-trash me-1"></i>Clear Cart</button>
+        </div>
+    </div>
+
     <!-- Nav placeholder — loaded dynamically by global-scripts.js -->
     <div id="nav-placeholder"></div>
 
@@ -166,12 +203,12 @@
                                     <div class="stat-value">100%</div>
                                     <div class="stat-label">Safe for Families</div>
                                     <div class="tooltip-content">
-                                        <div class="tooltip-title">100% Family & Pet Safety</div>
+                                        <div class="tooltip-title">100% Family &amp; Pet Safety</div>
                                         <div class="tooltip-fact">pH neutral (6.5-7.5) - gentler than most tap water</div>
                                         <div class="tooltip-fact">No gloves, masks, or respirators required during application</div>
                                         <div class="tooltip-fact">Safe to use around pregnant women, babies, and elderly</div>
                                         <div class="tooltip-fact">Can be used on toys, high chairs, and food surfaces without rinsing</div>
-                                        <div class="tooltip-reference">*FDA Food Contact Notification 1811 & EPA safety classification</div>
+                                        <div class="tooltip-reference">*FDA Food Contact Notification 1811 &amp; EPA safety classification</div>
                                     </div>
                                 </div>
 
@@ -185,7 +222,7 @@
                                         <div class="tooltip-fact">Hospital-grade disinfectant classification without toxic chemicals</div>
                                         <div class="tooltip-fact">Used in food processing plants, hospitals, and schools worldwide</div>
                                         <div class="tooltip-fact">WHO lists hypochlorous acid as an Essential Medicine</div>
-                                        <div class="tooltip-reference">*EPA Registration #97801-1 & USDA Organic Certificate</div>
+                                        <div class="tooltip-reference">*EPA Registration #97801-1 &amp; USDA Organic Certificate</div>
                                     </div>
                                 </div>
 
@@ -199,7 +236,7 @@
                                         <div class="tooltip-fact">No VOCs (Volatile Organic Compounds) or toxic fumes</div>
                                         <div class="tooltip-fact">Leaves no chemical film or sticky residue on surfaces</div>
                                         <div class="tooltip-fact">Environmentally safe - won't harm waterways or soil</div>
-                                        <div class="tooltip-reference">*EPA environmental safety data & biodegradability studies</div>
+                                        <div class="tooltip-reference">*EPA environmental safety data &amp; biodegradability studies</div>
                                     </div>
                                 </div>
                             </div>
@@ -268,7 +305,7 @@
                     <div class="col-lg-6 mb-4">
                         <div class="process-step">
                             <span class="step-number">1</span>
-                            <h5 class="fw-bold mt-3">Comprehensive Assessment & Custom Planning</h5>
+                            <h5 class="fw-bold mt-3">Comprehensive Assessment &amp; Custom Planning</h5>
                             <p>Thorough evaluation of your unique environment to determine optimal sanitization strategy, whether fogging, surface treatment, or specialized protocols for healthcare, food processing, agricultural, or residential needs.</p>
                         </div>
                     </div>
@@ -282,14 +319,14 @@
                     <div class="col-lg-6 mb-4">
                         <div class="process-step">
                             <span class="step-number">3</span>
-                            <h5 class="fw-bold mt-3">Precision Application & Execution</h5>
+                            <h5 class="fw-bold mt-3">Precision Application &amp; Execution</h5>
                             <p>Systematic sanitization delivery using proven methodologies including fogging, surface treatment, and specialized protocols ensuring proper concentration, complete coverage, and adequate contact time for maximum pathogen elimination.</p>
                         </div>
                     </div>
                     <div class="col-lg-6 mb-4">
                         <div class="process-step">
                             <span class="step-number">4</span>
-                            <h5 class="fw-bold mt-3">Quality Assurance & Documentation</h5>
+                            <h5 class="fw-bold mt-3">Quality Assurance &amp; Documentation</h5>
                             <p>Real-time verification with comprehensive service documentation, client education, and performance tracking to ensure regulatory compliance and deliver measurable results across all sanitization services.</p>
                         </div>
                     </div>
@@ -311,14 +348,12 @@
                     <!-- Commercial & Healthcare -->
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="service-detail-card">
-                            <div class="service-header service-header-blue">
-                                <div class="service-icon">📋</div>
-                            </div>
+                            <div class="service-header service-header-blue"><div class="service-icon">📋</div></div>
                             <div class="service-content">
-                                <h5 class="service-title">Commercial & Healthcare</h5>
+                                <h5 class="service-title">Commercial &amp; Healthcare</h5>
                                 <p class="service-description">Professional facility sanitization for businesses prioritizing health and safety against healthcare-associated infections.</p>
                                 <div class="service-tags mb-3">
-                                    <span class="service-tag tag-red">MRSA & VRE</span>
+                                    <span class="service-tag tag-red">MRSA &amp; VRE</span>
                                     <span class="service-tag tag-red">C-difficile</span>
                                     <span class="service-tag tag-red">Chemical Sensitivity</span>
                                     <span class="service-tag tag-blue">Weekend</span>
@@ -335,21 +370,18 @@
                             </div>
                         </div>
                     </div>
-
                     <!-- Residential Services -->
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="service-detail-card">
-                            <div class="service-header service-header-green">
-                                <div class="service-icon">🏠</div>
-                            </div>
+                            <div class="service-header service-header-green"><div class="service-icon">🏠</div></div>
                             <div class="service-content">
                                 <h5 class="service-title">Residential Services</h5>
                                 <p class="service-description">Safe, family-friendly home disinfection with USDA certified organic solutions protecting against household pathogens.</p>
                                 <div class="service-tags mb-3">
-                                    <span class="service-tag tag-red">Mold & Mildew</span>
+                                    <span class="service-tag tag-red">Mold &amp; Mildew</span>
                                     <span class="service-tag tag-red">Pet Pathogens</span>
                                     <span class="service-tag tag-red">Allergens</span>
-                                    <span class="service-tag tag-green">Child & Pet Safe</span>
+                                    <span class="service-tag tag-green">Child &amp; Pet Safe</span>
                                     <span class="service-tag tag-green">No Chemical Odors</span>
                                     <span class="service-tag tag-green">USDA Organic</span>
                                 </div>
@@ -360,15 +392,12 @@
                             </div>
                         </div>
                     </div>
-
                     <!-- Food Processing & Manufacturing -->
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="service-detail-card">
-                            <div class="service-header service-header-orange">
-                                <div class="service-icon">🏭</div>
-                            </div>
+                            <div class="service-header service-header-orange"><div class="service-icon">🏭</div></div>
                             <div class="service-content">
-                                <h5 class="service-title">Food Processing & Manufacturing</h5>
+                                <h5 class="service-title">Food Processing &amp; Manufacturing</h5>
                                 <p class="service-description">EPA-compliant solutions replacing harsh chemicals with USDA Organic HOCl for comprehensive pathogen control in processing facilities.</p>
                                 <div class="service-tags mb-3">
                                     <span class="service-tag tag-red">Listeria</span>
@@ -385,15 +414,12 @@
                             </div>
                         </div>
                     </div>
-
                     <!-- Agricultural & Livestock -->
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="service-detail-card">
-                            <div class="service-header service-header-cyan">
-                                <div class="service-icon">🌾</div>
-                            </div>
+                            <div class="service-header service-header-cyan"><div class="service-icon">🌾</div></div>
                             <div class="service-content">
-                                <h5 class="service-title">Agricultural & Livestock</h5>
+                                <h5 class="service-title">Agricultural &amp; Livestock</h5>
                                 <p class="service-description">Safe, organic sanitization for agricultural operations with USDA Organic compliance, protecting against animal diseases and crop pathogens.</p>
                                 <div class="service-tags mb-3">
                                     <span class="service-tag tag-red">Avian Influenza</span>
@@ -410,13 +436,10 @@
                             </div>
                         </div>
                     </div>
-
                     <!-- Subscription Programs -->
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="service-detail-card">
-                            <div class="service-header service-header-gray">
-                                <div class="service-icon">📅</div>
-                            </div>
+                            <div class="service-header service-header-gray"><div class="service-icon">📅</div></div>
                             <div class="service-content">
                                 <h5 class="service-title">Subscription Programs</h5>
                                 <p class="service-description">Regular sanitization programs for ongoing protection and peace of mind with customized frequency and coverage plans.</p>
@@ -452,9 +475,7 @@
                 <div class="row">
                     <div class="col-lg-6 mb-4">
                         <div class="product-line-card">
-                            <div class="organic-badge">
-                                <i class="fas fa-leaf me-2"></i>USDA Certified Organic
-                            </div>
+                            <div class="organic-badge"><i class="fas fa-leaf me-2"></i>USDA Certified Organic</div>
                             <h4 class="fw-bold mb-3">Family-Safe Organic Line</h4>
                             <p class="mb-4">Perfect for residential disinfection services and families who prioritize natural, food-safe sanitization solutions. These USDA certified products provide powerful protection without harmful chemicals.</p>
                             <ul class="list-unstyled mb-4">
@@ -464,27 +485,18 @@
                                 <li><i class="fas fa-check text-success me-2"></i>Biodegradable formula</li>
                             </ul>
                             <a href="products.html" class="btn btn-success btn-lg">Explore Organic Products</a>
-
                             <div class="service-booking-widget mt-3">
                                 <h6 class="fw-bold mb-2">Book Residential Service</h6>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <small>Starting at <strong>$150</strong></small><br>
-                                        <small class="text-muted">Based on home size</small>
-                                    </div>
-                                    <a href="book-service.html" class="btn btn-success btn-sm">
-                                        <i class="fas fa-calendar-plus me-1"></i>Book Now
-                                    </a>
+                                    <div><small>Starting at <strong>$150</strong></small><br><small class="text-muted">Based on home size</small></div>
+                                    <a href="book-service.html" class="btn btn-success btn-sm"><i class="fas fa-calendar-plus me-1"></i>Book Now</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                     <div class="col-lg-6 mb-4">
                         <div class="product-line-card">
-                            <div class="premium-badge">
-                                <i class="fas fa-shield-alt me-2"></i>EPA Premium Certified
-                            </div>
+                            <div class="premium-badge"><i class="fas fa-shield-alt me-2"></i>EPA Premium Certified</div>
                             <h4 class="fw-bold mb-3">Professional Premium Line</h4>
                             <p class="mb-4">Engineered for commercial facility sanitization and healthcare facility disinfection. These industrial cleaning products Utah trusts deliver maximum efficacy for professional applications.</p>
                             <ul class="list-unstyled mb-4">
@@ -494,17 +506,11 @@
                                 <li><i class="fas fa-check text-warning me-2"></i>Maximum pathogen elimination</li>
                             </ul>
                             <a href="products.html" class="btn btn-warning btn-lg">Explore Premium Products</a>
-
                             <div class="service-booking-widget mt-3">
                                 <h6 class="fw-bold mb-2">Book Commercial Service</h6>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <small>From <strong>$0.08-$0.13/sq ft</strong></small><br>
-                                        <small class="text-muted">Volume discounts available</small>
-                                    </div>
-                                    <a href="https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform?entry.service_type=Commercial&entry.source=Homepage_Hero" target="_blank" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-building me-1"></i>Get Quote
-                                    </a>
+                                    <div><small>From <strong>$0.08-$0.13/sq ft</strong></small><br><small class="text-muted">Volume discounts available</small></div>
+                                    <a href="https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform?entry.service_type=Commercial&amp;entry.source=Homepage_Hero" target="_blank" class="btn btn-warning btn-sm"><i class="fas fa-building me-1"></i>Get Quote</a>
                                 </div>
                             </div>
                         </div>
@@ -526,10 +532,8 @@
                     <div class="col-lg-6">
                         <h4 class="fw-bold mb-3">Our Mission</h4>
                         <p>Founded by Brandon O'Neal and Bob Strang, Organic HypoSolutions delivers EPA-registered, USDA certified organic sanitization solutions to food processing facilities, healthcare institutions, agricultural operations, and residential properties across Utah. Our mission is to provide the safest, most effective sanitization available while protecting people, animals, and the environment.</p>
-
                         <h5 class="fw-bold mt-4">Comprehensive Sanitization Expertise</h5>
                         <p>From food processing protocols to healthcare-grade disinfection and agricultural biosecurity, we utilize advanced hypochlorous acid technology and specialized application methods tailored to each industry's unique contamination challenges and regulatory requirements.</p>
-
                         <div class="mt-4">
                             <a href="calculator.html" class="btn btn-primary me-2">Calculate Your Service</a>
                             <a href="about.html" class="btn btn-outline-primary">Learn More About Us</a>
@@ -548,7 +552,6 @@
                                 <li class="mb-2"><i class="fas fa-paw text-info me-2"></i><strong>Animal Safe:</strong> Approved for livestock and veterinary applications</li>
                                 <li class="mb-2"><i class="fas fa-home text-warning me-2"></i><strong>Residential Friendly:</strong> Safe for families, pets, and allergy-sensitive individuals</li>
                             </ul>
-
                             <div class="alert alert-info mt-4">
                                 <strong><i class="fas fa-map-marker-alt me-2"></i>Service Area:</strong>
                                 We provide specialized sanitization services throughout Utah, covering food processing facilities, healthcare institutions, agricultural operations, and residential properties in Salt Lake City, Provo, Ogden, and surrounding communities.
@@ -566,29 +569,25 @@
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-lg-4 text-center mb-4 mb-lg-0">
-                        <div class="chemist-avatar">
-                            <i class="fas fa-flask"></i>
-                        </div>
+                        <div class="chemist-avatar"><i class="fas fa-flask"></i></div>
                         <h3 class="fw-bold mt-3 mb-1">Scott Anderson</h3>
-                        <p class="text-primary fw-semibold mb-0">Chief Chemist & Formulations Lead</p>
+                        <p class="text-primary fw-semibold mb-0">Chief Chemist &amp; Formulations Lead</p>
                     </div>
                     <div class="col-lg-8">
                         <div class="chemist-card">
                             <h4 class="fw-bold mb-3"><i class="fas fa-award text-warning me-2"></i>World-Class Chemical Engineering Expertise</h4>
                             <p class="mb-4">Scott Anderson brings decades of elite-level chemical engineering and executive leadership to Organic HypoSolutions, ensuring our hypochlorous acid formulations meet the highest standards of efficacy and safety.</p>
-
                             <h6 class="fw-bold text-primary mb-3"><i class="fas fa-graduation-cap me-2"></i>Education</h6>
                             <ul class="list-unstyled mb-4">
-                                <li class="mb-2"><i class="fas fa-trophy text-warning me-2"></i><strong>Brigham Young University</strong> — B.S. Chemical Engineering, #1 in Class & Valedictorian</li>
+                                <li class="mb-2"><i class="fas fa-trophy text-warning me-2"></i><strong>Brigham Young University</strong> — B.S. Chemical Engineering, #1 in Class &amp; Valedictorian</li>
                                 <li class="mb-2"><i class="fas fa-trophy text-warning me-2"></i><strong>Pepperdine University</strong> — MBA, Graduated #1 in Business School</li>
                             </ul>
-
                             <h6 class="fw-bold text-primary mb-3"><i class="fas fa-briefcase me-2"></i>Executive Career</h6>
                             <ul class="list-unstyled mb-0">
                                 <li class="mb-2"><i class="fas fa-chevron-right text-primary me-2"></i><strong>ExxonMobil</strong> — Senior Engineering Manager; developed new technologies and patents</li>
-                                <li class="mb-2"><i class="fas fa-chevron-right text-primary me-2"></i><strong>Pioneer Chemical (CA)</strong> — Vice President & General Manager</li>
+                                <li class="mb-2"><i class="fas fa-chevron-right text-primary me-2"></i><strong>Pioneer Chemical (CA)</strong> — Vice President &amp; General Manager</li>
                                 <li class="mb-2"><i class="fas fa-chevron-right text-primary me-2"></i><strong>Scott Specialty Gases</strong> — Group President; broke sales and profit records with new environmental products</li>
-                                <li class="mb-2"><i class="fas fa-chevron-right text-primary me-2"></i><strong>Huntsman International</strong> — VP of Manufacturing & Technology; 2,500 employees across 8 countries in Asia, North America, and Europe</li>
+                                <li class="mb-2"><i class="fas fa-chevron-right text-primary me-2"></i><strong>Huntsman International</strong> — VP of Manufacturing &amp; Technology; 2,500 employees across 8 countries in Asia, North America, and Europe</li>
                             </ul>
                         </div>
                     </div>
@@ -606,37 +605,14 @@
                     <p class="lead">Contact Utah's premier organic sanitization services provider today</p>
                 </div>
                 <div class="row justify-content-center">
-                    <div class="col-lg-3 col-md-6 text-center mb-3">
-                        <a href="calculator.html" class="btn btn-warning contact-btn">
-                            <i class="fas fa-calculator me-2"></i>Calculate Your Service
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-md-6 text-center mb-3">
-                        <a href="tel:+18017125663" class="btn btn-light contact-btn">
-                            <i class="fas fa-phone me-2"></i>Call Now
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-md-6 text-center mb-3">
-                        <a href="https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform" target="_blank" class="btn btn-success contact-btn">
-                            <i class="fas fa-clipboard-list me-2"></i>Get Quote
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-md-6 text-center mb-3">
-                        <a href="products.html" class="btn btn-info contact-btn">
-                            <i class="fas fa-shopping-cart me-2"></i>Order Products
-                        </a>
-                    </div>
+                    <div class="col-lg-3 col-md-6 text-center mb-3"><a href="calculator.html" class="btn btn-warning contact-btn"><i class="fas fa-calculator me-2"></i>Calculate Your Service</a></div>
+                    <div class="col-lg-3 col-md-6 text-center mb-3"><a href="tel:+18017125663" class="btn btn-light contact-btn"><i class="fas fa-phone me-2"></i>Call Now</a></div>
+                    <div class="col-lg-3 col-md-6 text-center mb-3"><a href="https://docs.google.com/forms/d/1zSq8EoZG8xcQHYtjt5pBovLA3zitegR1aU_tcniZy40/viewform" target="_blank" class="btn btn-success contact-btn"><i class="fas fa-clipboard-list me-2"></i>Get Quote</a></div>
+                    <div class="col-lg-3 col-md-6 text-center mb-3"><a href="products.html" class="btn btn-info contact-btn"><i class="fas fa-shopping-cart me-2"></i>Order Products</a></div>
                 </div>
-
                 <div class="row mt-5">
-                    <div class="col-md-6 text-center mb-3">
-                        <h5><i class="fas fa-map-marker-alt me-2"></i>Service Area</h5>
-                        <p>Salt Lake City, Provo, Ogden<br>& Throughout Utah</p>
-                    </div>
-                    <div class="col-md-6 text-center mb-3">
-                        <h5><i class="fas fa-clock me-2"></i>Business Hours</h5>
-                        <p>Monday-Friday: 8:00 AM - 6:00 PM<br>Saturday: 9:00 AM - 5:00 PM<br>Sunday: Closed</p>
-                    </div>
+                    <div class="col-md-6 text-center mb-3"><h5><i class="fas fa-map-marker-alt me-2"></i>Service Area</h5><p>Salt Lake City, Provo, Ogden<br>&amp; Throughout Utah</p></div>
+                    <div class="col-md-6 text-center mb-3"><h5><i class="fas fa-clock me-2"></i>Business Hours</h5><p>Monday-Friday: 8:00 AM - 6:00 PM<br>Saturday: 9:00 AM - 5:00 PM<br>Sunday: Closed</p></div>
                 </div>
             </div>
         </section>
@@ -653,33 +629,11 @@
         "name": "Organic HypoSolutions",
         "url": "https://organichyposolutions.com",
         "logo": "https://organichyposolutions.com/assets/images/logos/organiclogo.png",
-        "sameAs": [
-            "https://www.facebook.com/organichyposolutions",
-            "https://www.linkedin.com/company/organic-hyposolutions",
-            "https://www.instagram.com/organichyposolutions",
-            "https://www.tiktok.com/@organichyposolutions"
-        ],
-        "contactPoint": {
-            "@type": "ContactPoint",
-            "telephone": "+1-801-712-5663",
-            "contactType": "customer service",
-            "availableLanguage": "English",
-            "areaServed": "Utah"
-        },
-        "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "Salt Lake City",
-            "addressRegion": "UT",
-            "addressCountry": "US"
-        },
+        "sameAs": ["https://www.facebook.com/organichyposolutions","https://www.linkedin.com/company/organic-hyposolutions","https://www.instagram.com/organichyposolutions","https://www.tiktok.com/@organichyposolutions"],
+        "contactPoint": {"@type": "ContactPoint","telephone": "+1-801-712-5663","contactType": "customer service","availableLanguage": "English","areaServed": "Utah"},
+        "address": {"@type": "PostalAddress","addressLocality": "Salt Lake City","addressRegion": "UT","addressCountry": "US"},
         "description": "Utah's premier organic sanitization services provider offering USDA certified cleaning solutions and EPA registered disinfectant products.",
-        "offers": {
-            "@type": "AggregateOffer",
-            "priceCurrency": "USD",
-            "lowPrice": "12.99",
-            "highPrice": "34.99",
-            "offerCount": "10"
-        }
+        "offers": {"@type": "AggregateOffer","priceCurrency": "USD","lowPrice": "12.99","highPrice": "34.99","offerCount": "10"}
     }
     </script>
 
@@ -687,46 +641,109 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/global-scripts.js"></script>
     <script src="assets/js/analytics.js"></script>
-    <!-- Cart scripts for quick-add functionality -->
     <script src="shop/js/cart.js"></script>
     <script src="shop/js/shopify-client.js"></script>
 
     <!-- ============================================================ -->
-    <!-- HOMEPAGE JAVASCRIPT — Quick Add + Tooltips + Animations -->
+    <!-- HOMEPAGE JAVASCRIPT                                          -->
+    <!-- Features: State Selector, Quick Add with Wholesale + Subscribe, -->
+    <!--           Inventory Check, Stat Card Tooltips, Cart Preview   -->
     <!-- ============================================================ -->
     <script>
     (function() {
         'use strict';
 
         // =================================================================
-        // QUICK ADD — Uses product-catalog.js (window.PRODUCT_CATALOG)
-        // Quick-add products: Wipes + Skin Serum (both USDA-only, nationwide)
+        // US STATES LIST
         // =================================================================
+        var US_STATES = [
+            {code:'AL',name:'Alabama'},{code:'AK',name:'Alaska'},{code:'AZ',name:'Arizona'},
+            {code:'AR',name:'Arkansas'},{code:'CA',name:'California'},{code:'CO',name:'Colorado'},
+            {code:'CT',name:'Connecticut'},{code:'DE',name:'Delaware'},{code:'FL',name:'Florida'},
+            {code:'GA',name:'Georgia'},{code:'HI',name:'Hawaii'},{code:'ID',name:'Idaho'},
+            {code:'IL',name:'Illinois'},{code:'IN',name:'Indiana'},{code:'IA',name:'Iowa'},
+            {code:'KS',name:'Kansas'},{code:'KY',name:'Kentucky'},{code:'LA',name:'Louisiana'},
+            {code:'ME',name:'Maine'},{code:'MD',name:'Maryland'},{code:'MA',name:'Massachusetts'},
+            {code:'MI',name:'Michigan'},{code:'MN',name:'Minnesota'},{code:'MS',name:'Mississippi'},
+            {code:'MO',name:'Missouri'},{code:'MT',name:'Montana'},{code:'NE',name:'Nebraska'},
+            {code:'NV',name:'Nevada'},{code:'NH',name:'New Hampshire'},{code:'NJ',name:'New Jersey'},
+            {code:'NM',name:'New Mexico'},{code:'NY',name:'New York'},{code:'NC',name:'North Carolina'},
+            {code:'ND',name:'North Dakota'},{code:'OH',name:'Ohio'},{code:'OK',name:'Oklahoma'},
+            {code:'OR',name:'Oregon'},{code:'PA',name:'Pennsylvania'},{code:'RI',name:'Rhode Island'},
+            {code:'SC',name:'South Carolina'},{code:'SD',name:'South Dakota'},{code:'TN',name:'Tennessee'},
+            {code:'TX',name:'Texas'},{code:'UT',name:'Utah'},{code:'VT',name:'Vermont'},
+            {code:'VA',name:'Virginia'},{code:'WA',name:'Washington'},{code:'WV',name:'West Virginia'},
+            {code:'WI',name:'Wisconsin'},{code:'WY',name:'Wyoming'}
+        ];
 
+        // =================================================================
+        // [NEW] STATE SELECTOR MODAL
+        // =================================================================
+        function initStateSelector() {
+            if (localStorage.getItem('ohsUserState')) return;
+            var modal = document.getElementById('stateModal');
+            var select = document.getElementById('stateSelect');
+            var btn = document.getElementById('confirmStateBtn');
+            if (!modal || !select || !btn) return;
+
+            US_STATES.forEach(function(s) {
+                var opt = document.createElement('option');
+                opt.value = s.code; opt.textContent = s.name;
+                select.appendChild(opt);
+            });
+
+            select.addEventListener('change', function() { btn.disabled = !select.value; });
+            btn.addEventListener('click', function() {
+                if (!select.value) return;
+                localStorage.setItem('ohsUserState', select.value);
+                modal.classList.remove('show'); modal.style.display = 'none';
+                if (typeof showNotification === 'function') {
+                    var msg = select.value === 'UT'
+                        ? 'Utah — All products available!'
+                        : select.options[select.selectedIndex].text + ' — USDA Organic products ship nationwide!';
+                    showNotification('<i class="fas fa-map-marker-alt me-1"></i> ' + msg, 'success');
+                }
+            });
+            modal.classList.add('show');
+        }
+
+        // =================================================================
+        // QUICK ADD — with [NEW] wholesale pricing + subscribe & save + inventory
+        // =================================================================
         var QUICK_ADD_PRODUCT_IDS = ['7249401315399', '7249401348167']; // Wipes, Skin Serum
         var heroQuantities = {};
+        var heroSubscriptions = {};
 
         function initQuickAdd() {
             var container = document.getElementById('quickAddProducts');
             if (!container) return;
-
             container.innerHTML = '';
 
             QUICK_ADD_PRODUCT_IDS.forEach(function(productId) {
                 var product = window.findProduct ? window.findProduct(productId) : null;
-                if (!product) {
-                    console.warn('Quick-add product not found:', productId);
-                    return;
-                }
+                if (!product) { console.warn('Quick-add product not found:', productId); return; }
 
                 heroQuantities[productId] = 1;
+                heroSubscriptions[productId] = false;
+                var threshold = product.wholesaleThreshold || 25;
 
                 var card = document.createElement('div');
                 card.className = 'quick-product-card';
                 card.innerHTML =
                     '<div class="product-info">' +
-                        '<div class="product-name">' + product.shortName + '</div>' +
+                        '<div class="product-name">' + product.shortName +
+                            ' <span class="inventory-badge" id="qa-inv-' + productId + '" style="font-size:0.65rem;padding:2px 6px;border-radius:8px;margin-left:4px;"></span>' +
+                        '</div>' +
                         '<div class="product-price" id="qa-price-' + productId + '">$' + product.pricing.retail.toFixed(2) + '</div>' +
+                        '<div class="subscribe-toggle mt-1">' +
+                            '<label style="display:flex;align-items:center;gap:6px;font-size:0.75rem;cursor:pointer;opacity:0.9;">' +
+                                '<input type="checkbox" id="qa-sub-' + productId + '" onchange="window.ohsToggleSub(\'' + productId + '\')" style="accent-color:#4ADE80;">' +
+                                '<i class="fas fa-sync-alt" style="font-size:0.65rem;"></i> Subscribe &amp; Save 10%' +
+                            '</label>' +
+                        '</div>' +
+                        '<div class="wholesale-hint" id="qa-ws-' + productId + '" style="font-size:0.7rem;opacity:0.7;margin-top:2px;">' +
+                            'Buy ' + threshold + '+ for wholesale pricing' +
+                        '</div>' +
                     '</div>' +
                     '<div class="product-controls">' +
                         '<div class="qty-control">' +
@@ -741,7 +758,14 @@
             });
         }
 
-        // Update quantity
+        // [NEW] Subscribe toggle
+        window.ohsToggleSub = function(productId) {
+            var cb = document.getElementById('qa-sub-' + productId);
+            heroSubscriptions[productId] = cb ? cb.checked : false;
+            updateProductPrice(productId);
+        };
+
+        // Quantity update
         window.ohsQuickAddQty = function(productId, change) {
             if (heroQuantities[productId] === undefined) return;
             heroQuantities[productId] = Math.max(1, heroQuantities[productId] + change);
@@ -751,26 +775,46 @@
             if (display) display.textContent = heroQuantities[productId];
             if (minusBtn) minusBtn.disabled = heroQuantities[productId] <= 1;
 
-            // Update price using getPricingTier
-            if (window.getPricingTier) {
-                var tier = window.getPricingTier(productId, heroQuantities[productId], false);
-                var priceEl = document.getElementById('qa-price-' + productId);
-                if (priceEl) {
-                    priceEl.textContent = '$' + tier.price.toFixed(2);
-                    if (tier.isWholesale) {
-                        priceEl.innerHTML += ' <span class="badge bg-primary" style="font-size:0.6rem;">WHOLESALE</span>';
-                    }
-                }
-            }
+            updateProductPrice(productId);
         };
 
-        // Add to cart using ohsCart format
+        // [NEW] Price update with wholesale + subscription awareness
+        function updateProductPrice(productId) {
+            if (!window.getPricingTier) return;
+            var qty = heroQuantities[productId] || 1;
+            var isSub = heroSubscriptions[productId] || false;
+            var tier = window.getPricingTier(productId, qty, isSub);
+            var product = window.findProduct(productId);
+
+            var priceEl = document.getElementById('qa-price-' + productId);
+            if (priceEl) {
+                priceEl.innerHTML = '$' + tier.price.toFixed(2);
+                if (tier.isWholesale) priceEl.innerHTML += ' <span class="badge bg-primary" style="font-size:0.55rem;">WHOLESALE</span>';
+                if (tier.isSubscription) priceEl.innerHTML += ' <span class="badge bg-success" style="font-size:0.55rem;">SUBSCRIBE</span>';
+            }
+
+            // [NEW] Wholesale hint update
+            var wsHint = document.getElementById('qa-ws-' + productId);
+            if (wsHint && product) {
+                var threshold = product.wholesaleThreshold || 25;
+                if (tier.isWholesale) {
+                    wsHint.innerHTML = '<i class="fas fa-check-circle" style="color:#4ADE80;"></i> Wholesale pricing unlocked!';
+                    wsHint.style.opacity = '1'; wsHint.style.color = '#4ADE80';
+                } else {
+                    wsHint.innerHTML = 'Add ' + (threshold - qty) + ' more for wholesale pricing';
+                    wsHint.style.opacity = '0.7'; wsHint.style.color = '';
+                }
+            }
+        }
+
+        // Add to cart — [UPDATED] uses subscription state + cart preview refresh
         window.ohsQuickAdd = function(productId) {
             var product = window.findProduct ? window.findProduct(productId) : null;
             if (!product) return;
 
             var qty = heroQuantities[productId] || 1;
-            var tier = window.getPricingTier ? window.getPricingTier(productId, qty, false) : null;
+            var isSub = heroSubscriptions[productId] || false;
+            var tier = window.getPricingTier ? window.getPricingTier(productId, qty, isSub) : null;
 
             if (!tier || !tier.variantId) {
                 console.error('Cannot determine pricing tier for', productId);
@@ -786,42 +830,29 @@
                 sku: product.skus[tier.tierKey],
                 tier: tier.tier,
                 type: product.type,
-                isSubscription: false,
+                isSubscription: isSub,
                 image: product.image
             };
 
-            // Read existing cart
-            var cart = [];
-            try {
-                cart = JSON.parse(localStorage.getItem('ohsCart') || '[]');
-            } catch (e) {
-                cart = [];
-            }
-
-            // Check for existing item with same variant
-            var existingIndex = -1;
-            for (var i = 0; i < cart.length; i++) {
-                if (cart[i].variantId === cartItem.variantId) {
-                    existingIndex = i;
-                    break;
-                }
-            }
-
-            if (existingIndex >= 0) {
-                cart[existingIndex].quantity += qty;
+            // Use cart.js addToCart if available, else direct localStorage
+            if (typeof window.addToCart === 'function') {
+                window.addToCart(cartItem);
             } else {
-                cart.push(cartItem);
+                var cart = [];
+                try { cart = JSON.parse(localStorage.getItem('ohsCart') || '[]'); } catch (e) { cart = []; }
+                var existingIndex = -1;
+                for (var i = 0; i < cart.length; i++) {
+                    if (cart[i].variantId === cartItem.variantId) { existingIndex = i; break; }
+                }
+                if (existingIndex >= 0) { cart[existingIndex].quantity += qty; }
+                else { cart.push(cartItem); }
+                localStorage.setItem('ohsCart', JSON.stringify(cart));
+                if (typeof updateCartBadge === 'function') updateCartBadge();
             }
 
-            localStorage.setItem('ohsCart', JSON.stringify(cart));
-
-            // Update cart badge
-            if (typeof updateCartBadge === 'function') {
-                updateCartBadge();
-            }
-
-            // Show feedback
             showQuickAddFeedback(product.shortName, qty);
+            updateFloatingCart();
+            updateCartPreview();
 
             // Button loading state
             var btn = document.getElementById('qa-btn-' + productId);
@@ -829,10 +860,7 @@
                 var originalText = btn.innerHTML;
                 btn.innerHTML = '<i class="fas fa-check"></i> Added!';
                 btn.disabled = true;
-                setTimeout(function() {
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                }, 1500);
+                setTimeout(function() { btn.innerHTML = originalText; btn.disabled = false; }, 1500);
             }
 
             // GA4 tracking
@@ -840,13 +868,7 @@
                 gtag('event', 'add_to_cart', {
                     currency: 'USD',
                     value: tier.price * qty,
-                    items: [{
-                        item_id: tier.variantId,
-                        item_name: product.name,
-                        category: product.category,
-                        quantity: qty,
-                        price: tier.price
-                    }]
+                    items: [{ item_id: tier.variantId, item_name: product.name, category: product.category, quantity: qty, price: tier.price }]
                 });
             }
 
@@ -857,11 +879,9 @@
             var feedback = document.getElementById('quick-add-feedback');
             var message = document.getElementById('feedback-message');
             if (!feedback || !message) return;
-
             message.textContent = qty + 'x ' + name + ' added to cart!';
             feedback.style.display = 'block';
             feedback.classList.add('show');
-
             setTimeout(function() {
                 feedback.classList.remove('show');
                 setTimeout(function() { feedback.style.display = 'none'; }, 300);
@@ -869,23 +889,108 @@
         }
 
         // =================================================================
-        // MOBILE-FRIENDLY TOOLTIPS
+        // [NEW] INVENTORY CHECK — uses shopify-client.js
+        // =================================================================
+        function fetchQuickAddInventory() {
+            if (typeof window.fetchInventory !== 'function') return;
+            window.fetchInventory(QUICK_ADD_PRODUCT_IDS).then(function() {
+                QUICK_ADD_PRODUCT_IDS.forEach(function(pid) {
+                    var badge = document.getElementById('qa-inv-' + pid);
+                    var addBtn = document.getElementById('qa-btn-' + pid);
+                    if (!badge) return;
+                    var status = typeof window.getInventoryStatus === 'function' ? window.getInventoryStatus(pid) : null;
+                    if (!status) { badge.textContent = ''; return; }
+                    if (!status.availableForSale || status.totalInventory <= 0) {
+                        badge.textContent = 'Out of Stock'; badge.style.background = '#ef4444'; badge.style.color = 'white';
+                        if (addBtn) { addBtn.disabled = true; addBtn.style.opacity = '0.5'; addBtn.style.cursor = 'not-allowed'; }
+                    } else if (status.totalInventory <= 10) {
+                        badge.textContent = 'Low Stock'; badge.style.background = '#f59e0b'; badge.style.color = 'white';
+                    } else {
+                        badge.textContent = 'In Stock'; badge.style.background = '#4ADE80'; badge.style.color = 'white';
+                    }
+                });
+            }).catch(function(err) { console.warn('Quick-add inventory check failed:', err); });
+        }
+
+        // =================================================================
+        // [NEW] FLOATING CART BUTTON + CART PREVIEW PANEL
+        // =================================================================
+        function updateFloatingCart() {
+            var cart = [];
+            try { cart = JSON.parse(localStorage.getItem('ohsCart') || '[]'); } catch (e) {}
+            var total = 0;
+            if (Array.isArray(cart)) for (var i = 0; i < cart.length; i++) total += (cart[i].quantity || 0);
+            var btn = document.getElementById('floatingCartBtn');
+            var badge = document.getElementById('floatingCartBadge');
+            if (btn) btn.style.display = total > 0 ? 'flex' : 'none';
+            if (badge) badge.textContent = total;
+        }
+
+        window.toggleCartPreview = function() {
+            var preview = document.getElementById('cartPreview');
+            var overlay = document.getElementById('cartOverlay');
+            if (!preview) return;
+            preview.classList.toggle('show');
+            if (overlay) overlay.classList.toggle('show');
+            if (preview.classList.contains('show')) updateCartPreview();
+        };
+
+        function updateCartPreview() {
+            var container = document.getElementById('cartItemsPreview');
+            var summary = document.getElementById('cartSummary');
+            if (!container) return;
+            var cart = [];
+            try { cart = JSON.parse(localStorage.getItem('ohsCart') || '[]'); } catch (e) {}
+            if (!Array.isArray(cart) || cart.length === 0) {
+                container.innerHTML = '<div class="empty-cart text-center py-4"><i class="fas fa-shopping-cart fa-3x mb-3 text-muted"></i><h6 class="text-muted">Your cart is empty</h6><p class="text-muted small">Add products to get started</p></div>';
+                if (summary) summary.style.display = 'none';
+                return;
+            }
+            var html = '', subtotal = 0;
+            cart.forEach(function(item) {
+                var itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                var tierBadge = item.tier === 'wholesale' ? ' <span class="badge bg-success" style="font-size:0.6rem;">Wholesale</span>' : '';
+                var subBadge = item.isSubscription ? ' <span class="badge bg-primary" style="font-size:0.6rem;">Sub</span>' : '';
+                html += '<div style="display:flex;align-items:center;padding:0.75rem 0;border-bottom:1px solid #e2e8f0;"><div style="flex:1;"><div style="font-weight:600;color:#2E5EAA;font-size:0.85rem;">' + (item.name || 'Product') + tierBadge + subBadge + '</div><div style="font-size:0.75rem;color:#64748b;">$' + item.price.toFixed(2) + ' × ' + item.quantity + '</div></div><div style="font-weight:700;color:#1e3a8a;">$' + itemTotal.toFixed(2) + '</div></div>';
+            });
+            container.innerHTML = html;
+            if (summary) { document.getElementById('cartSubtotal').textContent = '$' + subtotal.toFixed(2); summary.style.display = 'block'; }
+        }
+
+        window.clearCartLocal = function() {
+            if (confirm('Clear all items from cart?')) {
+                localStorage.setItem('ohsCart', '[]');
+                if (typeof updateCartBadge === 'function') updateCartBadge();
+                updateCartPreview();
+                updateFloatingCart();
+            }
+        };
+
+        // =================================================================
+        // MOBILE-FRIENDLY TOOLTIPS — [FIXED] desktop hover + mobile click
         // =================================================================
         function initMobileTooltips() {
             var statCards = document.querySelectorAll('.stat-card');
             var overlay = document.getElementById('tooltipOverlay');
 
             statCards.forEach(function(card) {
+                // Desktop hover
+                card.addEventListener('mouseenter', function() {
+                    if (window.innerWidth > 768) card.classList.add('active');
+                });
+                card.addEventListener('mouseleave', function() {
+                    if (window.innerWidth > 768) card.classList.remove('active');
+                });
+
+                // Mobile click
                 card.addEventListener('click', function(e) {
                     e.stopPropagation();
                     if (window.innerWidth <= 768) {
-                        statCards.forEach(function(other) {
-                            if (other !== card) other.classList.remove('active');
-                        });
-                        card.classList.toggle('active');
-                        if (overlay) {
-                            overlay.classList.toggle('active', card.classList.contains('active'));
-                        }
+                        var wasActive = card.classList.contains('active');
+                        statCards.forEach(function(other) { other.classList.remove('active'); });
+                        if (!wasActive) card.classList.add('active');
+                        if (overlay) overlay.classList.toggle('active', !wasActive);
                     }
                 });
             });
@@ -949,20 +1054,44 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🏠 OHS Homepage initializing...');
 
+            initStateSelector();
             initQuickAdd();
+            fetchQuickAddInventory();
             initMobileTooltips();
             initSmoothScrolling();
             initAnimations();
+            updateFloatingCart();
 
-            // Update cart badge on load
-            if (typeof updateCartBadge === 'function') {
-                updateCartBadge();
-            }
+            if (typeof updateCartBadge === 'function') updateCartBadge();
 
-            console.log('✅ Homepage ready — 10 products in catalog, 2 quick-add');
+            // Listen for cart changes from other scripts
+            window.addEventListener('cartUpdated', function() {
+                updateFloatingCart();
+                updateCartPreview();
+            });
+
+            console.log('✅ Homepage ready — state selector, wholesale quick-add, inventory, cart preview, tooltips');
         });
-
     })();
     </script>
+
+    <!-- Homepage-specific styles for new features (will move to pages.css during migration) -->
+    <style>
+    .page-home .floating-cart { position:fixed; bottom:30px; right:30px; width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,#2E5EAA,#7DD3FC); color:white; border:none; box-shadow:0 8px 25px rgba(46,94,170,0.4); z-index:1030; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.3s ease; }
+    .page-home .floating-cart:hover { transform:scale(1.1); box-shadow:0 12px 35px rgba(46,94,170,0.5); }
+    .page-home .floating-cart-badge { position:absolute; top:-5px; right:-5px; background:#ef4444; color:white; border-radius:50%; font-size:0.75rem; font-weight:700; min-width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center; }
+    .page-home .cart-preview { position:fixed; top:100px; right:-420px; width:400px; max-height:80vh; background:white; border-radius:1rem 0 0 1rem; box-shadow:-5px 0 25px rgba(0,0,0,0.15); padding:1.5rem; z-index:1050; transition:right 0.3s ease; overflow-y:auto; border:2px solid #2E5EAA; border-right:none; }
+    .page-home .cart-preview.show { right:0; }
+    .page-home .cart-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.3); z-index:1040; opacity:0; visibility:hidden; transition:all 0.3s ease; }
+    .page-home .cart-overlay.show { opacity:1; visibility:visible; }
+    .page-home .cart-title { color:#2E5EAA; font-weight:700; font-size:1.1rem; }
+    .page-home .cart-summary-inline { border-top:2px solid #e2e8f0; padding-top:1rem; margin-top:0.5rem; }
+    .page-home .stat-card.active .tooltip-content { opacity:1 !important; visibility:visible !important; pointer-events:auto !important; }
+    @media (max-width:768px) {
+        .page-home .floating-cart { display:none !important; }
+        .page-home .cart-preview { width:calc(100vw - 20px); right:-100vw; top:80px; }
+        .page-home .cart-preview.show { right:10px; }
+    }
+    </style>
 </body>
 </html>
