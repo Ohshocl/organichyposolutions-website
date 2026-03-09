@@ -359,6 +359,7 @@
     transition: all 0.3s ease;
     position: relative;
     z-index: auto;
+    overflow: visible;
 }
 
 .page-home .stat-card:hover,
@@ -383,42 +384,32 @@
 
 /* --- Tooltip system (FIXED: solid dark bg, proper z-index) --- */
 .page-home .tooltip-content {
-    background: rgba(15, 23, 42, 0.97);
-    color: white;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    background: #0f172a !important;
+    color: white !important;
     padding: 20px;
     border-radius: 12px;
     min-width: 300px;
     max-width: 380px;
-    z-index: 10700;
+    z-index: 99999 !important;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
     font-size: 0.9em;
     text-align: left;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
     border: 1px solid rgba(125, 211, 252, 0.3);
     pointer-events: none;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
 }
 
-/* Desktop: fixed centered to escape backdrop-filter clipping */
-@media (min-width: 769px) {
-    .page-home .tooltip-content {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-}
-
-/* Mobile: centered overlay */
+/* Mobile: slightly smaller */
 @media (max-width: 768px) {
     .page-home .tooltip-content {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
         width: 85vw;
         max-width: 360px;
     }
@@ -426,8 +417,8 @@
 
 /* Show tooltip on active (hover on desktop, click on mobile) */
 .page-home .stat-card.active .tooltip-content {
-    opacity: 1;
-    visibility: visible;
+    opacity: 1 !important;
+    visibility: visible !important;
     pointer-events: auto;
 }
 
