@@ -545,3 +545,117 @@ window.throttle               = throttle;
 window.isInViewport           = isInViewport;
 
 console.log('🎉 OHS Global Scripts loaded.');
+
+
+
+// ==========================================================================
+// STATE SELECTOR — universal modal for all pages
+// ==========================================================================
+
+window.showStateModal = function () {
+    let modal = document.getElementById('globalStateModal');
+
+    if (!modal) {
+        // Build the modal if it doesn't exist on this page
+        modal = document.createElement('div');
+        modal.id = 'globalStateModal';
+        modal.className = 'state-modal';
+        modal.innerHTML = `
+            <div class="state-modal-content">
+                <div class="state-modal-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h3>Select Your State</h3>
+                <p>Some products are only available in Utah due to EPA registration. USDA Organic products ship nationwide.</p>
+                <select class="state-select" id="globalStateSelect">
+                    <option value="">-- Select Your State --</option>
+                </select>
+                <button class="state-modal-btn" id="globalStateConfirmBtn" disabled>
+                    <i class="fas fa-check me-2"></i>Confirm Location
+                </button>
+                <button onclick="document.getElementById('globalStateModal').classList.remove('show')"
+                        style="background:none;border:none;color:#6c757d;margin-top:0.75rem;cursor:pointer;font-size:0.85rem;">
+                    Cancel
+                </button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        // Populate states
+        const states = [
+            {code:'AL',name:'Alabama'},{code:'AK',name:'Alaska'},{code:'AZ',name:'Arizona'},
+            {code:'AR',name:'Arkansas'},{code:'CA',name:'California'},{code:'CO',name:'Colorado'},
+            {code:'CT',name:'Connecticut'},{code:'DE',name:'Delaware'},{code:'FL',name:'Florida'},
+            {code:'GA',name:'Georgia'},{code:'HI',name:'Hawaii'},{code:'ID',name:'Idaho'},
+            {code:'IL',name:'Illinois'},{code:'IN',name:'Indiana'},{code:'IA',name:'Iowa'},
+            {code:'KS',name:'Kansas'},{code:'KY',name:'Kentucky'},{code:'LA',name:'Louisiana'},
+            {code:'ME',name:'Maine'},{code:'MD',name:'Maryland'},{code:'MA',name:'Massachusetts'},
+            {code:'MI',name:'Michigan'},{code:'MN',name:'Minnesota'},{code:'MS',name:'Mississippi'},
+            {code:'MO',name:'Missouri'},{code:'MT',name:'Montana'},{code:'NE',name:'Nebraska'},
+            {code:'NV',name:'Nevada'},{code:'NH',name:'New Hampshire'},{code:'NJ',name:'New Jersey'},
+            {code:'NM',name:'New Mexico'},{code:'NY',name:'New York'},{code:'NC',name:'North Carolina'},
+            {code:'ND',name:'North Dakota'},{code:'OH',name:'Ohio'},{code:'OK',name:'Oklahoma'},
+            {code:'OR',name:'Oregon'},{code:'PA',name:'Pennsylvania'},{code:'RI',name:'Rhode Island'},
+            {code:'SC',name:'South Carolina'},{code:'SD',name:'South Dakota'},{code:'TN',name:'Tennessee'},
+            {code:'TX',name:'Texas'},{code:'UT',name:'Utah'},{code:'VT',name:'Vermont'},
+            {code:'VA',name:'Virginia'},{code:'WA',name:'Washington'},{code:'WV',name:'West Virginia'},
+            {code:'WI',name:'Wisconsin'},{code:'WY',name:'Wyoming'},{code:'DC',name:'District of Columbia'}
+        ];
+        const select = document.getElementById('globalStateSelect');
+        states.forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = s.code;
+            opt.textContent = s.name;
+            select.appendChild(opt);
+        });
+
+        // Pre-select saved state
+        const saved = localStorage.getItem('ohsUserState');
+        if (saved) { select.value = saved; document.getElementById('globalStateConfirmBtn').disabled = false; }
+
+        // Events
+        select.addEventListener('change', function () {
+            document.getElementById('globalStateConfirmBtn').disabled = !this.value;
+        });
+
+        document.getElementById('globalStateConfirmBtn').addEventListener('click', function () {
+            const val = document.getElementById('globalStateSelect').value;
+            if (!val) return;
+            localStorage.setItem('ohsUserState', val);
+            document.getElementById('globalStateModal').classList.remove('show');
+            updateNavStateName(val);
+            // Let products.html pick it up if it's the current page
+            window.dispatchEvent(new CustomEvent('stateChanged', { detail: { state: val } }));
+        });
+    } else {
+        // Modal already exists — just sync the saved state and show
+        const saved = localStorage.getItem('ohsUserState');
+        const select = document.getElementById('globalStateSelect');
+        if (saved) { select.value = saved; document.getElementById('globalStateConfirmBtn').disabled = false; }
+    }
+
+    modal.classList.add('show');
+};
+
+function updateNavStateName(stateCode) {
+    const el = document.getElementById('navStateName');
+    if (!el) return;
+    const names = {
+        AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',
+        CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',
+        IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',
+        ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',
+        MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',
+        NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',
+        OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',
+        TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',
+        WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming',DC:'District of Columbia'
+    };
+    el.textContent = names[stateCode] || stateCode;
+}
+
+// On every page load, update the nav state name if a state is already saved
+document.addEventListener('DOMContentLoaded', function () {
+    const saved = localStorage.getItem('ohsUserState');
+    if (saved) updateNavStateName(saved);
+});
