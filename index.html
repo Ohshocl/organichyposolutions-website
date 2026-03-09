@@ -967,46 +967,86 @@
             }
         };
 
+       // =================================================================
+// REPLACE THIS SECTION IN YOUR index.html
+// =================================================================
+// 
+// FIND this block (around line 530-570):
+//
+//   // MOBILE-FRIENDLY TOOLTIPS — [FIXED] desktop hover + mobile click
+//   function initMobileTooltips() {
+//     ... (about 40 lines) ...
+//   }
+//
+// REPLACE WITH everything below:
+// =================================================================
+
         // =================================================================
-        // MOBILE-FRIENDLY TOOLTIPS — [FIXED] desktop hover + mobile click
+        // TOOLTIP PORTAL — moves tooltip to <body> so no parent clips it
         // =================================================================
+        var activeTooltipPortal = null;
+        var activeTooltipBackdrop = null;
+
+        function showTooltipPortal(card) {
+            dismissTooltipPortal(); // clear any existing
+
+            var tooltipSource = card.querySelector('.tooltip-content');
+            if (!tooltipSource) return;
+
+            // Create dark backdrop
+            activeTooltipBackdrop = document.createElement('div');
+            activeTooltipBackdrop.className = 'ohs-tooltip-backdrop';
+            activeTooltipBackdrop.addEventListener('click', dismissTooltipPortal);
+            document.body.appendChild(activeTooltipBackdrop);
+
+            // Create portal tooltip directly on <body> — escapes ALL parent clipping
+            activeTooltipPortal = document.createElement('div');
+            activeTooltipPortal.className = 'ohs-tooltip-portal';
+            activeTooltipPortal.innerHTML = tooltipSource.innerHTML;
+            document.body.appendChild(activeTooltipPortal);
+
+            card.classList.add('active');
+        }
+
+        function dismissTooltipPortal() {
+            if (activeTooltipPortal) { activeTooltipPortal.remove(); activeTooltipPortal = null; }
+            if (activeTooltipBackdrop) { activeTooltipBackdrop.remove(); activeTooltipBackdrop = null; }
+            document.querySelectorAll('.stat-card').forEach(function(c) { c.classList.remove('active'); });
+        }
+
         function initMobileTooltips() {
             var statCards = document.querySelectorAll('.stat-card');
-            var overlay = document.getElementById('tooltipOverlay');
 
             statCards.forEach(function(card) {
-                // Desktop hover
+                // Desktop: show on hover
                 card.addEventListener('mouseenter', function() {
-                    if (window.innerWidth > 768) card.classList.add('active');
+                    if (window.innerWidth > 768) showTooltipPortal(card);
                 });
                 card.addEventListener('mouseleave', function() {
-                    if (window.innerWidth > 768) card.classList.remove('active');
+                    if (window.innerWidth > 768) dismissTooltipPortal();
                 });
 
-                // Mobile click
+                // Mobile: show on click
                 card.addEventListener('click', function(e) {
                     e.stopPropagation();
                     if (window.innerWidth <= 768) {
                         var wasActive = card.classList.contains('active');
-                        statCards.forEach(function(other) { other.classList.remove('active'); });
-                        if (!wasActive) card.classList.add('active');
-                        if (overlay) overlay.classList.toggle('active', !wasActive);
+                        dismissTooltipPortal();
+                        if (!wasActive) showTooltipPortal(card);
                     }
                 });
             });
 
-            if (overlay) {
-                overlay.addEventListener('click', function() {
-                    statCards.forEach(function(c) { c.classList.remove('active'); });
-                    overlay.classList.remove('active');
-                });
-            }
-
+            // Close on outside click (mobile)
             document.addEventListener('click', function(e) {
-                if (window.innerWidth <= 768 && !e.target.closest('.stat-card')) {
-                    statCards.forEach(function(c) { c.classList.remove('active'); });
-                    if (overlay) overlay.classList.remove('active');
+                if (!e.target.closest('.stat-card') && !e.target.closest('.ohs-tooltip-portal')) {
+                    dismissTooltipPortal();
                 }
+            });
+
+            // Close on Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') dismissTooltipPortal();
             });
         }
 
