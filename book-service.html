@@ -7,20 +7,20 @@
     <meta name="description" content="Schedule a professional USDA Certified Organic HOCl sanitization service for your home or business. Get an instant estimate and book online.">
     <meta property="og:title" content="Book Service | Organic HypoSolutions">
     <meta property="og:description" content="Schedule professional HOCl sanitization service. EPA Registered, USDA Certified Organic.">
-    <meta property="og:url" content="https://organichyposolutions.com/shop/book-service.html">
+    <meta property="og:url" content="https://organichyposolutions.com/book-service.html">
     <meta property="og:image" content="https://organichyposolutions.com/assets/images/logos/ohs-brand-image.jpg">
     <meta property="og:type" content="website">
-    <link rel="icon" type="image/png" href="../assets/images/logos/ohs-organic-logo.png">
+    <link rel="icon" type="image/png" href="assets/images/logos/ohs-organic-logo.png">
 
     <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/global-styles.css">
-    <link rel="stylesheet" href="../assets/css/components.css">
-    <link rel="stylesheet" href="../assets/css/pages.css">
+    <link rel="stylesheet" href="assets/css/global-styles.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/pages.css">
 
     <!-- Product Catalog -->
-    <script src="js/product-catalog.js"></script>
+    <script src="shop/js/product-catalog.js"></script>
 </head>
 <body class="page-book-service">
 
@@ -79,7 +79,7 @@
                             <input type="hidden" name="access_key" value="d2863ce3-70c1-48cf-bd78-ba381aac2d83">
                             <input type="hidden" name="subject" value="New Service Booking Request - Organic HypoSolutions">
                             <input type="hidden" name="from_name" value="OHS Service Booking">
-                            <input type="hidden" name="redirect" value="https://organichyposolutions.com/book-service.html?success=true">
+                            <input type="hidden" name="redirect" value="https://organichyposolutions.com/shop/book-service.html?success=true">
                             <!-- Hidden fields populated by JS -->
                             <input type="hidden" id="hiddenServiceType" name="service_type" value="">
                             <input type="hidden" id="hiddenEstimate" name="price_estimate" value="">
@@ -368,15 +368,15 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../assets/js/global-scripts.js"></script>
-    <script src="../assets/js/analytics.js"></script>
+    <script src="assets/js/global-scripts.js"></script>
+    <script src="assets/js/analytics.js"></script>
 
     <script>
     (function () {
         'use strict';
 
         /* ── State ── */
-        var selectedType = null;  // 'residential' | 'commercial'
+        var selectedType = null;
         var addonTotal = 0;
         var activeAddons = {};
 
@@ -385,16 +385,51 @@
             commercial: 249
         };
 
+        /* ── Estimate calculator (defined first so internal calls resolve) ── */
+        function updateEstimate() {
+            var display = document.getElementById('estimateDisplay');
+            var breakdown = document.getElementById('priceBreakdown');
+
+            if (!selectedType) {
+                display.textContent = 'Select service type to see estimate';
+                breakdown.style.display = 'none';
+                return;
+            }
+
+            var base = BASE_PRICES[selectedType];
+            var priorityChecked = document.querySelector('input[name="urgency"][value="priority"]');
+            var prioritySurcharge = (priorityChecked && priorityChecked.checked) ? 50 : 0;
+            var total = base + prioritySurcharge + addonTotal;
+
+            display.textContent = '~$' + total.toLocaleString();
+            document.getElementById('hiddenEstimate').value = '~$' + total;
+            document.getElementById('breakdownBase').textContent = '$' + base;
+            document.getElementById('breakdownTotal').textContent = '~$' + total.toLocaleString();
+
+            document.getElementById('breakdownPriorityRow').style.display = prioritySurcharge ? '' : 'none';
+
+            var addonsRow = document.getElementById('breakdownAddonsRow');
+            if (addonTotal > 0) {
+                addonsRow.style.display = '';
+                document.getElementById('breakdownAddons').textContent = '+$' + addonTotal;
+            } else {
+                addonsRow.style.display = 'none';
+            }
+
+            breakdown.style.display = '';
+        }
+
+        /* Expose for onchange= attributes in HTML */
+        window.updateEstimate = updateEstimate;
+
         /* ── Service type selection ── */
         window.selectServiceType = function (type) {
             selectedType = type;
             document.getElementById('hiddenServiceType').value = type;
-
             ['residential', 'commercial'].forEach(function (t) {
                 var card = document.getElementById('card-' + t);
                 if (card) card.classList.toggle('selected', t === type);
             });
-
             updateEstimate();
         };
 
@@ -415,41 +450,56 @@
             updateEstimate();
         };
 
-        /* ── Estimate calculator ── */
-        window.updateEstimate = function () {
-            var display = document.getElementById('estimateDisplay');
-            var breakdown = document.getElementById('priceBreakdown');
+        /* ── Calculator prefill ── */
+        /* calculator.html passes: source, serviceType, sqft, complexity, frequency, contractType */
+        function prefillFromCalculator() {
+            var params = new URLSearchParams(window.location.search);
+            if (!params.get('source') || params.get('source').indexOf('calculator') === -1) return;
 
-            if (!selectedType) {
-                display.textContent = 'Select service type to see estimate';
-                breakdown.style.display = 'none';
-                return;
+            /* Service type */
+            var svcType = params.get('serviceType');
+            if (svcType === 'residential' || svcType === 'commercial') {
+                window.selectServiceType(svcType);
+            } else if (svcType) {
+                /* calculator uses more specific types — map to residential/commercial */
+                var isCommercial = ['commercial','healthcare','education','food','gym'].some(function(t){ return svcType.indexOf(t) !== -1; });
+                window.selectServiceType(isCommercial ? 'commercial' : 'residential');
             }
 
-            var base = BASE_PRICES[selectedType];
-            var priorityChecked = document.querySelector('input[name="urgency"][value="priority"]');
-            var prioritySurcharge = (priorityChecked && priorityChecked.checked) ? 50 : 0;
-            var total = base + prioritySurcharge + addonTotal;
-
-            display.textContent = '~$' + total.toLocaleString();
-            document.getElementById('hiddenEstimate').value = '~$' + total;
-
-            document.getElementById('breakdownBase').textContent = '$' + base;
-            document.getElementById('breakdownTotal').textContent = '~$' + total.toLocaleString();
-
-            var priorRow = document.getElementById('breakdownPriorityRow');
-            priorRow.style.display = prioritySurcharge ? '' : 'none';
-
-            var addonsRow = document.getElementById('breakdownAddonsRow');
-            if (addonTotal > 0) {
-                addonsRow.style.display = '';
-                document.getElementById('breakdownAddons').textContent = '+$' + addonTotal;
-            } else {
-                addonsRow.style.display = 'none';
+            /* Square footage — map number to dropdown range */
+            var sqft = parseInt(params.get('sqft')) || 0;
+            if (sqft) {
+                var sfSelect = document.getElementById('squareFootage');
+                if (sfSelect) {
+                    var val = sqft < 1000 ? 'under_1000'
+                            : sqft < 2500 ? '1000_2500'
+                            : sqft < 5000 ? '2500_5000'
+                            : sqft < 10000 ? '5000_10000'
+                            : sqft < 25000 ? '10000_25000'
+                            : 'over_25000';
+                    sfSelect.value = val;
+                }
             }
 
-            breakdown.style.display = '';
-        };
+            /* Frequency — map to preferred time window if passed */
+            var freq = params.get('frequency');
+            if (freq) {
+                var timeSelect = document.getElementById('preferredTime');
+                if (timeSelect && freq === 'onetime') timeSelect.value = 'flexible';
+            }
+
+            /* Clean URL after reading params */
+            window.history.replaceState({}, document.title, window.location.pathname);
+
+            /* Notify user */
+            setTimeout(function () {
+                var banner = document.createElement('div');
+                banner.className = 'alert alert-info alert-dismissible fade show mx-3 mt-3';
+                banner.innerHTML = '<i class="fas fa-info-circle me-2"></i><strong>Form prefilled from calculator.</strong> Please complete your contact information and address below. <button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
+                var formContent = document.querySelector('.form-content');
+                if (formContent) formContent.insertBefore(banner, formContent.firstChild);
+            }, 400);
+        }
 
         /* ── Date min (today) ── */
         var dateInput = document.getElementById('preferredDate');
@@ -469,15 +519,15 @@
             }
         }
 
-/* ── Submit validation + loading state ── */
+        /* ── Submit validation + loading state ── */
         var form = document.getElementById('serviceBookingForm');
         if (form) {
             form.addEventListener('submit', function (e) {
                 var required = [
-                    { id: 'firstName',  label: 'First Name' },
-                    { id: 'lastName',   label: 'Last Name' },
-                    { id: 'email',      label: 'Email Address' },
-                    { id: 'address',    label: 'Service Address' }
+                    { id: 'firstName', label: 'First Name' },
+                    { id: 'lastName',  label: 'Last Name' },
+                    { id: 'email',     label: 'Email Address' },
+                    { id: 'address',   label: 'Service Address' }
                 ];
 
                 var missing = required.filter(function (f) {
@@ -500,6 +550,9 @@
                 }
             });
         }
+
+        /* ── Init ── */
+        prefillFromCalculator();
 
     })();
     </script>
