@@ -505,15 +505,19 @@
             if (!product || product.pricing.retail === null) return;
 
             const qty = parseInt(quantity) || 1;
-            const tier = window.getPricingTier(productId, qty, false);
+            const isSubscription = document.getElementById(`subscribe-${productId}`)?.checked || false;
+            const tier = window.getPricingTier(productId, qty, isSubscription);
             const priceEl = document.getElementById(`price-${productId}`);
 
             if (priceEl) {
+                let priceHTML = `<span class="fw-bold fs-5" style="color:var(--ohs-primary-blue)">$${tier.price.toFixed(2)}</span>`;
                 if (tier.isWholesale) {
-                    priceEl.innerHTML = `<span class="text-success fw-bold fs-5">$${tier.price.toFixed(2)}</span> <small class="text-success">Wholesale</small>`;
-                } else {
-                    priceEl.innerHTML = `<span class="fw-bold fs-5" style="color:var(--ohs-primary-blue)">$${tier.price.toFixed(2)}</span>`;
+                    priceHTML += ` <span class="badge bg-success ms-1" style="font-size:.65rem;">Wholesale</span>`;
                 }
+                if (tier.isSubscription) {
+                    priceHTML += ` <span class="badge bg-info ms-1" style="font-size:.65rem;">Subscribe &amp; Save</span>`;
+                }
+                priceEl.innerHTML = priceHTML;
             }
 
             updateWholesaleIndicator(productId, qty);
@@ -720,6 +724,16 @@
                                     <li><i class="fas fa-check text-success me-1"></i>${isEpa ? 'EPA + USDA Certified' : 'USDA Certified'}</li>
                                 </ul>
 
+<div class="form-check form-switch mb-2 d-flex align-items-center gap-2">
+                                    <input class="form-check-input" type="checkbox" role="switch"
+                                           id="subscribe-${product.id}"
+                                           onchange="displayPricingInfo('${product.id}', document.getElementById('qty-${product.id}').value)">
+                                    <label class="form-check-label small" for="subscribe-${product.id}">
+                                        <i class="fas fa-sync-alt me-1 text-success"></i>
+                                        <strong>Subscribe &amp; Save 10%</strong>
+                                    </label>
+                                </div>
+
                                 <div class="input-group mb-2">
                                     <button class="btn btn-outline-primary btn-sm" onclick="changeQuantity('${product.id}', -1)">
                                         <i class="fas fa-minus"></i>
@@ -824,7 +838,8 @@
                 return;
             }
 
-            const success = window.addToCart ? window.addToCart(productId, quantity) : false;
+            const isSubscription = document.getElementById(`subscribe-${productId}`)?.checked || false;
+            const success = window.addToCart ? window.addToCart(productId, quantity, isSubscription) : false;
             if (!success) {
                 if (window.showNotification) window.showNotification('Could not add to cart. Please try again.', 'error');
                 return;
