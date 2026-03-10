@@ -11,7 +11,7 @@
  * - Shopify variant IDs for all pricing tiers
  * - Helper functions for product lookups
  *
- * Last Updated: 2026-03-05
+ * Last Updated: 2026-03-10
  */
 
 (function() {
@@ -67,7 +67,7 @@
                 wholesale: 'OHS-32OZ-200PPM-RTU-WHOLESALE',
                 wholesaleSubscription: 'OHS-32OZ-200PPM-RTU-WHOLESALE-SUB'
             },
-            image: 'assets/images/products/32oz_epa_ready_to_use_cleaner.jpeg',
+            image: 'assets/images/products/epa-cleaner-32oz-200ppm.png',
             emoji: '🧴',
             badgeType: 'EPA+USDA',
             badgeColor: '#f59e0b',
@@ -116,7 +116,7 @@
                 wholesale: 'OHS-1GAL-200PPM-RTU-WHOLESALE',
                 wholesaleSubscription: 'OHS-1GAL-200PPM-RTU-WHOLESALE-SUB'
             },
-            image: 'assets/images/products/1_gallon_epa_ready_to_use_solution.jpg',
+            image: 'assets/images/products/epa-solution-1gal-200ppm.png',
             emoji: '🪣',
             badgeType: 'EPA+USDA',
             badgeColor: '#f59e0b',
@@ -165,7 +165,7 @@
                 wholesale: 'OHS-32OZ-500PPM-RTU-WHOLESALE',
                 wholesaleSubscription: 'OHS-32OZ-500PPM-RTU-WHOLESALE-SUB'
             },
-            image: 'assets/images/products/32oz-epa-500ppm.jpeg',
+            image: 'assets/images/products/epa-cleaner-32oz-500ppm.png',
             emoji: '🧴',
             badgeType: 'EPA+USDA',
             badgeColor: '#f59e0b',
@@ -214,7 +214,7 @@
                 wholesale: 'OHS-1GAL-500PPM-RTU-WHOLESALE',
                 wholesaleSubscription: 'OHS-1GAL-500PPM-RTU-WHOLESALE-SUB'
             },
-            image: 'assets/images/products/1gal-epa-500ppm.jpg',
+            image: 'assets/images/products/epa-solution-1gal-500ppm.png',
             emoji: '🪣',
             badgeType: 'EPA+USDA',
             badgeColor: '#f59e0b',
@@ -260,7 +260,7 @@
                 wholesale: 'USDA-OHS-32OZ-RTU-WHOLESALE',
                 wholesaleSubscription: 'USDA-OHS-32OZ-RTU-WHOLESALE-SUB'
             },
-            image: 'assets/images/products/32oz_organic_ready_to_use_cleaner.jpeg',
+            image: 'assets/images/products/organic-cleaner-32oz.png',
             emoji: '🧴',
             badgeType: 'USDA Organic',
             badgeColor: '#4ADE80',
@@ -306,7 +306,7 @@
                 wholesale: 'USDA-OHS-1GAL-RTU-WHOLESALE',
                 wholesaleSubscription: 'USDA-OHS-1GAL-RTU-WHOLESALE-SUB'
             },
-            image: 'assets/images/products/1_gallon_organic_ready_to_use_solution.jpg',
+            image: 'assets/images/products/organic-solution-1gal.png',
             emoji: '🪣',
             badgeType: 'USDA Organic',
             badgeColor: '#4ADE80',
@@ -352,7 +352,7 @@
                 wholesale: 'OHS-ALL-IN-ONE-WIPES-WHOLESALE',
                 wholesaleSubscription: 'OHS-ALL-IN-ONE-WIPES-WHOLESALE-SUB'
             },
-            image: 'assets/images/products/organic_all_in_one_disinfecting_wipes.jpg',
+            image: 'assets/images/products/organic-wipes.png',
             emoji: '🧻',
             badgeType: 'USDA Organic',
             badgeColor: '#4ADE80',
@@ -398,7 +398,7 @@
                 wholesale: 'HC-32OZ-LAUNDRY-BOOSTER-WHOLESALE',
                 wholesaleSubscription: 'HC-32OZ-LAUNDRY-BOOSTER-WHOLESALE-SUB'
             },
-            image: 'assets/images/products/32oz_organic_laundry.jpeg',
+            image: 'assets/images/products/laundry-booster-32oz.png',
             emoji: '👕',
             badgeType: 'USDA Organic',
             badgeColor: '#4ADE80',
@@ -444,7 +444,7 @@
                 wholesale: 'HC-1GAL-LAUNDRY-BOOSTER-WHOLESALE',
                 wholesaleSubscription: 'HC-1GAL-LAUNDRY-BOOSTER-WHOLESALE-SUB'
             },
-            image: 'assets/images/products/1gallon_organic_laundry_booster.jpg',
+            image: 'assets/images/products/laundry-booster-1gal.png',
             emoji: '👔',
             badgeType: 'USDA Organic',
             badgeColor: '#4ADE80',
@@ -490,7 +490,7 @@
                 wholesale: 'OHS-SKIN-SERUM-100ML-WHOLESALE',
                 wholesaleSubscription: 'OHS-SKIN-SERUM-100ML-WHOLESALE-SUB'
             },
-            image: 'assets/images/products/healing-skin-serum-100ml.jpeg',
+            image: 'assets/images/products/skin-serum-100ml.png',
             emoji: '✨',
             badgeType: 'USDA Organic',
             badgeColor: '#4ADE80',
