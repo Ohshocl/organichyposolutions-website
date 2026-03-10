@@ -747,20 +747,19 @@
                 image: product.image
             };
 
-            if (typeof window.addToCart === 'function') {
-                window.addToCart(cartItem);
-            } else {
-                var cart = [];
-                try { cart = JSON.parse(localStorage.getItem('ohsCart') || '[]'); } catch (e) { cart = []; }
-                var existingIndex = -1;
-                for (var i = 0; i < cart.length; i++) {
-                    if (cart[i].variantId === cartItem.variantId) { existingIndex = i; break; }
-                }
-                if (existingIndex >= 0) { cart[existingIndex].quantity += qty; }
-                else { cart.push(cartItem); }
-                localStorage.setItem('ohsCart', JSON.stringify(cart));
-                if (typeof updateCartBadge === 'function') updateCartBadge();
-            }
+// Write directly to localStorage — cart.js signature expects (productId, qty, isSub)
+// but we've already resolved the full cart item with correct variant/tier/pricing here
+var cart = [];
+try { cart = JSON.parse(localStorage.getItem('ohsCart') || '[]'); } catch (e) { cart = []; }
+var existingIndex = -1;
+for (var i = 0; i < cart.length; i++) {
+    if (cart[i].variantId === cartItem.variantId) { existingIndex = i; break; }
+}
+if (existingIndex >= 0) { cart[existingIndex].quantity += qty; }
+else { cart.push(cartItem); }
+localStorage.setItem('ohsCart', JSON.stringify(cart));
+if (typeof updateCartBadge === 'function') updateCartBadge();
+window.dispatchEvent(new Event('cartUpdated'));
 
             showQuickAddFeedback(product.shortName, qty);
             updateFloatingCart();
