@@ -60,18 +60,21 @@
                     <div class="form-content">
                         <form id="serviceBookingForm" action="https://api.web3forms.com/submit" method="POST" novalidate>
 
-                            <input type="hidden" name="access_key" value="d2863ce3-70c1-48cf-bd78-ba381aac2d83">
-                            <input type="hidden" name="subject" value="New Service Booking Request - Organic HypoSolutions">
-                            <input type="hidden" name="from_name" value="OHS Service Booking">
-                            <input type="hidden" name="redirect" value="https://organichyposolutions.com/shop/book-service.html?success=true">
-                            <input type="hidden" id="hiddenServiceType"  name="service_type"    value="">
-                            <input type="hidden" id="hiddenEstimate"     name="price_estimate"  value="">
-                            <input type="hidden" id="hiddenAddons"       name="selected_addons" value="">
-                            <input type="hidden" id="hiddenContract"     name="contract_type"   value="payPerService">
+                            <input type="hidden" name="access_key"   value="d2863ce3-70c1-48cf-bd78-ba381aac2d83">
+                            <input type="hidden" name="subject"      value="New Service Booking Request - Organic HypoSolutions">
+                            <input type="hidden" name="from_name"    value="OHS Service Booking">
+                            <input type="hidden" name="redirect"     value="https://organichyposolutions.com/book-service.html?success=true">
+                            <input type="hidden" id="hiddenServiceType" name="service_type"      value="">
+                            <input type="hidden" id="hiddenEstimate"    name="price_estimate"    value="">
+                            <input type="hidden" id="hiddenAddons"      name="selected_addons"   value="">
+                            <input type="hidden" id="hiddenContract"    name="contract_type"     value="payPerService">
+                            <input type="hidden" id="hiddenFrequency"   name="service_frequency" value="onetime">
 
-                            <!-- ══════════════════════════════════════════════
+                            <!-- ══════════════════════════════════════════
                                  STEP 1 — SERVICE TYPE
-                            ══════════════════════════════════════════════ -->
+                                 Matches calculator.html service type dropdown
+                                 (same 6 options, same pricing keys)
+                            ══════════════════════════════════════════ -->
                             <div class="service-type-selector">
                                 <h4 class="mb-3 text-center fw-semibold">
                                     <span class="badge bg-primary rounded-pill me-2">1</span>Select Service Type
@@ -82,23 +85,23 @@
                                             <i class="fas fa-home"></i>
                                             <h5 class="fw-bold mb-1">Residential</h5>
                                             <p class="text-muted small mb-2">Homes, apartments, condos</p>
-                                            <span class="urgency-badge urgency-standard">Starting ~$149</span>
+                                            <span class="urgency-badge urgency-standard">Starting ~$150</span>
                                         </div>
                                     </div>
                                     <div class="col-md-5">
                                         <div class="service-type-card" id="card-commercial">
                                             <i class="fas fa-building"></i>
                                             <h5 class="fw-bold mb-1">Commercial</h5>
-                                            <p class="text-muted small mb-2">Offices, retail, food service, healthcare</p>
-                                            <span class="urgency-badge urgency-standard">Starting ~$249</span>
+                                            <p class="text-muted small mb-2">Office, retail, healthcare, food service, fitness</p>
+                                            <span class="urgency-badge urgency-standard">Starting ~$200</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- ══════════════════════════════════════════════
+                            <!-- ══════════════════════════════════════════
                                  STEP 2 — CONTACT INFO
-                            ══════════════════════════════════════════════ -->
+                            ══════════════════════════════════════════ -->
                             <div class="form-section">
                                 <h5><span class="badge bg-primary rounded-pill me-2">2</span><i class="fas fa-user me-1"></i>Your Contact Information</h5>
                                 <div class="row g-3">
@@ -125,10 +128,11 @@
                                 </div>
                             </div>
 
-                            <!-- ══════════════════════════════════════════════
+                            <!-- ══════════════════════════════════════════
                                  STEP 3 — FACILITY DETAILS
-                                 (facility type + complexity — both affect pricing)
-                            ══════════════════════════════════════════════ -->
+                                 Slider: 0–50,000 sqft (matches calculator max)
+                                 Facility type: maps to same 6 pricing keys
+                            ══════════════════════════════════════════ -->
                             <div class="form-section">
                                 <h5><span class="badge bg-primary rounded-pill me-2">3</span><i class="fas fa-map-marker-alt me-1"></i>Facility Details</h5>
                                 <div class="row g-3">
@@ -136,24 +140,30 @@
                                         <label class="form-label fw-semibold" for="address">Service Address <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="address" name="service_address" placeholder="123 Main St, Salt Lake City, UT 84101" required>
                                     </div>
-
-                                    <!-- Square footage slider -->
                                     <div class="col-12">
-                                        <label class="form-label fw-semibold" for="squareFootage">
+                                        <label class="form-label fw-semibold">
                                             Approximate Square Footage
                                             <span class="text-primary fw-bold ms-2" id="sqftDisplay">— sq ft</span>
                                         </label>
+                                        <!-- max=50000 matches calculator.html slider range -->
                                         <input type="range" class="form-range" id="squareFootage" name="square_footage"
-                                               min="0" max="25000" step="1000" value="0">
+                                               min="0" max="50000" step="500" value="0">
                                         <div class="d-flex justify-content-between">
                                             <small class="text-muted">Not sure / 0</small>
-                                            <small class="text-muted">25,000 sq ft</small>
+                                            <small class="text-muted">50,000 sq ft</small>
                                         </div>
                                         <input type="hidden" id="squareFootageValue" name="square_footage_exact" value="">
                                     </div>
-
-                                    <!-- Facility type -->
                                     <div class="col-md-6">
+                                        <!--
+                                            Facility type maps to PRICING keys:
+                                            residential_* → 'residential'  (rate 0.15, min $150)
+                                            commercial_healthcare → 'healthcare' (rate 0.14, min $300)
+                                            commercial_food       → 'food'       (rate 0.135, min $200)
+                                            commercial_education  → 'education'  (rate 0.12,  min $200)
+                                            commercial_gym        → 'fitness'    (rate 0.13,  min $175)
+                                            commercial_*          → 'commercial' (rate 0.125, min $200)
+                                        -->
                                         <label class="form-label fw-semibold" for="facilityType">Facility Type</label>
                                         <select class="form-select" id="facilityType" name="facility_type">
                                             <option value="">-- Select type --</option>
@@ -168,8 +178,6 @@
                                             <option value="commercial_other">Commercial – Other</option>
                                         </select>
                                     </div>
-
-                                    <!-- Complexity — matches calculator exactly -->
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold" for="complexity">
                                             <i class="fas fa-cog me-1"></i>Facility Complexity
@@ -182,18 +190,15 @@
                                         <div class="form-text">Complex layouts (many rooms, multi-floor, tight spaces) cost more to service.</div>
                                     </div>
                                 </div>
-
-                                <!-- Dual machine notice -->
                                 <div class="dual-machine-notice mt-3" id="dualMachineNotice" style="display:none;">
                                     <h6 class="fw-bold mb-2"><i class="fas fa-tools me-1 text-warning"></i>Large Facility Service</h6>
                                     <p class="mb-0 small">Facilities over 20,000 sq ft require dual machine service for optimal coverage. Price reflects dual equipment cost.</p>
                                 </div>
                             </div>
 
-                            <!-- ══════════════════════════════════════════════
+                            <!-- ══════════════════════════════════════════
                                  STEP 4 — SCHEDULING
-                                 (frequency affects pricing; urgency is a surcharge)
-                            ══════════════════════════════════════════════ -->
+                            ══════════════════════════════════════════ -->
                             <div class="form-section">
                                 <h5><span class="badge bg-primary rounded-pill me-2">4</span><i class="fas fa-calendar-alt me-1"></i>Preferred Scheduling</h5>
                                 <div class="row g-3">
@@ -210,23 +215,7 @@
                                             <option value="flexible">Flexible</option>
                                         </select>
                                     </div>
-
-                                    <!-- Service frequency — same options as calculator; affects base price -->
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold" for="frequency">
-                                            <i class="fas fa-sync-alt me-1"></i>Service Frequency
-                                        </label>
-                                        <select class="form-select" id="frequency" name="service_frequency">
-                                            <option value="onetime">One-Time Service</option>
-                                            <option value="monthly" selected>Monthly Service</option>
-                                            <option value="biweekly">Bi-Weekly Service</option>
-                                            <option value="weekly">Weekly Service</option>
-                                            <option value="quarterly">Quarterly Service</option>
-                                        </select>
-                                    </div>
-
-                                    <!-- Urgency — priority surcharge -->
-                                    <div class="col-md-6">
+                                    <div class="col-12">
                                         <label class="form-label fw-semibold">Service Urgency</label>
                                         <div class="d-flex gap-2 flex-wrap mt-1">
                                             <label class="d-flex align-items-center gap-1 cursor-pointer">
@@ -242,37 +231,47 @@
                                 </div>
                             </div>
 
-                            <!-- ══════════════════════════════════════════════
-                                 STEP 5 — CONTRACT OPTIONS
-                                 (identical to calculator contract options)
-                            ══════════════════════════════════════════════ -->
+                            <!-- ══════════════════════════════════════════
+                                 STEP 5 — SERVICE CONTRACT
+                                 Each tile sets both the contract discount (affects
+                                 price estimate) and the frequency (recorded for
+                                 form submission — does NOT change per-visit price,
+                                 matching calculator.html behaviour exactly).
+                            ══════════════════════════════════════════ -->
                             <div class="form-section">
-                                <h5><span class="badge bg-primary rounded-pill me-2">5</span><i class="fas fa-file-contract me-1"></i>Contract Options</h5>
-                                <p class="text-muted small mb-3">Choose a contract for significant savings. Final contract terms confirmed with your specialist.</p>
+                                <h5><span class="badge bg-primary rounded-pill me-2">5</span><i class="fas fa-file-contract me-1"></i>Service Contract</h5>
+                                <p class="text-muted small mb-3">
+                                    Select how often you need service and whether you'd like to lock in a contract discount.
+                                    Recurring contracts apply a discount to every per-visit price shown in the estimate below.
+                                </p>
+
                                 <div class="subscription-options">
 
-                                    <div class="subscription-option selected" id="opt-payPerService" data-contract="payPerService">
+                                    <div class="subscription-option selected" id="opt-onetime"
+                                         data-contract="payPerService" data-frequency="onetime">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div>
-                                                <strong>Pay Per Service</strong>
-                                                <br><small class="text-muted">No contract required</small>
+                                                <strong>One-Time Service</strong>
+                                                <br><small class="text-muted">No contract · pay per visit</small>
                                             </div>
-                                            <div class="text-muted">Standard Rates</div>
+                                            <div class="text-muted">Standard rate</div>
                                         </div>
                                     </div>
 
-                                    <div class="subscription-option" id="opt-monthlyContract" data-contract="monthlyContract">
+                                    <div class="subscription-option" id="opt-monthly"
+                                         data-contract="monthlyContract" data-frequency="monthly">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div>
                                                 <strong>Monthly Contract</strong>
                                                 <span class="subscription-badge ms-2">15% OFF</span>
-                                                <br><small class="text-muted">30-day cancellation notice</small>
+                                                <br><small class="text-muted">Service every month · 30-day cancellation notice</small>
                                             </div>
                                             <div class="text-success fw-bold">Save 15%</div>
                                         </div>
                                     </div>
 
-                                    <div class="subscription-option" id="opt-bimonthlyContract" data-contract="bimonthlyContract">
+                                    <div class="subscription-option" id="opt-bimonthly"
+                                         data-contract="bimonthlyContract" data-frequency="bimonthly">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div>
                                                 <strong>Bi-Monthly Contract</strong>
@@ -283,23 +282,36 @@
                                         </div>
                                     </div>
 
-                                    <div class="subscription-option" id="opt-annualContract" data-contract="annualContract">
+                                    <div class="subscription-option" id="opt-quarterly"
+                                         data-contract="payPerService" data-frequency="quarterly">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>Quarterly Service</strong>
+                                                <br><small class="text-muted">Service every 3 months · no contract required</small>
+                                            </div>
+                                            <div class="text-muted">Standard rate</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="subscription-option" id="opt-annual"
+                                         data-contract="annualContract" data-frequency="monthly">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div>
                                                 <strong>Annual Prepaid Contract</strong>
                                                 <span class="subscription-badge ms-2">20% OFF</span>
-                                                <br><small class="text-muted">Includes 2 complimentary treatments</small>
+                                                <br><small class="text-muted">Monthly service · 2 complimentary treatments included</small>
                                             </div>
                                             <div class="text-success fw-bold">Save 20% + Bonuses</div>
                                         </div>
                                     </div>
 
                                 </div>
+                                <input type="hidden" id="frequency" name="service_frequency" value="onetime">
                             </div>
 
-                            <!-- ══════════════════════════════════════════════
+                            <!-- ══════════════════════════════════════════
                                  STEP 6 — ADD-ONS
-                            ══════════════════════════════════════════════ -->
+                            ══════════════════════════════════════════ -->
                             <div class="form-section">
                                 <h5><span class="badge bg-primary rounded-pill me-2">6</span><i class="fas fa-plus-circle me-1"></i>Optional Add-Ons</h5>
                                 <div class="row g-3">
@@ -362,14 +374,16 @@
                                 </div>
                             </div>
 
-                            <!-- ══════════════════════════════════════════════
-                                 PRICE ESTIMATE — full breakdown matching calculator
-                            ══════════════════════════════════════════════ -->
+                            <!-- ══════════════════════════════════════════
+                                 PRICE ESTIMATE
+                            ══════════════════════════════════════════ -->
                             <div class="price-estimate">
-                                <h4><i class="fas fa-dollar-sign me-2"></i>Estimated Price</h4>
+                                <h4><i class="fas fa-dollar-sign me-2"></i>Estimated Price
+                                    <small class="fs-6 fw-normal opacity-75 ms-1" id="estimateFreqLabel">per service</small>
+                                </h4>
                                 <div class="estimate-amount" id="estimateDisplay">Select service type to see estimate</div>
 
-                                <!-- Pay-per-service breakdown -->
+                                <!-- Breakdown — mirrors calculator.html breakdown panel exactly -->
                                 <div class="price-breakdown" id="priceBreakdown" style="display:none;">
                                     <div class="breakdown-row">
                                         <span>Base service</span>
@@ -379,10 +393,6 @@
                                         <span>Complexity adjustment</span>
                                         <span id="breakdownComplexity">—</span>
                                     </div>
-                                    <div class="breakdown-row" id="breakdownFrequencyRow" style="display:none;">
-                                        <span>Frequency adjustment</span>
-                                        <span id="breakdownFrequency">—</span>
-                                    </div>
                                     <div class="breakdown-row" id="breakdownDualRow" style="display:none;">
                                         <span><i class="fas fa-tools me-1 text-warning"></i>Dual machine (20,000+ sq ft)</span>
                                         <span>×2</span>
@@ -390,6 +400,11 @@
                                     <div class="breakdown-row">
                                         <span>Travel costs</span>
                                         <span id="breakdownTravel">—</span>
+                                    </div>
+                                    <!-- Volume discount row — shown when sqft > 20000, matches calculator -->
+                                    <div class="breakdown-row text-success" id="breakdownVolumeRow" style="display:none;">
+                                        <span>Volume discount (20,000+ sq ft)</span>
+                                        <span id="breakdownVolume">—</span>
                                     </div>
                                     <div class="breakdown-row" id="breakdownPriorityRow" style="display:none;">
                                         <span>Priority scheduling</span>
@@ -400,15 +415,15 @@
                                         <span id="breakdownAddons">—</span>
                                     </div>
                                     <div class="breakdown-row breakdown-total">
-                                        <span>Estimated Total</span>
+                                        <span>Per-visit subtotal</span>
                                         <span id="breakdownTotal">—</span>
                                     </div>
                                 </div>
 
-                                <!-- Contract pricing panel — shown when a contract is selected -->
-                                <div id="contractPanel" style="display:none;" class="mt-3 p-3 rounded" style="background:rgba(255,255,255,0.08);">
+                                <!-- Contract discount panel -->
+                                <div id="contractPanel" style="display:none;" class="mt-3 p-3 rounded">
                                     <div class="breakdown-row">
-                                        <span>Service price</span>
+                                        <span>Per-visit price</span>
                                         <span id="contractServicePrice">—</span>
                                     </div>
                                     <div class="breakdown-row text-success">
@@ -420,7 +435,7 @@
                                         <span id="annualBonusValue">—</span>
                                     </div>
                                     <div class="breakdown-row breakdown-total">
-                                        <span>Contract price</span>
+                                        <span>Contract price per visit</span>
                                         <span id="contractTotalPrice">—</span>
                                     </div>
                                     <div class="text-center mt-2">
@@ -434,9 +449,7 @@
                                 </div>
                             </div>
 
-                            <!-- ══════════════════════════════════════════════
-                                 ADDITIONAL NOTES
-                            ══════════════════════════════════════════════ -->
+                            <!-- ADDITIONAL NOTES -->
                             <div class="form-section">
                                 <h5><i class="fas fa-comment-alt me-1"></i>Additional Notes</h5>
                                 <label class="form-label" for="notes">Anything else we should know?</label>
@@ -473,8 +486,8 @@
                             </div>
 
                         </form>
-                    </div><!-- /.form-content -->
-                </div><!-- /.service-form-container -->
+                    </div>
+                </div>
             </div>
         </section>
     </main>
@@ -490,7 +503,11 @@
         'use strict';
 
         // =========================================================
-        // PRICING CONFIG — identical to calculator.html
+        // PRICING — copied verbatim from calculator.html
+        // All 6 service types, same rates, same minimums.
+        // Frequency multipliers are defined here for completeness but
+        // are NOT applied to the per-visit price (calculator.html does
+        // not apply them in updateCalculator either).
         // =========================================================
         var PRICING = {
             baseRates: {
@@ -501,6 +518,7 @@
                 food:        0.135,
                 fitness:     0.13
             },
+            volumeRate: 0.08,
             minimums: {
                 commercial:  200,
                 residential: 150,
@@ -509,42 +527,40 @@
                 food:        200,
                 fitness:     175
             },
-            volumeRate: 0.08,
-            frequencyMultipliers: {
-                monthly:   1.0,
-                biweekly:  1.8,
-                weekly:    3.5,
-                quarterly: 1.2,
-                onetime:   1.4
-            },
             complexityAdjustments: {
                 standard: 1.0,
                 moderate: 1.15,
                 complex:  1.3
             },
             contractDiscounts: {
-                payPerService:    0,
-                monthlyContract:  0.15,
-                bimonthlyContract:0.10,
-                annualContract:   0.20
+                payPerService:     0,
+                monthlyContract:   0.15,
+                bimonthlyContract: 0.10,
+                annualContract:    0.20
             },
             travelRate:        0.70,
             baseTravelRadius:  25,
-            estimatedDistance: 30,
-            dualMachineThreshold: 20000  // strictly > 20000, matches calculator
+            estimatedDistance: 30
         };
 
-        // ── State ──
-        var selectedType     = null;
-        var currentContract  = 'payPerService';
-        var addonTotal       = 0;
-        var activeAddons     = {};
+        var selectedType    = null;  // 'residential' | 'commercial'
+        var currentContract = 'payPerService';
+        var addonTotal      = 0;
+        var activeAddons    = {};
 
-        // =========================================================
-        // Maps facility dropdown value → PRICING key
-        // =========================================================
-        function getFacilityServiceType(facilityVal) {
-            if (!facilityVal) return selectedType === 'residential' ? 'residential' : 'commercial';
+        // ─────────────────────────────────────────────────────────
+        // Map facilityType dropdown value → PRICING key
+        // Mirrors calculator.html service type options exactly:
+        //   residential_* → 'residential'
+        //   commercial_healthcare → 'healthcare'
+        //   commercial_food       → 'food'
+        //   commercial_education  → 'education'
+        //   commercial_gym        → 'fitness'
+        //   commercial_*          → 'commercial'
+        //   (empty / unknown)     → selectedType fallback
+        // ─────────────────────────────────────────────────────────
+        function getServiceKey(facilityVal) {
+            if (!facilityVal) return selectedType || 'commercial';
             if (facilityVal.indexOf('residential') !== -1) return 'residential';
             if (facilityVal.indexOf('healthcare')  !== -1) return 'healthcare';
             if (facilityVal.indexOf('food')        !== -1) return 'food';
@@ -554,16 +570,30 @@
         }
 
         // =========================================================
-        // CORE ESTIMATE — identical math path as calculator.html
+        // CORE ESTIMATE
+        // Exact math chain from calculator.html updateCalculator():
+        //   1. baseRate  = sqft > 20000 ? volumeRate : baseRates[key]
+        //   2. basePrice = max(sqft * baseRate, minimums[key])
+        //   3. adjustedPrice = basePrice * complexityMult
+        //   4. sqft > 20000 → adjustedPrice *= 2
+        //   5. travelCosts  = (30 - 25) * 0.70 = $3.50
+        //   6. totalPrice   = adjustedPrice + travelCosts
+        //   7. volumeDiscount display = (standardRate - volumeRate) * sqft
+        //   8. contractPrice = totalPrice * (1 - contractDiscount)
+        //
+        // Priority +$50 is book-service-only (shown in breakdown).
+        // Add-ons are book-service-only (shown in breakdown).
+        // Frequency does NOT change price (matches calculator.html).
         // =========================================================
         function updateEstimate() {
-            var display   = document.getElementById('estimateDisplay');
-            var breakdown = document.getElementById('priceBreakdown');
+            var display       = document.getElementById('estimateDisplay');
+            var breakdown     = document.getElementById('priceBreakdown');
+            var contractPanel = document.getElementById('contractPanel');
 
             if (!selectedType) {
-                display.textContent = 'Select service type to see estimate';
-                breakdown.style.display = 'none';
-                document.getElementById('contractPanel').style.display = 'none';
+                display.textContent         = 'Select service type to see estimate';
+                breakdown.style.display     = 'none';
+                contractPanel.style.display = 'none';
                 return;
             }
 
@@ -573,64 +603,64 @@
             if (sqftEl) sqftEl.textContent = sqft > 0 ? sqft.toLocaleString() + ' sq ft' : '— sq ft';
             document.getElementById('squareFootageValue').value = sqft || '';
 
-            // 2. Facility type → service key → base rate + minimum
+            // 2. Service key → rates
             var facilityVal = document.getElementById('facilityType').value;
-            var serviceKey  = getFacilityServiceType(facilityVal);
+            var serviceKey  = getServiceKey(facilityVal);
             var minimum     = PRICING.minimums[serviceKey] || 150;
 
-            // 3. Dual machine check (strictly > 20000, matches calculator)
-            var dualMachine = sqft > PRICING.dualMachineThreshold;
+            // 3. Dual machine flag (sqft > 20000, matches calculator.html)
+            var dualMachine = sqft > 20000;
             document.getElementById('dualMachineNotice').style.display = dualMachine ? 'block' : 'none';
 
-            // 4. Base price (volume rate for large facilities)
+            // 4. Base price
             var baseRate  = dualMachine ? PRICING.volumeRate : (PRICING.baseRates[serviceKey] || 0.125);
             var basePrice = sqft > 0 ? Math.max(sqft * baseRate, minimum) : minimum;
 
-            // 5. Complexity adjustment (matches calculator)
-            var complexity         = document.getElementById('complexity').value || 'standard';
-            var complexityMult     = PRICING.complexityAdjustments[complexity] || 1.0;
-            var complexityAdj      = basePrice * (complexityMult - 1);
-            var afterComplexity    = basePrice * complexityMult;
+            // 5. Complexity (matches calculator.html)
+            var complexity      = document.getElementById('complexity').value || 'standard';
+            var complexityMult  = PRICING.complexityAdjustments[complexity] || 1.0;
+            var complexityAdj   = basePrice * (complexityMult - 1);
+            var adjustedPrice   = basePrice * complexityMult;
 
-            // 6. Dual machine multiplier (matches calculator)
-            if (dualMachine) afterComplexity *= 2;
+            // 6. Dual machine ×2 (matches calculator.html)
+            if (dualMachine) adjustedPrice *= 2;
 
-            // 7. Frequency multiplier (matches calculator)
-            var frequency     = document.getElementById('frequency').value || 'monthly';
-            var freqMult      = PRICING.frequencyMultipliers[frequency] || 1.0;
-            var afterFreq     = afterComplexity * freqMult;
-
-            // 8. Travel costs (matches calculator — fixed 30-mile estimate)
+            // 7. Travel (matches calculator.html fixed 30-mile estimate)
             var travelCosts = 0;
             if (PRICING.estimatedDistance > PRICING.baseTravelRadius) {
                 travelCosts = (PRICING.estimatedDistance - PRICING.baseTravelRadius) * PRICING.travelRate;
             }
 
-            // 9. Priority surcharge (book-service exclusive)
+            // 8. Per-visit total (NO frequency multiplier — matches calculator.html)
+            var totalPrice = adjustedPrice + travelCosts;
+
+            // 9. Volume discount display amount (matches calculator.html volumeDiscountRow)
+            var volumeDiscountAmount = 0;
+            if (dualMachine) {
+                var standardRate = PRICING.baseRates[serviceKey] || 0.125;
+                volumeDiscountAmount = (standardRate - PRICING.volumeRate) * sqft;
+            }
+
+            // 10. Book-service extras (priority + add-ons added on top)
             var priorityEl        = document.querySelector('input[name="urgency"][value="priority"]');
             var prioritySurcharge = (priorityEl && priorityEl.checked) ? 50 : 0;
+            var subTotal          = Math.round(totalPrice + prioritySurcharge + addonTotal);
 
-            // 10. Sub-total before contract discount
-            var subTotal = Math.round(afterFreq + travelCosts + prioritySurcharge + addonTotal);
+            // 11. Contract discount (matches calculator.html updateSubscriptionPricing)
+            var contractDiscount = PRICING.contractDiscounts[currentContract] || 0;
+            var contractSavings  = Math.round(subTotal * contractDiscount);
+            var contractTotal    = subTotal - contractSavings;
 
-            // 11. Contract discount
-            var contractDiscount     = PRICING.contractDiscounts[currentContract] || 0;
-            var contractSavings      = Math.round(subTotal * contractDiscount);
-            var contractTotal        = subTotal - contractSavings;
+            // ── Update main display ──
+            display.textContent = contractDiscount > 0
+                ? '~$' + contractTotal.toLocaleString()
+                : '~$' + subTotal.toLocaleString();
+            document.getElementById('hiddenEstimate').value = display.textContent;
+            document.getElementById('hiddenContract').value  = currentContract;
 
-            // ── Update breakdown display ──
-            display.textContent = (currentContract === 'payPerService')
-                ? '~$' + subTotal.toLocaleString()
-                : '~$' + contractTotal.toLocaleString();
-
-            document.getElementById('hiddenEstimate').value = (currentContract === 'payPerService')
-                ? '~$' + subTotal : '~$' + contractTotal;
-            document.getElementById('hiddenContract').value = currentContract;
-
-            // Base row
+            // ── Breakdown rows ──
             document.getElementById('breakdownBase').textContent = '$' + Math.round(basePrice).toLocaleString();
 
-            // Complexity row
             var compRow = document.getElementById('breakdownComplexityRow');
             if (complexityAdj > 0) {
                 compRow.style.display = '';
@@ -639,26 +669,19 @@
                 compRow.style.display = 'none';
             }
 
-            // Frequency row
-            var freqRow = document.getElementById('breakdownFrequencyRow');
-            if (freqMult !== 1.0) {
-                freqRow.style.display = '';
-                document.getElementById('breakdownFrequency').textContent = '×' + freqMult;
-            } else {
-                freqRow.style.display = 'none';
-            }
-
-            // Dual machine row
-            document.getElementById('breakdownDualRow').style.display = dualMachine ? '' : 'none';
-
-            // Travel row
-            document.getElementById('breakdownTravel').textContent = travelCosts > 0
-                ? '+$' + Math.round(travelCosts).toLocaleString() : '$0';
-
-            // Priority row
+            document.getElementById('breakdownDualRow').style.display    = dualMachine       ? '' : 'none';
+            document.getElementById('breakdownTravel').textContent        = travelCosts > 0  ? '+$' + Math.round(travelCosts) : '$0';
             document.getElementById('breakdownPriorityRow').style.display = prioritySurcharge ? '' : 'none';
 
-            // Add-ons row
+            // Volume discount row (matches calculator.html volumeDiscountRow)
+            var volRow = document.getElementById('breakdownVolumeRow');
+            if (volumeDiscountAmount > 0) {
+                volRow.style.display = '';
+                document.getElementById('breakdownVolume').textContent = '-$' + Math.round(volumeDiscountAmount).toLocaleString();
+            } else {
+                volRow.style.display = 'none';
+            }
+
             var addonsRow = document.getElementById('breakdownAddonsRow');
             if (addonTotal > 0) {
                 addonsRow.style.display = '';
@@ -667,28 +690,25 @@
                 addonsRow.style.display = 'none';
             }
 
-            // Totals
             document.getElementById('breakdownTotal').textContent = '~$' + subTotal.toLocaleString();
             breakdown.style.display = '';
 
-            // Contract panel
-            var contractPanel = document.getElementById('contractPanel');
-            if (currentContract !== 'payPerService') {
+            // ── Contract panel ──
+            if (contractDiscount > 0) {
                 contractPanel.style.display = 'block';
                 document.getElementById('contractServicePrice').textContent  = '$' + subTotal.toLocaleString();
-                document.getElementById('contractDiscountLabel').textContent =
-                    currentContract === 'monthlyContract'   ? 'Monthly contract (15% off)' :
+                document.getElementById('contractDiscountLabel').textContent  =
+                    currentContract === 'monthlyContract'   ? 'Monthly contract (15% off)'    :
                     currentContract === 'bimonthlyContract' ? 'Bi-monthly contract (10% off)' :
                     'Annual contract (20% off)';
                 document.getElementById('contractDiscountAmount').textContent = '-$' + contractSavings.toLocaleString();
                 document.getElementById('contractTotalPrice').textContent     = '~$' + contractTotal.toLocaleString();
-                document.getElementById('contractSavingsBadge').textContent   = 'Save $' + contractSavings.toLocaleString() + ' per service';
+                document.getElementById('contractSavingsBadge').textContent   = 'Save $' + contractSavings.toLocaleString() + ' per visit';
 
                 var annualRow = document.getElementById('annualBonusRow');
                 if (currentContract === 'annualContract') {
                     annualRow.style.display = '';
-                    document.getElementById('annualBonusValue').textContent =
-                        '$' + (subTotal * 2).toLocaleString() + ' value';
+                    document.getElementById('annualBonusValue').textContent = '$' + (subTotal * 2).toLocaleString() + ' value';
                 } else {
                     annualRow.style.display = 'none';
                 }
@@ -714,32 +734,47 @@
             });
         });
 
-        // ── Contract options ──
+        // ── Contract / frequency tiles ──
         document.querySelectorAll('.subscription-option').forEach(function (opt) {
             opt.addEventListener('click', function () {
-                currentContract = this.dataset.contract;
+                currentContract = this.dataset.contract || 'payPerService';
+                var freq        = this.dataset.frequency || 'onetime';
+
                 document.querySelectorAll('.subscription-option').forEach(function (o) {
                     o.classList.remove('selected');
                 });
                 this.classList.add('selected');
+
+                document.getElementById('hiddenFrequency').value = freq;
+                document.getElementById('frequency').value       = freq;
+
+                var freqLabel = document.getElementById('estimateFreqLabel');
+                if (freqLabel) {
+                    freqLabel.textContent =
+                        freq === 'onetime'   ? 'one-time'        :
+                        freq === 'monthly'   ? 'per month'       :
+                        freq === 'bimonthly' ? 'every 2 months'  :
+                        freq === 'quarterly' ? 'per quarter'     : 'per service';
+                }
+
                 updateEstimate();
             });
         });
 
-        // ── All dropdowns + slider + radios wire up ──
-        ['squareFootage'].forEach(function (id) {
-            var el = document.getElementById(id);
-            if (el) {
-                el.addEventListener('input',  updateEstimate);
-                el.addEventListener('change', updateEstimate);
-            }
-        });
+        // ── Slider ──
+        var sqftSlider = document.getElementById('squareFootage');
+        if (sqftSlider) {
+            sqftSlider.addEventListener('input',  updateEstimate);
+            sqftSlider.addEventListener('change', updateEstimate);
+        }
 
-        ['facilityType', 'complexity', 'frequency'].forEach(function (id) {
+        // ── Other dropdowns ──
+        ['facilityType', 'complexity'].forEach(function (id) {
             var el = document.getElementById(id);
             if (el) el.addEventListener('change', updateEstimate);
         });
 
+        // ── Urgency radios ──
         document.querySelectorAll('input[name="urgency"]').forEach(function (r) {
             r.addEventListener('change', updateEstimate);
         });
@@ -785,6 +820,8 @@
         }
 
         // ── Calculator prefill ──
+        // calculator.html passes serviceType as 'residential' or 'commercial' only
+        // (it maps all types to one of these two before building the URL).
         function prefillFromCalculator() {
             var params = new URLSearchParams(window.location.search);
             if (!params.get('source') || params.get('source').indexOf('calculator') === -1) return;
@@ -792,35 +829,32 @@
             var svcType = params.get('serviceType') || '';
             if (svcType === 'residential' || svcType === 'commercial') {
                 selectServiceType(svcType);
-            } else if (svcType) {
-                var isComm = ['commercial','healthcare','education','food','gym','fitness'].some(function (t) {
-                    return svcType.indexOf(t) !== -1;
-                });
-                selectServiceType(isComm ? 'commercial' : 'residential');
             }
 
             var sqft = parseInt(params.get('sqft')) || 0;
             if (sqft) {
                 var sf = document.getElementById('squareFootage');
-                if (sf) { sf.value = Math.min(Math.max(sqft, 0), 25000); }
+                if (sf) sf.value = Math.min(Math.max(sqft, 0), 50000);
             }
 
-            var complexity = params.get('complexity');
-            if (complexity) {
-                var cEl = document.getElementById('complexity');
-                if (cEl) cEl.value = complexity;
-            }
+            var cEl = document.getElementById('complexity');
+            if (cEl && params.get('complexity')) cEl.value = params.get('complexity');
 
-            var frequency = params.get('frequency');
-            if (frequency) {
-                var fEl = document.getElementById('frequency');
-                if (fEl) fEl.value = frequency;
-            }
-
+            // Map contractType → tile id, then click
+            var contractMap = {
+                payPerService:     'opt-onetime',
+                monthlyContract:   'opt-monthly',
+                bimonthlyContract: 'opt-bimonthly',
+                annualContract:    'opt-annual'
+            };
             var contractType = params.get('contractType');
-            if (contractType && contractType !== 'payPerService') {
-                var optEl = document.getElementById('opt-' + contractType);
-                if (optEl) optEl.click();
+            var tileId = contractMap[contractType] || 'opt-onetime';
+            var tileEl = document.getElementById(tileId);
+            if (tileEl) tileEl.click();
+
+            if (params.get('frequency') === 'quarterly') {
+                var qEl = document.getElementById('opt-quarterly');
+                if (qEl) qEl.click();
             }
 
             updateEstimate();
@@ -846,9 +880,9 @@
         if (form) {
             form.addEventListener('submit', function (e) {
                 var required = [
-                    { id: 'firstName', label: 'First Name' },
-                    { id: 'lastName',  label: 'Last Name' },
-                    { id: 'email',     label: 'Email Address' },
+                    { id: 'firstName', label: 'First Name'      },
+                    { id: 'lastName',  label: 'Last Name'       },
+                    { id: 'email',     label: 'Email Address'   },
                     { id: 'address',   label: 'Service Address' }
                 ];
                 var missing = required.filter(function (f) {
