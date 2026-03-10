@@ -469,10 +469,30 @@
             }
         }
 
-        /* ── Submit button loading state ── */
+/* ── Submit validation + loading state ── */
         var form = document.getElementById('serviceBookingForm');
         if (form) {
-            form.addEventListener('submit', function () {
+            form.addEventListener('submit', function (e) {
+                var required = [
+                    { id: 'firstName',  label: 'First Name' },
+                    { id: 'lastName',   label: 'Last Name' },
+                    { id: 'email',      label: 'Email Address' },
+                    { id: 'address',    label: 'Service Address' }
+                ];
+
+                var missing = required.filter(function (f) {
+                    var el = document.getElementById(f.id);
+                    return !el || !el.value.trim();
+                });
+
+                if (missing.length) {
+                    e.preventDefault();
+                    var names = missing.map(function (f) { return f.label; }).join(', ');
+                    alert('Please fill in the following required fields: ' + names);
+                    document.getElementById(missing[0].id).focus();
+                    return;
+                }
+
                 var btn = document.getElementById('submitBtn');
                 if (btn) {
                     btn.disabled = true;
