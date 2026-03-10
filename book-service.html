@@ -11,15 +11,11 @@
     <meta property="og:image" content="https://organichyposolutions.com/assets/images/logos/ohs-brand-image.jpg">
     <meta property="og:type" content="website">
     <link rel="icon" type="image/png" href="assets/images/logos/ohs-organic-logo.png">
-
-    <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/global-styles.css">
     <link rel="stylesheet" href="assets/css/components.css">
     <link rel="stylesheet" href="assets/css/pages.css">
-
-    <!-- Product Catalog -->
     <script src="shop/js/product-catalog.js"></script>
 </head>
 <body class="page-book-service">
@@ -27,13 +23,10 @@
     <div id="nav-placeholder"></div>
 
     <main>
-        <!-- HERO -->
         <section class="hero-section">
             <div class="container">
                 <div class="hero-content text-center">
-                    <h1 class="hero-title">
-                        <i class="fas fa-spray-can me-2"></i>Book a Service
-                    </h1>
+                    <h1 class="hero-title"><i class="fas fa-spray-can me-2"></i>Book a Service</h1>
                     <p class="hero-subtitle">
                         Professional USDA Certified Organic HOCl sanitization for your home or business.
                         Get an instant estimate and schedule a consultation with our specialists.
@@ -48,44 +41,34 @@
             </div>
         </section>
 
-        <!-- SUCCESS BANNER (shown after form submission) -->
         <div id="successBanner" class="container mt-4" style="display:none;">
             <div class="alert alert-success d-flex align-items-center gap-3" role="alert">
                 <i class="fas fa-check-circle fa-2x"></i>
-                <div>
-                    <strong>Booking request submitted!</strong> We'll review your details and reach out within 1 business day to confirm your appointment.
-                </div>
+                <div><strong>Booking request submitted!</strong> We'll review your details and reach out within 1 business day to confirm your appointment.</div>
             </div>
         </div>
 
-        <!-- BOOKING FORM -->
         <section class="py-5">
             <div class="container">
                 <div class="service-form-container">
 
-                    <!-- Form Header -->
                     <div class="form-header">
-                        <h2 class="mb-2">
-                            <i class="fas fa-calendar-plus me-2"></i>Service Booking Request
-                        </h2>
+                        <h2 class="mb-2"><i class="fas fa-calendar-plus me-2"></i>Service Booking Request</h2>
                         <p class="mb-0 opacity-75">Fill out the form below and we'll contact you to confirm scheduling and finalize pricing.</p>
                     </div>
 
-                    <!-- Form Content -->
                     <div class="form-content">
                         <form id="serviceBookingForm" action="https://api.web3forms.com/submit" method="POST" novalidate>
 
-                            <!-- Web3Forms config -->
                             <input type="hidden" name="access_key" value="d2863ce3-70c1-48cf-bd78-ba381aac2d83">
                             <input type="hidden" name="subject" value="New Service Booking Request - Organic HypoSolutions">
                             <input type="hidden" name="from_name" value="OHS Service Booking">
                             <input type="hidden" name="redirect" value="https://organichyposolutions.com/shop/book-service.html?success=true">
-                            <!-- Hidden fields populated by JS -->
                             <input type="hidden" id="hiddenServiceType" name="service_type" value="">
                             <input type="hidden" id="hiddenEstimate" name="price_estimate" value="">
                             <input type="hidden" id="hiddenAddons" name="selected_addons" value="">
 
-                            <!-- ── STEP 1: SERVICE TYPE ── -->
+                            <!-- STEP 1: SERVICE TYPE -->
                             <div class="service-type-selector">
                                 <h4 class="mb-3 text-center fw-semibold">
                                     <span class="badge bg-primary rounded-pill me-2">1</span>Select Service Type
@@ -96,9 +79,7 @@
                                             <i class="fas fa-home"></i>
                                             <h5 class="fw-bold mb-1">Residential</h5>
                                             <p class="text-muted small mb-2">Homes, apartments, condos</p>
-                                            <div class="d-flex justify-content-center gap-1 flex-wrap">
-                                                <span class="urgency-badge urgency-standard">Starting ~$149</span>
-                                            </div>
+                                            <span class="urgency-badge urgency-standard">Starting ~$149</span>
                                         </div>
                                     </div>
                                     <div class="col-md-5">
@@ -106,20 +87,15 @@
                                             <i class="fas fa-building"></i>
                                             <h5 class="fw-bold mb-1">Commercial</h5>
                                             <p class="text-muted small mb-2">Offices, retail, food service, healthcare</p>
-                                            <div class="d-flex justify-content-center gap-1 flex-wrap">
-                                                <span class="urgency-badge urgency-standard">Starting ~$249</span>
-                                            </div>
+                                            <span class="urgency-badge urgency-standard">Starting ~$249</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- ── STEP 2: CONTACT INFO ── -->
+                            <!-- STEP 2: CONTACT INFO -->
                             <div class="form-section">
-                                <h5>
-                                    <span class="badge bg-primary rounded-pill me-2">2</span>
-                                    <i class="fas fa-user me-1"></i>Your Contact Information
-                                </h5>
+                                <h5><span class="badge bg-primary rounded-pill me-2">2</span><i class="fas fa-user me-1"></i>Your Contact Information</h5>
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold" for="firstName">First Name <span class="text-danger">*</span></label>
@@ -144,28 +120,27 @@
                                 </div>
                             </div>
 
-                            <!-- ── STEP 3: FACILITY DETAILS ── -->
+                            <!-- STEP 3: FACILITY DETAILS -->
                             <div class="form-section">
-                                <h5>
-                                    <span class="badge bg-primary rounded-pill me-2">3</span>
-                                    <i class="fas fa-map-marker-alt me-1"></i>Facility Details
-                                </h5>
+                                <h5><span class="badge bg-primary rounded-pill me-2">3</span><i class="fas fa-map-marker-alt me-1"></i>Facility Details</h5>
                                 <div class="row g-3">
                                     <div class="col-12">
                                         <label class="form-label fw-semibold" for="address">Service Address <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="address" name="service_address" placeholder="123 Main St, Salt Lake City, UT 84101" required>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold" for="squareFootage">Approximate Square Footage</label>
-                                        <select class="form-select" id="squareFootage" name="square_footage">
-                                            <option value="">-- Select range --</option>
-                                            <option value="under_1000">Under 1,000 sq ft</option>
-                                            <option value="1000_2500">1,000 – 2,500 sq ft</option>
-                                            <option value="2500_5000">2,500 – 5,000 sq ft</option>
-                                            <option value="5000_10000">5,000 – 10,000 sq ft</option>
-                                            <option value="10000_25000">10,000 – 25,000 sq ft</option>
-                                            <option value="over_25000">25,000+ sq ft</option>
-                                        </select>
+                                    <div class="col-12">
+                                        <label class="form-label fw-semibold" for="squareFootage">
+                                            Approximate Square Footage
+                                            <span class="text-primary fw-bold ms-2" id="sqftDisplay">— sq ft</span>
+                                        </label>
+                                        <!-- min=0 value=0: far-left start; step=1000 → clean 1k increments to 25k -->
+                                        <input type="range" class="form-range" id="squareFootage" name="square_footage"
+                                               min="0" max="25000" step="1000" value="0">
+                                        <div class="d-flex justify-content-between">
+                                            <small class="text-muted">Not sure / 0</small>
+                                            <small class="text-muted">25,000 sq ft</small>
+                                        </div>
+                                        <input type="hidden" id="squareFootageValue" name="square_footage_exact" value="">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold" for="facilityType">Facility Type</label>
@@ -183,14 +158,16 @@
                                         </select>
                                     </div>
                                 </div>
+                                <!-- Dual machine notice — shown by JS when sqft > 20,000 -->
+                                <div class="dual-machine-notice mt-3" id="dualMachineNotice" style="display:none;">
+                                    <h6 class="fw-bold mb-2"><i class="fas fa-tools me-1 text-warning"></i>Large Facility Service</h6>
+                                    <p class="mb-0 small">Facilities over 20,000 sq ft require dual machine service for optimal coverage. Price reflects dual equipment cost.</p>
+                                </div>
                             </div>
 
-                            <!-- ── STEP 4: SCHEDULING ── -->
+                            <!-- STEP 4: SCHEDULING -->
                             <div class="form-section">
-                                <h5>
-                                    <span class="badge bg-primary rounded-pill me-2">4</span>
-                                    <i class="fas fa-calendar-alt me-1"></i>Preferred Scheduling
-                                </h5>
+                                <h5><span class="badge bg-primary rounded-pill me-2">4</span><i class="fas fa-calendar-alt me-1"></i>Preferred Scheduling</h5>
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold" for="preferredDate">Preferred Date</label>
@@ -206,7 +183,7 @@
                                         </select>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label fw-semibold" for="urgency">Service Urgency</label>
+                                        <label class="form-label fw-semibold">Service Urgency</label>
                                         <div class="d-flex gap-2 flex-wrap mt-1">
                                             <label class="d-flex align-items-center gap-1 cursor-pointer">
                                                 <input type="radio" name="urgency" value="standard" checked>
@@ -221,12 +198,9 @@
                                 </div>
                             </div>
 
-                            <!-- ── STEP 5: ADD-ONS ── -->
+                            <!-- STEP 5: ADD-ONS -->
                             <div class="form-section">
-                                <h5>
-                                    <span class="badge bg-primary rounded-pill me-2">5</span>
-                                    <i class="fas fa-plus-circle me-1"></i>Optional Add-Ons
-                                </h5>
+                                <h5><span class="badge bg-primary rounded-pill me-2">5</span><i class="fas fa-plus-circle me-1"></i>Optional Add-Ons</h5>
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <div class="service-addon">
@@ -287,7 +261,7 @@
                                 </div>
                             </div>
 
-                            <!-- ── PRICE ESTIMATE ── -->
+                            <!-- PRICE ESTIMATE -->
                             <div class="price-estimate">
                                 <h4><i class="fas fa-dollar-sign me-2"></i>Estimated Price</h4>
                                 <div class="estimate-amount" id="estimateDisplay">Select service type to see estimate</div>
@@ -295,6 +269,10 @@
                                     <div class="breakdown-row">
                                         <span>Base service</span>
                                         <span id="breakdownBase">—</span>
+                                    </div>
+                                    <div class="breakdown-row" id="breakdownDualRow" style="display:none;">
+                                        <span><i class="fas fa-tools me-1 text-warning"></i>Dual machine (20,000+ sq ft)</span>
+                                        <span>×2</span>
                                     </div>
                                     <div class="breakdown-row" id="breakdownPriorityRow" style="display:none;">
                                         <span>Priority scheduling</span>
@@ -315,23 +293,20 @@
                                 </div>
                             </div>
 
-                            <!-- ── ADDITIONAL NOTES ── -->
+                            <!-- ADDITIONAL NOTES -->
                             <div class="form-section">
-                                <h5>
-                                    <i class="fas fa-comment-alt me-1"></i>Additional Notes
-                                </h5>
+                                <h5><i class="fas fa-comment-alt me-1"></i>Additional Notes</h5>
                                 <label class="form-label" for="notes">Anything else we should know?</label>
                                 <textarea class="form-control" id="notes" name="notes" rows="4"
                                     placeholder="Access instructions, specific areas of concern, existing equipment, allergies or sensitivities, etc."></textarea>
                             </div>
 
-                            <!-- ── INFO CARDS ── -->
+                            <!-- INFO CARDS -->
                             <div class="row g-3 mb-4">
                                 <div class="col-md-6">
                                     <div class="info-card">
                                         <i class="fas fa-map-marker-alt me-2"></i>
-                                        <strong>Service Area:</strong> Salt Lake City &amp; surrounding Utah counties.
-                                        Travel fees may apply beyond 30 miles.
+                                        <strong>Service Area:</strong> Salt Lake City &amp; surrounding Utah counties. Travel fees may apply beyond 30 miles.
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -343,12 +318,9 @@
                                 </div>
                             </div>
 
-                            <!-- ── SUBMIT ── -->
+                            <!-- SUBMIT -->
                             <div class="submit-section">
-                                <p class="text-muted small mb-3">
-                                    By submitting this form you agree to be contacted by an OHS representative to confirm your appointment.
-                                    No payment is collected at this stage.
-                                </p>
+                                <p class="text-muted small mb-3">By submitting this form you agree to be contacted by an OHS representative to confirm your appointment. No payment is collected at this stage.</p>
                                 <button type="submit" class="btn submit-btn text-white" id="submitBtn">
                                     <i class="fas fa-calendar-check me-2"></i>Submit Booking Request
                                 </button>
@@ -358,15 +330,14 @@
                             </div>
 
                         </form>
-                    </div><!-- /.form-content -->
-                </div><!-- /.service-form-container -->
+                    </div>
+                </div>
             </div>
         </section>
     </main>
 
     <div id="footer-placeholder"></div>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/global-scripts.js"></script>
     <script src="assets/js/analytics.js"></script>
@@ -375,31 +346,120 @@
     document.addEventListener('DOMContentLoaded', function () {
         'use strict';
 
-        /* ── State ── */
         var selectedType = null;
-        var addonTotal = 0;
+        var addonTotal   = 0;
         var activeAddons = {};
 
-        var BASE_PRICES = { residential: 149, commercial: 249 };
+        // =========================================================
+        // PRICING CONFIG — keep in sync with calculator.html
+        // All 6 base rates and minimums mirror calculator.html exactly.
+        // =========================================================
+        var PRICING = {
+            baseRates: {
+                commercial:  0.125,
+                residential: 0.15,
+                healthcare:  0.14,
+                education:   0.12,
+                food:        0.135,
+                fitness:     0.13
+            },
+            minimums: {
+                commercial:  200,
+                residential: 150,
+                healthcare:  300,
+                education:   200,
+                food:        200,
+                fitness:     175
+            },
+            volumeRate:            0.08,
+            complexityAdjustments: { standard: 1.0, moderate: 1.15, complex: 1.3 },
+            travelRate:            0.70,
+            baseTravelRadius:      25,
+            estimatedDistance:     30,
+            dualMachineThreshold:  20000   // strictly > 20000, matches calculator.html
+        };
 
-        /* ── Estimate ── */
+        // =========================================================
+        // Maps the facility type dropdown value → PRICING key.
+        // Prevents healthcare/food/education/gym from collapsing
+        // to 'commercial' and getting the wrong base rate.
+        // =========================================================
+        function getFacilityServiceType(facilityVal) {
+            if (!facilityVal) {
+                return selectedType === 'residential' ? 'residential' : 'commercial';
+            }
+            if (facilityVal.indexOf('residential') !== -1) return 'residential';
+            if (facilityVal.indexOf('healthcare')  !== -1) return 'healthcare';
+            if (facilityVal.indexOf('food')        !== -1) return 'food';
+            if (facilityVal.indexOf('education')   !== -1) return 'education';
+            if (facilityVal.indexOf('gym')         !== -1) return 'fitness';
+            return 'commercial'; // office, retail, other
+        }
+
+        // =========================================================
+        // CORE ESTIMATE — fires on every input change
+        // =========================================================
         function updateEstimate() {
             var display   = document.getElementById('estimateDisplay');
             var breakdown = document.getElementById('priceBreakdown');
+
             if (!selectedType) {
                 display.textContent = 'Select service type to see estimate';
                 breakdown.style.display = 'none';
                 return;
             }
-            var base = BASE_PRICES[selectedType];
-            var priorityEl = document.querySelector('input[name="urgency"][value="priority"]');
-            var prioritySurcharge = (priorityEl && priorityEl.checked) ? 50 : 0;
-            var total = base + prioritySurcharge + addonTotal;
 
+            /* 1. Sqft from slider (0 = not set) */
+            var sqft = parseInt(document.getElementById('squareFootage').value) || 0;
+
+            var sqftDisplay = document.getElementById('sqftDisplay');
+            if (sqftDisplay) {
+                sqftDisplay.textContent = sqft > 0 ? sqft.toLocaleString() + ' sq ft' : '— sq ft';
+            }
+            document.getElementById('squareFootageValue').value = sqft || '';
+
+            /* 2. Map facility type → correct service type key for base rate + minimum */
+            var facilityVal = document.getElementById('facilityType').value;
+            var serviceKey  = getFacilityServiceType(facilityVal);
+            var baseRate    = PRICING.baseRates[serviceKey]  || 0.125;
+            var minimum     = PRICING.minimums[serviceKey]   || 150;
+
+            /* 3. Dual machine — strictly > 20,000 sq ft (matches calculator.html) */
+            var dualMachine = sqft > PRICING.dualMachineThreshold;
+            var dualNotice  = document.getElementById('dualMachineNotice');
+            if (dualNotice) dualNotice.style.display = dualMachine ? 'block' : 'none';
+
+            /* 4. Base price — volume rate applies when dual machine is needed */
+            var effectiveRate = dualMachine ? PRICING.volumeRate : baseRate;
+            var basePrice     = sqft > 0 ? Math.max(sqft * effectiveRate, minimum) : minimum;
+
+            /* 5. Complexity — book-service has no complexity selector; use standard (1.0×).
+                  Healthcare / food / fitness already carry their rate premium above. */
+            var adjustedPrice = basePrice * PRICING.complexityAdjustments['standard'];
+
+            /* 6. Apply dual machine multiplier */
+            if (dualMachine) adjustedPrice *= 2;
+
+            /* 7. Travel (fixed 30-mile estimate, matches calculator.html) */
+            var travelCosts = 0;
+            if (PRICING.estimatedDistance > PRICING.baseTravelRadius) {
+                travelCosts = (PRICING.estimatedDistance - PRICING.baseTravelRadius) * PRICING.travelRate;
+            }
+
+            /* 8. Priority surcharge */
+            var priorityEl        = document.querySelector('input[name="urgency"][value="priority"]');
+            var prioritySurcharge = (priorityEl && priorityEl.checked) ? 50 : 0;
+
+            /* 9. Total */
+            var total = Math.round(adjustedPrice + travelCosts + prioritySurcharge + addonTotal);
+
+            /* Update estimate display */
             display.textContent = '~$' + total.toLocaleString();
-            document.getElementById('hiddenEstimate').value = '~$' + total;
-            document.getElementById('breakdownBase').textContent = '$' + base;
-            document.getElementById('breakdownTotal').textContent = '~$' + total.toLocaleString();
+            document.getElementById('hiddenEstimate').value        = '~$' + total;
+            document.getElementById('breakdownBase').textContent   = '$' + Math.round(basePrice).toLocaleString();
+            document.getElementById('breakdownTotal').textContent  = '~$' + total.toLocaleString();
+
+            document.getElementById('breakdownDualRow').style.display     = dualMachine       ? '' : 'none';
             document.getElementById('breakdownPriorityRow').style.display = prioritySurcharge ? '' : 'none';
 
             var addonsRow = document.getElementById('breakdownAddonsRow');
@@ -425,17 +485,27 @@
 
         document.querySelectorAll('.service-type-card').forEach(function (card) {
             card.addEventListener('click', function () {
-                var type = this.id.replace('card-', '');
-                selectServiceType(type);
+                selectServiceType(this.id.replace('card-', ''));
             });
         });
 
         /* ── Urgency radios ── */
-        document.querySelectorAll('input[name="urgency"]').forEach(function (radio) {
-            radio.addEventListener('change', updateEstimate);
+        document.querySelectorAll('input[name="urgency"]').forEach(function (r) {
+            r.addEventListener('change', updateEstimate);
         });
 
-        /* ── Add-on cards ── */
+        /* ── Sqft slider — input fires live while dragging, change on release ── */
+        var sqftSlider = document.getElementById('squareFootage');
+        if (sqftSlider) {
+            sqftSlider.addEventListener('input',  updateEstimate);
+            sqftSlider.addEventListener('change', updateEstimate);
+        }
+
+        /* ── Facility type dropdown ── */
+        var facilitySelect = document.getElementById('facilityType');
+        if (facilitySelect) facilitySelect.addEventListener('change', updateEstimate);
+
+        /* ── Add-ons ── */
         var addonConfig = {
             'addon-deep':     { key: 'deep_clean',        cost: 75 },
             'addon-air':      { key: 'air_treatment',     cost: 60 },
@@ -445,24 +515,18 @@
 
         document.querySelectorAll('.service-addon').forEach(function (container) {
             container.addEventListener('click', function (e) {
-                /* Don't double-fire when the checkbox itself is clicked */
                 if (e.target.type === 'checkbox') return;
-                var checkbox = this.querySelector('input[type="checkbox"]');
-                if (!checkbox) return;
-                checkbox.checked = !checkbox.checked;
-                triggerAddonUpdate(this, checkbox);
+                var cb = this.querySelector('input[type="checkbox"]');
+                if (!cb) return;
+                cb.checked = !cb.checked;
+                triggerAddonUpdate(this, cb);
             });
             var cb = container.querySelector('input[type="checkbox"]');
-            if (cb) {
-                cb.addEventListener('change', function () {
-                    triggerAddonUpdate(container, this);
-                });
-            }
+            if (cb) cb.addEventListener('change', function () { triggerAddonUpdate(container, this); });
         });
 
         function triggerAddonUpdate(container, checkbox) {
-            var id  = checkbox.id;
-            var cfg = addonConfig[id];
+            var cfg = addonConfig[checkbox.id];
             if (!cfg) return;
             container.classList.toggle('selected', checkbox.checked);
             if (checkbox.checked) {
@@ -493,27 +557,22 @@
             if (svcType === 'residential' || svcType === 'commercial') {
                 selectServiceType(svcType);
             } else if (svcType) {
-                var isCommercial = ['commercial','healthcare','education','food','gym'].some(function (t) {
+                var isComm = ['commercial','healthcare','education','food','gym','fitness'].some(function (t) {
                     return svcType.indexOf(t) !== -1;
                 });
-                selectServiceType(isCommercial ? 'commercial' : 'residential');
+                selectServiceType(isComm ? 'commercial' : 'residential');
             }
 
             var sqft = parseInt(params.get('sqft')) || 0;
             if (sqft) {
-                var sfSelect = document.getElementById('squareFootage');
-                if (sfSelect) {
-                    sfSelect.value = sqft < 1000    ? 'under_1000'
-                                   : sqft < 2500    ? '1000_2500'
-                                   : sqft < 5000    ? '2500_5000'
-                                   : sqft < 10000   ? '5000_10000'
-                                   : sqft < 25000   ? '10000_25000'
-                                   : 'over_25000';
+                var sf = document.getElementById('squareFootage');
+                if (sf) {
+                    sf.value = Math.min(Math.max(sqft, 0), 25000);
+                    updateEstimate();
                 }
             }
 
-            var freq = params.get('frequency');
-            if (freq === 'onetime') {
+            if (params.get('frequency') === 'onetime') {
                 var timeSelect = document.getElementById('preferredTime');
                 if (timeSelect) timeSelect.value = 'flexible';
             }
@@ -563,7 +622,6 @@
             });
         }
 
-        /* ── Init ── */
         prefillFromCalculator();
     });
     </script>
