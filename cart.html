@@ -375,23 +375,63 @@
         }
 
         // ============================================================
-        // CHECKOUT
-        // ============================================================
-        function handleCheckout() {
-            var btn = document.getElementById('checkoutBtn');
-            if (!btn) return;
-            btn.disabled  = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Preparing checkout…';
-            setTimeout(function() {
-                if (window.proceedToCheckout) {
-                    window.proceedToCheckout();
-                } else if (window.showNotification) {
-                    window.showNotification('Checkout unavailable. Please try again.', 'error');
-                }
-                btn.disabled  = false;
-                btn.innerHTML = '<i class="fas fa-lock me-2"></i>SECURE CHECKOUT';
-            }, 500);
+// CHECKOUT — with inventory validation before proceeding
+// ============================================================
+async function handleCheckout() {
+    var btn = document.getElementById('checkoutBtn');
+    if (!btn) return;
+    btn.disabled  = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Checking availability…';
+
+    try {
+        // Force-refresh inventory at checkout time for accuracy
+        if (window.refreshInventory) {
+            await window.refreshInventory();
         }
+
+        var items      = window.getCartItems();
+        var violations = [];
+
+        items.forEach(function(item) {
+            var status = window.getInventoryStatus ? window.getInventoryStatus(item.productId) : null;
+            if (!status) return; // no inventory data — don't block
+            if (!status.canPurchase) {
+                violations.push(item.name + ' is out of stock');
+            } else if (status.quantity !== null && item.quantity > status.quantity) {
+                violations.push(item.name + ': only ' + status.quantity + ' available (you have ' + item.quantity + ')');
+                window.updateCartItemQuantity(item.variantId, status.quantity);
+            }
+        });
+
+        if (violations.length > 0) {
+            updateCartDisplay();
+            if (window.showNotification) {
+                window.showNotification('Cart updated — ' + violations.join('; '), 'warning');
+            }
+            btn.disabled  = false;
+            btn.innerHTML = '<i class="fas fa-lock me-2"></i>SECURE CHECKOUT';
+            return;
+        }
+
+        // All clear — proceed to Shopify checkout
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Preparing checkout…';
+        if (window.proceedToCheckout) {
+            window.proceedToCheckout();
+        } else if (window.showNotification) {
+            window.showNotification('Checkout unavailable. Please try again.', 'error');
+        }
+
+    } catch (err) {
+        // API failure — don't block the customer, let Shopify catch it
+        console.error('Checkout inventory check failed:', err);
+        if (window.proceedToCheckout) {
+            window.proceedToCheckout();
+        }
+    }
+
+    btn.disabled  = false;
+    btn.innerHTML = '<i class="fas fa-lock me-2"></i>SECURE CHECKOUT';
+}
 
         // ============================================================
         // INITIALIZE
