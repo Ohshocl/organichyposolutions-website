@@ -119,22 +119,23 @@
                     <h4 class="text-center mb-3">Order Summary</h4>
                     <div class="summary-grid">
                         <div class="summary-item">
-                            <div class="summary-icon"><i class="fas fa-receipt"></i></div>
+                            <!-- FIX: icon rendered directly, not inside .summary-icon wrapper -->
+                            <i class="fas fa-receipt fa-2x mb-2" style="color:rgba(255,255,255,0.85);"></i>
                             <div class="summary-value" id="cartSubtotal">$0.00</div>
                             <div class="summary-label">Subtotal</div>
                         </div>
                         <div class="summary-item">
-                            <div class="summary-icon"><i class="fas fa-tag"></i></div>
+                            <i class="fas fa-tag fa-2x mb-2" style="color:rgba(255,255,255,0.85);"></i>
                             <div class="summary-value" id="wholesaleSavingsAmount">$0.00</div>
                             <div class="summary-label">Wholesale Savings</div>
                         </div>
                         <div class="summary-item">
-                            <div class="summary-icon"><i class="fas fa-truck"></i></div>
+                            <i class="fas fa-truck fa-2x mb-2" style="color:rgba(255,255,255,0.85);"></i>
                             <div class="summary-value">Calculated</div>
                             <div class="summary-label">Shipping at Checkout</div>
                         </div>
                         <div class="summary-item">
-                            <div class="summary-icon"><i class="fas fa-calculator"></i></div>
+                            <i class="fas fa-calculator fa-2x mb-2" style="color:rgba(255,255,255,0.85);"></i>
                             <div class="summary-value">+Tax</div>
                             <div class="summary-label">Utah Tax at Checkout</div>
                         </div>
@@ -330,18 +331,20 @@
 
         // ============================================================
         // QUANTITY HANDLERS
+        // FIX: pass item.variantId (not item.productId) to
+        //      updateCartItemQuantity — cart.js looks up by variantId.
         // ============================================================
         function handleQtyChange(idx, delta) {
             var items = window.getCartItems();
             if (!items[idx]) return;
-            window.updateCartItemQuantity(items[idx].productId, Math.max(1, items[idx].quantity + delta));
+            window.updateCartItemQuantity(items[idx].variantId, Math.max(1, items[idx].quantity + delta));
             updateCartDisplay();
         }
 
         function handleSetQty(idx, val) {
             var items = window.getCartItems();
             if (!items[idx]) return;
-            window.updateCartItemQuantity(items[idx].productId, Math.max(1, Math.min(999, parseInt(val) || 1)));
+            window.updateCartItemQuantity(items[idx].variantId, Math.max(1, Math.min(999, parseInt(val) || 1)));
             updateCartDisplay();
         }
 
@@ -350,6 +353,7 @@
             mobileQtyTimer = setTimeout(function() { handleSetQty(idx, val); }, 800);
         }
 
+        // removeFromCart accepts productId — this one was already correct.
         function handleRemove(idx) {
             var items = window.getCartItems();
             if (items[idx] && confirm('Remove this item from your cart?')) {
