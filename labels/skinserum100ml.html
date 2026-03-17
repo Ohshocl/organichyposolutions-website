@@ -41,9 +41,18 @@
             -webkit-print-color-adjust:exact; print-color-adjust:exact; color-adjust:exact;
         }
 
-        /* LOGO - fills full width, max height so it dominates */
+        /* Logo + USDA seal row */
+        .logo-row {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            min-height: 0;
+        }
+
         .logo-image {
-            max-width: 85%;
+            max-width: 72%;
             max-height: 85%;
             width: auto;
             height: auto;
@@ -56,7 +65,11 @@
             -webkit-print-color-adjust:exact; print-color-adjust:exact; color-adjust:exact;
         }
 
-        /* TITLE ROW: name left, circle right */
+        .usda-seal {
+            flex-shrink: 0;
+        }
+
+        /* TITLE ROW */
         .title-row {
             display: flex;
             align-items: center;
@@ -160,6 +173,10 @@
         .footer p { margin:0.3px 0; }
         .f-left { text-align:left; }
         .f-right { text-align:right; }
+        .footer-divider {
+            border-top: 0.5px solid rgba(255,255,255,0.4);
+            margin: 1.5px 0 1px 0;
+        }
     </style>
 </head>
 <body>
@@ -168,9 +185,13 @@
     <!-- FRONT PANEL -->
     <div class="front-panel">
 
-        <!-- Logo container: takes all free space, centers logo inside -->
-        <div style="flex:1; display:flex; align-items:center; justify-content:center; min-height:0;">
-            <img src="assets/images/logos/organiclogo.png" alt="OHS Logo" class="logo-image">
+        <!-- Logo + USDA Organic Seal -->
+        <div class="logo-row">
+            <img src="../assets/images/logos/organiclogo.png" alt="OHS Logo" class="logo-image">
+            <div class="usda-seal">
+                <img src="../assets/images/logos/RT_OrganicFourColorOrganicSeal.jpg" alt="USDA Organic"
+                     style="width:32px;height:auto;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+            </div>
         </div>
 
         <!-- Product name + All Natural circle -->
@@ -217,7 +238,6 @@
                 <p><strong>Hypochlorous Acid … 0.03%</strong></p>
                 <p>Pure Water &amp; Natural<br>Minerals … 99.97%</p>
                 <p><strong>TOTAL … 100.00%</strong></p>
-                <p style="margin-top:1px;font-size:3px;color:#666;">USDA Cert. Organic #Z-699995-2008</p>
             </div>
         </div>
 
@@ -278,14 +298,19 @@
 
         <div class="footer">
             <div class="f-left">
+                <p><strong>MANUFACTURED BY:</strong></p>
+                <p>Sani-TEST, LLC</p>
+                <p>Certified by OTCO</p>
+                <div class="footer-divider"></div>
                 <p><strong>DISTRIBUTED BY:</strong></p>
                 <p>Organic HypoSolutions LLC</p>
-                <p>Salt Lake City, UT 84101</p>
+                <p>Salt Lake City, UT</p>
                 <p>Made in Utah, USA</p>
             </div>
             <div class="f-right">
                 <div style="display:flex;justify-content:flex-end;margin-bottom:1px;">
-                    <img src="documents/qrcodes/OHS_Products_QR.png" alt="QR" style="width:20px;height:20px;background:white;padding:1px;border-radius:1px;">
+                    <img src="../assets/images/qrcodes/OHS_Products_QR.png" alt="QR"
+                         style="width:20px;height:20px;background:white;padding:1px;border-radius:1px;">
                 </div>
                 <p>www.organichyposolutions.com</p>
                 <p>OHS@OrganicHypoSolutions.com</p>
@@ -297,4 +322,3 @@
 </div>
 </body>
 </html>
-
