@@ -36,14 +36,8 @@
         }
 
         @media screen {
-            body {
-                background: #e0e0e0;
-                padding: 20px;
-            }
-            .page {
-                margin: 20px auto;
-                box-shadow: 0 0 20px rgba(0,0,0,0.3);
-            }
+            body { background: #e0e0e0; padding: 20px; }
+            .page { margin: 20px auto; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
         }
 
         @media print {
@@ -52,10 +46,9 @@
         }
 
         /* =============================================
-           FRONT PANEL — teal fill via box-shadow inset
+           FRONT PANEL
            ============================================= */
         .front-panel {
-            /* inset box-shadow fills the entire panel with teal — renders as foreground, not background */
             box-shadow: inset 0 0 0 9999px #7AD4D6;
             color: white;
             padding: 10px 14px 8px 14px;
@@ -68,22 +61,32 @@
             gap: 0px;
             position: relative;
             border-radius: 6px;
-            /* outline border gives the panel edge definition */
             outline: 3px solid #5BBFC2;
             outline-offset: -3px;
         }
 
+        /* Logo + USDA seal row */
+        .logo-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+
         .logo-image {
-            max-width: 90%;
+            max-width: 80%;
             max-height: 150px;
             height: auto;
             padding: 8px;
             object-fit: contain;
             border-radius: 6px;
-            /* white fill behind logo via box-shadow */
             box-shadow: 0 3px 8px rgba(0,0,0,0.25), inset 0 0 0 9999px white;
-            margin-top: auto;
-            margin-bottom: auto;
+        }
+
+        .usda-seal {
+            flex-shrink: 0;
         }
 
         .badge-container {
@@ -94,7 +97,6 @@
         }
 
         .badge {
-            /* light green fill via box-shadow */
             box-shadow: inset 0 0 0 9999px #B8E8D0, 0 4px 8px rgba(0,0,0,0.3);
             color: #2E7D32;
             padding: 7px;
@@ -140,7 +142,6 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            /* white fill via box-shadow */
             box-shadow: inset 0 0 0 9999px rgba(255,255,255,0.95), 0 2px 4px rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
@@ -155,7 +156,6 @@
             color: white;
         }
 
-        /* Claim bars: use border + colored outline trick */
         .main-claim {
             font-size: 13px;
             font-weight: bold;
@@ -180,27 +180,6 @@
             color: white;
             width: 100%;
             line-height: 1.1;
-        }
-
-        .usda-badge {
-            /* white fill via box-shadow */
-            box-shadow: inset 0 0 0 9999px white, 0 2px 4px rgba(0,0,0,0.2);
-            color: #2E7D32;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 7px;
-            font-weight: bold;
-            text-align: center;
-            line-height: 1.5;
-            border: 1px solid #4CAF50;
-        }
-
-        .usda-badge .usda-cert-num {
-            font-size: 5.5px;
-            font-weight: normal;
-            color: #555;
-            display: block;
-            line-height: 1.3;
         }
 
         .front-bottom { width: 100%; text-align: center; }
@@ -231,7 +210,6 @@
             border: 2px solid #7AD4D6;
         }
 
-        /* Header and section titles: teal via box-shadow inset */
         .back-header {
             box-shadow: inset 0 0 0 9999px #7AD4D6;
             color: white;
@@ -333,7 +311,6 @@
             line-height: 1.2;
         }
 
-        /* Footer: teal via box-shadow inset */
         .footer {
             box-shadow: inset 0 0 0 9999px #7AD4D6;
             color: white;
@@ -349,16 +326,33 @@
         .footer-left { text-align: left; }
         .footer-right { text-align: right; }
         .footer p { margin: 0.5px 0; }
+
+        .footer-divider {
+            border-top: 0.5px solid rgba(255,255,255,0.4);
+            margin: 2px 0 1px 0;
+        }
     </style>
 </head>
 <body>
+    <!-- SINGLE PAGE - 10.325" x 4.875" -->
+    <!-- COMPLIANCE NOTE: USDA-only product. No EPA numbers. No ppm listed.
+         No cert number. No OTCO on front or Key Features. -->
     <div class="page">
+
         <!-- FRONT PANEL -->
         <div class="front-panel">
 
-            <img src="assets/images/logos/organiclogo.png" alt="Company Logo" class="logo-image">
+            <!-- Logo + USDA Organic Seal -->
+            <div class="logo-row">
+                <img src="../assets/images/logos/organiclogo.png" alt="OHS Logo" class="logo-image">
+                <div class="usda-seal">
+                    <img src="../assets/images/logos/RT_OrganicFourColorOrganicSeal.jpg" alt="USDA Organic"
+                         style="width:65px;height:auto;">
+                </div>
+            </div>
 
-            <div style="width: 100%; display: flex; flex-direction: column; gap: 7px; margin-top: auto; align-items: center;">
+            <div style="width:100%;display:flex;flex-direction:column;gap:7px;margin-top:auto;align-items:center;">
+
                 <div class="badge-container">
                     <div class="badge">
                         <div class="badge-large">All Natural</div>
@@ -367,8 +361,8 @@
                     </div>
                     <div class="badge">
                         <div class="badge-large">USDA</div>
-                        <div class="badge-large">Certified</div>
-                        <div class="badge-small">Organic</div>
+                        <div class="badge-large">Organic</div>
+                        <div class="badge-small">Certified</div>
                     </div>
                 </div>
 
@@ -391,17 +385,10 @@
                     Multi-Use Organic Cleaner &amp; Deodorizer
                 </div>
 
-                <div class="sub-claim">
-                    Safe • Proven • Effective
-                </div>
+                <div class="sub-claim">Safe • Proven • Effective</div>
 
                 <div class="sub-claim">
                     Ready to Use • No Dilution Required • No Rinsing Required
-                </div>
-
-                <div class="usda-badge">
-                    🌿 USDA Certified Organic — Certified by OTCO
-                    <span class="usda-cert-num">Certificate #8150019050 | Verify: organic.ams.usda.gov</span>
                 </div>
 
                 <div class="front-bottom">
@@ -413,7 +400,7 @@
         <!-- BACK PANEL -->
         <div class="back-panel">
             <div class="back-header">
-                32oz Hypochlorous Multi-Use Organic Cleaner — USDA Certified Organic by OTCO | Cert. #8150019050
+                32oz Hypochlorous Multi-Use Organic Cleaner
             </div>
 
             <div class="active-ingredient-box">
@@ -445,7 +432,7 @@
                     <div class="section-title">KEY FEATURES</div>
                     <div class="section-content">
                         <ul>
-                            <li>USDA Certified Organic by OTCO</li>
+                            <li>USDA Certified Organic</li>
                             <li>All natural ingredients</li>
                             <li>Child, pet &amp; food safe</li>
                             <li>Eliminates odors at their source</li>
@@ -487,17 +474,22 @@
             <div class="footer">
                 <div class="footer-left">
                     <p><strong>MANUFACTURED BY:</strong></p>
-                    <p>Sani-TEST LLC</p>
-                    <p>PO Box 461, Perkasie, PA 18944</p>
-                    <p>Certified Organic by OTCO | Cert. #8150019050</p>
+                    <p>Sani-TEST, LLC</p>
+                    <p>Certified by OTCO</p>
+                    <div class="footer-divider"></div>
+                    <p><strong>DISTRIBUTED BY:</strong></p>
+                    <p>Organic HypoSolutions LLC</p>
+                    <p>Salt Lake City, UT</p>
+                    <p>Made in Utah, USA</p>
                 </div>
                 <div class="footer-right">
-                    <div style="display: flex; justify-content: flex-end; margin-bottom: 2px;">
-                        <img src="documents/qrcodes/OHS_Products_QR.png" alt="Scan for Products" style="width: 32px; height: 32px;">
+                    <div style="display:flex;justify-content:flex-end;margin-bottom:2px;">
+                        <img src="../assets/images/qrcodes/OHS_Products_QR.png" alt="Scan for Products"
+                             style="width:32px;height:32px;">
                     </div>
                     <p>www.organichyposolutions.com</p>
-                    <p>info@organichyposolutions.com | (801) 712-5663</p>
-                    <p style="margin-top: 2px;"><strong>NET CONTENTS: 32 FL OZ (946 mL)</strong></p>
+                    <p>OHS@OrganicHypoSolutions.com | (801) 712-5663</p>
+                    <p style="margin-top:2px;"><strong>NET CONTENTS: 32 FL OZ (946 mL)</strong></p>
                 </div>
             </div>
         </div>
