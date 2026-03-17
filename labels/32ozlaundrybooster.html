@@ -41,7 +41,6 @@
             flex-direction: row;
         }
 
-        /* Screen view only */
         @media screen {
             body {
                 background: #e0e0e0;
@@ -83,22 +82,22 @@
             color-adjust: exact;
         }
 
-        /* Logo - Centered at Top */
+        /* Logo + USDA seal row */
         .logo-center {
             text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 8px;
             margin: 0;
         }
 
-        /* Spacer pushes everything below logo to the bottom */
         .front-spacer {
             flex: 1;
         }
 
         .logo-image {
-            max-width: 340px;
+            max-width: 270px;
             height: auto;
             background: white;
             padding: 10px;
@@ -106,7 +105,11 @@
             box-shadow: 0 3px 8px rgba(0,0,0,0.25);
         }
 
-        /* Title Row - Product Name + Feature Circle side by side */
+        .usda-seal {
+            flex-shrink: 0;
+        }
+
+        /* Title Row */
         .title-row {
             display: flex;
             align-items: center;
@@ -140,7 +143,6 @@
             color: #2E7D32;
         }
 
-        /* Product Title Block */
         .product-title {
             text-align: center;
         }
@@ -166,7 +168,6 @@
             opacity: 0.9;
         }
 
-        /* Feature Badges Row */
         .badge-container {
             display: flex;
             justify-content: center;
@@ -202,7 +203,6 @@
             font-weight: normal;
         }
 
-        /* Main Claim Bar - COMPLIANCE SAFE */
         .main-claim {
             font-size: 8.5px;
             font-weight: bold;
@@ -218,7 +218,6 @@
             color-adjust: exact;
         }
 
-        /* Info Grid - PERFECT FOR + INGREDIENTS */
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -264,7 +263,6 @@
             margin-bottom: 0.5px;
         }
 
-        /* Warning Box on Front */
         .front-warning-box {
             background: #FF5722;
             color: white;
@@ -282,7 +280,6 @@
             color-adjust: exact;
         }
 
-        /* Net Contents Front */
         .net-contents {
             font-size: 7px;
             padding: 2px;
@@ -355,7 +352,6 @@
             margin-bottom: 1px;
         }
 
-        /* Fabric Warning */
         .back-warning {
             background: #FFF3E0;
             border: 1px solid #E8723A;
@@ -378,7 +374,6 @@
             line-height: 1.2;
         }
 
-        /* Two Column - Benefits + Why */
         .two-column {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -397,12 +392,10 @@
             line-height: 1.2;
         }
 
-        /* Storage Section */
         .storage-section .section-content {
             font-size: 5.5px;
         }
 
-        /* Keep Out Box */
         .koorch-box {
             background: #E8723A;
             color: white;
@@ -418,7 +411,6 @@
             color-adjust: exact;
         }
 
-        /* Footer */
         .footer {
             background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%);
             color: white;
@@ -436,13 +428,6 @@
 
         .footer-left {
             text-align: left;
-        }
-
-        .footer-right {
-            text-align: right;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
         }
 
         .footer p {
@@ -473,31 +458,35 @@
             text-align: center;
         }
 
-        .bold {
-            font-weight: bold;
+        .footer-divider {
+            border-top: 0.5px solid rgba(255,255,255,0.4);
+            margin: 2px 0 1px 0;
         }
     </style>
 </head>
 <body>
     <!-- SINGLE PAGE - 10.325" x 4.875" - WRAP-AROUND LABEL -->
-    <!-- COMPLIANCE NOTE: This is a USDA-only product (no EPA registration).
-         ALL antimicrobial/pesticidal claims have been removed per FIFRA requirements.
-         No claims of killing, destroying, or combating bacteria, viruses, or pathogens.
-         Focus: odor elimination, cleaning, brightening, freshening. -->
+    <!-- COMPLIANCE NOTE: USDA-only product. No EPA registration numbers.
+         No antimicrobial/pesticidal claims per FIFRA requirements.
+         No ppm listed per label notes. -->
     <div class="page">
+
         <!-- ============================================
              FRONT PANEL - LEFT SIDE
              ============================================ -->
         <div class="front-panel">
-            <!-- Spacer: centers logo vertically above content -->
+
             <div class="front-spacer"></div>
 
-            <!-- Logo - Front and Center -->
+            <!-- Logo + USDA Organic Seal -->
             <div class="logo-center">
-                <img src="assets/images/logos/organiclogo.png" alt="OHS Logo" class="logo-image">
+                <img src="../assets/images/logos/organiclogo.png" alt="OHS Logo" class="logo-image">
+                <div class="usda-seal">
+                    <img src="../assets/images/logos/RT_OrganicFourColorOrganicSeal.jpg" alt="USDA Organic"
+                         style="width:58px;height:auto;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+                </div>
             </div>
 
-            <!-- Spacer: absorbs gap between logo and content below -->
             <div class="front-spacer"></div>
 
             <!-- Product Title + Feature Circle Row -->
@@ -517,7 +506,7 @@
                 </div>
             </div>
 
-            <!-- Feature Badges - COMPLIANCE SAFE: No antimicrobial claims -->
+            <!-- Feature Badges -->
             <div class="badge-container">
                 <div class="feature-badge">
                     <div class="feature-badge-title">Eliminates<br>Odors</div>
@@ -529,12 +518,12 @@
                 </div>
             </div>
 
-            <!-- Main Claim - COMPLIANCE SAFE: Removed "combat viruses, bacteria" -->
+            <!-- Main Claim -->
             <div class="main-claim">
                 The same molecule your body naturally produces &mdash; now in a Laundry Booster!
             </div>
 
-            <!-- Info Grid: Perfect For + Ingredients (matches proof) -->
+            <!-- Info Grid -->
             <div class="info-grid">
                 <div class="info-box">
                     <div class="info-box-title">PERFECT FOR:</div>
@@ -546,7 +535,6 @@
                         <li>Use with any detergent</li>
                     </ul>
                 </div>
-                
                 <div class="info-box">
                     <div class="info-box-title">INGREDIENTS:</div>
                     <p><strong>pH: 4.9 (optimized for laundry)</strong></p>
@@ -555,7 +543,7 @@
                 </div>
             </div>
 
-            <!-- Front Warning Banner (matches proof) -->
+            <!-- Front Warning Banner -->
             <div class="front-warning-box">
                 TEST FABRICS FIRST &bull; Do not use with bleach or fabric softener
             </div>
@@ -564,6 +552,7 @@
             <div class="net-contents">
                 Net Contents: 32 Fluid Ounces (946 mL)
             </div>
+
         </div>
 
         <!-- ============================================
@@ -573,17 +562,14 @@
             <div class="back-header">
                 32oz Laundry Booster - Natural Additive Solution
             </div>
-            
+
             <!-- Directions -->
             <div class="section-compact">
                 <div class="section-title">DIRECTIONS FOR USE</div>
                 <div class="section-content">
                     <p><strong>STANDARD LOAD:</strong> Pour 1-2 oz of Hypochlorous Laundry Booster into the fabric softener dispensing cup of your washing machine.</p>
-                    
                     <p style="margin-top: 1px;"><strong>HEAVILY SOILED/ODOROUS LOADS:</strong> Pour 1-2 oz into fabric softener cup, PLUS an additional 2 oz into the bleach dispensing cup. Wash in warm water for best results.</p>
-                    
                     <p style="margin-top: 1px;"><strong>IMPORTANT:</strong> No presoak or pretreat necessary. Use your regular laundry detergent as normal. Run load on any cycle, but for best results use warm and/or cold water. Dry as normal.</p>
-                    
                     <p style="margin-top: 1px;"><strong>Each 32oz bottle contains approximately 16 loads (2oz per load).</strong></p>
                 </div>
             </div>
@@ -594,7 +580,7 @@
                 <p><strong>TEST FABRICS TO ASSURE COMPATIBILITY BEFORE USE.</strong> Do not use bleach or fabric softener when using Hypochlorous Laundry Booster. Do not use any other laundry products other than normal laundry detergent when using Laundry Booster.</p>
             </div>
 
-            <!-- Two Column: Benefits + Why Hypochlorous - COMPLIANCE SAFE -->
+            <!-- Two Column -->
             <div class="two-column">
                 <div class="section-compact">
                     <div class="section-title">KEY BENEFITS</div>
@@ -612,7 +598,6 @@
                         </ul>
                     </div>
                 </div>
-
                 <div class="section-compact">
                     <div class="section-title">WHY HYPOCHLOROUS?</div>
                     <div class="section-content">
@@ -643,12 +628,16 @@
                 ⚠ KEEP OUT OF THE REACH OF CHILDREN
             </div>
 
-            <!-- Footer with QR code area -->
+            <!-- Footer -->
             <div class="footer">
                 <div class="footer-left">
+                    <p><strong>MANUFACTURED BY:</strong></p>
+                    <p>Sani-TEST, LLC</p>
+                    <p>Certified by OTCO</p>
+                    <div class="footer-divider"></div>
                     <p><strong>DISTRIBUTED BY:</strong></p>
                     <p>Organic HypoSolutions LLC</p>
-                    <p>Salt Lake City, UT 84101</p>
+                    <p>Salt Lake City, UT</p>
                     <p>Made in Utah, USA</p>
                 </div>
                 <div class="footer-center">
@@ -657,10 +646,11 @@
                     <p style="margin-top: 2px;"><strong>Net Contents: 32 Fluid Ounces (946 mL)</strong></p>
                 </div>
                 <div class="qr-placeholder">
-                    <img src="documents/qrcodes/OHS_Products_QR.png" alt="Scan for Products" style="width:100%;height:100%;border-radius:2px;">
+                    <img src="../assets/images/qrcodes/OHS_Products_QR.png" alt="Scan for Products" style="width:100%;height:100%;border-radius:2px;">
                     <span style="display:block;margin-top:1px;">Scan for<br>Products</span>
                 </div>
             </div>
+
         </div>
     </div>
 </body>
