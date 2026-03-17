@@ -82,26 +82,25 @@
             color-adjust: exact;
         }
 
-        /* Large spacer above logo floats it down from top */
         .front-spacer-top {
             flex: 1;
         }
 
-        /* Small fixed gap between logo and content */
         .front-spacer-bottom {
             flex: 0 0 6px;
         }
 
-        /* Logo - centered */
+        /* Logo + USDA seal row */
         .logo-center {
             text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 10px;
         }
 
         .logo-image {
-            max-width: 520px;
+            max-width: 460px;
             max-height: 1.9in;
             width: auto;
             height: auto;
@@ -114,7 +113,10 @@
             color-adjust: exact;
         }
 
-        /* Title row: product name + feature circle side by side */
+        .usda-seal {
+            flex-shrink: 0;
+        }
+
         .title-row {
             display: flex;
             align-items: center;
@@ -148,7 +150,6 @@
             opacity: 0.9;
         }
 
-        /* Feature circle badge */
         .feature-badge-circle {
             background: rgba(255,255,255,0.95);
             color: #2E7D32;
@@ -174,7 +175,6 @@
             color: #2E7D32;
         }
 
-        /* Feature badges row */
         .badge-container {
             display: flex;
             justify-content: center;
@@ -210,7 +210,6 @@
             font-weight: normal;
         }
 
-        /* Main claim bar */
         .main-claim {
             font-size: 9px;
             font-weight: bold;
@@ -225,7 +224,6 @@
             color-adjust: exact;
         }
 
-        /* Info grid: 2 columns for perfect-for / ingredients */
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -271,59 +269,6 @@
             margin-bottom: 1px;
         }
 
-        /* ========================================
-           ACTIVE INGREDIENT BOX - FRONT PANEL
-           Required by FIFRA on principal display panel
-           ======================================== */
-        .active-ingredient-front {
-            background: white;
-            border: 2px solid #333;
-            padding: 4px 8px;
-            border-radius: 3px;
-            width: 100%;
-            font-size: 6px;
-            line-height: 1.4;
-            color: #000;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
-        }
-
-        .active-ingredient-front .ai-title {
-            font-weight: bold;
-            font-size: 7px;
-            color: #000;
-            margin-bottom: 1px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .active-ingredient-front .ai-row {
-            font-size: 6px;
-            font-family: 'Courier New', monospace;
-        }
-
-        .active-ingredient-front .ai-row.bold {
-            font-weight: bold;
-        }
-
-        .active-ingredient-front .ai-total {
-            font-size: 6px;
-            font-weight: bold;
-            font-family: 'Courier New', monospace;
-            border-top: 1px solid #333;
-            padding-top: 1px;
-            margin-top: 1px;
-        }
-
-        .active-ingredient-front .epa-reg {
-            font-size: 5.5px;
-            color: #333;
-            margin-top: 2px;
-            font-weight: bold;
-        }
-
-        /* Net contents bar at bottom */
         .net-contents {
             font-size: 8px;
             padding: 2px;
@@ -444,37 +389,32 @@
             margin: 0.5px 0;
         }
 
-        .net-contents-back {
-            font-size: 7px;
-            padding: 2px 4px;
-            background: #f5f5f5;
-            color: #333;
-            border-radius: 2px;
-            text-align: center;
-            font-weight: bold;
-            margin-top: 2px;
-            border: 1px solid #7AD4D6;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
+        .footer-divider {
+            border-top: 0.5px solid rgba(255,255,255,0.4);
+            margin: 2px 0 1px 0;
         }
     </style>
 </head>
 <body>
     <!-- SINGLE PAGE - EXACT DIMENSIONS 13.063" × 4.313" -->
+    <!-- COMPLIANCE NOTE: USDA-only product. EPA Reg. No. + Est. No. only per label notes.
+         No ppm listed. No additional EPA label additions. -->
     <div class="page">
-        <!-- FRONT PANEL - LEFT SIDE (Principal Display Panel) -->
+
+        <!-- FRONT PANEL - LEFT SIDE -->
         <div class="front-panel">
 
-            <!-- Spacer above logo - pushes logo down from top -->
             <div class="front-spacer-top"></div>
 
-            <!-- Logo -->
+            <!-- Logo + USDA Organic Seal -->
             <div class="logo-center">
-                <img src="assets/images/logos/organiclogo.png" alt="OHS Logo" class="logo-image">
+                <img src="../assets/images/logos/organiclogo.png" alt="OHS Logo" class="logo-image">
+                <div class="usda-seal">
+                    <img src="../assets/images/logos/RT_OrganicFourColorOrganicSeal.jpg" alt="USDA Organic"
+                         style="width:65px;height:auto;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+                </div>
             </div>
 
-            <!-- Small gap between logo and content -->
             <div class="front-spacer-bottom"></div>
 
             <!-- Product Title + Feature Circle Row -->
@@ -510,7 +450,7 @@
                 The same molecule your body naturally produces &mdash; now in a convenient wipe!
             </div>
 
-            <!-- Info Grid: Uses + Active Ingredient -->
+            <!-- Info Grid -->
             <div class="info-grid">
                 <div class="info-box">
                     <div class="info-box-title">PERFECT FOR:</div>
@@ -527,6 +467,9 @@
                     <p><strong>Hypochlorous Acid ……… 0.01%</strong></p>
                     <p>Pure Water, Ethanoic Acid<br>&amp; Other Natural Minerals … 99.99%</p>
                     <p><strong>TOTAL ……………………… 100.00%</strong></p>
+                    <p style="margin-top:2px;font-size:5.5px;">
+                        EPA Reg. No. 97801-1 &bull; EPA Est. No. 97801-UT-1
+                    </p>
                 </div>
             </div>
 
@@ -554,11 +497,8 @@
                 <div class="section-title">DIRECTIONS FOR USE</div>
                 <div class="section-content">
                     <p><span class="bold">GENERAL CLEANING &amp; DEODORIZING:</span> Wipe surface thoroughly. Allow surface to remain visibly wet for 10 minutes. Allow to air dry or wipe dry with a clean cloth. No rinsing necessary. For visibly soiled surfaces, pre-cleaning is recommended.</p>
-
                     <p style="margin-top: 1.5px;"><span class="bold">HARD SURFACES:</span> Use on countertops, tables, appliances, toys, pet areas, and high-touch surfaces. Wipe surface completely. Allow to remain wet for 10 minutes. For heavily soiled areas, pre-clean and use multiple wipes as needed.</p>
-
                     <p style="margin-top: 1.5px;"><span class="bold">ELECTRONICS:</span> Completely power off equipment prior to treatment. Pre-clean soils with dry cloth, then carefully apply. Avoid over-soaking and pooled areas. Treated surfaces must remain visibly wet for 10 minutes. Do not restore power until thoroughly dry.</p>
-
                     <p style="margin-top: 1.5px;"><span class="bold">FABRIC &amp; UPHOLSTERY:</span> Test on inconspicuous area first. Gently wipe surface. Safe for carpets, furniture, car interiors, and pet bedding.</p>
                 </div>
             </div>
@@ -604,23 +544,29 @@
                 </div>
             </div>
 
+            <!-- Footer -->
             <div class="footer">
                 <div class="footer-left">
+                    <p><strong>MANUFACTURED BY:</strong></p>
+                    <p>Sani-TEST, LLC</p>
+                    <p>Certified by OTCO</p>
+                    <div class="footer-divider"></div>
                     <p><strong>DISTRIBUTED BY:</strong></p>
                     <p>Organic HypoSolutions LLC</p>
-                    <p>Salt Lake City, UT 84101</p>
+                    <p>Salt Lake City, UT</p>
                     <p>Made in Utah, USA</p>
                 </div>
                 <div class="footer-right">
-                    <div style="display: flex; justify-content: flex-end; margin-bottom: 1px;">
-                        <img src="documents/qrcodes/OHS_Products_QR.png" alt="Scan for Products" style="width: 28px; height: 28px;">
+                    <div style="display:flex;justify-content:flex-end;margin-bottom:1px;">
+                        <img src="../assets/images/qrcodes/OHS_Products_QR.png" alt="Scan for Products"
+                             style="width:28px;height:28px;">
                     </div>
                     <p>www.organichyposolutions.com</p>
                     <p>OHS@OrganicHypoSolutions.com | (801) 712-5663</p>
                 </div>
             </div>
+
         </div>
     </div>
-
 </body>
 </html>
