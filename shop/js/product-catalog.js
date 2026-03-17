@@ -6,7 +6,7 @@
  * Both cart.js and products.html import this file
  *
  * Features:
- * - All 10 products with complete data
+ * - All 8 products with complete data
  * - Geographic restrictions (EPA products Utah-only)
  * - Shopify variant IDs for all pricing tiers
  * - Helper functions for product lookups
@@ -24,19 +24,19 @@
     window.SHOPIFY_DOMAIN = 'npmv1h-8e.myshopify.com';
 
     // =============================================================================
-    // MASTER PRODUCT CATALOG - 10 PRODUCTS
+    // MASTER PRODUCT CATALOG - 8 PRODUCTS
     // =============================================================================
 
     window.PRODUCT_CATALOG = {
 
         // =========================================================================
-        // PRODUCT 1: 32oz EPA Registered Ready-to-Use Cleaner 200ppm (Utah Only)
+        // PRODUCT 1: 32oz EPA Registered Ready-to-Use Cleaner (Utah Only)
         // =========================================================================
         '7249401053255': {
             id: '7249401053255',
             shopifyProductId: '7249401053255',
-            name: '32oz EPA Registered Ready-to-Use Cleaner 200 PPM',
-            shortName: '32oz EPA Cleaner 200 PPM',
+            name: '32oz EPA Registered Ready-to-Use Cleaner',
+            shortName: '32oz EPA Cleaner',
             type: 'epa-usda',
             ppm: 200,
             size: '32oz',
@@ -79,13 +79,13 @@
         },
 
         // =========================================================================
-        // PRODUCT 2: 1 Gallon EPA Registered Ready-to-Use Solution 200ppm (Utah Only)
+        // PRODUCT 2: 1 Gallon EPA Registered Ready-to-Use Solution (Utah Only)
         // =========================================================================
         '7249401086023': {
             id: '7249401086023',
             shopifyProductId: '7249401086023',
-            name: '1 Gallon EPA Registered Ready-to-Use Solution 200 PPM',
-            shortName: '1 Gal EPA Solution 200 PPM',
+            name: '1 Gallon EPA Registered Ready-to-Use Solution',
+            shortName: '1 Gal EPA Solution',
             type: 'epa-usda',
             ppm: 200,
             size: '1gal',
@@ -127,106 +127,9 @@
             status: 'active'
         },
 
+       
         // =========================================================================
-        // PRODUCT 3: 32oz EPA Registered Cleaner 500ppm (Utah Only) — NEW
-        // =========================================================================
-        '7470030454855': {
-            id: '7470030454855',
-            shopifyProductId: '7470030454855',
-            name: '32oz EPA Registered Ready-to-Use Cleaner 500 PPM',
-            shortName: '32oz EPA Cleaner 500 PPM',
-            type: 'epa-usda',
-            ppm: 500,
-            size: '32oz',
-            certifications: ['EPA #97801-1', 'USDA #Z-699995-2008'],
-            epaNumber: '97801-1',
-            usdaNumber: 'Z-699995-2008',
-            description: 'Professional-strength 500ppm ready-to-use hypochlorous acid cleaner and disinfectant. Higher concentration for heavy-duty commercial and industrial applications. Kills 99.9% of pathogens including bacteria, viruses, and fungi. EPA registered (#97801-1) and USDA Certified Organic (#Z-699995-2008). Made in Utah, USA.',
-            restrictions: {
-                states: ['UT'],
-                reason: 'EPA registration limited to Utah'
-            },
-            pricing: {
-                retail: 21.99,
-                retailSubscription: 19.79,
-                wholesale: 15.99,
-                wholesaleSubscription: 14.39
-            },
-            wholesaleThreshold: 25,
-            shopifyVariants: {
-                retail: '42565309038663',
-                retailSubscription: '42565309071431',
-                wholesale: '42565309104199',
-                wholesaleSubscription: '42565309136967'
-            },
-            skus: {
-                retail: 'OHS-32OZ-500PPM-RTU-RETAIL',
-                retailSubscription: 'OHS-32OZ-500PPM-RTU-RETAIL-SUB',
-                wholesale: 'OHS-32OZ-500PPM-RTU-WHOLESALE',
-                wholesaleSubscription: 'OHS-32OZ-500PPM-RTU-WHOLESALE-SUB'
-            },
-            image: 'assets/images/products/epa-cleaner-32oz-500ppm.png',
-            emoji: '🧴',
-            badgeType: 'EPA+USDA',
-            badgeColor: '#f59e0b',
-            weight: 2.5,
-            category: 'Cleaners',
-            productLine: 'epa-registered',
-            useCase: ['disinfectant', 'cleaner', 'sanitizer', 'heavy-duty'],
-            status: 'active'
-        },
-
-        // =========================================================================
-        // PRODUCT 4: 1 Gallon EPA Registered Solution 500ppm (Utah Only) — NEW
-        // =========================================================================
-        '7470030258247': {
-            id: '7470030258247',
-            shopifyProductId: '7470030258247',
-            name: '1 Gallon EPA Registered Ready-to-Use Solution 500 PPM',
-            shortName: '1 Gal EPA Solution 500 PPM',
-            type: 'epa-usda',
-            ppm: 500,
-            size: '1gal',
-            certifications: ['EPA #97801-1', 'USDA #Z-699995-2008'],
-            epaNumber: '97801-1',
-            usdaNumber: 'Z-699995-2008',
-            description: 'Bulk premium 500ppm professional-grade hypochlorous acid cleaner and disinfectant for heavy-duty large-scale applications. Higher concentration formula for commercial and industrial use. Kills 99.9% of pathogens. EPA registered (#97801-1) and USDA Certified Organic (#Z-699995-2008). Made in Utah, USA.',
-            restrictions: {
-                states: ['UT'],
-                reason: 'EPA registration limited to Utah'
-            },
-            pricing: {
-                retail: 34.99,
-                retailSubscription: 31.49,
-                wholesale: 22.99,
-                wholesaleSubscription: 20.69
-            },
-            wholesaleThreshold: 10,
-            shopifyVariants: {
-                retail: '42565306449991',
-                retailSubscription: '42565306482759',
-                wholesale: '42565306515527',
-                wholesaleSubscription: '42565306548295'
-            },
-            skus: {
-                retail: 'OHS-1GAL-500PPM-RTU-RETAIL',
-                retailSubscription: 'OHS-1GAL-500PPM-RTU-RETAIL-SUB',
-                wholesale: 'OHS-1GAL-500PPM-RTU-WHOLESALE',
-                wholesaleSubscription: 'OHS-1GAL-500PPM-RTU-WHOLESALE-SUB'
-            },
-            image: 'assets/images/products/epa-solution-1gal-500ppm.png',
-            emoji: '🪣',
-            badgeType: 'EPA+USDA',
-            badgeColor: '#f59e0b',
-            weight: 9.0,
-            category: 'Cleaners',
-            productLine: 'epa-registered',
-            useCase: ['disinfectant', 'cleaner', 'bulk', 'heavy-duty'],
-            status: 'active'
-        },
-
-        // =========================================================================
-        // PRODUCT 5: 32oz USDA Certified Organic Cleaner (Nationwide)
+        // PRODUCT 3: 32oz USDA Certified Organic Cleaner (Nationwide)
         // =========================================================================
         '7418569752647': {
             id: '7418569752647',
@@ -272,7 +175,7 @@
         },
 
         // =========================================================================
-        // PRODUCT 6: 1 Gallon USDA Certified Organic Solution (Nationwide)
+        // PRODUCT 4: 1 Gallon USDA Certified Organic Solution (Nationwide)
         // =========================================================================
         '7418571685959': {
             id: '7418571685959',
@@ -318,7 +221,7 @@
         },
 
         // =========================================================================
-        // PRODUCT 7: All in One Hypochlorous Organic Wipes (Nationwide)
+        // PRODUCT 5: All in One Hypochlorous Organic Wipes (Nationwide)
         // =========================================================================
         '7249401315399': {
             id: '7249401315399',
@@ -364,7 +267,7 @@
         },
 
         // =========================================================================
-        // PRODUCT 8: 32oz Organic Laundry Booster (Nationwide)
+        // PRODUCT 6: 32oz Organic Laundry Booster (Nationwide)
         // =========================================================================
         '7249400004679': {
             id: '7249400004679',
@@ -410,7 +313,7 @@
         },
 
         // =========================================================================
-        // PRODUCT 9: 1 Gallon Organic Laundry Booster (Nationwide)
+        // PRODUCT 7: 1 Gallon Organic Laundry Booster (Nationwide)
         // =========================================================================
         '7249400037447': {
             id: '7249400037447',
@@ -456,7 +359,7 @@
         },
 
         // =========================================================================
-        // PRODUCT 10: OHS Pure Skin Serum 100ml (Nationwide) — CORRECTED PRICING
+        // PRODUCT 8: OHS Pure Skin Serum 100ml (Nationwide) — CORRECTED PRICING
         // =========================================================================
         '7249401348167': {
             id: '7249401348167',
@@ -522,18 +425,6 @@
         '1gal epa solution': '7249401086023',
         '1gal epa solution 200ppm': '7249401086023',
         'ohs-1gal-200ppm': '7249401086023',
-
-        // EPA 32oz 500ppm
-        'ohs-32oz-epa-cleaner-500ppm': '7470030454855',
-        '32oz epa registered cleaner 500ppm': '7470030454855',
-        '32oz epa cleaner 500ppm': '7470030454855',
-        'ohs-32oz-500ppm': '7470030454855',
-
-        // EPA 1 Gal 500ppm
-        'ohs-1gal-epa-solution-500ppm': '7470030258247',
-        '1 gallon epa registered solution 500ppm': '7470030258247',
-        '1gal epa solution 500ppm': '7470030258247',
-        'ohs-1gal-500ppm': '7470030258247',
 
         // USDA 32oz
         'usda-32oz-organic-cleaner': '7418569752647',
