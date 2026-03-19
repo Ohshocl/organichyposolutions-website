@@ -11,7 +11,12 @@
  * - Shopify variant IDs for all pricing tiers
  * - Helper functions for product lookups
  *
- * Last Updated: 2026-03-10
+ * Product Types:
+ * - 'epa'            → EPA Registered only (Utah-only, kill claims allowed, NOT organic)
+ * - 'usda-only'      → USDA Certified Organic (nationwide, NO kill/disinfectant claims)
+ * - 'non-registered'  → No EPA or USDA registration (nationwide, NO kill/organic claims)
+ *
+ * Last Updated: 2026-03-19
  */
 
 (function() {
@@ -31,19 +36,20 @@
 
         // =========================================================================
         // PRODUCT 1: 32oz EPA Registered Ready-to-Use Cleaner (Utah Only)
+        // EPA ONLY — Not USDA Organic
         // =========================================================================
         '7249401053255': {
             id: '7249401053255',
             shopifyProductId: '7249401053255',
             name: '32oz EPA Registered Ready-to-Use Cleaner',
             shortName: '32oz EPA Cleaner',
-            type: 'epa-usda',
+            type: 'epa',
             ppm: 200,
             size: '32oz',
-            certifications: ['EPA #97801-1', 'USDA #Z-699995-2008'],
-            epaNumber: '97801-1',
-            usdaNumber: 'Z-699995-2008',
-            description: 'Professional-strength ready-to-use hypochlorous acid cleaner and disinfectant. Kills 99.9% of pathogens including bacteria, viruses, and fungi. Safe for food contact surfaces, toys, and skin. Perfect for homes, offices, restaurants, and healthcare facilities. No harsh chemicals, no toxic fumes. Simply spray and wipe. EPA registered (#97801-1) and USDA Certified Organic (#Z-699995-2008). Made in Utah, USA.',
+            certifications: ['EPA #97801-1-105539'],
+            epaNumber: '97801-1-105539',
+            usdaNumber: null,
+            description: 'Professional-strength ready-to-use hypochlorous acid cleaner and disinfectant. Kills 99.9% of pathogens including bacteria, viruses, and fungi. Safe for food contact surfaces, toys, and skin. Perfect for homes, offices, restaurants, and healthcare facilities. No harsh chemicals, no toxic fumes. Simply spray and wipe. EPA registered (#97801-1-105539). Made in Utah, USA.',
             restrictions: {
                 states: ['UT'],
                 reason: 'EPA registration limited to Utah'
@@ -69,7 +75,7 @@
             },
             image: 'assets/images/products/epa-cleaner-32oz-200ppm.png',
             emoji: '🧴',
-            badgeType: 'EPA+USDA',
+            badgeType: 'EPA Registered',
             badgeColor: '#f59e0b',
             weight: 2.5,
             category: 'Cleaners',
@@ -80,19 +86,20 @@
 
         // =========================================================================
         // PRODUCT 2: 1 Gallon EPA Registered Ready-to-Use Solution (Utah Only)
+        // EPA ONLY — Not USDA Organic
         // =========================================================================
         '7249401086023': {
             id: '7249401086023',
             shopifyProductId: '7249401086023',
             name: '1 Gallon EPA Registered Ready-to-Use Solution',
             shortName: '1 Gal EPA Solution',
-            type: 'epa-usda',
+            type: 'epa',
             ppm: 200,
             size: '1gal',
-            certifications: ['EPA #97801-1', 'USDA #Z-699995-2008'],
-            epaNumber: '97801-1',
-            usdaNumber: 'Z-699995-2008',
-            description: 'Bulk premium professional-grade hypochlorous acid cleaner and disinfectant for large-scale applications. Kills 99.9% of pathogens including bacteria, viruses, and fungi. Perfect for commercial facilities, restaurants, and high-volume cleaning needs. Safe for food contact surfaces and skin. EPA registered (#97801-1) and USDA Certified Organic (#Z-699995-2008). Made in Utah, USA.',
+            certifications: ['EPA #97801-1-105539'],
+            epaNumber: '97801-1-105539',
+            usdaNumber: null,
+            description: 'Bulk premium professional-grade hypochlorous acid cleaner and disinfectant for large-scale applications. Kills 99.9% of pathogens including bacteria, viruses, and fungi. Perfect for commercial facilities, restaurants, and high-volume cleaning needs. Safe for food contact surfaces and skin. EPA registered (#97801-1-105539). Made in Utah, USA.',
             restrictions: {
                 states: ['UT'],
                 reason: 'EPA registration limited to Utah'
@@ -118,7 +125,7 @@
             },
             image: 'assets/images/products/epa-solution-1gal-200ppm.png',
             emoji: '🪣',
-            badgeType: 'EPA+USDA',
+            badgeType: 'EPA Registered',
             badgeColor: '#f59e0b',
             weight: 9.0,
             category: 'Cleaners',
@@ -127,9 +134,9 @@
             status: 'active'
         },
 
-       
         // =========================================================================
         // PRODUCT 3: 32oz USDA Certified Organic Cleaner (Nationwide)
+        // USDA Organic — Certified by OTCO — NO EPA claims
         // =========================================================================
         '7418569752647': {
             id: '7418569752647',
@@ -139,10 +146,10 @@
             type: 'usda-only',
             ppm: null,
             size: '32oz',
-            certifications: ['USDA #Z-699995-2008'],
+            certifications: ['USDA Organic', 'Certified Organic by OTCO'],
             epaNumber: null,
             usdaNumber: 'Z-699995-2008',
-            description: 'Professional-strength ready-to-use hypochlorous acid cleaner. Safe for food contact surfaces, toys, and skin. Perfect for homes, offices, restaurants, and healthcare facilities. No harsh chemicals, no toxic fumes. Simply spray and wipe. USDA Certified Organic (#Z-699995-2008). Ships nationwide. Made in Utah, USA.',
+            description: 'Professional-strength ready-to-use hypochlorous acid cleaner. Safe for food contact surfaces, toys, and skin. Perfect for homes, offices, restaurants, and healthcare facilities. No harsh chemicals, no toxic fumes. Simply spray and wipe. USDA Certified Organic. Certified Organic by OTCO. Ships nationwide. Made in Utah, USA.',
             restrictions: null,
             pricing: {
                 retail: 19.99,
@@ -176,6 +183,7 @@
 
         // =========================================================================
         // PRODUCT 4: 1 Gallon USDA Certified Organic Solution (Nationwide)
+        // USDA Organic — Certified by OTCO — NO EPA claims
         // =========================================================================
         '7418571685959': {
             id: '7418571685959',
@@ -185,10 +193,10 @@
             type: 'usda-only',
             ppm: null,
             size: '1gal',
-            certifications: ['USDA #Z-699995-2008'],
+            certifications: ['USDA Organic', 'Certified Organic by OTCO'],
             epaNumber: null,
             usdaNumber: 'Z-699995-2008',
-            description: 'Bulk premium professional-grade hypochlorous acid cleaner for large-scale applications. Safe for food contact surfaces and skin. Perfect for commercial facilities and high-volume cleaning needs. Cost-effective bulk solution. USDA Certified Organic (#Z-699995-2008). Ships nationwide. Made in Utah, USA.',
+            description: 'Bulk premium professional-grade hypochlorous acid cleaner for large-scale applications. Safe for food contact surfaces and skin. Perfect for commercial facilities and high-volume cleaning needs. Cost-effective bulk solution. USDA Certified Organic. Certified Organic by OTCO. Ships nationwide. Made in Utah, USA.',
             restrictions: null,
             pricing: {
                 retail: 32.99,
@@ -221,20 +229,21 @@
         },
 
         // =========================================================================
-        // PRODUCT 5: All in One Hypochlorous Organic Wipes (Nationwide)
+        // PRODUCT 5: All in One Hypochlorous Wipes (Nationwide)
+        // NON-REGISTERED — Not EPA, Not USDA Organic
         // =========================================================================
         '7249401315399': {
             id: '7249401315399',
             shopifyProductId: '7249401315399',
-            name: 'All in One Hypochlorous Organic Wipes',
-            shortName: 'Organic Wipes',
-            type: 'usda-only',
+            name: 'All in One Hypochlorous Acid Wipes',
+            shortName: 'HOCl Wipes',
+            type: 'non-registered',
             ppm: null,
             size: 'wipes',
-            certifications: ['USDA #Z-699995-2008'],
+            certifications: [],
             epaNumber: null,
-            usdaNumber: 'Z-699995-2008',
-            description: 'Convenient pre-moistened hypochlorous acid wipes for quick cleaning on-the-go. Safe for all surfaces including food contact. Ideal for homes, offices, travel, and healthcare. Non-toxic, alcohol-free formula. USDA Certified Organic (#Z-699995-2008). Ships nationwide. Made in Utah, USA.',
+            usdaNumber: null,
+            description: 'Convenient pre-moistened hypochlorous acid wipes for quick cleaning on-the-go. Safe for all surfaces including food contact. Ideal for homes, offices, travel, and healthcare. Non-toxic, alcohol-free formula. Recyclable packaging. Net weight 1 lb 2 oz, 100 wipes. Ships nationwide. Made in Utah, USA.',
             restrictions: null,
             pricing: {
                 retail: 12.99,
@@ -257,17 +266,18 @@
             },
             image: 'assets/images/products/organic-wipes.png',
             emoji: '🧻',
-            badgeType: 'USDA Organic',
-            badgeColor: '#4ADE80',
-            weight: 1.0,
+            badgeType: 'HOCl',
+            badgeColor: '#2E5EAA',
+            weight: 1.125,
             category: 'Wipes',
-            productLine: 'organic',
+            productLine: 'general',
             useCase: ['wipes', 'travel', 'convenience'],
             status: 'active'
         },
 
         // =========================================================================
         // PRODUCT 6: 32oz Organic Laundry Booster (Nationwide)
+        // USDA Organic — Certified by OTCO — NO EPA claims
         // =========================================================================
         '7249400004679': {
             id: '7249400004679',
@@ -277,10 +287,10 @@
             type: 'usda-only',
             ppm: null,
             size: '32oz',
-            certifications: ['USDA #Z-699995-2008'],
+            certifications: ['USDA Organic', 'Certified Organic by OTCO'],
             epaNumber: null,
             usdaNumber: 'Z-699995-2008',
-            description: 'Premium laundry enhancement solution using hypochlorous acid technology. Eliminates odors, brightens whites, and provides antimicrobial protection for fabrics. Safe for all fabric types and colors. Perfect for households and commercial laundries. Non-toxic, eco-friendly alternative to harsh chemicals. USDA Certified Organic (#Z-699995-2008). Ships nationwide. Made in Utah, USA.',
+            description: 'Premium laundry enhancement solution using hypochlorous acid technology. Eliminates odors, brightens whites, and provides protection for fabrics. Safe for all fabric types and colors. Perfect for households and commercial laundries. Non-toxic, eco-friendly alternative to harsh chemicals. USDA Certified Organic. Certified Organic by OTCO. Ships nationwide. Made in Utah, USA.',
             restrictions: null,
             pricing: {
                 retail: 15.99,
@@ -314,6 +324,7 @@
 
         // =========================================================================
         // PRODUCT 7: 1 Gallon Organic Laundry Booster (Nationwide)
+        // USDA Organic — Certified by OTCO — NO EPA claims
         // =========================================================================
         '7249400037447': {
             id: '7249400037447',
@@ -323,10 +334,10 @@
             type: 'usda-only',
             ppm: null,
             size: '1gal',
-            certifications: ['USDA #Z-699995-2008'],
+            certifications: ['USDA Organic', 'Certified Organic by OTCO'],
             epaNumber: null,
             usdaNumber: 'Z-699995-2008',
-            description: 'Bulk premium laundry enhancement solution using hypochlorous acid technology. Eliminates odors, brightens whites, and provides antimicrobial protection for fabrics. Perfect for commercial laundries, hotels, and professional cleaning services. Safe for all fabric types and colors. Eco-friendly alternative to harsh chemicals. USDA Certified Organic (#Z-699995-2008). Ships nationwide. Made in Utah, USA.',
+            description: 'Bulk premium laundry enhancement solution using hypochlorous acid technology. Eliminates odors, brightens whites, and provides protection for fabrics. Perfect for commercial laundries, hotels, and professional cleaning services. Safe for all fabric types and colors. Eco-friendly alternative to harsh chemicals. USDA Certified Organic. Certified Organic by OTCO. Ships nationwide. Made in Utah, USA.',
             restrictions: null,
             pricing: {
                 retail: 28.99,
@@ -359,20 +370,21 @@
         },
 
         // =========================================================================
-        // PRODUCT 8: OHS Pure Skin Serum 100ml (Nationwide) — CORRECTED PRICING
+        // PRODUCT 8: OHS Pure Skin Serum 100ml (Nationwide)
+        // NON-REGISTERED — Not EPA, Not USDA Organic
         // =========================================================================
         '7249401348167': {
             id: '7249401348167',
             shopifyProductId: '7249401348167',
             name: 'OHS Pure Skin Serum 100ml',
             shortName: 'Skin Serum 100ml',
-            type: 'usda-only',
+            type: 'non-registered',
             ppm: null,
             size: '100ml',
-            certifications: ['USDA #Z-699995-2008'],
+            certifications: [],
             epaNumber: null,
-            usdaNumber: 'Z-699995-2008',
-            description: 'Advanced premium skin wellness serum formulated with hypochlorous acid technology. Professional-grade formulation with premium packaging. Supports skin wellness, soothes irritation, and provides gentle care for all skin types. Perfect for skincare-conscious consumers and dermatology practices. USDA Certified Organic (#Z-699995-2008). Ships nationwide. Made in Utah, USA.',
+            usdaNumber: null,
+            description: 'Advanced premium skin wellness serum formulated with hypochlorous acid technology. Professional-grade formulation with premium packaging. Supports skin wellness, soothes irritation, and provides gentle care for all skin types. Perfect for skincare-conscious consumers and dermatology practices. Ships nationwide. Made in Utah, USA.',
             restrictions: null,
             pricing: {
                 retail: 34.99,
@@ -395,11 +407,11 @@
             },
             image: 'assets/images/products/skin-serum-100ml.png',
             emoji: '✨',
-            badgeType: 'USDA Organic',
-            badgeColor: '#4ADE80',
+            badgeType: 'Skin Care',
+            badgeColor: '#7DD3FC',
             weight: 0.5,
             category: 'Skincare',
-            productLine: 'organic',
+            productLine: 'wellness',
             useCase: ['skincare', 'sensitive-skin', 'wellness'],
             status: 'active'
         }
@@ -413,17 +425,13 @@
         // EPA 32oz 200ppm
         'ohs-32oz-epa-cleaner': '7249401053255',
         '32oz epa registered ready-to-use cleaner': '7249401053255',
-        '32oz epa registered ready-to-use cleaner 200ppm': '7249401053255',
         '32oz epa cleaner': '7249401053255',
-        '32oz epa cleaner 200ppm': '7249401053255',
         'ohs-32oz-200ppm': '7249401053255',
 
         // EPA 1 Gal 200ppm
         'ohs-1gal-epa-solution': '7249401086023',
         '1 gallon epa registered ready-to-use solution': '7249401086023',
-        '1 gallon epa registered ready-to-use solution 200ppm': '7249401086023',
         '1gal epa solution': '7249401086023',
-        '1gal epa solution 200ppm': '7249401086023',
         'ohs-1gal-200ppm': '7249401086023',
 
         // USDA 32oz
@@ -438,11 +446,11 @@
         '1gal organic solution': '7418571685959',
         'ohs-1-gallon-organic-ready-to-use': '7418571685959',
 
-        // Wipes
-        'ohs-organic-wipes': '7249401315399',
+        // Wipes (no longer "organic" in alias)
+        'ohs-wipes': '7249401315399',
         'ohs-all-in-one-wipes': '7249401315399',
-        'all in one hypochlorous organic wipes': '7249401315399',
-        'organic wipes': '7249401315399',
+        'all in one hypochlorous acid wipes': '7249401315399',
+        'hocl wipes': '7249401315399',
 
         // 32oz Laundry
         'ohs-32oz-laundry': '7249400004679',
@@ -640,17 +648,27 @@
      */
     window.getEPAProducts = function() {
         return Object.values(window.PRODUCT_CATALOG).filter(function(p) {
-            return p.type === 'epa-usda';
+            return p.type === 'epa';
         });
     };
 
     /**
-     * Get USDA-only products (ships nationwide)
+     * Get USDA-only products (ships nationwide, organic certified)
      * @returns {Array}
      */
     window.getUSDAOnlyProducts = function() {
         return Object.values(window.PRODUCT_CATALOG).filter(function(p) {
             return p.type === 'usda-only';
+        });
+    };
+
+    /**
+     * Get non-registered products (ships nationwide, no EPA or USDA)
+     * @returns {Array}
+     */
+    window.getNonRegisteredProducts = function() {
+        return Object.values(window.PRODUCT_CATALOG).filter(function(p) {
+            return p.type === 'non-registered';
         });
     };
 
@@ -713,7 +731,8 @@
     ];
 
     console.log('✅ Product Catalog loaded:', Object.keys(window.PRODUCT_CATALOG).length, 'products');
-    console.log('📦 EPA Products (Utah Only):', window.getEPAProducts().length);
-    console.log('🌿 USDA Products (Nationwide):', window.getUSDAOnlyProducts().length);
+    console.log('🛡️ EPA Products (Utah Only):', window.getEPAProducts().length);
+    console.log('🌿 USDA Organic Products (Nationwide):', window.getUSDAOnlyProducts().length);
+    console.log('📦 Non-Registered Products (Nationwide):', window.getNonRegisteredProducts().length);
 
 })();
