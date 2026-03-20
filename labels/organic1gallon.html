@@ -72,32 +72,27 @@
             color-adjust: exact;
         }
 
-        /* Logo + USDA seal row */
+        /* Logo centered solo at top */
         .logo-row {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
             margin-top: auto;
             margin-bottom: auto;
         }
 
         .logo-image {
-            max-width: 80%;
-            max-height: 180px;
+            max-width: 85%;
+            max-height: 200px;
             height: auto;
             background: white;
-            padding: 8px;
+            padding: 10px;
             object-fit: contain;
             border-radius: 6px;
             box-shadow: 0 3px 8px rgba(0,0,0,0.25);
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             color-adjust: exact;
-        }
-
-        .usda-seal {
-            flex-shrink: 0;
         }
 
         .badge-container {
@@ -107,36 +102,61 @@
             margin: 0 0 6px 0;
         }
 
-        .badge {
-            background: #B8E8D0;
-            color: #2E7D32;
-            padding: 7px;
+        /* Green circle badge - matches laundry booster */
+        .feature-badge-circle {
+            background: #4CAF50;
+            color: white;
+            border: 2px solid #2E7D32;
             border-radius: 50%;
-            width: 82px;
-            height: 82px;
+            width: 72px;
+            height: 72px;
+            min-width: 72px;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            border: 3px solid #4CAF50;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             color-adjust: exact;
         }
 
-        .badge-large {
-            font-size: 10px;
-            margin-bottom: 1px;
-            line-height: 1.1;
-            text-align: center;
+        .feature-circle-wrapper {
+            background: white;
+            border-radius: 6px;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
 
-        .badge-small {
-            font-size: 6px;
+        .feature-badge-circle-text {
+            font-size: 7px;
+            font-weight: bold;
             text-align: center;
-            line-height: 1.2;
+            line-height: 1.25;
+            color: white;
+        }
+
+        /* USDA Seal box next to badge */
+        .usda-seal-box {
+            background: white;
+            border-radius: 6px;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            width: 82px;
+            height: 82px;
+            min-width: 82px;
+        }
+
+        .usda-seal-box img {
+            width: 100%;
+            height: auto;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
 
         .safe-icons {
@@ -387,34 +407,37 @@
 </head>
 <body>
     <!-- SINGLE PAGE - 18.25" x 5.375" -->
-    <!-- COMPLIANCE NOTE: USDA-only product. No EPA numbers. No ppm listed.
-         No cert number. No OTCO on front or Key Features. -->
+    <!-- COMPLIANCE NOTE: USDA Organic product. No EPA numbers. No ppm listed.
+         Manufactured by Sani-TEST removed per 3/19 universal update.
+         Certified Organic by OTCO under Distributed By only.
+         USDA Organic seal moved next to All Natural Ingredients badge.
+         OHS logo enlarged and centered solo. -->
     <div class="page">
 
         <!-- FRONT PANEL -->
         <div class="front-panel">
 
-            <!-- Logo + USDA Organic Seal -->
+            <!-- Logo - Enlarged and centered solo -->
             <div class="logo-row">
                 <img src="../assets/images/logos/organiclogo.png" alt="OHS Logo" class="logo-image">
-                <div class="usda-seal">
-                    <img src="../assets/images/logos/RT_OrganicFourColorOrganicSeal.jpg" alt="USDA Organic"
-                         style="width:80px;height:auto;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
-                </div>
             </div>
 
             <div style="width:100%;display:flex;flex-direction:column;gap:7px;margin-top:auto;align-items:center;">
 
+                <!-- All Natural badge + USDA Seal side by side (USDA Organic Certified badge removed) -->
                 <div class="badge-container">
-                    <div class="badge">
-                        <div class="badge-large">All Natural</div>
-                        <div class="badge-large">Ingredients</div>
-                        <div class="badge-small">No Harsh Chemicals</div>
+                    <div class="feature-circle-wrapper">
+                        <div class="feature-badge-circle">
+                            <div class="feature-badge-circle-text">
+                                ALL NATURAL<br>
+                                INGREDIENTS<br>
+                                NO HARSH<br>
+                                CHEMICALS
+                            </div>
+                        </div>
                     </div>
-                    <div class="badge">
-                        <div class="badge-large">USDA</div>
-                        <div class="badge-large">Organic</div>
-                        <div class="badge-small">Certified</div>
+                    <div class="usda-seal-box">
+                        <img src="../assets/images/logos/RT_OrganicFourColorOrganicSeal.jpg" alt="USDA Organic">
                     </div>
                 </div>
 
@@ -527,13 +550,10 @@
 
             <div class="footer">
                 <div class="footer-left">
-                    <p><strong>MANUFACTURED BY:</strong></p>
-                    <p>Sani-TEST, LLC</p>
-                    <p>Certified by OTCO</p>
-                    <div class="footer-divider"></div>
                     <p><strong>DISTRIBUTED BY:</strong></p>
                     <p>Organic HypoSolutions LLC</p>
                     <p>Salt Lake City, UT</p>
+                    <p>Certified Organic by OTCO</p>
                     <p>Made in Utah, USA</p>
                 </div>
                 <div class="footer-right">
