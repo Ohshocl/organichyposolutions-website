@@ -69,7 +69,7 @@
         .front-panel {
             background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%);
             color: white;
-            padding: 3px 12px 4px 12px;
+            padding: 6px 10px 4px 10px;
             width: 50%;
             height: 100%;
             display: flex;
@@ -82,73 +82,99 @@
             color-adjust: exact;
         }
 
-        /* Logo + USDA seal row */
+        /* OHS Logo - centered at top */
         .logo-center {
             text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
             margin: 0;
         }
 
-        .front-spacer {
-            flex: 1;
-        }
-
         .logo-image {
-            max-width: 270px;
+            max-width: 240px;
             height: auto;
             background: white;
-            padding: 10px;
-            border-radius: 6px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+            padding: 8px 12px;
+            border-radius: 5px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
         }
 
-        .usda-seal {
-            flex-shrink: 0;
-        }
-
-        /* Title Row */
-        .title-row {
+        /* Seal Row - Feature circle + USDA seal side by side */
+        .seal-row {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            margin-bottom: 3px;
+            gap: 10px;
+            margin-bottom: 0;
         }
 
         .feature-badge-circle {
-            background: rgba(255,255,255,0.95);
-            color: #2E7D32;
-            border: 2px solid #4CAF50;
+            background: #4CAF50;
+            color: white;
+            border: 2px solid #2E7D32;
             border-radius: 50%;
-            width: 68px;
-            height: 68px;
-            min-width: 68px;
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             color-adjust: exact;
         }
 
+        /* White square behind the circle */
+        .feature-circle-wrapper {
+            background: white;
+            border-radius: 5px;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
         .feature-badge-circle-text {
-            font-size: 6px;
+            font-size: 5px;
             font-weight: bold;
             text-align: center;
             line-height: 1.25;
-            color: #2E7D32;
+            color: white;
         }
 
+        /* Product Title Block */
         .product-title {
             text-align: center;
+            margin-bottom: 0;
+        }
+
+        /* USDA Seal box */
+        .usda-seal-box {
+            flex-shrink: 0;
+            background: white;
+            border-radius: 5px;
+            padding: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            width: 56px;
+            height: 56px;
+            min-width: 56px;
+        }
+
+        .usda-seal-box img {
+            width: 100%;
+            height: auto;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
 
         .product-name {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             letter-spacing: 1px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
@@ -156,33 +182,28 @@
         }
 
         .product-subtitle {
-            font-size: 8px;
+            font-size: 7.5px;
             font-weight: 500;
             margin-top: 1px;
             letter-spacing: 0.5px;
         }
 
-        .product-size {
-            font-size: 7.5px;
-            margin-top: 0px;
-            opacity: 0.9;
-        }
-
+        /* Feature Badges Row */
         .badge-container {
             display: flex;
             justify-content: center;
             gap: 8px;
-            margin: 2px 0;
+            margin: 0;
         }
 
         .feature-badge {
             background: rgba(255,255,255,0.95);
             color: #333;
             padding: 3px 6px;
-            border-radius: 8px;
+            border-radius: 6px;
             text-align: center;
             font-weight: bold;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
             flex: 1;
             max-width: 110px;
             -webkit-print-color-adjust: exact;
@@ -203,26 +224,12 @@
             font-weight: normal;
         }
 
-        .main-claim {
-            font-size: 8.5px;
-            font-weight: bold;
-            margin: 2px 0;
-            text-align: center;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-            background: rgba(255,255,255,0.2);
-            padding: 3px 6px;
-            border-radius: 5px;
-            line-height: 1.15;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
-        }
-
+        /* Info Grid */
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 4px;
-            margin: 2px 0;
+            margin: 0;
         }
 
         .info-box {
@@ -263,6 +270,7 @@
             margin-bottom: 0.5px;
         }
 
+        /* Warning Box on Front */
         .front-warning-box {
             background: #FF5722;
             color: white;
@@ -274,12 +282,13 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.4);
             border: 1.5px solid white;
             line-height: 1.1;
-            margin: 2px 0;
+            margin: 0;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             color-adjust: exact;
         }
 
+        /* Net Contents Front */
         .net-contents {
             font-size: 7px;
             padding: 2px;
@@ -288,7 +297,7 @@
             border-radius: 4px;
             text-align: center;
             font-weight: bold;
-            margin-top: 2px;
+            margin-top: 0;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             color-adjust: exact;
@@ -298,7 +307,7 @@
            BACK PANEL - RIGHT SIDE
            ======================================== */
         .back-panel {
-            padding: 8px 10px 6px 10px;
+            padding: 6px 8px 4px 8px;
             background: white;
             width: 50%;
             height: 100%;
@@ -314,12 +323,12 @@
         .back-header {
             background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%);
             color: white;
-            padding: 3px 6px;
+            padding: 2px 5px;
             font-weight: bold;
             font-size: 8.5px;
             text-align: center;
             border-radius: 4px;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             color-adjust: exact;
@@ -352,6 +361,7 @@
             margin-bottom: 1px;
         }
 
+        /* Fabric Warning */
         .back-warning {
             background: #FFF3E0;
             border: 1px solid #E8723A;
@@ -374,6 +384,7 @@
             line-height: 1.2;
         }
 
+        /* Two Column */
         .two-column {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -392,10 +403,12 @@
             line-height: 1.2;
         }
 
+        /* Storage Section */
         .storage-section .section-content {
             font-size: 5.5px;
         }
 
+        /* Keep Out Box */
         .koorch-box {
             background: #E8723A;
             color: white;
@@ -411,10 +424,11 @@
             color-adjust: exact;
         }
 
+        /* Footer */
         .footer {
             background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%);
             color: white;
-            padding: 3px 6px;
+            padding: 3px 5px;
             font-size: 5.5px;
             margin-top: auto;
             border-radius: 3px;
@@ -466,9 +480,12 @@
 </head>
 <body>
     <!-- SINGLE PAGE - 10.325" x 4.875" - WRAP-AROUND LABEL -->
-    <!-- COMPLIANCE NOTE: USDA-only product. No EPA registration numbers.
+    <!-- COMPLIANCE NOTE: USDA Organic product. No EPA registration numbers.
          No antimicrobial/pesticidal claims per FIFRA requirements.
-         No ppm listed per label notes. -->
+         No ppm listed per label notes. No pH listed per 3/19 update.
+         Certified Organic by OTCO appears under Distributed By only.
+         USDA Organic seal appears next to All Natural Ingredients circle.
+         Manufactured by Sani-TEST removed per universal label update. -->
     <div class="page">
 
         <!-- ============================================
@@ -476,38 +493,42 @@
              ============================================ -->
         <div class="front-panel">
 
-            <div class="front-spacer"></div>
+            <!-- Small spacer above logo -->
+            <div style="flex:0.2;"></div>
 
-            <!-- Logo + USDA Organic Seal -->
+            <!-- OHS Logo - Centered at top -->
             <div class="logo-center">
                 <img src="../assets/images/logos/organiclogo.png" alt="OHS Logo" class="logo-image">
-                <div class="usda-seal">
-                    <img src="../assets/images/logos/RT_OrganicFourColorOrganicSeal.jpg" alt="USDA Organic"
-                         style="width:58px;height:auto;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+            </div>
+
+            <!-- Spacer between logo and content cluster -->
+            <div style="flex:1;"></div>
+
+            <!-- Feature Circle + USDA Seal Row -->
+            <div class="seal-row">
+                <div class="feature-circle-wrapper">
+                    <div class="feature-badge-circle">
+                        <div class="feature-badge-circle-text">
+                            ALL NATURAL<br>
+                            INGREDIENTS<br>
+                            NO HARSH<br>
+                            CHEMICALS
+                        </div>
+                    </div>
+                </div>
+                <div class="usda-seal-box">
+                    <img src="../assets/images/logos/RT_OrganicFourColorOrganicSeal.jpg" alt="USDA Organic">
                 </div>
             </div>
 
-            <div class="front-spacer"></div>
-
-            <!-- Product Title + Feature Circle Row -->
-            <div class="title-row">
-                <div class="product-title">
-                    <div class="product-name">Laundry Booster</div>
-                    <div class="product-subtitle">Natural Washing Machine Additive</div>
-                    <div class="product-size">32 oz (946 mL)</div>
-                </div>
-                <div class="feature-badge-circle">
-                    <div class="feature-badge-circle-text">
-                        HYPOALLERGENIC<br>
-                        CLEAN &amp; FRESH<br>
-                        NO ADDED<br>
-                        FRAGRANCES
-                    </div>
-                </div>
+            <!-- Product Title -->
+            <div class="product-title" style="margin-top:2px;">
+                <div class="product-name">Laundry Booster</div>
+                <div class="product-subtitle">Natural Washing Machine Additive</div>
             </div>
 
             <!-- Feature Badges -->
-            <div class="badge-container">
+            <div class="badge-container" style="margin-top:3px;">
                 <div class="feature-badge">
                     <div class="feature-badge-title">Eliminates<br>Odors</div>
                     <div class="feature-badge-text">Freshens and deodorizes fabric naturally</div>
@@ -518,13 +539,8 @@
                 </div>
             </div>
 
-            <!-- Main Claim -->
-            <div class="main-claim">
-                The same molecule your body naturally produces &mdash; now in a Laundry Booster!
-            </div>
-
             <!-- Info Grid -->
-            <div class="info-grid">
+            <div class="info-grid" style="margin-top:3px;">
                 <div class="info-box">
                     <div class="info-box-title">PERFECT FOR:</div>
                     <ul>
@@ -536,20 +552,19 @@
                     </ul>
                 </div>
                 <div class="info-box">
-                    <div class="info-box-title">INGREDIENTS:</div>
-                    <p><strong>pH: 4.9 (optimized for laundry)</strong></p>
+                    <div class="info-box-title">ALL NATURAL INGREDIENTS:</div>
                     <p><strong>Hypochlorous Acid:</strong> 0.01%</p>
                     <p>Pure Water, Ethanoic Acid &amp; other Natural Minerals: 99.97%</p>
                 </div>
             </div>
 
             <!-- Front Warning Banner -->
-            <div class="front-warning-box">
+            <div class="front-warning-box" style="margin-top:3px;">
                 TEST FABRICS FIRST &bull; Do not use with bleach or fabric softener
             </div>
 
             <!-- Net Contents -->
-            <div class="net-contents">
+            <div class="net-contents" style="margin-top:2px;">
                 Net Contents: 32 Fluid Ounces (946 mL)
             </div>
 
@@ -580,7 +595,7 @@
                 <p><strong>TEST FABRICS TO ASSURE COMPATIBILITY BEFORE USE.</strong> Do not use bleach or fabric softener when using Hypochlorous Laundry Booster. Do not use any other laundry products other than normal laundry detergent when using Laundry Booster.</p>
             </div>
 
-            <!-- Two Column -->
+            <!-- Two Column: Benefits + Why -->
             <div class="two-column">
                 <div class="section-compact">
                     <div class="section-title">KEY BENEFITS</div>
@@ -631,13 +646,10 @@
             <!-- Footer -->
             <div class="footer">
                 <div class="footer-left">
-                    <p><strong>MANUFACTURED BY:</strong></p>
-                    <p>Sani-TEST, LLC</p>
-                    <p>Certified by OTCO</p>
-                    <div class="footer-divider"></div>
                     <p><strong>DISTRIBUTED BY:</strong></p>
                     <p>Organic HypoSolutions LLC</p>
                     <p>Salt Lake City, UT</p>
+                    <p>Certified Organic by OTCO</p>
                     <p>Made in Utah, USA</p>
                 </div>
                 <div class="footer-center">
