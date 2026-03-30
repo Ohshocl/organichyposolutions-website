@@ -9,23 +9,47 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
         }
 
         body {
             font-family: 'Arial', 'Helvetica', sans-serif;
             background: white;
             color: #000;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
         }
 
         @page {
             size: 10.325in 4.875in;
             margin: 0;
+        }
+
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            body {
+                background: white !important;
+                padding: 0;
+            }
+            .page {
+                margin: 0;
+                box-shadow: none;
+            }
+            /* Force solid colors on print */
+            .front-panel {
+                background: #5BBFC2 !important;
+            }
+            .back-header,
+            .footer {
+                background: #5BBFC2 !important;
+            }
         }
 
         .page {
@@ -46,16 +70,12 @@
             .page { margin: 20px auto; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
         }
 
-        @media print {
-            body { background: white; padding: 0; }
-            .page { margin: 0; box-shadow: none; }
-        }
-
         /* ========================================
            FRONT PANEL
            ======================================== */
         .front-panel {
-            background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%);
+            /* SOLID COLOR - gradients cause gray printing */
+            background: #5BBFC2 !important;
             color: white;
             padding: 10px 14px 8px 14px;
             flex: 1;
@@ -67,9 +87,6 @@
             gap: 0px;
             position: relative;
             border-radius: 6px;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         /* Logo centered solo at top */
@@ -85,14 +102,11 @@
             max-width: 95%;
             max-height: 190px;
             height: auto;
-            background: white;
+            background: white !important;
             padding: 12px;
             object-fit: contain;
             border-radius: 6px;
             box-shadow: 0 3px 8px rgba(0,0,0,0.25);
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .badge-container {
@@ -104,7 +118,7 @@
 
         /* Green circle badge - matches laundry booster */
         .feature-badge-circle {
-            background: #4CAF50;
+            background: #4CAF50 !important;
             color: white;
             border: 2px solid #2E7D32;
             border-radius: 50%;
@@ -115,13 +129,10 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .feature-circle-wrapper {
-            background: white;
+            background: white !important;
             border-radius: 6px;
             padding: 5px;
             display: flex;
@@ -140,7 +151,7 @@
 
         /* USDA Seal box next to badge */
         .usda-seal-box {
-            background: white;
+            background: white !important;
             border-radius: 6px;
             padding: 4px;
             display: flex;
@@ -155,8 +166,6 @@
         .usda-seal-box img {
             width: 100%;
             height: auto;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
         }
 
         .safe-icons {
@@ -177,7 +186,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.95);
+            background: #ffffff !important;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -198,15 +207,12 @@
             margin: 0;
             text-align: center;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-            background: #3DA8D5;
+            background: #3DA8D5 !important;
             padding: 2px 10px;
             border-radius: 5px;
             color: white;
             width: 100%;
             line-height: 1;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .sub-claim {
@@ -214,14 +220,11 @@
             margin: 0;
             text-align: center;
             font-weight: 500;
-            background: #3DA8D5;
+            background: #3DA8D5 !important;
             padding: 1.5px 10px;
             border-radius: 5px;
             width: 100%;
             line-height: 1;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .front-bottom {
@@ -232,14 +235,11 @@
         .front-size {
             font-size: 8px;
             padding: 1.5px 5px;
-            background: rgba(255,255,255,0.95);
+            background: #ffffff !important;
             color: #333;
             border-radius: 4px;
             text-align: center;
             font-weight: bold;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         /* ========================================
@@ -247,7 +247,7 @@
            ======================================== */
         .back-panel {
             padding: 8px 12px 8px 12px;
-            background: white;
+            background: white !important;
             flex: 1;
             height: 100%;
             overflow: hidden;
@@ -255,13 +255,11 @@
             flex-direction: column;
             border-radius: 6px;
             border: 2px solid #7AD4D6;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .back-header {
-            background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%);
+            /* SOLID COLOR - gradients cause gray printing */
+            background: #5BBFC2 !important;
             color: white;
             padding: 3px 6px;
             font-weight: bold;
@@ -269,9 +267,6 @@
             text-align: center;
             border-radius: 3px;
             margin-bottom: 3px;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .section-compact {
@@ -279,16 +274,13 @@
         }
 
         .section-title {
-            background: #7AD4D6;
+            background: #7AD4D6 !important;
             color: white;
             padding: 2px 5px;
             font-weight: bold;
             font-size: 7px;
             margin-bottom: 2px;
             border-radius: 3px;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .section-content {
@@ -304,16 +296,13 @@
         .bold { font-weight: bold; }
 
         .active-ingredient-box {
-            background: #f9f9f9;
+            background: #f9f9f9 !important;
             border: 1px solid #7AD4D6;
             padding: 4px 6px;
             border-radius: 4px;
             font-size: 6px;
             line-height: 1.4;
             margin-bottom: 3px;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .active-ingredient-box .ai-title {
@@ -345,16 +334,13 @@
         }
 
         .safety-statement {
-            background: #f0fdf4;
+            background: #f0fdf4 !important;
             border: 1px solid #86efac;
             border-radius: 3px;
             padding: 3px 5px;
             margin-bottom: 3px;
             font-size: 5.5px;
             line-height: 1.25;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .safety-statement strong {
@@ -381,7 +367,8 @@
         }
 
         .footer {
-            background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%);
+            /* SOLID COLOR - gradients cause gray printing */
+            background: #5BBFC2 !important;
             color: white;
             padding: 3px 6px;
             font-size: 5.5px;
@@ -390,9 +377,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .footer-left { text-align: left; }
@@ -562,4 +546,12 @@
                              style="width:32px;height:32px;">
                     </div>
                     <p>www.organichyposolutions.com</p>
-                    <p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="642b2c37242b1603050a0d072c1d14
+                    <p>OHS@OrganicHypoSolutions.com | (801) 712-5663</p>
+                    <p style="margin-top:2px;"><strong>Net Contents: 32 FL OZ (946 mL)</strong></p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
