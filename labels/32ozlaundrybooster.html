@@ -9,24 +9,48 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
         }
 
         body {
             font-family: 'Arial', 'Helvetica', sans-serif;
             background: white;
             color: #000;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
         }
 
         /* Print-specific styles - EXACT PROOF DIMENSIONS: 10.325" x 4.875" */
         @page {
             size: 10.325in 4.875in;
             margin: 0;
+        }
+
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            body {
+                background: white !important;
+                padding: 0;
+            }
+            .page {
+                margin: 0;
+                box-shadow: none;
+            }
+            /* Force solid colors on print */
+            .front-panel {
+                background: #5BBFC2 !important;
+            }
+            .back-header,
+            .footer {
+                background: #5BBFC2 !important;
+            }
         }
 
         .page {
@@ -52,22 +76,12 @@
             }
         }
 
-        @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-            .page {
-                margin: 0;
-                box-shadow: none;
-            }
-        }
-
         /* ========================================
            FRONT PANEL - LEFT SIDE
            ======================================== */
         .front-panel {
-            background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%);
+            /* SOLID COLOR - gradients cause gray printing */
+            background: #5BBFC2 !important;
             color: white;
             padding: 6px 10px 4px 10px;
             width: 50%;
@@ -77,9 +91,6 @@
             justify-content: flex-start;
             gap: 0px;
             position: relative;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         /* OHS Logo - centered at top */
@@ -94,7 +105,7 @@
         .logo-image {
             max-width: 320px;
             height: auto;
-            background: white;
+            background: white !important;
             padding: 10px 14px;
             border-radius: 5px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.25);
@@ -110,7 +121,7 @@
         }
 
         .feature-badge-circle {
-            background: #4CAF50;
+            background: #4CAF50 !important;
             color: white;
             border: 2px solid #2E7D32;
             border-radius: 50%;
@@ -121,14 +132,11 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         /* White square behind the circle */
         .feature-circle-wrapper {
-            background: white;
+            background: white !important;
             border-radius: 5px;
             padding: 4px;
             display: flex;
@@ -154,7 +162,7 @@
         /* USDA Seal box */
         .usda-seal-box {
             flex-shrink: 0;
-            background: white;
+            background: white !important;
             border-radius: 5px;
             padding: 3px;
             display: flex;
@@ -169,8 +177,6 @@
         .usda-seal-box img {
             width: 100%;
             height: auto;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
         }
 
         .product-name {
@@ -197,7 +203,7 @@
         }
 
         .feature-badge {
-            background: rgba(255,255,255,0.95);
+            background: #ffffff !important;
             color: #333;
             padding: 3px 6px;
             border-radius: 6px;
@@ -206,9 +212,6 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
             flex: 1;
             max-width: 110px;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .feature-badge-title {
@@ -233,15 +236,12 @@
         }
 
         .info-box {
-            background: rgba(255,255,255,0.95);
+            background: #ffffff !important;
             color: #333;
             padding: 3px 4px;
             border-radius: 4px;
             font-size: 5.5px;
             line-height: 1.15;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .info-box-title {
@@ -251,9 +251,6 @@
             color: #5BBFC2;
             border-bottom: 1.5px solid #5BBFC2;
             padding-bottom: 1px;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .info-box ul {
@@ -272,7 +269,7 @@
 
         /* Warning Box on Front */
         .front-warning-box {
-            background: #FF5722;
+            background: #FF5722 !important;
             color: white;
             padding: 2px 5px;
             border-radius: 4px;
@@ -283,24 +280,18 @@
             border: 1.5px solid white;
             line-height: 1.1;
             margin: 0;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         /* Net Contents Front */
         .net-contents {
             font-size: 7px;
             padding: 2px;
-            background: rgba(255,255,255,0.95);
+            background: #ffffff !important;
             color: #333;
             border-radius: 4px;
             text-align: center;
             font-weight: bold;
             margin-top: 0;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         /* ========================================
@@ -308,20 +299,18 @@
            ======================================== */
         .back-panel {
             padding: 6px 8px 4px 8px;
-            background: white;
+            background: white !important;
             width: 50%;
             height: 100%;
             overflow: hidden;
             display: flex;
             flex-direction: column;
             border-left: 1px dashed #ccc;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .back-header {
-            background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%);
+            /* SOLID COLOR - gradients cause gray printing */
+            background: #5BBFC2 !important;
             color: white;
             padding: 2px 5px;
             font-weight: bold;
@@ -329,9 +318,6 @@
             text-align: center;
             border-radius: 4px;
             margin-bottom: 2px;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .section-compact {
@@ -339,16 +325,13 @@
         }
 
         .section-title {
-            background: #7AD4D6;
+            background: #7AD4D6 !important;
             color: white;
             padding: 1.5px 5px;
             font-weight: bold;
             font-size: 7px;
             margin-bottom: 1.5px;
             border-radius: 3px;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .section-content {
@@ -363,14 +346,11 @@
 
         /* Fabric Warning */
         .back-warning {
-            background: #FFF3E0;
+            background: #FFF3E0 !important;
             border: 1px solid #E8723A;
             border-radius: 3px;
             padding: 2px 4px;
             margin-bottom: 2px;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .back-warning h6 {
@@ -410,7 +390,7 @@
 
         /* Keep Out Box */
         .koorch-box {
-            background: #E8723A;
+            background: #E8723A !important;
             color: white;
             padding: 2px 6px;
             border-radius: 4px;
@@ -419,14 +399,12 @@
             text-align: center;
             margin-bottom: 2px;
             border: 1.5px solid white;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         /* Footer */
         .footer {
-            background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%);
+            /* SOLID COLOR - gradients cause gray printing */
+            background: #5BBFC2 !important;
             color: white;
             padding: 3px 5px;
             font-size: 5.5px;
@@ -435,9 +413,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-            color-adjust: exact;
         }
 
         .footer-left {
@@ -464,7 +439,7 @@
             width: 40px;
             height: 40px;
             border-radius: 2px;
-            background: white;
+            background: white !important;
             padding: 1px;
         }
 
