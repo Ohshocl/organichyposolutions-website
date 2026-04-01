@@ -3,66 +3,159 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Managing Operations — Study Guide & Quiz</title>
+<title>Managing Operations — PVRO Study Tool</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,sans-serif;background:#f5f4f0;color:#1a1a1a;line-height:1.6}
+body{font-family:system-ui,-apple-system,sans-serif;background:#f5f4f0;color:#1a1a1a;line-height:1.6}
 .container{max-width:820px;margin:0 auto;padding:2rem 1.25rem}
-h1{font-size:20px;font-weight:600;margin-bottom:.25rem}
-.subtitle{font-size:14px;color:#666;margin-bottom:1.5rem}
-.tab-bar{display:flex;gap:8px;margin-bottom:1.75rem}
-.tab{padding:8px 20px;border-radius:8px;border:1px solid #ccc;background:transparent;cursor:pointer;font-size:14px;font-weight:500;color:#555}
-.tab.active{background:#fff;color:#111;border-color:#888;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+h1{font-size:20px;font-weight:700;margin-bottom:.2rem}
+.subtitle{font-size:13px;color:#888;margin-bottom:1.5rem}
+
+/* TABS */
+.tab-bar{display:flex;gap:8px;margin-bottom:1.75rem;flex-wrap:wrap}
+.tab{padding:8px 18px;border-radius:8px;border:1px solid #ccc;background:transparent;cursor:pointer;font-size:13px;font-weight:600;color:#555;transition:all .15s}
+.tab.active{background:#fff;color:#111;border-color:#888;box-shadow:0 1px 3px rgba(0,0,0,.1)}
 .section{display:none}.section.active{display:block}
-.sec-head{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;margin:2rem 0 .75rem;padding-bottom:6px;border-bottom:1px solid #e0e0e0}
+
+/* STUDY GUIDE */
+.sec-head{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.07em;margin:2rem 0 .75rem;padding-bottom:6px;border-bottom:1px solid #e0e0e0}
 .card{background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.25rem}
-.card-title{font-size:15px;font-weight:600;color:#111;margin-bottom:.4rem}
+.card-title{font-size:15px;font-weight:700;color:#111;margin-bottom:.4rem}
 .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.85rem}
-.tag{font-size:11px;padding:2px 9px;border-radius:6px;font-weight:600}
+.tag{font-size:11px;padding:2px 9px;border-radius:6px;font-weight:700}
 .t-both{background:#fde8e8;color:#8b1a1a}
 .t-a1{background:#fef3cd;color:#7a5000}
 .t-a2{background:#deeeff;color:#0a3d7a}
 .t-q{background:#ede9fe;color:#3c2a8a}
+.t-missed{background:#fde8e8;color:#8b1a1a}
+.t-weak{background:#fef3cd;color:#7a5000}
+.t-strong{background:#dcfce7;color:#14532d}
 .body{font-size:14px;color:#444;line-height:1.85}
 .body p{margin-bottom:.8rem}.body p:last-child{margin-bottom:0}
-.body strong{color:#111;font-weight:600}
+.body strong{color:#111;font-weight:700}
 .note{border-left:3px solid #3b82f6;background:#eff6ff;padding:10px 14px;margin:10px 0;font-size:13px;color:#1e3a5f;line-height:1.7}
-.note strong{font-weight:600}
+.note strong{font-weight:700}
 .warn{border-left:3px solid #e05a20;background:#fef1ec;padding:10px 14px;margin:10px 0;font-size:13px;color:#6b2a10;line-height:1.7}
-.warn strong{font-weight:600;color:#6b2a10}
+.warn strong{font-weight:700;color:#6b2a10}
 .formula{background:#f3f4f6;border:1px solid #d1d5db;border-radius:6px;padding:8px 14px;font-family:monospace;font-size:13px;color:#111;margin:8px 0}
-/* QUIZ */
-.score-bar{background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:16px}
-.score-num{font-size:24px;font-weight:700;color:#111}
-.score-lbl{font-size:13px;color:#666}
-.prog{flex:1;height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden}
-.prog-fill{height:100%;background:#16a34a;border-radius:3px;transition:width .3s}
-.reset{padding:8px 16px;border-radius:8px;border:1px solid #ccc;background:transparent;cursor:pointer;font-size:13px;color:#555}
-.reset:hover{background:#f3f4f6}
-.qcard{background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
-.qmeta{font-size:12px;color:#999;margin-bottom:6px;display:flex;gap:8px;align-items:center}
-.qtext{font-size:15px;font-weight:600;color:#111;margin-bottom:1rem;line-height:1.55}
-.opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid #e0e0e0;border-radius:8px;margin-bottom:6px;cursor:pointer;font-size:14px;color:#111;line-height:1.5;transition:background .1s}
-.opt:hover{background:#f9fafb}
-.opt.correct{background:#f0fdf4;border-color:#16a34a;color:#14532d}
+
+/* QUIZ TOOLBAR */
+.quiz-controls{background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
+.controls-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:.6rem}
+.controls-row:last-child{margin-bottom:0}
+.ctrl-label{font-size:12px;font-weight:700;color:#555;min-width:100px}
+.mode-btn{padding:6px 14px;border-radius:6px;border:1px solid #ccc;background:transparent;cursor:pointer;font-size:12px;font-weight:600;color:#555;transition:all .15s}
+.mode-btn.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.score-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.score-num{font-size:22px;font-weight:700;color:#111}
+.score-lbl{font-size:12px;color:#888}
+.prog{flex:1;min-width:80px;height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:#16a34a;border-radius:3px;transition:width .4s}
+.streak-badge{font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;background:#fef9c3;color:#713f12;display:none}
+.reset-btn{padding:7px 14px;border-radius:8px;border:1px solid #ccc;background:transparent;cursor:pointer;font-size:12px;font-weight:600;color:#555}
+.reset-btn:hover{background:#f3f4f6}
+.stats-mini{font-size:12px;color:#888;display:flex;gap:12px;flex-wrap:wrap}
+.stats-mini span{display:flex;align-items:center;gap:4px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.dot-green{background:#16a34a}.dot-red{background:#dc2626}.dot-gray{background:#9ca3af}
+
+/* QUESTION CARDS */
+.qcard{background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1.25rem;margin-bottom:1rem;transition:box-shadow .2s}
+.qcard.answered{box-shadow:none}
+.qmeta{font-size:12px;color:#999;margin-bottom:6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.qnum{font-weight:700;color:#bbb}
+.qtext{font-size:15px;font-weight:700;color:#111;margin-bottom:1rem;line-height:1.55}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid #e0e0e0;border-radius:8px;margin-bottom:6px;cursor:pointer;font-size:14px;color:#111;line-height:1.5;transition:all .15s;user-select:none}
+.opt:hover:not(.locked){background:#f9fafb;border-color:#d1d5db}
+.opt.correct{background:#f0fdf4;border-color:#16a34a;color:#14532d;font-weight:600}
 .opt.wrong{background:#fef2f2;border-color:#dc2626;color:#7f1d1d}
-.opt.show{background:#f0fdf4;border-color:#16a34a;color:#14532d}
-.ltr{font-weight:700;min-width:18px}
-.exp{font-size:13px;color:#555;margin-top:10px;padding:10px 12px;background:#f9fafb;border-radius:8px;line-height:1.6;display:none;border:1px solid #e5e7eb}
-.exp strong{color:#111;font-weight:600}
+.opt.show-correct{background:#f0fdf4;border-color:#16a34a;color:#14532d}
+.opt.locked{cursor:default}
+.ltr{font-weight:700;min-width:20px;font-size:13px;color:#888}
+.opt.correct .ltr,.opt.show-correct .ltr{color:#16a34a}
+.opt.wrong .ltr{color:#dc2626}
+.opt-icon{margin-left:auto;font-size:14px}
+
+/* EXPLANATION */
+.exp{font-size:13px;color:#444;margin-top:12px;padding:12px 14px;background:#f9fafb;border-radius:8px;line-height:1.65;display:none;border:1px solid #e5e7eb}
+.exp strong{color:#111;font-weight:700}
+.exp-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#888;margin-bottom:4px}
+
+/* CONFIDENCE BUTTONS */
+.confidence-row{display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap}
+.conf-label{font-size:12px;color:#888;font-weight:600}
+.conf-btn{padding:5px 12px;border-radius:6px;border:1px solid #e0e0e0;background:transparent;cursor:pointer;font-size:12px;font-weight:700;transition:all .15s}
+.conf-btn:hover{transform:translateY(-1px)}
+.conf-again{color:#dc2626;border-color:#fca5a5}.conf-again:hover{background:#fef2f2}
+.conf-hard{color:#d97706;border-color:#fcd34d}.conf-hard:hover{background:#fffbeb}
+.conf-good{color:#16a34a;border-color:#86efac}.conf-good:hover{background:#f0fdf4}
+.conf-easy{color:#2563eb;border-color:#93c5fd}.conf-easy:hover{background:#eff6ff}
+
+/* COMPLETION CARD */
+.completion-card{background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:2rem;text-align:center;margin-bottom:1rem}
+.completion-card h2{font-size:20px;font-weight:700;margin-bottom:.5rem}
+.completion-card p{font-size:14px;color:#666;margin-bottom:1rem}
+.big-score{font-size:48px;font-weight:700;margin:.5rem 0}
+.grade-excellent{color:#16a34a}
+.grade-good{color:#2563eb}
+.grade-needs-work{color:#d97706}
+.grade-fail{color:#dc2626}
+.completion-stats{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin:1rem 0}
+.cstat{background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:.6rem 1rem;font-size:13px}
+.cstat strong{display:block;font-size:18px;font-weight:700}
+.next-steps{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px;font-size:13px;color:#1e3a5f;margin-top:1rem;text-align:left;line-height:1.7}
+.next-steps strong{font-weight:700}
+.retry-btn{padding:10px 24px;border-radius:8px;background:#1a1a1a;color:#fff;border:none;cursor:pointer;font-size:14px;font-weight:700;margin-top:1rem}
+.retry-missed-btn{padding:10px 24px;border-radius:8px;background:transparent;color:#dc2626;border:1.5px solid #dc2626;cursor:pointer;font-size:14px;font-weight:700;margin-top:1rem;margin-left:8px}
+.retry-btn:hover{background:#333}
+
+/* PROGRESS TRACKER */
+.tracker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(28px,1fr));gap:4px;margin:12px 0}
+.tq{width:28px;height:28px;border-radius:5px;border:1.5px solid #e0e0e0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#bbb;cursor:pointer;transition:all .15s}
+.tq:hover{border-color:#888}
+.tq.tq-correct{background:#dcfce7;border-color:#16a34a;color:#14532d}
+.tq.tq-wrong{background:#fef2f2;border-color:#dc2626;color:#991b1b}
+.tq.tq-active{border-color:#3b82f6;box-shadow:0 0 0 2px #bfdbfe}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:999;opacity:0;pointer-events:none;transition:opacity .25s;white-space:nowrap}
+.toast.show{opacity:1}
+
+/* FLASHCARD MODE */
+.flashcard-wrap{perspective:1000px;margin-bottom:1rem}
+.flashcard{width:100%;min-height:200px;position:relative;transform-style:preserve-3d;transition:transform .5s;cursor:pointer}
+.flashcard.flipped{transform:rotateY(180deg)}
+.fc-face{position:absolute;width:100%;min-height:200px;backface-visibility:hidden;border-radius:12px;border:1px solid #e0e0e0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center}
+.fc-back{transform:rotateY(180deg);background:#f9fafb}
+.fc-hint{font-size:11px;color:#bbb;position:absolute;bottom:.75rem;right:1rem;font-weight:600}
+.fc-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#bbb;margin-bottom:.75rem}
+.fc-text{font-size:16px;font-weight:700;color:#111;line-height:1.5}
+.fc-nav{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:1rem}
+.fc-nav button{padding:8px 20px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer;font-size:13px;font-weight:700;color:#555}
+.fc-nav button:hover{background:#f3f4f6}
+.fc-progress{font-size:13px;color:#888;font-weight:600}
+.fc-counter{font-size:12px;color:#bbb;text-align:center;margin-bottom:.75rem}
+
+/* RESPONSIVE */
+@media(max-width:520px){
+  .controls-row{gap:6px}
+  .completion-stats{gap:.5rem}
+  .cstat{padding:.5rem .75rem}
+}
 </style>
 </head>
 <body>
 <div class="container">
 <h1>Managing Operations — PVRO</h1>
-<p class="subtitle">Study guide and practice quiz built from Assessment 1 &amp; Assessment 2 missed questions</p>
+<p class="subtitle">Study tool built from Assessment 1 &amp; 2 missed questions • Spaced repetition + active recall enabled</p>
 
 <div class="tab-bar">
-  <button class="tab active" onclick="go('study')">Study Guide</button>
-  <button class="tab" onclick="go('quiz')">Full Quiz</button>
+  <button class="tab active" onclick="go('study')">📖 Study Guide</button>
+  <button class="tab" onclick="go('quiz')">✏️ Practice Quiz</button>
+  <button class="tab" onclick="go('flash')">🃏 Flashcards</button>
 </div>
 
-<!-- STUDY GUIDE -->
+<!-- ═══════════ STUDY GUIDE ═══════════ -->
 <div id="study" class="section active">
 
 <div class="sec-head">Operations &amp; Competitive Strategy</div>
@@ -80,16 +173,16 @@ h1{font-size:20px;font-weight:600;margin-bottom:.25rem}
 <div class="card-title">Customer benefit packages — core vs peripheral goods</div>
 <div class="tags"><span class="tag t-both">Missed — Both Assessments</span></div>
 <div class="body">
-<p>A customer benefit package (CBP) is the complete bundle of goods and services a customer receives. At the center is the core product. Surrounding it are peripheral items that add value and help differentiate the seller. The critical distinction is between peripheral <strong>goods</strong> (physical, tangible items) and peripheral <strong>services</strong> (intangible support activities).</p>
-<p>Financing options and online customer support are services — intangible and not physically part of the package. Software preloaded on a device is part of the core product experience — it is embedded in what you are buying, not added on top. A physical accessory like a replacement battery or charger is a true peripheral good: it is tangible, physically separate, and including it creates a differentiated offer a competitor might not match.</p>
-<div class="warn"><strong>Both assessments confusion:</strong> Preloaded software was selected. Because it ships as part of the product's core functionality, it is not a peripheral good. Peripheral goods must be physically separate items that add value beyond the main product.</div>
+<p>A customer benefit package (CBP) is the complete bundle of goods and services a customer receives. At the center is the core product. Surrounding it are peripheral items that add value and differentiate the seller. The critical distinction is between peripheral <strong>goods</strong> (tangible, physically separate items) and peripheral <strong>services</strong> (intangible support activities).</p>
+<p>Financing options and online customer support are services — intangible and not physically part of the package. Software preloaded on a device is part of the core product experience — embedded in what you are buying, not added on top. A physical accessory like a replacement battery or charger is a true peripheral good: tangible, physically separate, and its inclusion creates a differentiated offer a competitor might not match.</p>
+<div class="warn"><strong>Both assessments confusion:</strong> Preloaded software was selected. Because it ships as part of the core functionality, it is not a peripheral good. Peripheral goods must be physically separate items that add value beyond the main product.</div>
 </div></div>
 
 <div class="card">
 <div class="card-title">Customer ratings and future purchase behavior</div>
 <div class="tags"><span class="tag t-a2">Missed — Assessment 2</span></div>
 <div class="body">
-<p>Customer ratings are most strongly correlated with <strong>future purchase behavior</strong>. When a customer leaves a high rating, it signals satisfaction that predicts whether they will return. Internal operational metrics like inventory levels, workforce productivity, and sales forecast accuracy do not have a direct causal relationship with how a customer rates their experience. A customer has no idea whether inventory was optimally managed that week — they only know whether the experience was good enough to bring them back.</p>
+<p>Customer ratings are most strongly correlated with <strong>future purchase behavior</strong>. When a customer leaves a high rating, it signals satisfaction that predicts whether they will return. Internal operational metrics like inventory levels, workforce productivity, and forecast accuracy do not have a direct causal relationship with how a customer rates their experience. A customer has no idea whether inventory was optimally managed — they only know whether the experience was good enough to bring them back.</p>
 <div class="warn"><strong>Assessment 2 confusion:</strong> "Inventory level" was selected. Customers cannot see inventory levels and do not factor them into ratings. The correlation runs between satisfaction, rating, and future purchasing behavior.</div>
 </div></div>
 
@@ -99,37 +192,37 @@ h1{font-size:20px;font-weight:600;margin-bottom:.25rem}
 <div class="card-title">Process types — flow shop, job shop, project, and continuous flow</div>
 <div class="tags"><span class="tag t-both">Missed — Both Assessments</span></div>
 <div class="body">
-<p>A <strong>flow shop</strong> uses sequential workstations where products move through the same steps in the same order. Multiple similar products — like different vehicle models — can all move through the same assembly line because the fundamental process sequence is shared. This is automobile manufacturing: different models share the assembly sequence even though specific parts differ.</p>
-<p>A <strong>job shop</strong> handles custom, unique work where each job may follow a completely different sequence of operations. A <strong>project process</strong> is a one-time unique endeavor with a defined start and end — building a cruise ship, constructing a skyscraper. A <strong>continuous flow</strong> process runs 24/7 producing a single product, like an oil refinery or chemical plant, where stopping and restarting is more costly than never stopping.</p>
-<div class="warn"><strong>Both assessments confusion:</strong> Automobile assembly of multiple models was selected as a job shop. Job shops handle one-off custom work in varying sequences. Auto assembly is repetitive and sequential — every car goes through the same stations in the same order. That is a flow shop.</div>
+<p>A <strong>flow shop</strong> uses sequential workstations where products move through the same steps in the same order. Multiple similar products — like different vehicle models — share the assembly sequence even though specific parts differ. This is automobile manufacturing.</p>
+<p>A <strong>job shop</strong> handles custom, unique work where each job may follow a completely different sequence of operations. A <strong>project process</strong> is a one-time unique endeavor — building a cruise ship, constructing a skyscraper. A <strong>continuous flow</strong> process runs 24/7 producing a single product, like an oil refinery, where stopping and restarting is more costly than never stopping.</p>
+<div class="warn"><strong>Both assessments confusion:</strong> Automobile assembly was selected as a job shop. Job shops handle one-off custom work in varying sequences. Auto assembly is repetitive and sequential — every car goes through the same stations in the same order. That is a flow shop.</div>
 </div></div>
 
 <div class="card">
 <div class="card-title">House of quality, QFD, and competitive evaluation</div>
 <div class="tags"><span class="tag t-both">Missed — Both Assessments</span></div>
 <div class="body">
-<p>Quality Function Deployment (QFD) translates customer needs into engineering requirements using the House of Quality matrix. The most important input to QFD is the <strong>Voice of the Customer (VOC)</strong> — the direct expression of customer needs and wants. Everything else in the House of Quality flows from it. The House of Quality is the tool, the output, the framework — it cannot be its own input.</p>
-<p>Within the matrix, the <strong>competitive evaluation section</strong> compares your product against competitors on each customer requirement. This is the section directly tied to differentiation — it reveals where your product is stronger or weaker in the marketplace relative to rivals.</p>
-<div class="note"><strong>Quick structure:</strong> Left = Voice of Customer (inputs). Top = Technical features (how product delivers). Center = Relationship matrix (which features satisfy which needs). Right = Competitive evaluation (comparison to rivals).</div>
-<div class="warn"><strong>Both assessments confusion on QFD input:</strong> The House of Quality was selected. The House of Quality is the entire diagram — you cannot put the output back in as the starting input. VOC is always the input.</div>
+<p>Quality Function Deployment (QFD) translates customer needs into engineering requirements. The most important input to QFD is the <strong>Voice of the Customer (VOC)</strong> — the direct expression of customer needs. The House of Quality is the tool, the output, the framework — it cannot be its own input.</p>
+<p>Within the matrix, the <strong>competitive evaluation section</strong> compares your product against competitors on each customer requirement — directly tied to differentiation strategy.</p>
+<div class="note"><strong>Quick structure:</strong> Left = VOC (inputs). Top = Technical features (how the product delivers). Center = Relationship matrix. Right = Competitive evaluation (comparison to rivals).</div>
+<div class="warn"><strong>Both assessments confusion on QFD input:</strong> The House of Quality was selected. It is the diagram you build from the VOC — you cannot put the output back in as the starting input.</div>
 </div></div>
 
 <div class="card">
 <div class="card-title">Design philosophies — manufacturability, reliability, and assembly</div>
 <div class="tags"><span class="tag t-both">Missed — Both Assessments</span></div>
 <div class="body">
-<p><strong>Design for Manufacturability (DFM)</strong> focuses on making a product easy and efficient to produce at the highest possible quality — reducing production costs, minimizing floor errors, and ensuring designs translate smoothly from drawings to physical reality.</p>
-<p><strong>Design for Reliability</strong> focuses on ensuring the product performs its intended function for a specified period under defined conditions. This is about functional longevity — a probability-based concept: given these conditions and this time window, what is the likelihood of failure-free performance?</p>
-<p><strong>Design for Assembly (DFA)</strong> focuses specifically on minimizing parts and simplifying how components fit together. It overlaps with DFM but is narrower — focused only on the assembly step.</p>
-<div class="warn"><strong>Both assessments confusion:</strong> Design for Reliability was selected when the question described designing for efficient production at the highest quality. Reliability is about how long something keeps working — not how efficiently it is made. DFM spans both production efficiency and quality simultaneously.</div>
+<p><strong>Design for Manufacturability (DFM)</strong> makes a product easy and efficient to produce at the highest possible quality — reducing production costs and minimizing floor errors.</p>
+<p><strong>Design for Reliability</strong> ensures the product performs its intended function for a specified period under defined conditions. This is about functional longevity — a probability-based concept: given these conditions and this time window, what is the likelihood of failure-free performance?</p>
+<p><strong>Design for Assembly (DFA)</strong> focuses specifically on minimizing parts and simplifying assembly steps. It overlaps with DFM but is narrower — focused only on the assembly phase.</p>
+<div class="warn"><strong>Both assessments confusion:</strong> Design for Reliability was selected when the question described designing for efficient production at the highest quality. Reliability is about how long something keeps working — not how efficiently it is made. DFM spans both production efficiency and quality.</div>
 </div></div>
 
 <div class="card">
 <div class="card-title">3D printing — best business application</div>
 <div class="tags"><span class="tag t-a1">Missed — Assessment 1</span></div>
 <div class="body">
-<p>3D printing's most powerful business application is <strong>prototyping before scaling production</strong>. Companies use it to quickly produce physical test models before investing in expensive tooling required for mass manufacturing. This compresses development timelines and reduces the cost of discovering design errors late in the process. 3D printing is too slow and expensive per unit for mass production — its value is concentrated in the early development phase where design iteration speed matters most.</p>
-<div class="warn"><strong>Assessment 1 confusion:</strong> "Increasing manufacturing productivity" was selected. 3D printing does not improve the throughput of a mass production line — it is a development and prototyping tool, not a production scaling tool.</div>
+<p>3D printing's most powerful business application is <strong>prototyping before scaling production</strong>. Companies use it to quickly produce physical test models before investing in expensive tooling required for mass manufacturing. It is too slow and expensive per unit for mass production — its value is concentrated in the early development phase where design iteration speed matters most.</p>
+<div class="warn"><strong>Assessment 1 confusion:</strong> "Increasing manufacturing productivity" was selected. 3D printing does not improve throughput of a mass production line — it is a prototyping and development tool.</div>
 </div></div>
 
 <div class="sec-head">Supply Chain Design &amp; Fulfillment</div>
@@ -138,16 +231,16 @@ h1{font-size:20px;font-weight:600;margin-bottom:.25rem}
 <div class="card-title">Postponement strategy in supply chain design</div>
 <div class="tags"><span class="tag t-both">Missed — Both Assessments</span></div>
 <div class="body">
-<p><strong>Postponement</strong> delays final product customization or differentiation until the latest possible point — as close to actual customer demand as possible. Rather than producing finished, differentiated products far upstream based on uncertain forecasts, companies keep products in a generic state longer and complete customization regionally based on real demand. A company that ships bulk product to regional warehouses and packages it locally into different sizes is practicing postponement — the packaging decision is postponed to where actual demand is known.</p>
-<p>This is commonly confused with vertical integration, which means a company owns more stages of its supply chain. Vertical integration is about ownership and control of supply chain stages. Postponement is about the timing of product differentiation. They are entirely different strategic concepts.</p>
-<div class="warn"><strong>Both assessments confusion:</strong> Vertical integration was selected in both attempts. The scenario described is about when and where customization happens — that is postponement. Vertical integration is about acquiring or owning supply chain stages.</div>
+<p><strong>Postponement</strong> delays final product customization until the latest possible point — as close to actual customer demand as possible. A company that ships bulk product to regional warehouses and packages it locally into different sizes is practicing postponement — the packaging decision is postponed to where actual demand is known.</p>
+<p>This is commonly confused with vertical integration, which means a company owns more stages of its supply chain. Vertical integration is about ownership. Postponement is about the timing of differentiation. They are entirely different concepts.</p>
+<div class="warn"><strong>Both assessments confusion:</strong> Vertical integration was selected in both attempts. The scenario is about when and where customization happens — that is postponement.</div>
 </div></div>
 
 <div class="card">
 <div class="card-title">Make-to-stock vs make-to-order — the key distinction</div>
 <div class="tags"><span class="tag t-a1">Missed — Assessment 1</span></div>
 <div class="body">
-<p>The single most important distinction between make-to-stock (MTS) and make-to-order (MTO) is whether the company holds <strong>finished goods inventory</strong> before demand arrives. In MTS, products are manufactured based on forecasts and held in stock ready to ship immediately. In MTO, production does not begin until a customer order is received — no finished goods inventory is held. Both strategies still require manufacturing and raw materials planning. Only MTS requires pre-building and holding finished goods.</p>
+<p>The single most important distinction is whether the company holds <strong>finished goods inventory</strong> before demand arrives. In MTS, products are manufactured based on forecasts and held in stock. In MTO, production does not begin until a customer order is received — no finished goods inventory is held. Both strategies still require manufacturing and materials planning. Only MTS requires pre-building finished goods.</p>
 <div class="warn"><strong>Assessment 1 confusion:</strong> "The need to manufacture the finished good" was selected. Both MTS and MTO manufacture finished goods — that is not a distinguishing factor. Only MTS requires holding finished goods inventory before the order arrives.</div>
 </div></div>
 
@@ -155,45 +248,44 @@ h1{font-size:20px;font-weight:600;margin-bottom:.25rem}
 <div class="card-title">Fixed and variable cost math — make-or-buy decisions</div>
 <div class="tags"><span class="tag t-both">Missed — Both Assessments</span></div>
 <div class="body">
-<p>When evaluating in-house production versus outsourcing, total cost is calculated using a fixed-plus-variable model. Fixed costs do not change with production volume. Variable costs change proportionally with output.</p>
+<p>Fixed costs do not change with production volume. Variable costs change proportionally with output.</p>
 <div class="formula">Total Cost = Fixed Cost + (Variable Cost per Unit × Number of Units)</div>
-<p>A $4,000 fixed cost plus a $5-per-unit variable cost for 1,000 units: $4,000 + ($5 × 1,000) = $4,000 + $5,000 = $9,000. Variable cost is per unit. 1,000 units × $5/unit = $5,000 — not $5,000,000. Always verify your unit of measure before multiplying, and check that the result passes a basic reasonableness check.</p>
-<div class="warn"><strong>Both assessments confusion:</strong> $4,005,000 was selected in both attempts — treating $5 as if applied to one million units rather than one thousand. A unit-of-measure error inflated the answer by a factor of 1,000.</div>
+<p>$4,000 fixed + $5/unit variable × 1,000 units = $4,000 + $5,000 = <strong>$9,000</strong>. Variable cost is per unit. 1,000 × $5 = $5,000 — not $5,000,000. Always check your unit of measure.</p>
+<div class="warn"><strong>Both assessments confusion:</strong> $4,005,000 was selected — treating $5 as if applied to one million units rather than one thousand. A unit-of-measure error inflated the answer by a factor of 1,000.</div>
 </div></div>
 
 <div class="card">
 <div class="card-title">Supply chain risk types — economic vs logistics vs infrastructure vs capacity</div>
 <div class="tags"><span class="tag t-both">Missed — Both Assessments</span></div>
 <div class="body">
-<p>Supply chain risks are categorized by what caused the disruption, not what was disrupted. <strong>Economic risk</strong> arises from financial, regulatory, or trade policy changes — tariffs, new taxes, currency shifts, sanctions. <strong>Logistics risk</strong> involves physical disruptions to the movement of goods — port strikes, trucking shortages, vessel groundings. <strong>Infrastructure risk</strong> involves failures of physical systems like roads, bridges, or power grids. <strong>Capacity risk</strong> is the inability to produce enough to meet demand.</p>
-<p>When a shipment is halted at a border because a government changed its tax structure, no truck broke down and no port backed up — a policy changed. That is economic risk.</p>
-<div class="warn"><strong>Both assessments confusion:</strong> Logistics risk was selected for a tax-regime delay. Logistics risk applies when physical transportation mechanisms fail. A policy change causing the delay is economic risk. Always ask: what caused the disruption, not just where it happened.</div>
+<p>Categorize by what <em>caused</em> the disruption, not what was disrupted. <strong>Economic risk</strong> = financial, regulatory, or trade policy changes (tariffs, taxes, sanctions). <strong>Logistics risk</strong> = physical disruptions to movement (port strikes, trucking shortages). <strong>Infrastructure risk</strong> = physical system failures (roads, bridges, power grids). <strong>Capacity risk</strong> = inability to produce enough.</p>
+<p>When a shipment is halted at a border because a government changed its tax structure — no truck broke down, no port backed up — a policy changed. That is economic risk.</p>
+<div class="warn"><strong>Both assessments confusion:</strong> Logistics risk was selected for a tax-regime delay. Logistics risk applies when physical transportation mechanisms fail. A policy change is economic risk. Always ask: what caused the disruption?</div>
 </div></div>
 
 <div class="card">
 <div class="card-title">Backhaul and consolidation in logistics</div>
 <div class="tags"><span class="tag t-a1">Missed — Assessment 1</span></div>
 <div class="body">
-<p><strong>Backhaul</strong> refers to using the return leg of a delivery route to carry freight rather than driving empty. When a truck delivers from A to B, it must return to A. Rather than making that trip empty, backhaul arranges return freight, converting wasted capacity into a revenue-generating move. <strong>Consolidation</strong>, by contrast, means combining multiple small shipments from different shippers into a single truckload going in one direction. Consolidation aggregates cargo going the same way. Backhaul productively uses the return trip of a vehicle that has already completed its delivery.</p>
-<div class="warn"><strong>Assessment 1 confusion:</strong> Consolidation was selected. The truck in the scenario had already completed its delivery and was carrying new cargo on the return trip — that is backhaul, not combining loads from multiple shippers.</div>
+<p><strong>Backhaul</strong> = using the return leg of a delivery route to carry freight rather than driving empty. <strong>Consolidation</strong> = combining multiple small shipments from different shippers into a single truckload going in one direction. Consolidation aggregates cargo going the same way. Backhaul productively uses the return trip of a vehicle that already completed its delivery.</p>
+<div class="warn"><strong>Assessment 1 confusion:</strong> Consolidation was selected. The truck in the scenario had already completed its delivery and was carrying new cargo on the return trip — that is backhaul.</div>
 </div></div>
 
 <div class="card">
 <div class="card-title">Bullwhip effect — demand amplification in supply chains</div>
 <div class="tags"><span class="tag t-a1">Missed — Assessment 1</span></div>
 <div class="body">
-<p>The <strong>bullwhip effect</strong> describes how small fluctuations in consumer demand become progressively amplified as the demand signal travels upstream through retailers, wholesalers, distributors, and manufacturers — because each party adds its own safety buffer on top of what it already received. A modest consumer uptick might cause a retailer to order 15% more, the wholesaler to order 25% more, and by the time the signal reaches the manufacturer, it looks like a massive demand surge requiring emergency production ramp-up. The name comes from cracking a whip: a small wrist flick creates a large wave at the tip.</p>
-<p>Demand variance is different — it is normal statistical fluctuation in demand. The bullwhip effect is the artificial amplification of that variance caused by independent buffering at every chain level.</p>
-<div class="warn"><strong>Assessment 1 confusion:</strong> Demand variance was selected. Demand variance is the normal statistical fluctuation. Bullwhip is what happens when each supply chain member independently buffers against uncertainty, distorting and amplifying the variance as it moves upstream.</div>
+<p>The <strong>bullwhip effect</strong> describes how small fluctuations in consumer demand become progressively amplified upstream — because each supply chain member adds its own safety buffer on top of what they received. A modest consumer uptick causes the retailer to order 15% more, the wholesaler 25% more, and by the manufacturer the signal looks like a massive surge. The name comes from cracking a whip: a small wrist flick creates a large wave at the tip.</p>
+<p>Demand variance is different — it is normal statistical fluctuation. The bullwhip effect is the artificial amplification caused by independent buffering at every level.</p>
+<div class="warn"><strong>Assessment 1 confusion:</strong> Demand variance was selected. Bullwhip is specifically the amplification phenomenon — not the underlying variance itself.</div>
 </div></div>
 
 <div class="card">
-<div class="card-title">Multisourcing — when to use multiple suppliers and when not to</div>
+<div class="card-title">Multisourcing — when it helps and when it doesn't</div>
 <div class="tags"><span class="tag t-both">Missed — Both Assessments</span></div>
 <div class="body">
-<p>Multisourcing means using multiple suppliers for the same component. It makes the most sense when a component requires supply <strong>flexibility</strong> and carries <strong>high supply risk</strong>. Multiple suppliers protect against disruption — if one source fails, production continues from others. Multiple sources also allow volume shifting when demand or conditions change.</p>
-<p>Multisourcing does not make sense for IP-intensive components because production knowledge shared across multiple suppliers risks exposing proprietary information. It also tends not to work for high-capital-investment components because dividing volume across multiple suppliers means none achieves the economies of scale a single consolidated supplier would produce.</p>
-<div class="warn"><strong>Both assessments confusion:</strong> IP-intensive or technologically complex components were selected as appropriate for multisourcing. In reality those components benefit from single-source relationships where proprietary knowledge stays protected and the supplier relationship is deep and specialized.</div>
+<p>Multisourcing makes the most sense when a component requires supply <strong>flexibility</strong> and carries <strong>high supply risk</strong>. Multiple suppliers protect against disruption — if one source fails, production continues. Multisourcing does not make sense for IP-intensive components (risks exposing proprietary information) or high-capital-investment components (divides volume, preventing economies of scale).</p>
+<div class="warn"><strong>Both assessments confusion:</strong> IP-intensive components were selected as appropriate for multisourcing. In reality those benefit from single-source relationships where proprietary knowledge stays protected.</div>
 </div></div>
 
 <div class="sec-head">Process Analysis &amp; Capacity</div>
@@ -202,39 +294,37 @@ h1{font-size:20px;font-weight:600;margin-bottom:.25rem}
 <div class="card-title">Station utilization — calculating correctly when multiple workers are involved</div>
 <div class="tags"><span class="tag t-both">Missed — Both Assessments</span></div>
 <div class="body">
-<p>Utilization measures what fraction of a resource's maximum capacity is actually being used.</p>
 <div class="formula">Utilization = Demand Rate ÷ Capacity Rate</div>
-<p>The most common error in multi-worker scenarios is forgetting to add up all the capacity at the station before dividing. If two workers each process 50 units per hour, the station's combined capacity is 100 units per hour. If 60 units per hour flow to the station, utilization = 60 ÷ 100 = 60%. The station has surplus capacity. A utilization above 100% signals a bottleneck.</p>
-<div class="warn"><strong>Both assessments confusion:</strong> 83% was selected in both attempts — likely from dividing 60 by a single inspector's capacity of 50. There are two inspectors, making total capacity 100. Always sum all parallel capacity at a station before calculating utilization.</div>
+<p>If two workers each process 50 units/hr, combined station capacity = 100 units/hr. If 60 units/hr flow to the station, utilization = 60 ÷ 100 = <strong>60%</strong>. A utilization above 100% signals a bottleneck.</p>
+<div class="warn"><strong>Both assessments confusion:</strong> 83% was selected — from dividing 60 by a single inspector's capacity of 50. There are two inspectors, making total capacity 100. Always sum all parallel capacity at a station before dividing.</div>
 </div></div>
 
 <div class="card">
 <div class="card-title">Throughput in serial processes — the bottleneck determines everything</div>
 <div class="tags"><span class="tag t-a2">Missed — Assessment 2</span></div>
 <div class="body">
-<p>In a serial process where each step feeds directly into the next, overall throughput is determined entirely by the slowest step — the <strong>bottleneck</strong>. No matter how fast other steps operate, the system cannot produce faster than the bottleneck allows. Everything upstream builds a queue; everything downstream is perpetually starved. This is the foundation of the Theory of Constraints: improving any step other than the bottleneck produces no improvement in system throughput.</p>
-<div class="note"><strong>Visual shortcut:</strong> Water flowing through four pipes connected in series — the narrowest pipe determines system flow regardless of how wide the others are.</div>
-<div class="warn"><strong>Assessment 2 confusion:</strong> 85 units/hr was selected — the second-lowest rate, not the lowest. The bottleneck is always the single minimum output rate in the chain. Near-minimum does not count; only the actual minimum constrains the system.</div>
+<p>In a serial process, overall throughput = the <strong>bottleneck = the slowest step</strong>. No matter how fast other steps operate, the system cannot produce faster than the bottleneck allows. Everything upstream builds a queue; everything downstream is starved. In a four-step process with outputs of 280, 60, 45, and 85 units/hr, throughput = 45 units/hr.</p>
+<div class="note"><strong>Visual:</strong> Water through four pipes in series — the narrowest pipe determines system flow regardless of how wide the others are.</div>
+<div class="warn"><strong>Assessment 2 confusion:</strong> 85 units/hr was selected — the second-lowest rate. The bottleneck is always the single minimum output rate. Near-minimum does not count.</div>
 </div></div>
 
 <div class="card">
 <div class="card-title">EOQ formula — why doubling demand doesn't double the order quantity</div>
 <div class="tags"><span class="tag t-both">Missed — Both Assessments</span></div>
 <div class="body">
-<p>The Economic Order Quantity formula balances ordering costs against holding costs. Because demand appears inside a square root, changes in demand have a dampened effect on the resulting order quantity.</p>
 <div class="formula">EOQ = √(2 × D × S ÷ H)</div>
-<p>When demand doubles, new EOQ = √2 × original EOQ. √2 ≈ 1.414, meaning EOQ increases by about 41% — roughly 40%. The square root dampens the effect because as demand increases you order more per order, but you also reorder more frequently, so individual order size grows more slowly than demand itself.</p>
-<div class="warn"><strong>Both assessments confusion:</strong> A 200% increase was selected in both attempts — which would mean tripling the EOQ. That ignores the square root entirely. Whenever EOQ changes in response to demand, remember the square root cuts the proportional effect roughly in half.</div>
+<p>When demand doubles: new EOQ = √2 × original EOQ. √2 ≈ 1.414 → <strong>about 41% increase ≈ 40%</strong>. The square root dampens the effect. As demand increases you order more per order, but also reorder more frequently, so individual order size grows more slowly than demand.</p>
+<div class="warn"><strong>Both assessments confusion:</strong> 200% increase was selected — which would mean tripling EOQ. That ignores the square root entirely. The square root cuts the proportional effect roughly in half.</div>
 </div></div>
 
 <div class="card">
-<div class="card-title">WIP inventory and cycle inventory — two distinct inventory concepts</div>
+<div class="card-title">WIP inventory and cycle inventory — two distinct concepts</div>
 <div class="tags"><span class="tag t-a1">Missed — Assessment 1</span></div>
 <div class="body">
-<p><strong>Work-in-Process (WIP) inventory</strong> consists of partially completed goods somewhere in the middle of a production process — past raw materials, not yet finished goods. Its primary purpose is to buffer between sequential process activities, absorbing timing mismatches so a slowdown at one step does not immediately halt the next.</p>
-<p><strong>Cycle inventory</strong> is the average inventory held because ordering happens in batches. Because companies order in lots — say 500 units at a time — inventory cycles between a high point right after delivery and near-zero before the next order. The average is half the lot size.</p>
+<p><strong>Work-in-Process (WIP) inventory</strong> = partially completed goods in the middle of production. Its purpose is to buffer between sequential process activities, absorbing timing mismatches. <strong>Cycle inventory</strong> = average inventory held because ordering happens in batches.</p>
 <div class="formula">Average Cycle Inventory = Lot Size ÷ 2</div>
-<div class="warn"><strong>Assessment 1 confusion:</strong> On WIP, "meets expected customer demand" was selected — that describes finished goods inventory. On cycle inventory, the answer "2" was selected when lot size was 500. The number 2 is the divisor in the formula, not the result. 500 ÷ 2 = 250.</div>
+<p>If lot size = 500 units, average cycle inventory = 250 units.</p>
+<div class="warn"><strong>Assessment 1 confusion:</strong> WIP was said to "meet expected customer demand" — that describes finished goods. On cycle inventory, the answer "2" was selected (the divisor, not the result). 500 ÷ 2 = 250.</div>
 </div></div>
 
 <div class="sec-head">Forecasting Methods</div>
@@ -243,11 +333,10 @@ h1{font-size:20px;font-weight:600;margin-bottom:.25rem}
 <div class="card-title">Forecasting techniques — SMA, multiple regression, Delphi, and exponential smoothing</div>
 <div class="tags"><span class="tag t-a2">Missed — Assessment 2</span><span class="tag t-a1">Partial — Assessment 1</span></div>
 <div class="body">
-<p>The <strong>simple moving average (SMA)</strong> averages actual demand from the most recent N periods. Three months of X units each: (X+X+X) ÷ 3 = X. The average of three identical values is that same value — not the sum (3X). Always divide by the number of periods.</p>
-<p><strong>Multiple linear regression</strong> is the correct technique when forecasting involves more than one independent variable simultaneously. The <strong>Delphi method</strong> is qualitative and expert-consensus based — no formula, no variables. These are very different: one is quantitative and data-driven, the other is qualitative and judgment-driven.</p>
-<p>In regression, the required parameter is the <strong>slope</strong> (b in Forecast = a + bX). "Gradient" is a calculus term for a related concept but is not standard operations management terminology.</p>
-<p>In <strong>simple exponential smoothing</strong>, a low smoothing constant (α = 0.2) gives heavy weight to historical data — low responsiveness to recent changes. A high α (0.8) reacts strongly to the most recent actual demand — high responsiveness.</p>
-<div class="warn"><strong>Assessment 2 confusion:</strong> Delphi method was selected for a multi-variable forecasting scenario. Delphi is qualitative and handles no mathematical variable relationships. Multiple linear regression is the only quantitative technique designed for multiple independent variables simultaneously.</div>
+<p>The <strong>SMA</strong> averages demand from the most recent N periods. Three months of X units each: (X+X+X) ÷ 3 = X. Always divide by the number of periods — the result is the average, not the sum.</p>
+<p><strong>Multiple linear regression</strong> = forecasting with more than one independent variable simultaneously. The <strong>Delphi method</strong> is qualitative and expert-consensus based — no formula, no variables. The required parameter in regression is the <strong>slope</strong> (b in Forecast = a + bX). "Gradient" is a calculus term — not standard OM terminology.</p>
+<p>In <strong>exponential smoothing</strong>, low α (e.g. 0.2) = heavy weight on history, low responsiveness. High α (e.g. 0.8) = high responsiveness to recent demand changes.</p>
+<div class="warn"><strong>Assessment 2 confusion:</strong> Delphi was selected for a multi-variable forecasting scenario. Delphi is qualitative with no mathematical variable relationships. Multiple linear regression is the quantitative technique for multiple independent variables.</div>
 </div></div>
 
 <div class="sec-head">Sustainability, Ethics &amp; Governance</div>
@@ -256,184 +345,563 @@ h1{font-size:20px;font-weight:600;margin-bottom:.25rem}
 <div class="card-title">ISO standards — four standards, four completely different scopes</div>
 <div class="tags"><span class="tag t-both">Missed — Both Assessments</span></div>
 <div class="body">
-<p><strong>ISO 9001</strong> governs quality management systems — consistent products and services meeting customer requirements. <strong>ISO 14000</strong> governs environmental management systems — frameworks for managing and reducing environmental impact cost-effectively. <strong>ISO 26000</strong> provides guidance on social responsibility covering the full ESG framework: environmental, social, and governance dimensions together. <strong>ISO 27001</strong> governs information security management — protecting data and managing cybersecurity risk.</p>
-<div class="note"><strong>Memory anchor:</strong> ISO 9001 = Quality (9 → Q → Quality). ISO 14000 = Environment (14 → forest → nature). ISO 26000 = Society/ESG (broader social scope). ISO 27001 = Security (27 → 007 → James Bond → security). When a question references the full ESG framework, the answer is ISO 26000 — not ISO 14000, which covers only the environmental pillar.</div>
-<div class="warn"><strong>Both assessments confusion:</strong> Assessment 1 picked ISO 27001 for ESG guidance. Assessment 2 picked ISO 14000. ISO 14000 covers only environmental management — one ESG pillar. ISO 26000 addresses all three ESG pillars together.</div>
+<p><strong>ISO 9001</strong> = quality management systems. <strong>ISO 14000</strong> = environmental management systems. <strong>ISO 26000</strong> = social responsibility / full ESG framework (environmental + social + governance). <strong>ISO 27001</strong> = information security management.</p>
+<div class="note"><strong>Memory anchor:</strong> ISO 9001 = Quality (Q). ISO 14000 = Environment (forest/nature). ISO 26000 = Society/ESG (broadest scope). ISO 27001 = Security (007 → James Bond → security). Full ESG framework = ISO 26000, not ISO 14000 which covers only the environmental pillar.</div>
+<div class="warn"><strong>Both assessments confusion:</strong> Assessment 1 picked ISO 27001 for ESG. Assessment 2 picked ISO 14000. ISO 14000 is only one ESG pillar. ISO 26000 covers all three.</div>
 </div></div>
 
 <div class="card">
-<div class="card-title">Scope 1, 2, and 3 emissions — where in the value chain emissions originate</div>
+<div class="card-title">Scope 1, 2, and 3 emissions</div>
 <div class="tags"><span class="tag t-both">Missed — Both Assessments</span></div>
 <div class="body">
-<p><strong>Scope 1</strong> = direct emissions from company-owned sources: your factory's smokestacks, your company vehicle fleet, your on-site generators. <strong>Scope 2</strong> = indirect emissions from purchased electricity, steam, heating, or cooling. <strong>Scope 3</strong> = all other indirect emissions across the entire value chain — upstream from suppliers and downstream from customers. Scope 3 is typically the largest category for most companies and the hardest to measure.</p>
-<p>To reduce Scope 3 emissions, a company must act on external parties — primarily suppliers. Setting emission reduction targets for key suppliers, including sustainability requirements in procurement contracts, or shifting to lower-emission suppliers. No change inside the company's own walls reduces Scope 3; those internal changes only affect Scope 1.</p>
-<div class="warn"><strong>Both assessments confusion:</strong> Controlling the company's own manufacturing plant emissions was selected as the Scope 3 reduction method. Manufacturing plant emissions are Scope 1 — direct and owned. Scope 3 requires acting on suppliers and value chain partners, not on internal operations.</div>
+<p><strong>Scope 1</strong> = direct emissions from company-owned sources (your factory, your fleet, your generators). <strong>Scope 2</strong> = indirect emissions from purchased electricity, steam, heating, or cooling. <strong>Scope 3</strong> = all other indirect emissions across the entire value chain — from suppliers upstream and customers downstream.</p>
+<p>To reduce Scope 3, you must act on external parties — setting emission targets for key suppliers, adjusting procurement requirements, or shifting to lower-emission suppliers. Internal changes only affect Scope 1.</p>
+<div class="warn"><strong>Both assessments confusion:</strong> Controlling the company's own manufacturing plant emissions was selected as the Scope 3 reduction method. Manufacturing plant emissions = Scope 1. Scope 3 requires acting on suppliers and value chain partners.</div>
 </div></div>
 
 <div class="card">
 <div class="card-title">Corporate governance — structure, ratings, and what they actually measure</div>
 <div class="tags"><span class="tag t-both">Missed — Both Assessments</span></div>
 <div class="body">
-<p><strong>Corporate governance</strong> is the system of rules and processes defining how investors (shareholders) oversee management and how authority is divided between owners and the managers who act on their behalf. It is distinct from corporate social responsibility (voluntary ethical behavior toward communities) and from the triple bottom line (a multi-dimensional measurement framework).</p>
-<p>Corporate governance rating systems evaluate how effectively the board of directors represents shareholder interests. The key factors are the <strong>quality and diversity of directors</strong> — independence from management, breadth of expertise, and diversity of backgrounds. A board dominated by insiders scores poorly. A board with independent directors from varied professional backgrounds scores well. Product quality, supplier quality, and distribution reliability are operational metrics — not governance metrics.</p>
-<div class="warn"><strong>Both assessments confusion:</strong> "Quality and consistency of products and services" was selected in both attempts. That is an operational metric. Corporate governance ratings assess the people overseeing the company — board composition — not the products the company makes.</div>
+<p><strong>Corporate governance</strong> = the system defining how shareholders oversee management and how authority is divided between owners and the managers who act on their behalf. Distinct from CSR (voluntary ethical behavior) and the triple bottom line (a measurement framework).</p>
+<p>Governance rating systems evaluate the <strong>quality and diversity of directors</strong> — independence from management, breadth of expertise, and diversity of backgrounds. Product quality, supplier quality, and distribution reliability are operational metrics — not governance metrics.</p>
+<div class="warn"><strong>Both assessments confusion:</strong> "Quality and consistency of products and services" was selected. That is an operational metric. Governance ratings assess who oversees the company — board composition — not what the company produces.</div>
 </div></div>
 
 <div class="card">
 <div class="card-title">Business ethics eras — Industrial Revolution vs mercantilism</div>
 <div class="tags"><span class="tag t-a2">Missed — Assessment 2</span></div>
 <div class="body">
-<p>The <strong>Industrial Revolution and post-industrial era</strong> (mid-1700s through early 1900s) is defined by singular focus on maximizing shareholder profit with minimal concern for workers, communities, or environment. The rise of factories, mass production, and publicly traded corporations created structures where shareholder returns were treated as the sole legitimate purpose of a business.</p>
-<p>The <strong>mercantilism era</strong> predates industrialization. It describes a period when nations — not individual corporations — competed for wealth through trade surpluses, colonization, and accumulation of precious metals. The actors are different (nation-states vs corporations) and the mechanism is different (trade policy vs shareholder capitalism).</p>
-<div class="warn"><strong>Assessment 2 confusion:</strong> Mercantilism was selected. Mercantilism is about national trade policy before the shareholder corporation existed. The era defined by shareholder primacy and profit maximization with little stakeholder concern is the Industrial Revolution and post-industrial era.</div>
+<p>The <strong>Industrial Revolution and post-industrial era</strong> (mid-1700s onward) = singular focus on maximizing shareholder profit with minimal concern for workers, communities, or environment. The rise of factories and publicly traded corporations made shareholder returns the sole purpose of a business.</p>
+<p>The <strong>mercantilism era</strong> predates industrialization. It describes nation-states — not corporations — competing for wealth through trade surpluses and colonization. Different actors (nation-states vs corporations) and different mechanism (trade policy vs shareholder capitalism).</p>
+<div class="warn"><strong>Assessment 2 confusion:</strong> Mercantilism was selected. Mercantilism is about national trade policy before the shareholder corporation existed. The era defined by shareholder primacy is the Industrial Revolution and post-industrial era.</div>
 </div></div>
 
 <div class="card">
-<div class="card-title">Competing values in new market entry — economic development vs environmental protection</div>
+<div class="card-title">Competing values in new market entry</div>
 <div class="tags"><span class="tag t-both">Missed — Both Assessments</span></div>
 <div class="body">
-<p>When an industrial company establishes operations in a new country, it faces a fundamental tension between two genuinely positive but competing goals. <strong>Economic development</strong>: the operation creates jobs, generates tax revenue, builds infrastructure, and stimulates local economies. <strong>Environmental protection</strong>: the operations may damage ecosystems, contaminate water sources, and create long-term environmental harm. These two values directly compete — aggressively pursuing one often directly undermines the other.</p>
-<div class="warn"><strong>Both assessments confusion:</strong> "Ethical decision-making and long-term sustainability" was selected. That describes how to approach the dilemma — the methodology — not what the competing values themselves are. The values in tension are specifically economic development and environmental protection.</div>
+<p>When an industrial company establishes operations in a new country, the fundamental tension is between <strong>economic development</strong> (jobs, tax revenue, infrastructure) and <strong>environmental protection</strong> (ecosystem damage, water contamination, long-term harm). These two legitimately positive goals directly compete — aggressively pursuing one often directly undermines the other.</p>
+<div class="warn"><strong>Both assessments confusion:</strong> "Ethical decision-making and sustainability" was selected. That describes the methodology for approaching the dilemma, not the competing values themselves. The values in tension are economic development and environmental protection.</div>
 </div></div>
 
 <div class="card">
-<div class="card-title">Triple bottom line — measuring the full scope of corporate social responsibility</div>
+<div class="card-title">Triple bottom line — measuring CSR success</div>
 <div class="tags"><span class="tag t-a1">Missed — Assessment 1</span></div>
 <div class="body">
-<p>The <strong>triple bottom line (TBL)</strong> measures corporate performance across three dimensions simultaneously: People (social impact), Planet (environmental impact), and Profit (economic performance). Traditional financial reporting captures only profit. The TBL adds social and environmental performance as equally important measures of long-term corporate health. A code of conduct sets behavioral rules but does not measure outcomes. A balance sheet captures financial position only. An audit report verifies compliance. None of these captures all three CSR dimensions the way the TBL does.</p>
-<div class="warn"><strong>Assessment 1 confusion:</strong> Code of conduct was selected. A code of conduct tells people how to behave — it does not measure how well a company is actually performing across social, environmental, and economic dimensions.</div>
+<p>The <strong>triple bottom line (TBL)</strong> measures corporate performance across three dimensions: People (social impact), Planet (environmental impact), and Profit (economic performance). Traditional financial reporting captures only profit. A code of conduct sets behavioral rules — it does not measure outcomes. A balance sheet captures financial position only. Only the TBL captures all three CSR dimensions together.</p>
+<div class="warn"><strong>Assessment 1 confusion:</strong> Code of conduct was selected. A code of conduct tells people how to behave — it does not measure performance across social, environmental, and economic dimensions.</div>
 </div></div>
 
 <div class="sec-head">Quality &amp; Continuous Improvement</div>
 
 <div class="card">
-<div class="card-title">Six Sigma — understanding DPMO and what the standard actually requires</div>
+<div class="card-title">Six Sigma — understanding DPMO and minimum production volume</div>
 <div class="tags"><span class="tag t-both">Missed — Both Assessments</span></div>
 <div class="body">
-<p>Six Sigma defines near-perfect process performance as no more than <strong>3.4 defects per million opportunities (DPMO)</strong>. To determine how many units must be produced for a given defect count to represent Six Sigma quality, divide the defect count by 3.4 and multiply by one million. Fifty-one defects: 51 ÷ 3.4 = 15 million units required. At only 1 million units, 51 defects would equal 51 DPMO — fifteen times worse than Six Sigma quality.</p>
-<div class="warn"><strong>Both assessments confusion:</strong> 1 million units was selected in both attempts. That answer treats the absolute defect count as if it were the DPMO itself. 51 defects out of 1 million units = 51 DPMO, not Six Sigma quality. The correct minimum volume is 15 million units.</div>
+<p>Six Sigma = no more than <strong>3.4 defects per million opportunities (DPMO)</strong>. To find the minimum production volume for a given defect count to represent Six Sigma quality: divide the defect count by 3.4 and multiply by one million.</p>
+<p>51 defects: 51 ÷ 3.4 = <strong>15 million units</strong> required. At 1 million units, 51 defects = 51 DPMO — fifteen times worse than Six Sigma quality.</p>
+<div class="warn"><strong>Both assessments confusion:</strong> 1 million units was selected. That treats the absolute defect count as if it were the DPMO itself. 51 defects ÷ 3.4 DPMO = 15 million units needed.</div>
 </div></div>
 
 <div class="card">
 <div class="card-title">Lean waste types — motion vs waiting vs over-processing</div>
 <div class="tags"><span class="tag t-a2">Missed — Assessment 2</span></div>
 <div class="body">
-<p><strong>Motion waste</strong> is unnecessary physical movement by workers — walking farther than necessary, reaching awkwardly, searching for tools that should be at hand. The cause is typically poor workplace layout. <strong>Waiting waste</strong> is idle time — a worker or machine stopped because something upstream hasn't arrived yet. The worker is stationary and unproductive due to a timing mismatch. <strong>Over-processing waste</strong> is doing more work than the customer actually requires — extra finish coats, redundant quality checks, using precision equipment for imprecise work.</p>
-<div class="warn"><strong>Assessment 2 confusion:</strong> Over-processing was selected for a scenario where workers walk to an inconvenient storage area. That unnecessary walking is motion waste — the worker's body is moving unnecessarily due to poor layout. Over-processing means doing more steps than required, which is a different problem entirely.</div>
+<p><strong>Motion waste</strong> = unnecessary physical movement by workers — walking farther than necessary, searching for tools, reaching awkwardly. Caused by poor workplace layout. <strong>Waiting waste</strong> = idle time because something upstream hasn't arrived. <strong>Over-processing waste</strong> = doing more work than the customer requires — extra finish coats, redundant quality checks.</p>
+<div class="warn"><strong>Assessment 2 confusion:</strong> Over-processing was selected for workers walking to an inconvenient storage area. That unnecessary walking is motion waste — the worker's body moves unnecessarily due to poor layout. Over-processing means doing more steps than required.</div>
 </div></div>
 
 <div class="card">
-<div class="card-title">Pull systems — matching production exactly to real demand</div>
+<div class="card-title">Pull systems — matching production to real demand</div>
 <div class="tags"><span class="tag t-both">Missed — Both Assessments</span></div>
 <div class="body">
-<p>A <strong>pull system</strong> triggers production only in response to actual customer demand — a customer order, a kanban signal, an inventory replenishment trigger. Nothing is produced until demand authorizes it. Pull systems directly solve overproduction — one of Lean's eight wastes. When production consistently exceeds actual demand, a pull system ties production rate to actual consumption, eliminating unwanted inventory buildup.</p>
-<p>A <strong>push system</strong> schedules production based on demand forecasts and runs regardless of whether output has been requested. Push systems cause overproduction when forecasts are inaccurate. Six Sigma reduces defects, not excess volume. EOQ is an order-sizing formula, not a production control philosophy.</p>
-<div class="warn"><strong>Both assessments confusion:</strong> Assessment 1 selected Six Sigma; Assessment 2 selected push system — for an overproduction problem. Six Sigma reduces defects, not volume. A push system is the cause of overproduction, not the solution. The remedy is a pull system that ties production to actual demand.</div>
+<p>A <strong>pull system</strong> triggers production only in response to actual customer demand — a customer order, a kanban signal, an inventory replenishment trigger. Nothing is produced until demand authorizes it. Pull systems directly solve overproduction. A <strong>push system</strong> schedules production based on demand forecasts and runs regardless of whether output has been requested — the cause of overproduction, not the solution. Six Sigma reduces defects, not excess volume. EOQ is an order-sizing formula, not a production control philosophy.</p>
+<div class="warn"><strong>Both assessments confusion:</strong> Assessment 1 selected Six Sigma; Assessment 2 selected push system — for an overproduction problem. Six Sigma reduces defects, not volume. Push system causes overproduction. Pull system solves it.</div>
 </div></div>
 
 <div class="card">
 <div class="card-title">Disruptive vs sustaining innovation</div>
 <div class="tags"><span class="tag t-a2">Missed — Assessment 2</span></div>
 <div class="body">
-<p><strong>Disruptive innovation</strong> creates an entirely new market or fundamentally transforms how an existing industry operates — something so novel it changes the rules of competition. A first-of-its-kind digital platform for supply chain risk prediction is disruptive: nothing like it previously existed, and it changes how supply chain professionals manage risk entirely. Upgrading existing software is <strong>sustaining innovation</strong> — it improves what already exists without changing market structure. A new product variant is incremental innovation. Launching a product a competitor already offers is imitation. None of these qualify as disruptive.</p>
-<div class="warn"><strong>Assessment 2 confusion:</strong> Introducing a new mountain bike variant was selected. A new variant of an existing product in an established category is incremental product development — nothing disruptive about adding another configuration to an existing product line.</div>
+<p><strong>Disruptive innovation</strong> creates an entirely new market or fundamentally transforms how an existing industry operates. A first-of-its-kind digital platform for supply chain risk prediction is disruptive — it creates a new category of tool and changes how professionals manage risk. Upgrading existing software = sustaining innovation. A new product variant = incremental innovation. Launching a competitor's existing product = imitation. Disruption changes the rules of competition, not just the product.</p>
+<div class="warn"><strong>Assessment 2 confusion:</strong> Introducing a new mountain bike variant was selected. A new variant in an established category is incremental product development — nothing disruptive about adding another configuration to an existing product line.</div>
 </div></div>
 
+</div><!-- end study -->
+
+<!-- ═══════════ QUIZ ═══════════ -->
+<div id="quiz" class="section">
+
+<div class="quiz-controls">
+  <div class="controls-row">
+    <span class="ctrl-label">Quiz mode:</span>
+    <button class="mode-btn active" id="mode-all" onclick="setMode('all')">All questions</button>
+    <button class="mode-btn" id="mode-missed" onclick="setMode('missed')">Missed only</button>
+    <button class="mode-btn" id="mode-weak" onclick="setMode('weak')">Need work</button>
+  </div>
+  <div class="controls-row">
+    <span class="ctrl-label">Order:</span>
+    <button class="mode-btn active" id="order-shuffle" onclick="setOrder('shuffle')">Shuffle</button>
+    <button class="mode-btn" id="order-priority" onclick="setOrder('priority')">Priority first</button>
+    <button class="mode-btn" id="order-sequential" onclick="setOrder('sequential')">Sequential</button>
+  </div>
+  <div style="height:8px"></div>
+  <div class="score-row">
+    <div><div class="score-num" id="snum">0 / 0</div><div class="score-lbl">correct this session</div></div>
+    <div class="prog"><div class="prog-fill" id="pfill" style="width:0%"></div></div>
+    <span class="streak-badge" id="streak-badge">🔥 3 streak</span>
+    <button class="reset-btn" onclick="resetQ()">↺ New quiz</button>
+  </div>
+  <div style="height:8px"></div>
+  <div class="stats-mini" id="stats-mini">
+    <span><span class="dot dot-green"></span><span id="stat-correct">0</span> correct</span>
+    <span><span class="dot dot-red"></span><span id="stat-wrong">0</span> incorrect</span>
+    <span><span class="dot dot-gray"></span><span id="stat-remain">0</span> remaining</span>
+  </div>
+  <div style="height:8px"></div>
+  <div class="tracker-grid" id="tracker-grid"></div>
 </div>
 
-<!-- QUIZ -->
-<div id="quiz" class="section">
-<div class="score-bar">
-  <div><div class="score-num" id="snum">0 / 0</div><div class="score-lbl">correct so far</div></div>
-  <div class="prog"><div class="prog-fill" id="pfill" style="width:0%"></div></div>
-  <button class="reset" onclick="resetQ()">Reset quiz</button>
-</div>
 <div id="qbox"></div>
 </div>
+
+<!-- ═══════════ FLASHCARDS ═══════════ -->
+<div id="flash" class="section">
+<div style="background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem;">
+  <div class="controls-row">
+    <span class="ctrl-label">Deck:</span>
+    <button class="mode-btn active" id="fd-all" onclick="setDeck('all')">All cards</button>
+    <button class="mode-btn" id="fd-missed" onclick="setDeck('missed')">Missed only</button>
+    <button class="mode-btn" id="fd-weak" onclick="setDeck('weak')">Need work</button>
+  </div>
+</div>
+<div class="fc-counter" id="fc-counter">Card 1 of 37</div>
+<div class="flashcard-wrap">
+  <div class="flashcard" id="fc-card" onclick="flipCard()">
+    <div class="fc-face">
+      <div class="fc-label">Concept</div>
+      <div class="fc-text" id="fc-front">—</div>
+      <div class="fc-hint">Tap to reveal</div>
+    </div>
+    <div class="fc-face fc-back">
+      <div class="fc-label">Key Definition / Distinction</div>
+      <div class="fc-text" id="fc-back">—</div>
+      <div class="fc-hint">Tap to flip back</div>
+    </div>
+  </div>
+</div>
+<div class="confidence-row" style="justify-content:center;margin-bottom:1rem">
+  <span class="conf-label">How well did you know this?</span>
+  <button class="conf-btn conf-again" onclick="fcRate('again')">Again</button>
+  <button class="conf-btn conf-hard" onclick="fcRate('hard')">Hard</button>
+  <button class="conf-btn conf-good" onclick="fcRate('good')">Good</button>
+  <button class="conf-btn conf-easy" onclick="fcRate('easy')">Easy</button>
+</div>
+<div class="fc-nav">
+  <button onclick="fcNav(-1)">← Prev</button>
+  <span class="fc-progress" id="fc-progress">1 / 37</span>
+  <button onclick="fcNav(1)">Next →</button>
+</div>
+<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px 16px;font-size:13px;color:#1e3a5f;line-height:1.7;margin-top:.5rem">
+  <strong>How to use flashcards:</strong> Read the concept, try to recall the answer in your head, then tap to reveal. Rate your confidence honestly — "Again" and "Hard" cards will be shown more frequently. This is spaced repetition: cards you struggle with get reinforced automatically.
+</div>
 </div>
 
+</div><!-- end container -->
+
+<div class="toast" id="toast"></div>
+
 <script>
+// ════════════════════════════════════════
+// DATA
+// ════════════════════════════════════════
 const QQ=[
-  {q:"Which performance measurement describes a company's ability to adapt quickly to changing customer requirements?",o:["Service quality measure","Customer satisfaction","Processing time","Flexibility"],a:3,t:"Assessment 1",e:"<strong>Flexibility</strong> measures adaptability to changing requirements. Service quality = how well a service is delivered. Customer satisfaction = an outcome. Processing time = speed. Flexibility answers: how easily can we change when requirements shift?"},
-  {q:"Which item qualifies as a peripheral good in a customer benefit package bundled with a laptop?",o:["Financing and leasing option","Preloaded software","Replacement battery and charger","Online customer support"],a:2,t:"Both Assessments",e:"A <strong>replacement battery and charger</strong> is a tangible, physically separate peripheral good. Preloaded software is embedded in the core product. Financing and support are services — intangible and not physically part of the bundle."},
-  {q:"Which factor is most strongly correlated with customer ratings?",o:["Future purchases","Workforce productivity","Sales forecast accuracy","Inventory level"],a:0,t:"Assessment 2",e:"<strong>Future purchases</strong> are most highly correlated with customer ratings. High ratings signal satisfaction and predict repeat business. Inventory levels and workforce productivity are internal metrics invisible to customers."},
-  {q:"Which process type describes automobile assembly of multiple vehicle models on a shared sequential line?",o:["Continuous flow","Project","Job shop","Flow shop"],a:3,t:"Both Assessments",e:"<strong>Flow shop</strong> uses sequential workstations where different products follow the same process order. Job shop = custom unique work in varying sequences. Continuous flow = 24/7 single product. Project = one-time unique endeavor."},
-  {q:"Which section of the House of Quality compares your product to competitors on customer requirements?",o:["Voice of the customer","Competitive evaluation","Relationship matrix","Technical features"],a:1,t:"Both Assessments",e:"The <strong>competitive evaluation</strong> section benchmarks your product against competitors — directly showing differentiation. VOC = inputs. Relationship matrix = maps VOC to tech specs. Technical features = engineering parameters."},
-  {q:"Which is the primary input used in Quality Function Deployment to identify product requirements?",o:["Equipment reliability","Technical specifications","Voice of the customer","House of quality"],a:2,t:"Both Assessments",e:"<strong>Voice of the Customer (VOC)</strong> is the primary input to QFD. The House of Quality is the tool and output — it cannot be its own input. Technical specifications are outputs generated by the process."},
-  {q:"Which design concept focuses on making products easy and efficient to produce at the highest quality levels?",o:["Design for manufacturability","Design for assembly","Design for environment","Design for reliability"],a:0,t:"Both Assessments",e:"<strong>Design for Manufacturability (DFM)</strong> focuses on efficient production at the highest quality. Design for Reliability = functional longevity over time. Design for Assembly = simplifying the assembly step specifically. DFM spans the full manufacturing process."},
-  {q:"What is the term for the probability that equipment performs its intended function for a stated period under specified operating conditions?",o:["Serviceability","Reliability","Functionality","Durability"],a:1,t:"Assessment 1",e:"<strong>Reliability</strong> is the probability-based definition: given these conditions and this time window, what is the likelihood of failure-free performance? Serviceability = ease of repair. Durability = physical toughness. Functionality = which features exist."},
-  {q:"A company ships products in bulk to regional warehouses, then customizes packaging locally based on regional demand. What strategy is this?",o:["Vertical integration","Postponement","Pull system","Forward integration"],a:1,t:"Both Assessments",e:"<strong>Postponement</strong> delays final product differentiation until close to actual demand. Shipping bulk and customizing locally is textbook postponement. Vertical integration = owning more supply chain stages — a completely different concept."},
-  {q:"Fixed cost is $4,000 and variable cost is $5 per unit. What is total cost for 1,000 units?",o:["$4,005","$9,000","$4,000,000","$4,005,000"],a:1,t:"Both Assessments",e:"Total Cost = $4,000 + ($5 × 1,000) = $4,000 + $5,000 = <strong>$9,000</strong>. Variable cost is per unit. 1,000 units × $5 = $5,000. The error in both attempts was treating $5 as if applied to one million units."},
-  {q:"What is the single most important operational distinction between make-to-stock and make-to-order strategies?",o:["The need to manufacture the finished good","The need to hold finished goods inventory","The need to plan for raw materials","The need to plan for the workforce"],a:1,t:"Assessment 1",e:"<strong>Holding finished goods inventory</strong> is the key difference. MTS pre-builds and stocks goods. MTO produces only after an order arrives. Both strategies still require manufacturing and materials planning."},
-  {q:"Two inspectors each process 50 units per hour, and 60 units per hour flow to the station. What is station utilization?",o:["60 percent","83 percent","120 percent","240 percent"],a:0,t:"Both Assessments",e:"Utilization = Demand ÷ Capacity. Total capacity = 2 × 50 = 100/hr. Demand = 60/hr. 60 ÷ 100 = <strong>60%</strong>. Both attempts picked 83% — from dividing 60 by one inspector's rate (50) rather than combined station capacity (100)."},
-  {q:"A four-step serial process has outputs of 280, 60, 45, and 85 units per hour. What is the overall system throughput?",o:["45 units/hr","85 units/hr","60 units/hr","280 units/hr"],a:0,t:"Assessment 2",e:"Throughput = the <strong>bottleneck = lowest output rate</strong>. Activity at 45/hr limits everything. Assessment 2 picked 85 — the second-lowest. Only the single minimum constrains the system."},
-  {q:"What happens to Economic Order Quantity when annual demand is doubled?",o:["EOQ increases by 200%","EOQ decreases by 200%","EOQ increases by approximately 40%","EOQ decreases by 40%"],a:2,t:"Both Assessments",e:"EOQ = √(2DS/H). Doubling D gives √2 × original EOQ. √2 ≈ 1.414 → <strong>about 41% increase ≈ 40%</strong>. The square root dampens the effect. Both attempts picked 200%, ignoring the square root."},
-  {q:"What is the primary purpose of Work-in-Process inventory in a production environment?",o:["Acts as an input to the process","Meets expected customer demand","Acts as a buffer between process activities","Used to repair broken equipment"],a:2,t:"Assessment 1",e:"WIP inventory <strong>acts as a buffer between process activities</strong>, absorbing timing mismatches. Finished goods inventory meets customer demand. Assessment 1 selected 'meets expected customer demand' — that describes finished goods, not WIP."},
-  {q:"A retailer orders bread in lots of 500 units. What is the average cycle inventory?",o:["2","8","125","250"],a:3,t:"Assessment 1",e:"Average cycle inventory = Lot size ÷ 2 = 500 ÷ 2 = <strong>250 units</strong>. Assessment 1 selected 2 — the divisor in the formula, not the result."},
-  {q:"A shipment is held at a border because the government changed its tax regime. Which supply chain risk type is this?",o:["Capacity risk","Logistics risk","Infrastructure risk","Economic risk"],a:3,t:"Both Assessments",e:"<strong>Economic risk</strong> = financial, regulatory, or trade policy disruptions. A tax regime change is a policy decision. No truck broke down, no port backed up. Both attempts picked logistics risk, which applies when physical transportation mechanisms fail."},
-  {q:"Which metric is most appropriate for measuring supply chain sustainability performance of an oil refinery?",o:["Energy reduction","Total supply chain costs","Return on investment","Order fulfillment lead time"],a:0,t:"Both Assessments",e:"<strong>Energy reduction</strong> is an environmental sustainability metric measuring ecological impact and resource efficiency. ROI and total costs are financial. Order fulfillment lead time is operational efficiency. Sustainability performance requires an environmental measure."},
-  {q:"Which supply chain phenomenon describes how each member independently buffers inventory, amplifying demand swings upstream?",o:["Order quantity vacillation","Demand variance","Visibility amplification","Bullwhip effect"],a:3,t:"Assessment 1",e:"The <strong>bullwhip effect</strong> describes progressive amplification of demand signals upstream as each party adds its own safety buffer. Assessment 1 picked demand variance — normal statistical fluctuation. Bullwhip is the artificial amplification caused by independent buffering at every level."},
-  {q:"A truck delivers goods from city A to city B, then carries different freight back from B to A. What is this logistics practice?",o:["Consolidation","Backorder","Bullwhip","Backhaul"],a:3,t:"Assessment 1",e:"<strong>Backhaul</strong> = using the return leg to carry freight instead of driving empty. Consolidation = combining multiple small shipments into one truck going one direction. Assessment 1 picked consolidation — but this truck completed its delivery and is now carrying return cargo."},
-  {q:"Which framework identifies how investors control management's actions and how responsibilities are divided between owners and managers?",o:["Corporate social responsibility","Corporate governance","Triple bottom line","Agency relationship"],a:1,t:"Assessment 1",e:"<strong>Corporate governance</strong> is the framework defining how shareholders oversee management. CSR = voluntary ethical behavior. Triple bottom line = a measurement framework. Agency relationship = the concept of acting on someone's behalf, not the governance framework itself."},
-  {q:"Which combination of factors do corporate governance rating systems use to evaluate governance effectiveness?",o:["Quality and diversity of suppliers","Quality and consistency of products and services","Quality and diversity of directors","Quality and reliability of distribution"],a:2,t:"Both Assessments",e:"Governance ratings evaluate the <strong>board of directors — quality and diversity</strong>: independence, expertise, and demographic breadth. Both attempts picked product/service quality — an operational metric. Governance is about who oversees the company, not what it produces."},
-  {q:"Which framework measures corporate social responsibility success across people, planet, and profit dimensions?",o:["Triple bottom line","Balance sheet","Code of conduct","Audit report"],a:0,t:"Assessment 1",e:"The <strong>triple bottom line</strong> measures CSR across People, Planet, and Profit. A balance sheet = financial position only. A code of conduct = behavioral rules. An audit report = compliance verification. Only TBL captures all three CSR dimensions."},
-  {q:"How can a corporation most effectively reduce its Scope 3 greenhouse gas emissions?",o:["Reduce company-owned truck emissions","Reduce utility provider emissions","Reduce its own manufacturing plant emissions","Monitor and set targets for key suppliers' emissions"],a:3,t:"Both Assessments",e:"<strong>Scope 3 = indirect value chain emissions</strong> from suppliers and customers. Reducing Scope 3 requires acting on suppliers — setting targets, adjusting procurement. Company trucks and manufacturing plant = Scope 1. Both attempts selected Scope 1 actions for a Scope 3 problem."},
-  {q:"Which international standard provides guidance for the full ESG framework?",o:["ISO 26000","ISO 17025","ISO 14000","ISO 27001"],a:0,t:"Both Assessments",e:"<strong>ISO 26000</strong> = social responsibility / full ESG framework. ISO 14000 = environmental management only — one ESG pillar. ISO 27001 = information security. Assessment 1 picked ISO 27001. Assessment 2 picked ISO 14000. ESG as a whole = ISO 26000."},
-  {q:"Which historical era was characterized by maximizing shareholder profit with little concern for outside stakeholders?",o:["Colonial era","Mercantilism era","Information era","Industrial Revolution and post-industrial era"],a:3,t:"Assessment 2",e:"The <strong>Industrial Revolution and post-industrial era</strong> established shareholder primacy through factories and mass production. Mercantilism = nation-state wealth through trade policy — it predates the shareholder corporation. Assessment 2 picked mercantilism."},
-  {q:"A company plans industrial operations in a new country. Which competing values must be most carefully balanced?",o:["Empowering employees and fairness","Ethical decision-making and sustainability","Racial impartiality and compliance","Economic development and environmental protection"],a:3,t:"Both Assessments",e:"<strong>Economic development vs environmental protection</strong> is the core tension. New operations create jobs and GDP but may damage ecosystems. Both attempts picked 'ethical decision-making and sustainability' — that describes how to approach the dilemma, not what the competing values are."},
-  {q:"In which procurement scenario does multisourcing provide the most business value?",o:["Component requiring high capital investment","Component requiring deep supplier knowledge","Technologically intense IP-sensitive component","Component needing flexibility with high supply risk"],a:3,t:"Both Assessments",e:"Multisourcing delivers most value when a component needs <strong>flexibility and carries high supply risk</strong>. IP-intensive components favor single-source relationships to protect proprietary knowledge. Both attempts selected IP-intensive components — the opposite of the correct answer."},
-  {q:"If a manufacturer had 51 defects and achieved Six Sigma quality, what is the minimum production volume implied?",o:["1 million units","10 million units","15 million units","100 million units"],a:2,t:"Both Assessments",e:"Six Sigma = 3.4 DPMO. 51 ÷ 3.4 = <strong>15 million units</strong>. At 1 million units, 51 defects = 51 DPMO — 15 times worse than Six Sigma. Both attempts picked 1 million, confusing absolute defect count with DPMO rate."},
-  {q:"A production unit consistently makes far more output each day than actual daily demand requires. Which production model solves this?",o:["Six Sigma","Pull system","Push system","Economic order quantity"],a:1,t:"Both Assessments",e:"A <strong>pull system</strong> ties production to actual demand signals, eliminating overproduction. Six Sigma reduces defects, not volume. Push system produces to forecast — it causes overproduction. Assessment 1 picked Six Sigma; Assessment 2 picked push system."},
-  {q:"Which forecasting technique handles more than one independent variable simultaneously?",o:["Single exponential smoothing","Simple moving average","Multiple linear regression","Delphi method"],a:2,t:"Assessment 2",e:"<strong>Multiple linear regression</strong> models one dependent variable against multiple independent variables. Delphi = qualitative expert consensus with no formula. Assessment 2 picked Delphi — qualitative, single-variable, not a multi-variable quantitative method."},
-  {q:"Sales have been identical each month for three consecutive months. What does a three-month SMA forecast for next month?",o:["One-third of that monthly value","That same monthly value","Twice that monthly value","Three times that monthly value"],a:1,t:"Assessment 2",e:"SMA = (X+X+X) ÷ 3 = <strong>X</strong>. The average of three identical values is that same value. Assessment 2 picked three times the monthly value — the sum, not the average. Always divide by the number of periods."},
-  {q:"Which parameter is required to calculate a forecast using linear regression?",o:["Gradient","Slope","Slant","Decent"],a:1,t:"Assessment 2",e:"Forecast = a + b(X), where b is the <strong>slope</strong>. 'Gradient' is a calculus term for a related concept but is not standard operations management terminology. 'Slant' and 'Decent' are not statistical terms."},
-  {q:"Which standard promotes effective environmental management systems using cost-effective tools?",o:["ISO 9001","ISO 17025","ISO 14000","ISO 26000"],a:2,t:"Assessment 2",e:"<strong>ISO 14000</strong> = environmental management systems. ISO 9001 = quality management. ISO 17025 = testing/calibration labs. ISO 26000 = social responsibility/ESG. Assessment 2 picked ISO 9001, which covers quality — not environmental management."},
-  {q:"Workers walk to an inconvenient storage area to retrieve supplies, increasing per-unit production time. Which Lean waste type is this?",o:["Wait time","Inventory","Motion","Processing"],a:2,t:"Assessment 2",e:"<strong>Motion waste</strong> = unnecessary physical movement by workers due to poor layout. Wait time = workers standing idle. Over-processing = doing more work than required. Assessment 2 picked processing — but the problem is the unnecessary walking, which is motion."},
-  {q:"Which scenario best illustrates the effective use of 3D printing in a business context?",o:["Improving production output quality","Scaling up manufacturing productivity","Developing prototypes before committing to full-scale production","Minimizing machine downtime"],a:2,t:"Assessment 1",e:"3D printing's primary business value is <strong>rapid prototyping before scaling production</strong> — creating test models before investing in mass-production tooling. It is too slow and expensive for mass production itself."},
-  {q:"Which innovation concept describes a first-of-its-kind platform that creates a new market or fundamentally transforms an existing industry?",o:["Upgrading existing software products","Launching a competing version of a rival product","A first-in-kind digital platform for an entirely new purpose","Introducing a new variant of an existing product line"],a:2,t:"Assessment 2",e:"<strong>Disruptive innovation</strong> creates a new market or transforms industry rules. Upgrading software = sustaining innovation. Copying a competitor = imitation. A new product variant = incremental. Disruption changes the rules of competition, not just the product."}
+  {q:"Which performance measurement describes a company's ability to adapt quickly to changing customer requirements?",o:["Service quality measure","Customer satisfaction","Processing time","Flexibility"],a:3,t:"A1",e:"<strong>Flexibility</strong> measures adaptability to changing requirements. Service quality = how well a service is delivered. Customer satisfaction = an outcome. Processing time = speed. Flexibility answers: how easily can we change when requirements shift?"},
+  {q:"Which item qualifies as a peripheral good in a customer benefit package bundled with a laptop?",o:["Financing and leasing option","Preloaded software","Replacement battery and charger","Online customer support"],a:2,t:"Both",e:"A <strong>replacement battery and charger</strong> is a tangible, physically separate peripheral good. Preloaded software is embedded in the core product. Financing and support are services — intangible, not physically part of the bundle."},
+  {q:"Which factor is most strongly correlated with customer ratings?",o:["Future purchases","Workforce productivity","Sales forecast accuracy","Inventory level"],a:0,t:"A2",e:"<strong>Future purchases</strong> are most highly correlated with customer ratings. High ratings signal satisfaction and predict repeat business. Inventory levels and workforce productivity are internal metrics invisible to customers."},
+  {q:"Which process type describes automobile assembly of multiple vehicle models on a shared sequential line?",o:["Continuous flow","Project","Job shop","Flow shop"],a:3,t:"Both",e:"<strong>Flow shop</strong> uses sequential workstations where different products follow the same process order. Job shop = custom unique work in varying sequences. Continuous flow = 24/7 single product. Project = one-time unique endeavor."},
+  {q:"Which section of the House of Quality compares your product to competitors on customer requirements?",o:["Voice of the customer","Competitive evaluation","Relationship matrix","Technical features"],a:1,t:"Both",e:"The <strong>competitive evaluation</strong> section benchmarks your product against competitors — directly showing differentiation opportunities."},
+  {q:"Which is the primary input used in Quality Function Deployment to identify product requirements?",o:["Equipment reliability","Technical specifications","Voice of the customer","House of quality"],a:2,t:"Both",e:"<strong>Voice of the Customer (VOC)</strong> is the primary input to QFD. The House of Quality is the tool and output — it cannot be its own input."},
+  {q:"Which design concept focuses on making products easy and efficient to produce at the highest quality levels?",o:["Design for manufacturability","Design for assembly","Design for environment","Design for reliability"],a:0,t:"Both",e:"<strong>Design for Manufacturability (DFM)</strong> spans both production efficiency and quality. Design for Reliability = functional longevity. Design for Assembly = simplifying the assembly step only."},
+  {q:"What is the term for the probability that equipment performs its intended function for a stated period under specified conditions?",o:["Serviceability","Reliability","Functionality","Durability"],a:1,t:"A1",e:"<strong>Reliability</strong> is probability-based: given these conditions and this time window, what is the likelihood of failure-free performance? Serviceability = ease of repair. Durability = physical toughness."},
+  {q:"A company ships products in bulk to regional warehouses, then customizes packaging locally based on regional demand. What strategy is this?",o:["Vertical integration","Postponement","Pull system","Forward integration"],a:1,t:"Both",e:"<strong>Postponement</strong> delays final product differentiation until close to actual demand. Vertical integration = owning more supply chain stages — a completely different concept."},
+  {q:"Fixed cost is $4,000 and variable cost is $5 per unit. What is total cost for 1,000 units?",o:["$4,005","$9,000","$4,000,000","$4,005,000"],a:1,t:"Both",e:"Total Cost = $4,000 + ($5 × 1,000) = <strong>$9,000</strong>. Variable cost is per unit. 1,000 × $5 = $5,000. The error was treating $5 as if applied to one million units."},
+  {q:"What is the single most important operational distinction between make-to-stock and make-to-order?",o:["The need to manufacture the finished good","The need to hold finished goods inventory","The need to plan for raw materials","The need to plan for the workforce"],a:1,t:"A1",e:"<strong>Holding finished goods inventory</strong> is the key difference. MTS pre-builds and stocks goods. MTO produces only after an order arrives. Both strategies still require manufacturing and materials planning."},
+  {q:"Two inspectors each process 50 units per hour, and 60 units per hour flow to the station. What is station utilization?",o:["60 percent","83 percent","120 percent","240 percent"],a:0,t:"Both",e:"Utilization = Demand ÷ Capacity. Total capacity = 2 × 50 = 100/hr. 60 ÷ 100 = <strong>60%</strong>. Both attempts picked 83% — from dividing 60 by one inspector's rate (50) rather than combined capacity (100)."},
+  {q:"A four-step serial process has outputs of 280, 60, 45, and 85 units per hour. What is the overall system throughput?",o:["45 units/hr","85 units/hr","60 units/hr","280 units/hr"],a:0,t:"A2",e:"Throughput = the <strong>bottleneck = lowest output rate</strong>. Activity at 45/hr limits everything downstream. Assessment 2 picked 85 — the second-lowest. Only the actual minimum constrains the system."},
+  {q:"What happens to Economic Order Quantity when annual demand is doubled?",o:["EOQ increases by 200%","EOQ decreases by 200%","EOQ increases by approximately 40%","EOQ decreases by 40%"],a:2,t:"Both",e:"EOQ = √(2DS/H). Doubling D gives √2 × original EOQ. √2 ≈ 1.414 → <strong>about 41% ≈ 40% increase</strong>. The square root dampens the effect — doubling demand does not double EOQ."},
+  {q:"What is the primary purpose of Work-in-Process inventory in a production environment?",o:["Acts as an input to the process","Meets expected customer demand","Acts as a buffer between process activities","Used to repair broken equipment"],a:2,t:"A1",e:"WIP inventory <strong>acts as a buffer between process activities</strong>, absorbing timing mismatches. Finished goods meet customer demand. Assessment 1 selected customer demand — that describes finished goods, not WIP."},
+  {q:"A retailer orders bread in lots of 500 units. What is the average cycle inventory?",o:["2","8","125","250"],a:3,t:"A1",e:"Average cycle inventory = Lot size ÷ 2 = 500 ÷ 2 = <strong>250 units</strong>. Assessment 1 selected 2 — the divisor in the formula, not the result."},
+  {q:"A shipment is held at a border because the government changed its tax regime. Which supply chain risk type is this?",o:["Capacity risk","Logistics risk","Infrastructure risk","Economic risk"],a:3,t:"Both",e:"<strong>Economic risk</strong> = financial, regulatory, or trade policy disruptions. A tax regime change is a government policy decision — no truck broke down, no port backed up. Logistics risk applies when physical transportation mechanisms fail."},
+  {q:"Which metric is most appropriate for measuring supply chain sustainability performance of an oil refinery?",o:["Energy reduction","Total supply chain costs","Return on investment","Order fulfillment lead time"],a:0,t:"Both",e:"<strong>Energy reduction</strong> is an environmental sustainability metric measuring ecological impact and resource efficiency. ROI and costs are financial. Order fulfillment lead time is operational efficiency. Sustainability requires an environmental measure."},
+  {q:"Which supply chain phenomenon describes how each member independently buffers inventory, amplifying demand swings upstream?",o:["Order quantity vacillation","Demand variance","Visibility amplification","Bullwhip effect"],a:3,t:"A1",e:"The <strong>bullwhip effect</strong> describes progressive amplification of demand signals upstream. Assessment 1 picked demand variance — normal statistical fluctuation. Bullwhip is the artificial amplification caused by independent buffering at every chain level."},
+  {q:"A truck delivers goods from city A to city B, then carries different freight back from B to A. What is this logistics practice?",o:["Consolidation","Backorder","Bullwhip","Backhaul"],a:3,t:"A1",e:"<strong>Backhaul</strong> = using the return leg to carry freight instead of driving empty. Consolidation = combining multiple small shipments into one truck going one direction. Assessment 1 picked consolidation."},
+  {q:"Which framework identifies how investors control management and how responsibilities are divided between owners and managers?",o:["Corporate social responsibility","Corporate governance","Triple bottom line","Agency relationship"],a:1,t:"A1",e:"<strong>Corporate governance</strong> = the framework defining how shareholders oversee management. CSR = voluntary ethical behavior. Triple bottom line = a measurement framework. Agency relationship = the concept of acting on someone's behalf."},
+  {q:"Which combination of factors do corporate governance rating systems use to evaluate governance effectiveness?",o:["Quality and diversity of suppliers","Quality and consistency of products and services","Quality and diversity of directors","Quality and reliability of distribution"],a:2,t:"Both",e:"Governance ratings evaluate the <strong>board of directors — quality and diversity</strong>: independence, expertise, and demographic breadth. Product/service quality is an operational metric — not a governance metric."},
+  {q:"Which framework measures corporate social responsibility success across people, planet, and profit?",o:["Triple bottom line","Balance sheet","Code of conduct","Audit report"],a:0,t:"A1",e:"The <strong>triple bottom line</strong> measures People, Planet, and Profit. A balance sheet = financial only. A code of conduct = behavioral rules. An audit = compliance verification. Only TBL captures all three CSR dimensions."},
+  {q:"How can a corporation most effectively reduce its Scope 3 greenhouse gas emissions?",o:["Reduce company-owned truck emissions","Reduce utility provider emissions","Reduce its own manufacturing plant emissions","Monitor and set targets for key suppliers' emissions"],a:3,t:"Both",e:"<strong>Scope 3 = indirect value chain emissions</strong>. Reducing Scope 3 requires acting on suppliers — setting targets, adjusting procurement. Company trucks and manufacturing plant = Scope 1. Both attempts selected Scope 1 actions for a Scope 3 problem."},
+  {q:"Which international standard provides guidance for the full ESG framework?",o:["ISO 26000","ISO 17025","ISO 14000","ISO 27001"],a:0,t:"Both",e:"<strong>ISO 26000</strong> = social responsibility / full ESG framework. ISO 14000 = environmental management only — one ESG pillar. ISO 27001 = information security. Assessment 1 picked ISO 27001. Assessment 2 picked ISO 14000. ESG as a whole = ISO 26000."},
+  {q:"Which historical era was characterized by maximizing shareholder profit with little concern for outside stakeholders?",o:["Colonial era","Mercantilism era","Information era","Industrial Revolution and post-industrial era"],a:3,t:"A2",e:"The <strong>Industrial Revolution and post-industrial era</strong> established shareholder primacy through factories and mass production. Mercantilism = nation-state wealth through trade policy — predates the shareholder corporation. Assessment 2 picked mercantilism."},
+  {q:"A company plans industrial operations in a new country. Which competing values must be most carefully balanced?",o:["Empowering employees and fairness","Ethical decision-making and sustainability","Racial impartiality and compliance","Economic development and environmental protection"],a:3,t:"Both",e:"<strong>Economic development vs environmental protection</strong> is the core tension. Both attempts picked 'ethical decision-making and sustainability' — that describes how to approach the dilemma, not what the competing values are."},
+  {q:"In which procurement scenario does multisourcing provide the most business value?",o:["Component requiring high capital investment","Component requiring deep supplier knowledge","Technologically intense IP-sensitive component","Component needing flexibility with high supply risk"],a:3,t:"Both",e:"Multisourcing delivers most value when a component needs <strong>flexibility and carries high supply risk</strong>. IP-intensive components favor single-source relationships to protect proprietary knowledge. Both attempts selected IP-intensive components — the opposite of the correct answer."},
+  {q:"If a manufacturer had 51 defects and achieved Six Sigma quality, what is the minimum production volume implied?",o:["1 million units","10 million units","15 million units","100 million units"],a:2,t:"Both",e:"Six Sigma = 3.4 DPMO. 51 ÷ 3.4 = <strong>15 million units</strong>. At 1 million units, 51 defects = 51 DPMO — 15 times worse than Six Sigma. Both attempts picked 1 million, confusing absolute defect count with DPMO rate."},
+  {q:"A production unit consistently makes far more output than actual daily demand requires. Which production model solves this?",o:["Six Sigma","Pull system","Push system","Economic order quantity"],a:1,t:"Both",e:"A <strong>pull system</strong> ties production to actual demand signals, eliminating overproduction. Six Sigma reduces defects, not volume. Push system causes overproduction. EOQ is an order-sizing formula. A1 picked Six Sigma; A2 picked push system."},
+  {q:"Which forecasting technique handles more than one independent variable simultaneously?",o:["Single exponential smoothing","Simple moving average","Multiple linear regression","Delphi method"],a:2,t:"A2",e:"<strong>Multiple linear regression</strong> models one dependent variable against multiple independent variables. Delphi = qualitative expert consensus with no formula. Assessment 2 picked Delphi — qualitative, single-variable, not a multi-variable quantitative method."},
+  {q:"Sales have been identical each month for three consecutive months. What does a three-month simple moving average forecast for next month?",o:["One-third of that monthly value","That same monthly value","Twice that monthly value","Three times that monthly value"],a:1,t:"A2",e:"SMA = (X+X+X) ÷ 3 = <strong>X</strong>. The average of three identical values is that same value. Assessment 2 picked three times — the sum, not the average. Always divide by the number of periods."},
+  {q:"Which parameter is required to calculate a forecast using linear regression?",o:["Gradient","Slope","Slant","Decent"],a:1,t:"A2",e:"Forecast = a + b(X), where b is the <strong>slope</strong>. 'Gradient' is a calculus term — not standard operations management terminology. 'Slant' and 'Decent' are not statistical terms."},
+  {q:"Which standard promotes effective environmental management systems using cost-effective tools?",o:["ISO 9001","ISO 17025","ISO 14000","ISO 26000"],a:2,t:"A2",e:"<strong>ISO 14000</strong> = environmental management systems. ISO 9001 = quality management. ISO 26000 = social responsibility/ESG. Assessment 2 picked ISO 9001, which covers quality — not environmental management."},
+  {q:"Workers walk to an inconvenient storage area to retrieve supplies, increasing per-unit production time. Which Lean waste type is this?",o:["Wait time","Inventory","Motion","Processing"],a:2,t:"A2",e:"<strong>Motion waste</strong> = unnecessary physical movement by workers due to poor layout. Over-processing = doing more work than required. Assessment 2 picked processing — but the problem is the unnecessary walking, which is motion."},
+  {q:"Which scenario best illustrates the effective use of 3D printing in a business context?",o:["Improving production output quality","Scaling up manufacturing productivity","Developing prototypes before committing to full-scale production","Minimizing machine downtime"],a:2,t:"A1",e:"3D printing's primary business value is <strong>rapid prototyping before scaling production</strong> — creating test models before investing in mass-production tooling. It is too slow and expensive for mass production itself."},
+  {q:"Which innovation concept describes a first-of-its-kind platform that creates a new market or fundamentally transforms an existing industry?",o:["Upgrading existing software products","Launching a competing version of a rival product","A first-in-kind digital platform for an entirely new purpose","Introducing a new variant of an existing product line"],a:2,t:"A2",e:"<strong>Disruptive innovation</strong> creates a new market or transforms industry rules. Upgrading software = sustaining innovation. Copying a rival = imitation. A new product variant = incremental. Disruption changes the rules of competition itself."}
 ];
 
-let answered={},correct=0;
+// FLASHCARD DATA
+const FLASHCARDS=[
+  {f:"What does flexibility measure as a competitive priority?",b:"A company's ability to adapt quickly to changing customer requirements — not service quality, satisfaction, or processing time."},
+  {f:"What is the difference between a peripheral good and a peripheral service in a CBP?",b:"Peripheral goods are physical, tangible, and separately packaged (e.g. charger). Peripheral services are intangible support (e.g. financing, tech support). Preloaded software = core product, not peripheral good."},
+  {f:"What does a high customer rating most strongly predict?",b:"Future purchase behavior — repeat business and loyalty. Not inventory levels, productivity, or forecast accuracy."},
+  {f:"What makes automobile assembly a flow shop, not a job shop?",b:"All models follow the same sequential workstation order. Job shops have unique, custom jobs in varying sequences. Continuous flow = 24/7 single product. Project = one-time."},
+  {f:"What is the primary INPUT to Quality Function Deployment (QFD)?",b:"Voice of the Customer (VOC) — direct expression of customer needs. The House of Quality is the output/tool, not the input."},
+  {f:"Which section of the House of Quality shows competitive differentiation?",b:"The competitive evaluation section — it compares your product against competitors on each customer requirement."},
+  {f:"DFM vs Design for Reliability — what's the key difference?",b:"DFM = efficient production at highest quality (how it's made). Design for Reliability = probability of failure-free performance over time (how long it works)."},
+  {f:"What is the best business application of 3D printing?",b:"Prototyping before committing to full-scale production — not mass manufacturing, not machine uptime, not production quality."},
+  {f:"What is postponement and how does it differ from vertical integration?",b:"Postponement = delaying customization until close to actual demand. Vertical integration = owning more supply chain stages. Entirely different concepts."},
+  {f:"Make-to-stock vs make-to-order — what is the single key difference?",b:"MTS holds finished goods inventory before demand arrives. MTO produces only after an order is placed. Both still manufacture; only MTS pre-stocks."},
+  {f:"Total cost formula for make-or-buy decisions",b:"Total Cost = Fixed Cost + (Variable Cost per Unit × Number of Units). At 1,000 units: $4,000 + ($5 × 1,000) = $9,000. Never confuse 'per unit' with 'per thousand.'"},
+  {f:"A border delay caused by a new tax law — which supply chain risk type?",b:"Economic risk. No physical transport failure occurred — a government policy changed. Logistics risk = physical transport breakdown. Infrastructure = roads/grids. Capacity = can't produce enough."},
+  {f:"Backhaul vs consolidation — what's the difference?",b:"Backhaul = using the return trip of a vehicle to carry freight instead of driving empty. Consolidation = combining multiple separate small loads into one truck going one direction."},
+  {f:"What is the bullwhip effect and what causes it?",b:"Amplification of small demand fluctuations as they travel upstream — each supply chain member adds their own safety buffer on top of what they received, distorting the signal progressively."},
+  {f:"When does multisourcing make the most business sense?",b:"When a component needs flexibility and carries high supply risk. NOT for IP-intensive or high-capital-investment components."},
+  {f:"How do you calculate station utilization when there are 2 inspectors?",b:"Utilization = Demand ÷ Total Capacity. Two inspectors × 50 each = 100 capacity. 60 demand ÷ 100 capacity = 60%. Don't divide by just one inspector's rate."},
+  {f:"What determines throughput in a serial process?",b:"The bottleneck — the single slowest step. In 280/60/45/85, throughput = 45. Near-minimum doesn't count; only the actual minimum constrains the system."},
+  {f:"What happens to EOQ when demand doubles?",b:"EOQ increases by approximately 40% (√2 ≈ 1.414). The square root in the formula dampens the effect — doubling demand does NOT double EOQ. 200% increase is wrong."},
+  {f:"What is WIP inventory and what is its purpose?",b:"Work-in-Process = partially completed goods in production. Purpose = buffer between sequential process activities. NOT for meeting customer demand (that's finished goods)."},
+  {f:"Average cycle inventory formula and result for 500-unit lots",b:"Average Cycle Inventory = Lot Size ÷ 2 = 500 ÷ 2 = 250 units. The '2' is the divisor — not the answer."},
+  {f:"SMA: if sales are X units for 3 months, what does a 3-month SMA forecast?",b:"X. Average of three identical values = (X+X+X) ÷ 3 = X. The answer is NOT 3X (that's the sum, not the average)."},
+  {f:"Multiple regression vs Delphi method — when to use each?",b:"Multiple regression = quantitative, handles multiple independent variables simultaneously. Delphi = qualitative expert consensus, no formula, used when data is scarce or situation is too novel."},
+  {f:"What is the slope in a linear regression forecast?",b:"The slope (b) in Forecast = a + b(X) — the rate of change of the dependent variable per unit of the independent variable. 'Gradient' is a calculus term, not standard OM terminology."},
+  {f:"ISO 9001 vs ISO 14000 vs ISO 26000 vs ISO 27001",b:"9001 = Quality. 14000 = Environmental management. 26000 = Social responsibility / full ESG framework. 27001 = Information security. ESG = ISO 26000 (not 14000 which is only environmental)."},
+  {f:"Scope 1 vs Scope 2 vs Scope 3 emissions",b:"Scope 1 = direct/owned (your factory, fleet). Scope 2 = purchased electricity/energy. Scope 3 = indirect value chain (suppliers, customers). Reducing Scope 3 = set supplier targets, not change your own plants."},
+  {f:"What do corporate governance rating systems actually measure?",b:"Quality and diversity of the board of directors — independence, expertise, and demographic diversity. NOT product quality, supplier quality, or distribution reliability."},
+  {f:"Industrial Revolution vs Mercantilism era — which featured shareholder primacy?",b:"Industrial Revolution and post-industrial era = shareholder profit maximization with little stakeholder concern. Mercantilism = nation-states accumulating wealth through trade policy — predates corporations."},
+  {f:"Competing values when entering a new country with industrial operations",b:"Economic development (jobs, GDP, tax revenue) vs environmental protection (ecosystem damage, contamination). NOT 'ethical decision-making and sustainability' — that's the approach, not the competing values."},
+  {f:"What does the triple bottom line measure?",b:"CSR success across People (social), Planet (environmental), and Profit (economic). A code of conduct = behavioral rules, not measurement. Balance sheet = financial only."},
+  {f:"Six Sigma DPMO and the minimum volume calculation",b:"Six Sigma = 3.4 defects per million opportunities. 51 defects ÷ 3.4 = 15 million units needed to qualify. At 1M units, 51 defects = 51 DPMO — 15x worse than Six Sigma."},
+  {f:"Motion waste vs waiting waste vs over-processing waste",b:"Motion = unnecessary worker movement due to poor layout (walking too far, searching for tools). Waiting = idle time because upstream step isn't done. Over-processing = doing more work than customer requires."},
+  {f:"Pull system vs push system — which solves overproduction?",b:"Pull system solves overproduction — production triggered only by actual demand. Push system causes overproduction — produces to forecast. Six Sigma addresses defects, not volume."},
+  {f:"What is disruptive innovation vs sustaining vs incremental?",b:"Disruptive = creates new market or fundamentally transforms industry rules (first-of-its-kind platform). Sustaining = improves existing product. Incremental = new variant in existing category. A new mountain bike variant is incremental, not disruptive."}
+];
 
+// ════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════
+let quizMode='all', quizOrder='shuffle';
+let qHistory={}, sessionAnswered={}, sessionCorrect=0, currentQ=[];
+let streak=0;
+
+// Load persisted history
+try{ const s=localStorage.getItem('pvro_history'); if(s) qHistory=JSON.parse(s); }catch(e){}
+
+function saveHistory(){ try{localStorage.setItem('pvro_history',JSON.stringify(qHistory));}catch(e){} }
+
+function getQWeight(idx){
+  const h=qHistory[idx];
+  if(!h) return 3; // unseen = high priority
+  if(h.rating==='again') return 5;
+  if(h.rating==='hard') return 4;
+  if(h.rating==='good') return 2;
+  if(h.rating==='easy') return 1;
+  const wr=h.wrong||0; const tot=(h.wrong||0)+(h.right||0);
+  if(tot===0) return 3;
+  const pct=wr/tot;
+  if(pct>0.5) return 4;
+  if(pct>0) return 2;
+  return 1;
+}
+
+function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+function buildQuestionList(){
+  let indices=[...Array(QQ.length).keys()];
+  if(quizMode==='missed'){
+    indices=indices.filter(i=>{
+      const h=qHistory[i];
+      if(!h) return true;
+      return (h.wrong||0)>0;
+    });
+    if(indices.length===0){ showToast('No missed questions tracked yet — answering all'); indices=[...Array(QQ.length).keys()]; }
+  } else if(quizMode==='weak'){
+    indices=indices.filter(i=>getQWeight(i)>=3);
+    if(indices.length===0){ showToast('No weak questions yet — answering all'); indices=[...Array(QQ.length).keys()]; }
+  }
+  if(quizOrder==='shuffle') return shuffle(indices);
+  if(quizOrder==='priority') return indices.sort((a,b)=>getQWeight(b)-getQWeight(a));
+  return indices; // sequential
+}
+
+// ════════════════════════════════════════
+// QUIZ
+// ════════════════════════════════════════
+function setMode(m){
+  quizMode=m;
+  document.querySelectorAll('#quiz .controls-row:first-child .mode-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('mode-'+m).classList.add('active');
+}
+function setOrder(o){
+  quizOrder=o;
+  ['shuffle','priority','sequential'].forEach(x=>document.getElementById('order-'+x).classList.remove('active'));
+  document.getElementById('order-'+o).classList.add('active');
+}
+
+function resetQ(){
+  sessionAnswered={};sessionCorrect=0;streak=0;
+  document.getElementById('streak-badge').style.display='none';
+  currentQ=buildQuestionList();
+  document.getElementById('qbox').innerHTML='';
+  document.getElementById('snum').textContent='0 / 0';
+  document.getElementById('pfill').style.width='0%';
+  document.getElementById('stat-correct').textContent='0';
+  document.getElementById('stat-wrong').textContent='0';
+  document.getElementById('stat-remain').textContent=currentQ.length;
+  buildTrackerGrid();
+  buildQuiz();
+}
+
+function buildTrackerGrid(){
+  const g=document.getElementById('tracker-grid');
+  g.innerHTML='';
+  currentQ.forEach((qi,pos)=>{
+    const d=document.createElement('div');
+    d.className='tq';d.id='tq-'+pos;d.textContent=pos+1;
+    d.title=QQ[qi].q.substring(0,60)+'...';
+    d.onclick=()=>{ const el=document.getElementById('qcard-'+pos); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); };
+    g.appendChild(d);
+  });
+}
+
+function buildQuiz(){
+  const box=document.getElementById('qbox');
+  box.innerHTML='';
+  const L=['A','B','C','D'];
+  const tagMap={A1:'t-a1',A2:'t-a2',Both:'t-both'};
+  const tagLabel={A1:'Assessment 1',A2:'Assessment 2',Both:'Both Assessments'};
+  currentQ.forEach((qi,pos)=>{
+    const q=QQ[qi];
+    const d=document.createElement('div');
+    d.className='qcard';d.id='qcard-'+pos;
+    // shuffle options
+    const opts=q.o.map((o,oi)=>({text:o,orig:oi}));
+    const shuffledOpts=shuffle(opts);
+    const newCorrect=shuffledOpts.findIndex(x=>x.orig===q.a);
+    d.innerHTML=`
+      <div class="qmeta">
+        <span class="qnum">Q${pos+1}</span>
+        <span class="tag ${tagMap[q.t]}">${tagLabel[q.t]}</span>
+        ${qHistory[qi]?(qHistory[qi].wrong||0)>0?'<span class="tag t-missed">⚠ Previously missed</span>':'<span class="tag t-strong">✓ Previously correct</span>':''}
+      </div>
+      <div class="qtext">${q.q}</div>
+      ${shuffledOpts.map((o,oi)=>`<div class="opt" id="opt-${pos}-${oi}" onclick="pick(${pos},${oi},${newCorrect},${qi})" data-orig="${o.orig}"><span class="ltr">${L[oi]}</span>${o.text}<span class="opt-icon"></span></div>`).join('')}
+      <div class="exp" id="exp-${pos}"><div class="exp-label">Explanation</div>${q.e}
+        <div class="confidence-row" style="margin-top:10px">
+          <span class="conf-label">How well did you know this?</span>
+          <button class="conf-btn conf-again" onclick="rateQ(${qi},'again')">Again</button>
+          <button class="conf-btn conf-hard" onclick="rateQ(${qi},'hard')">Hard</button>
+          <button class="conf-btn conf-good" onclick="rateQ(${qi},'good')">Good</button>
+          <button class="conf-btn conf-easy" onclick="rateQ(${qi},'easy')">Easy</button>
+        </div>
+      </div>`;
+    box.appendChild(d);
+  });
+}
+
+function pick(pos,oi,correctOi,qi){
+  if(sessionAnswered[pos]!==undefined) return;
+  sessionAnswered[pos]=oi;
+  const isCorrect=oi===correctOi;
+
+  // lock all options
+  for(let i=0;i<4;i++){
+    const el=document.getElementById(`opt-${pos}-${i}`);
+    if(el){ el.classList.add('locked'); el.onclick=null; }
+  }
+  const chosen=document.getElementById(`opt-${pos}-${oi}`);
+  const correct=document.getElementById(`opt-${pos}-${correctOi}`);
+
+  if(isCorrect){
+    chosen.classList.add('correct');
+    chosen.querySelector('.opt-icon').textContent='✓';
+    sessionCorrect++;
+    streak++;
+    if(!qHistory[qi]) qHistory[qi]={right:0,wrong:0};
+    qHistory[qi].right=(qHistory[qi].right||0)+1;
+  } else {
+    chosen.classList.add('wrong');
+    chosen.querySelector('.opt-icon').textContent='✗';
+    correct.classList.add('show-correct');
+    correct.querySelector('.opt-icon').textContent='✓';
+    streak=0;
+    if(!qHistory[qi]) qHistory[qi]={right:0,wrong:0};
+    qHistory[qi].wrong=(qHistory[qi].wrong||0)+1;
+  }
+  saveHistory();
+
+  document.getElementById(`exp-${pos}`).style.display='block';
+
+  // update tracker
+  const tq=document.getElementById('tq-'+pos);
+  if(tq){ tq.classList.add(isCorrect?'tq-correct':'tq-wrong'); }
+
+  // update score
+  const tot=Object.keys(sessionAnswered).length;
+  document.getElementById('snum').textContent=`${sessionCorrect} / ${tot}`;
+  document.getElementById('pfill').style.width=(tot>0?(sessionCorrect/tot*100):0).toFixed(0)+'%';
+  document.getElementById('stat-correct').textContent=sessionCorrect;
+  document.getElementById('stat-wrong').textContent=tot-sessionCorrect;
+  document.getElementById('stat-remain').textContent=currentQ.length-tot;
+
+  // streak
+  if(streak>=3){
+    const sb=document.getElementById('streak-badge');
+    sb.textContent=`🔥 ${streak} streak`;
+    sb.style.display='inline-block';
+  } else {
+    document.getElementById('streak-badge').style.display='none';
+  }
+
+  // check completion
+  if(tot===currentQ.length){
+    setTimeout(()=>showCompletion(tot,sessionCorrect),600);
+  }
+}
+
+function rateQ(qi,rating){
+  if(!qHistory[qi]) qHistory[qi]={right:0,wrong:0};
+  qHistory[qi].rating=rating;
+  saveHistory();
+  const labels={again:'Will show again soon',hard:'Marked as hard — will prioritize',good:'Marked as good',easy:'Marked as easy — lower priority'};
+  showToast(labels[rating]);
+}
+
+function showCompletion(tot,correct){
+  const pct=Math.round(correct/tot*100);
+  let grade,gClass;
+  if(pct>=90){grade='Excellent!';gClass='grade-excellent';}
+  else if(pct>=75){grade='Good work';gClass='grade-good';}
+  else if(pct>=60){grade='Needs more review';gClass='grade-needs-work';}
+  else{grade='Keep studying';gClass='grade-fail';}
+
+  const wrongList=currentQ.filter((_,pos)=>sessionAnswered[pos]!==undefined && sessionAnswered[pos]!==findCorrect(pos)).map((_,pos)=>pos);
+
+  const card=document.createElement('div');
+  card.className='completion-card';
+  card.innerHTML=`
+    <h2>${grade}</h2>
+    <div class="big-score ${gClass}">${pct}%</div>
+    <p>${correct} of ${tot} correct</p>
+    <div class="completion-stats">
+      <div class="cstat"><strong style="color:#16a34a">${correct}</strong> Correct</div>
+      <div class="cstat"><strong style="color:#dc2626">${tot-correct}</strong> Incorrect</div>
+      <div class="cstat"><strong>${pct}%</strong> Score</div>
+    </div>
+    ${pct<100?`<div class="next-steps"><strong>Next steps:</strong> Use "Missed only" or "Need work" mode to focus on your weak spots. Rate your confidence after each answer — cards you mark "Again" or "Hard" will be prioritized in future sessions. Review the Study Guide for any concepts you struggled with, then retake.</div>`:'<div class="next-steps"><strong>Perfect score!</strong> Try the flashcard mode to test quick recall, or switch to a different question order for another pass.</div>'}
+    <div>
+      <button class="retry-btn" onclick="resetQ();document.getElementById('completionCard').remove()">↺ New quiz</button>
+      ${tot-correct>0?`<button class="retry-missed-btn" onclick="setMode('missed');resetQ();document.getElementById('completionCard').remove()">Retry missed only</button>`:''}
+    </div>
+  `;
+  card.id='completionCard';
+  document.getElementById('qbox').prepend(card);
+  card.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function findCorrect(pos){
+  // find which shuffled option matches the correct answer
+  const qi=currentQ[pos];
+  for(let i=0;i<4;i++){
+    const el=document.getElementById(`opt-${pos}-${i}`);
+    if(el && parseInt(el.dataset.orig)===QQ[qi].a) return i;
+  }
+  return -1;
+}
+
+// ════════════════════════════════════════
+// FLASHCARDS
+// ════════════════════════════════════════
+let fcDeck='all', fcOrder=[], fcIndex=0;
+
+function setDeck(d){
+  fcDeck=d;
+  ['all','missed','weak'].forEach(x=>document.getElementById('fd-'+x).classList.remove('active'));
+  document.getElementById('fd-'+d).classList.add('active');
+  buildDeck();
+}
+
+function buildDeck(){
+  let indices=[...Array(FLASHCARDS.length).keys()];
+  if(fcDeck==='missed') indices=indices.filter(i=>{ const h=qHistory[i]; return !h||(h.wrong||0)>0; });
+  if(fcDeck==='weak') indices=indices.filter(i=>getQWeight(i)>=3);
+  if(indices.length===0) indices=[...Array(FLASHCARDS.length).keys()];
+  fcOrder=shuffle(indices);
+  fcIndex=0;
+  renderCard();
+}
+
+function renderCard(){
+  const i=fcOrder[fcIndex];
+  const card=FLASHCARDS[i];
+  document.getElementById('fc-front').textContent=card.f;
+  document.getElementById('fc-back').innerHTML=card.b;
+  document.getElementById('fc-progress').textContent=`${fcIndex+1} / ${fcOrder.length}`;
+  document.getElementById('fc-counter').textContent=`Card ${fcIndex+1} of ${fcOrder.length}`;
+  const fc=document.getElementById('fc-card');
+  fc.classList.remove('flipped');
+}
+
+function flipCard(){
+  document.getElementById('fc-card').classList.toggle('flipped');
+}
+
+function fcNav(dir){
+  fcIndex=(fcIndex+dir+fcOrder.length)%fcOrder.length;
+  renderCard();
+}
+
+function fcRate(rating){
+  const qi=fcOrder[fcIndex];
+  if(!qHistory[qi]) qHistory[qi]={right:0,wrong:0};
+  qHistory[qi].rating=rating;
+  saveHistory();
+  const labels={again:'Will show again',hard:'Marked hard',good:'Marked good',easy:'Marked easy'};
+  showToast(labels[rating]);
+  fcNav(1);
+}
+
+// ════════════════════════════════════════
+// TABS + UTILS
+// ════════════════════════════════════════
 function go(t){
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
   document.querySelector(`[onclick="go('${t}')"]`).classList.add('active');
   document.getElementById(t).classList.add('active');
-  if(t==='quiz') buildQ();
+  if(t==='quiz' && document.getElementById('qbox').children.length===0) resetQ();
+  if(t==='flash' && fcOrder.length===0) buildDeck();
 }
 
-function buildQ(){
-  const box=document.getElementById('qbox');
-  if(box.children.length>0) return;
-  const L=['A','B','C','D'];
-  QQ.forEach((q,qi)=>{
-    const d=document.createElement('div');
-    d.className='qcard';
-    d.innerHTML=`<div class="qmeta"><span>Q${qi+1} of ${QQ.length}</span><span class="tag t-q">${q.t}</span></div><div class="qtext">${q.q}</div>${q.o.map((o,oi)=>`<div class="opt" id="q${qi}o${oi}" onclick="pick(${qi},${oi})"><span class="ltr">${L[oi]}</span>${o}</div>`).join('')}<div class="exp" id="e${qi}"><strong>Explanation:</strong> ${q.e}</div>`;
-    box.appendChild(d);
-  });
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._to);t._to=setTimeout(()=>t.classList.remove('show'),2000);
 }
 
-function pick(qi,oi){
-  if(answered[qi]!==undefined) return;
-  answered[qi]=oi;
-  const q=QQ[qi];
-  if(oi===q.a){document.getElementById(`q${qi}o${oi}`).classList.add('correct');correct++;}
-  else{document.getElementById(`q${qi}o${oi}`).classList.add('wrong');document.getElementById(`q${qi}o${q.a}`).classList.add('show');}
-  document.getElementById(`e${qi}`).style.display='block';
-  const tot=Object.keys(answered).length;
-  document.getElementById('snum').textContent=`${correct} / ${tot}`;
-  document.getElementById('pfill').style.width=(tot>0?(correct/tot*100):0).toFixed(0)+'%';
-}
-
-function resetQ(){
-  answered={};correct=0;
-  document.getElementById('qbox').innerHTML='';
-  document.getElementById('snum').textContent='0 / 0';
-  document.getElementById('pfill').style.width='0%';
-  buildQ();
-}
+// init quiz on load silently
+window.addEventListener('DOMContentLoaded',()=>{
+  currentQ=buildQuestionList();
+  buildTrackerGrid();
+  buildQuiz();
+  document.getElementById('stat-remain').textContent=currentQ.length;
+});
 </script>
 </body>
 </html>
