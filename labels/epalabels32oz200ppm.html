@@ -28,18 +28,22 @@
             color-adjust: exact !important;
         }
 
+        /*
+         * BLEED: 0.125in on all sides.
+         * @page expanded to 10.575in x 5.125in. Die cut still at 10.325" x 4.875".
+         */
         @page {
-            size: 10.325in 4.875in;
+            size: 10.575in 5.125in;
             margin: 0;
         }
 
         .page {
             width: 10.325in;
             height: 4.875in;
-            margin: 0 auto;
+            margin: 0.125in auto;
             background: white;
             position: relative;
-            padding: 0;
+            padding: 0.0625in; /* CUT TOLERANCE: 1/16in safe zone all sides */
             overflow: hidden;
             display: flex;
             flex-direction: row;
@@ -48,7 +52,7 @@
 
         @media screen {
             body { background: #e0e0e0; padding: 20px; }
-            .page { margin: 20px auto; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
+            .page { margin: 20px auto; }
         }
 
         @media print {
@@ -63,39 +67,21 @@
                 color-adjust: exact !important;
             }
             body { background: white !important; padding: 0; }
-            .page { margin: 0; box-shadow: none; }
-            .front-panel {
-                background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%) !important;
-                -webkit-print-color-adjust: exact !important;
-            }
-            .warning-box {
-                background: #E8723A !important;
-                -webkit-print-color-adjust: exact !important;
-            }
-            .badge {
-                background: #B8E8D0 !important;
-                -webkit-print-color-adjust: exact !important;
-            }
-            .main-claim, .sub-claim {
-                background: #3DA8D5 !important;
-                -webkit-print-color-adjust: exact !important;
-            }
-            .section-title {
-                background: #7AD4D6 !important;
-                -webkit-print-color-adjust: exact !important;
-            }
-            table th {
-                background: #7AD4D6 !important;
-                -webkit-print-color-adjust: exact !important;
-            }
-            .footer {
-                background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%) !important;
-                -webkit-print-color-adjust: exact !important;
-            }
+            .page { margin: 0.125in; box-shadow: none; }
+            .front-panel { background: #5BBFC2 !important; }
+            .warning-box { background: #E8723A !important; }
+            .badge { background: #B8E8D0 !important; }
+            .main-claim, .sub-claim { background: #3DA8D5 !important; }
+            .section-title { background: #5BBFC2 !important; }
+            table th { background: #5BBFC2 !important; }
+            .footer { background: #5BBFC2 !important; }
         }
 
+        /* ========================================
+           FRONT PANEL
+           ======================================== */
         .front-panel {
-            background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%);
+            background: #5BBFC2 !important; /* solid — gradient causes gray printing */
             color: white;
             padding: 5px 12px 5px 12px;
             flex: 1;
@@ -122,7 +108,7 @@
         }
 
         .warning-box {
-            background: #E8723A;
+            background: #E8723A !important;
             color: white;
             padding: 5px 8px;
             border-radius: 5px;
@@ -130,7 +116,7 @@
             font-size: 7px;
             max-width: 75px;
             text-align: center;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+            /* box-shadow removed */
             border: 2px solid white;
             line-height: 1.2;
             -webkit-print-color-adjust: exact !important;
@@ -150,13 +136,11 @@
             max-width: 95%;
             max-height: 190px;
             height: auto;
-            background: white;
+            background: white !important;
             padding: 10px 12px;
             border-radius: 6px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+            /* box-shadow removed */
         }
-
-        .usda-seal { flex-shrink: 0; }
 
         .badge-container {
             display: flex;
@@ -167,7 +151,7 @@
         }
 
         .badge {
-            background: #B8E8D0;
+            background: #B8E8D0 !important;
             color: #2E7D32;
             padding: 4px;
             border-radius: 50%;
@@ -178,7 +162,7 @@
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            /* box-shadow removed */
             border: 2px solid #4CAF50;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
@@ -193,7 +177,7 @@
         }
 
         .badge-small {
-            font-size: 5.5px;
+            font-size: 7px; /* bumped from 5.5px — was 4.125pt */
             text-align: center;
             line-height: 1.2;
         }
@@ -203,8 +187,8 @@
             font-weight: bold;
             margin: 2px 0;
             text-align: center;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-            background: #3DA8D5;
+            /* text-shadow removed */
+            background: #3DA8D5 !important;
             padding: 3px 10px;
             border-radius: 5px;
             color: white;
@@ -219,7 +203,7 @@
             margin: 2px 0;
             text-align: center;
             font-weight: 500;
-            background: #3DA8D5;
+            background: #3DA8D5 !important;
             padding: 3px 10px;
             border-radius: 5px;
             width: 100%;
@@ -229,11 +213,11 @@
         }
 
         .active-ingredient-front {
-            background: white;
+            background: white !important;
             padding: 3px 8px;
             border-radius: 3px;
             width: 100%;
-            font-size: 5.5px;
+            font-size: 7px; /* bumped from 5.5px — was 4.125pt */
             line-height: 1.3;
             color: #000;
             margin-top: 3px;
@@ -252,7 +236,7 @@
         }
 
         .active-ingredient-front .ai-row {
-            font-size: 6px;
+            font-size: 7px; /* bumped from 6px — was 4.5pt */
             font-family: 'Courier New', monospace;
             color: #000;
         }
@@ -260,7 +244,7 @@
         .active-ingredient-front .ai-row.bold { font-weight: bold; }
 
         .active-ingredient-front .ai-total {
-            font-size: 6px;
+            font-size: 7px; /* bumped from 6px — was 4.5pt */
             font-weight: bold;
             font-family: 'Courier New', monospace;
             border-top: 1px solid #333;
@@ -270,7 +254,7 @@
         }
 
         .active-ingredient-front .shelf-life-note {
-            font-size: 5.5px;
+            font-size: 7px; /* bumped from 5.5px — was 4.125pt */
             font-weight: bold;
             margin-top: 2px;
             font-family: 'Arial', sans-serif;
@@ -278,7 +262,7 @@
         }
 
         .active-ingredient-front .epa-reg {
-            font-size: 5.5px;
+            font-size: 7px; /* bumped from 5.5px — was 4.125pt */
             color: #333;
             margin-top: 2px;
             font-weight: bold;
@@ -293,7 +277,7 @@
         .front-size {
             font-size: 8px;
             padding: 3px 6px;
-            background: rgba(255,255,255,0.95);
+            background: white !important; /* solid — rgba causes shadow artifact */
             color: #333;
             border-radius: 4px;
             text-align: center;
@@ -303,16 +287,19 @@
             color-adjust: exact !important;
         }
 
+        /* ========================================
+           BACK PANEL
+           ======================================== */
         .back-panel {
             padding: 8px 12px 8px 12px;
-            background: white;
+            background: white !important;
             flex: 1;
             height: 100%;
             overflow: hidden;
             display: flex;
             flex-direction: column;
             border-radius: 6px;
-            border: 2px solid #7AD4D6;
+            border: 2px solid #5BBFC2;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
             color-adjust: exact !important;
@@ -321,7 +308,7 @@
         .section-compact { margin-bottom: 3px; }
 
         .section-title {
-            background: #7AD4D6;
+            background: #5BBFC2 !important; /* solid — gradient causes gray */
             color: white;
             padding: 3px 6px;
             font-weight: bold;
@@ -336,7 +323,7 @@
         .section-content {
             padding: 0 3px;
             line-height: 1.2;
-            font-size: 5.5px;
+            font-size: 7px; /* bumped from 5.5px — was 4.125pt */
         }
 
         .section-content p { margin-bottom: 2px; }
@@ -356,7 +343,7 @@
         }
 
         table th {
-            background: #7AD4D6;
+            background: #5BBFC2 !important;
             color: white;
             padding: 2px 3px;
             text-align: left;
@@ -369,7 +356,7 @@
         table td {
             padding: 2px 3px;
             border-bottom: 1px solid #ddd;
-            font-size: 6px;
+            font-size: 7px; /* bumped from 6px — was 4.5pt */
         }
 
         ul {
@@ -380,11 +367,11 @@
         li {
             margin-bottom: 1px;
             line-height: 1.2;
-            font-size: 5.5px;
+            font-size: 7px; /* bumped from 5.5px — was 4.125pt */
         }
 
         .footnote {
-            font-size: 5.5px;
+            font-size: 7px; /* bumped from 5.5px — was 4.125pt */
             color: #333;
             margin-top: 2px;
             padding: 0 3px;
@@ -392,11 +379,12 @@
         }
 
         .footer {
-            background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%);
+            background: #5BBFC2 !important; /* solid — gradient causes gray */
             color: white;
             padding: 4px 6px;
-            font-size: 6px;
+            font-size: 7px; /* bumped from 6px — was 4.5pt */
             margin-top: auto;
+            margin-bottom: 5px; /* CUT TOLERANCE FIX */
             border-radius: 3px;
             display: flex;
             justify-content: space-between;
@@ -418,23 +406,24 @@
         .net-contents-back {
             font-size: 8px;
             padding: 4px;
-            background: #f5f5f5;
+            background: #f5f5f5 !important;
             color: #333;
             border-radius: 3px;
             text-align: center;
             font-weight: bold;
             margin-top: 3px;
-            border: 1px solid #7AD4D6;
+            margin-bottom: 5px; /* CUT TOLERANCE FIX */
+            border: 1px solid #5BBFC2;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
             color-adjust: exact !important;
         }
 
-        .back-panel .section-content strong { font-size: 6.5px; }
+        .back-panel .section-content strong { font-size: 7px; } /* bumped from 6.5px */
     </style>
 </head>
 <body>
-    <!-- SINGLE PAGE - 10.325" x 4.875" -->
+    <!-- SINGLE PAGE - 10.325" x 4.875" + 0.125in bleed all sides -->
     <!-- COMPLIANCE: EPA Reg. No. 97801-1-105539 (OHS sub-registration)
          Est. No. 97801-1-UT on front and back
          No ppm listed. bacteria* single asterisk. virus** double asterisk.
