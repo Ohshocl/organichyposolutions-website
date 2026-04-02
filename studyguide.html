@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Managing Operations — PVRO Study Tool</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f5f4f0">
+<title>PVRO Study Tool</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,-apple-system,sans-serif;background:#f5f4f0;color:#1a1a1a;line-height:1.6}
@@ -142,6 +145,112 @@ h1{font-size:20px;font-weight:700;margin-bottom:.2rem}
   .completion-stats{gap:.5rem}
   .cstat{padding:.5rem .75rem}
 }
+
+/* ═══ MOBILE ENHANCEMENTS ═══ */
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{padding-bottom:env(safe-area-inset-bottom)}
+*{-webkit-tap-highlight-color:transparent}
+
+/* Bottom nav - mobile only */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:#fff;border-top:1px solid #e0e0e0;
+  display:flex;z-index:200;
+  padding-bottom:env(safe-area-inset-bottom);
+  box-shadow:0 -1px 8px rgba(0,0,0,.08);
+}
+.bnav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:10px 4px 8px;
+  font-size:10px;font-weight:700;color:#aaa;
+  border:none;background:transparent;cursor:pointer;gap:3px;
+  transition:color .15s;min-height:56px;
+}
+.bnav-btn .bicon{font-size:21px;line-height:1;display:block}
+.bnav-btn.active{color:#1a1a1a}
+.bnav-btn.active .bicon{transform:scale(1.08)}
+
+/* Hide bottom nav on desktop, show tab bar */
+@media(min-width:600px){
+  .bottom-nav{display:none}
+  .tab-bar{display:flex !important}
+  .container{padding-bottom:2rem}
+}
+@media(max-width:599px){
+  .tab-bar{display:none !important}
+  .container{padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+}
+
+/* Mobile sizing */
+@media(max-width:599px){
+  .container{padding:1rem 1rem 0}
+  h1{font-size:17px}
+  .subtitle{font-size:12px;margin-bottom:.875rem}
+  .card{padding:1rem}
+  .card-title{font-size:14px}
+  .body{font-size:13.5px;line-height:1.75}
+  .sec-head{margin-top:1.25rem}
+
+  /* Quiz controls */
+  .quiz-controls{padding:.875rem}
+  .ctrl-label{font-size:11px;min-width:unset;width:100%;margin-bottom:.3rem}
+  .controls-row{flex-direction:column;align-items:flex-start;gap:.3rem}
+  .mode-pills{display:flex;flex-wrap:wrap;gap:6px}
+  .mode-btn{padding:8px 14px;border-radius:20px;font-size:12px;min-height:36px}
+
+  /* Touch targets for options - minimum 44px */
+  .opt{padding:13px 12px;min-height:44px;border-radius:10px;margin-bottom:8px;font-size:14px}
+  .ltr{font-size:13px;min-width:22px}
+
+  /* Bigger confidence buttons on mobile */
+  .confidence-row{gap:6px;margin-top:12px}
+  .conf-label{font-size:11px;width:100%}
+  .conf-btn{flex:1;min-height:40px;padding:8px 4px;font-size:12px;border-radius:8px}
+
+  /* Flashcard */
+  .flashcard-wrap{min-height:200px}
+  .flashcard{min-height:200px}
+  .fc-face{min-height:200px;padding:1.25rem 1rem}
+  .fc-text{font-size:14px}
+  .fc-nav{gap:8px}
+  .fc-nav button{min-height:44px;flex:1;padding:10px 12px;font-size:13px}
+
+  /* Tracker dots smaller on mobile */
+  .tq{width:26px;height:26px;font-size:9px}
+
+  /* Score area */
+  .score-row{flex-wrap:wrap;gap:8px}
+  .score-num{font-size:20px}
+  .reset-btn{min-height:36px;padding:8px 12px}
+
+  /* Completion card */
+  .completion-card{padding:1.25rem .875rem}
+  .big-score{font-size:44px}
+  .completion-btns{flex-direction:column;gap:8px;align-items:stretch}
+  .retry-btn,.retry-missed-btn{width:100%;padding:14px;font-size:15px;min-height:50px}
+
+  /* Note/warn callouts */
+  .note,.warn{font-size:12.5px;padding:9px 11px}
+  .formula{font-size:12px;padding:7px 11px}
+}
+
+/* Prevent hover flicker on touch devices */
+@media(hover:none){
+  .opt:hover:not(.locked){background:transparent;border-color:#e0e0e0}
+  .opt:active:not(.locked){background:#f3f4f6;border-color:#d1d5db}
+  .conf-btn:hover{transform:none}
+  .conf-btn:active{transform:scale(.96)}
+  .mode-btn:hover{background:transparent}
+  .mode-btn:active:not(.active){background:#f3f4f6}
+  .reset-btn:hover{background:transparent}
+  .reset-btn:active{background:#f3f4f6}
+}
+
+/* Toast above bottom nav on mobile */
+@media(max-width:599px){
+  .toast{bottom:calc(68px + env(safe-area-inset-bottom) + 8px)}
+}
+
 </style>
 </head>
 <body>
@@ -436,15 +545,15 @@ h1{font-size:20px;font-weight:700;margin-bottom:.2rem}
 <div class="quiz-controls">
   <div class="controls-row">
     <span class="ctrl-label">Quiz mode:</span>
-    <button class="mode-btn active" id="mode-all" onclick="setMode('all')">All questions</button>
+    <div class="mode-pills"><button class="mode-btn active" id="mode-all" onclick="setMode('all')">All questions</button>
     <button class="mode-btn" id="mode-missed" onclick="setMode('missed')">Missed only</button>
-    <button class="mode-btn" id="mode-weak" onclick="setMode('weak')">Need work</button>
+    <button class="mode-btn" id="mode-weak" onclick="setMode('weak')">Need work</button></div>
   </div>
   <div class="controls-row">
     <span class="ctrl-label">Order:</span>
-    <button class="mode-btn active" id="order-shuffle" onclick="setOrder('shuffle')">Shuffle</button>
+    <div class="mode-pills"><button class="mode-btn active" id="order-shuffle" onclick="setOrder('shuffle')">Shuffle</button>
     <button class="mode-btn" id="order-priority" onclick="setOrder('priority')">Priority first</button>
-    <button class="mode-btn" id="order-sequential" onclick="setOrder('sequential')">Sequential</button>
+    <button class="mode-btn" id="order-sequential" onclick="setOrder('sequential')">Sequential</button></div>
   </div>
   <div style="height:8px"></div>
   <div class="score-row">
@@ -881,12 +990,16 @@ function fcRate(rating){
 // TABS + UTILS
 // ════════════════════════════════════════
 function go(t){
-  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.tab,.bnav-btn').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
-  document.querySelector(`[onclick="go('${t}')"]`).classList.add('active');
+  const dt=document.querySelector(`.tab[onclick="go('${t}')"]`);
+  if(dt) dt.classList.add('active');
+  const bn=document.getElementById('bnav-'+t);
+  if(bn) bn.classList.add('active');
   document.getElementById(t).classList.add('active');
   if(t==='quiz' && document.getElementById('qbox').children.length===0) resetQ();
   if(t==='flash' && fcOrder.length===0) buildDeck();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function showToast(msg){
@@ -903,5 +1016,19 @@ window.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('stat-remain').textContent=currentQ.length;
 });
 </script>
+
+<!-- Mobile bottom navigation -->
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="bnav-btn active" id="bnav-study" onclick="go('study')">
+    <span class="bicon">📖</span>Study
+  </button>
+  <button class="bnav-btn" id="bnav-quiz" onclick="go('quiz')">
+    <span class="bicon">✏️</span>Quiz
+  </button>
+  <button class="bnav-btn" id="bnav-flash" onclick="go('flash')">
+    <span class="bicon">🃏</span>Cards
+  </button>
+</nav>
+
 </body>
 </html>
