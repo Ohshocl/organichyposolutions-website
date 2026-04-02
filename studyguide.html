@@ -251,6 +251,33 @@ body{padding-bottom:env(safe-area-inset-bottom)}
   .toast{bottom:calc(68px + env(safe-area-inset-bottom) + 8px)}
 }
 
+
+/* ═══ TRAP PATTERNS TAB ═══ */
+.trap-intro{background:#fff8e6;border:1px solid #fcd34d;border-radius:12px;padding:1rem 1.1rem;margin-bottom:1.25rem;font-size:13px;color:#713f12;line-height:1.65}
+.trap-intro strong{font-weight:700;display:block;margin-bottom:.3rem;font-size:14px}
+.trap-card{background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:1rem 1.1rem;margin-bottom:1rem;position:relative}
+.trap-num{position:absolute;top:.875rem;right:1rem;font-size:11px;font-weight:700;color:#ddd}
+.trap-pattern{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 9px;border-radius:20px;display:inline-block;margin-bottom:.6rem}
+.tp-def{background:#fde8e8;color:#8b1a1a}
+.tp-cause{background:#fff3e0;color:#7a3d00}
+.tp-adjacent{background:#ede9fe;color:#3c2a8a}
+.tp-math{background:#dcfce7;color:#14532d}
+.tp-scope{background:#deeeff;color:#0a3d7a}
+.trap-title{font-size:14px;font-weight:700;color:#111;margin-bottom:.75rem;line-height:1.45}
+.trap-vs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.75rem}
+@media(max-width:420px){.trap-vs{grid-template-columns:1fr}}
+.trap-wrong{background:#fef2f2;border:1.5px solid #fca5a5;border-radius:8px;padding:10px 11px}
+.trap-right{background:#f0fdf4;border:1.5px solid #86efac;border-radius:8px;padding:10px 11px}
+.trap-vs-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.trap-wrong .trap-vs-label{color:#dc2626}
+.trap-right .trap-vs-label{color:#16a34a}
+.trap-vs-text{font-size:13px;font-weight:600;color:#111;line-height:1.4}
+.trap-rule{background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 11px;font-size:13px;color:#713f12;line-height:1.6}
+.trap-rule strong{font-weight:700}
+.trap-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.tf-btn{padding:6px 13px;border-radius:20px;border:1.5px solid #ddd;background:transparent;cursor:pointer;font-size:12px;font-weight:700;color:#666;min-height:34px}
+.tf-btn.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+
 </style>
 </head>
 <body>
@@ -262,6 +289,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}
   <button class="tab active" onclick="go('study')">📖 Study Guide</button>
   <button class="tab" onclick="go('quiz')">✏️ Practice Quiz</button>
   <button class="tab" onclick="go('flash')">🃏 Flashcards</button>
+  <button class="tab" onclick="go('traps')">⚠️ Traps</button>
 </div>
 
 <!-- ═══════════ STUDY GUIDE ═══════════ -->
@@ -616,6 +644,173 @@ body{padding-bottom:env(safe-area-inset-bottom)}
   <strong>How to use flashcards:</strong> Read the concept, try to recall the answer in your head, then tap to reveal. Rate your confidence honestly — "Again" and "Hard" cards will be shown more frequently. This is spaced repetition: cards you struggle with get reinforced automatically.
 </div>
 </div>
+
+
+  <!-- ═══════════ TRAP PATTERNS ═══════════ -->
+  <div id="traps" class="section">
+
+  <div class="trap-intro">
+    <strong>⚠️ Your 5 Recurring Failure Patterns</strong>
+    These are the specific mental traps that cost you points on both assessments. Each card shows exactly what you picked, what the right answer was, and a one-sentence rule to prevent it from happening again on the OA.
+  </div>
+
+  <div class="trap-filter">
+    <button class="tf-btn active" onclick="filterTraps('all')">All traps</button>
+    <button class="tf-btn" onclick="filterTraps('def')">Definition confusion</button>
+    <button class="tf-btn" onclick="filterTraps('cause')">Cause vs solution</button>
+    <button class="tf-btn" onclick="filterTraps('adjacent')">Adjacent wrong answer</button>
+    <button class="tf-btn" onclick="filterTraps('math')">Math errors</button>
+    <button class="tf-btn" onclick="filterTraps('scope')">Scope creep</button>
+  </div>
+
+  <div id="trap-list">
+
+  <!-- TRAP 1 -->
+  <div class="trap-card" data-pattern="def">
+    <span class="trap-num">1 / 12</span>
+    <span class="trap-pattern tp-def">Definition confusion</span>
+    <div class="trap-title">DFM vs Design for Reliability — both sound like "designing something well"</div>
+    <div class="trap-vs">
+      <div class="trap-wrong"><div class="trap-vs-label">You picked</div><div class="trap-vs-text">Design for Reliability</div></div>
+      <div class="trap-right"><div class="trap-vs-label">Correct answer</div><div class="trap-vs-text">Design for Manufacturability (DFM)</div></div>
+    </div>
+    <div class="trap-rule"><strong>The rule:</strong> Reliability = <em>how long it keeps working</em> (probability of failure-free performance over time). DFM = <em>how efficiently it gets made</em> at the highest quality. If the question is about production efficiency or quality during manufacturing → DFM every time.</div>
+  </div>
+
+  <!-- TRAP 2 -->
+  <div class="trap-card" data-pattern="def">
+    <span class="trap-num">2 / 12</span>
+    <span class="trap-pattern tp-def">Definition confusion</span>
+    <div class="trap-title">House of Quality as the INPUT to QFD — picking the output as the input</div>
+    <div class="trap-vs">
+      <div class="trap-wrong"><div class="trap-vs-label">You picked</div><div class="trap-vs-text">House of Quality</div></div>
+      <div class="trap-right"><div class="trap-vs-label">Correct answer</div><div class="trap-vs-text">Voice of the Customer (VOC)</div></div>
+    </div>
+    <div class="trap-rule"><strong>The rule:</strong> The House of Quality is the diagram you <em>build</em> from customer input — it cannot be the thing that starts the process. VOC is always the input. The output cannot feed itself.</div>
+  </div>
+
+  <!-- TRAP 3 -->
+  <div class="trap-card" data-pattern="def">
+    <span class="trap-num">3 / 12</span>
+    <span class="trap-pattern tp-def">Definition confusion</span>
+    <div class="trap-title">Postponement vs Vertical Integration — both are supply chain strategies</div>
+    <div class="trap-vs">
+      <div class="trap-wrong"><div class="trap-vs-label">You picked</div><div class="trap-vs-text">Vertical integration</div></div>
+      <div class="trap-right"><div class="trap-vs-label">Correct answer</div><div class="trap-vs-text">Postponement</div></div>
+    </div>
+    <div class="trap-rule"><strong>The rule:</strong> Vertical integration = <em>who owns what</em> in the supply chain. Postponement = <em>when and where customization happens</em>. If the scenario is about delaying product differentiation until closer to demand → postponement.</div>
+  </div>
+
+  <!-- TRAP 4 -->
+  <div class="trap-card" data-pattern="def">
+    <span class="trap-num">4 / 12</span>
+    <span class="trap-pattern tp-def">Definition confusion</span>
+    <div class="trap-title">Preloaded software as a peripheral good — it sounds like an "extra"</div>
+    <div class="trap-vs">
+      <div class="trap-wrong"><div class="trap-vs-label">You picked</div><div class="trap-vs-text">Preloaded software</div></div>
+      <div class="trap-right"><div class="trap-vs-label">Correct answer</div><div class="trap-vs-text">Physical accessory (battery/charger)</div></div>
+    </div>
+    <div class="trap-rule"><strong>The rule:</strong> Peripheral goods must be <em>physically separate and tangible</em>. Preloaded software ships embedded in the core product — it is not an add-on. If you can't hold it separately in your hand, it's not a peripheral good.</div>
+  </div>
+
+  <!-- TRAP 5 -->
+  <div class="trap-card" data-pattern="cause">
+    <span class="trap-num">5 / 12</span>
+    <span class="trap-pattern tp-cause">Cause vs solution</span>
+    <div class="trap-title">Overproduction problem → picking the CAUSE instead of the SOLUTION</div>
+    <div class="trap-vs">
+      <div class="trap-wrong"><div class="trap-vs-label">A1 picked / A2 picked</div><div class="trap-vs-text">Six Sigma / Push system</div></div>
+      <div class="trap-right"><div class="trap-vs-label">Correct answer</div><div class="trap-vs-text">Pull system</div></div>
+    </div>
+    <div class="trap-rule"><strong>The rule:</strong> Push system <em>causes</em> overproduction (produces to forecast regardless of demand). Pull system <em>solves</em> it (only produces when demand signals arrive). Six Sigma fixes defect quality — it has nothing to do with production volume.</div>
+  </div>
+
+  <!-- TRAP 6 -->
+  <div class="trap-card" data-pattern="cause">
+    <span class="trap-num">6 / 12</span>
+    <span class="trap-pattern tp-cause">Cause vs solution</span>
+    <div class="trap-title">Supply chain risk → classifying by what was disrupted instead of what caused it</div>
+    <div class="trap-vs">
+      <div class="trap-wrong"><div class="trap-vs-label">You picked</div><div class="trap-vs-text">Logistics risk</div></div>
+      <div class="trap-right"><div class="trap-vs-label">Correct answer</div><div class="trap-vs-text">Economic risk</div></div>
+    </div>
+    <div class="trap-rule"><strong>The rule:</strong> Always ask <em>what caused the disruption</em>, not where it happened. A border delay looks like a logistics problem but if the cause is a tax law change → it is economic risk. Logistics risk only applies when a physical transport mechanism fails.</div>
+  </div>
+
+  <!-- TRAP 7 -->
+  <div class="trap-card" data-pattern="adjacent">
+    <span class="trap-num">7 / 12</span>
+    <span class="trap-pattern tp-adjacent">Adjacent wrong answer</span>
+    <div class="trap-title">Bottleneck throughput → picking the second-lowest rate instead of the lowest</div>
+    <div class="trap-vs">
+      <div class="trap-wrong"><div class="trap-vs-label">You picked</div><div class="trap-vs-text">85 units/hr (2nd lowest)</div></div>
+      <div class="trap-right"><div class="trap-vs-label">Correct answer</div><div class="trap-vs-text">45 units/hr (actual minimum)</div></div>
+    </div>
+    <div class="trap-rule"><strong>The rule:</strong> The bottleneck is always the single <em>minimum</em> rate — not close to minimum, not the second-lowest. In a serial process scan all rates, find the smallest one, and that is your throughput. Near-minimum doesn't count.</div>
+  </div>
+
+  <!-- TRAP 8 -->
+  <div class="trap-card" data-pattern="adjacent">
+    <span class="trap-num">8 / 12</span>
+    <span class="trap-pattern tp-adjacent">Adjacent wrong answer</span>
+    <div class="trap-title">ISO standards → picking the adjacent scope (14000 for ESG, 27001 for ESG)</div>
+    <div class="trap-vs">
+      <div class="trap-wrong"><div class="trap-vs-label">A1 picked / A2 picked</div><div class="trap-vs-text">ISO 27001 / ISO 14000</div></div>
+      <div class="trap-right"><div class="trap-vs-label">Correct answer</div><div class="trap-vs-text">ISO 26000</div></div>
+    </div>
+    <div class="trap-rule"><strong>The rule:</strong> ISO 14000 = environment only (one ESG pillar). ISO 26000 = full ESG (all three: Environmental + Social + Governance). ISO 27001 = security. Whenever the question mentions the full ESG framework, the answer is 26000 — every time.</div>
+  </div>
+
+  <!-- TRAP 9 -->
+  <div class="trap-card" data-pattern="adjacent">
+    <span class="trap-num">9 / 12</span>
+    <span class="trap-pattern tp-adjacent">Adjacent wrong answer</span>
+    <div class="trap-title">Multisourcing → picking IP-intensive instead of high-supply-risk components</div>
+    <div class="trap-vs">
+      <div class="trap-wrong"><div class="trap-vs-label">You picked</div><div class="trap-vs-text">IP-intensive / technologically complex component</div></div>
+      <div class="trap-right"><div class="trap-vs-label">Correct answer</div><div class="trap-vs-text">Component needing flexibility + high supply risk</div></div>
+    </div>
+    <div class="trap-rule"><strong>The rule:</strong> IP-intensive components need <em>fewer</em> suppliers to protect proprietary knowledge — the exact opposite of multisourcing. Multisourcing only adds value when supply risk is high and the component is not sensitive to information exposure.</div>
+  </div>
+
+  <!-- TRAP 10 -->
+  <div class="trap-card" data-pattern="math">
+    <span class="trap-num">10 / 12</span>
+    <span class="trap-pattern tp-math">Math error</span>
+    <div class="trap-title">Station utilization → dividing by one worker's rate instead of combined capacity</div>
+    <div class="trap-vs">
+      <div class="trap-wrong"><div class="trap-vs-label">You calculated</div><div class="trap-vs-text">60 ÷ 50 = 83%</div></div>
+      <div class="trap-right"><div class="trap-vs-label">Correct calculation</div><div class="trap-vs-text">60 ÷ (2×50) = 60 ÷ 100 = 60%</div></div>
+    </div>
+    <div class="trap-rule"><strong>The rule:</strong> Before dividing demand by capacity, always add up <em>all</em> parallel workers or machines at the station. Two workers = double the capacity. Divide demand by the <em>total</em> station capacity, never by just one unit's rate.</div>
+  </div>
+
+  <!-- TRAP 11 -->
+  <div class="trap-card" data-pattern="math">
+    <span class="trap-num">11 / 12</span>
+    <span class="trap-pattern tp-math">Math error</span>
+    <div class="trap-title">Six Sigma volume → treating the defect count as the DPMO rate</div>
+    <div class="trap-vs">
+      <div class="trap-wrong"><div class="trap-vs-label">You picked</div><div class="trap-vs-text">1 million units (51 defects = 51 DPMO)</div></div>
+      <div class="trap-right"><div class="trap-vs-label">Correct answer</div><div class="trap-vs-text">15 million units (51 ÷ 3.4 = 15M)</div></div>
+    </div>
+    <div class="trap-rule"><strong>The rule:</strong> Six Sigma = 3.4 defects <em>per million</em>. To find the required volume: divide defect count by 3.4, then multiply by 1,000,000. 51 ÷ 3.4 = 15 → 15 million units. The defect count is NOT the rate — it becomes the rate only when divided by volume.</div>
+  </div>
+
+  <!-- TRAP 12 -->
+  <div class="trap-card" data-pattern="scope">
+    <span class="trap-num">12 / 12</span>
+    <span class="trap-pattern tp-scope">Scope creep</span>
+    <div class="trap-title">Competing values → picking the approach (how to decide) instead of the values (what competes)</div>
+    <div class="trap-vs">
+      <div class="trap-wrong"><div class="trap-vs-label">You picked</div><div class="trap-vs-text">"Ethical decision-making and long-term sustainability"</div></div>
+      <div class="trap-right"><div class="trap-vs-label">Correct answer</div><div class="trap-vs-text">Economic development vs environmental protection</div></div>
+    </div>
+    <div class="trap-rule"><strong>The rule:</strong> The question asks <em>what values compete</em> — not how to resolve the conflict. "Ethical decision-making" is a methodology, not a value that competes with anything. The two values in tension are always economic development (jobs/growth) vs environmental protection (ecosystem harm).</div>
+  </div>
+
+  </div><!-- end trap-list -->
+  </div><!-- end traps section -->
 
 </div><!-- end container -->
 
@@ -1002,6 +1197,22 @@ function go(t){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
+
+// ════════════════════════════════════════
+// TRAP PATTERNS FILTER
+// ════════════════════════════════════════
+function filterTraps(pattern){
+  document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.trap-card').forEach(card=>{
+    if(pattern==='all' || card.dataset.pattern===pattern){
+      card.style.display='';
+    } else {
+      card.style.display='none';
+    }
+  });
+}
+
 function showToast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg;t.classList.add('show');
@@ -1027,6 +1238,9 @@ window.addEventListener('DOMContentLoaded',()=>{
   </button>
   <button class="bnav-btn" id="bnav-flash" onclick="go('flash')">
     <span class="bicon">🃏</span>Cards
+  </button>
+  <button class="bnav-btn" id="bnav-traps" onclick="go('traps')">
+    <span class="bicon">⚠️</span>Traps
   </button>
 </nav>
 
