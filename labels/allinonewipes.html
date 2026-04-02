@@ -23,19 +23,25 @@
             color-adjust: exact !important;
         }
 
+        /*
+         * BLEED: Standard print bleed is 0.125in on all sides.
+         * @page expanded by 0.25in each axis. The die cut still happens
+         * at the original 13.063" x 4.313" dimensions. Panel backgrounds
+         * extend to fill the bleed zone via negative margins.
+         */
         @page {
-            size: 13.063in 4.313in;
+            size: 13.313in 4.563in;
             margin: 0;
         }
 
         .page {
             width: 13.063in;
             height: 4.313in;
-            margin: 0 auto;
+            margin: 0.125in auto;
             background: white;
             position: relative;
             padding: 0;
-            overflow: hidden;
+            overflow: visible;
             display: flex;
             flex-direction: row;
             gap: 0;
@@ -45,10 +51,6 @@
             body {
                 background: #e0e0e0;
                 padding: 20px;
-            }
-            .page {
-                margin: 20px auto;
-                box-shadow: 0 0 20px rgba(0,0,0,0.3);
             }
         }
 
@@ -61,8 +63,7 @@
                 color-adjust: exact !important;
             }
             .page {
-                margin: 0;
-                box-shadow: none;
+                margin: 0.125in;
             }
             * {
                 -webkit-print-color-adjust: exact !important;
@@ -75,7 +76,7 @@
            FRONT PANEL - LEFT SIDE
            ======================================== */
         .front-panel {
-            background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%) !important;
+            background: #5BBFC2 !important;
             color: white;
             padding: 6px 12px 4px 12px;
             width: 6.5315in;
@@ -98,7 +99,6 @@
             flex: 0 0 6px;
         }
 
-        /* Logo centered solo */
         .logo-center {
             text-align: center;
             display: flex;
@@ -114,7 +114,7 @@
             background: white !important;
             padding: 8px;
             border-radius: 6px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+            /* box-shadow removed — causes visible artifact in print */
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
             color-adjust: exact !important;
@@ -136,8 +136,8 @@
             font-size: 16px;
             font-weight: bold;
             letter-spacing: 0.5px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             line-height: 1;
+            /* text-shadow removed */
         }
 
         .product-subtitle {
@@ -154,7 +154,7 @@
         }
 
         .feature-badge-circle {
-            background: rgba(255,255,255,0.95) !important;
+            background: white !important;
             color: #2E7D32 !important;
             border: 2.5px solid #4CAF50 !important;
             border-radius: 50%;
@@ -164,14 +164,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            /* box-shadow removed */
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
             color-adjust: exact !important;
         }
 
         .feature-badge-circle-text {
-            font-size: 6.5px;
+            font-size: 7px;
             font-weight: bold;
             text-align: center;
             line-height: 1.25;
@@ -186,13 +186,13 @@
         }
 
         .feature-badge {
-            background: rgba(255,255,255,0.95) !important;
+            background: white !important;
             color: #333 !important;
             padding: 3px 6px;
             border-radius: 8px;
             text-align: center;
             font-weight: bold;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            /* box-shadow removed */
             flex: 1;
             max-width: 140px;
             -webkit-print-color-adjust: exact !important;
@@ -207,7 +207,7 @@
         }
 
         .feature-badge-text {
-            font-size: 6.5px;
+            font-size: 7px;
             color: #555 !important;
             line-height: 1.1;
             font-weight: normal;
@@ -235,12 +235,13 @@
         }
 
         .info-box {
-            background: rgba(255,255,255,0.95) !important;
+            background: white !important;
             color: #333 !important;
             padding: 3px 4px;
             border-radius: 4px;
-            font-size: 6.5px;
+            font-size: 7px;
             line-height: 1.2;
+            /* box-shadow removed */
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
             color-adjust: exact !important;
@@ -265,7 +266,7 @@
 
         .info-box li {
             margin-bottom: 0.5px;
-            font-size: 6.5px;
+            font-size: 7px;
         }
 
         .info-box p {
@@ -275,12 +276,13 @@
         .net-contents {
             font-size: 8px;
             padding: 2px;
-            background: rgba(255,255,255,0.95) !important;
+            background: white !important;
             color: #333 !important;
             border-radius: 4px;
             text-align: center;
             font-weight: bold;
             margin-top: 2px;
+            margin-bottom: 6px; /* cut tolerance: pull away from bottom edge */
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
             color-adjust: exact !important;
@@ -297,14 +299,14 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            border-left: 2px solid #7AD4D6 !important;
+            border-left: 2px solid #5BBFC2 !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
             color-adjust: exact !important;
         }
 
         .back-header {
-            background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%) !important;
+            background: #5BBFC2 !important;
             color: white !important;
             padding: 3px 6px;
             font-weight: bold;
@@ -322,7 +324,7 @@
         }
 
         .section-title {
-            background: #7AD4D6 !important;
+            background: #5BBFC2 !important;
             color: white !important;
             padding: 1.5px 4px;
             font-weight: bold;
@@ -337,7 +339,7 @@
         .section-content {
             padding: 0 2px;
             line-height: 1.15;
-            font-size: 5.5px;
+            font-size: 6px;
         }
 
         .section-content p {
@@ -362,15 +364,16 @@
         li {
             margin-bottom: 0.5px;
             line-height: 1.1;
-            font-size: 5.5px;
+            font-size: 6px;
         }
 
         .footer {
-            background: linear-gradient(135deg, #7AD4D6 0%, #5BBFC2 100%) !important;
+            background: #5BBFC2 !important;
             color: white !important;
             padding: 3px 6px;
-            font-size: 5.5px;
+            font-size: 6px;
             margin-top: auto;
+            margin-bottom: 5px; /* cut tolerance: pull away from bottom edge */
             border-radius: 2px;
             display: flex;
             justify-content: space-between;
@@ -391,15 +394,10 @@
         .footer p {
             margin: 0.5px 0;
         }
-
-        .footer-divider {
-            border-top: 0.5px solid rgba(255,255,255,0.4);
-            margin: 2px 0 1px 0;
-        }
     </style>
 </head>
 <body>
-    <!-- SINGLE PAGE - EXACT DIMENSIONS 13.063" × 4.313" -->
+    <!-- SINGLE PAGE - EXACT DIMENSIONS 13.063" × 4.313" + 0.125in bleed all sides -->
     <!-- COMPLIANCE NOTE: NON-REGISTERED product. No EPA, No USDA.
          Not biodegradable — recyclable. Net weight 1 lb 2 oz, 100 wipes.
          Manufactured by Sani-TEST removed per 3/19 universal update. -->
@@ -471,7 +469,7 @@
                 </div>
             </div>
 
-            <!-- Net Contents — updated: 1 lb 2 oz, 100 wipes -->
+            <!-- Net Contents — margin-bottom for cut tolerance -->
             <div class="net-contents">
                 Net Weight: 1 lb 2 oz &bull; 100 Wipes (6" &times; 9")
             </div>
@@ -542,7 +540,7 @@
                 </div>
             </div>
 
-            <!-- Footer -->
+            <!-- Footer — margin-bottom for cut tolerance -->
             <div class="footer">
                 <div class="footer-left">
                     <p><strong>DISTRIBUTED BY:</strong></p>
