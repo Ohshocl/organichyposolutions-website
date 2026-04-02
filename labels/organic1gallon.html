@@ -23,12 +23,8 @@
             color-adjust: exact !important;
         }
 
-        /*
-         * BLEED: Standard print bleed is 0.125in on all sides.
-         * @page expanded by 0.25in each axis. Die cut still at 18.25" x 5.375".
-         */
         @page {
-            size: 18.5in 5.625in;
+            size: 18.25in 5.375in;
             margin: 0;
         }
 
@@ -43,9 +39,10 @@
                 padding: 0;
             }
             .page {
-                margin: 0.125in;
+                margin: 0;
                 box-shadow: none;
             }
+            /* Force solid colors on print */
             .front-panel {
                 background: #5BBFC2 !important;
             }
@@ -58,7 +55,7 @@
         .page {
             width: 18.25in;
             height: 5.375in;
-            margin: 0.125in auto;
+            margin: 0 auto;
             background: white;
             position: relative;
             padding: 0;
@@ -70,14 +67,14 @@
 
         @media screen {
             body { background: #e0e0e0; padding: 20px; }
-            .page { margin: 20px auto; }
-            /* no box-shadow on screen either — matches print output */
+            .page { margin: 20px auto; box-shadow: 0 0 20px rgba(0,0,0,0.3); }
         }
 
         /* ========================================
            FRONT PANEL
            ======================================== */
         .front-panel {
+            /* SOLID COLOR - gradients cause gray printing */
             background: #5BBFC2 !important;
             color: white;
             padding: 10px 14px 8px 14px;
@@ -92,6 +89,7 @@
             border-radius: 6px;
         }
 
+        /* Logo centered solo at top */
         .logo-row {
             display: flex;
             align-items: center;
@@ -108,7 +106,7 @@
             padding: 12px;
             object-fit: contain;
             border-radius: 6px;
-            /* box-shadow removed */
+            box-shadow: 0 3px 8px rgba(0,0,0,0.25);
         }
 
         .badge-container {
@@ -118,6 +116,7 @@
             margin: 0 0 6px 0;
         }
 
+        /* Green circle badge - matches laundry booster */
         .feature-badge-circle {
             background: #4CAF50 !important;
             color: white;
@@ -129,7 +128,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            /* box-shadow removed */
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         }
 
         .feature-circle-wrapper {
@@ -139,7 +138,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            /* box-shadow removed */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
 
         .feature-badge-circle-text {
@@ -150,6 +149,7 @@
             color: white;
         }
 
+        /* USDA Seal box next to badge */
         .usda-seal-box {
             background: white !important;
             border-radius: 6px;
@@ -157,7 +157,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            /* box-shadow removed */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
             width: 82px;
             height: 82px;
             min-width: 82px;
@@ -186,19 +186,19 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: white !important;
+            background: #ffffff !important;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 18px;
-            /* box-shadow removed */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .safe-icon-text {
             font-size: 7px;
             font-weight: bold;
             text-align: center;
-            /* text-shadow removed */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
 
         .main-claim {
@@ -206,7 +206,7 @@
             font-weight: bold;
             margin: 0;
             text-align: center;
-            /* text-shadow removed */
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
             background: #3DA8D5 !important;
             padding: 2px 10px;
             border-radius: 5px;
@@ -235,7 +235,7 @@
         .front-size {
             font-size: 8px;
             padding: 1.5px 5px;
-            background: white !important;
+            background: #ffffff !important;
             color: #333;
             border-radius: 4px;
             text-align: center;
@@ -254,10 +254,11 @@
             display: flex;
             flex-direction: column;
             border-radius: 6px;
-            border: 2px solid #5BBFC2;
+            border: 2px solid #7AD4D6;
         }
 
         .back-header {
+            /* SOLID COLOR - gradients cause gray printing */
             background: #5BBFC2 !important;
             color: white;
             padding: 3px 6px;
@@ -273,7 +274,7 @@
         }
 
         .section-title {
-            background: #5BBFC2 !important;
+            background: #7AD4D6 !important;
             color: white;
             padding: 2px 5px;
             font-weight: bold;
@@ -285,7 +286,7 @@
         .section-content {
             padding: 0 3px;
             line-height: 1.25;
-            font-size: 7px; /* bumped from 5.5px — was below 5pt threshold */
+            font-size: 5.5px;
         }
 
         .section-content p {
@@ -296,28 +297,28 @@
 
         .active-ingredient-box {
             background: #f9f9f9 !important;
-            border: 1px solid #5BBFC2;
+            border: 1px solid #7AD4D6;
             padding: 4px 6px;
             border-radius: 4px;
-            font-size: 7px;
+            font-size: 6px;
             line-height: 1.4;
             margin-bottom: 3px;
         }
 
         .active-ingredient-box .ai-title {
             font-weight: bold;
-            font-size: 7px;
+            font-size: 6.5px;
             color: #5BBFC2;
             margin-bottom: 2px;
         }
 
         .active-ingredient-box .ai-row {
-            font-size: 7px;
+            font-size: 6px;
             font-family: 'Courier New', monospace;
         }
 
         .active-ingredient-box .ai-total {
-            font-size: 7px;
+            font-size: 6px;
             font-weight: bold;
             font-family: 'Courier New', monospace;
             border-top: 1px solid #ccc;
@@ -326,7 +327,7 @@
         }
 
         .shelf-life-note {
-            font-size: 7px; /* bumped from 5.5px */
+            font-size: 5.5px;
             font-weight: bold;
             margin-top: 2px;
             font-family: 'Arial', sans-serif;
@@ -338,13 +339,13 @@
             border-radius: 3px;
             padding: 3px 5px;
             margin-bottom: 3px;
-            font-size: 7px; /* bumped from 5.5px */
+            font-size: 5.5px;
             line-height: 1.25;
         }
 
         .safety-statement strong {
             color: #2E7D32;
-            font-size: 7px;
+            font-size: 6px;
         }
 
         .two-column {
@@ -361,17 +362,17 @@
 
         .two-column .section-content li {
             margin-bottom: 0.5px;
-            font-size: 7px; /* bumped from 5.5px */
+            font-size: 5.5px;
             line-height: 1.2;
         }
 
         .footer {
+            /* SOLID COLOR - gradients cause gray printing */
             background: #5BBFC2 !important;
             color: white;
             padding: 3px 6px;
-            font-size: 7px; /* bumped from 5.5px */
+            font-size: 5.5px;
             margin-top: auto;
-            margin-bottom: 5px; /* CUT TOLERANCE FIX: pull away from bottom edge */
             border-radius: 3px;
             display: flex;
             justify-content: space-between;
@@ -389,7 +390,7 @@
     </style>
 </head>
 <body>
-    <!-- SINGLE PAGE - 18.25" x 5.375" + 0.125in bleed all sides -->
+    <!-- SINGLE PAGE - 18.25" x 5.375" -->
     <!-- COMPLIANCE NOTE: USDA Organic product. No EPA numbers. No ppm listed.
          Manufactured by Sani-TEST removed per 3/19 universal update.
          Certified Organic by OTCO under Distributed By only.
@@ -407,7 +408,7 @@
 
             <div style="width:100%;display:flex;flex-direction:column;gap:7px;margin-top:auto;align-items:center;">
 
-                <!-- All Natural badge + USDA Seal side by side -->
+                <!-- All Natural badge + USDA Seal side by side (USDA Organic Certified badge removed) -->
                 <div class="badge-container">
                     <div class="feature-circle-wrapper">
                         <div class="feature-badge-circle">
@@ -531,7 +532,6 @@
                 </div>
             </div>
 
-            <!-- Footer — margin-bottom for cut tolerance -->
             <div class="footer">
                 <div class="footer-left">
                     <p><strong>DISTRIBUTED BY:</strong></p>
