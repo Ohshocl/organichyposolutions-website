@@ -283,7 +283,7 @@ h1{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;letter-spacing:-
 /* ═══ ARENA ═══ */
 .xp-bar-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.875rem 1rem;margin-bottom:.875rem}
 .xp-level-row{display:flex;align-items:center;gap:12px;margin-bottom:.75rem}
-.xp-level-badge{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 0 16px rgba(79,142,255,.3)}
+.xp-level-badge{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;box-shadow:0 0 16px rgba(79,142,255,.3)}
 .xp-info{flex:1;min-width:0}
 .xp-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:#fff}
 .xp-sub{font-size:10px;color:var(--text3);margin-top:1px}
@@ -1181,8 +1181,8 @@ select{
   <div class="xp-level-row">
     <div class="xp-level-badge" id="xp-lvl-badge">1</div>
     <div class="xp-info">
-      <div class="xp-title" id="xp-title">Freshman</div>
-      <div class="xp-sub">D080 Global Business</div>
+      <div class="xp-title" id="xp-title">Enrolled</div>
+      <div class="xp-sub" id="xp-sub">Keep studying — Competent unlocks at 3,000 XP</div>
     </div>
   </div>
   <div class="xp-bar-outer"><div class="xp-bar-inner" id="xp-bar" style="width:0%"></div></div>
@@ -1945,230 +1945,640 @@ function closeCmap(){
 }
 
 // ═══ ARENA ENGINE ═══
+// Persistent state via localStorage (cookie-equivalent for same-origin HTML files)
+// All stats are saved after EVERY meaningful change, not just at game end.
+
 const LEVELS=[
-  {n:"Freshman",xp:0},{n:"Sophomore",xp:100},{n:"Junior",xp:250},{n:"Senior",xp:450},
-  {n:"Associate",xp:700},{n:"Analyst",xp:1000},{n:"Consultant",xp:1400},{n:"Manager",xp:1900},
-  {n:"Director",xp:2500},{n:"VP",xp:3200},{n:"C-Suite",xp:4000},{n:"Global Expert",xp:5000}
+  // ── Learning phase ────────────────────────────────────────────────────────
+  {n:'Enrolled',       xp:0,      next:200,   badge:'📚'},
+  {n:'Studying',       xp:200,    next:500,   badge:'📖'},
+  {n:'Reviewing',      xp:500,    next:1000,  badge:'🔍'},
+  {n:'Practicing',     xp:1000,   next:1800,  badge:'✏️'},
+  {n:'Understanding',  xp:1800,   next:3000,  badge:'💡'},
+  // ── Competency milestone ──────────────────────────────────────────────────
+  {n:'Competent',      xp:3000,   next:4500,  badge:'✅', milestone:true},
+  // ── Mastery phase ─────────────────────────────────────────────────────────
+  {n:'Proficient',     xp:4500,   next:6500,  badge:'⭐'},
+  {n:'Advanced',       xp:6500,   next:9000,  badge:'🌟'},
+  {n:'Expert',         xp:9000,   next:12000, badge:'🏆'},
+  {n:'Senior Analyst', xp:12000,  next:16000, badge:'💎'},
+  {n:'Global Strategist',xp:16000,next:21000, badge:'🌍'},
+  // ── Mastery cap ───────────────────────────────────────────────────────────
+  {n:'Global Expert',  xp:21000,  next:null,  badge:'👑'},
 ];
+
 const ACHIEVEMENTS=[
-  {id:"first_blood",icon:"🩸",name:"First Blood",desc:"Complete first Arena match",req:s=>s.matches>=1},
-  {id:"blitz_master",icon:"⚡",name:"Blitz Master",desc:"Score 80%+ in Blitz",req:s=>s.blitz_best>=80},
-  {id:"survivor",icon:"❤️",name:"Survivor",desc:"Survive with 2+ lives",req:s=>s.survival_best_lives>=2},
-  {id:"boss_slayer",icon:"🐉",name:"Boss Slayer",desc:"Defeat any Boss",req:s=>s.bosses_defeated>=1},
-  {id:"perfect",icon:"💎",name:"Perfect Run",desc:"100% on any mode",req:s=>s.perfect_runs>=1},
-  {id:"combo_king",icon:"🔥",name:"Combo King",desc:"Hit a 5× combo",req:s=>s.best_combo>=5},
-  {id:"speed_demon",icon:"🚀",name:"Speed Demon",desc:"5 Blitz answers under 5s",req:s=>s.fast_answers>=5},
-  {id:"day_streak",icon:"📅",name:"3-Day Streak",desc:"Study 3 days in a row",req:s=>s.day_streak>=3},
-  {id:"xp_500",icon:"⭐",name:"Star Pupil",desc:"Earn 500 XP",req:s=>s.total_xp>=500},
-  {id:"xp_1000",icon:"🌟",name:"Knowledge Hunter",desc:"Earn 1000 XP",req:s=>s.total_xp>=1000},
-  {id:"sudden_10",icon:"💀",name:"Daredevil",desc:"Survive 10 Sudden Death questions",req:s=>s.sudden_best>=10},
-  {id:"all_bosses",icon:"👑",name:"World Dominator",desc:"Defeat all 11 bosses",req:s=>s.unique_bosses>=11},
+  // ── Participation ──────────────────────────────────────────────────────────
+  {id:'first_blood',   icon:'🩸',name:'First Blood',      desc:'Complete your first Arena match',              req:s=>s.matches>=1},
+  {id:'day_streak_3',  icon:'📅',name:'3-Day Streak',     desc:'Study 3 days in a row',                        req:s=>s.day_streak>=3},
+  {id:'day_streak_7',  icon:'🗓️', name:'Week Warrior',    desc:'Study 7 days in a row',                        req:s=>s.day_streak>=7},
+  // ── Performance — these require actual accuracy ────────────────────────────
+  {id:'blitz_master',  icon:'⚡',name:'Blitz Master',     desc:'Score 80%+ accuracy in Blitz',                 req:s=>s.blitz_best>=80},
+  {id:'blitz_perfect', icon:'⚡',name:'Blitz Perfect',    desc:'Score 100% in Blitz mode',                     req:s=>s.blitz_best>=100},
+  {id:'survivor',      icon:'❤️',name:'Survivor',         desc:'Finish Survival with 2+ lives remaining',      req:s=>s.survival_best_lives>=2},
+  {id:'perfect',       icon:'💎',name:'Perfect Run',      desc:'100% correct in any Arena mode',               req:s=>s.perfect_runs>=1},
+  {id:'perfect_5',     icon:'💎',name:'Consistent',       desc:'5 perfect runs across any modes',              req:s=>s.perfect_runs>=5},
+  {id:'combo_king',    icon:'🔥',name:'Combo King',       desc:'Hit a 5× correct answer streak',               req:s=>s.best_combo>=5},
+  {id:'combo_10',      icon:'🔥',name:'On Fire',          desc:'Hit a 10× correct answer streak',              req:s=>s.best_combo>=10},
+  {id:'speed_demon',   icon:'🚀',name:'Speed Demon',      desc:'5 Blitz answers under 5 seconds each',         req:s=>s.fast_answers>=5},
+  {id:'sudden_10',     icon:'💀',name:'Daredevil',        desc:'Survive 10 questions in Sudden Death',         req:s=>s.sudden_best>=10},
+  {id:'sudden_30',     icon:'💀',name:'Untouchable',      desc:'Survive 30 questions in Sudden Death',         req:s=>s.sudden_best>=30},
+  // ── Boss mastery ────────────────────────────────────────────────────────────
+  {id:'boss_slayer',   icon:'🐉',name:'Boss Slayer',      desc:'Defeat your first topic boss',                 req:s=>s.bosses_defeated>=1},
+  {id:'all_bosses',    icon:'👑',name:'World Dominator',  desc:'Defeat all 11 topic bosses',                   req:s=>s.unique_bosses>=11},
+  // ── Competency milestones — these are the meaningful ones ─────────────────
+  {id:'xp_1000',       icon:'📈',name:'Getting There',   desc:'Reach 1,000 XP — requires real accuracy',      req:s=>s.total_xp>=1000},
+  {id:'competent',     icon:'✅',name:'Competent',        desc:'Reach the Competent level (3,000 XP) — you know this material', req:s=>s.total_xp>=3000},
+  {id:'expert',        icon:'🏆',name:'Expert',           desc:'Reach Expert level (9,000 XP)',                req:s=>s.total_xp>=9000},
+  {id:'global_expert', icon:'🌍',name:'Global Expert',   desc:'Reach Global Expert — maximum mastery (21,000 XP)', req:s=>s.total_xp>=21000},
 ];
 
-let AS={total_xp:0,matches:0,blitz_best:0,survival_best_lives:0,bosses_defeated:0,
-  unique_bosses:0,boss_topics_done:[],perfect_runs:0,best_combo:0,
-  fast_answers:0,day_streak:0,last_study_date:'',study_dates:[],
-  sudden_best:0,earned_achs:[],total_correct:0,total_answered:0};
-try{const s=localStorage.getItem('d080_arena');if(s)AS=Object.assign(AS,JSON.parse(s));}catch(e){}
-function saveAS(){try{localStorage.setItem('d080_arena',JSON.stringify(AS));}catch(e){}}
+// ── Default state shape ──────────────────────────────────────────────────────
+const AS_DEFAULT = {
+  total_xp: 0,
+  matches: 0,
+  total_correct: 0,
+  total_answered: 0,
+  blitz_best: 0,
+  survival_best_lives: 0,
+  bosses_defeated: 0,
+  unique_bosses: 0,
+  boss_topics_done: [],
+  perfect_runs: 0,
+  best_combo: 0,
+  fast_answers: 0,
+  day_streak: 0,
+  last_study_date: '',
+  study_dates: [],
+  sudden_best: 0,
+  earned_achs: [],
+};
 
-let arenaMode='',arenaQs=[],arenaIdx=0,arenaScore=0,arenaCombo=0,
-    arenaLives=3,arenaTimer=null,arenaTimeLeft=15,arenaCorrect=0,
-    arenaFastCount=0,bossHP=100,bossMaxHP=100,bossTopic='',arenaAnswered=0;
+// ── Load from localStorage, merge with defaults so new fields always exist ───
+let AS = Object.assign({}, AS_DEFAULT);
+(function loadAS() {
+  try {
+    const raw = localStorage.getItem('d080_arena_v2');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      // Merge: parsed values override defaults, missing keys stay as default
+      AS = Object.assign({}, AS_DEFAULT, parsed);
+      // Ensure arrays are arrays (guard against corruption)
+      if (!Array.isArray(AS.boss_topics_done)) AS.boss_topics_done = [];
+      if (!Array.isArray(AS.study_dates))      AS.study_dates = [];
+      if (!Array.isArray(AS.earned_achs))      AS.earned_achs = [];
+    }
+  } catch(e) {
+    console.warn('Arena: could not load saved state, starting fresh.', e);
+    AS = Object.assign({}, AS_DEFAULT);
+  }
+})();
 
-function getLevel(){let lv=0;for(let i=0;i<LEVELS.length;i++){if(AS.total_xp>=LEVELS[i].xp)lv=i;}return lv;}
-function renderXPBar(){
-  const lv=getLevel();const cur=LEVELS[lv];const next=LEVELS[lv+1];
-  document.getElementById('xp-lvl-badge').textContent=lv+1;
-  document.getElementById('xp-title').textContent=cur.n;
-  const pct=next?Math.min(100,Math.round((AS.total_xp-cur.xp)/(next.xp-cur.xp)*100)):100;
-  document.getElementById('xp-bar').style.width=pct+'%';
-  document.getElementById('xp-nums').textContent=AS.total_xp+' / '+(next?next.xp:'MAX')+' XP';
-  document.getElementById('as-xp').textContent=AS.total_xp;
-  document.getElementById('as-streak').textContent=AS.day_streak;
-  document.getElementById('as-best').textContent=AS.best_combo;
-  const acc=AS.total_answered?Math.round(AS.total_correct/AS.total_answered*100)+'%':'—';
-  document.getElementById('as-acc').textContent=acc;
-}
-function renderStreak(){
-  const grid=document.getElementById('streak-calendar');grid.innerHTML='';
-  const today=new Date();
-  for(let i=13;i>=0;i--){
-    const d=new Date(today);d.setDate(today.getDate()-i);
-    const key=d.toISOString().slice(0,10);
-    const div=document.createElement('div');
-    div.className='streak-day'+(i===0?' sd-today':AS.study_dates.includes(key)?' sd-done':'');
-    div.textContent=d.getDate();
-    grid.appendChild(div);
+// ── Save to localStorage ─────────────────────────────────────────────────────
+function saveAS() {
+  try {
+    localStorage.setItem('d080_arena_v2', JSON.stringify(AS));
+  } catch(e) {
+    console.warn('Arena: could not save state.', e);
   }
 }
-function renderAchievements(){
-  const grid=document.getElementById('ach-grid');grid.innerHTML='';
-  ACHIEVEMENTS.forEach(a=>{
-    const earned=AS.earned_achs.includes(a.id)||a.req(AS);
-    const div=document.createElement('div');div.className='ach-card '+(earned?'earned':'locked');
-    div.innerHTML=`<span class="ach-icon">${earned?a.icon:'🔒'}</span><div class="ach-name">${a.name}</div><div class="ach-desc">${a.desc}</div>`;
-    grid.appendChild(div);
-  });
-}
-function checkAchievements(){
-  ACHIEVEMENTS.forEach(a=>{if(!AS.earned_achs.includes(a.id)&&a.req(AS)){AS.earned_achs.push(a.id);showToast('🏆 Unlocked: '+a.name);}});
-}
-function markStudyToday(){
-  const today=new Date().toISOString().slice(0,10);
-  if(AS.last_study_date===today)return;
-  const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
-  const ykey=yesterday.toISOString().slice(0,10);
-  AS.day_streak=AS.last_study_date===ykey?AS.day_streak+1:1;
-  AS.last_study_date=today;
-  if(!AS.study_dates.includes(today))AS.study_dates.push(today);
-  if(AS.study_dates.length>60)AS.study_dates=AS.study_dates.slice(-60);
+
+// ── Mark today as a study day, update streak ─────────────────────────────────
+function markStudyToday() {
+  const today = new Date().toISOString().slice(0, 10);
+  if (AS.last_study_date === today) return; // already marked today
+
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yKey = yesterday.toISOString().slice(0, 10);
+
+  AS.day_streak = (AS.last_study_date === yKey) ? AS.day_streak + 1 : 1;
+  AS.last_study_date = today;
+
+  if (!AS.study_dates.includes(today)) AS.study_dates.push(today);
+  if (AS.study_dates.length > 90) AS.study_dates = AS.study_dates.slice(-90);
+
   saveAS();
 }
 
-function startArena(mode){
-  if(mode==='boss'){document.getElementById('boss-topic-select').style.display='block';return;}
-  arenaMode=mode;
-  let pool=[...Array(QQ.length).keys()];
-  if(mode==='blitz')arenaQs=shuffle(pool).slice(0,10);
-  else arenaQs=shuffle(pool);
-  arenaLives=3;launchGame();
+// ── Level helpers ─────────────────────────────────────────────────────────────
+function getLevel() {
+  let lv = 0;
+  for (let i = 0; i < LEVELS.length; i++) {
+    if (AS.total_xp >= LEVELS[i].xp) lv = i;
+  }
+  return lv;
 }
-function startBoss(topic){
-  bossTopic=topic;arenaMode='boss';
-  let pool=QQ.map((q,i)=>i).filter(i=>QQ[i].t===topic);
-  if(pool.length<8)pool=[...pool,...shuffle(QQ.map((q,i)=>i).filter(i=>QQ[i].t!==topic)).slice(0,8-pool.length)];
-  arenaQs=shuffle(pool).slice(0,8);bossHP=bossMaxHP=100;
-  document.getElementById('boss-topic-select').style.display='none';
-  launchGame();
+
+// ── Render XP bar and all stat tiles ─────────────────────────────────────────
+function renderXPBar() {
+  const lv  = getLevel();
+  const cur = LEVELS[lv];
+  const nxt = LEVELS[lv + 1];
+
+  // Badge icon + level number
+  const badgeEl = document.getElementById('xp-lvl-badge');
+  badgeEl.textContent = cur.badge || (lv + 1);
+
+  // Title + milestone indicator
+  const titleEl = document.getElementById('xp-title');
+  titleEl.textContent = cur.n + (cur.milestone ? ' ✅' : '');
+  titleEl.style.color = cur.milestone ? 'var(--green)' : '#fff';
+
+  const subEl = document.getElementById('xp-sub');
+  if (subEl) {
+    if (lv < 5) {
+      subEl.textContent = 'Keep studying — Competent unlocks at 3,000 XP';
+    } else if (lv === 5) {
+      subEl.textContent = '✅ Competent — you know this material!';
+    } else {
+      const toMax = 21000 - AS.total_xp;
+      subEl.textContent = toMax > 0
+        ? 'Mastery path — ' + toMax.toLocaleString() + ' XP to Global Expert'
+        : '👑 Maximum mastery achieved';
+    }
+  }
+
+  const xpIntoLevel = AS.total_xp - cur.xp;
+  const xpNeeded    = nxt ? (nxt.xp - cur.xp) : 1;
+  const barPct      = nxt ? Math.min(100, Math.round(xpIntoLevel / xpNeeded * 100)) : 100;
+
+  document.getElementById('xp-bar').style.width = barPct + '%';
+  document.getElementById('xp-nums').textContent =
+    AS.total_xp.toLocaleString() + ' / ' + (nxt ? nxt.xp.toLocaleString() : 'MAX') + ' XP';
+
+  // Stats row
+  document.getElementById('as-xp').textContent     = AS.total_xp.toLocaleString();
+  document.getElementById('as-streak').textContent = AS.day_streak;
+  document.getElementById('as-best').textContent   = AS.best_combo;
+
+  const acc = AS.total_answered > 0
+    ? Math.round(AS.total_correct / AS.total_answered * 100) + '%'
+    : '—';
+  document.getElementById('as-acc').textContent = acc;
 }
-function launchGame(){
-  arenaIdx=0;arenaScore=0;arenaCombo=0;arenaCorrect=0;arenaAnswered=0;arenaFastCount=0;
-  markStudyToday();
-  document.getElementById('arena-lobby').style.display='none';
-  document.getElementById('arena-game').classList.add('active');
-  document.getElementById('arena-results').classList.remove('active');
-  document.getElementById('hud-mode-label').textContent={blitz:'⚡ Blitz',survival:'❤️ Survival',boss:'🐉 Boss Battle',sudden:'💀 Sudden Death'}[arenaMode];
-  document.getElementById('boss-health-wrap').style.display=arenaMode==='boss'?'block':'none';
-  if(arenaMode==='boss'){document.getElementById('boss-name').textContent='🐉 '+bossTopic;updateBossBar();}
-  updateLives();renderArenaQ();
-}
-function updateLives(){
-  if(arenaMode==='survival')document.getElementById('hud-lives').textContent='❤️'.repeat(arenaLives)+'🖤'.repeat(3-arenaLives);
-  else if(arenaMode==='sudden')document.getElementById('hud-lives').textContent='💀 One life';
-  else document.getElementById('hud-lives').textContent='';
-}
-function renderArenaQ(){
-  clearArenaTimer();
-  if(arenaIdx>=arenaQs.length){endArena();return;}
-  const qi=arenaQs[arenaIdx];const q=QQ[qi];
-  const total=arenaQs.length;
-  document.getElementById('hud-qnum').textContent=(arenaIdx+1)+'/'+total;
-  document.getElementById('hud-prog-fill').style.width=(arenaIdx/total*100)+'%';
-  document.getElementById('hud-combo').textContent=arenaCombo>=2?'🔥 ×'+arenaCombo:'';
-  document.getElementById('hud-combo').className='hud-combo'+(arenaCombo>=2?' show':'');
-  const opts=shuffle(q.o.map((o,i)=>{return {text:o,orig:i}}));
-  const nc=opts.findIndex(x=>x.orig===q.a);
-  const L=['A','B','C','D'];
-  document.getElementById('arena-qbox').innerHTML=`<div class="arena-q-card">
-    <div class="arena-q-text">${q.q}</div>
-    ${opts.map((o,i)=>`<div class="arena-opt" id="ao-${i}" onclick="arenaAnswer(${i},${nc},${qi})"><span class="ao-ltr">${L[i]}</span>${o.text}<span class="ao-icon"></span></div>`).join('')}
-  </div>`;
-  if(arenaMode==='blitz'){arenaTimeLeft=15;startArenaTimer();}
-  else{document.getElementById('hud-timer').textContent='∞';document.getElementById('hud-timer').className='hud-timer safe';}
-}
-function startArenaTimer(){
-  clearArenaTimer();
-  arenaTimer=setInterval(()=>{
-    arenaTimeLeft--;
-    const el=document.getElementById('hud-timer');
-    el.textContent=arenaTimeLeft;
-    el.className='hud-timer '+(arenaTimeLeft<=5?'danger':arenaTimeLeft<=8?'warn':'safe');
-    if(arenaTimeLeft<=0){clearArenaTimer();arenaCombo=0;arenaAnswered++;AS.total_answered++;lockArenaOpts();showToast('⏱️ Time up!');setTimeout(()=>{arenaIdx++;renderArenaQ();},800);}
-  },1000);
-}
-function clearArenaTimer(){clearInterval(arenaTimer);arenaTimer=null;}
-function arenaAnswer(optIdx,correctIdx,qi){
-  clearArenaTimer();
-  const elapsed=arenaMode==='blitz'?(15-arenaTimeLeft):null;
-  const correct=optIdx===correctIdx;
-  lockArenaOpts();
-  const chosen=document.getElementById('ao-'+optIdx);
-  const correctEl=document.getElementById('ao-'+correctIdx);
-  arenaAnswered++;AS.total_answered++;
-  if(correct){
-    chosen.classList.add('ao-correct');chosen.querySelector('.ao-icon').textContent='✓';
-    arenaCorrect++;AS.total_correct++;arenaCombo++;
-    if(arenaCombo>AS.best_combo)AS.best_combo=arenaCombo;
-    let pts=100;
-    if(arenaMode==='blitz'&&elapsed!==null){pts+=Math.round((15-elapsed)*10);if(elapsed<5)arenaFastCount++;}
-    if(arenaCombo>=2)pts=Math.round(pts*(1+(arenaCombo-1)*0.15));
-    if(arenaMode==='boss'){const dmg=Math.round(bossMaxHP/arenaQs.length*1.3);bossHP=Math.max(0,bossHP-dmg);updateBossBar();}
-    arenaScore+=pts;
-    document.getElementById('hud-score').textContent=arenaScore+' pts';
-    const xpEl=document.getElementById('xp-flash');
-    xpEl.textContent='+'+Math.round(pts/10)+' XP';
-    xpEl.className='xp-flash pop';
-    setTimeout(()=>xpEl.className='xp-flash',800);
-    if(arenaCombo>=5){const fl=document.getElementById('streak-flame');fl.textContent='🔥';fl.className='streak-flame pop';setTimeout(()=>fl.className='streak-flame',600);}
-    setTimeout(()=>{arenaIdx++;renderArenaQ();},500);
-  }else{
-    chosen.classList.add('ao-wrong');chosen.querySelector('.ao-icon').textContent='✗';
-    if(correctEl)correctEl.classList.add('ao-reveal');
-    arenaCombo=0;
-    if(arenaMode==='survival'){arenaLives--;updateLives();if(arenaLives<=0){setTimeout(()=>endArena(),800);return;}}
-    if(arenaMode==='sudden'){setTimeout(()=>endArena(),800);return;}
-    setTimeout(()=>{arenaIdx++;renderArenaQ();},1000);
+
+// ── Streak calendar ───────────────────────────────────────────────────────────
+function renderStreak() {
+  const grid  = document.getElementById('streak-calendar');
+  if (!grid) return;
+  grid.innerHTML = '';
+  const today = new Date();
+  for (let i = 13; i >= 0; i--) {
+    const d   = new Date(today);
+    d.setDate(today.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    const div = document.createElement('div');
+    div.className = 'streak-day' +
+      (i === 0                       ? ' sd-today' :
+       AS.study_dates.includes(key)  ? ' sd-done'  : '');
+    div.textContent = d.getDate();
+    div.title = key;
+    grid.appendChild(div);
   }
 }
-function lockArenaOpts(){document.querySelectorAll('.arena-opt').forEach(o=>{o.classList.add('locked');o.onclick=null;});}
-function updateBossBar(){
-  const pct=Math.max(0,bossHP/bossMaxHP*100);
-  document.getElementById('boss-hp-bar').style.width=pct+'%';
-  document.getElementById('boss-hp-label').textContent=Math.round(bossHP)+' HP';
+
+// ── Achievements ──────────────────────────────────────────────────────────────
+function checkAndGrantAchievements() {
+  let newlyEarned = false;
+  ACHIEVEMENTS.forEach(a => {
+    if (!AS.earned_achs.includes(a.id) && a.req(AS)) {
+      AS.earned_achs.push(a.id);
+      newlyEarned = true;
+      setTimeout(() => showToast('🏆 Unlocked: ' + a.name), 400);
+    }
+  });
+  if (newlyEarned) saveAS();
 }
-function endArena(){
-  clearArenaTimer();AS.matches++;
-  const pct=arenaAnswered?Math.round(arenaCorrect/arenaAnswered*100):0;
-  let xpGained=Math.round(arenaScore/10);
-  if(pct===100){xpGained=Math.round(xpGained*1.5);AS.perfect_runs++;}
-  AS.total_xp+=xpGained;
-  if(arenaMode==='blitz'&&pct>AS.blitz_best)AS.blitz_best=pct;
-  if(arenaMode==='survival')AS.survival_best_lives=Math.max(AS.survival_best_lives||0,arenaLives);
-  if(arenaMode==='boss'&&bossHP<=0){AS.bosses_defeated++;if(!AS.boss_topics_done.includes(bossTopic))AS.boss_topics_done.push(bossTopic);AS.unique_bosses=AS.boss_topics_done.length;}
-  if(arenaMode==='sudden')AS.sudden_best=Math.max(AS.sudden_best||0,arenaIdx);
-  if(arenaFastCount>0)AS.fast_answers=(AS.fast_answers||0)+arenaFastCount;
-  checkAchievements();saveAS();
+
+function renderAchievements() {
+  const grid = document.getElementById('ach-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  ACHIEVEMENTS.forEach(a => {
+    const earned = AS.earned_achs.includes(a.id);
+    const div    = document.createElement('div');
+    div.className = 'ach-card ' + (earned ? 'earned' : 'locked');
+    div.innerHTML = `<span class="ach-icon">${earned ? a.icon : '🔒'}</span>
+      <div class="ach-name">${a.name}</div>
+      <div class="ach-desc">${a.desc}</div>`;
+    grid.appendChild(div);
+  });
+}
+
+// ── Arena session variables (reset each game) ─────────────────────────────────
+let arenaMode       = '';
+let arenaQs         = [];
+let arenaIdx        = 0;
+let arenaScore      = 0;   // points this session (used for XP calc)
+let arenaCombo      = 0;   // current answer streak
+let arenaLives      = 3;
+let arenaTimer      = null;
+let arenaTimeLeft   = 15;
+let arenaCorrect    = 0;   // correct answers this session
+let arenaAnswered   = 0;   // total answered this session
+let arenaFastCount  = 0;   // blitz answers < 5s this session
+let bossHP          = 100;
+let bossMaxHP       = 100;
+let bossTopic       = '';
+
+function resetSessionVars() {
+  arenaIdx       = 0;
+  arenaScore     = 0;
+  arenaCombo     = 0;
+  arenaCorrect   = 0;
+  arenaAnswered  = 0;
+  arenaFastCount = 0;
+  bossHP         = 100;
+}
+
+// ── Mode launchers ────────────────────────────────────────────────────────────
+function startArena(mode) {
+  if (mode === 'boss') {
+    document.getElementById('boss-topic-select').style.display = 'block';
+    return;
+  }
+  arenaMode = mode;
+  const pool = shuffle([...Array(QQ.length).keys()]);
+  arenaQs    = (mode === 'blitz') ? pool.slice(0, 10) : pool;
+  arenaLives = 3;
+  launchGame();
+}
+
+function startBoss(topic) {
+  bossTopic = topic;
+  arenaMode = 'boss';
+  let pool  = QQ.map((q, i) => i).filter(i => QQ[i].t === topic);
+  // Pad to 8 questions if topic has fewer
+  if (pool.length < 8) {
+    const extra = shuffle(QQ.map((q, i) => i).filter(i => QQ[i].t !== topic));
+    pool = [...pool, ...extra.slice(0, 8 - pool.length)];
+  }
+  arenaQs    = shuffle(pool).slice(0, 8);
+  bossMaxHP  = 100;
+  bossHP     = 100;
+  document.getElementById('boss-topic-select').style.display = 'none';
+  launchGame();
+}
+
+function launchGame() {
+  resetSessionVars();
+  markStudyToday();
+
+  // Switch screens
+  document.getElementById('arena-lobby').style.display   = 'none';
+  document.getElementById('arena-game').classList.add('active');
+  document.getElementById('arena-results').classList.remove('active');
+
+  // HUD setup
+  document.getElementById('hud-mode-label').textContent = {
+    blitz: '⚡ Blitz', survival: '❤️ Survival',
+    boss:  '🐉 Boss Battle', sudden: '💀 Sudden Death'
+  }[arenaMode] || arenaMode;
+  document.getElementById('boss-health-wrap').style.display =
+    arenaMode === 'boss' ? 'block' : 'none';
+  if (arenaMode === 'boss') {
+    document.getElementById('boss-name').textContent = '🐉 ' + bossTopic;
+    updateBossBar();
+  }
+  updateLivesDisplay();
+  renderArenaQuestion();
+}
+
+// ── HUD helpers ───────────────────────────────────────────────────────────────
+function updateLivesDisplay() {
+  const el = document.getElementById('hud-lives');
+  if (arenaMode === 'survival') {
+    el.textContent = '❤️'.repeat(arenaLives) + '🖤'.repeat(Math.max(0, 3 - arenaLives));
+  } else if (arenaMode === 'sudden') {
+    el.textContent = '💀 One life';
+  } else {
+    el.textContent = '';
+  }
+}
+
+function updateBossBar() {
+  const pct = Math.max(0, bossHP / bossMaxHP * 100);
+  document.getElementById('boss-hp-bar').style.width  = pct + '%';
+  document.getElementById('boss-hp-label').textContent = Math.ceil(bossHP) + ' HP';
+}
+
+function updateComboDisplay() {
+  const el = document.getElementById('hud-combo');
+  if (arenaCombo >= 2) {
+    el.textContent  = '🔥 ×' + arenaCombo;
+    el.className    = 'hud-combo show';
+  } else {
+    el.className = 'hud-combo';
+  }
+}
+
+// ── Question renderer ─────────────────────────────────────────────────────────
+function renderArenaQuestion() {
+  clearArenaTimer();
+  if (arenaIdx >= arenaQs.length) { endArena(); return; }
+
+  const qi    = arenaQs[arenaIdx];
+  const q     = QQ[qi];
+  const total = arenaQs.length;
+
+  document.getElementById('hud-qnum').textContent       = (arenaIdx + 1) + '/' + total;
+  document.getElementById('hud-prog-fill').style.width  = (arenaIdx / total * 100) + '%';
+  document.getElementById('hud-score').textContent      = arenaScore + ' pts';
+  updateComboDisplay();
+
+  const opts = shuffle(q.o.map((o, i) => ({ text: o, orig: i })));
+  const nc   = opts.findIndex(x => x.orig === q.a);
+  const L    = ['A', 'B', 'C', 'D'];
+
+  document.getElementById('arena-qbox').innerHTML = `
+    <div class="arena-q-card">
+      <div class="arena-q-text">${q.q}</div>
+      ${opts.map((o, i) => `
+        <div class="arena-opt" id="ao-${i}"
+             onclick="arenaAnswer(${i}, ${nc}, ${qi})">
+          <span class="ao-ltr">${L[i]}</span>${o.text}<span class="ao-icon"></span>
+        </div>`).join('')}
+    </div>`;
+
+  if (arenaMode === 'blitz') {
+    arenaTimeLeft = 15;
+    startArenaTimer();
+  } else {
+    const timerEl = document.getElementById('hud-timer');
+    timerEl.textContent = '∞';
+    timerEl.className   = 'hud-timer safe';
+  }
+}
+
+// ── Timer ─────────────────────────────────────────────────────────────────────
+function startArenaTimer() {
+  clearArenaTimer();
+  const timerEl = document.getElementById('hud-timer');
+  arenaTimer = setInterval(() => {
+    arenaTimeLeft--;
+    timerEl.textContent = arenaTimeLeft;
+    timerEl.className   = 'hud-timer ' +
+      (arenaTimeLeft <= 5 ? 'danger' : arenaTimeLeft <= 8 ? 'warn' : 'safe');
+    if (arenaTimeLeft <= 0) {
+      clearArenaTimer();
+      arenaCombo = 0;         // reset combo on timeout
+      arenaAnswered++;
+      // Don't increment AS.total_answered here — only do it at endArena to avoid double-counting
+      lockArenaOpts();
+      showToast('⏱️ Time up!');
+      setTimeout(() => { arenaIdx++; renderArenaQuestion(); }, 900);
+    }
+  }, 1000);
+}
+
+function clearArenaTimer() {
+  if (arenaTimer) { clearInterval(arenaTimer); arenaTimer = null; }
+}
+
+// ── Answer handler ────────────────────────────────────────────────────────────
+function arenaAnswer(optIdx, correctIdx, qi) {
+  clearArenaTimer();
+
+  // Seconds elapsed since question appeared (for blitz speed bonus)
+  const secondsUsed = (arenaMode === 'blitz') ? (15 - arenaTimeLeft) : 0;
+
+  const correct   = (optIdx === correctIdx);
+  const chosenEl  = document.getElementById('ao-' + optIdx);
+  const correctEl = document.getElementById('ao-' + correctIdx);
+
+  lockArenaOpts();
+  arenaAnswered++;
+
+  if (correct) {
+    // ── Correct ──────────────────────────────────────────────
+    chosenEl.classList.add('ao-correct');
+    chosenEl.querySelector('.ao-icon').textContent = '✓';
+
+    arenaCorrect++;
+    arenaCombo++;
+
+    // Track all-time best combo (save immediately)
+    if (arenaCombo > AS.best_combo) {
+      AS.best_combo = arenaCombo;
+      saveAS();
+    }
+
+    // ── Score calculation ──────────────────────────────────
+    let pts = 100; // base points
+
+    // Blitz speed bonus: up to +140pts for instant answer, 0 for 14s answer
+    if (arenaMode === 'blitz') {
+      const speedBonus = Math.max(0, Math.round((14 - secondsUsed) * 10));
+      pts += speedBonus;
+      if (secondsUsed < 5) arenaFastCount++;
+    }
+
+    // Combo multiplier: ×1.15 per streak level above 1
+    if (arenaCombo >= 2) {
+      pts = Math.round(pts * (1 + (arenaCombo - 1) * 0.15));
+    }
+
+    arenaScore += pts;
+
+    // Boss damage
+    if (arenaMode === 'boss') {
+      const dmg = Math.round(bossMaxHP / arenaQs.length * 1.4);
+      bossHP = Math.max(0, bossHP - dmg);
+      updateBossBar();
+    }
+
+    // XP flash (preview only — actual XP awarded at end)
+    const previewXP = Math.max(1, Math.round(pts / 10));
+    const xpFlash   = document.getElementById('xp-flash');
+    xpFlash.textContent = '+' + previewXP + ' XP';
+    xpFlash.className   = 'xp-flash pop';
+    setTimeout(() => { xpFlash.className = 'xp-flash'; }, 800);
+
+    // Flame animation for 5+ combo
+    if (arenaCombo >= 5) {
+      const fl = document.getElementById('streak-flame');
+      fl.textContent = '🔥';
+      fl.className   = 'streak-flame pop';
+      setTimeout(() => { fl.className = 'streak-flame'; }, 600);
+    }
+
+    document.getElementById('hud-score').textContent = arenaScore + ' pts';
+    updateComboDisplay();
+
+    setTimeout(() => { arenaIdx++; renderArenaQuestion(); }, 500);
+
+  } else {
+    // ── Wrong ─────────────────────────────────────────────
+    chosenEl.classList.add('ao-wrong');
+    chosenEl.querySelector('.ao-icon').textContent = '✗';
+    if (correctEl) {
+      correctEl.classList.add('ao-reveal');
+      correctEl.querySelector('.ao-icon').textContent = '✓';
+    }
+    arenaCombo = 0;
+    updateComboDisplay();
+
+    if (arenaMode === 'survival') {
+      arenaLives--;
+      updateLivesDisplay();
+      if (arenaLives <= 0) { setTimeout(() => endArena(), 900); return; }
+    }
+    if (arenaMode === 'sudden') { setTimeout(() => endArena(), 900); return; }
+
+    setTimeout(() => { arenaIdx++; renderArenaQuestion(); }, 1100);
+  }
+}
+
+function lockArenaOpts() {
+  document.querySelectorAll('.arena-opt').forEach(o => {
+    o.classList.add('locked');
+    o.onclick = null;
+  });
+}
+
+// ── End game — commit all stats ───────────────────────────────────────────────
+function endArena() {
+  clearArenaTimer();
+
+  const questionsAttempted = arenaAnswered;
+  const pct = questionsAttempted > 0
+    ? Math.round(arenaCorrect / questionsAttempted * 100)
+    : 0;
+
+  // ── XP calculation ────────────────────────────────────────────────────────
+  // XP is earned only on CORRECT answers, scaled by accuracy.
+  // This means you cannot grind XP through repeated wrong answers.
+  //
+  // Formula: correctAnswers × 10 × (accuracy%) × modeMultiplier
+  //
+  // accuracy% acts as a tax: 40% accuracy = only 40% of potential XP.
+  // You must answer correctly AND accurately to earn meaningful XP.
+
+  const accuracyMult = questionsAttempted > 0 ? (pct / 100) : 0;
+  const modeMult = {
+    blitz:    1.2,   // speed adds value
+    boss:     1.5,   // topic mastery deserves more
+    survival: 1.3,   // endurance run
+    sudden:   2.0,   // highest risk, highest reward
+  }[arenaMode] || 1.0;
+
+  let xpGained = Math.round(arenaCorrect * 10 * accuracyMult * modeMult);
+
+  // Perfect run bonus: additional +50% on top
+  if (pct === 100 && questionsAttempted > 0) {
+    xpGained = Math.round(xpGained * 1.5);
+  }
+
+  // Minimum: 3 XP for completing any game (tiny participation credit,
+  // not enough to grind levels — just acknowledges you showed up)
+  xpGained = Math.max(3, xpGained);
+
+  // ── Commit stats to AS ────────────────────────────────────────────────────
+  AS.matches++;
+  AS.total_xp       += xpGained;
+  AS.total_correct  += arenaCorrect;
+  AS.total_answered += questionsAttempted;
+
+  if (pct === 100 && questionsAttempted > 0) AS.perfect_runs++;
+
+  if (arenaMode === 'blitz' && pct > AS.blitz_best) {
+    AS.blitz_best = pct;
+  }
+  if (arenaMode === 'survival') {
+    AS.survival_best_lives = Math.max(AS.survival_best_lives, arenaLives);
+  }
+  if (arenaMode === 'boss' && bossHP <= 0) {
+    AS.bosses_defeated++;
+    if (!AS.boss_topics_done.includes(bossTopic)) {
+      AS.boss_topics_done.push(bossTopic);
+    }
+    AS.unique_bosses = AS.boss_topics_done.length;
+  }
+  if (arenaMode === 'sudden') {
+    AS.sudden_best = Math.max(AS.sudden_best, arenaIdx);
+  }
+  if (arenaFastCount > 0) {
+    AS.fast_answers += arenaFastCount;
+  }
+
+  // ── Save everything ───────────────────────────────────────────────────────
+  saveAS();
+  checkAndGrantAchievements();
+
+  // ── Switch to results screen ──────────────────────────────────────────────
   document.getElementById('arena-game').classList.remove('active');
   document.getElementById('arena-results').classList.add('active');
-  const bossWon=arenaMode==='boss'&&bossHP<=0;
-  let title=pct===100?'💎 Perfect!':pct>=80?'🔥 Excellent!':pct>=60?'👍 Good Run':'📚 Keep Grinding';
-  if(arenaMode==='sudden'&&arenaIdx<arenaQs.length)title='💀 You Died';
-  if(bossWon)title='🐉 Boss Defeated!';
-  document.getElementById('arena-results-content').innerHTML=`
-    <div class="ar-title">${title}</div><div class="ar-score">${pct}%</div>
+
+  const bossWon = (arenaMode === 'boss' && bossHP <= 0);
+  let title = pct === 100 ? '💎 Perfect!' :
+              pct >= 80   ? '🔥 Excellent!' :
+              pct >= 60   ? '👍 Good Run'   : '📚 Keep Grinding';
+  if (arenaMode === 'sudden' && arenaIdx < arenaQs.length) title = '💀 You Died';
+  if (bossWon) title = '🐉 Boss Defeated!';
+
+  document.getElementById('arena-results-content').innerHTML = `
+    <div class="ar-title">${title}</div>
+    <div class="ar-score">${pct}%</div>
     <div class="ar-grid">
-      <div class="ar-cell"><strong style="color:var(--green)">${arenaCorrect}</strong><span>Correct</span></div>
-      <div class="ar-cell"><strong style="color:var(--red)">${arenaAnswered-arenaCorrect}</strong><span>Wrong</span></div>
-      <div class="ar-cell"><strong>${arenaScore}</strong><span>Points</span></div>
+      <div class="ar-cell">
+        <strong style="color:var(--green)">${arenaCorrect}</strong>
+        <span>Correct</span>
+      </div>
+      <div class="ar-cell">
+        <strong style="color:var(--red)">${questionsAttempted - arenaCorrect}</strong>
+        <span>Wrong</span>
+      </div>
+      <div class="ar-cell">
+        <strong>${arenaScore}</strong>
+        <span>Points</span>
+      </div>
     </div>
-    <div class="ar-xp-gained">+${xpGained} XP earned${pct===100?' (50% perfect bonus!)':''}</div>
-    <div style="color:var(--text2);font-size:12px;margin-bottom:1rem">Best combo: ${AS.best_combo}×</div>
+    <div class="ar-xp-gained">
+      +${xpGained} XP earned
+      ${pct === 100 ? ' (+50% perfect bonus!)' : ''}
+    </div>
+    <div style="color:var(--text3);font-size:11px;margin-bottom:.5rem;line-height:1.6">
+      ${arenaCorrect} correct × 10 × ${Math.round(pct)}% accuracy × ${({blitz:1.2,boss:1.5,survival:1.3,sudden:2.0}[arenaMode]||1.0)}× mode
+    </div>
+    <div style="color:var(--text2);font-size:12px;margin-bottom:1rem">
+      Combo this run: ${arenaCombo > 0 ? arenaCombo : '—'}×
+      &nbsp;|&nbsp; All-time best: ${AS.best_combo}×
+    </div>
     <button class="arena-btn abtn-primary" onclick="replayArena()">↺ Play Again</button>
     <button class="arena-btn abtn-secondary" onclick="exitArena()">← Lobby</button>`;
+
+  // Refresh lobby stats so they reflect the new XP
+  renderXPBar();
+  renderStreak();
+  renderAchievements();
 }
-function replayArena(){
+
+// ── Replay / exit ─────────────────────────────────────────────────────────────
+function replayArena() {
   document.getElementById('arena-results').classList.remove('active');
-  if(arenaMode==='boss')startBoss(bossTopic);else startArena(arenaMode);
+  if (arenaMode === 'boss') startBoss(bossTopic);
+  else startArena(arenaMode);
 }
-function exitArena(){
+
+function exitArena() {
   clearArenaTimer();
   document.getElementById('arena-game').classList.remove('active');
   document.getElementById('arena-results').classList.remove('active');
-  document.getElementById('arena-lobby').style.display='block';
-  renderXPBar();renderStreak();renderAchievements();
+  document.getElementById('arena-lobby').style.display = 'block';
+  renderXPBar();
+  renderStreak();
+  renderAchievements();
 }
-function initArena(){markStudyToday();renderXPBar();renderStreak();renderAchievements();}
+
+// ── initArena — called when navigating to the arena tab ───────────────────────
+function initArena() {
+  markStudyToday();
+  renderXPBar();
+  renderStreak();
+  renderAchievements();
+}
+
 
 // ═══ NAVIGATION ═══
 function go(t){
