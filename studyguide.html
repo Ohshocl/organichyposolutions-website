@@ -518,6 +518,9 @@ select{
     <button class="tts-speed-btn active" id="tts-1x" onclick="ttsSetSpeed(1,this)">1×</button>
     <button class="tts-speed-btn" id="tts-15x" onclick="ttsSetSpeed(1.5,this)">1.5×</button>
     <button class="tts-speed-btn" id="tts-2x" onclick="ttsSetSpeed(2,this)">2×</button>
+    <span class="tts-label" style="margin-left:4px">Voice</span>
+    <button class="tts-speed-btn tts-voice-btn active" onclick="ttsSetVoicePref('british-female',this)" title="British Female">🇬🇧♀</button>
+    <button class="tts-speed-btn tts-voice-btn" onclick="ttsSetVoicePref('british-male',this)" title="British Male">🇬🇧♂</button>
   </div>
   <div class="tts-row2">
     <span class="tts-label">Jump to</span>
@@ -2970,6 +2973,67 @@ function ttsGetCurrentSectionName() {
   return ttsSections[sIdx] ? ttsSections[sIdx].title.replace(/— .+$/, '').trim() : '';
 }
 
+
+// ── Voice selection ──────────────────────────────────────────────────────────
+let ttsVoiceCache = null;
+let ttsVoicePref  = 'british-female'; // default preference
+
+function ttsPickVoice() {
+  const voices = speechSynthesis.getVoices();
+  if (!voices.length) return null;
+
+  // Priority order for British female voices across platforms
+  const britishFemale = [
+    // iOS / macOS
+    v => v.name === 'Serena' && v.lang.startsWith('en-GB'),
+    v => v.name === 'Kate'   && v.lang.startsWith('en-GB'),
+    v => v.name.includes('Moira'),                          // Irish fallback
+    // Android / Chrome
+    v => v.name.includes('Google UK English Female'),
+    // Windows
+    v => v.name.includes('Hazel'),
+    v => v.name.includes('Susan'),
+    // Generic: any en-GB female
+    v => v.lang.startsWith('en-GB') && v.name.toLowerCase().includes('female'),
+    // Fallback: any en-GB voice
+    v => v.lang.startsWith('en-GB'),
+    // Last resort: any English female
+    v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female'),
+    // Absolute fallback
+    v => v.lang.startsWith('en'),
+  ];
+
+  const britishMale = [
+    v => v.name.includes('Google UK English Male'),
+    v => v.lang.startsWith('en-GB'),
+    v => v.lang.startsWith('en'),
+  ];
+
+  const matchers = ttsVoicePref === 'british-male' ? britishMale : britishFemale;
+
+  for (const match of matchers) {
+    const found = voices.find(match);
+    if (found) { ttsVoiceCache = found; return found; }
+  }
+  return null;
+}
+
+function ttsSetVoicePref(pref, btn) {
+  ttsVoicePref  = pref;
+  ttsVoiceCache = null;
+  document.querySelectorAll('.tts-voice-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // Show which voice was actually selected
+  const v = ttsPickVoice();
+  const statusEl = document.getElementById('tts-status');
+  if (v && statusEl) statusEl.textContent = 'Voice: ' + v.name + ' (' + v.lang + ')';
+  else if (statusEl)  statusEl.textContent = 'No matching voice found — using device default';
+  if (ttsActive) { speechSynthesis.cancel(); setTimeout(ttsReadChunk, 80); }
+}
+
+// Voices load asynchronously on some browsers
+speechSynthesis.onvoiceschanged = () => { ttsVoiceCache = null; };
+
 function ttsToggle() {
   if (ttsActive) { ttsPause(); return; }
   if (ttsUtterance && speechSynthesis.paused) { speechSynthesis.resume(); ttsActive = true; updateTTSUI(); return; }
@@ -2997,6 +3061,7 @@ function ttsReadChunk() {
   ttsUtterance.rate   = ttsSpeed;
   ttsUtterance.pitch  = 1.0;
   ttsUtterance.volume = 1.0;
+  ttsUtterance.voice  = ttsPickVoice();
 
   // Update progress
   const pct = Math.round(ttsChunkIdx / ttsChunks.length * 100);
