@@ -2940,8 +2940,10 @@ function ttsJumpToSection(startChunkStr) {
   if (startChunkStr === '') return;
   const startChunk = parseInt(startChunkStr, 10);
   const wasPaying = ttsActive;
+  ttsClearWatchdog();
   speechSynthesis.cancel();
-  ttsChunkIdx = startChunk;
+  ttsChunkIdx     = startChunk;
+  ttsLastChunkIdx = -1;
   ttsActive = true;
   document.getElementById('tts-progress-wrap').style.display = 'block';
   document.getElementById('tts-prev-btn').style.display = 'flex';
@@ -3061,6 +3063,7 @@ function ttsStart() {
   ttsBuildChunks();
   if (!ttsChunks.length) { showToast('No content to read'); return; }
   if (ttsChunkIdx >= ttsChunks.length) ttsChunkIdx = 0;
+  ttsLastChunkIdx = -1;
   ttsActive = true;
   document.getElementById('tts-progress-wrap').style.display = 'block';
   document.getElementById('tts-prev-btn').style.display = 'flex';
@@ -3070,52 +3073,110 @@ function ttsStart() {
   ttsReadChunk();
 }
 
+// Watchdog: if speech hasn't moved on within N ms, force-advance
+let ttsWatchdog = null;
+let ttsLastChunkIdx = -1;
+
+function ttsClearWatchdog() {
+  if (ttsWatchdog) { clearTimeout(ttsWatchdog); ttsWatchdog = null; }
+}
+
+function ttsArmWatchdog(expectedDurationMs) {
+  ttsClearWatchdog();
+  // Allow up to 2× expected duration + 2s buffer before declaring stuck
+  const timeout = Math.max(4000, expectedDurationMs * 2 + 2000);
+  ttsWatchdog = setTimeout(() => {
+    // If we're still on the same chunk, force advance
+    if (ttsActive && ttsChunkIdx === ttsLastChunkIdx) {
+      ttsChunkIdx++;
+      ttsAdvance();
+    }
+  }, timeout);
+}
+
+function ttsAdvance() {
+  ttsClearWatchdog();
+  speechSynthesis.cancel();
+  if (!ttsActive || ttsChunkIdx >= ttsChunks.length) { ttsStop(); return; }
+  // Small pause between chunks prevents iOS from merging utterances
+  setTimeout(ttsReadChunk, 120);
+}
+
 function ttsReadChunk() {
   if (!ttsActive || ttsChunkIdx >= ttsChunks.length) { ttsStop(); return; }
+
+  // Guard: don't re-read the same chunk (catches edge-case loops)
+  if (ttsChunkIdx === ttsLastChunkIdx) {
+    ttsChunkIdx++;
+    if (ttsChunkIdx >= ttsChunks.length) { ttsStop(); return; }
+  }
+  ttsLastChunkIdx = ttsChunkIdx;
+
   const chunk = ttsChunks[ttsChunkIdx];
-  ttsUtterance = new SpeechSynthesisUtterance(chunk.text);
+
+  // Truncate very long chunks to avoid browser timeouts (iOS limit ~200 chars)
+  const MAX = 180;
+  let text = chunk.text;
+  if (text.length > MAX) {
+    // Split at a word boundary near MAX
+    const cut = text.lastIndexOf(' ', MAX);
+    text = text.substring(0, cut > 0 ? cut : MAX);
+  }
+
+  ttsUtterance = new SpeechSynthesisUtterance(text);
   ttsUtterance.rate   = ttsSpeed;
   ttsUtterance.pitch  = 1.0;
   ttsUtterance.volume = 1.0;
   ttsUtterance.voice  = ttsPickVoice();
 
-  // Update progress
+  // Estimate duration in ms (rough: words / (rate * 2.5) * 1000)
+  const wordCount = text.split(/\s+/).length;
+  const estMs     = Math.round(wordCount / (ttsSpeed * 2.5) * 1000);
+
+  // Update progress UI
   const pct = Math.round(ttsChunkIdx / ttsChunks.length * 100);
   document.getElementById('tts-progress-fill').style.width = pct + '%';
-
   const secName = ttsGetCurrentSectionName();
   const statusEl = document.getElementById('tts-status');
   if (statusEl) statusEl.textContent = secName
     ? 'Reading: ' + secName + ' (' + pct + '%)'
     : 'Block ' + (ttsChunkIdx + 1) + ' of ' + ttsChunks.length;
 
-  // Keep dropdown in sync with current section
+  // Keep section dropdown in sync
   const sel = document.getElementById('tts-section-select');
   if (sel && ttsSections[chunk.sectionIdx]) {
     sel.value = ttsSections[chunk.sectionIdx].startChunk;
   }
 
-  ttsUtterance.onend = () => {
+  let advanced = false;
+  function doAdvance() {
+    if (advanced) return;   // prevent double-advance
+    advanced = true;
     ttsChunkIdx++;
-    if (ttsActive) setTimeout(ttsReadChunk, 60);
-  };
-  ttsUtterance.onerror = () => {
-    ttsChunkIdx++;
-    if (ttsActive) setTimeout(ttsReadChunk, 60);
-  };
+    ttsAdvance();
+  }
+
+  ttsUtterance.onend   = doAdvance;
+  ttsUtterance.onerror = doAdvance;
+
+  // Arm watchdog BEFORE speak() in case onend never fires
+  ttsArmWatchdog(estMs);
   speechSynthesis.speak(ttsUtterance);
 }
 
 function ttsPause() {
+  ttsClearWatchdog();
   speechSynthesis.pause();
   ttsActive = false;
   updateTTSUI();
 }
 
 function ttsStop() {
+  ttsClearWatchdog();
   speechSynthesis.cancel();
-  ttsActive   = false;
-  ttsChunkIdx = 0;
+  ttsActive      = false;
+  ttsChunkIdx    = 0;
+  ttsLastChunkIdx = -1;
   document.getElementById('tts-progress-fill').style.width = '0%';
   document.getElementById('tts-progress-wrap').style.display   = 'none';
   document.getElementById('tts-prev-btn').style.display        = 'none';
@@ -3133,7 +3194,8 @@ function ttsSetSpeed(speed, btn) {
   document.querySelectorAll('.tts-speed-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   if (ttsActive) {
-    // Restart current chunk at new speed
+    ttsClearWatchdog();
+    ttsLastChunkIdx = -1;
     speechSynthesis.cancel();
     setTimeout(ttsReadChunk, 80);
   }
