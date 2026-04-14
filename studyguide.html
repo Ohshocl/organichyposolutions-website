@@ -484,6 +484,26 @@ select{
 .tts-progress-fill{height:100%;background:var(--accent);border-radius:2px;width:0%;transition:width .3s;}
 .tts-reading .card{border-color:rgba(79,142,255,.35);background:rgba(79,142,255,.03);}
 .tts-highlight{background:rgba(79,142,255,.15);border-radius:3px;padding:0 2px;}
+
+/* ── TTS word highlighting ──────────────────────────────────────────────── */
+.tts-word { display:inline; }
+.tts-word-active {
+  background: rgba(79,142,255,.28);
+  color: #fff;
+  border-radius: 3px;
+  padding: 0 2px;
+  transition: background .08s;
+}
+/* Dim the whole card body slightly while reading to make highlight pop */
+.tts-reading-active .body {
+  color: var(--text3);
+}
+.tts-reading-active .tts-word {
+  color: var(--text2);
+}
+.tts-reading-active .tts-word-active {
+  color: #fff;
+}
 </style>
 </head>
 <body>
@@ -2885,50 +2905,46 @@ function ttsBuildChunks() {
   if (!study) return;
   ttsChunks = [];
   ttsSections = [];
+  ttsRestoreAll(); // clear any leftover highlights
 
-  // Each sec-head starts a new section; cards under it are its content
   const allChildren = study.querySelectorAll('.sec-head, .card');
   let currentSection = { title: 'Introduction', startChunk: 0, cardCount: 0 };
   let sectionIdx = 0;
 
   allChildren.forEach(el => {
     if (el.classList.contains('sec-head')) {
-      // Save previous section if it had content
       if (currentSection.cardCount > 0 || ttsSections.length === 0) {
         if (ttsSections.length > 0) ttsSections[ttsSections.length - 1].endChunk = ttsChunks.length - 1;
         currentSection = { title: el.textContent.trim(), startChunk: ttsChunks.length, cardCount: 0 };
         sectionIdx = ttsSections.length;
         ttsSections.push(currentSection);
       } else {
-        // Update title of placeholder section
         if (ttsSections.length > 0) ttsSections[ttsSections.length - 1].title = el.textContent.trim();
         else { currentSection.title = el.textContent.trim(); ttsSections.push(currentSection); }
         sectionIdx = ttsSections.length - 1;
       }
     } else if (el.classList.contains('card')) {
-      const title = el.querySelector('.card-title');
-      const body  = el.querySelector('.body');
-      const sIdx  = ttsSections.length > 0 ? ttsSections.length - 1 : 0;
-      if (title && title.textContent.trim()) {
-        ttsChunks.push({ text: title.textContent.trim(), sectionIdx: sIdx });
+      const titleEl = el.querySelector('.card-title');
+      const bodyEl  = el.querySelector('.body');
+      const sIdx    = ttsSections.length > 0 ? ttsSections.length - 1 : 0;
+      if (titleEl && titleEl.textContent.trim()) {
+        ttsChunks.push({ text: titleEl.textContent.trim(), sectionIdx: sIdx, el: titleEl });
       }
-      if (body) {
-        const txt = (body.innerText || body.textContent).replace(/\s+/g, ' ').trim();
-        if (txt) ttsChunks.push({ text: txt, sectionIdx: sIdx });
+      if (bodyEl) {
+        const txt = (bodyEl.innerText || bodyEl.textContent).replace(/\s+/g, ' ').trim();
+        if (txt) ttsChunks.push({ text: txt, sectionIdx: sIdx, el: bodyEl });
       }
       if (ttsSections[sIdx]) ttsSections[sIdx].cardCount = (ttsSections[sIdx].cardCount || 0) + 1;
     }
   });
   if (ttsSections.length > 0) ttsSections[ttsSections.length - 1].endChunk = ttsChunks.length - 1;
 
-  // Populate the section jump dropdown
   const sel = document.getElementById('tts-section-select');
   if (sel) {
     sel.innerHTML = '<option value="">— Jump to section —</option>';
     ttsSections.forEach((sec, i) => {
       const opt = document.createElement('option');
       opt.value = sec.startChunk;
-      // Shorten long section titles for the dropdown
       const shortTitle = sec.title.replace(/— .+$/, '').trim().substring(0, 50);
       opt.textContent = (i + 1) + '. ' + shortTitle;
       sel.appendChild(opt);
@@ -3073,6 +3089,101 @@ function ttsStart() {
   ttsReadChunk();
 }
 
+
+// ── Word highlight engine ─────────────────────────────────────────────────────
+let ttsHighlightTimers = [];
+let ttsCurrentEl       = null;
+let ttsOriginalHTML    = null;
+
+function ttsRestoreEl() {
+  if (ttsCurrentEl && ttsOriginalHTML !== null) {
+    ttsCurrentEl.innerHTML = ttsOriginalHTML;
+  }
+  ttsCurrentEl    = null;
+  ttsOriginalHTML = null;
+  ttsHighlightTimers.forEach(clearTimeout);
+  ttsHighlightTimers = [];
+}
+
+function ttsRestoreAll() {
+  ttsRestoreEl();
+  // Clean up any stray highlight spans left in the DOM
+  document.querySelectorAll('.tts-word').forEach(s => {
+    const parent = s.parentNode;
+    if (parent) parent.replaceChild(document.createTextNode(s.textContent), s);
+  });
+}
+
+function ttsHighlightChunk(el, text, durationMs) {
+  ttsRestoreEl();
+  if (!el) return;
+
+  ttsCurrentEl    = el;
+  ttsOriginalHTML = el.innerHTML;
+
+  // Split text into words, keeping whitespace as separate tokens
+  const tokens = text.split(/(\s+)/);
+  const words   = tokens.filter(t => t.trim().length > 0);
+  if (!words.length) return;
+
+  const msPerWord = durationMs / words.length;
+
+  // Replace el text content with word-wrapped version
+  // We only wrap the text content of the element (not child elements like .fc-hook)
+  // Find the first text node or just work with textContent directly
+  let html = '';
+  let wordIdx = 0;
+  tokens.forEach(token => {
+    if (token.trim().length > 0) {
+      html += `<span class="tts-word" id="ttsw-${wordIdx}">${token}</span>`;
+      wordIdx++;
+    } else {
+      html += token; // preserve whitespace
+    }
+  });
+
+  // Only wrap the direct text content, not nested elements
+  // Find all direct text nodes in el and replace
+  try {
+    // Simple approach: replace innerHTML only if el has no complex children
+    // For card-title and body paragraphs this is safe enough
+    el.innerHTML = html;
+  } catch(e) {
+    ttsCurrentEl = null; return;
+  }
+
+  // Schedule each word highlight
+  let cumulativeMs = 0;
+  for (let i = 0; i < words.length; i++) {
+    const idx     = i;
+    const delay   = Math.round(cumulativeMs);
+    cumulativeMs += msPerWord;
+
+    const t = setTimeout(() => {
+      // Remove previous highlight
+      if (idx > 0) {
+        const prev = document.getElementById(`ttsw-${idx-1}`);
+        if (prev) prev.classList.remove('tts-word-active');
+      }
+      // Highlight current word
+      const span = document.getElementById(`ttsw-${idx}`);
+      if (span) {
+        span.classList.add('tts-word-active');
+        // Scroll into view smoothly if near edge
+        span.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+      }
+    }, delay);
+    ttsHighlightTimers.push(t);
+  }
+
+  // Clear last highlight after chunk ends
+  const clearT = setTimeout(() => {
+    const last = document.getElementById(`ttsw-${words.length-1}`);
+    if (last) last.classList.remove('tts-word-active');
+  }, Math.round(cumulativeMs) + 200);
+  ttsHighlightTimers.push(clearT);
+}
+
 // Watchdog: if speech hasn't moved on within N ms, force-advance
 let ttsWatchdog = null;
 let ttsLastChunkIdx = -1;
@@ -3148,10 +3259,17 @@ function ttsReadChunk() {
     sel.value = ttsSections[chunk.sectionIdx].startChunk;
   }
 
+  // Highlight words in the source element
+  ttsHighlightChunk(chunk.el || null, text, estMs);
+
+  // Scroll the current element into view
+  if (chunk.el) chunk.el.closest('.card')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
   let advanced = false;
   function doAdvance() {
-    if (advanced) return;   // prevent double-advance
+    if (advanced) return;
     advanced = true;
+    ttsRestoreEl();     // restore HTML before moving on
     ttsChunkIdx++;
     ttsAdvance();
   }
@@ -3159,13 +3277,14 @@ function ttsReadChunk() {
   ttsUtterance.onend   = doAdvance;
   ttsUtterance.onerror = doAdvance;
 
-  // Arm watchdog BEFORE speak() in case onend never fires
   ttsArmWatchdog(estMs);
   speechSynthesis.speak(ttsUtterance);
 }
 
 function ttsPause() {
   ttsClearWatchdog();
+  ttsHighlightTimers.forEach(clearTimeout);
+  ttsHighlightTimers = [];
   speechSynthesis.pause();
   ttsActive = false;
   updateTTSUI();
@@ -3173,6 +3292,7 @@ function ttsPause() {
 
 function ttsStop() {
   ttsClearWatchdog();
+  ttsRestoreAll();
   speechSynthesis.cancel();
   ttsActive      = false;
   ttsChunkIdx    = 0;
