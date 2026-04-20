@@ -72,20 +72,24 @@
             <!-- Hero stats -->
             <div class="hero-stats mb-4">
                 <div class="stat-item">
-                    <span class="stat-number" id="totalProductCount">10</span>
+                    <span class="stat-number" id="totalProductCount">8</span>
                     <span class="stat-label">Total Products</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-number" id="activeProductCount">10</span>
+                    <span class="stat-number" id="activeProductCount">8</span>
                     <span class="stat-label">Available Now</span>
                 </div>
                 <div class="stat-item" id="epaProductStat">
-                    <span class="stat-number" id="epaProductCount">4</span>
-                    <span class="stat-label">EPA + USDA</span>
+                    <span class="stat-number" id="epaProductCount">2</span>
+                    <span class="stat-label">EPA Registered</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-number" id="usdaProductCount">6</span>
+                    <span class="stat-number" id="usdaProductCount">4</span>
                     <span class="stat-label">USDA Organic</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="genProductCount">2</span>
+                    <span class="stat-label">Wellness</span>
                 </div>
             </div>
 
@@ -343,7 +347,7 @@
             const heroSubtitle = document.getElementById('heroSubtitle');
             if (heroSubtitle) {
                 if (isUtah) {
-                    heroSubtitle.textContent = 'EPA Premium & USDA Organic — All 10 Products Available';
+                    heroSubtitle.textContent = 'EPA Premium & USDA Organic — All 8 Products Available';
                 } else if (userState) {
                     heroSubtitle.textContent = 'USDA Organic Products — Ships Nationwide';
                 } else {
@@ -358,14 +362,23 @@
             const isUtah = isUtahUser();
             const hasState = getUserStateLocal() !== null;
 
-            const totalProducts = (isUtah || !hasState) ? 10 : 6;
-            const epaProducts  = (isUtah || !hasState) ? 4 : 0;
-            const usdaProducts = 6;
+            // Derive counts dynamically from the catalog
+            const epaCount  = window.getEPAProducts          ? window.getEPAProducts().length          : 0;
+            const usdaCount = window.getUSDAOnlyProducts      ? window.getUSDAOnlyProducts().length      : 0;
+            const genCount  = window.getNonRegisteredProducts ? window.getNonRegisteredProducts().length : 0;
 
-            document.getElementById('totalProductCount').textContent = totalProducts;
+            const totalProducts = (isUtah || !hasState)
+                ? epaCount + usdaCount + genCount
+                : usdaCount + genCount;
+            const epaProducts  = (isUtah || !hasState) ? epaCount : 0;
+            const usdaProducts = usdaCount;
+
+            document.getElementById('totalProductCount').textContent  = totalProducts;
             document.getElementById('activeProductCount').textContent = totalProducts;
-            document.getElementById('epaProductCount').textContent = epaProducts;
-            document.getElementById('usdaProductCount').textContent = usdaProducts;
+            document.getElementById('epaProductCount').textContent    = epaProducts;
+            document.getElementById('usdaProductCount').textContent   = usdaProducts;
+            const genEl = document.getElementById('genProductCount');
+            if (genEl) genEl.textContent = genCount;
 
             const epaStat = document.getElementById('epaProductStat');
             if (epaStat) epaStat.style.display = (isUtah || !hasState) ? 'block' : 'none';
@@ -380,8 +393,8 @@
             const isUtah = userState === 'UT';
             return Object.values(window.PRODUCT_CATALOG).filter(p => {
                 if (!userState) return true;
-                if (p.type === 'usda-only') return true;
-                if (p.type === 'epa-usda') return isUtah;
+                if (p.type === 'usda-only' || p.type === 'non-registered') return true;
+                if (p.type === 'epa') return isUtah;
                 return true;
             });
         }
@@ -396,6 +409,12 @@
 
         function getUSDAProductsFiltered() {
             return window.getUSDAOnlyProducts ? window.getUSDAOnlyProducts() : [];
+        }
+
+        function getGeneralProductsFiltered() {
+            return window.getNonRegisteredProducts
+                ? window.getNonRegisteredProducts().filter(p => p.status === 'active')
+                : [];
         }
 
         // ================================================================
@@ -566,21 +585,22 @@
 
             await fetchShopifyInventory();
 
-            const userState = getUserStateLocal();
-            const isUtah = userState === 'UT';
-            const epaProducts  = getEPAProductsFiltered();
-            const usdaProducts = getUSDAProductsFiltered();
+            const userState   = getUserStateLocal();
+            const isUtah      = userState === 'UT';
+            const epaProducts     = getEPAProductsFiltered();
+            const usdaProducts    = getUSDAProductsFiltered();
+            const generalProducts = getGeneralProductsFiltered();
 
             let html = '';
 
-            // EPA Section
+            // ── EPA Section (Utah only) ───────────────────────────────
             if (epaProducts.length > 0) {
                 html += `
                     <section class="mb-5">
                         <div class="section-header epa text-center py-4 mb-4">
-                            <h2><i class="fas fa-shield-alt me-2"></i>EPA Registered + USDA Organic</h2>
-                            <p class="mb-1">Dual-Certified Professional Disinfectants — Utah Exclusive</p>
-                            <small class="text-muted">EPA Registration #97801-1 &bull; USDA Certificate #Z-699995-2008</small>
+                            <h2><i class="fas fa-shield-alt me-2"></i>EPA Registered</h2>
+                            <p class="mb-1">Professional Disinfectants — Utah Exclusive</p>
+                            <small class="text-muted">EPA Registration #97801-1</small>
                         </div>
                         <div class="row">
                 `;
@@ -588,7 +608,7 @@
                 html += '</div></section>';
             }
 
-            // Utah-only notice for non-Utah users
+            // ── Utah-only notice for non-Utah users ──────────────────
             if (!isUtah && userState) {
                 html += `
                     <div class="utah-exclusive-banner mb-4">
@@ -598,18 +618,32 @@
                 `;
             }
 
-            // USDA Section
+            // ── USDA Organic Section ──────────────────────────────────
             if (usdaProducts.length > 0) {
                 html += `
                     <section class="mb-5">
                         <div class="section-header organic text-center py-4 mb-4">
                             <h2><i class="fas fa-leaf me-2"></i>USDA Organic Line</h2>
                             <p class="mb-1">Family-safe USDA Certified Organic Products — Ships Nationwide</p>
-                            <small class="text-muted">USDA Certificate #Z-699995-2008</small>
+                            <small class="text-muted">USDA Certificate #Z-699995-2008 &bull; Certified Organic by OTCO</small>
                         </div>
                         <div class="row">
                 `;
                 usdaProducts.forEach(p => { html += renderProductCard(p); });
+                html += '</div></section>';
+            }
+
+            // ── Wellness & Accessories Section (non-registered) ───────
+            if (generalProducts.length > 0) {
+                html += `
+                    <section class="mb-5">
+                        <div class="section-header organic text-center py-4 mb-4">
+                            <h2><i class="fas fa-star me-2"></i>Wellness &amp; Accessories</h2>
+                            <p class="mb-1">HOCl-Powered Skincare &amp; Convenience Products — Ships Nationwide</p>
+                        </div>
+                        <div class="row">
+                `;
+                generalProducts.forEach(p => { html += renderProductCard(p); });
                 html += '</div></section>';
             }
 
@@ -621,20 +655,30 @@
         }
 
         function renderProductCard(product) {
-            const isComingSoon = product.status === 'coming-soon';
-            const retail = product.pricing?.retail || 0;
-            const invStatus = getInventoryStatus(product.id);
-            const isOutOfStock = invStatus.status === 'out-of-stock';
-            const isEpa = product.type === 'epa-usda';
+            const isComingSoon  = product.status === 'coming-soon';
+            const retail        = product.pricing?.retail || 0;
+            const invStatus     = getInventoryStatus(product.id);
+            const isOutOfStock  = invStatus.status === 'out-of-stock';
 
-            const badgeColor = isEpa ? '#f59e0b' : '#4ADE80';
-            const badgeType  = isEpa ? 'EPA + USDA' : 'USDA Organic';
-            const badgeIcon  = isEpa ? 'shield-alt' : 'leaf';
+            // ── Correct type checks matching product-catalog.js types ──
+            const isEpa     = product.type === 'epa';
+            const isGeneral = product.type === 'non-registered';
+
+            const badgeColor = isEpa ? '#f59e0b' : isGeneral ? '#7DD3FC' : '#4ADE80';
+            const badgeType  = isEpa ? 'EPA Registered' : isGeneral ? (product.badgeType || 'HOCl') : 'USDA Organic';
+            const badgeIcon  = isEpa ? 'shield-alt' : isGeneral ? 'star' : 'leaf';
 
             // Icon for inventory badge
             const invIcon = invStatus.status === 'out-of-stock' ? 'times-circle'
-                          : invStatus.status === 'low-stock'   ? 'exclamation-triangle'
+                          : invStatus.status === 'low-stock'    ? 'exclamation-triangle'
                           : 'check-circle';
+
+            // Certification bullet line
+            const certLabel = isEpa
+                ? 'EPA Registered'
+                : isGeneral
+                ? 'HOCl Technology'
+                : 'USDA Certified';
 
             return `
                 <div class="col-lg-4 col-md-6 mb-4">
@@ -648,7 +692,7 @@
                             </div>
                         ` : ''}
 
-                        <div class="product-badge" style="background:${badgeColor};color:white;">
+                        <div class="product-badge" style="background:${badgeColor};color:${isGeneral ? '#1e3a8a' : 'white'};">
                             <i class="fas fa-${badgeIcon} me-1"></i>${badgeType}
                         </div>
 
@@ -721,10 +765,10 @@
                                 <ul class="list-unstyled small mb-3">
                                     <li><i class="fas fa-check text-success me-1"></i>Family &amp; Pet Safe</li>
                                     <li><i class="fas fa-check text-success me-1"></i>Utah Made</li>
-                                    <li><i class="fas fa-check text-success me-1"></i>${isEpa ? 'EPA + USDA Certified' : 'USDA Certified'}</li>
+                                    <li><i class="fas fa-check text-success me-1"></i>${certLabel}</li>
                                 </ul>
 
-<div class="form-check form-switch mb-2 d-flex align-items-center gap-2">
+                                <div class="form-check form-switch mb-2 d-flex align-items-center gap-2">
                                     <input class="form-check-input" type="checkbox" role="switch"
                                            id="subscribe-${product.id}"
                                            onchange="displayPricingInfo('${product.id}', document.getElementById('qty-${product.id}').value)">
@@ -738,7 +782,7 @@
                                     <button class="btn btn-outline-primary btn-sm" onclick="changeQuantity('${product.id}', -1)">
                                         <i class="fas fa-minus"></i>
                                     </button>
-                                    <input type="number" class="form-control form-control-sm text-center" 
+                                    <input type="number" class="form-control form-control-sm text-center"
                                            id="qty-${product.id}" value="1" min="1"
                                            max="${invStatus.quantity || 999}" style="max-width:70px;"
                                            onchange="validateQuantity('${product.id}', this.value); displayPricingInfo('${product.id}', this.value)"
@@ -773,7 +817,7 @@
                 if (badge && invStatus.badgeText) {
                     badge.className = `inventory-badge ${invStatus.badgeClass}`;
                     const icon = invStatus.status === 'out-of-stock' ? 'times-circle'
-                               : invStatus.status === 'low-stock'   ? 'exclamation-triangle'
+                               : invStatus.status === 'low-stock'    ? 'exclamation-triangle'
                                : 'check-circle';
                     badge.innerHTML = `<i class="fas fa-${icon} me-1"></i>${invStatus.badgeText}`;
                 }
@@ -821,7 +865,8 @@
                 return;
             }
 
-            if (product.type === 'epa-usda' && getUserStateLocal() !== 'UT') {
+            // EPA products are Utah-only
+            if (product.type === 'epa' && getUserStateLocal() !== 'UT') {
                 if (window.showNotification) window.showNotification('EPA products are only available for shipping within Utah.', 'error');
                 return;
             }
@@ -863,7 +908,7 @@
                     items: [{
                         item_id: tier.variantId,
                         item_name: product.name,
-                        category: product.type === 'epa-usda' ? 'EPA+USDA' : 'USDA Organic',
+                        category: product.type === 'epa' ? 'EPA Registered' : product.type === 'usda-only' ? 'USDA Organic' : 'General',
                         quantity: quantity,
                         price: tier.price,
                         item_variant: tier.tier
@@ -916,7 +961,7 @@
 
             cartItemsContainer.innerHTML = itemsHTML;
             document.getElementById('cartSubtotal').textContent = `$${subtotal.toFixed(2)}`;
-            document.getElementById('cartTotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('cartTotal').textContent    = `$${subtotal.toFixed(2)}`;
             if (cartSummary) cartSummary.style.display = 'block';
         }
 
@@ -962,7 +1007,7 @@
         }
 
         function toggleCart() {
-            const panel = document.getElementById('cartPreview');
+            const panel   = document.getElementById('cartPreview');
             const overlay = document.getElementById('cartOverlay');
             cartVisible = !cartVisible;
             if (cartVisible) {
@@ -1028,11 +1073,11 @@
 
             // Cross-tab sync
             window.addEventListener('storage', function (e) {
-                if (e.key === 'ohsCart') { updateCartBadges(); updateCartPreview(); }
+                if (e.key === 'ohsCart')      { updateCartBadges(); updateCartPreview(); }
                 if (e.key === 'ohsUserState') { updateStateDisplay(); loadProducts(); }
             });
 
-            window.addEventListener('stateChanged', function (e) {
+            window.addEventListener('stateChanged', function () {
                 updateStateDisplay();
                 loadProducts();
             });
@@ -1043,22 +1088,22 @@
         });
 
         // Expose globals for inline onclick handlers
-        window.addToCartLocal         = addToCartLocal;
-        window.changeQuantity         = changeQuantity;
-        window.updateCartQtyLocal     = updateCartQtyLocal;
-        window.removeFromCartLocal    = removeFromCartLocal;
-        window.clearCartLocal         = clearCartLocal;
-        window.toggleCart             = toggleCart;
-        window.proceedToCartPage      = proceedToCartPage;
-        window.scrollToProducts       = scrollToProducts;
-        window.displayPricingInfo     = displayPricingInfo;
-        window.validateQuantity       = validateQuantity;
+        window.addToCartLocal           = addToCartLocal;
+        window.changeQuantity           = changeQuantity;
+        window.updateCartQtyLocal       = updateCartQtyLocal;
+        window.removeFromCartLocal      = removeFromCartLocal;
+        window.clearCartLocal           = clearCartLocal;
+        window.toggleCart               = toggleCart;
+        window.proceedToCartPage        = proceedToCartPage;
+        window.scrollToProducts         = scrollToProducts;
+        window.displayPricingInfo       = displayPricingInfo;
+        window.validateQuantity         = validateQuantity;
         window.updateWholesaleIndicator = updateWholesaleIndicator;
-        window.showStateModal         = showStateModal;
-        window.hideStateModal         = hideStateModal;
-        window.setUserStateLocal      = setUserStateLocal;
-        window.getUserStateLocal      = getUserStateLocal;
-        window.isUtahUser             = isUtahUser;
+        window.showStateModal           = showStateModal;
+        window.hideStateModal           = hideStateModal;
+        window.setUserStateLocal        = setUserStateLocal;
+        window.getUserStateLocal        = getUserStateLocal;
+        window.isUtahUser               = isUtahUser;
     </script>
 
 </body>
