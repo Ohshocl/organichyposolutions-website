@@ -246,10 +246,10 @@
             description: 'Convenient pre-moistened hypochlorous acid wipes for quick cleaning on-the-go. Safe for all surfaces including food contact. Ideal for homes, offices, travel, and healthcare. Non-toxic, alcohol-free formula. Recyclable packaging. Net weight 1 lb 2 oz, 100 wipes. Ships nationwide. Made in Utah, USA.',
             restrictions: null,
             pricing: {
-                retail: 12.99,
-                retailSubscription: 11.69,
-                wholesale: 10.99,
-                wholesaleSubscription: 9.99
+                retail: 15.99,
+                retailSubscription: 14.39,
+                wholesale: 12.50,
+                wholesaleSubscription: 12.50
             },
             wholesaleThreshold: 20,
             shopifyVariants: {
