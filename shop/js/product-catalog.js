@@ -248,8 +248,8 @@
             pricing: {
                 retail: 15.99,
                 retailSubscription: 14.39,
-                wholesale: 12.50,
-                wholesaleSubscription: 12.50
+                wholesale: 12.99,
+                wholesaleSubscription: 12.99
             },
             wholesaleThreshold: 20,
             shopifyVariants: {
