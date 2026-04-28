@@ -517,9 +517,9 @@ select{
     <button class="tts-btn" id="tts-next-btn" onclick="ttsSkipSection(1)" title="Next section" style="display:none">⏭</button>
     <span class="tts-label">Speed</span>
     <button class="tts-speed-btn active" id="tts-normal" onclick="ttsSetSpeed(1.0,140,this)">Normal</button>
-    <button class="tts-speed-btn" id="tts-150" onclick="ttsSetSpeed(1.05,150,this)">150</button>
-    <button class="tts-speed-btn" id="tts-170" onclick="ttsSetSpeed(1.1,160,this)">160</button>
-    <button class="tts-speed-btn" id="tts-190" onclick="ttsSetSpeed(1.17,170,this)">170</button>
+    <button class="tts-speed-btn" id="tts-150" onclick="ttsSetSpeed(1.07,150,this)">150</button>
+    <button class="tts-speed-btn" id="tts-160" onclick="ttsSetSpeed(1.14,160,this)">160</button>
+    <button class="tts-speed-btn" id="tts-170" onclick="ttsSetSpeed(1.21,170,this)">170</button>
     <span class="tts-label" style="margin-left:4px">Voice</span>
     <button class="tts-speed-btn tts-voice-btn active" onclick="ttsSetVoicePref('british',this)" title="British — Serena">🇬🇧</button>
     <button class="tts-speed-btn tts-voice-btn" onclick="ttsSetVoicePref('irish',this)" title="Irish — Moira">☘️</button>
@@ -2736,7 +2736,9 @@ function ttsClearAll() {
 
 function ttsWpmMs(text) {
   const words = text.trim().split(/\s+/).length;
-  return Math.round((words / ttsWPM) * 60000) + 600; // +600ms buffer — ensures timer never fires mid-word
+  // Timer is based purely on WPM. Rate is derived from WPM so they stay in sync.
+  // Add 800ms buffer to ensure timer ALWAYS fires after voice finishes, never before.
+  return Math.round((words / ttsWPM) * 60000) + 800;
 }
 
 // Split text into sentence-sized pieces (iOS chokes on long utterances)
@@ -3058,12 +3060,13 @@ function ttsNextSentence() {
     // WPM timer is the primary source of truth — always fires
     ttsAdvTimer = setTimeout(advance, waitMs);
 
-    // onend: only trust after 75% of expected duration
-    // Below that = iOS early-fire bug — let the timer handle it
+    // onend: trust after 60% of expected duration at higher speeds, 70% at normal
+    // This lets the voice signal completion without waiting for the full buffer
+    const trustPct = ttsWPM >= 160 ? 0.60 : 0.70;
     ttsUtterance.onend = () => {
       const elapsed = Date.now() - startTs;
-      if (elapsed >= waitMs * 0.75) advance();
-      // else: fired too early — ignore, timer will catch it
+      if (elapsed >= waitMs * trustPct) advance();
+      // else: fired too early (iOS bug) — ignore, timer will catch it
     };
 
     ttsUtterance.onerror = (e) => {
