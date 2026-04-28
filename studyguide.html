@@ -2911,9 +2911,9 @@ function ttsJumpToSection(valStr) {
   const startChunk = parseInt(valStr, 10);
   ttsClearAll();
   speechSynthesis.cancel();
-  ttsChunkIdx  = startChunk;
-  ttsLastChunk = -1;
-  ttsSubQueue  = [];
+  ttsChunkIdx    = startChunk;
+  ttsLastChunk   = -1;   // not used for skip logic anymore but keep for safety
+  ttsSubQueue    = [];
   ttsCurrentCard = null;
   ttsActive    = true;
 
@@ -2971,33 +2971,32 @@ function ttsStart() {
   document.getElementById('tts-prev-btn').style.display  = 'flex';
   document.getElementById('tts-next-btn').style.display  = 'flex';
   updateTTSUI();
-  ttsNextChunk();
+  setTimeout(ttsNextChunk, 150); // give cancel() time to settle before first chunk
 }
 
 // Advance to next main chunk
 function ttsNextChunk() {
   if (!ttsActive) return;
   if (ttsChunkIdx >= ttsChunks.length) { ttsStop(); return; }
-  if (ttsChunkIdx === ttsLastChunk) { ttsChunkIdx++; }
-  if (ttsChunkIdx >= ttsChunks.length) { ttsStop(); return; }
 
-  ttsLastChunk = ttsChunkIdx;
-  const chunk  = ttsChunks[ttsChunkIdx];
+  // No skip guard here — ttsChunkIdx is managed exclusively by ttsNextSentence
+  const chunk = ttsChunks[ttsChunkIdx];
 
-  // Update progress
-  const pct = Math.round(ttsChunkIdx / ttsChunks.length * 100);
-  const fill = document.getElementById('tts-progress-fill');
-  if (fill) fill.style.width = pct + '%';
-
-  const secName  = ttsGetSecName();
+  // Update progress bar and status
+  const pct      = Math.round((ttsChunkIdx + 1) / ttsChunks.length * 100);
+  const fill     = document.getElementById('tts-progress-fill');
   const statusEl = document.getElementById('tts-status');
-  if (statusEl) statusEl.textContent = secName ? 'Reading: ' + secName + ' (' + pct + '%)' : pct + '% complete';
+  const secName  = ttsGetSecName();
+  if (fill)     fill.style.width = pct + '%';
+  if (statusEl) statusEl.textContent = secName
+    ? 'Reading: ' + secName + ' (' + pct + '%)'
+    : 'Block ' + (ttsChunkIdx + 1) + ' of ' + ttsChunks.length;
 
-  // Keep dropdown in sync
+  // Keep section dropdown in sync
   const sel = document.getElementById('tts-section-select');
   if (sel && ttsSections[chunk.sectionIdx]) sel.value = ttsSections[chunk.sectionIdx].startChunk;
 
-  // Scroll to card (only when card changes)
+  // Scroll to card only when card changes — debounced to avoid jank
   const card = chunk.el ? chunk.el.closest('.card') : null;
   if (card && card !== ttsCurrentCard) {
     ttsCurrentCard = card;
@@ -3007,8 +3006,14 @@ function ttsNextChunk() {
     }, 200);
   }
 
-  // Split into sentences and queue them
+  // Build sentence queue for this chunk and start reading
   ttsSubQueue = ttsToSentences(chunk.text);
+  if (ttsSubQueue.length === 0) {
+    // Empty chunk (shouldn't happen but guard against it) — just move on
+    ttsChunkIdx++;
+    setTimeout(ttsNextChunk, 50);
+    return;
+  }
   ttsNextSentence();
 }
 
@@ -3020,7 +3025,7 @@ function ttsNextSentence() {
   ttsApplyPending();
 
   if (ttsSubQueue.length === 0) {
-    // Done with this chunk — move to next
+    // This chunk is fully read — move to next chunk
     ttsChunkIdx++;
     setTimeout(ttsNextChunk, 250);
     return;
