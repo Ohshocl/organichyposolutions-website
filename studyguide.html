@@ -3082,16 +3082,16 @@ function ttsClearWatchdog() {
 }
 
 function ttsArmWatchdog(expectedDurationMs) {
+  // Watchdog is no longer used per-subchunk — timer in ttsReadSubChunk handles timing.
+  // This is kept as a global stall detector only (30s max silence = something broke).
   ttsClearWatchdog();
-  // Allow up to 2× expected duration + 2s buffer before declaring stuck
-  const timeout = Math.max(4000, expectedDurationMs * 2 + 2000);
   ttsWatchdog = setTimeout(() => {
-    // If we're still on the same chunk, force advance
-    if (ttsActive && ttsChunkIdx === ttsLastChunkIdx) {
-      ttsChunkIdx++;
-      ttsAdvance();
+    if (ttsActive) {
+      console.warn('TTS: 30s stall detected, restarting from current position');
+      speechSynthesis.cancel();
+      setTimeout(ttsReadSubChunk, 200);
     }
-  }, timeout);
+  }, 30000);
 }
 
 function ttsAdvance() {
@@ -3191,14 +3191,16 @@ function ttsReadChunk() {
 function ttsReadSubChunk() {
   if (!ttsActive) return;
   if (ttsSubQueue.length === 0) {
-    // Done with this main chunk, advance
     ttsChunkIdx++;
     ttsAdvance();
     return;
   }
 
   const text = ttsSubQueue.shift();
-  if (!text || !text.trim()) { ttsReadSubChunk(); return; }
+  if (!text || !text.trim()) { setTimeout(ttsReadSubChunk, 30); return; }
+
+  // Cancel any pending speech before starting new
+  speechSynthesis.cancel();
 
   ttsUtterance = new SpeechSynthesisUtterance(text);
   ttsUtterance.rate   = ttsSpeed;
@@ -3206,28 +3208,50 @@ function ttsReadSubChunk() {
   ttsUtterance.volume = 1.0;
   ttsUtterance.voice  = ttsPickVoice();
 
+  // Estimate reading time: words / (rate * avg_words_per_second) + generous buffer
+  // Non-default voices on iOS run slower — use 1.8 wps base instead of 2.5
   const wordCount = text.split(/\s+/).length;
-  const estMs     = Math.round(wordCount / (ttsSpeed * 2.5) * 1000);
+  const estMs = Math.round((wordCount / (ttsSpeed * 1.8)) * 1000) + 800;
 
-  let advanced = false;
-  function doNext() {
-    if (advanced) return;
-    advanced = true;
-    // Short gap between sub-chunks so iOS doesn't merge utterances
-    setTimeout(ttsReadSubChunk, 60);
-  }
+  // Schedule advance purely on timer — don't rely on onend which is broken
+  // on iOS for non-default voices. onend fires early or not at all.
+  const scheduleNext = () => setTimeout(ttsReadSubChunk, 120);
 
-  ttsUtterance.onend   = doNext;
-  ttsUtterance.onerror = doNext;
+  // Use onend as an ACCELERATOR only — if it fires at a reasonable time,
+  // use it. Otherwise the timer catches it.
+  let timerFired = false;
+  let endFired   = false;
 
-  ttsArmWatchdog(estMs);
+  const advanceTimer = setTimeout(() => {
+    timerFired = true;
+    if (!endFired) scheduleNext();
+  }, estMs);
+
+  // Track when speech started to detect early-fire bugs
+  const startedAt = Date.now();
+
+  ttsUtterance.onend = () => {
+    endFired = true;
+    const elapsed = Date.now() - startedAt;
+    const minValidMs = Math.round(estMs * 0.35); // less than 35% = iOS fired early
+    if (elapsed >= minValidMs) {
+      // onend fired at a believable time — trust it, cancel timer, advance now
+      clearTimeout(advanceTimer);
+      if (!timerFired) scheduleNext();
+    }
+    // else: onend fired too early = iOS bug. Ignore it, let the timer handle it.
+  };
+
+  ttsUtterance.onerror = () => {
+    clearTimeout(advanceTimer);
+    if (!timerFired && !endFired) scheduleNext();
+  };
+
   speechSynthesis.speak(ttsUtterance);
 }
 
 function ttsPause() {
   ttsClearWatchdog();
-  ttsHighlightTimers.forEach(clearTimeout);
-  ttsHighlightTimers = [];
   speechSynthesis.pause();
   ttsActive = false;
   updateTTSUI();
