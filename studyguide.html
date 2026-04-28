@@ -2736,22 +2736,51 @@ function ttsClearAll() {
 
 function ttsWpmMs(text) {
   const words = text.trim().split(/\s+/).length;
-  return Math.round((words / ttsWPM) * 60000) + 300; // +300ms buffer
+  return Math.round((words / ttsWPM) * 60000) + 600; // +600ms buffer — ensures timer never fires mid-word
 }
 
 // Split text into sentence-sized pieces (iOS chokes on long utterances)
+function ttsCleanText(raw) {
+  return raw
+    // Em dashes — Safari reads these as "dash" or pauses awkwardly. Replace with comma-space.
+    .replace(/\s*—\s*/g, ', ')
+    // En dash
+    .replace(/\s*–\s*/g, ', ')
+    // Parenthetical acronyms: "FDI (Foreign Direct Investment)" — skip the expansion
+    // "(FDI)" style abbreviations: just keep the preceding word
+    .replace(/\s*\([A-Z][A-Z]+\)/g, '')
+    // Slash between words: "short-term/long-term" -> "short-term or long-term"
+    .replace(/\s*\/\s*/g, ' or ')
+    // Bullet chars and arrows that Safari may stumble on
+    .replace(/[→←•·◦▶▸►]/g, ', ')
+    // Multiple spaces/commas from above replacements
+    .replace(/,\s*,/g, ',')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
 function ttsToSentences(text) {
-  const MAX = 140;
-  // Split at sentence endings
-  const raw = text.replace(/([.!?])\s+/g, '$1|').split('|').map(s => s.trim()).filter(Boolean);
+  const MAX = 130;
+  const cleaned = ttsCleanText(text);
+  // Split at sentence endings followed by space
+  const raw = cleaned.replace(/([.!?])\s+/g, '$1|').split('|').map(s => s.trim()).filter(Boolean);
   const out = [];
   raw.forEach(s => {
     if (s.length <= MAX) { out.push(s); return; }
-    // Further split at commas near the midpoint
+    // Split long sentences at clause boundaries (colon, semicolon, comma near midpoint)
     const mid  = Math.floor(s.length / 2);
-    const cut  = Math.max(s.lastIndexOf(', ', mid), s.lastIndexOf(' — ', mid), s.lastIndexOf(' - ', mid), s.lastIndexOf(' ', mid));
-    if (cut > 15) { out.push(s.slice(0, cut).trim()); out.push(s.slice(cut + 1).trim()); }
-    else out.push(s);
+    const cut  = Math.max(
+      s.lastIndexOf(': ', mid),
+      s.lastIndexOf('; ', mid),
+      s.lastIndexOf(', ', mid),
+      s.lastIndexOf(' ', mid)
+    );
+    if (cut > 20) {
+      out.push(s.slice(0, cut + 1).trim());
+      out.push(s.slice(cut + 1).trim());
+    } else {
+      out.push(s);
+    }
   });
   return out.filter(s => s.length > 0);
 }
@@ -2913,60 +2942,58 @@ function ttsNextSentence() {
   if (ttsSubQueue.length === 0) {
     // Done with this chunk — move to next
     ttsChunkIdx++;
-    setTimeout(ttsNextChunk, 150);
+    setTimeout(ttsNextChunk, 250);
     return;
   }
 
   const text = ttsSubQueue.shift().trim();
   if (!text) { ttsNextSentence(); return; }
 
-  // iOS Safari: cancel first, then wait 80ms before speaking
-  // Immediate cancel+speak = stutter, choppy audio, premature onend
+  // iOS Safari requires a clean gap after cancel() before the next speak()
+  // 150ms is the safe minimum — 80ms causes clipping on busy threads
   speechSynthesis.cancel();
 
-  // Build utterance with fresh voice object (iOS invalidates after cancel)
   const voice = ttsPickVoice();
   const rate  = ttsRate;
   const wpm   = ttsWPM;
-
-  const waitMs  = ttsWpmMs(text);  // WPM-based timer — source of truth
-  const startTs = Date.now();
-  let   done    = false;
+  let   done  = false;
 
   function advance() {
     if (done) return;
     done = true;
     ttsClearAll();
-    setTimeout(ttsNextSentence, 200); // 200ms gap — Safari needs breathing room
+    setTimeout(ttsNextSentence, 300); // 300ms gap — gives Safari time to breathe
   }
 
-  // Delay speak by 80ms after cancel — fixes Safari stutter
   setTimeout(() => {
     if (!ttsActive || done) return;
 
     ttsUtterance        = new SpeechSynthesisUtterance(text);
     ttsUtterance.rate   = rate;
-    ttsUtterance.pitch  = 1.15;
+    ttsUtterance.pitch  = (ttsVoicePref === 'irish') ? 1.35 : 1.15;
     ttsUtterance.volume = 1.0;
     if (voice) ttsUtterance.voice = voice;
 
-    // Primary advance: WPM timer. Fires no matter what.
+    // startTs measured HERE (after the delay) so elapsed is true speech time
+    const startTs = Date.now();
+
+    // WPM timer is the primary source of truth — always fires
     ttsAdvTimer = setTimeout(advance, waitMs);
 
-    // onend: only trust if fired after 50% of expected time
-    // Earlier = iOS early-fire bug, ignore it
+    // onend: only trust after 75% of expected duration
+    // Below that = iOS early-fire bug — let the timer handle it
     ttsUtterance.onend = () => {
       const elapsed = Date.now() - startTs;
-      if (elapsed >= waitMs * 0.50) advance();
+      if (elapsed >= waitMs * 0.75) advance();
+      // else: fired too early — ignore, timer will catch it
     };
 
-    // onerror: skip interrupted (that's us calling cancel), advance on real errors
     ttsUtterance.onerror = (e) => {
       if (e.error !== 'interrupted' && e.error !== 'canceled') advance();
     };
 
     speechSynthesis.speak(ttsUtterance);
-  }, 80);
+  }, 150);
 
   // Global stall watchdog: if nothing has advanced in 25s, something broke
   ttsWatchdog = setTimeout(() => {
@@ -3010,8 +3037,8 @@ function ttsSetSpeed(rate, wpm, btn) {
   document.querySelectorAll('.tts-speed-btn:not(.tts-voice-btn)').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   if (ttsActive) {
-    // Defer — apply at start of next sentence, don't interrupt current word
     ttsPendingSpeed = { rate, wpm };
+    ttsFastForwardCurrent();
   } else {
     ttsRate = rate;
     ttsWPM  = wpm;
@@ -3090,16 +3117,31 @@ function ttsSetVoicePref(pref, btn) {
   btn.classList.add('active');
 
   if (ttsActive) {
-    // Queue the change — apply it at the START of the next sentence
-    // so we never cancel mid-word (causes Safari stutter)
     ttsPendingVoice = pref;
     const statusEl = document.getElementById('tts-status');
-    if (statusEl) statusEl.textContent = 'Switching voice after this sentence…';
+    if (statusEl) statusEl.textContent = 'Switching voice…';
+    // Accelerate the current sentence timer to fire within 1.2s max
+    // so the switch feels responsive without cutting off mid-word
+    ttsFastForwardCurrent();
   } else {
     ttsVoicePref = pref;
     const statusEl = document.getElementById('tts-status');
     if (statusEl) statusEl.textContent = 'Voice: ' + ttsVoiceName();
   }
+}
+
+
+// Accelerate current sentence to end within 1.2s so voice/speed changes feel responsive
+function ttsFastForwardCurrent() {
+  if (!ttsAdvTimer) return; // nothing playing yet
+  clearTimeout(ttsAdvTimer);
+  // Give iOS ~1.2s to finish current word naturally, then advance
+  ttsAdvTimer = setTimeout(() => {
+    if (ttsActive) {
+      speechSynthesis.cancel();
+      setTimeout(ttsNextSentence, 200);
+    }
+  }, 1200);
 }
 
 function ttsApplyPending() {
