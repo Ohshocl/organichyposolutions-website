@@ -2708,247 +2708,262 @@ function initArena() {
 
 
 // ═══ TEXT-TO-SPEECH ENGINE ═══
-// Design: timer-driven advancement, onend used only as trusted accelerator.
-// WPM-based timing is more reliable than rate-multiplier estimation.
+// Safari/iOS approach: use onend as primary signal, with a single
+// watchdog timeout as fallback. No complex timer math.
+// Keep utterances SHORT (under 100 chars) so onend fires reliably.
 
-let ttsUtterance  = null;
-let ttsActive     = false;
-let ttsRate       = 1.0;    // speechSynthesis rate
-let ttsWPM        = 140;    // words per minute (controls timer)
-let ttsChunks     = [];     // [{text, sectionIdx, el}]
-let ttsChunkIdx   = 0;
-let ttsSubQueue   = [];     // sentence-sized pieces of current chunk
-let ttsSections   = [];     // [{title, startChunk}]
-let ttsLastChunk  = -1;
+let ttsUtterance   = null;
+let ttsActive      = false;
+let ttsRate        = 1.0;
+let ttsWPM         = 140;
+let ttsChunks      = [];
+let ttsChunkIdx    = 0;
+let ttsSubQueue    = [];
+let ttsSections    = [];
 let ttsCurrentCard = null;
 let ttsScrollTimer = null;
-let ttsAdvTimer    = null;  // the one true advance timer per sub-chunk
-let ttsWatchdog    = null;  // global stall detector
+let ttsWatchdog    = null;
+let ttsVoicePref   = 'british';
+let ttsPendingVoice = null;
+let ttsPendingRate  = null;
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
-function ttsClearAll() {
-  clearTimeout(ttsAdvTimer);
-  clearTimeout(ttsWatchdog);
-  clearTimeout(ttsScrollTimer);
-  ttsAdvTimer  = null;
-  ttsWatchdog  = null;
-}
-
-function ttsWpmMs(text) {
-  const words = text.trim().split(/\s+/).length;
-  // Timer is based purely on WPM. Rate is derived from WPM so they stay in sync.
-  // Add 800ms buffer to ensure timer ALWAYS fires after voice finishes, never before.
-  return Math.round((words / ttsWPM) * 60000) + 800;
-}
-
-// Split text into sentence-sized pieces (iOS chokes on long utterances)
-// Pronunciation dictionary — words Safari mispronounces on iOS
-// Uses phonetic respelling that iOS TTS renders correctly
+// ── Pronunciation dictionary ──────────────────────────────────────────────────
 const TTS_PRONOUNCE = [
-  // Acronyms — spell them out so iOS says each letter
-  [/\bGAAP\b/g,       'gap'],           // reads as one word otherwise
-  [/\bIFRS\b/g,       'I F R S'],
-  [/\bIMF\b/g,        'I M F'],
-  [/\bWTO\b/g,        'W T O'],
-  [/\bFDI\b/g,        'F D I'],
-  [/\bGDP\b/g,        'G D P'],
-  [/\bCSR\b/g,        'C S R'],
-  [/\bMNC\b/g,        'M N C'],
-  [/\bTNC\b/g,        'T N C'],
-  [/\bHR\b/g,         'H R'],
-  [/\bIP\b/g,         'I P'],
-  [/\bJIT\b/g,        'J I T'],
-  [/\bERP\b/g,        'E R P'],
-  [/\bSDR\b/g,        'S D R'],
-  [/\bUCC\b/g,        'U C C'],
-  [/\bCISG\b/g,       'C I S G'],
-  [/\bTRIPS\b/g,      'trips'],         // this one IS a word
-  [/\bWIPO\b/g,       'W I P O'],
-  [/\bNAFTA\b/g,      'nafta'],         // pronounced as a word
-  [/\bUMSCA\b/g,      'U S M C A'],
-  [/\bUSMCA\b/g,      'U S M C A'],
-  [/\bCAFTA\b/g,      'cafta'],
-  [/\bASEAN\b/g,      'AH-see-an'],
-  [/\bGCC\b/g,        'G C C'],
-  [/\bEU\b/g,         'E U'],
-  [/\bFASB\b/g,       'F A S B'],
-  [/\bIASB\b/g,       'I A S B'],
-  [/\bFCPA\b/g,       'F C P A'],
-  [/\bVERs\b/g,       'voluntary export restrictions'],
-  [/\bVER\b/g,        'voluntary export restriction'],
-  [/\bFTA\b/g,        'F T A'],
-  [/\bFTAs\b/g,       'F T As'],
-  [/\bMNCs\b/g,       'M N Cs'],
-  [/\bTNCs\b/g,       'T N Cs'],
-
-  // Tricky business/econ words Safari mangles
-  [/\bmurabaha\b/gi,      'moo-rah-bah-ha'],
-  [/\bmusharaka\b/gi,     'moo-shah-rah-kah'],
-  [/\bijara\b/gi,         'ee-jah-rah'],
-  [/\briba\b/gi,          'ree-bah'],
-  [/\bSharia\b/gi,        'sha-ree-ah'],
-  [/\bGhemawat\b/gi,      'geh-mah-wat'],
-  [/\bHofstede\b/gi,      'hof-steh-deh'],
-  [/\bHeckscher\b/gi,     'heck-sher'],
-  [/\bOhlin\b/gi,         'oh-lin'],
-  [/\bMercosur\b/gi,      'mair-koh-sur'],
-  [/\bmurabaha\b/gi,      'moo-rah-bah-ha'],
-  [/\bglocalization\b/gi, 'glo-kal-ih-ZAY-shun'],
-  [/\bglocal\b/gi,        'glo-kal'],
-  [/\bautarky\b/gi,       'aw-tar-kee'],
-  [/\brepatriation\b/gi,  'ree-pay-tree-AY-shun'],
-  [/\brepatriating\b/gi,  'ree-PAY-tree-ay-ting'],
-  [/\bpolycentric\b/gi,   'pol-ee-SEN-trik'],
-  [/\bethnocentric\b/gi,  'eth-no-SEN-trik'],
-  [/\bgeocentric\b/gi,    'jee-oh-SEN-trik'],
-  [/\bcountervailing\b/gi,'coun-ter-VAY-ling'],
-  [/\bmurabaha\b/gi,      'moo-rah-bah-ha'],
-
-  // Words with unusual stress Safari gets wrong
-  [/\bcomparative\b/gi,   'com-PAIR-ah-tiv'],
-  [/\bprotectionism\b/gi, 'pro-TEK-shun-iz-um'],
-  [/\bsubsidiar/gi,        'sub-SID-ee-air'],   // subsidiaries / subsidiary
-  [/\bmonopolization\b/gi,'mon-op-oh-lih-ZAY-shun'],
-  [/\boligopoly\b/gi,     'ol-ih-GOP-oh-lee'],
-  [/\bcryptographically\b/gi, 'krip-toh-GRAF-ik-lee'],
-
-  // Numbers/symbols that read oddly
-  [/×/g,   ' times '],
-  [/%/g,   ' percent'],
-  [/\$/g,  'dollars'],
+  [/\bGAAP\b/g,        'gap'],
+  [/\bIFRS\b/g,        'I F R S'],
+  [/\bIMF\b/g,         'I M F'],
+  [/\bWTO\b/g,         'W T O'],
+  [/\bFDI\b/g,         'F D I'],
+  [/\bGDP\b/g,         'G D P'],
+  [/\bCSR\b/g,         'C S R'],
+  [/\bMNCs\b/g,        'M N Cs'],
+  [/\bMNC\b/g,         'M N C'],
+  [/\bTNCs\b/g,        'T N Cs'],
+  [/\bTNC\b/g,         'T N C'],
+  [/\bHR\b/g,          'H R'],
+  [/\bIP\b/g,          'I P'],
+  [/\bJIT\b/g,         'J I T'],
+  [/\bERP\b/g,         'E R P'],
+  [/\bSDR\b/g,         'S D R'],
+  [/\bUCC\b/g,         'U C C'],
+  [/\bCISG\b/g,        'C I S G'],
+  [/\bTRIPS\b/g,       'trips'],
+  [/\bWIPO\b/g,        'W I P O'],
+  [/\bNAFTA\b/g,       'nafta'],
+  [/\bUSMCA\b/g,       'U S M C A'],
+  [/\bCAFTA\b/g,       'cafta'],
+  [/\bASEAN\b/g,       'AH see an'],
+  [/\bGCC\b/g,         'G C C'],
+  [/\bFASB\b/g,        'F A S B'],
+  [/\bIASB\b/g,        'I A S B'],
+  [/\bFCPA\b/g,        'F C P A'],
+  [/\bFTAs\b/g,        'F T As'],
+  [/\bFTA\b/g,         'F T A'],
+  [/\bVERs\b/g,        'voluntary export restrictions'],
+  [/\bVER\b/g,         'voluntary export restriction'],
+  [/\bmurabaha\b/gi,   'moo rah bah ha'],
+  [/\bmusharaka\b/gi,  'moo shah rah kah'],
+  [/\bijara\b/gi,      'ee jah rah'],
+  [/\briba\b/gi,       'ree bah'],
+  [/\bSharia\b/gi,     'sha ree ah'],
+  [/\bGhemawat\b/gi,   'geh mah wat'],
+  [/\bHofstede\b/gi,   'hof steh deh'],
+  [/\bHeckscher\b/gi,  'heck sher'],
+  [/\bOhlin\b/gi,      'oh lin'],
+  [/\bMercosur\b/gi,   'mair koh sur'],
+  [/\bglocalization\b/gi, 'glo kal ih zay shun'],
+  [/\bglocal\b/gi,     'glo kal'],
+  [/\bautarky\b/gi,    'aw tar kee'],
+  [/\brepatriation\b/gi,  'ree pay tree ay shun'],
+  [/\bpolycentric\b/gi,   'pol ee sen trik'],
+  [/\bethnocentric\b/gi,  'eth no sen trik'],
+  [/\bgeocentric\b/gi,    'jee oh sen trik'],
+  [/\bcountervailing\b/gi,'cown ter vay ling'],
+  [/×/g,  ' times '],
+  [/%/g,  ' percent'],
+  [/\$/g, 'dollars'],
   [/&amp;/g, 'and'],
-  [/&/g,   'and'],
+  [/&/g,  'and'],
+  [/\s*—\s*/g,  ', '],
+  [/\s*–\s*/g,  ', '],
+  [/\s*\([A-Z][A-Z]+\)/g, ''],
+  [/\s*\/\s*/g, ' or '],
+  [/[→←•·◦▶▸►]/g, ', '],
+  [/,\s*,/g, ','],
+  [/\s{2,}/g, ' '],
 ];
 
-function ttsCleanText(raw) {
-  let t = raw
-    .replace(/\s*—\s*/g, ', ')
-    .replace(/\s*–\s*/g, ', ')
-    .replace(/\s*\([A-Z][A-Z]+\)/g, '')   // strip parenthetical all-caps acronyms
-    .replace(/\s*\/\s*/g, ' or ')
-    .replace(/[→←•·◦▶▸►]/g, ', ')
-    .replace(/,\s*,/g, ',')
-    .replace(/\s{2,}/g, ' ')
-    .trim();
-
-  // Apply pronunciation dictionary
-  for (const [pattern, replacement] of TTS_PRONOUNCE) {
-    t = t.replace(pattern, replacement);
-  }
-
-  return t;
+function ttsClean(text) {
+  let t = text.trim();
+  for (const [p, r] of TTS_PRONOUNCE) t = t.replace(p, r);
+  return t.trim();
 }
 
-function ttsToSentences(text) {
-  const MAX = 130;
-  const cleaned = ttsCleanText(text);
-  // Split at sentence endings followed by space
-  const raw = cleaned.replace(/([.!?])\s+/g, '$1|').split('|').map(s => s.trim()).filter(Boolean);
+// Split into short utterances Safari can handle reliably
+// Target: under 90 chars each so onend fires consistently
+function ttsSplit(text) {
+  const cleaned = ttsClean(text);
   const out = [];
-  raw.forEach(s => {
-    if (s.length <= MAX) { out.push(s); return; }
-    // Split long sentences at clause boundaries (colon, semicolon, comma near midpoint)
-    const mid  = Math.floor(s.length / 2);
-    const cut  = Math.max(
-      s.lastIndexOf(': ', mid),
-      s.lastIndexOf('; ', mid),
-      s.lastIndexOf(', ', mid),
-      s.lastIndexOf(' ', mid)
-    );
-    if (cut > 20) {
-      out.push(s.slice(0, cut + 1).trim());
-      out.push(s.slice(cut + 1).trim());
-    } else {
-      out.push(s);
+  // Split at sentence endings first
+  const bySentence = cleaned.replace(/([.!?])\s+/g, '$1\n').split('\n').map(s => s.trim()).filter(Boolean);
+  for (const s of bySentence) {
+    if (s.length <= 90) { out.push(s); continue; }
+    // Split long sentence at clause boundaries
+    const parts = s.split(/(?:,\s+|;\s+|:\s+)/);
+    let current = '';
+    for (const part of parts) {
+      if (!current) { current = part; continue; }
+      if ((current + ', ' + part).length <= 90) {
+        current += ', ' + part;
+      } else {
+        if (current) out.push(current.trim());
+        current = part;
+      }
     }
-  });
+    if (current.trim()) out.push(current.trim());
+  }
   return out.filter(s => s.length > 0);
 }
 
-// ── Build chunk list from DOM ─────────────────────────────────────────────────
+// ── Voice picker ──────────────────────────────────────────────────────────────
+const VOICES = {
+  british:      ['Serena', 'Kate', 'Martha'],
+  irish:        ['Moira'],
+  australian:   ['Karen', 'Catherine'],
+  'south-african': ['Tessa'],
+};
+const VOICE_FALLBACK = ['Serena','Moira','Karen','Tessa','Kate','Samantha','Victoria'];
+
+function ttsPickVoice() {
+  const all = speechSynthesis.getVoices();
+  if (!all.length) return null;
+  const pref = ttsPendingVoice || ttsVoicePref;
+  const names = VOICES[pref] || VOICES.british;
+  for (const name of names) {
+    const v = all.find(v => v.name === name);
+    if (v) return v;
+  }
+  for (const name of VOICE_FALLBACK) {
+    const v = all.find(v => v.name === name);
+    if (v) return v;
+  }
+  return all.find(v => v.lang.startsWith('en')) || null;
+}
+
+// ── Build chunk list ──────────────────────────────────────────────────────────
 function ttsBuildChunks() {
   const study = document.getElementById('study');
   if (!study) return;
-  ttsChunks   = [];
-  ttsSections = [];
-
-  const nodes = study.querySelectorAll('.sec-head, .card');
-  let secIdx  = 0;
-
-  nodes.forEach(el => {
+  ttsChunks = []; ttsSections = [];
+  study.querySelectorAll('.sec-head, .card').forEach(el => {
     if (el.classList.contains('sec-head')) {
       ttsSections.push({ title: el.textContent.trim(), startChunk: ttsChunks.length });
-      secIdx = ttsSections.length - 1;
-    } else if (el.classList.contains('card')) {
-      const titleEl = el.querySelector('.card-title');
-      const bodyEl  = el.querySelector('.body');
-      if (titleEl && titleEl.textContent.trim()) {
-        ttsChunks.push({ text: titleEl.textContent.trim(), sectionIdx: secIdx, el: titleEl });
-      }
-      if (bodyEl) {
-        const raw = (bodyEl.innerText || bodyEl.textContent).replace(/\s+/g, ' ').trim();
-        if (raw) ttsChunks.push({ text: raw, sectionIdx: secIdx, el: bodyEl });
+    } else {
+      const si = ttsSections.length ? ttsSections.length - 1 : 0;
+      const te = el.querySelector('.card-title');
+      const be = el.querySelector('.body');
+      if (te && te.textContent.trim()) ttsChunks.push({ text: te.textContent.trim(), si, el: te });
+      if (be) {
+        const t = (be.innerText || be.textContent).replace(/\s+/g, ' ').trim();
+        if (t) ttsChunks.push({ text: t, si, el: be });
       }
     }
   });
-
-  // Populate section dropdown
   const sel = document.getElementById('tts-section-select');
   if (sel) {
     sel.innerHTML = '<option value="">— Jump to section —</option>';
-    ttsSections.forEach((sec, i) => {
-      const opt = document.createElement('option');
-      opt.value = sec.startChunk;
-      opt.textContent = (i + 1) + '. ' + sec.title.replace(/— .+$/, '').trim().slice(0, 50);
-      sel.appendChild(opt);
+    ttsSections.forEach((s, i) => {
+      const o = document.createElement('option');
+      o.value = s.startChunk;
+      o.textContent = (i + 1) + '. ' + s.title.replace(/— .+$/, '').trim().slice(0, 50);
+      sel.appendChild(o);
     });
   }
 }
 
-// ── Section jump ──────────────────────────────────────────────────────────────
-function ttsJumpToSection(valStr) {
-  if (!valStr) return;
-  const startChunk = parseInt(valStr, 10);
-  ttsClearAll();
-  speechSynthesis.cancel();
-  ttsChunkIdx    = startChunk;
-  ttsLastChunk   = -1;   // not used for skip logic anymore but keep for safety
-  ttsSubQueue    = [];
-  ttsCurrentCard = null;
-  ttsActive    = true;
-
-  document.getElementById('tts-progress-wrap').style.display = 'block';
-  document.getElementById('tts-stop-btn').style.display  = 'flex';
-  document.getElementById('tts-prev-btn').style.display  = 'flex';
-  document.getElementById('tts-next-btn').style.display  = 'flex';
-  updateTTSUI();
-
-  // Scroll to section heading
-  const chunk   = ttsChunks[startChunk];
-  const secIdx  = chunk ? chunk.sectionIdx : 0;
-  const heads   = document.querySelectorAll('#study .sec-head');
-  if (heads[secIdx]) heads[secIdx].scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-  setTimeout(ttsNextChunk, 350);
-}
-
-function ttsSkipSection(dir) {
-  if (!ttsChunks.length) return;
-  const curSec    = ttsChunks[Math.min(ttsChunkIdx, ttsChunks.length - 1)]?.sectionIdx ?? 0;
-  const targetSec = Math.max(0, Math.min(ttsSections.length - 1, curSec + dir));
-  const startChunk = ttsSections[targetSec]?.startChunk ?? 0;
-  const sel = document.getElementById('tts-section-select');
-  if (sel) sel.value = startChunk;
-  ttsJumpToSection(String(startChunk));
-}
-
-function ttsGetSecName() {
-  const chunk = ttsChunks[Math.min(ttsChunkIdx, ttsChunks.length - 1)];
-  if (!chunk) return '';
-  return ttsSections[chunk.sectionIdx]?.title.replace(/— .+$/, '').trim() ?? '';
-}
-
 // ── Core read loop ────────────────────────────────────────────────────────────
+function ttsSpeak(text, onDone) {
+  // Always cancel first, then wait for iOS to clear
+  speechSynthesis.cancel();
+  setTimeout(() => {
+    if (!ttsActive) return;
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.voice  = ttsPickVoice();
+    utt.rate   = ttsRate;
+    utt.pitch  = (ttsVoicePref === 'irish') ? 1.35 : 1.15;
+    utt.volume = 1.0;
+    ttsUtterance = utt;
+
+    // Watchdog: words / wpm * 60s + 2s safety margin
+    const words = text.split(/\s+/).length;
+    const maxMs = Math.round(words / ttsWPM * 60000) + 2000;
+    clearTimeout(ttsWatchdog);
+    ttsWatchdog = setTimeout(() => {
+      // onend didn't fire in time — force advance
+      if (ttsActive) onDone();
+    }, maxMs);
+
+    utt.onend = () => { clearTimeout(ttsWatchdog); onDone(); };
+    utt.onerror = (e) => {
+      clearTimeout(ttsWatchdog);
+      if (e.error !== 'interrupted' && e.error !== 'canceled') onDone();
+    };
+    speechSynthesis.speak(utt);
+  }, 120);
+}
+
+function ttsReadQueue() {
+  if (!ttsActive) return;
+
+  // Apply pending voice/rate changes between sentences
+  if (ttsPendingVoice) { ttsVoicePref = ttsPendingVoice; ttsPendingVoice = null; }
+  if (ttsPendingRate)  { ttsRate = ttsPendingRate.rate; ttsWPM = ttsPendingRate.wpm; ttsPendingRate = null; }
+
+  if (ttsSubQueue.length === 0) {
+    // Chunk done — advance to next
+    ttsChunkIdx++;
+    if (ttsChunkIdx >= ttsChunks.length) { ttsStop(); return; }
+    ttsLoadChunk();
+    return;
+  }
+
+  const text = ttsSubQueue.shift();
+  if (!text || !text.trim()) { ttsReadQueue(); return; }
+
+  ttsSpeak(text, () => {
+    if (ttsActive) setTimeout(ttsReadQueue, 250);
+  });
+}
+
+function ttsLoadChunk() {
+  if (!ttsActive || ttsChunkIdx >= ttsChunks.length) { ttsStop(); return; }
+  const chunk = ttsChunks[ttsChunkIdx];
+
+  // Progress
+  const pct = Math.round((ttsChunkIdx + 1) / ttsChunks.length * 100);
+  const fill = document.getElementById('tts-progress-fill');
+  const stat = document.getElementById('tts-status');
+  const secName = ttsSections[chunk.si]?.title.replace(/— .+$/, '').trim() || '';
+  if (fill) fill.style.width = pct + '%';
+  if (stat) stat.textContent = secName ? 'Reading: ' + secName + ' (' + pct + '%)' : pct + '% complete';
+
+  // Sync dropdown
+  const sel = document.getElementById('tts-section-select');
+  if (sel && ttsSections[chunk.si]) sel.value = ttsSections[chunk.si].startChunk;
+
+  // Scroll to card (debounced, only on card change)
+  const card = chunk.el ? chunk.el.closest('.card') : null;
+  if (card && card !== ttsCurrentCard) {
+    ttsCurrentCard = card;
+    clearTimeout(ttsScrollTimer);
+    ttsScrollTimer = setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
+  }
+
+  ttsSubQueue = ttsSplit(chunk.text);
+  ttsReadQueue();
+}
+
+// ── Controls ──────────────────────────────────────────────────────────────────
 function ttsToggle() {
   if (ttsActive) { ttsPause(); return; }
   if (speechSynthesis.paused) { speechSynthesis.resume(); ttsActive = true; updateTTSUI(); return; }
@@ -2956,162 +2971,40 @@ function ttsToggle() {
 }
 
 function ttsStart() {
-  ttsClearAll();
+  clearTimeout(ttsWatchdog);
   speechSynthesis.cancel();
   ttsBuildChunks();
   if (!ttsChunks.length) { showToast('No content to read'); return; }
   if (ttsChunkIdx >= ttsChunks.length) ttsChunkIdx = 0;
-  ttsLastChunk   = -1;
-  ttsSubQueue    = [];
-  ttsCurrentCard = null;
-  ttsActive      = true;
-
+  ttsSubQueue = []; ttsCurrentCard = null; ttsActive = true;
   document.getElementById('tts-progress-wrap').style.display = 'block';
-  document.getElementById('tts-stop-btn').style.display  = 'flex';
-  document.getElementById('tts-prev-btn').style.display  = 'flex';
-  document.getElementById('tts-next-btn').style.display  = 'flex';
+  document.getElementById('tts-stop-btn').style.display = 'flex';
+  document.getElementById('tts-prev-btn').style.display = 'flex';
+  document.getElementById('tts-next-btn').style.display = 'flex';
   updateTTSUI();
-  setTimeout(ttsNextChunk, 150); // give cancel() time to settle before first chunk
+  setTimeout(ttsLoadChunk, 200);
 }
 
-// Advance to next main chunk
-function ttsNextChunk() {
-  if (!ttsActive) return;
-  if (ttsChunkIdx >= ttsChunks.length) { ttsStop(); return; }
-
-  // No skip guard here — ttsChunkIdx is managed exclusively by ttsNextSentence
-  const chunk = ttsChunks[ttsChunkIdx];
-
-  // Update progress bar and status
-  const pct      = Math.round((ttsChunkIdx + 1) / ttsChunks.length * 100);
-  const fill     = document.getElementById('tts-progress-fill');
-  const statusEl = document.getElementById('tts-status');
-  const secName  = ttsGetSecName();
-  if (fill)     fill.style.width = pct + '%';
-  if (statusEl) statusEl.textContent = secName
-    ? 'Reading: ' + secName + ' (' + pct + '%)'
-    : 'Block ' + (ttsChunkIdx + 1) + ' of ' + ttsChunks.length;
-
-  // Keep section dropdown in sync
-  const sel = document.getElementById('tts-section-select');
-  if (sel && ttsSections[chunk.sectionIdx]) sel.value = ttsSections[chunk.sectionIdx].startChunk;
-
-  // Scroll to card only when card changes — debounced to avoid jank
-  const card = chunk.el ? chunk.el.closest('.card') : null;
-  if (card && card !== ttsCurrentCard) {
-    ttsCurrentCard = card;
-    clearTimeout(ttsScrollTimer);
-    ttsScrollTimer = setTimeout(() => {
-      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 200);
-  }
-
-  // Build sentence queue for this chunk and start reading
-  ttsSubQueue = ttsToSentences(chunk.text);
-  if (ttsSubQueue.length === 0) {
-    // Empty chunk (shouldn't happen but guard against it) — just move on
-    ttsChunkIdx++;
-    setTimeout(ttsNextChunk, 50);
-    return;
-  }
-  ttsNextSentence();
-}
-
-// Read one sentence, advance on timer (onend is optional accelerator only)
-function ttsNextSentence() {
-  if (!ttsActive) return;
-
-  // Apply any deferred voice/speed changes at sentence boundary (safe for Safari)
-  ttsApplyPending();
-
-  if (ttsSubQueue.length === 0) {
-    // This chunk is fully read — move to next chunk
-    ttsChunkIdx++;
-    setTimeout(ttsNextChunk, 250);
-    return;
-  }
-
-  const text = ttsSubQueue.shift().trim();
-  if (!text) { ttsNextSentence(); return; }
-
-  // iOS Safari requires a clean gap after cancel() before the next speak()
-  // 150ms is the safe minimum — 80ms causes clipping on busy threads
-  speechSynthesis.cancel();
-
-  const voice   = ttsPickVoice();
-  const rate    = ttsRate;
-  const waitMs  = ttsWpmMs(text);  // WPM-based timer — declared here so it's in scope
-  let   done    = false;
-
-  function advance() {
-    if (done) return;
-    done = true;
-    ttsClearAll();
-    setTimeout(ttsNextSentence, 300);
-  }
-
-  setTimeout(() => {
-    if (!ttsActive || done) return;
-
-    ttsUtterance        = new SpeechSynthesisUtterance(text);
-    ttsUtterance.rate   = rate;
-    ttsUtterance.pitch  = (ttsVoicePref === 'irish') ? 1.35 : 1.15;
-    ttsUtterance.volume = 1.0;
-    if (voice) ttsUtterance.voice = voice;
-
-    const startTs = Date.now();
-
-    ttsAdvTimer = setTimeout(advance, waitMs);
-
-    // onend: trust after 60% of expected duration at higher speeds, 70% at normal
-    // This lets the voice signal completion without waiting for the full buffer
-    const trustPct = ttsWPM >= 160 ? 0.60 : 0.70;
-    ttsUtterance.onend = () => {
-      const elapsed = Date.now() - startTs;
-      if (elapsed >= waitMs * trustPct) advance();
-      // else: fired too early (iOS bug) — ignore, timer will catch it
-    };
-
-    ttsUtterance.onerror = (e) => {
-      if (e.error !== 'interrupted' && e.error !== 'canceled') advance();
-    };
-
-    speechSynthesis.speak(ttsUtterance);
-  }, 150);
-
-  // Global stall watchdog: if nothing has advanced in 25s, something broke
-  ttsWatchdog = setTimeout(() => {
-    if (ttsActive) { console.warn('TTS stall — restarting'); advance(); }
-  }, 25000);
-}
-
-// ── Controls ──────────────────────────────────────────────────────────────────
 function ttsPause() {
-  ttsClearAll();
+  clearTimeout(ttsWatchdog);
   speechSynthesis.pause();
   ttsActive = false;
   updateTTSUI();
 }
 
 function ttsStop() {
-  ttsClearAll();
+  clearTimeout(ttsWatchdog); clearTimeout(ttsScrollTimer);
   speechSynthesis.cancel();
-  ttsActive       = false;
-  ttsChunkIdx     = 0;
-  ttsLastChunk    = -1;
-  ttsSubQueue     = [];
-  ttsCurrentCard  = null;
-  ttsPendingVoice = null;
-  ttsPendingSpeed = null;
-
+  ttsActive = false; ttsChunkIdx = 0; ttsSubQueue = []; ttsCurrentCard = null;
+  ttsPendingVoice = null; ttsPendingRate = null;
   const fill = document.getElementById('tts-progress-fill');
   if (fill) fill.style.width = '0%';
   document.getElementById('tts-progress-wrap').style.display = 'none';
-  document.getElementById('tts-stop-btn').style.display  = 'none';
-  document.getElementById('tts-prev-btn').style.display  = 'none';
-  document.getElementById('tts-next-btn').style.display  = 'none';
-  const statusEl = document.getElementById('tts-status');
-  if (statusEl) statusEl.textContent = 'Tap ▶ Read to start, or jump to any section below';
+  document.getElementById('tts-stop-btn').style.display = 'none';
+  document.getElementById('tts-prev-btn').style.display = 'none';
+  document.getElementById('tts-next-btn').style.display = 'none';
+  const stat = document.getElementById('tts-status');
+  if (stat) stat.textContent = 'Tap ▶ Read to start, or jump to any section below';
   const sel = document.getElementById('tts-section-select');
   if (sel) sel.value = '';
   updateTTSUI();
@@ -3120,13 +3013,50 @@ function ttsStop() {
 function ttsSetSpeed(rate, wpm, btn) {
   document.querySelectorAll('.tts-speed-btn:not(.tts-voice-btn)').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  if (ttsActive) {
-    ttsPendingSpeed = { rate, wpm };
-    ttsFastForwardCurrent();
-  } else {
-    ttsRate = rate;
-    ttsWPM  = wpm;
+  if (ttsActive) { ttsPendingRate = { rate, wpm }; }
+  else { ttsRate = rate; ttsWPM = wpm; }
+}
+
+function ttsSetVoicePref(pref, btn) {
+  document.querySelectorAll('.tts-voice-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (ttsActive) { ttsPendingVoice = pref; }
+  else {
+    ttsVoicePref = pref;
+    const v = ttsPickVoice();
+    const stat = document.getElementById('tts-status');
+    if (stat) stat.textContent = v ? 'Voice: ' + v.name : 'No matching voice found';
   }
+}
+
+function ttsJumpToSection(valStr) {
+  if (!valStr) return;
+  clearTimeout(ttsWatchdog);
+  speechSynthesis.cancel();
+  ttsChunkIdx = parseInt(valStr, 10);
+  ttsSubQueue = []; ttsCurrentCard = null;
+  ttsActive = true;
+  document.getElementById('tts-progress-wrap').style.display = 'block';
+  document.getElementById('tts-stop-btn').style.display = 'flex';
+  document.getElementById('tts-prev-btn').style.display = 'flex';
+  document.getElementById('tts-next-btn').style.display = 'flex';
+  updateTTSUI();
+  const chunk = ttsChunks[ttsChunkIdx];
+  if (chunk) {
+    const heads = document.querySelectorAll('#study .sec-head');
+    if (heads[chunk.si]) heads[chunk.si].scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  setTimeout(ttsLoadChunk, 350);
+}
+
+function ttsSkipSection(dir) {
+  if (!ttsChunks.length) return;
+  const cur = ttsChunks[Math.min(ttsChunkIdx, ttsChunks.length - 1)]?.si ?? 0;
+  const target = Math.max(0, Math.min(ttsSections.length - 1, cur + dir));
+  const start = ttsSections[target]?.startChunk ?? 0;
+  const sel = document.getElementById('tts-section-select');
+  if (sel) sel.value = start;
+  ttsJumpToSection(String(start));
 }
 
 function updateTTSUI() {
@@ -3136,112 +3066,8 @@ function updateTTSUI() {
   else { btn.textContent = speechSynthesis.paused ? '▶ Resume' : '▶ Read'; btn.classList.remove('tts-active'); }
 }
 
-// ── Voice selection ───────────────────────────────────────────────────────────
-// iOS Safari guaranteed female voices (built-in, no download):
-//   Serena  en-GB  British Enhanced
-//   Moira   en-IE  Irish
-//   Karen   en-AU  Australian
-//   Tessa   en-ZA  South African
-// Never cache voice objects across cancel() calls on iOS — always re-fetch.
+speechSynthesis.onvoiceschanged = () => {};
 
-let ttsVoicePref    = 'british';
-let ttsPendingVoice = null;   // set when user switches voice mid-playback
-let ttsPendingSpeed = null;   // set when user switches speed mid-playback
-
-// Priority lists — first match wins. Never include male names.
-const VOICE_PREFS = {
-  british: [
-    n => n === 'Serena',
-    n => n === 'Kate',
-    n => n === 'Martha',
-  ],
-  irish: [
-    n => n === 'Moira',
-  ],
-  australian: [
-    n => n === 'Karen',
-    n => n === 'Catherine',
-  ],
-  'south-african': [
-    n => n === 'Tessa',
-  ],
-};
-// Fallback chain if preferred accent not found
-const FALLBACK_NAMES = ['Serena','Moira','Karen','Tessa','Kate','Samantha'];
-
-function ttsPickVoice() {
-  // Always call getVoices() fresh — iOS invalidates cached objects after cancel()
-  const voices = speechSynthesis.getVoices();
-  if (!voices.length) return null;
-
-  const pref = ttsPendingVoice || ttsVoicePref;
-  const matchers = VOICE_PREFS[pref] || VOICE_PREFS.british;
-
-  // Try preferred accent first
-  for (const fn of matchers) {
-    const v = voices.find(v => fn(v.name));
-    if (v) return v;
-  }
-  // Fallback: first available from known female list
-  for (const name of FALLBACK_NAMES) {
-    const v = voices.find(v => v.name === name);
-    if (v) return v;
-  }
-  // Last resort: any English voice
-  return voices.find(v => v.lang.startsWith('en')) || null;
-}
-
-function ttsVoiceName() {
-  const v = ttsPickVoice();
-  return v ? v.name + ' (' + v.lang + ')' : 'device default';
-}
-
-function ttsSetVoicePref(pref, btn) {
-  document.querySelectorAll('.tts-voice-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-
-  if (ttsActive) {
-    ttsPendingVoice = pref;
-    const statusEl = document.getElementById('tts-status');
-    if (statusEl) statusEl.textContent = 'Switching voice…';
-    // Accelerate the current sentence timer to fire within 1.2s max
-    // so the switch feels responsive without cutting off mid-word
-    ttsFastForwardCurrent();
-  } else {
-    ttsVoicePref = pref;
-    const statusEl = document.getElementById('tts-status');
-    if (statusEl) statusEl.textContent = 'Voice: ' + ttsVoiceName();
-  }
-}
-
-
-// Accelerate current sentence to end within 1.2s so voice/speed changes feel responsive
-function ttsFastForwardCurrent() {
-  if (!ttsAdvTimer) return; // nothing playing yet
-  clearTimeout(ttsAdvTimer);
-  // Give iOS ~1.2s to finish current word naturally, then advance
-  ttsAdvTimer = setTimeout(() => {
-    if (ttsActive) {
-      speechSynthesis.cancel();
-      setTimeout(ttsNextSentence, 200);
-    }
-  }, 1200);
-}
-
-function ttsApplyPending() {
-  // Called at the start of each sentence — apply any queued voice/speed changes
-  if (ttsPendingVoice !== null) {
-    ttsVoicePref    = ttsPendingVoice;
-    ttsPendingVoice = null;
-  }
-  if (ttsPendingSpeed !== null) {
-    ttsRate = ttsPendingSpeed.rate;
-    ttsWPM  = ttsPendingSpeed.wpm;
-    ttsPendingSpeed = null;
-  }
-}
-
-speechSynthesis.onvoiceschanged = () => { /* no cache to clear */ };
 
 // ═══ NAVIGATION ═══
 function go(t){
