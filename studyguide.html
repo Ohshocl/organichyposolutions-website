@@ -2707,27 +2707,38 @@ function initArena() {
 
 
 
-// ═══ TEXT-TO-SPEECH ENGINE ═══
-// Safari/iOS approach: use onend as primary signal, with a single
-// watchdog timeout as fallback. No complex timer math.
-// Keep utterances SHORT (under 100 chars) so onend fires reliably.
+// ═══ TEXT-TO-SPEECH ENGINE — iOS Safari optimized ═══
+//
+// Research-backed fixes for Safari/iOS:
+// 1. Keep utterance reference alive (prevents GC killing onend)
+// 2. Set utterance.lang to match voice.lang (prevents voice switching)
+// 3. Never cancel() between sentences — use native queue instead
+// 4. Keep utterances under 200 chars — longer ones cause onend to not fire
+// 5. Watchdog polls speechSynthesis.speaking every 250ms — reliable on all browsers
+// 6. No manual timers for advancement — onend + speaking-poll only
 
-let ttsUtterance   = null;
 let ttsActive      = false;
 let ttsRate        = 1.0;
-let ttsWPM         = 140;
+let ttsWPM         = 140;       // used for watchdog timeout only
 let ttsChunks      = [];
 let ttsChunkIdx    = 0;
-let ttsSubQueue    = [];
+let ttsSubQueue    = [];        // flat array of short strings to speak
 let ttsSections    = [];
 let ttsCurrentCard = null;
 let ttsScrollTimer = null;
-let ttsWatchdog    = null;
 let ttsVoicePref   = 'british';
 let ttsPendingVoice = null;
 let ttsPendingRate  = null;
 
-// ── Pronunciation dictionary ──────────────────────────────────────────────────
+// Keep ALL utterances in a persistent array so Safari can't GC them
+// This is the #1 fix for onend not firing
+let ttsUtteranceRefs = [];
+
+// Watchdog: polls speechSynthesis.speaking every 250ms
+// If speaking stops but queue isn't empty, nudge it
+let ttsWatchdogInterval = null;
+
+// ── Pronunciation & text cleaning ─────────────────────────────────────────────
 const TTS_PRONOUNCE = [
   [/\bGAAP\b/g,        'gap'],
   [/\bIFRS\b/g,        'I F R S'],
@@ -2741,7 +2752,6 @@ const TTS_PRONOUNCE = [
   [/\bTNCs\b/g,        'T N Cs'],
   [/\bTNC\b/g,         'T N C'],
   [/\bHR\b/g,          'H R'],
-  [/\bIP\b/g,          'I P'],
   [/\bJIT\b/g,         'J I T'],
   [/\bERP\b/g,         'E R P'],
   [/\bSDR\b/g,         'S D R'],
@@ -2759,8 +2769,6 @@ const TTS_PRONOUNCE = [
   [/\bFCPA\b/g,        'F C P A'],
   [/\bFTAs\b/g,        'F T As'],
   [/\bFTA\b/g,         'F T A'],
-  [/\bVERs\b/g,        'voluntary export restrictions'],
-  [/\bVER\b/g,         'voluntary export restriction'],
   [/\bmurabaha\b/gi,   'moo rah bah ha'],
   [/\bmusharaka\b/gi,  'moo shah rah kah'],
   [/\bijara\b/gi,      'ee jah rah'],
@@ -2796,49 +2804,52 @@ const TTS_PRONOUNCE = [
 function ttsClean(text) {
   let t = text.trim();
   for (const [p, r] of TTS_PRONOUNCE) t = t.replace(p, r);
-  return t.trim();
+  return t.replace(/\s{2,}/g, ' ').trim();
 }
 
-// Split into short utterances Safari can handle reliably
-// Target: under 90 chars each so onend fires consistently
+// Split into utterances under 200 chars — critical for iOS onend reliability
 function ttsSplit(text) {
+  const MAX = 180;
   const cleaned = ttsClean(text);
   const out = [];
-  // Split at sentence endings first
-  const bySentence = cleaned.replace(/([.!?])\s+/g, '$1\n').split('\n').map(s => s.trim()).filter(Boolean);
-  for (const s of bySentence) {
-    if (s.length <= 90) { out.push(s); continue; }
-    // Split long sentence at clause boundaries
-    const parts = s.split(/(?:,\s+|;\s+|:\s+)/);
-    let current = '';
-    for (const part of parts) {
-      if (!current) { current = part; continue; }
-      if ((current + ', ' + part).length <= 90) {
-        current += ', ' + part;
-      } else {
-        if (current) out.push(current.trim());
-        current = part;
+
+  // Split on sentence endings first
+  const sentences = cleaned.replace(/([.!?])\s+/g, '$1\n').split('\n').map(s => s.trim()).filter(Boolean);
+
+  for (const s of sentences) {
+    if (s.length <= MAX) { out.push(s); continue; }
+    // Long sentence: split at clause boundaries
+    let remaining = s;
+    while (remaining.length > MAX) {
+      let cut = -1;
+      for (const sep of [': ', '; ', ', ', ' ']) {
+        const idx = remaining.lastIndexOf(sep, MAX);
+        if (idx > 30) { cut = idx + sep.length - 1; break; }
       }
+      if (cut < 0) cut = MAX;
+      out.push(remaining.slice(0, cut).trim());
+      remaining = remaining.slice(cut).trim();
     }
-    if (current.trim()) out.push(current.trim());
+    if (remaining) out.push(remaining);
   }
+
   return out.filter(s => s.length > 0);
 }
 
 // ── Voice picker ──────────────────────────────────────────────────────────────
-const VOICES = {
-  british:      ['Serena', 'Kate', 'Martha'],
-  irish:        ['Moira'],
-  australian:   ['Karen', 'Catherine'],
-  'south-african': ['Tessa'],
+const VOICE_NAMES = {
+  british:        ['Serena', 'Kate', 'Martha'],
+  irish:          ['Moira'],
+  australian:     ['Karen', 'Catherine'],
+  'south-african':['Tessa'],
 };
-const VOICE_FALLBACK = ['Serena','Moira','Karen','Tessa','Kate','Samantha','Victoria'];
+const VOICE_FALLBACK = ['Serena','Moira','Karen','Tessa','Kate','Samantha','Victoria','Fiona'];
 
 function ttsPickVoice() {
   const all = speechSynthesis.getVoices();
   if (!all.length) return null;
-  const pref = ttsPendingVoice || ttsVoicePref;
-  const names = VOICES[pref] || VOICES.british;
+  const pref  = ttsPendingVoice || ttsVoicePref;
+  const names = VOICE_NAMES[pref] || VOICE_NAMES.british;
   for (const name of names) {
     const v = all.find(v => v.name === name);
     if (v) return v;
@@ -2850,7 +2861,27 @@ function ttsPickVoice() {
   return all.find(v => v.lang.startsWith('en')) || null;
 }
 
-// ── Build chunk list ──────────────────────────────────────────────────────────
+// ── Build utterance object (kept in ttsUtteranceRefs to prevent GC) ───────────
+function ttsMakeUtterance(text, onDone) {
+  const voice = ttsPickVoice();
+  const utt   = new SpeechSynthesisUtterance(text);
+  utt.rate    = ttsRate;
+  utt.pitch   = (ttsVoicePref === 'irish') ? 1.35 : 1.15;
+  utt.volume  = 1.0;
+  if (voice) {
+    utt.voice = voice;
+    utt.lang  = voice.lang; // must match voice.lang to prevent Safari re-selecting voice
+  }
+  utt.onend   = () => { ttsUtteranceRefs = ttsUtteranceRefs.filter(u => u !== utt); onDone(); };
+  utt.onerror = (e) => {
+    ttsUtteranceRefs = ttsUtteranceRefs.filter(u => u !== utt);
+    if (e.error !== 'interrupted' && e.error !== 'canceled') onDone();
+  };
+  ttsUtteranceRefs.push(utt); // keep reference alive — prevents Safari GC
+  return utt;
+}
+
+// ── Build chunk list from DOM ─────────────────────────────────────────────────
 function ttsBuildChunks() {
   const study = document.getElementById('study');
   if (!study) return;
@@ -2869,6 +2900,7 @@ function ttsBuildChunks() {
       }
     }
   });
+
   const sel = document.getElementById('tts-section-select');
   if (sel) {
     sel.innerHTML = '<option value="">— Jump to section —</option>';
@@ -2881,77 +2913,83 @@ function ttsBuildChunks() {
   }
 }
 
-// ── Core read loop ────────────────────────────────────────────────────────────
-function ttsSpeak(text, onDone) {
-  // Always cancel first, then wait for iOS to clear
-  speechSynthesis.cancel();
-  setTimeout(() => {
-    if (!ttsActive) return;
-    const utt = new SpeechSynthesisUtterance(text);
-    utt.voice  = ttsPickVoice();
-    utt.rate   = ttsRate;
-    utt.pitch  = (ttsVoicePref === 'irish') ? 1.35 : 1.15;
-    utt.volume = 1.0;
-    ttsUtterance = utt;
+// ── Watchdog ──────────────────────────────────────────────────────────────────
+// Polls speechSynthesis.speaking every 250ms
+// If it stops while we still have sentences queued, we kick it
+let ttsExpectingSpeech = false;
+let ttsIdleCount = 0;
 
-    // Watchdog: words / wpm * 60s + 2s safety margin
-    const words = text.split(/\s+/).length;
-    const maxMs = Math.round(words / ttsWPM * 60000) + 2000;
-    clearTimeout(ttsWatchdog);
-    ttsWatchdog = setTimeout(() => {
-      // onend didn't fire in time — force advance
-      if (ttsActive) onDone();
-    }, maxMs);
-
-    utt.onend = () => { clearTimeout(ttsWatchdog); onDone(); };
-    utt.onerror = (e) => {
-      clearTimeout(ttsWatchdog);
-      if (e.error !== 'interrupted' && e.error !== 'canceled') onDone();
-    };
-    speechSynthesis.speak(utt);
-  }, 120);
+function ttsStartWatchdog() {
+  clearInterval(ttsWatchdogInterval);
+  ttsIdleCount = 0;
+  ttsWatchdogInterval = setInterval(() => {
+    if (!ttsActive) { clearInterval(ttsWatchdogInterval); return; }
+    if (speechSynthesis.speaking) {
+      ttsIdleCount = 0;
+      return;
+    }
+    // Not speaking — check if we still have work to do
+    if (ttsSubQueue.length > 0 || ttsChunkIdx < ttsChunks.length) {
+      ttsIdleCount++;
+      // Give it 3 polls (750ms) before declaring stall
+      if (ttsIdleCount >= 3) {
+        ttsIdleCount = 0;
+        // Kick the queue — speak next sentence directly
+        ttsReadNext();
+      }
+    } else {
+      // Genuinely done
+      clearInterval(ttsWatchdogInterval);
+      ttsStop();
+    }
+  }, 250);
 }
 
-function ttsReadQueue() {
+// ── Core read loop ────────────────────────────────────────────────────────────
+function ttsReadNext() {
   if (!ttsActive) return;
 
-  // Apply pending voice/rate changes between sentences
+  // Apply pending voice/speed at sentence boundaries
   if (ttsPendingVoice) { ttsVoicePref = ttsPendingVoice; ttsPendingVoice = null; }
   if (ttsPendingRate)  { ttsRate = ttsPendingRate.rate; ttsWPM = ttsPendingRate.wpm; ttsPendingRate = null; }
 
+  // If sub-queue empty, load next chunk
   if (ttsSubQueue.length === 0) {
-    // Chunk done — advance to next
-    ttsChunkIdx++;
     if (ttsChunkIdx >= ttsChunks.length) { ttsStop(); return; }
     ttsLoadChunk();
     return;
   }
 
   const text = ttsSubQueue.shift();
-  if (!text || !text.trim()) { ttsReadQueue(); return; }
+  if (!text || !text.trim()) { ttsReadNext(); return; }
 
-  ttsSpeak(text, () => {
-    if (ttsActive) setTimeout(ttsReadQueue, 250);
+  const utt = ttsMakeUtterance(text, () => {
+    // onend fired — read next sentence after a tiny gap
+    if (ttsActive) setTimeout(ttsReadNext, 180);
   });
+
+  speechSynthesis.speak(utt);
+  ttsIdleCount = 0; // reset stall counter — we just spoke
 }
 
 function ttsLoadChunk() {
   if (!ttsActive || ttsChunkIdx >= ttsChunks.length) { ttsStop(); return; }
   const chunk = ttsChunks[ttsChunkIdx];
 
-  // Progress
-  const pct = Math.round((ttsChunkIdx + 1) / ttsChunks.length * 100);
+  // Update progress
+  const pct  = Math.round((ttsChunkIdx + 1) / ttsChunks.length * 100);
   const fill = document.getElementById('tts-progress-fill');
   const stat = document.getElementById('tts-status');
-  const secName = ttsSections[chunk.si]?.title.replace(/— .+$/, '').trim() || '';
+  const sec  = ttsSections[chunk.si];
+  const name = sec ? sec.title.replace(/— .+$/, '').trim() : '';
   if (fill) fill.style.width = pct + '%';
-  if (stat) stat.textContent = secName ? 'Reading: ' + secName + ' (' + pct + '%)' : pct + '% complete';
+  if (stat) stat.textContent = name ? 'Reading: ' + name + ' (' + pct + '%)' : pct + '% complete';
 
   // Sync dropdown
   const sel = document.getElementById('tts-section-select');
-  if (sel && ttsSections[chunk.si]) sel.value = ttsSections[chunk.si].startChunk;
+  if (sel && sec) sel.value = sec.startChunk;
 
-  // Scroll to card (debounced, only on card change)
+  // Scroll card into view (debounced, only on change)
   const card = chunk.el ? chunk.el.closest('.card') : null;
   if (card && card !== ttsCurrentCard) {
     ttsCurrentCard = card;
@@ -2959,8 +2997,11 @@ function ttsLoadChunk() {
     ttsScrollTimer = setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
   }
 
+  // Queue sentences for this chunk, then advance chunk index
   ttsSubQueue = ttsSplit(chunk.text);
-  ttsReadQueue();
+  ttsChunkIdx++;
+
+  ttsReadNext();
 }
 
 // ── Controls ──────────────────────────────────────────────────────────────────
@@ -2971,32 +3012,49 @@ function ttsToggle() {
 }
 
 function ttsStart() {
-  clearTimeout(ttsWatchdog);
+  clearInterval(ttsWatchdogInterval);
   speechSynthesis.cancel();
+  ttsUtteranceRefs = [];
+
   ttsBuildChunks();
   if (!ttsChunks.length) { showToast('No content to read'); return; }
   if (ttsChunkIdx >= ttsChunks.length) ttsChunkIdx = 0;
-  ttsSubQueue = []; ttsCurrentCard = null; ttsActive = true;
+
+  ttsSubQueue = []; ttsCurrentCard = null; ttsActive = true; ttsIdleCount = 0;
+
   document.getElementById('tts-progress-wrap').style.display = 'block';
   document.getElementById('tts-stop-btn').style.display = 'flex';
   document.getElementById('tts-prev-btn').style.display = 'flex';
   document.getElementById('tts-next-btn').style.display = 'flex';
   updateTTSUI();
-  setTimeout(ttsLoadChunk, 200);
+
+  // Small delay after cancel before first speak
+  setTimeout(() => {
+    ttsLoadChunk();
+    ttsStartWatchdog();
+  }, 250);
 }
 
 function ttsPause() {
-  clearTimeout(ttsWatchdog);
+  clearInterval(ttsWatchdogInterval);
   speechSynthesis.pause();
   ttsActive = false;
   updateTTSUI();
 }
 
 function ttsStop() {
-  clearTimeout(ttsWatchdog); clearTimeout(ttsScrollTimer);
+  clearInterval(ttsWatchdogInterval);
+  clearTimeout(ttsScrollTimer);
   speechSynthesis.cancel();
-  ttsActive = false; ttsChunkIdx = 0; ttsSubQueue = []; ttsCurrentCard = null;
-  ttsPendingVoice = null; ttsPendingRate = null;
+  ttsUtteranceRefs = [];
+  ttsActive = false;
+  ttsChunkIdx = 0;
+  ttsSubQueue = [];
+  ttsCurrentCard = null;
+  ttsPendingVoice = null;
+  ttsPendingRate  = null;
+  ttsIdleCount    = 0;
+
   const fill = document.getElementById('tts-progress-fill');
   if (fill) fill.style.width = '0%';
   document.getElementById('tts-progress-wrap').style.display = 'none';
@@ -3020,41 +3078,52 @@ function ttsSetSpeed(rate, wpm, btn) {
 function ttsSetVoicePref(pref, btn) {
   document.querySelectorAll('.tts-voice-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  if (ttsActive) { ttsPendingVoice = pref; }
-  else {
+  if (ttsActive) {
+    ttsPendingVoice = pref;
+  } else {
     ttsVoicePref = pref;
-    const v = ttsPickVoice();
+    const v   = ttsPickVoice();
     const stat = document.getElementById('tts-status');
-    if (stat) stat.textContent = v ? 'Voice: ' + v.name : 'No matching voice found';
+    if (stat) stat.textContent = v ? 'Voice: ' + v.name + ' (' + v.lang + ')' : 'No matching voice found';
   }
 }
 
 function ttsJumpToSection(valStr) {
   if (!valStr) return;
-  clearTimeout(ttsWatchdog);
+  clearInterval(ttsWatchdogInterval);
   speechSynthesis.cancel();
-  ttsChunkIdx = parseInt(valStr, 10);
-  ttsSubQueue = []; ttsCurrentCard = null;
-  ttsActive = true;
+  ttsUtteranceRefs = [];
+  ttsChunkIdx     = parseInt(valStr, 10);
+  ttsSubQueue     = [];
+  ttsCurrentCard  = null;
+  ttsActive       = true;
+  ttsIdleCount    = 0;
+
   document.getElementById('tts-progress-wrap').style.display = 'block';
   document.getElementById('tts-stop-btn').style.display = 'flex';
   document.getElementById('tts-prev-btn').style.display = 'flex';
   document.getElementById('tts-next-btn').style.display = 'flex';
   updateTTSUI();
-  const chunk = ttsChunks[ttsChunkIdx];
-  if (chunk) {
+
+  // Scroll to section heading
+  if (ttsChunks[ttsChunkIdx]) {
     const heads = document.querySelectorAll('#study .sec-head');
-    if (heads[chunk.si]) heads[chunk.si].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const si    = ttsChunks[ttsChunkIdx].si;
+    if (heads[si]) heads[si].scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
-  setTimeout(ttsLoadChunk, 350);
+
+  setTimeout(() => {
+    ttsLoadChunk();
+    ttsStartWatchdog();
+  }, 350);
 }
 
 function ttsSkipSection(dir) {
   if (!ttsChunks.length) return;
-  const cur = ttsChunks[Math.min(ttsChunkIdx, ttsChunks.length - 1)]?.si ?? 0;
+  const cur    = ttsChunks[Math.min(ttsChunkIdx, ttsChunks.length - 1)]?.si ?? 0;
   const target = Math.max(0, Math.min(ttsSections.length - 1, cur + dir));
-  const start = ttsSections[target]?.startChunk ?? 0;
-  const sel = document.getElementById('tts-section-select');
+  const start  = ttsSections[target]?.startChunk ?? 0;
+  const sel    = document.getElementById('tts-section-select');
   if (sel) sel.value = start;
   ttsJumpToSection(String(start));
 }
