@@ -516,10 +516,10 @@ select{
     <button class="tts-btn" id="tts-prev-btn" onclick="ttsSkipSection(-1)" title="Previous section" style="display:none">⏮</button>
     <button class="tts-btn" id="tts-next-btn" onclick="ttsSkipSection(1)" title="Next section" style="display:none">⏭</button>
     <span class="tts-label">Speed</span>
-    <button class="tts-speed-btn active" id="tts-normal" onclick="ttsSetSpeed(1.0,130,this)">Normal</button>
-    <button class="tts-speed-btn" id="tts-150" onclick="ttsSetSpeed(1.08,150,this)">150</button>
-    <button class="tts-speed-btn" id="tts-170" onclick="ttsSetSpeed(1.2,170,this)">170</button>
-    <button class="tts-speed-btn" id="tts-190" onclick="ttsSetSpeed(1.35,190,this)">190</button>
+    <button class="tts-speed-btn active" id="tts-normal" onclick="ttsSetSpeed(1.0,140,this)">Normal</button>
+    <button class="tts-speed-btn" id="tts-150" onclick="ttsSetSpeed(1.05,150,this)">150</button>
+    <button class="tts-speed-btn" id="tts-170" onclick="ttsSetSpeed(1.1,160,this)">160</button>
+    <button class="tts-speed-btn" id="tts-190" onclick="ttsSetSpeed(1.17,170,this)">170</button>
     <span class="tts-label" style="margin-left:4px">Voice</span>
     <button class="tts-speed-btn tts-voice-btn active" onclick="ttsSetVoicePref('british',this)" title="British — Serena">🇬🇧</button>
     <button class="tts-speed-btn tts-voice-btn" onclick="ttsSetVoicePref('irish',this)" title="Irish — Moira">☘️</button>
@@ -2714,7 +2714,7 @@ function initArena() {
 let ttsUtterance  = null;
 let ttsActive     = false;
 let ttsRate       = 1.0;    // speechSynthesis rate
-let ttsWPM        = 150;    // words per minute (controls timer)
+let ttsWPM        = 140;    // words per minute (controls timer)
 let ttsChunks     = [];     // [{text, sectionIdx, el}]
 let ttsChunkIdx   = 0;
 let ttsSubQueue   = [];     // sentence-sized pieces of current chunk
@@ -2740,23 +2740,101 @@ function ttsWpmMs(text) {
 }
 
 // Split text into sentence-sized pieces (iOS chokes on long utterances)
+// Pronunciation dictionary — words Safari mispronounces on iOS
+// Uses phonetic respelling that iOS TTS renders correctly
+const TTS_PRONOUNCE = [
+  // Acronyms — spell them out so iOS says each letter
+  [/\bGAAP\b/g,       'gap'],           // reads as one word otherwise
+  [/\bIFRS\b/g,       'I F R S'],
+  [/\bIMF\b/g,        'I M F'],
+  [/\bWTO\b/g,        'W T O'],
+  [/\bFDI\b/g,        'F D I'],
+  [/\bGDP\b/g,        'G D P'],
+  [/\bCSR\b/g,        'C S R'],
+  [/\bMNC\b/g,        'M N C'],
+  [/\bTNC\b/g,        'T N C'],
+  [/\bHR\b/g,         'H R'],
+  [/\bIP\b/g,         'I P'],
+  [/\bJIT\b/g,        'J I T'],
+  [/\bERP\b/g,        'E R P'],
+  [/\bSDR\b/g,        'S D R'],
+  [/\bUCC\b/g,        'U C C'],
+  [/\bCISG\b/g,       'C I S G'],
+  [/\bTRIPS\b/g,      'trips'],         // this one IS a word
+  [/\bWIPO\b/g,       'W I P O'],
+  [/\bNAFTA\b/g,      'nafta'],         // pronounced as a word
+  [/\bUMSCA\b/g,      'U S M C A'],
+  [/\bUSMCA\b/g,      'U S M C A'],
+  [/\bCAFTA\b/g,      'cafta'],
+  [/\bASEAN\b/g,      'AH-see-an'],
+  [/\bGCC\b/g,        'G C C'],
+  [/\bEU\b/g,         'E U'],
+  [/\bFASB\b/g,       'F A S B'],
+  [/\bIASB\b/g,       'I A S B'],
+  [/\bFCPA\b/g,       'F C P A'],
+  [/\bVERs\b/g,       'voluntary export restrictions'],
+  [/\bVER\b/g,        'voluntary export restriction'],
+  [/\bFTA\b/g,        'F T A'],
+  [/\bFTAs\b/g,       'F T As'],
+  [/\bMNCs\b/g,       'M N Cs'],
+  [/\bTNCs\b/g,       'T N Cs'],
+
+  // Tricky business/econ words Safari mangles
+  [/\bmurabaha\b/gi,      'moo-rah-bah-ha'],
+  [/\bmusharaka\b/gi,     'moo-shah-rah-kah'],
+  [/\bijara\b/gi,         'ee-jah-rah'],
+  [/\briba\b/gi,          'ree-bah'],
+  [/\bSharia\b/gi,        'sha-ree-ah'],
+  [/\bGhemawat\b/gi,      'geh-mah-wat'],
+  [/\bHofstede\b/gi,      'hof-steh-deh'],
+  [/\bHeckscher\b/gi,     'heck-sher'],
+  [/\bOhlin\b/gi,         'oh-lin'],
+  [/\bMercosur\b/gi,      'mair-koh-sur'],
+  [/\bmurabaha\b/gi,      'moo-rah-bah-ha'],
+  [/\bglocalization\b/gi, 'glo-kal-ih-ZAY-shun'],
+  [/\bglocal\b/gi,        'glo-kal'],
+  [/\bautarky\b/gi,       'aw-tar-kee'],
+  [/\brepatriation\b/gi,  'ree-pay-tree-AY-shun'],
+  [/\brepatriating\b/gi,  'ree-PAY-tree-ay-ting'],
+  [/\bpolycentric\b/gi,   'pol-ee-SEN-trik'],
+  [/\bethnocentric\b/gi,  'eth-no-SEN-trik'],
+  [/\bgeocentric\b/gi,    'jee-oh-SEN-trik'],
+  [/\bcountervailing\b/gi,'coun-ter-VAY-ling'],
+  [/\bmurabaha\b/gi,      'moo-rah-bah-ha'],
+
+  // Words with unusual stress Safari gets wrong
+  [/\bcomparative\b/gi,   'com-PAIR-ah-tiv'],
+  [/\bprotectionism\b/gi, 'pro-TEK-shun-iz-um'],
+  [/\bsubsidiar/gi,        'sub-SID-ee-air'],   // subsidiaries / subsidiary
+  [/\bmonopolization\b/gi,'mon-op-oh-lih-ZAY-shun'],
+  [/\boligopoly\b/gi,     'ol-ih-GOP-oh-lee'],
+  [/\bcryptographically\b/gi, 'krip-toh-GRAF-ik-lee'],
+
+  // Numbers/symbols that read oddly
+  [/×/g,   ' times '],
+  [/%/g,   ' percent'],
+  [/\$/g,  'dollars'],
+  [/&amp;/g, 'and'],
+  [/&/g,   'and'],
+];
+
 function ttsCleanText(raw) {
-  return raw
-    // Em dashes — Safari reads these as "dash" or pauses awkwardly. Replace with comma-space.
+  let t = raw
     .replace(/\s*—\s*/g, ', ')
-    // En dash
     .replace(/\s*–\s*/g, ', ')
-    // Parenthetical acronyms: "FDI (Foreign Direct Investment)" — skip the expansion
-    // "(FDI)" style abbreviations: just keep the preceding word
-    .replace(/\s*\([A-Z][A-Z]+\)/g, '')
-    // Slash between words: "short-term/long-term" -> "short-term or long-term"
+    .replace(/\s*\([A-Z][A-Z]+\)/g, '')   // strip parenthetical all-caps acronyms
     .replace(/\s*\/\s*/g, ' or ')
-    // Bullet chars and arrows that Safari may stumble on
     .replace(/[→←•·◦▶▸►]/g, ', ')
-    // Multiple spaces/commas from above replacements
     .replace(/,\s*,/g, ',')
     .replace(/\s{2,}/g, ' ')
     .trim();
+
+  // Apply pronunciation dictionary
+  for (const [pattern, replacement] of TTS_PRONOUNCE) {
+    t = t.replace(pattern, replacement);
+  }
+
+  return t;
 }
 
 function ttsToSentences(text) {
