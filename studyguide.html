@@ -3038,16 +3038,16 @@ function ttsNextSentence() {
   // 150ms is the safe minimum — 80ms causes clipping on busy threads
   speechSynthesis.cancel();
 
-  const voice = ttsPickVoice();
-  const rate  = ttsRate;
-  const wpm   = ttsWPM;
-  let   done  = false;
+  const voice   = ttsPickVoice();
+  const rate    = ttsRate;
+  const waitMs  = ttsWpmMs(text);  // WPM-based timer — declared here so it's in scope
+  let   done    = false;
 
   function advance() {
     if (done) return;
     done = true;
     ttsClearAll();
-    setTimeout(ttsNextSentence, 300); // 300ms gap — gives Safari time to breathe
+    setTimeout(ttsNextSentence, 300);
   }
 
   setTimeout(() => {
@@ -3059,10 +3059,8 @@ function ttsNextSentence() {
     ttsUtterance.volume = 1.0;
     if (voice) ttsUtterance.voice = voice;
 
-    // startTs measured HERE (after the delay) so elapsed is true speech time
     const startTs = Date.now();
 
-    // WPM timer is the primary source of truth — always fires
     ttsAdvTimer = setTimeout(advance, waitMs);
 
     // onend: trust after 60% of expected duration at higher speeds, 70% at normal
