@@ -521,10 +521,10 @@ select{
     <button class="tts-speed-btn" id="tts-170" onclick="ttsSetSpeed(1.2,170,this)">170</button>
     <button class="tts-speed-btn" id="tts-190" onclick="ttsSetSpeed(1.35,190,this)">190</button>
     <span class="tts-label" style="margin-left:4px">Voice</span>
-    <button class="tts-speed-btn tts-voice-btn active" onclick="ttsSetVoicePref('british-female',this)" title="British Female">🇬🇧♀</button>
-    <button class="tts-speed-btn tts-voice-btn" onclick="ttsSetVoicePref('australian-female',this)" title="Australian Female">🇦🇺♀</button>
-    <button class="tts-speed-btn tts-voice-btn" onclick="ttsSetVoicePref('american-female',this)" title="American Female">🇺🇸♀</button>
-    <button class="tts-speed-btn tts-voice-btn" onclick="ttsSetVoicePref('irish-female',this)" title="Irish Female ☘️">☘️♀</button>
+    <button class="tts-speed-btn tts-voice-btn active" onclick="ttsSetVoicePref('british',this)" title="British — Serena">🇬🇧</button>
+    <button class="tts-speed-btn tts-voice-btn" onclick="ttsSetVoicePref('irish',this)" title="Irish — Moira">☘️</button>
+    <button class="tts-speed-btn tts-voice-btn" onclick="ttsSetVoicePref('australian',this)" title="Australian — Karen">🇦🇺</button>
+    <button class="tts-speed-btn tts-voice-btn" onclick="ttsSetVoicePref('south-african',this)" title="South African — Tessa">🇿🇦</button>
   </div>
   <div class="tts-row2">
     <span class="tts-label">Jump to</span>
@@ -2907,6 +2907,9 @@ function ttsNextChunk() {
 function ttsNextSentence() {
   if (!ttsActive) return;
 
+  // Apply any deferred voice/speed changes at sentence boundary (safe for Safari)
+  ttsApplyPending();
+
   if (ttsSubQueue.length === 0) {
     // Done with this chunk — move to next
     ttsChunkIdx++;
@@ -2917,42 +2920,53 @@ function ttsNextSentence() {
   const text = ttsSubQueue.shift().trim();
   if (!text) { ttsNextSentence(); return; }
 
-  // Cancel previous before queuing new (iOS buffer fix)
+  // iOS Safari: cancel first, then wait 80ms before speaking
+  // Immediate cancel+speak = stutter, choppy audio, premature onend
   speechSynthesis.cancel();
 
-  ttsUtterance        = new SpeechSynthesisUtterance(text);
-  ttsUtterance.rate   = ttsRate;
-  ttsUtterance.pitch  = 1.0;
-  ttsUtterance.volume = 1.0;
-  ttsUtterance.voice  = ttsPickVoice();
+  // Build utterance with fresh voice object (iOS invalidates after cancel)
+  const voice = ttsPickVoice();
+  const rate  = ttsRate;
+  const wpm   = ttsWPM;
 
-  const waitMs   = ttsWpmMs(text);   // WPM-based timer
-  const startTs  = Date.now();
-  let   done     = false;
+  const waitMs  = ttsWpmMs(text);  // WPM-based timer — source of truth
+  const startTs = Date.now();
+  let   done    = false;
 
   function advance() {
     if (done) return;
     done = true;
     ttsClearAll();
-    setTimeout(ttsNextSentence, 180); // gap between sentences
+    setTimeout(ttsNextSentence, 200); // 200ms gap — Safari needs breathing room
   }
 
-  // Primary: pure timer — fires regardless of onend
-  ttsAdvTimer = setTimeout(advance, waitMs);
+  // Delay speak by 80ms after cancel — fixes Safari stutter
+  setTimeout(() => {
+    if (!ttsActive || done) return;
 
-  // Bonus: if onend fires AFTER at least 45% of expected time, trust it and go early
-  ttsUtterance.onend = () => {
-    const elapsed = Date.now() - startTs;
-    if (elapsed >= waitMs * 0.45) advance();
-    // else: iOS fired early — ignore, let timer handle it
-  };
+    ttsUtterance        = new SpeechSynthesisUtterance(text);
+    ttsUtterance.rate   = rate;
+    ttsUtterance.pitch  = 1.0;
+    ttsUtterance.volume = 1.0;
+    if (voice) ttsUtterance.voice = voice;
 
-  // On actual error, move on after a short delay
-  ttsUtterance.onerror = (e) => {
-    if (e.error !== 'interrupted') advance();
-  };
+    // Primary advance: WPM timer. Fires no matter what.
+    ttsAdvTimer = setTimeout(advance, waitMs);
 
-  speechSynthesis.speak(ttsUtterance);
+    // onend: only trust if fired after 50% of expected time
+    // Earlier = iOS early-fire bug, ignore it
+    ttsUtterance.onend = () => {
+      const elapsed = Date.now() - startTs;
+      if (elapsed >= waitMs * 0.50) advance();
+    };
+
+    // onerror: skip interrupted (that's us calling cancel), advance on real errors
+    ttsUtterance.onerror = (e) => {
+      if (e.error !== 'interrupted' && e.error !== 'canceled') advance();
+    };
+
+    speechSynthesis.speak(ttsUtterance);
+  }, 80);
 
   // Global stall watchdog: if nothing has advanced in 25s, something broke
   ttsWatchdog = setTimeout(() => {
@@ -2971,11 +2985,13 @@ function ttsPause() {
 function ttsStop() {
   ttsClearAll();
   speechSynthesis.cancel();
-  ttsActive      = false;
-  ttsChunkIdx    = 0;
-  ttsLastChunk   = -1;
-  ttsSubQueue    = [];
-  ttsCurrentCard = null;
+  ttsActive       = false;
+  ttsChunkIdx     = 0;
+  ttsLastChunk    = -1;
+  ttsSubQueue     = [];
+  ttsCurrentCard  = null;
+  ttsPendingVoice = null;
+  ttsPendingSpeed = null;
 
   const fill = document.getElementById('tts-progress-fill');
   if (fill) fill.style.width = '0%';
@@ -2991,14 +3007,14 @@ function ttsStop() {
 }
 
 function ttsSetSpeed(rate, wpm, btn) {
-  ttsRate = rate;
-  ttsWPM  = wpm;
   document.querySelectorAll('.tts-speed-btn:not(.tts-voice-btn)').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   if (ttsActive) {
-    ttsClearAll();
-    speechSynthesis.cancel();
-    setTimeout(ttsNextSentence, 100);
+    // Defer — apply at start of next sentence, don't interrupt current word
+    ttsPendingSpeed = { rate, wpm };
+  } else {
+    ttsRate = rate;
+    ttsWPM  = wpm;
   }
 }
 
@@ -3010,72 +3026,96 @@ function updateTTSUI() {
 }
 
 // ── Voice selection ───────────────────────────────────────────────────────────
-let ttsVoiceCache = null;
-let ttsVoicePref  = 'british-female';
+// iOS Safari guaranteed female voices (built-in, no download):
+//   Serena  en-GB  British Enhanced
+//   Moira   en-IE  Irish
+//   Karen   en-AU  Australian
+//   Tessa   en-ZA  South African
+// Never cache voice objects across cancel() calls on iOS — always re-fetch.
+
+let ttsVoicePref    = 'british';
+let ttsPendingVoice = null;   // set when user switches voice mid-playback
+let ttsPendingSpeed = null;   // set when user switches speed mid-playback
+
+// Priority lists — first match wins. Never include male names.
+const VOICE_PREFS = {
+  british: [
+    n => n === 'Serena',
+    n => n === 'Kate',
+    n => n === 'Martha',
+  ],
+  irish: [
+    n => n === 'Moira',
+  ],
+  australian: [
+    n => n === 'Karen',
+    n => n === 'Catherine',
+  ],
+  'south-african': [
+    n => n === 'Tessa',
+  ],
+};
+// Fallback chain if preferred accent not found
+const FALLBACK_NAMES = ['Serena','Moira','Karen','Tessa','Kate','Samantha'];
 
 function ttsPickVoice() {
+  // Always call getVoices() fresh — iOS invalidates cached objects after cancel()
   const voices = speechSynthesis.getVoices();
   if (!voices.length) return null;
 
-  const british = [
-    v => v.name === 'Serena'  && v.lang.startsWith('en-GB'),
-    v => v.name === 'Kate'    && v.lang.startsWith('en-GB'),
-    v => v.name.includes('Google UK English Female'),
-    v => v.lang.startsWith('en-GB') && /female/i.test(v.name),
-    v => v.lang.startsWith('en-GB'),
-    v => v.lang.startsWith('en'),
-  ];
-  const australian = [
-    v => v.name === 'Karen'     && v.lang.startsWith('en-AU'),
-    v => v.name === 'Catherine' && v.lang.startsWith('en-AU'),
-    v => v.name.includes('Google Australian English'),
-    v => v.lang.startsWith('en-AU') && /female/i.test(v.name),
-    v => v.lang.startsWith('en-AU'),
-    v => v.lang.startsWith('en'),
-  ];
-  const american = [
-    v => v.name === 'Samantha' && v.lang.startsWith('en-US'),
-    v => v.name === 'Ava'      && v.lang.startsWith('en-US'),
-    v => v.name.includes('Google US English') && /female/i.test(v.name),
-    v => v.lang.startsWith('en-US') && /female/i.test(v.name),
-    v => v.lang.startsWith('en-US'),
-    v => v.lang.startsWith('en'),
-  ];
+  const pref = ttsPendingVoice || ttsVoicePref;
+  const matchers = VOICE_PREFS[pref] || VOICE_PREFS.british;
 
-  const irish = [
-    v => v.name === 'Moira'   && v.lang.startsWith('en-IE'),
-    v => v.name === 'Moira',                                   // macOS — best Irish voice
-    v => v.lang.startsWith('en-IE') && /female/i.test(v.name),
-    v => v.lang.startsWith('en-IE'),
-    v => v.name.includes('Google UK English Female'),          // fallback to British
-    v => v.lang.startsWith('en-GB'),
-    v => v.lang.startsWith('en'),
-  ];
-
-  const matchers = ttsVoicePref === 'australian-female' ? australian
-                 : ttsVoicePref === 'american-female'   ? american
-                 : ttsVoicePref === 'irish-female'       ? irish
-                 : british;
-
+  // Try preferred accent first
   for (const fn of matchers) {
-    const v = voices.find(fn);
-    if (v) { ttsVoiceCache = v; return v; }
+    const v = voices.find(v => fn(v.name));
+    if (v) return v;
   }
-  return null;
+  // Fallback: first available from known female list
+  for (const name of FALLBACK_NAMES) {
+    const v = voices.find(v => v.name === name);
+    if (v) return v;
+  }
+  // Last resort: any English voice
+  return voices.find(v => v.lang.startsWith('en')) || null;
+}
+
+function ttsVoiceName() {
+  const v = ttsPickVoice();
+  return v ? v.name + ' (' + v.lang + ')' : 'device default';
 }
 
 function ttsSetVoicePref(pref, btn) {
-  ttsVoicePref  = pref;
-  ttsVoiceCache = null;
   document.querySelectorAll('.tts-voice-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  const v = ttsPickVoice();
-  const statusEl = document.getElementById('tts-status');
-  if (statusEl) statusEl.textContent = v ? 'Voice: ' + v.name + ' (' + v.lang + ')' : 'No matching voice found — using device default';
-  if (ttsActive) { ttsClearAll(); speechSynthesis.cancel(); setTimeout(ttsNextSentence, 100); }
+
+  if (ttsActive) {
+    // Queue the change — apply it at the START of the next sentence
+    // so we never cancel mid-word (causes Safari stutter)
+    ttsPendingVoice = pref;
+    const statusEl = document.getElementById('tts-status');
+    if (statusEl) statusEl.textContent = 'Switching voice after this sentence…';
+  } else {
+    ttsVoicePref = pref;
+    const statusEl = document.getElementById('tts-status');
+    if (statusEl) statusEl.textContent = 'Voice: ' + ttsVoiceName();
+  }
 }
 
-speechSynthesis.onvoiceschanged = () => { ttsVoiceCache = null; };
+function ttsApplyPending() {
+  // Called at the start of each sentence — apply any queued voice/speed changes
+  if (ttsPendingVoice !== null) {
+    ttsVoicePref    = ttsPendingVoice;
+    ttsPendingVoice = null;
+  }
+  if (ttsPendingSpeed !== null) {
+    ttsRate = ttsPendingSpeed.rate;
+    ttsWPM  = ttsPendingSpeed.wpm;
+    ttsPendingSpeed = null;
+  }
+}
+
+speechSynthesis.onvoiceschanged = () => { /* no cache to clear */ };
 
 // ═══ NAVIGATION ═══
 function go(t){
