@@ -727,6 +727,11 @@
    TOAST NOTIFICATION — shared across all pages
    (Also defined in global-styles.css for #quick-add-feedback specifically;
     this section covers the generic notification container used by cart.js)
+
+   FIX (May 2026): Added max-width to container so it never overflows the
+   right edge of the viewport. Changed .notification translate from a fixed
+   400px (which clips on narrow screens) to calc(100% + 40px) so it slides
+   off-screen by exactly its own width regardless of viewport size.
    ========================================================================== */
 
 #notificationContainer {
@@ -734,18 +739,20 @@
     top: 100px;
     right: 20px;
     z-index: 9999;
+    max-width: calc(100vw - 40px); /* FIX: prevents right-edge overflow */
 }
 
 .notification {
-    min-width: 300px;
+    min-width: 280px;
     max-width: 400px;
+    box-sizing: border-box; /* FIX: padding doesn't add to declared width */
     padding: 1rem 1.5rem;
     border-radius: 15px;
     color: white;
     font-weight: 500;
     margin-bottom: 0.5rem;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-    transform: translateX(400px);
+    transform: translateX(calc(100% + 40px)); /* FIX: relative to own width, not fixed 400px */
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
@@ -1368,12 +1375,17 @@
         padding: 0.3rem 0.6rem;
     }
 
-    /* Notification mobile */
-    .notification {
+    /* Notification mobile — FIX: constrain container, not just .notification */
+    #notificationContainer {
         right: 10px;
         left: 10px;
-        min-width: auto;
         max-width: calc(100vw - 20px);
+    }
+
+    .notification {
+        min-width: auto;
+        max-width: 100%;
+        transform: translateX(calc(100% + 20px));
     }
 }
 
