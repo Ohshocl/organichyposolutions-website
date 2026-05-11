@@ -723,83 +723,59 @@
     text-align: center;
 }
 
-/* ==========================================================================
-   TOAST NOTIFICATION — shared across all pages
-   (Also defined in global-styles.css for #quick-add-feedback specifically;
-    this section covers the generic notification container used by cart.js)
-   ========================================================================== */
+/* ── TOAST NOTIFICATION FIXES ── */
 
+/* Generic notification container */
 #notificationContainer {
     position: fixed;
     top: 100px;
     right: 20px;
     z-index: 9999;
+    max-width: calc(100vw - 40px);   /* NEW — can never overflow viewport */
 }
 
 .notification {
-    min-width: 300px;
+    min-width: 280px;                /* slightly reduced from 300px */
+    max-width: calc(100vw - 40px);   /* NEW — hard cap */
+    box-sizing: border-box;          /* NEW — padding doesn't add width */
     max-width: 400px;
+    margin-bottom: 10px;
     padding: 1rem 1.5rem;
-    border-radius: 15px;
-    color: white;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-    transform: translateX(400px);
-    transition: all 0.3s ease;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    transform: translateX(450px);
+    transition: transform 0.3s ease;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 10px;
+    color: white;
 }
 
 .notification.show {
     transform: translateX(0);
 }
 
-.notification.success {
+/* Homepage quick-add feedback toast */
+#quick-add-feedback {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 9999;
+    min-width: 260px;
+    max-width: calc(100vw - 40px);   /* NEW */
+    box-sizing: border-box;          /* NEW */
+    box-shadow: 0 8px 25px rgba(74, 222, 128, 0.4);
+    border: none;
+    border-radius: 15px;
     background: linear-gradient(135deg, var(--ohs-organic-green), var(--ohs-dark-green));
-}
-
-.notification.error {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-}
-
-.notification.warning {
-    background: linear-gradient(135deg, var(--ohs-premium-gold), #d97706);
-}
-
-.notification.info {
-    background: linear-gradient(135deg, var(--ohs-primary-blue), var(--ohs-accent-blue));
-}
-
-.notification i {
-    font-size: 1.2rem;
-    flex-shrink: 0;
-}
-
-/* Generic alert overrides */
-.alert-success {
-    background-color: var(--ohs-organic-green);
-    border-color: var(--ohs-dark-green);
     color: white;
+    transform: translateX(400px);
+    transition: all 0.3s ease;
+    padding: var(--spacing-md) var(--spacing-lg);
 }
 
-.alert-warning {
-    background-color: var(--ohs-premium-gold);
-    border-color: #d97706;
-    color: white;
-}
-
-.alert-danger {
-    background-color: #ef4444;
-    border-color: #dc2626;
-    color: white;
-}
-
-.alert-info {
-    background-color: var(--ohs-accent-blue);
-    border-color: var(--ohs-primary-blue);
-    color: var(--ohs-dark-navy);
+#quick-add-feedback.show {
+    transform: translateX(0);
 }
 
 /* ==========================================================================
