@@ -6,12 +6,12 @@
 
     <!-- SEO Meta Tags -->
     <title>Service Cost Calculator | Organic HypoSolutions</title>
-    <meta name="description" content="Get instant pricing for Utah sanitization cost calculator and commercial fogging pricing. Professional cleaning cost estimates for residential disinfection quotes.">
-    <meta name="keywords" content="Utah sanitization cost calculator, commercial fogging pricing, residential disinfection quotes, professional cleaning cost estimate, hypochlorous acid service pricing, Utah facility sanitization rates, subscription sanitization services, Salt Lake City cleaning quotes, professional fogging cost">
+    <meta name="description" content="Get instant pricing for Utah mold remediation, sanitization, and commercial fogging services. Professional cleaning cost estimates for residential and commercial properties.">
+    <meta name="keywords" content="Utah sanitization cost calculator, mold remediation pricing, commercial fogging pricing, residential disinfection quotes, professional cleaning cost estimate, hypochlorous acid service pricing, Utah facility sanitization rates, Salt Lake City cleaning quotes">
 
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Service Cost Calculator | Organic HypoSolutions">
-    <meta property="og:description" content="Get instant pricing for Utah sanitization services and professional cleaning cost estimates">
+    <meta property="og:description" content="Get instant pricing for Utah mold remediation and sanitization services">
     <meta property="og:url" content="https://organichyposolutions.com/calculator.html">
     <meta property="og:image" content="https://organichyposolutions.com/assets/images/logos/ohs-brand-image.jpg">
     <meta property="og:type" content="website">
@@ -26,6 +26,166 @@
 
     <!-- Product Catalog (always load for cart badge) -->
     <script src="shop/js/product-catalog.js"></script>
+
+    <style>
+        .calculator-section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .calc-input { margin-bottom: 1.5rem; }
+        .calc-result {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2E5EAA 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            position: sticky;
+            top: 80px;
+        }
+        .price-breakdown {
+            background: rgba(255,255,255,0.15);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .subscription-section {
+            background: linear-gradient(135deg, #166534 0%, #22C55E 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 1rem;
+        }
+        .subscription-breakdown {
+            background: rgba(255,255,255,0.15);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .subscription-options { display: flex; flex-direction: column; gap: 0.5rem; }
+        .subscription-option {
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .subscription-option:hover { border-color: #2E5EAA; background: #f0f4ff; }
+        .subscription-option.selected { border-color: #2E5EAA; background: #e8f0fe; }
+        .subscription-badge {
+            background: #f59e0b;
+            color: white;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 6px;
+        }
+        .savings-highlight {
+            background: rgba(255,255,255,0.25);
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-weight: bold;
+        }
+        .service-radius-notice {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .dual-machine-notice {
+            background: #cfe2ff;
+            border: 1px solid #2E5EAA;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        .benefits-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: 100%;
+        }
+        .benefits-section h3 {
+            color: #1e3a8a;
+            border-bottom: 2px solid #2E5EAA;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .benefit-item { padding: 0.5rem 0; border-bottom: 1px solid #dee2e6; }
+        .benefit-item:last-child { border-bottom: none; }
+        .business-benefits { border-left: 4px solid #f59e0b; }
+        .health-benefits   { border-left: 4px solid #2E5EAA; }
+        .business-benefit-item { border-bottom-color: #fde68a; }
+        .health-benefit-item   { border-bottom-color: #bfdbfe; }
+        .testimonial-box {
+            background: white;
+            border-left: 3px solid #22C55E;
+            border-radius: 0 8px 8px 0;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-style: italic;
+        }
+        .testimonial-author { font-weight: bold; font-style: normal; color: #22C55E; margin-top: 0.5rem; }
+
+        /* ── Service mode tabs ── */
+        .service-mode-tabs {
+            display: flex;
+            border: 2px solid #2E5EAA;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        .service-mode-tab {
+            flex: 1;
+            padding: 0.65rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            background: white;
+            color: #2E5EAA;
+            border: none;
+            outline: none;
+        }
+        .service-mode-tab.active { background: #2E5EAA; color: white; }
+
+        /* ── Mold complexity cards ── */
+        .mold-complexity-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .mold-complexity-card {
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 0.75rem 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .mold-complexity-card:hover { border-color: #2E5EAA; background: #f0f4ff; }
+        .mold-complexity-card.selected { border-color: #2E5EAA; background: #e8f0fe; }
+        .mold-complexity-card .rate-badge { font-size: 0.72rem; font-weight: bold; color: #2E5EAA; margin-top: 0.25rem; }
+        .mold-complexity-card .mold-label { font-size: 0.85rem; font-weight: 600; }
+        .mold-complexity-card .mold-desc { font-size: 0.68rem; color: #6c757d; margin-top: 0.2rem; }
+
+        .mold-info-callout {
+            background: #fff7ed;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+        }
+
+        /* show/hide panels */
+        #foggingPanel { display: none; }
+    </style>
 </head>
 <body class="page-calculator">
 
@@ -36,166 +196,304 @@
             <div class="calculator-section">
                 <div class="text-center mb-4">
                     <h1 class="display-4 fw-bold text-primary">📊 Service Cost Calculator</h1>
-                    <p class="lead">Get an instant quote for your USDA Certified Organic HOCl sanitization service</p>
+                    <p class="lead">Get an instant quote for USDA Certified Organic HOCl services</p>
                     <small class="text-muted">*<a href="legal-information.html" class="text-decoration-none">See Legal Information for terms and conditions</a></small>
                 </div>
 
+                <!-- ── SERVICE MODE TABS ── -->
+                <div class="service-mode-tabs">
+                    <button class="service-mode-tab active" id="tab-mold" onclick="setServiceMode('mold')">
+                        <i class="fas fa-biohazard me-1"></i> Mold Remediation
+                    </button>
+                    <button class="service-mode-tab" id="tab-fogging" onclick="setServiceMode('fogging')">
+                        <i class="fas fa-spray-can me-1"></i> Fogging / Sanitization
+                    </button>
+                </div>
+
                 <div class="row">
+                    <!-- ════ LEFT COLUMN — INPUTS ════ -->
                     <div class="col-lg-6">
-                        <!-- Square Footage Input -->
-                        <div class="calc-input">
-                            <label class="form-label fw-bold">🏢 Facility Size (Square Feet)</label>
-                            <input type="range" class="form-range" id="squareFootage"
-                                   min="500" max="50000" value="3500" step="250">
-                            <div class="d-flex justify-content-between">
-                                <small>500 sq ft</small>
-                                <strong id="sqftDisplay">3,500 sq ft</strong>
-                                <small>50,000+ sq ft</small>
+
+                        <!-- ══════════════════════════════════════
+                             MOLD REMEDIATION PANEL (DEFAULT)
+                        ══════════════════════════════════════ -->
+                        <div id="moldPanel">
+
+                            <div class="mold-info-callout">
+                                <i class="fas fa-info-circle me-1 text-warning"></i>
+                                <strong>How mold pricing works:</strong> Estimates cover the OHS post-remediation organic antimicrobial treatment. Physical mold removal is quoted separately by our licensed general contractor.
                             </div>
-                        </div>
 
-                        <!-- Service Type -->
-                        <div class="calc-input">
-                            <label class="form-label fw-bold">🏗️ Service Type</label>
-                            <select class="form-select" id="serviceType">
-                                <option value="commercial">🏢 Commercial Facility</option>
-                                <option value="residential">🏠 Residential Property</option>
-                                <option value="healthcare">🏥 Healthcare Facility</option>
-                                <option value="education">🎓 Educational Facility</option>
-                                <option value="food">🍽️ Food Service</option>
-                                <option value="fitness">💪 Fitness Center</option>
-                            </select>
-                        </div>
-
-                        <!-- Service Frequency -->
-                        <div class="calc-input">
-                            <label class="form-label fw-bold">📅 Service Frequency</label>
-                            <select class="form-select" id="frequency">
-                                <option value="monthly">Monthly Service</option>
-                                <option value="biweekly">Bi-Weekly Service</option>
-                                <option value="weekly">Weekly Service</option>
-                                <option value="quarterly">Quarterly Service</option>
-                                <option value="onetime">One-Time Service</option>
-                            </select>
-                        </div>
-
-                        <!-- Complexity Level -->
-                        <div class="calc-input">
-                            <label class="form-label fw-bold">⚙️ Facility Complexity</label>
-                            <select class="form-select" id="complexity">
-                                <option value="standard">Standard Layout</option>
-                                <option value="moderate">Moderate Complexity</option>
-                                <option value="complex">High Complexity</option>
-                            </select>
-                        </div>
-
-                        <!-- Subscription Options -->
-                        <div class="calc-input">
-                            <label class="form-label fw-bold">📝 Contract Options</label>
-                            <div class="subscription-options">
-                                <div class="subscription-option selected" id="payPerService">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>Pay Per Service</strong>
-                                            <br><small class="text-muted">No contract required</small>
-                                        </div>
-                                        <div>Standard Rates</div>
-                                    </div>
+                            <!-- Affected Area -->
+                            <div class="calc-input">
+                                <label class="form-label fw-bold">🏢 Affected Area (Square Feet)</label>
+                                <input type="range" class="form-range" id="squareFootage"
+                                       min="50" max="5000" value="400" step="50"
+                                       oninput="updateCalculator()" onchange="updateCalculator()">
+                                <div class="d-flex justify-content-between">
+                                    <small>50 sq ft</small>
+                                    <strong id="sqftDisplay">400 sq ft</strong>
+                                    <small>5,000 sq ft</small>
                                 </div>
+                            </div>
 
-                                <div class="subscription-option" id="monthlyContract">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>Monthly Contract</strong>
-                                            <span class="subscription-badge">15% OFF</span>
-                                            <br><small class="text-muted">30-day cancellation notice</small>
-                                        </div>
-                                        <div class="text-success fw-bold">Save 15%</div>
+                            <!-- Mold Complexity Cards -->
+                            <div class="calc-input">
+                                <label class="form-label fw-bold">🔬 Job Complexity</label>
+                                <div class="mold-complexity-grid">
+                                    <div class="mold-complexity-card selected" id="mold-surface" onclick="selectMoldComplexity('surface')">
+                                        <div class="mold-label">Surface</div>
+                                        <div class="mold-desc">Hard surfaces, easy access, dry env.</div>
+                                        <div class="rate-badge">$2–$7 / sf</div>
                                     </div>
-                                </div>
-
-                                <div class="subscription-option" id="bimonthlyContract">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>Bi-Monthly Contract</strong>
-                                            <span class="subscription-badge">10% OFF</span>
-                                            <br><small class="text-muted">Service every 2 months</small>
-                                        </div>
-                                        <div class="text-success fw-bold">Save 10%</div>
+                                    <div class="mold-complexity-card" id="mold-moderate" onclick="selectMoldComplexity('moderate')">
+                                        <div class="mold-label">Moderate</div>
+                                        <div class="mold-desc">Drywall/framing, semi-accessible</div>
+                                        <div class="rate-badge">$8–$11 / sf</div>
                                     </div>
-                                </div>
-
-                                <div class="subscription-option" id="annualContract">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>Annual Prepaid Contract</strong>
-                                            <span class="subscription-badge">20% OFF</span>
-                                            <br><small class="text-muted">Includes 2 complimentary treatments</small>
-                                        </div>
-                                        <div class="text-success fw-bold">Save 20% + Bonuses</div>
+                                    <div class="mold-complexity-card" id="mold-complex" onclick="selectMoldComplexity('complex')">
+                                        <div class="mold-label">Complex</div>
+                                        <div class="mold-desc">Attic/crawl, black mold, containment</div>
+                                        <div class="rate-badge">$12–$15 / sf</div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Additional Services -->
-                        <div class="calc-input">
-                            <label class="form-label fw-bold">➕ Additional Services</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="adhocFogging">
-                                <label class="form-check-label" for="adhocFogging">
-                                    Additional adhoc backpack fogging requests - additional sqft can be calculated on site
-                                </label>
+                            <!-- Property Type -->
+                            <div class="calc-input">
+                                <label class="form-label fw-bold">🏗️ Property Type</label>
+                                <select class="form-select" id="moldPropertyType" onchange="updateCalculator()">
+                                    <option value="residential">🏠 Residential</option>
+                                    <option value="commercial">🏢 Commercial</option>
+                                    <option value="healthcare">🏥 Healthcare / Medical</option>
+                                    <option value="multi-family">🏘️ Multi-Family / Apartment</option>
+                                </select>
                             </div>
-                        </div>
 
-                        <!-- Service Radius Notice -->
-                        <div class="service-radius-notice">
-                            <h6 class="fw-bold mb-2">📍 Service Area Notice</h6>
-                            <p class="mb-1">This service quote is valid for up to a 60 mile radius of Salt Lake City, Utah.</p>
-                            <small class="text-muted">Travel charges at $0.70 per mile apply beyond 25-mile radius.</small>
-                        </div>
+                            <!-- Moisture Status -->
+                            <div class="calc-input">
+                                <label class="form-label fw-bold">💧 Moisture Status</label>
+                                <select class="form-select" id="moistureStatus" onchange="updateCalculator()">
+                                    <option value="fixed">✅ Source already fixed</option>
+                                    <option value="active">⚠️ Active or recently repaired</option>
+                                    <option value="flood">🌊 Post-flood / water damage</option>
+                                </select>
+                                <small class="text-muted">Active moisture or flood events increase treatment intensity and cost.</small>
+                            </div>
 
-                        <!-- Dual Machine Notice -->
-                        <div class="dual-machine-notice" id="dualMachineNotice">
-                            <h6 class="fw-bold mb-2">⚡ Large Facility Service</h6>
-                            <p class="mb-0">Facilities over 20,000 sq ft require dual machine service for optimal coverage and efficiency.</p>
-                        </div>
-                    </div>
+                            <!-- Mold Contract Options -->
+                            <div class="calc-input">
+                                <label class="form-label fw-bold">📝 Service Option</label>
+                                <div class="subscription-options">
+                                    <div class="subscription-option selected" id="payPerService" onclick="selectSubscription('payPerService')">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>One-Time Treatment</strong>
+                                                <br><small class="text-muted">Post-remediation antimicrobial fogging</small>
+                                            </div>
+                                            <div>Standard Rate</div>
+                                        </div>
+                                    </div>
+                                    <div class="subscription-option" id="monthlyContract" onclick="selectSubscription('monthlyContract')">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>Follow-Up Maintenance Plan</strong>
+                                                <span class="subscription-badge">15% OFF</span>
+                                                <br><small class="text-muted">Monthly re-treatment to prevent recurrence</small>
+                                            </div>
+                                            <div class="text-success fw-bold">Save 15%</div>
+                                        </div>
+                                    </div>
+                                    <div class="subscription-option" id="bimonthlyContract" onclick="selectSubscription('bimonthlyContract')">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>Bi-Monthly Maintenance</strong>
+                                                <span class="subscription-badge">10% OFF</span>
+                                                <br><small class="text-muted">Treatment every 2 months</small>
+                                            </div>
+                                            <div class="text-success fw-bold">Save 10%</div>
+                                        </div>
+                                    </div>
+                                    <div class="subscription-option" id="annualContract" onclick="selectSubscription('annualContract')">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>Annual Prevention Program</strong>
+                                                <span class="subscription-badge">20% OFF</span>
+                                                <br><small class="text-muted">Quarterly treatments + 2 complimentary services</small>
+                                            </div>
+                                            <div class="text-success fw-bold">Save 20% + Bonuses</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
+                        </div><!-- /moldPanel -->
+
+
+                        <!-- ══════════════════════════════════════
+                             FOGGING / SANITIZATION PANEL
+                        ══════════════════════════════════════ -->
+                        <div id="foggingPanel">
+
+                            <!-- Square Footage -->
+                            <div class="calc-input">
+                                <label class="form-label fw-bold">🏢 Facility Size (Square Feet)</label>
+                                <input type="range" class="form-range" id="squareFootageFogging"
+                                       min="500" max="50000" value="3500" step="250"
+                                       oninput="updateCalculator()" onchange="updateCalculator()">
+                                <div class="d-flex justify-content-between">
+                                    <small>500 sq ft</small>
+                                    <strong id="sqftDisplayFogging">3,500 sq ft</strong>
+                                    <small>50,000+ sq ft</small>
+                                </div>
+                            </div>
+
+                            <!-- Service Type — ALL ORIGINAL TYPES PRESERVED -->
+                            <div class="calc-input">
+                                <label class="form-label fw-bold">🏗️ Service Type</label>
+                                <select class="form-select" id="serviceType" onchange="updateCalculator()">
+                                    <option value="commercial">🏢 Commercial Facility</option>
+                                    <option value="residential">🏠 Residential Property</option>
+                                    <option value="healthcare">🏥 Healthcare Facility</option>
+                                    <option value="education">🎓 Educational Facility</option>
+                                    <option value="food">🍽️ Food Service</option>
+                                    <option value="fitness">💪 Fitness Center</option>
+                                </select>
+                                <small class="text-muted">Residential is lower-cost — open plan, fast access, minimal compliance overhead.</small>
+                            </div>
+
+                            <!-- Service Frequency -->
+                            <div class="calc-input">
+                                <label class="form-label fw-bold">📅 Service Frequency</label>
+                                <select class="form-select" id="frequency" onchange="updateCalculator()">
+                                    <option value="monthly">Monthly Service</option>
+                                    <option value="biweekly">Bi-Weekly Service</option>
+                                    <option value="weekly">Weekly Service</option>
+                                    <option value="quarterly">Quarterly Service</option>
+                                    <option value="onetime">One-Time Service</option>
+                                </select>
+                            </div>
+
+                            <!-- Complexity Level -->
+                            <div class="calc-input">
+                                <label class="form-label fw-bold">⚙️ Facility Complexity</label>
+                                <select class="form-select" id="complexity" onchange="updateCalculator()">
+                                    <option value="standard">Standard Layout</option>
+                                    <option value="moderate">Moderate Complexity</option>
+                                    <option value="complex">High Complexity</option>
+                                </select>
+                            </div>
+
+                            <!-- Fogging Contract Options -->
+                            <div class="calc-input">
+                                <label class="form-label fw-bold">📝 Contract Options</label>
+                                <div class="subscription-options">
+                                    <div class="subscription-option selected" id="payPerServiceFogging" onclick="selectSubscription('payPerService')">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>Pay Per Service</strong>
+                                                <br><small class="text-muted">No contract required</small>
+                                            </div>
+                                            <div>Standard Rates</div>
+                                        </div>
+                                    </div>
+                                    <div class="subscription-option" id="monthlyContractFogging" onclick="selectSubscription('monthlyContract')">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>Monthly Contract</strong>
+                                                <span class="subscription-badge">15% OFF</span>
+                                                <br><small class="text-muted">30-day cancellation notice</small>
+                                            </div>
+                                            <div class="text-success fw-bold">Save 15%</div>
+                                        </div>
+                                    </div>
+                                    <div class="subscription-option" id="bimonthlyContractFogging" onclick="selectSubscription('bimonthlyContract')">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>Bi-Monthly Contract</strong>
+                                                <span class="subscription-badge">10% OFF</span>
+                                                <br><small class="text-muted">Service every 2 months</small>
+                                            </div>
+                                            <div class="text-success fw-bold">Save 10%</div>
+                                        </div>
+                                    </div>
+                                    <div class="subscription-option" id="annualContractFogging" onclick="selectSubscription('annualContract')">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>Annual Prepaid Contract</strong>
+                                                <span class="subscription-badge">20% OFF</span>
+                                                <br><small class="text-muted">Includes 2 complimentary treatments</small>
+                                            </div>
+                                            <div class="text-success fw-bold">Save 20% + Bonuses</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Additional Services -->
+                            <div class="calc-input">
+                                <label class="form-label fw-bold">➕ Additional Services</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="adhocFogging" onchange="updateCalculator()">
+                                    <label class="form-check-label" for="adhocFogging">
+                                        Additional ad-hoc backpack fogging requests — additional sqft calculated on site
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Service Radius Notice -->
+                            <div class="service-radius-notice">
+                                <h6 class="fw-bold mb-2">📍 Service Area Notice</h6>
+                                <p class="mb-1">This service quote is valid for up to a 60-mile radius of Salt Lake City, Utah.</p>
+                                <small class="text-muted">Travel charges at $0.70 per mile apply beyond 25-mile radius.</small>
+                            </div>
+
+                            <!-- Dual Machine Notice -->
+                            <div class="dual-machine-notice" id="dualMachineNotice">
+                                <h6 class="fw-bold mb-2">⚡ Large Facility Service</h6>
+                                <p class="mb-0">Facilities over 20,000 sq ft require dual machine service for optimal coverage and efficiency.</p>
+                            </div>
+
+                        </div><!-- /foggingPanel -->
+
+                    </div><!-- /col left -->
+
+
+                    <!-- ════ RIGHT COLUMN — RESULTS ════ -->
                     <div class="col-lg-6">
-                        <!-- One-Time Service Results Section -->
+
+                        <!-- One-Time / Base Estimate -->
                         <div class="calc-result">
                             <h3 class="fw-bold mb-3">💰 Service Estimate</h3>
-                            <div class="display-4 fw-bold mb-2" id="totalPrice">$620</div>
+                            <div class="display-4 fw-bold mb-2" id="totalPrice">$0</div>
                             <p class="fs-5 mb-3" id="priceFrequency">per service</p>
 
                             <div class="price-breakdown">
                                 <h5 class="fw-bold mb-3">📋 Breakdown</h5>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Base Service:</span>
-                                    <span id="basePrice">$570</span>
+                                    <span id="basePrice">$0</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
-                                    <span>Complexity Adjustment:</span>
+                                    <span id="complexityLabel">Complexity Adjustment:</span>
                                     <span id="complexityPrice">$0</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Travel Costs:</span>
                                     <span id="travelPrice">$0</span>
                                 </div>
-                                <div class="d-flex justify-content-between mb-2" id="volumeDiscountRow" style="display: none;">
+                                <div class="d-flex justify-content-between mb-2" id="volumeDiscountRow" style="display:none !important;">
                                     <span>Volume Discount (20k+ sq ft):</span>
                                     <span id="volumeDiscount">-$0</span>
                                 </div>
                                 <hr class="border-light">
                                 <div class="d-flex justify-content-between fw-bold fs-5">
                                     <span>Estimated Total:</span>
-                                    <span id="breakdownTotal">$620</span>
+                                    <span id="breakdownTotal">$0</span>
                                 </div>
                             </div>
 
-                            <div class="mt-3 p-2" style="background: rgba(255,255,255,0.1); border-radius: 8px;">
+                            <div class="mt-3 p-2" style="background:rgba(255,255,255,0.1);border-radius:8px;">
                                 <small><i class="fas fa-info-circle me-1"></i> This is an estimate. Final pricing confirmed by specialist.</small>
                             </div>
 
@@ -209,35 +507,35 @@
                             </div>
                         </div>
 
-                        <!-- Subscription/Contract Results Section -->
-                        <div class="subscription-section" id="subscriptionResults" style="display: none;">
+                        <!-- Contract / Subscription Results -->
+                        <div class="subscription-section" id="subscriptionResults" style="display:none;">
                             <h3 class="fw-bold mb-3">📅 Contract Pricing</h3>
-                            <div class="display-4 fw-bold mb-2" id="contractPrice">$527</div>
-                            <p class="fs-5 mb-1" id="contractFrequency">per month</p>
-                            <p class="mb-3"><span class="savings-highlight" id="contractSavings">Save $93/month</span></p>
+                            <div class="display-4 fw-bold mb-2" id="contractPrice">$0</div>
+                            <p class="fs-5 mb-1" id="contractFrequency">per service</p>
+                            <p class="mb-3"><span class="savings-highlight" id="contractSavings">Save $0</span></p>
 
                             <div class="subscription-breakdown">
                                 <h5 class="fw-bold mb-3">📋 Contract Benefits</h5>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Service Price:</span>
-                                    <span id="contractServicePrice">$620</span>
+                                    <span id="contractServicePrice">$0</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Contract Discount:</span>
-                                    <span id="contractDiscountAmount">-$93</span>
+                                    <span id="contractDiscountAmount">-$0</span>
                                 </div>
-                                <div class="d-flex justify-content-between mb-2" id="annualBonusRow" style="display: none;">
+                                <div class="d-flex justify-content-between mb-2" id="annualBonusRow" style="display:none;">
                                     <span>Annual Bonus (2 free services):</span>
-                                    <span id="annualBonusValue">$1,240 value</span>
+                                    <span id="annualBonusValue">$0 value</span>
                                 </div>
                                 <hr class="border-light">
                                 <div class="d-flex justify-content-between fw-bold fs-5">
                                     <span>Contract Price:</span>
-                                    <span id="contractTotalPrice">$527</span>
+                                    <span id="contractTotalPrice">$0</span>
                                 </div>
                             </div>
 
-                            <div class="mt-3 p-2" style="background: rgba(255,255,255,0.1); border-radius: 8px;">
+                            <div class="mt-3 p-2" style="background:rgba(255,255,255,0.1);border-radius:8px;">
                                 <small><i class="fas fa-info-circle me-1"></i> This is an estimate. Final pricing confirmed by specialist.</small>
                             </div>
 
@@ -250,11 +548,14 @@
                                 </button>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- BENEFITS SECTIONS BELOW CALCULATOR -->
-                <div class="row">
+                    </div><!-- /col right -->
+                </div><!-- /row -->
+
+
+                <!-- ════ BENEFITS SECTIONS ════ -->
+                <div class="row mt-5">
+
                     <!-- Contract Benefits -->
                     <div class="col-lg-6 mb-4">
                         <div class="benefits-section">
@@ -286,7 +587,7 @@
                     <!-- Allergy & Pet Benefits -->
                     <div class="col-lg-6 mb-4">
                         <div class="benefits-section">
-                            <h3><i class="fas fa-shield-alt me-2"></i>Allergy & Pet Benefits</h3>
+                            <h3><i class="fas fa-shield-alt me-2"></i>Allergy &amp; Pet Benefits</h3>
                             <p class="mb-3">Our USDA Certified Organic HOCl service can help reduce allergens and create a healthier environment for:</p>
                             <div class="benefit-item">
                                 <strong>Children with allergies and sensitivities:</strong> Chemical-free sanitization reduces triggers
@@ -362,9 +663,11 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
+
+                </div><!-- /benefits row -->
+
+            </div><!-- /calculator-section -->
+        </div><!-- /container -->
     </main>
 
     <div id="footer-placeholder"></div>
@@ -375,264 +678,396 @@
     <script src="assets/js/analytics.js"></script>
 
     <script>
-        // =========================================================
-        // UNIFIED PRICING CONFIGURATION - SOURCE OF TRUTH
-        // This pricing MUST match book-service.html exactly
-        // =========================================================
-        const PRICING = {
-            baseRates: {
-                commercial: 0.125,
-                residential: 0.15,
-                healthcare: 0.14,
-                education: 0.12,
-                food: 0.135,
-                fitness: 0.13
-            },
-            volumeRate: 0.08,
-            frequencyMultipliers: {
-                monthly: 1.0,
-                biweekly: 1.8,
-                weekly: 3.5,
-                quarterly: 1.2,
-                onetime: 1.4
-            },
-            complexityAdjustments: {
-                standard: 1.0,
-                moderate: 1.15,
-                complex: 1.3
-            },
-            minimums: {
-                commercial: 200,
-                residential: 150,
-                healthcare: 300,
-                education: 200,
-                food: 200,
-                fitness: 175
-            },
-            contractDiscounts: {
-                payPerService: 0,
-                monthlyContract: 0.15,
-                bimonthlyContract: 0.10,
-                annualContract: 0.20
-            },
-            travelRate: 0.70,
-            baseTravelRadius: 25,
-            addons: {
-                organic: 25,
-                hvac: 75,
-                products: 45,
-                certificate: 15
-            }
-        };
+    // =========================================================
+    // UNIFIED PRICING CONFIGURATION — SOURCE OF TRUTH
+    // Fogging rates must stay in sync with book-service.html
+    // =========================================================
+    const PRICING = {
+        // ── FOGGING base rates ($/sf) ──
+        // NOTE: residential intentionally lower — open plan, fast access,
+        //       no compliance documentation overhead vs commercial.
+        baseRates: {
+            commercial:  0.125,
+            residential: 0.10,   // CORRECTED from 0.15 — simpler access, lower overhead
+            healthcare:  0.14,
+            education:   0.12,
+            food:        0.135,
+            fitness:     0.13
+        },
+        volumeRate: 0.08,   // large facility (>20k sqft) blended rate
+        frequencyMultipliers: {
+            monthly:   1.0,
+            biweekly:  1.8,
+            weekly:    3.5,
+            quarterly: 1.2,
+            onetime:   1.4
+        },
+        complexityAdjustments: {
+            standard: 1.0,
+            moderate: 1.15,
+            complex:  1.3
+        },
+        minimums: {
+            commercial:  200,
+            residential: 125,    // CORRECTED from 150 — matches lower rate
+            healthcare:  300,
+            education:   200,
+            food:        200,
+            fitness:     175
+        },
 
-        let currentSubscription = 'payPerService';
-        let lastCalculation = null;
+        // ── MOLD REMEDIATION rates (midpoints of published bands) ──
+        // Surface: $2–$7  → midpoint $4.50
+        // Moderate: $8–$11 → midpoint $9.50
+        // Complex: $12–$15 → midpoint $13.50
+        moldRates: {
+            surface:  { low: 2,  high: 7,  mid: 4.50, label: 'Surface (hard surfaces, easy access)'  },
+            moderate: { low: 8,  high: 11, mid: 9.50, label: 'Moderate (drywall/framing penetration)' },
+            complex:  { low: 12, high: 15, mid: 13.50, label: 'Complex (attic/crawl, black mold)'     }
+        },
+        moldMinimums: {
+            residential:  300,
+            commercial:   400,
+            healthcare:   500,
+            'multi-family': 350
+        },
+        // Moisture surcharge multipliers
+        moistureMultipliers: {
+            fixed:  1.0,
+            active: 1.15,
+            flood:  1.30
+        },
 
-        function updateCalculator() {
-            try {
-                const sqft = parseInt(document.getElementById('squareFootage').value);
-                const serviceType = document.getElementById('serviceType').value;
-                const frequency = document.getElementById('frequency').value;
-                const complexity = document.getElementById('complexity').value;
+        contractDiscounts: {
+            payPerService:    0,
+            monthlyContract:  0.15,
+            bimonthlyContract: 0.10,
+            annualContract:   0.20
+        },
+        travelRate:       0.70,
+        baseTravelRadius: 25
+    };
 
-                const sqftDisplay = document.getElementById('sqftDisplay');
-                if (sqftDisplay) sqftDisplay.textContent = sqft.toLocaleString() + ' sq ft';
+    // ── State ──
+    let currentMode          = 'mold';       // 'mold' | 'fogging'
+    let currentSubscription  = 'payPerService';
+    let currentMoldComplexity = 'surface';
+    let lastCalculation      = null;
 
-                const dualMachineNotice = document.getElementById('dualMachineNotice');
-                const volumeDiscountRow = document.getElementById('volumeDiscountRow');
+    // =========================================================
+    // MODE SWITCHING
+    // =========================================================
+    function setServiceMode(mode) {
+        currentMode = mode;
 
-                if (sqft > 20000) {
-                    if (dualMachineNotice) dualMachineNotice.style.display = 'block';
-                    if (volumeDiscountRow) volumeDiscountRow.style.display = 'flex';
-                } else {
-                    if (dualMachineNotice) dualMachineNotice.style.display = 'none';
-                    if (volumeDiscountRow) volumeDiscountRow.style.display = 'none';
-                }
+        // Tab styles
+        document.getElementById('tab-mold').classList.toggle('active', mode === 'mold');
+        document.getElementById('tab-fogging').classList.toggle('active', mode === 'fogging');
 
-                let baseRate = sqft > 20000 ? PRICING.volumeRate : (PRICING.baseRates[serviceType] || 0.125);
-                let basePrice = Math.max(sqft * baseRate, PRICING.minimums[serviceType] || 150);
+        // Panels
+        document.getElementById('moldPanel').style.display    = mode === 'mold'    ? 'block' : 'none';
+        document.getElementById('foggingPanel').style.display = mode === 'fogging' ? 'block' : 'none';
 
-                const complexityMultiplier = PRICING.complexityAdjustments[complexity] || 1.0;
-                const complexityAdjustment = basePrice * (complexityMultiplier - 1);
-                let adjustedPrice = basePrice * complexityMultiplier;
+        // Reset contract selection visuals
+        resetContractUI();
 
-                if (sqft > 20000) adjustedPrice *= 2;
+        updateCalculator();
+    }
 
-                const estimatedDistance = 30;
-                let travelCosts = 0;
-                if (estimatedDistance > PRICING.baseTravelRadius) {
-                    travelCosts = (estimatedDistance - PRICING.baseTravelRadius) * PRICING.travelRate;
-                }
-
-                let totalPrice = adjustedPrice + travelCosts;
-
-                let volumeDiscountAmount = 0;
-                if (sqft > 20000) {
-                    volumeDiscountAmount = ((PRICING.baseRates[serviceType] || 0.125) - PRICING.volumeRate) * sqft;
-                }
-
-                lastCalculation = {
-                    sqft, serviceType, frequency, complexity,
-                    contractType: currentSubscription,
-                    basePrice: Math.round(basePrice),
-                    complexityAdjustment: Math.round(complexityAdjustment),
-                    travelCosts: Math.round(travelCosts),
-                    volumeDiscount: Math.round(volumeDiscountAmount),
-                    totalPrice: Math.round(totalPrice),
-                    contractDiscount: PRICING.contractDiscounts[currentSubscription],
-                    contractPrice: Math.round(totalPrice * (1 - PRICING.contractDiscounts[currentSubscription]))
-                };
-
-                updateElement('basePrice', '$' + Math.round(basePrice).toLocaleString());
-                updateElement('complexityPrice', '$' + Math.round(complexityAdjustment).toLocaleString());
-                updateElement('travelPrice', '$' + Math.round(travelCosts).toLocaleString());
-                updateElement('volumeDiscount', '-$' + Math.round(volumeDiscountAmount).toLocaleString());
-                updateElement('totalPrice', '$' + Math.round(totalPrice).toLocaleString());
-                updateElement('breakdownTotal', '$' + Math.round(totalPrice).toLocaleString());
-
-                const priceFrequencyElement = document.getElementById('priceFrequency');
-                if (priceFrequencyElement) {
-                    priceFrequencyElement.textContent = frequency === 'onetime' ? 'one-time service' : 'per service';
-                }
-
-                updateSubscriptionPricing(totalPrice);
-
-            } catch (error) {
-                console.error('Calculator error:', error);
-            }
-        }
-
-        function updateElement(id, value) {
+    function resetContractUI() {
+        // Clear all option highlights then re-apply selected to payPerService defaults
+        document.querySelectorAll('.subscription-option').forEach(el => el.classList.remove('selected'));
+        const defaults = ['payPerService', 'payPerServiceFogging'];
+        defaults.forEach(id => {
             const el = document.getElementById(id);
-            if (el) el.textContent = value;
-        }
+            if (el) el.classList.add('selected');
+        });
+        currentSubscription = 'payPerService';
+    }
 
-        function updateSubscriptionPricing(totalPrice) {
-            const subscriptionResults = document.getElementById('subscriptionResults');
-            const annualBonusRow = document.getElementById('annualBonusRow');
+    // =========================================================
+    // MOLD COMPLEXITY SELECTION
+    // =========================================================
+    function selectMoldComplexity(level) {
+        currentMoldComplexity = level;
+        ['surface', 'moderate', 'complex'].forEach(l => {
+            const card = document.getElementById('mold-' + l);
+            if (card) card.classList.toggle('selected', l === level);
+        });
+        updateCalculator();
+    }
 
-            if (currentSubscription !== 'payPerService') {
-                if (subscriptionResults) subscriptionResults.style.display = 'block';
+    // =========================================================
+    // CONTRACT SELECTION
+    // =========================================================
+    function selectSubscription(type) {
+        currentSubscription = type;
 
-                const discount = PRICING.contractDiscounts[currentSubscription];
-                const contractPrice = totalPrice * (1 - discount);
-                const savings = totalPrice - contractPrice;
-
-                if (lastCalculation) {
-                    lastCalculation.contractPrice = Math.round(contractPrice);
-                    lastCalculation.contractSavings = Math.round(savings);
-                }
-
-                updateElement('contractPrice', '$' + Math.round(contractPrice).toLocaleString());
-                updateElement('contractServicePrice', '$' + Math.round(totalPrice).toLocaleString());
-                updateElement('contractDiscountAmount', '-$' + Math.round(savings).toLocaleString());
-                updateElement('contractTotalPrice', '$' + Math.round(contractPrice).toLocaleString());
-                updateElement('contractSavings', 'Save $' + Math.round(savings).toLocaleString());
-
-                let contractFrequencyText = 'per service';
-                if (currentSubscription === 'monthlyContract') {
-                    contractFrequencyText = 'per month';
-                } else if (currentSubscription === 'bimonthlyContract') {
-                    contractFrequencyText = 'per service (bi-monthly)';
-                } else if (currentSubscription === 'annualContract') {
-                    contractFrequencyText = 'per service (annual rate)';
-                    if (annualBonusRow) {
-                        annualBonusRow.style.display = 'flex';
-                        updateElement('annualBonusValue', '$' + Math.round(totalPrice * 2).toLocaleString() + ' value');
-                    }
-                } else {
-                    if (annualBonusRow) annualBonusRow.style.display = 'none';
-                }
-
-                updateElement('contractFrequency', contractFrequencyText);
-            } else {
-                if (subscriptionResults) subscriptionResults.style.display = 'none';
-                if (annualBonusRow) annualBonusRow.style.display = 'none';
-            }
-        }
-
-        function selectSubscription(subscriptionType) {
-            try {
-                currentSubscription = subscriptionType;
-                document.querySelectorAll('.subscription-option').forEach(opt => opt.classList.remove('selected'));
-                const selected = document.getElementById(subscriptionType);
-                if (selected) selected.classList.add('selected');
-                updateCalculator();
-            } catch (error) {
-                console.error('Subscription selection error:', error);
-            }
-        }
-
-        function setupEventListeners() {
-            const slider = document.getElementById('squareFootage');
-            if (slider) {
-                slider.addEventListener('input', updateCalculator);
-                slider.addEventListener('change', updateCalculator);
-            }
-
-            ['serviceType', 'frequency', 'complexity'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.addEventListener('change', updateCalculator);
-            });
-
+        // Highlight the clicked option in whichever panel is active
+        if (currentMode === 'mold') {
             ['payPerService', 'monthlyContract', 'bimonthlyContract', 'annualContract'].forEach(id => {
                 const el = document.getElementById(id);
-                if (el) el.addEventListener('click', () => selectSubscription(id));
+                if (el) el.classList.toggle('selected', id === type);
+            });
+        } else {
+            ['payPerServiceFogging', 'monthlyContractFogging', 'bimonthlyContractFogging', 'annualContractFogging'].forEach(id => {
+                const canonical = id.replace('Fogging', '');
+                const el = document.getElementById(id);
+                if (el) el.classList.toggle('selected', canonical === type);
             });
         }
 
-        function requestQuote() {
-            try {
-                if (!lastCalculation) updateCalculator();
-                const mappedServiceType = lastCalculation.serviceType === 'residential' ? 'residential' : 'commercial';
-                const params = new URLSearchParams({
-                    serviceType: mappedServiceType,
-                    sqft: lastCalculation.sqft,
-                    complexity: lastCalculation.complexity,
-                    frequency: lastCalculation.frequency,
-                    contractType: lastCalculation.contractType,
-                    estimate: lastCalculation.totalPrice,
-                    source: 'calculator'
-                });
-                window.location.href = 'book-service.html?' + params.toString();
-            } catch (error) {
-                console.error('Quote request error:', error);
-                window.location.href = 'book-service.html';
+        updateCalculator();
+    }
+
+    // =========================================================
+    // MAIN CALCULATOR
+    // =========================================================
+    function updateCalculator() {
+        try {
+            if (currentMode === 'mold') {
+                calcMold();
+            } else {
+                calcFogging();
             }
+        } catch (err) {
+            console.error('Calculator error:', err);
+        }
+    }
+
+    // ── MOLD CALCULATION ──────────────────────────────────────
+    function calcMold() {
+        const sqft         = parseInt(document.getElementById('squareFootage').value) || 400;
+        const propertyType = document.getElementById('moldPropertyType').value;
+        const moisture     = document.getElementById('moistureStatus').value;
+        const rateData     = PRICING.moldRates[currentMoldComplexity];
+        const minimum      = PRICING.moldMinimums[propertyType] || 300;
+        const moistMult    = PRICING.moistureMultipliers[moisture] || 1.0;
+
+        // Update display
+        const sqftEl = document.getElementById('sqftDisplay');
+        if (sqftEl) sqftEl.textContent = sqft.toLocaleString() + ' sq ft';
+
+        // Price range using mid-rate, then apply moisture surcharge
+        const basePrice = Math.max(sqft * rateData.mid, minimum);
+        const moistureAdjustment = basePrice * (moistMult - 1);
+        const adjustedPrice = basePrice * moistMult;
+
+        // Travel (assume avg ~30 mi for estimates; same as fogging logic)
+        const estimatedDistance = 30;
+        let travelCosts = 0;
+        if (estimatedDistance > PRICING.baseTravelRadius) {
+            travelCosts = (estimatedDistance - PRICING.baseTravelRadius) * PRICING.travelRate;
         }
 
-        function requestContractQuote() {
-            try {
-                if (!lastCalculation) updateCalculator();
-                const mappedServiceType = lastCalculation.serviceType === 'residential' ? 'residential' : 'commercial';
-                const params = new URLSearchParams({
-                    serviceType: mappedServiceType,
-                    sqft: lastCalculation.sqft,
-                    complexity: lastCalculation.complexity,
-                    frequency: lastCalculation.frequency,
-                    contractType: currentSubscription,
-                    estimate: lastCalculation.contractPrice,
-                    source: 'calculator_contract'
-                });
-                window.location.href = 'book-service.html?' + params.toString();
-            } catch (error) {
-                console.error('Contract quote request error:', error);
-                window.location.href = 'book-service.html';
+        const totalPrice = adjustedPrice + travelCosts;
+
+        // Low/high range for the result panel (uses band, not just midpoint)
+        const lowTotal  = Math.max(sqft * rateData.low,  minimum) * moistMult + travelCosts;
+        const highTotal = Math.max(sqft * rateData.high, minimum) * moistMult + travelCosts;
+
+        lastCalculation = {
+            mode: 'mold',
+            sqft, propertyType, moisture,
+            complexity: currentMoldComplexity,
+            contractType: currentSubscription,
+            basePrice:           Math.round(basePrice),
+            moistureAdjustment:  Math.round(moistureAdjustment),
+            travelCosts:         Math.round(travelCosts),
+            totalPrice:          Math.round(totalPrice),
+            lowTotal:            Math.round(lowTotal),
+            highTotal:           Math.round(highTotal),
+            contractDiscount:    PRICING.contractDiscounts[currentSubscription],
+            contractPrice:       Math.round(totalPrice * (1 - PRICING.contractDiscounts[currentSubscription]))
+        };
+
+        // Show range for mold (more variability than fogging)
+        updateElement('totalPrice',    '$' + Math.round(lowTotal).toLocaleString() + '–$' + Math.round(highTotal).toLocaleString());
+        updateElement('priceFrequency', 'estimated range (based on ' + rateData.label + ')');
+        updateElement('basePrice',     '$' + Math.round(basePrice).toLocaleString());
+        updateElement('complexityPrice', moisture !== 'fixed'
+            ? '+$' + Math.round(moistureAdjustment).toLocaleString() + ' (moisture surcharge)'
+            : '$0');
+        updateElement('travelPrice',   '$' + Math.round(travelCosts).toLocaleString());
+        updateElement('breakdownTotal','$' + Math.round(totalPrice).toLocaleString() + ' mid-estimate');
+
+        // Relabel the complexity row for mold context
+        updateElement('complexityLabel', 'Moisture Surcharge:');
+
+        // Hide volume discount row (not applicable to mold)
+        const vRow = document.getElementById('volumeDiscountRow');
+        if (vRow) vRow.style.setProperty('display', 'none', 'important');
+
+        updateContractResults(totalPrice);
+    }
+
+    // ── FOGGING CALCULATION ───────────────────────────────────
+    function calcFogging() {
+        const sqft        = parseInt(document.getElementById('squareFootageFogging').value) || 3500;
+        const serviceType = document.getElementById('serviceType').value;
+        const frequency   = document.getElementById('frequency').value;
+        const complexity  = document.getElementById('complexity').value;
+
+        // Update display
+        const sqftEl = document.getElementById('sqftDisplayFogging');
+        if (sqftEl) sqftEl.textContent = sqft.toLocaleString() + ' sq ft';
+
+        // Dual machine notice
+        const dualNotice     = document.getElementById('dualMachineNotice');
+        const volumeRow      = document.getElementById('volumeDiscountRow');
+        if (sqft > 20000) {
+            if (dualNotice) dualNotice.style.display = 'block';
+            if (volumeRow)  volumeRow.style.removeProperty('display');
+        } else {
+            if (dualNotice) dualNotice.style.display = 'none';
+            if (volumeRow)  volumeRow.style.setProperty('display', 'none', 'important');
+        }
+
+        let baseRate   = sqft > 20000 ? PRICING.volumeRate : (PRICING.baseRates[serviceType] || 0.125);
+        let basePrice  = Math.max(sqft * baseRate, PRICING.minimums[serviceType] || 150);
+
+        const complexityMultiplier  = PRICING.complexityAdjustments[complexity] || 1.0;
+        const complexityAdjustment  = basePrice * (complexityMultiplier - 1);
+        let adjustedPrice           = basePrice * complexityMultiplier;
+
+        if (sqft > 20000) adjustedPrice *= 2;  // dual machine
+
+        const estimatedDistance = 30;
+        let travelCosts = 0;
+        if (estimatedDistance > PRICING.baseTravelRadius) {
+            travelCosts = (estimatedDistance - PRICING.baseTravelRadius) * PRICING.travelRate;
+        }
+
+        const totalPrice = adjustedPrice + travelCosts;
+
+        let volumeDiscountAmount = 0;
+        if (sqft > 20000) {
+            volumeDiscountAmount = ((PRICING.baseRates[serviceType] || 0.125) - PRICING.volumeRate) * sqft;
+        }
+
+        lastCalculation = {
+            mode: 'fogging',
+            sqft, serviceType, frequency, complexity,
+            contractType:       currentSubscription,
+            basePrice:          Math.round(basePrice),
+            complexityAdjustment: Math.round(complexityAdjustment),
+            travelCosts:        Math.round(travelCosts),
+            volumeDiscount:     Math.round(volumeDiscountAmount),
+            totalPrice:         Math.round(totalPrice),
+            contractDiscount:   PRICING.contractDiscounts[currentSubscription],
+            contractPrice:      Math.round(totalPrice * (1 - PRICING.contractDiscounts[currentSubscription]))
+        };
+
+        updateElement('totalPrice',     '$' + Math.round(totalPrice).toLocaleString());
+        updateElement('priceFrequency', frequency === 'onetime' ? 'one-time service' : 'per service');
+        updateElement('basePrice',      '$' + Math.round(basePrice).toLocaleString());
+        updateElement('complexityPrice','$' + Math.round(complexityAdjustment).toLocaleString());
+        updateElement('travelPrice',    '$' + Math.round(travelCosts).toLocaleString());
+        updateElement('volumeDiscount', '-$' + Math.round(volumeDiscountAmount).toLocaleString());
+        updateElement('breakdownTotal', '$' + Math.round(totalPrice).toLocaleString());
+        updateElement('complexityLabel', 'Complexity Adjustment:');
+
+        updateContractResults(totalPrice);
+    }
+
+    // ── SHARED CONTRACT RESULTS ───────────────────────────────
+    function updateContractResults(totalPrice) {
+        const subscriptionResults = document.getElementById('subscriptionResults');
+        const annualBonusRow      = document.getElementById('annualBonusRow');
+
+        if (currentSubscription !== 'payPerService') {
+            if (subscriptionResults) subscriptionResults.style.display = 'block';
+
+            const discount     = PRICING.contractDiscounts[currentSubscription];
+            const contractPrice = totalPrice * (1 - discount);
+            const savings       = totalPrice - contractPrice;
+
+            if (lastCalculation) {
+                lastCalculation.contractPrice  = Math.round(contractPrice);
+                lastCalculation.contractSavings = Math.round(savings);
             }
+
+            updateElement('contractPrice',          '$' + Math.round(contractPrice).toLocaleString());
+            updateElement('contractServicePrice',   '$' + Math.round(totalPrice).toLocaleString());
+            updateElement('contractDiscountAmount', '-$' + Math.round(savings).toLocaleString());
+            updateElement('contractTotalPrice',     '$' + Math.round(contractPrice).toLocaleString());
+            updateElement('contractSavings',        'Save $' + Math.round(savings).toLocaleString());
+
+            let freqText = 'per service';
+            if (currentSubscription === 'monthlyContract') {
+                freqText = currentMode === 'mold' ? 'per monthly maintenance visit' : 'per month';
+            } else if (currentSubscription === 'bimonthlyContract') {
+                freqText = 'per service (bi-monthly)';
+            } else if (currentSubscription === 'annualContract') {
+                freqText = 'per service (annual rate)';
+                if (annualBonusRow) {
+                    annualBonusRow.style.display = 'flex';
+                    updateElement('annualBonusValue', '$' + Math.round(totalPrice * 2).toLocaleString() + ' value');
+                }
+            }
+            if (currentSubscription !== 'annualContract' && annualBonusRow) {
+                annualBonusRow.style.display = 'none';
+            }
+            updateElement('contractFrequency', freqText);
+
+        } else {
+            if (subscriptionResults) subscriptionResults.style.display = 'none';
+            if (annualBonusRow) annualBonusRow.style.display = 'none';
         }
+    }
 
-        function callNow() {
-            window.location.href = 'tel:+18017125663';
+    // ── UTILITIES ─────────────────────────────────────────────
+    function updateElement(id, value) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+    }
+
+    function requestQuote() {
+        if (!lastCalculation) updateCalculator();
+        const params = new URLSearchParams({
+            serviceType:  lastCalculation.mode === 'mold' ? 'mold' : (lastCalculation.serviceType || 'commercial'),
+            sqft:         lastCalculation.sqft,
+            complexity:   lastCalculation.complexity || lastCalculation.complexityAdjustment || 'standard',
+            contractType: lastCalculation.contractType,
+            estimate:     lastCalculation.totalPrice,
+            source:       'calculator'
+        });
+        if (lastCalculation.mode === 'mold') {
+            params.set('moldComplexity', currentMoldComplexity);
+        } else {
+            params.set('frequency', lastCalculation.frequency || 'monthly');
         }
+        window.location.href = 'book-service.html?' + params.toString();
+    }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            setupEventListeners();
-            setTimeout(() => updateCalculator(), 100);
+    function requestContractQuote() {
+        if (!lastCalculation) updateCalculator();
+        const params = new URLSearchParams({
+            serviceType:  lastCalculation.mode === 'mold' ? 'mold' : (lastCalculation.serviceType || 'commercial'),
+            sqft:         lastCalculation.sqft,
+            contractType: currentSubscription,
+            estimate:     lastCalculation.contractPrice || lastCalculation.totalPrice,
+            source:       'calculator_contract'
         });
+        window.location.href = 'book-service.html?' + params.toString();
+    }
 
-        window.addEventListener('load', function() {
-            updateCalculator();
-        });
+    function callNow() {
+        window.location.href = 'tel:+18017125663';
+    }
+
+    // ── INIT ──────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', function () {
+        // Default state: mold panel visible, fogging hidden
+        document.getElementById('moldPanel').style.display    = 'block';
+        document.getElementById('foggingPanel').style.display = 'none';
+        setTimeout(() => updateCalculator(), 100);
+    });
+
+    window.addEventListener('load', function () {
+        updateCalculator();
+    });
     </script>
+
 </body>
 </html>
