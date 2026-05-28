@@ -257,7 +257,7 @@ h1{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;letter-spacing:-
 .rrb-missed{color:var(--red);border-color:rgba(255,71,87,.3)}.rrb-partial{color:var(--yellow);border-color:rgba(255,209,102,.3)}.rrb-got{color:var(--green);border-color:rgba(34,211,165,.3)}
 
 /* ═══ LECTURE TAB ═══ */
-.lecture-player{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;position:sticky;top:0;z-index:50;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(18,21,31,.97)}
+.lecture-player{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(18,21,31,.97)}
 .lp-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:.75rem;display:flex;align-items:center;gap:8px}
 .lp-title-dot{width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0;animation:lpblink 1.4s ease-in-out infinite}
 .lp-title-dot.paused{animation:none;background:var(--text3)}
@@ -1184,7 +1184,8 @@ function go(t){
   if(t==='drill'&&drillList.length===0)resetDrill();
   if(t==='flash'){renderFC();initSwipe();}
   if(t==='recall')buildRecall();
-  window.scrollTo({top:0,behavior:'smooth'});
+  // Don't auto-scroll on lecture tab — user scrolls the read-text freely
+  if(t !== 'lecture') window.scrollTo({top:0,behavior:'instant'});
 }
 
 function showToast(msg){
@@ -1662,29 +1663,22 @@ const MALE_NAMES = [
   'male','man','homme'
 ];
 
-// ── iOS Safari confirmed female voices (built-in, no download required) ──
-// Strategy: one entry per VOICE (not per accent) so each button = a distinct voice
-// Deduplication in buildVoiceButtons still prevents duplicates if a voice covers multiple lang codes
+// ── iOS Safari confirmed female voices ──
+// Buttons only appear when the voice is actually installed on the device
 const ACCENT_DEFS = [
-  // 1. Samantha — en-US, the iOS default female voice. Always present.
-  {id:'en-US',    flag:'🇺🇸', label:'Samantha',  pitch:1.2,  priority:['samantha']},
-  // 2. Ava — en-US, neural voice, iOS 14+. Warmer and more natural than Samantha.
-  {id:'en-US',    flag:'🇺🇸', label:'Ava',        pitch:1.25, priority:['ava']},
-  // 3. Victoria — en-US, older but ships on all iOS. Slightly crisper, more formal tone.
-  {id:'en-US',    flag:'🇺🇸', label:'Victoria',   pitch:1.2,  priority:['victoria']},
-  // 4. Moira — en-IE, Irish English. Built into iOS. Distinct lilt.
-  {id:'en-IE',    flag:'🇮🇪', label:'Moira',      pitch:1.45, priority:['moira']},
-  // 5. Karen — en-AU, Australian English. Ships on most iOS devices.
-  {id:'en-AU',    flag:'🇦🇺', label:'Karen',      pitch:1.2,  priority:['karen','tessa']},
-  // 6. Veena — en-IN, Indian English. Ships on most iOS devices.
-  {id:'en-IN',    flag:'🇮🇳', label:'Veena',      pitch:1.25, priority:['veena','neerja']},
-  // 7. Fiona — en-SC, Scottish English. Pre-loaded on most iOS 15+ devices.
-  {id:'en-SC',    flag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', label:'Fiona',      pitch:1.2,  priority:['fiona']},
-  // 8. Nicky — en-US, iOS 15+ neural voice. Younger, conversational tone.
-  {id:'en-US',    flag:'🇺🇸', label:'Nicky',      pitch:1.3,  priority:['nicky']},
-  // Bonus: Kate / Sonia / Tessa shown if installed (require download on iOS but ship on macOS)
-  {id:'en-GB',    flag:'🇬🇧', label:'Kate',       pitch:1.2,  priority:['kate','hazel','sonia','libby']},
-  {id:'en-ZA',    flag:'🇿🇦', label:'Tessa',      pitch:1.2,  priority:['tessa']},
+  // Moira — en-IE, Irish. Built into iOS. Distinct Irish lilt.
+  {id:'en-IE', flag:'🇮🇪', label:'Irish',      pitch:1.45, priority:['moira']},
+  // Karen — en-AU, Australian English. Ships on most iOS.
+  {id:'en-AU', flag:'🇦🇺', label:'Australian', pitch:1.2,  priority:['karen']},
+  // Tessa — en-ZA, South African English. Ships on most iOS.
+  {id:'en-ZA', flag:'🇿🇦', label:'S. African', pitch:1.2,  priority:['tessa']},
+  // Kate — en-GB, British English. Pre-loaded on macOS; downloadable on iOS via
+  // Settings → Accessibility → Spoken Content → Voices → English → English (UK)
+  {id:'en-GB', flag:'🇬🇧', label:'British',    pitch:1.2,  priority:['kate','hazel','sonia','libby']},
+  // Veena — en-IN, Indian English. Built into iOS.
+  {id:'en-IN', flag:'🇮🇳', label:'Indian',     pitch:1.25, priority:['veena','neerja']},
+  // Samantha — en-US, American. The iOS default — always present as fallback.
+  {id:'en-US', flag:'🇺🇸', label:'American',   pitch:1.2,  priority:['samantha','ava','victoria']},
 ];
 
 // Per-accent pitch lookup (filled when voices resolve)
@@ -1712,58 +1706,40 @@ function isFemale(v){
 function resolveVoices(){
   const all = speechSynthesis.getVoices();
   const enVoices = all.filter(v => v.lang.startsWith('en'));
-
   console.log('Available en voices:', enVoices.map(v => v.name + ' (' + v.lang + ')').join(', '));
 
   voiceMap = {};
   availableAccents = [];
   accentPitch = {};
 
-  // Track which voice objects have already been assigned so same-lang entries
-  // (e.g. multiple en-US entries) each resolve to a DIFFERENT voice
-  const usedVoices = new Set();
-
   ACCENT_DEFS.forEach(def => {
-    // Get candidates matching this lang prefix
-    const candidates = enVoices.filter(v => {
-      if(v.lang === def.id) return true;
-      if(v.lang.startsWith(def.id + '-')){
-        // Don't let en-GB grab en-GB-WLS if WLS is its own entry
-        const claimed = ACCENT_DEFS.some(d => d.id !== def.id && v.lang.startsWith(d.id + '-') && d.id.length > def.id.length);
-        return !claimed;
-      }
-      return false;
-    });
+    // Candidates: exact lang match or sub-region (e.g. en-ZA-x also matches en-ZA)
+    const candidates = enVoices.filter(v => v.lang === def.id || v.lang.startsWith(def.id + '-'));
 
-    // For entries with priority names: try to find the exact named voice first
-    // This lets multiple en-US entries (Samantha, Ava, Victoria, Nicky) resolve differently
-    let chosen = null;
-    let isFallback = false;
+    let chosen = null, isFallback = false;
 
-    // 1. Try priority names in order, skipping already-used voices
+    // 1. Priority name match within this lang
     for(const name of def.priority){
-      const match = candidates.find(v => v.name.toLowerCase().includes(name) && !usedVoices.has(v.name));
+      const match = candidates.find(v => v.name.toLowerCase().includes(name));
       if(match){ chosen = match; break; }
     }
 
-    // 2. Try any unused female candidate for this lang
+    // 2. Any female candidate for this lang
     if(!chosen){
-      const femaleCandidates = candidates.filter(v => isFemale(v) !== false && !usedVoices.has(v.name));
-      if(femaleCandidates.length) chosen = femaleCandidates[0];
+      const fem = candidates.filter(v => isFemale(v) !== false);
+      if(fem.length) chosen = fem[0];
     }
 
-    // 3. Global fallback: any unused female en- voice
+    // 3. Global female fallback (show with dimmed opacity)
     if(!chosen){
-      const broad = enVoices.filter(v => isFemale(v) !== false && !usedVoices.has(v.name));
+      const broad = enVoices.filter(v => isFemale(v) !== false);
       if(broad.length){ chosen = broad[0]; isFallback = true; }
     }
 
     if(chosen){
-      usedVoices.add(chosen.name);
-      voiceMap[def.id + '|' + def.label] = chosen; // unique key per entry
-      accentPitch[def.id + '|' + def.label] = def.pitch;
-      availableAccents.push({...def, fallback: isFallback, voice: chosen,
-        mapKey: def.id + '|' + def.label});
+      voiceMap[def.id] = chosen;
+      accentPitch[def.id] = def.pitch;
+      availableAccents.push({...def, fallback: isFallback, voice: chosen});
     }
   });
 
@@ -1814,9 +1790,7 @@ function buildVoiceButtons(){
 }
 
 function getVoice(lang){
-  // Try voiceMap with any key starting with lang
-  const key = Object.keys(voiceMap).find(k => k.startsWith(lang));
-  if(key) return voiceMap[key];
+  if(voiceMap[lang]) return voiceMap[lang];
   const all = speechSynthesis.getVoices();
   const fem = all.filter(v => v.lang.startsWith('en') && isFemale(v) !== false);
   return fem[0] || all[0] || null;
@@ -1825,7 +1799,7 @@ function getVoice(lang){
 function setAccent(lang, btn, voiceObj, pitch){
   lpAccent = lang;
   if(voiceObj) lpSelectedVoice = voiceObj;
-  lpSelectedPitch = pitch || 1.2;
+  lpSelectedPitch = pitch || accentPitch[lang] || 1.2;
   document.querySelectorAll('.voice-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   let info = document.querySelector('.lp-voice-name');
@@ -1949,7 +1923,11 @@ function lpSpeakChunk(){
     if(lpWordIdx > 0 && lpWords[lpWordIdx-1]) lpWords[lpWordIdx-1].classList.remove('highlight');
     if(lpWords[lpWordIdx]){
       lpWords[lpWordIdx].classList.add('highlight');
-      lpWords[lpWordIdx].scrollIntoView({behavior:'smooth', block:'nearest'});
+      // Only scroll if word is outside visible area — prevents page jumping on iOS
+      const wr = lpWords[lpWordIdx].getBoundingClientRect();
+      if(wr.bottom > window.innerHeight - 80 || wr.top < 100){
+        lpWords[lpWordIdx].scrollIntoView({behavior:'smooth', block:'center'});
+      }
     }
     lpWordIdx++;
     lpSpokenWords++;
