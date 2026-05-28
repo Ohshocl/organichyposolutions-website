@@ -1662,21 +1662,29 @@ const MALE_NAMES = [
   'male','man','homme'
 ];
 
-// Accent definitions — per-accent pitch so Irish can be higher
+// ── iOS Safari confirmed female voices (built-in, no download required) ──
+// Strategy: one entry per VOICE (not per accent) so each button = a distinct voice
+// Deduplication in buildVoiceButtons still prevents duplicates if a voice covers multiple lang codes
 const ACCENT_DEFS = [
-  {id:'en-GB', flag:'🇬🇧', label:'British',   pitch:1.2,  priority:['hazel','sonia','libby','kate','emma','amy','serena','jane','aria']},
-  {id:'en-IE', flag:'🇮🇪', label:'Irish',     pitch:1.45, priority:['moira','niamh','aoife','siobhan']},
-  {id:'en-NZ', flag:'🇳🇿', label:'NZ',        pitch:1.2,  priority:['karen','zoe','nicky']},
-  {id:'en-AU', flag:'🇦🇺', label:'Aussie',    pitch:1.2,  priority:['karen','tessa']},
-  {id:'en-ZA', flag:'🇿🇦', label:'S.African', pitch:1.2,  priority:['tessa']},
-  {id:'en-IN', flag:'🇮🇳', label:'Indian',    pitch:1.25, priority:['veena','neerja','raveena','lekha','heera']},
-  {id:'en-US', flag:'🇺🇸', label:'American',  pitch:1.2,  priority:['samantha','victoria','allison','ava','susan','zira','jenny']},
-  {id:'en-CA', flag:'🇨🇦', label:'Canadian',  pitch:1.2,  priority:['samantha','clara','catherine']},
-  {id:'en-SC', flag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', label:'Scottish',  pitch:1.2,  priority:['fiona']},
-  // New accents
-  {id:'en-GB-WLS', flag:'🏴󠁧󠁢󠁷󠁬󠁳󠁿', label:'Welsh',     pitch:1.3,  priority:['seren','catrin','lowri','gwenllian','angharad']},
-  {id:'en-NG',     flag:'🇳🇬', label:'Nigerian',  pitch:1.25, priority:['ngozi','amara','chioma','adaeze','blessing']},
-  {id:'en-SG',     flag:'🇸🇬', label:'Singapore', pitch:1.2,  priority:['hui','lin','mei','nurul','siti','aishah']},
+  // 1. Samantha — en-US, the iOS default female voice. Always present.
+  {id:'en-US',    flag:'🇺🇸', label:'Samantha',  pitch:1.2,  priority:['samantha']},
+  // 2. Ava — en-US, neural voice, iOS 14+. Warmer and more natural than Samantha.
+  {id:'en-US',    flag:'🇺🇸', label:'Ava',        pitch:1.25, priority:['ava']},
+  // 3. Victoria — en-US, older but ships on all iOS. Slightly crisper, more formal tone.
+  {id:'en-US',    flag:'🇺🇸', label:'Victoria',   pitch:1.2,  priority:['victoria']},
+  // 4. Moira — en-IE, Irish English. Built into iOS. Distinct lilt.
+  {id:'en-IE',    flag:'🇮🇪', label:'Moira',      pitch:1.45, priority:['moira']},
+  // 5. Karen — en-AU, Australian English. Ships on most iOS devices.
+  {id:'en-AU',    flag:'🇦🇺', label:'Karen',      pitch:1.2,  priority:['karen','tessa']},
+  // 6. Veena — en-IN, Indian English. Ships on most iOS devices.
+  {id:'en-IN',    flag:'🇮🇳', label:'Veena',      pitch:1.25, priority:['veena','neerja']},
+  // 7. Fiona — en-SC, Scottish English. Pre-loaded on most iOS 15+ devices.
+  {id:'en-SC',    flag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', label:'Fiona',      pitch:1.2,  priority:['fiona']},
+  // 8. Nicky — en-US, iOS 15+ neural voice. Younger, conversational tone.
+  {id:'en-US',    flag:'🇺🇸', label:'Nicky',      pitch:1.3,  priority:['nicky']},
+  // Bonus: Kate / Sonia / Tessa shown if installed (require download on iOS but ship on macOS)
+  {id:'en-GB',    flag:'🇬🇧', label:'Kate',       pitch:1.2,  priority:['kate','hazel','sonia','libby']},
+  {id:'en-ZA',    flag:'🇿🇦', label:'Tessa',      pitch:1.2,  priority:['tessa']},
 ];
 
 // Per-accent pitch lookup (filled when voices resolve)
@@ -1703,53 +1711,59 @@ function isFemale(v){
 
 function resolveVoices(){
   const all = speechSynthesis.getVoices();
-  const enVoices = all.filter(v=>v.lang.startsWith('en'));
+  const enVoices = all.filter(v => v.lang.startsWith('en'));
 
-  // Debug: log all available en voices so we can see what iOS has
-  console.log('Available en voices:', enVoices.map(v=>v.name+' ('+v.lang+')').join(', '));
+  console.log('Available en voices:', enVoices.map(v => v.name + ' (' + v.lang + ')').join(', '));
 
   voiceMap = {};
   availableAccents = [];
   accentPitch = {};
 
-  ACCENT_DEFS.forEach(def=>{
-    // Use exact lang match first (e.g. 'en-GB' should not grab 'en-GB-WLS' voices)
-    // Match: lang === def.id  OR  lang starts with def.id + '-' (sub-region of same base)
-    // But en-GB-WLS is its OWN entry so en-GB should NOT include it
-    let candidates = enVoices.filter(v => {
+  // Track which voice objects have already been assigned so same-lang entries
+  // (e.g. multiple en-US entries) each resolve to a DIFFERENT voice
+  const usedVoices = new Set();
+
+  ACCENT_DEFS.forEach(def => {
+    // Get candidates matching this lang prefix
+    const candidates = enVoices.filter(v => {
       if(v.lang === def.id) return true;
-      // Only allow sub-region if no more-specific ACCENT_DEF claims it
       if(v.lang.startsWith(def.id + '-')){
-        const claimed = ACCENT_DEFS.some(d => d.id !== def.id && v.lang.startsWith(d.id));
+        // Don't let en-GB grab en-GB-WLS if WLS is its own entry
+        const claimed = ACCENT_DEFS.some(d => d.id !== def.id && v.lang.startsWith(d.id + '-') && d.id.length > def.id.length);
         return !claimed;
       }
       return false;
     });
-    let female = candidates.filter(v=>isFemale(v)!==false);
 
-    function score(v){
-      const n=v.name.toLowerCase();
-      const pi = def.priority.findIndex(p=>n.includes(p));
-      if(pi>=0) return pi;
-      if(isFemale(v)===true) return def.priority.length;
-      return def.priority.length+1;
+    // For entries with priority names: try to find the exact named voice first
+    // This lets multiple en-US entries (Samantha, Ava, Victoria, Nicky) resolve differently
+    let chosen = null;
+    let isFallback = false;
+
+    // 1. Try priority names in order, skipping already-used voices
+    for(const name of def.priority){
+      const match = candidates.find(v => v.name.toLowerCase().includes(name) && !usedVoices.has(v.name));
+      if(match){ chosen = match; break; }
     }
-    female.sort((a,b)=>score(a)-score(b));
 
-    let chosen = null, isFallback = false;
-    if(female.length){
-      chosen = female[0];
-    } else {
-      // Fallback: best female from any en- voice
-      let broad = enVoices.filter(v=>isFemale(v)!==false);
-      broad.sort((a,b)=>score(a)-score(b));
+    // 2. Try any unused female candidate for this lang
+    if(!chosen){
+      const femaleCandidates = candidates.filter(v => isFemale(v) !== false && !usedVoices.has(v.name));
+      if(femaleCandidates.length) chosen = femaleCandidates[0];
+    }
+
+    // 3. Global fallback: any unused female en- voice
+    if(!chosen){
+      const broad = enVoices.filter(v => isFemale(v) !== false && !usedVoices.has(v.name));
       if(broad.length){ chosen = broad[0]; isFallback = true; }
     }
 
     if(chosen){
-      voiceMap[def.id] = chosen;
-      accentPitch[def.id] = def.pitch;
-      availableAccents.push({...def, fallback:isFallback, voice:chosen});
+      usedVoices.add(chosen.name);
+      voiceMap[def.id + '|' + def.label] = chosen; // unique key per entry
+      accentPitch[def.id + '|' + def.label] = def.pitch;
+      availableAccents.push({...def, fallback: isFallback, voice: chosen,
+        mapKey: def.id + '|' + def.label});
     }
   });
 
@@ -1760,47 +1774,35 @@ function buildVoiceButtons(){
   const row = document.getElementById('lp-voice-row');
   const loading = document.getElementById('lp-voice-loading');
   if(loading) loading.remove();
-  row.querySelectorAll('.voice-btn').forEach(b=>b.remove());
+  row.querySelectorAll('.voice-btn').forEach(b => b.remove());
 
   if(!availableAccents.length){
     const span = document.createElement('span');
-    span.style.cssText='font-size:11px;color:var(--red)';
-    span.textContent='No speech voices found in this browser.';
+    span.style.cssText = 'font-size:11px;color:var(--red)';
+    span.textContent = 'No speech voices found in this browser.';
     row.appendChild(span); return;
   }
 
-  // Deduplicate by voice name
-  const seen = new Set();
-  const unique = availableAccents.filter(a=>{
-    if(seen.has(a.voice.name)) return false;
-    seen.add(a.voice.name); return true;
-  });
-
-  unique.forEach((acc,i)=>{
+  // No dedup — resolveVoices already ensures each entry gets a unique voice
+  availableAccents.forEach((acc, i) => {
     const btn = document.createElement('button');
-    btn.className = 'voice-btn' + (i===0?' active':'');
+    btn.className = 'voice-btn' + (i === 0 ? ' active' : '');
     btn.dataset.accent = acc.id;
-    // Show actual voice name on iOS so user knows what they're getting
-    const shortName = acc.voice.name.replace(/^(com\.apple\.|Microsoft )/i,'').split(' ')[0];
-    btn.innerHTML = acc.flag+' <span style="font-size:10px">'+acc.label+'</span>'
-      + (acc.fallback ? '' : '<br><span style="font-size:9px;opacity:.7">'+shortName+'</span>');
+    const shortName = acc.voice.name.replace(/^(com\.apple\.|Microsoft )/i, '').split(' ')[0];
+    btn.innerHTML = acc.flag + ' <span style="font-size:11px;font-weight:700">' + shortName + '</span>'
+      + '<br><span style="font-size:9px;opacity:.6">' + acc.label + '</span>';
     btn.style.lineHeight = '1.3';
-    if(acc.fallback){
-      btn.style.opacity = '0.65';
-      btn.title = acc.voice.name+' — closest female ('+acc.id+' unavailable on this device)';
-    } else {
-      btn.title = acc.voice.name+' · '+acc.voice.lang;
-    }
-    btn.onclick = ()=>setAccent(acc.id, btn, acc.voice, acc.pitch);
+    btn.title = acc.voice.name + ' \u00b7 ' + acc.voice.lang + (acc.fallback ? ' (closest female)' : '');
+    if(acc.fallback) btn.style.opacity = '0.65';
+    btn.onclick = () => setAccent(acc.id, btn, acc.voice, acc.pitch);
     row.appendChild(btn);
-    if(i===0){
+    if(i === 0){
       lpAccent = acc.id;
       lpSelectedVoice = acc.voice;
       lpSelectedPitch = acc.pitch || 1.2;
     }
   });
 
-  // Voice info line
   let info = row.parentElement.querySelector('.lp-voice-name');
   if(!info){
     info = document.createElement('div');
@@ -1808,25 +1810,27 @@ function buildVoiceButtons(){
     info.style.cssText = 'font-size:10px;color:var(--text3);margin-top:4px';
     row.parentElement.insertBefore(info, row.nextSibling);
   }
-  if(lpSelectedVoice) info.textContent = '🎤 '+lpSelectedVoice.name+' · '+lpSelectedVoice.lang;
+  if(lpSelectedVoice) info.textContent = '\ud83c\udfa4 ' + lpSelectedVoice.name + ' \u00b7 ' + lpSelectedVoice.lang;
 }
 
 function getVoice(lang){
-  if(voiceMap[lang]) return voiceMap[lang];
+  // Try voiceMap with any key starting with lang
+  const key = Object.keys(voiceMap).find(k => k.startsWith(lang));
+  if(key) return voiceMap[key];
   const all = speechSynthesis.getVoices();
-  const fem = all.filter(v=>v.lang.startsWith('en')&&isFemale(v)!==false);
-  return fem[0]||all[0]||null;
+  const fem = all.filter(v => v.lang.startsWith('en') && isFemale(v) !== false);
+  return fem[0] || all[0] || null;
 }
 
 function setAccent(lang, btn, voiceObj, pitch){
   lpAccent = lang;
   if(voiceObj) lpSelectedVoice = voiceObj;
-  lpSelectedPitch = pitch || accentPitch[lang] || 1.2;
-  document.querySelectorAll('.voice-btn').forEach(b=>b.classList.remove('active'));
+  lpSelectedPitch = pitch || 1.2;
+  document.querySelectorAll('.voice-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   let info = document.querySelector('.lp-voice-name');
-  if(info && lpSelectedVoice) info.textContent='🎤 '+lpSelectedVoice.name+' · '+lpSelectedVoice.lang;
-  if(lpCurrent>=0 && lpIsPlaying){ lpStop(); lpLoad(lpCurrent,true); }
+  if(info && lpSelectedVoice) info.textContent = '🎤 ' + lpSelectedVoice.name + ' · ' + lpSelectedVoice.lang;
+  if(lpCurrent >= 0 && lpIsPlaying){ lpStop(); lpLoad(lpCurrent, true); }
 }
 
 // ── WPM → rate table (empirically tuned for Web Speech API default voices)
