@@ -1923,11 +1923,6 @@ function lpSpeakChunk(){
     if(lpWordIdx > 0 && lpWords[lpWordIdx-1]) lpWords[lpWordIdx-1].classList.remove('highlight');
     if(lpWords[lpWordIdx]){
       lpWords[lpWordIdx].classList.add('highlight');
-      // Only scroll if word is outside visible area — prevents page jumping on iOS
-      const wr = lpWords[lpWordIdx].getBoundingClientRect();
-      if(wr.bottom > window.innerHeight - 80 || wr.top < 100){
-        lpWords[lpWordIdx].scrollIntoView({behavior:'smooth', block:'center'});
-      }
     }
     lpWordIdx++;
     lpSpokenWords++;
@@ -1966,24 +1961,12 @@ function lpOnComplete(){
   document.getElementById('lp-pfill').style.width = '100%';
   if(lpWords) lpWords.forEach(w => w.classList.remove('highlight'));
   lpSetUI('stopped');
+
   if(lpAuto && lpCurrent < ALL.length - 1){
-    if(IS_IOS || IS_SAFARI){
-      const next = lpCurrent + 1;
-      lpCurrent = next; lpWordIdx = 0; lpSpokenWords = 0;
-      document.querySelectorAll('.lp-track').forEach((t,i) => t.classList.toggle('playing', i===next));
-      const lc = ALL[next];
-      document.getElementById('lp-np').textContent = lc.title.replace(/^\u25a0\s*/,'');
-      document.getElementById('lp-title-text').textContent = lc.title.replace(/^\u25a0\s*/,'');
-      document.getElementById('lp-pfill').style.width = '0%';
-      renderLectureText(lc);
-      lpChunks = chunkText(lc.text);
-      lpChunkIdx = 0;
-      lpTotalWords = lc.text.split(/\s+/).length;
-      lpSetUI('stopped');
-      showToast('Tap ▶ Play for next lecture');
-    } else {
-      setTimeout(() => lpLoad(lpCurrent + 1, true), 1000);
-    }
+    // We are called from onend — still inside the speech engine's callback context.
+    // speak() works here on iOS just like chunk-to-chunk advance does.
+    // Do NOT use setTimeout or show a toast — just load and play directly.
+    lpLoad(lpCurrent + 1, true);
   }
 }
 
