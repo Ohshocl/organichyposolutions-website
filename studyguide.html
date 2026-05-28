@@ -1490,23 +1490,27 @@ const MALE_NAMES = [
   'male','man','homme'
 ];
 
-// Accent definitions: lang-code prefix → label, flag, priority female names
+// Accent definitions — per-accent pitch so Irish can be higher
 const ACCENT_DEFS = [
-  {id:'en-GB', flag:'🇬🇧', label:'British',   priority:['hazel','sonia','libby','kate','emma','amy','serena','jane','aria']},
-  {id:'en-IE', flag:'🇮🇪', label:'Irish',     priority:['moira','niamh','aoife','siobhan']},
-  {id:'en-NZ', flag:'🇳🇿', label:'NZ',        priority:['karen','zoe','nicky']},
-  {id:'en-AU', flag:'🇦🇺', label:'Aussie',    priority:['karen','tessa']},
-  {id:'en-ZA', flag:'🇿🇦', label:'S.African', priority:['tessa']},
-  {id:'en-IN', flag:'🇮🇳', label:'Indian',    priority:['veena','neerja','raveena','lekha','heera']},
-  {id:'en-US', flag:'🇺🇸', label:'American',  priority:['samantha','victoria','allison','ava','susan','zira','jenny']},
-  {id:'en-CA', flag:'🇨🇦', label:'Canadian',  priority:['samantha','clara','catherine']},
-  {id:'en-SC', flag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', label:'Scottish',  priority:['fiona']},
+  {id:'en-GB', flag:'🇬🇧', label:'British',   pitch:1.2,  priority:['hazel','sonia','libby','kate','emma','amy','serena','jane','aria']},
+  {id:'en-IE', flag:'🇮🇪', label:'Irish',     pitch:1.45, priority:['moira','niamh','aoife','siobhan']},
+  {id:'en-NZ', flag:'🇳🇿', label:'NZ',        pitch:1.2,  priority:['karen','zoe','nicky']},
+  {id:'en-AU', flag:'🇦🇺', label:'Aussie',    pitch:1.2,  priority:['karen','tessa']},
+  {id:'en-ZA', flag:'🇿🇦', label:'S.African', pitch:1.2,  priority:['tessa']},
+  {id:'en-IN', flag:'🇮🇳', label:'Indian',    pitch:1.25, priority:['veena','neerja','raveena','lekha','heera']},
+  {id:'en-US', flag:'🇺🇸', label:'American',  pitch:1.2,  priority:['samantha','victoria','allison','ava','susan','zira','jenny']},
+  {id:'en-CA', flag:'🇨🇦', label:'Canadian',  pitch:1.2,  priority:['samantha','clara','catherine']},
+  {id:'en-SC', flag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', label:'Scottish',  pitch:1.2,  priority:['fiona']},
 ];
+
+// Per-accent pitch lookup (filled when voices resolve)
+let accentPitch = {};
 
 // Resolved voice map: accent id → SpeechSynthesisVoice
 let voiceMap = {};
 let availableAccents = [];
 let lpSelectedVoice = null;
+let lpSelectedPitch = 1.2;
 
 function isFemale(v){
   const n = v.name.toLowerCase();
@@ -1525,17 +1529,17 @@ function resolveVoices(){
   const all = speechSynthesis.getVoices();
   const enVoices = all.filter(v=>v.lang.startsWith('en'));
 
+  // Debug: log all available en voices so we can see what iOS has
+  console.log('Available en voices:', enVoices.map(v=>v.name+' ('+v.lang+')').join(', '));
+
   voiceMap = {};
   availableAccents = [];
+  accentPitch = {};
 
   ACCENT_DEFS.forEach(def=>{
-    // Get all voices for this lang prefix
     let candidates = enVoices.filter(v=>v.lang.startsWith(def.id));
-
-    // Filter to confirmed female (isFemale = true or null, exclude known-male)
     let female = candidates.filter(v=>isFemale(v)!==false);
 
-    // Score by priority name match
     function score(v){
       const n=v.name.toLowerCase();
       const pi = def.priority.findIndex(p=>n.includes(p));
@@ -1545,18 +1549,20 @@ function resolveVoices(){
     }
     female.sort((a,b)=>score(a)-score(b));
 
-    // If no female match for exact accent, try broader en- pool
-    if(!female.length){
+    let chosen = null, isFallback = false;
+    if(female.length){
+      chosen = female[0];
+    } else {
+      // Fallback: best female from any en- voice
       let broad = enVoices.filter(v=>isFemale(v)!==false);
       broad.sort((a,b)=>score(a)-score(b));
-      // Only add if we have at least a reasonable female voice
-      if(broad.length){
-        voiceMap[def.id] = broad[0];
-        availableAccents.push({...def, fallback:true, voice:broad[0]});
-      }
-    } else {
-      voiceMap[def.id] = female[0];
-      availableAccents.push({...def, fallback:false, voice:female[0]});
+      if(broad.length){ chosen = broad[0]; isFallback = true; }
+    }
+
+    if(chosen){
+      voiceMap[def.id] = chosen;
+      accentPitch[def.id] = def.pitch;
+      availableAccents.push({...def, fallback:isFallback, voice:chosen});
     }
   });
 
@@ -1565,7 +1571,6 @@ function resolveVoices(){
 
 function buildVoiceButtons(){
   const row = document.getElementById('lp-voice-row');
-  // Remove loading text and old buttons
   const loading = document.getElementById('lp-voice-loading');
   if(loading) loading.remove();
   row.querySelectorAll('.voice-btn').forEach(b=>b.remove());
@@ -1577,58 +1582,64 @@ function buildVoiceButtons(){
     row.appendChild(span); return;
   }
 
-  // Deduplicate by voice name so we don't show 4 buttons all using Samantha
+  // Deduplicate by voice name
   const seen = new Set();
   const unique = availableAccents.filter(a=>{
-    const key = a.voice.name;
-    if(seen.has(key)) return false;
-    seen.add(key); return true;
+    if(seen.has(a.voice.name)) return false;
+    seen.add(a.voice.name); return true;
   });
 
-  let firstBtn = null;
   unique.forEach((acc,i)=>{
     const btn = document.createElement('button');
     btn.className = 'voice-btn' + (i===0?' active':'');
     btn.dataset.accent = acc.id;
-    btn.title = acc.voice.name + (acc.fallback?' (closest female)':'');
-    btn.textContent = acc.flag+' '+acc.label;
+    // Show actual voice name on iOS so user knows what they're getting
+    const shortName = acc.voice.name.replace(/^(com\.apple\.|Microsoft )/i,'').split(' ')[0];
+    btn.innerHTML = acc.flag+' <span style="font-size:10px">'+acc.label+'</span>'
+      + (acc.fallback ? '' : '<br><span style="font-size:9px;opacity:.7">'+shortName+'</span>');
+    btn.style.lineHeight = '1.3';
     if(acc.fallback){
-      btn.style.opacity='0.7';
-      btn.title += ' — exact accent unavailable, using closest female';
+      btn.style.opacity = '0.65';
+      btn.title = acc.voice.name+' — closest female ('+acc.id+' unavailable on this device)';
+    } else {
+      btn.title = acc.voice.name+' · '+acc.voice.lang;
     }
-    btn.onclick = ()=>setAccent(acc.id, btn, acc.voice);
+    btn.onclick = ()=>setAccent(acc.id, btn, acc.voice, acc.pitch);
     row.appendChild(btn);
-    if(i===0){ firstBtn=btn; lpAccent=acc.id; lpSelectedVoice=acc.voice; }
+    if(i===0){
+      lpAccent = acc.id;
+      lpSelectedVoice = acc.voice;
+      lpSelectedPitch = acc.pitch || 1.2;
+    }
   });
 
-  // Voice name display
-  if(lpSelectedVoice){
-    let info = row.parentElement.querySelector('.lp-voice-name');
-    if(!info){ info=document.createElement('div'); info.className='lp-voice-name'; info.style.cssText='font-size:10px;color:var(--text3);margin-top:4px'; row.parentElement.insertBefore(info,row.nextSibling); }
-    info.textContent='🎤 '+lpSelectedVoice.name+' · '+lpSelectedVoice.lang;
+  // Voice info line
+  let info = row.parentElement.querySelector('.lp-voice-name');
+  if(!info){
+    info = document.createElement('div');
+    info.className = 'lp-voice-name';
+    info.style.cssText = 'font-size:10px;color:var(--text3);margin-top:4px';
+    row.parentElement.insertBefore(info, row.nextSibling);
   }
+  if(lpSelectedVoice) info.textContent = '🎤 '+lpSelectedVoice.name+' · '+lpSelectedVoice.lang;
 }
 
 function getVoice(lang){
-  // Return pre-resolved female voice for this accent
   if(voiceMap[lang]) return voiceMap[lang];
-  // Fallback: any female en voice
   const all = speechSynthesis.getVoices();
   const fem = all.filter(v=>v.lang.startsWith('en')&&isFemale(v)!==false);
   return fem[0]||all[0]||null;
 }
 
-function setAccent(lang, btn, voiceObj){
+function setAccent(lang, btn, voiceObj, pitch){
   lpAccent = lang;
   if(voiceObj) lpSelectedVoice = voiceObj;
+  lpSelectedPitch = pitch || accentPitch[lang] || 1.2;
   document.querySelectorAll('.voice-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  // Update voice name display
-  if(lpSelectedVoice){
-    let info = document.querySelector('.lp-voice-name');
-    if(info) info.textContent='🎤 '+lpSelectedVoice.name+' · '+lpSelectedVoice.lang;
-  }
-  if(lpCurrent>=0 && lpUtter){ lpStop(); lpLoad(lpCurrent,true); }
+  let info = document.querySelector('.lp-voice-name');
+  if(info && lpSelectedVoice) info.textContent='🎤 '+lpSelectedVoice.name+' · '+lpSelectedVoice.lang;
+  if(lpCurrent>=0 && lpIsPlaying){ lpStop(); lpLoad(lpCurrent,true); }
 }
 
 // ── WPM → rate table (empirically tuned for Web Speech API default voices)
@@ -1687,12 +1698,12 @@ function lpSetUI(state){
 }
 
 function lpLoad(idx, autoplay){
-  // Cancel any current speech BEFORE setting new state
-  // On iOS we must call cancel() then speak() in same gesture — so we keep
-  // autoplay=true path direct: cancel → setup → speak (no setTimeout)
+  // Cancel speech directly — do NOT call lpStop() as it sets lpIsPlaying=false
+  // which causes lpSpeakChunk() to bail before speaking (breaks autoplay)
   speechSynthesis.cancel();
   clearInterval(lpProgTimer);
-  lpIsPaused = false; lpIsPlaying = false;
+  lpIsPaused = false;
+  // lpIsPlaying stays false here; lpSetUI('playing') inside autoplay path sets it true
 
   lpCurrent = idx; lpWordIdx = 0; lpSpokenWords = 0;
   document.querySelectorAll('.lp-track').forEach((t,i) => t.classList.toggle('playing', i===idx));
@@ -1706,8 +1717,10 @@ function lpLoad(idx, autoplay){
   lpTotalWords = lc.text.split(/\s+/).length;
 
   if(autoplay){
-    lpSetUI('playing');
-    lpSpeakChunk(); // call directly — no setTimeout — keeps iOS gesture chain
+    lpSetUI('playing'); // sets lpIsPlaying=true BEFORE lpSpeakChunk checks it
+    lpSpeakChunk();     // synchronous — no setTimeout — keeps iOS gesture chain intact
+  } else {
+    lpSetUI('stopped');
   }
 }
 
@@ -1730,12 +1743,12 @@ function renderLectureText(lc){
 function lpSpeakChunk(){
   if(!('speechSynthesis' in window)) return;
   if(lpChunkIdx >= lpChunks.length){ lpOnComplete(); return; }
-  if(lpIsPaused || !lpIsPlaying) return;
+  if(lpIsPaused) return; // only pause check — lpIsPlaying is set by caller
 
   const chunk = lpChunks[lpChunkIdx];
   const u = new SpeechSynthesisUtterance(chunk);
   u.rate  = WPM_RATE[lpTargetWPM] || 0.88;
-  u.pitch = 1.25;
+  u.pitch = lpSelectedPitch;
   u.volume = 1.0;
 
   const v = lpSelectedVoice || getVoice(lpAccent);
@@ -1756,10 +1769,8 @@ function lpSpeakChunk(){
   };
 
   u.onend = function(){
-    if(lpIsPaused || !lpIsPlaying) return;
+    if(lpIsPaused) return;
     lpChunkIdx++;
-    // iOS: call synchronously from onend (still in valid speech context)
-    // Chrome: tiny timeout is fine and avoids queue overlap
     if(IS_IOS || IS_SAFARI){
       lpSpeakChunk();
     } else {
@@ -1770,7 +1781,7 @@ function lpSpeakChunk(){
   u.onerror = function(e){
     if(e.error === 'interrupted' || e.error === 'canceled') return;
     console.warn('TTS chunk error:', e.error, '| chunk', lpChunkIdx);
-    if(lpIsPaused || !lpIsPlaying) return;
+    if(lpIsPaused) return;
     lpChunkIdx++;
     setTimeout(lpSpeakChunk, 150);
   };
