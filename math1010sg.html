@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0d1117">
+<title>MATH 1010 — Intermediate Algebra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#1c2128;--surface3:#21262d;
+  --border:#30363d;--border2:#3d444d;
+  --cyan:#39d0d8;--lime:#7ee787;--amber:#e3b341;--rose:#f85149;--violet:#a371f7;--blue:#58a6ff;
+  --text:#e6edf3;--text2:#8b949e;--text3:#484f58;
+  --radius:12px;--radius-sm:8px;
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+  --nav-h:60px;
+}
+html{-webkit-text-size-adjust:100%;height:100%}
+body{
+  font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);
+  line-height:1.6;min-height:100%;
+  padding-bottom:calc(var(--nav-h) + var(--safe-bottom) + 16px);
+  overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 60% 50% at 0% 0%,rgba(57,208,216,.04),transparent 60%),
+    radial-gradient(ellipse 50% 40% at 100% 100%,rgba(126,231,135,.04),transparent 60%),
+    radial-gradient(ellipse 40% 30% at 50% 50%,rgba(163,113,247,.025),transparent 60%);
+}
+.container{max-width:820px;margin:0 auto;padding:1.25rem 1rem;position:relative;z-index:1}
+@media(min-width:600px){.container{padding:1.5rem 1.5rem}}
+
+/* HEADER */
+.app-header{margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.hdr-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.hdr-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(57,208,216,.1);color:var(--cyan);border:1px solid rgba(57,208,216,.2);border-radius:20px;font-size:10px;font-weight:700;padding:3px 10px;margin-bottom:.5rem;letter-spacing:.05em;font-family:'Space Mono',monospace}
+h1{font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:#fff;line-height:1.2}
+@media(min-width:480px){h1{font-size:22px}}
+.subtitle{font-size:11px;color:var(--text3);margin-top:.25rem}
+.xp-pill{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:6px 12px;font-family:'Space Mono',monospace;font-size:11px;color:var(--amber);font-weight:700;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.xp-bar-wrap{height:4px;background:var(--border);border-radius:2px;margin-top:.5rem;overflow:hidden}
+.xp-bar-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--lime));border-radius:2px;transition:width .5s ease}
+
+/* TABS */
+.tab-bar{display:none;gap:5px;margin-bottom:1.5rem;flex-wrap:wrap;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:6px}
+@media(min-width:600px){.tab-bar{display:flex}}
+.tab{padding:7px 13px;border-radius:7px;border:none;background:transparent;cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);transition:all .15s;font-family:'DM Sans',sans-serif;min-height:34px}
+.tab.active{background:var(--surface3);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.section{display:none}.section.active{display:block}
+
+/* BOTTOM NAV */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:300;
+  background:rgba(13,17,23,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
+  display:grid;grid-template-columns:repeat(6,1fr);
+  padding-bottom:var(--safe-bottom);
+  height:calc(var(--nav-h) + var(--safe-bottom));
+}
+@media(min-width:600px){.bottom-nav{display:none}}
+.bnav-btn{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:1px;padding:8px 2px 5px;font-size:7px;font-weight:700;color:var(--text3);
+  border:none;background:transparent;cursor:pointer;letter-spacing:.02em;
+  font-family:'DM Sans',sans-serif;text-transform:uppercase;transition:color .15s;
+  min-height:var(--nav-h);-webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+.bnav-btn .bicon{font-size:17px;line-height:1;display:block}
+.bnav-btn.active{color:var(--cyan)}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:calc(var(--nav-h) + var(--safe-bottom) + 10px);left:50%;transform:translateX(-50%);
+  background:var(--surface3);color:var(--text);border:1px solid var(--border2);
+  padding:9px 16px;border-radius:9px;font-size:12px;font-weight:600;
+  z-index:999;opacity:0;pointer-events:none;transition:opacity .25s;white-space:nowrap;
+  max-width:calc(100vw - 32px);box-shadow:0 8px 24px rgba(0,0,0,.4);
+}
+.toast.show{opacity:1}
+@media(min-width:600px){.toast{bottom:1.5rem}}
+
+/* SECTION HEADINGS */
+.sec-head{
+  font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:var(--text3);
+  text-transform:uppercase;letter-spacing:.1em;margin:1.75rem 0 .875rem;
+  padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;
+}
+.sec-head::before{content:'';display:inline-block;width:3px;height:12px;border-radius:2px;flex-shrink:0}
+.sh-cyan::before{background:var(--cyan)}.sh-lime::before{background:var(--lime)}
+.sh-amber::before{background:var(--amber)}.sh-rose::before{background:var(--rose)}
+.sh-violet::before{background:var(--violet)}.sh-blue::before{background:var(--blue)}
+
+/* STUDY CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:.875rem}
+.card-title{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#fff;margin-bottom:.75rem;line-height:1.4}
+.body{font-size:13px;color:var(--text2);line-height:1.9}
+.body p{margin-bottom:.75rem}.body p:last-child{margin-bottom:0}
+.body strong{color:var(--text);font-weight:600}
+.steps{list-style:none;counter-reset:steps;margin:.5rem 0}
+.steps li{counter-increment:steps;display:flex;gap:10px;margin-bottom:.6rem;font-size:13px;color:var(--text2);line-height:1.65}
+.steps li::before{content:counter(steps);min-width:20px;height:20px;background:rgba(57,208,216,.12);border:1px solid rgba(57,208,216,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--cyan);flex-shrink:0;margin-top:2px;font-family:'Space Mono',monospace}
+.formula-box{background:rgba(57,208,216,.05);border:1px solid rgba(57,208,216,.15);border-radius:8px;padding:10px 14px;margin:10px 0;font-family:'Space Mono',monospace;font-size:13px;color:var(--cyan);line-height:1.8}
+.formula-box .fb-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;font-family:'DM Sans',sans-serif}
+.note-box{border-left:3px solid var(--blue);background:rgba(88,166,255,.06);padding:9px 12px;margin:10px 0;font-size:12px;color:#a5c8ff;line-height:1.7;border-radius:0 6px 6px 0}
+.warn-box{border-left:3px solid var(--rose);background:rgba(248,81,73,.06);padding:9px 12px;margin:10px 0;font-size:12px;color:#ffa8a8;line-height:1.7;border-radius:0 6px 6px 0}
+.example-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:10px 0}
+.example-box .ex-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--lime);margin-bottom:6px}
+.example-box .ex-body{font-size:12.5px;color:var(--text2);line-height:1.75;font-family:'Space Mono',monospace}
+.tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:.7rem}
+.tag{font-size:10px;padding:2px 7px;border-radius:5px;font-weight:700;letter-spacing:.03em;border:1px solid}
+.t-cyan{background:rgba(57,208,216,.08);color:var(--cyan);border-color:rgba(57,208,216,.2)}
+.t-lime{background:rgba(126,231,135,.08);color:var(--lime);border-color:rgba(126,231,135,.2)}
+.t-amber{background:rgba(227,179,65,.08);color:var(--amber);border-color:rgba(227,179,65,.2)}
+.t-rose{background:rgba(248,81,73,.08);color:var(--rose);border-color:rgba(248,81,73,.2)}
+.t-violet{background:rgba(163,113,247,.08);color:var(--violet);border-color:rgba(163,113,247,.2)}
+
+/* SOLVER TAB */
+.solver-grid{display:grid;grid-template-columns:1fr;gap:.875rem;margin-bottom:1rem}
+@media(min-width:520px){.solver-grid{grid-template-columns:1fr 1fr}}
+.solver-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;cursor:pointer;transition:border-color .15s;touch-action:manipulation}
+.solver-card:active{border-color:var(--cyan)}
+@media(hover:hover){.solver-card:hover{border-color:rgba(57,208,216,.4)}}
+.sc-title{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:#fff;margin-bottom:.25rem}
+.sc-desc{font-size:11px;color:var(--text3);line-height:1.5}
+.solver-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;display:none}
+.solver-panel.active{display:block}
+.solver-panel h3{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#fff;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.inp-row{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-bottom:.875rem}
+.inp-group{display:flex;flex-direction:column;gap:5px;flex:1;min-width:70px}
+.inp-group label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:'Space Mono',monospace}
+.inp-group input{background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;color:var(--text);font-family:'Space Mono',monospace;transition:border-color .15s;-webkit-appearance:none}
+.inp-group input:focus{outline:none;border-color:rgba(57,208,216,.5)}
+.solve-btn{padding:11px 20px;border-radius:8px;background:var(--cyan);color:#0d1117;border:none;cursor:pointer;font-size:13px;font-weight:700;font-family:'DM Sans',sans-serif;min-height:44px;touch-action:manipulation;white-space:nowrap;flex-shrink:0}
+.result-area{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1rem;font-family:'Space Mono',monospace;font-size:13px;color:var(--text2);line-height:2;display:none;margin-top:.875rem}
+.result-area.show{display:block}
+.result-area .r-answer{font-size:15px;color:var(--lime);font-weight:700;margin-bottom:.5rem}
+.result-area .r-step{color:var(--text2);font-size:12px;margin-bottom:.25rem}
+.result-area .r-step strong{color:var(--cyan)}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:1rem;font-family:'DM Sans',sans-serif;touch-action:manipulation}
+
+/* QUIZ */
+.quiz-ctrl{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.875rem 1rem;margin-bottom:1rem}
+.ctrl-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:.5rem}
+.ctrl-row:last-child{margin-bottom:0}
+.ctrl-lbl{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;font-family:'Space Mono',monospace;min-width:50px}
+.mode-btn{padding:7px 11px;border-radius:7px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:11px;font-weight:600;color:var(--text2);transition:all .15s;font-family:'DM Sans',sans-serif;min-height:34px;touch-action:manipulation}
+.mode-btn.active{background:var(--cyan);color:#0d1117;border-color:var(--cyan)}
+.score-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:.75rem}
+.score-num{font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:#fff}
+.score-lbl{font-size:11px;color:var(--text3)}
+.prog{flex:1;min-width:50px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:var(--cyan);border-radius:2px;transition:width .4s}
+.reset-btn{padding:7px 12px;border-radius:7px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:11px;font-weight:600;color:var(--text2);font-family:'DM Sans',sans-serif;min-height:34px;touch-action:manipulation}
+.tracker-grid{display:flex;flex-wrap:wrap;gap:3px;margin-top:10px}
+.tq{width:26px;height:26px;border-radius:5px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:var(--text3);cursor:pointer;transition:all .15s;touch-action:manipulation;font-family:'Space Mono',monospace}
+.tq.tq-c{background:rgba(126,231,135,.1);border-color:var(--lime);color:var(--lime)}
+.tq.tq-w{background:rgba(248,81,73,.1);border-color:var(--rose);color:var(--rose)}
+.qcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:.875rem}
+.qmeta{font-size:11px;color:var(--text3);margin-bottom:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.qnum{font-family:'Space Mono',monospace;font-weight:700;color:var(--text3)}
+.qtopic{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:1px 7px;font-size:10px;font-weight:600;color:var(--text3)}
+.qtext{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#fff;margin-bottom:.875rem;line-height:1.6}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:11px 12px;border:1.5px solid var(--border);border-radius:9px;margin-bottom:6px;cursor:pointer;font-size:13px;color:var(--text2);line-height:1.5;transition:all .12s;user-select:none;min-height:44px;touch-action:manipulation}
+.opt:active:not(.locked){background:var(--surface2);border-color:rgba(57,208,216,.4)}
+@media(hover:hover){.opt:hover:not(.locked){background:var(--surface2);border-color:rgba(57,208,216,.35);color:var(--text)}}
+.opt.correct{background:rgba(126,231,135,.08);border-color:var(--lime);color:var(--lime);font-weight:600}
+.opt.wrong{background:rgba(248,81,73,.08);border-color:var(--rose);color:var(--rose)}
+.opt.show-correct{background:rgba(126,231,135,.05);border-color:var(--lime);color:var(--lime)}
+.opt.locked{cursor:default}
+.ltr{font-family:'Space Mono',monospace;font-weight:700;min-width:16px;font-size:11px;color:var(--text3);flex-shrink:0}
+.opt.correct .ltr,.opt.show-correct .ltr{color:var(--lime)}.opt.wrong .ltr{color:var(--rose)}
+.opt-icon{margin-left:auto;font-size:13px;flex-shrink:0}
+.exp{font-size:12.5px;color:var(--text2);margin-top:10px;padding:11px 13px;background:var(--surface2);border-radius:8px;line-height:1.75;display:none;border:1px solid var(--border)}
+.exp strong{color:var(--text)}
+.exp-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:5px;font-family:'Space Mono',monospace}
+.completion-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem 1.25rem;text-align:center;margin-bottom:1rem}
+.completion-card h2{font-family:'Space Mono',monospace;font-size:18px;font-weight:700;margin-bottom:.5rem;color:#fff}
+.big-score{font-family:'Space Mono',monospace;font-size:52px;font-weight:700;margin:.5rem 0;line-height:1}
+.g-ex{color:var(--lime)}.g-gd{color:var(--cyan)}.g-nw{color:var(--amber)}.g-fl{color:var(--rose)}
+.completion-stats{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin:1rem 0}
+.cstat{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.6rem 1rem;font-size:12px;color:var(--text2)}
+.cstat strong{display:block;font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:#fff}
+.retry-btn{padding:11px 22px;border-radius:9px;background:var(--cyan);color:#0d1117;border:none;cursor:pointer;font-size:13px;font-weight:700;margin-top:.875rem;font-family:'DM Sans',sans-serif;touch-action:manipulation}
+
+/* FLASHCARDS */
+.flashcard-wrap{perspective:1200px;margin-bottom:1rem;min-height:220px}
+.flashcard{width:100%;min-height:220px;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1);cursor:pointer;touch-action:manipulation}
+.flashcard.flipped{transform:rotateY(180deg)}
+.fc-face{position:absolute;width:100%;min-height:220px;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem 1.25rem;text-align:center}
+.fc-back{transform:rotateY(180deg);background:var(--surface2);border-color:rgba(57,208,216,.2)}
+.fc-hint{font-size:9px;color:var(--text3);position:absolute;bottom:.75rem;right:1rem;font-weight:700;letter-spacing:.06em;font-family:'Space Mono',monospace}
+.fc-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:.75rem;font-family:'Space Mono',monospace}
+.fc-cat{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--cyan);margin-bottom:.5rem;padding:2px 8px;border:1px solid rgba(57,208,216,.2);border-radius:4px}
+.fc-text{font-family:'Space Mono',monospace;font-size:13.5px;font-weight:700;color:#fff;line-height:1.5;max-width:100%}
+.fc-back .fc-text{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;color:var(--text);line-height:1.7;text-align:left}
+.fc-formula{margin-top:10px;padding:8px 11px;background:rgba(57,208,216,.06);border:1px solid rgba(57,208,216,.15);border-radius:7px;font-size:12px;color:var(--cyan);font-family:'Space Mono',monospace;width:100%;text-align:left;line-height:1.6}
+.fc-nav{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:.75rem}
+.fc-nav button{padding:9px 18px;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-size:12px;font-weight:700;color:var(--text2);font-family:'DM Sans',sans-serif;min-height:42px;touch-action:manipulation}
+.fc-progress{font-family:'Space Mono',monospace;font-size:12px;color:var(--text3);font-weight:700}
+.fc-counter{font-size:11px;color:var(--text3);text-align:center;margin-bottom:.75rem}
+.swipe-hint{text-align:center;font-size:10px;color:var(--text3);margin-bottom:.5rem;letter-spacing:.04em}
+.confidence-row{display:flex;gap:5px;margin-top:10px;align-items:center;flex-wrap:wrap}
+.conf-label{font-size:10px;color:var(--text3);font-weight:600;width:100%;font-family:'Space Mono',monospace}
+.conf-btn{flex:1;padding:8px 4px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:11px;font-weight:700;transition:all .15s;font-family:'DM Sans',sans-serif;min-height:38px;touch-action:manipulation}
+.conf-again{color:var(--rose);border-color:rgba(248,81,73,.25)}
+.conf-hard{color:var(--amber);border-color:rgba(227,179,65,.25)}
+.conf-good{color:var(--lime);border-color:rgba(126,231,135,.25)}
+.conf-easy{color:var(--cyan);border-color:rgba(57,208,216,.25)}
+
+/* FORMULA SHEET */
+.formula-grid{display:grid;grid-template-columns:1fr;gap:.875rem}
+@media(min-width:520px){.formula-grid{grid-template-columns:1fr 1fr}}
+.fsheet{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem}
+.fsheet-title{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:#fff;margin-bottom:.875rem;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px}
+.fsheet-title .fs-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.frow{display:flex;align-items:flex-start;gap:8px;margin-bottom:.6rem;font-size:12px}
+.frow-label{color:var(--text3);min-width:90px;flex-shrink:0;line-height:1.5;font-size:11px}
+.frow-formula{font-family:'Space Mono',monospace;color:var(--cyan);font-size:11.5px;line-height:1.65;flex:1}
+
+/* LECTURE */
+.lecture-player{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem}
+.lp-title{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#fff;margin-bottom:.875rem;display:flex;align-items:center;gap:8px}
+.lp-dot{width:7px;height:7px;border-radius:50%;background:var(--rose);flex-shrink:0;animation:lpblink 1.4s ease-in-out infinite}
+.lp-dot.paused{animation:none;background:var(--text3)}
+@keyframes lpblink{0%,100%{opacity:1}50%{opacity:.3}}
+.lp-progress-wrap{height:4px;background:var(--border);border-radius:2px;margin-bottom:.875rem;cursor:pointer;overflow:hidden}
+.lp-progress-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--violet));border-radius:2px;transition:width .3s linear;width:0%}
+.lp-controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:.75rem}
+.lp-btn{padding:8px 13px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:12px;font-weight:700;color:var(--text2);font-family:'DM Sans',sans-serif;min-height:38px;transition:all .15s;touch-action:manipulation;display:flex;align-items:center;gap:5px}
+.lp-btn.primary{background:var(--cyan);color:#0d1117;border-color:var(--cyan)}
+.lp-btn.lp-auto-on{background:rgba(126,231,135,.1);border-color:rgba(126,231,135,.3);color:var(--lime)}
+.lp-speed{padding:6px 9px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:11px;font-weight:700;color:var(--text3);font-family:'Space Mono',monospace;min-height:34px;touch-action:manipulation}
+.lp-speed.active{background:rgba(57,208,216,.1);border-color:rgba(57,208,216,.25);color:var(--cyan)}
+.lp-voice-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:.875rem;align-items:center}
+.lp-voice-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;min-width:42px;font-family:'Space Mono',monospace}
+.voice-btn{padding:6px 10px;border-radius:18px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:11px;font-weight:600;color:var(--text3);font-family:'DM Sans',sans-serif;min-height:32px;touch-action:manipulation;transition:all .15s;line-height:1.3}
+.voice-btn.active{background:var(--cyan);color:#0d1117;border-color:var(--cyan)}
+.lp-np{font-size:11px;color:var(--text3);margin-bottom:.5rem;min-height:14px}
+.lp-np-track{font-weight:600;color:var(--text2)}
+.lp-playlist{border:1px solid var(--border);border-radius:9px;max-height:200px;overflow-y:auto;margin-top:.5rem}
+.lp-playlist::-webkit-scrollbar{width:4px}.lp-playlist::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.lp-track{display:flex;align-items:flex-start;gap:9px;padding:11px 13px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s;touch-action:manipulation}
+.lp-track:last-child{border-bottom:none}
+.lp-track:active{background:var(--surface2)}
+@media(hover:hover){.lp-track:hover{background:var(--surface2)}}
+.lp-track.playing{background:rgba(57,208,216,.06);border-left:2px solid var(--cyan);padding-left:11px}
+.lp-track-num{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:var(--text3);min-width:20px;flex-shrink:0;padding-top:1px}
+.lp-track.playing .lp-track-num{color:var(--cyan)}
+.lp-track-body{flex:1;min-width:0}
+.lp-track-title{font-size:12px;font-weight:600;color:var(--text2);line-height:1.4}
+.lp-track.playing .lp-track-title{color:#fff}
+.lp-track-cat{font-size:10px;color:var(--text3);margin-top:1px}
+.lp-waveform{display:flex;align-items:center;gap:2px;margin-left:auto;flex-shrink:0;padding-top:4px}
+.lp-bar{width:3px;border-radius:2px;background:var(--cyan);transform-origin:bottom;display:none}
+.lp-track.playing .lp-bar{display:block;animation:lpwave .6s ease-in-out infinite alternate}
+.lp-bar:nth-child(1){height:7px;animation-delay:0s}
+.lp-bar:nth-child(2){height:12px;animation-delay:.1s}
+.lp-bar:nth-child(3){height:5px;animation-delay:.2s}
+.lp-bar:nth-child(4){height:9px;animation-delay:.05s}
+@keyframes lpwave{from{transform:scaleY(.25)}to{transform:scaleY(1)}}
+.lp-read-text{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;font-size:14px;line-height:2;color:var(--text2);margin-top:.5rem}
+.lp-read-text .word{display:inline;cursor:default;border-radius:2px;padding:0 1px;transition:background .08s}
+.lp-read-text .word.highlight{background:rgba(57,208,216,.25);color:#fff}
+.lp-read-text h3{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#fff;margin:1.25rem 0 .5rem;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.lp-read-text h3:first-child{margin-top:0}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="app-header">
+  <div class="hdr-top">
+    <div>
+      <div class="hdr-badge">📐 MATH 1010 · SLCC · S. GARCIA-SANCHEZ</div>
+      <h1>Intermediate Algebra</h1>
+      <p class="subtitle">Salt Lake Community College · Fall 2025 · Scientific calc only · 60% final rule</p>
+    </div>
+    <div class="xp-pill" id="xp-pill">⚡ <span id="xp-val">0</span> XP</div>
+  </div>
+  <div class="xp-bar-wrap"><div class="xp-bar-fill" id="xp-bar" style="width:0%"></div></div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab active" onclick="go('study')">📖 Study</button>
+  <button class="tab" onclick="go('solver')">🔢 Solver</button>
+  <button class="tab" onclick="go('quiz')">🎯 Quiz</button>
+  <button class="tab" onclick="go('cards')">🃏 Cards</button>
+  <button class="tab" onclick="go('formulas')">📐 Formulas</button>
+  <button class="tab" onclick="go('lecture')">🎙️ Lecture</button>
+</div>
+
+<!-- ══════════ STUDY TAB ══════════ -->
+<div id="study" class="section active">
+
+<div class="sec-head sh-cyan">Module 1 — Graphs, Functions &amp; Linear Equations</div>
+
+<div class="card">
+  <div class="tags"><span class="tag t-cyan">1.1 Graphs</span><span class="tag t-lime">Core</span></div>
+  <div class="card-title">Coordinate Plane &amp; Graphing Points</div>
+  <div class="body">
+    <p>Every point is written as an <strong>ordered pair (x, y)</strong>. The x-axis is horizontal, y-axis is vertical. The plane is divided into 4 quadrants: Q1 (+,+), Q2 (−,+), Q3 (−,−), Q4 (+,−).</p>
+    <div class="formula-box">
+      <div class="fb-label">Distance Formula</div>
+      d = √[(x₂−x₁)² + (y₂−y₁)²]
+      <br><span style="color:var(--text3)">Midpoint: M = ((x₁+x₂)/2, (y₁+y₂)/2)</span>
+    </div>
+    <div class="example-box">
+      <div class="ex-label">Example</div>
+      <div class="ex-body">Distance from (1,2) to (4,6):<br>d = √[(4−1)² + (6−2)²] = √[9+16] = √25 = 5</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag t-cyan">1.2 Functions</span><span class="tag t-lime">Core</span></div>
+  <div class="card-title">What is a Function? Domain &amp; Range</div>
+  <div class="body">
+    <p>A <strong>function</strong> assigns exactly one output to each input. Test: each x-value appears only once in the table, or use the <strong>Vertical Line Test</strong> — if any vertical line crosses the graph more than once, it is NOT a function.</p>
+    <p><strong>Domain</strong> = all allowed inputs (x-values). <strong>Range</strong> = all possible outputs (y-values).</p>
+    <div class="note-box"><strong>Function notation:</strong> f(x) means "the function f evaluated at x." f(3) means plug 3 in for x. If f(x) = 2x + 1, then f(3) = 2(3) + 1 = 7.</div>
+    <div class="warn-box"><strong>Domain restrictions:</strong> You CANNOT divide by zero. You CANNOT take the square root of a negative number (in real numbers). Set denominator ≠ 0 or radicand ≥ 0 to find domain.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag t-cyan">1.3 Linear Functions</span><span class="tag t-lime">Core</span></div>
+  <div class="card-title">Slope, Intercepts &amp; Forms of a Line</div>
+  <div class="body">
+    <div class="formula-box">
+      <div class="fb-label">Slope</div>
+      m = (y₂ − y₁) / (x₂ − x₁) = rise / run
+    </div>
+    <p>Three forms of a line:</p>
+    <div class="formula-box">
+      Slope-Intercept:  y = mx + b   (m = slope, b = y-intercept)
+      Point-Slope:      y − y₁ = m(x − x₁)
+      Standard:         Ax + By = C
+    </div>
+    <div class="example-box">
+      <div class="ex-label">Parallel &amp; Perpendicular</div>
+      <div class="ex-body">Parallel lines: SAME slope (m₁ = m₂)<br>Perpendicular: NEGATIVE RECIPROCAL slope (m₁ × m₂ = −1)</div>
+    </div>
+    <div class="warn-box"><strong>Horizontal line:</strong> y = k, slope = 0. <strong>Vertical line:</strong> x = k, slope = UNDEFINED (not zero!).</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag t-cyan">1.4 Linear Equations</span></div>
+  <div class="card-title">Solving Linear Equations — 6-Step Process</div>
+  <div class="body">
+    <ol class="steps">
+      <li>Clear fractions/decimals (multiply both sides by LCD)</li>
+      <li>Use Distributive Property to remove parentheses</li>
+      <li>Combine like terms on each side separately</li>
+      <li>Move all variable terms to one side</li>
+      <li>Move all constant terms to the other side</li>
+      <li>Divide both sides by the coefficient of the variable</li>
+    </ol>
+    <div class="note-box"><strong>Special cases:</strong> If variables cancel and you get a TRUE statement (0 = 0) → infinitely many solutions. If you get a FALSE statement (3 = 5) → no solution.</div>
+  </div>
+</div>
+
+<div class="sec-head sh-lime">Module 2 — Systems of Linear Equations</div>
+
+<div class="card">
+  <div class="tags"><span class="tag t-lime">2.1 Systems of 2</span><span class="tag t-lime">Core</span></div>
+  <div class="card-title">Substitution &amp; Elimination Methods</div>
+  <div class="body">
+    <p><strong>Substitution:</strong> Solve one equation for one variable, then substitute into the other.</p>
+    <ol class="steps">
+      <li>Isolate one variable in the simpler equation</li>
+      <li>Substitute that expression into the other equation</li>
+      <li>Solve for the remaining variable</li>
+      <li>Back-substitute to find the other variable</li>
+      <li>Check in BOTH original equations</li>
+    </ol>
+    <p><strong>Elimination (Addition):</strong> Multiply equations so that one variable's coefficients are opposites, then add the equations to eliminate that variable.</p>
+    <div class="note-box"><strong>Solution types:</strong> One solution = intersecting lines. No solution = parallel lines (same slope, different y-int). Infinite solutions = same line.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag t-lime">2.2 Systems of 3</span></div>
+  <div class="card-title">3×3 Systems — Gaussian Elimination</div>
+  <div class="body">
+    <p>Use elimination repeatedly to reduce to a 2×2 system, then a 1×1:</p>
+    <ol class="steps">
+      <li>Pick any two pairs of equations, eliminate the SAME variable from each pair</li>
+      <li>Now you have a 2×2 system — solve with substitution or elimination</li>
+      <li>Back-substitute to find all three variables</li>
+      <li>Check in all three original equations</li>
+    </ol>
+  </div>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag t-lime">2.3 Systems of Inequalities</span></div>
+  <div class="card-title">Graphing Systems of Linear Inequalities</div>
+  <div class="body">
+    <p>Graph each inequality separately. The <strong>solution is the overlapping (intersection) region</strong>.</p>
+    <ul class="steps">
+      <li>Use a <strong>solid line</strong> for ≤ or ≥ (boundary is included)</li>
+      <li>Use a <strong>dashed line</strong> for &lt; or &gt; (boundary is NOT included)</li>
+      <li>Test the point (0,0) to determine which side to shade (unless it's on the line)</li>
+    </ul>
+  </div>
+</div>
+
+<div class="sec-head sh-amber">Module 3 — Polynomials &amp; Quadratic Functions</div>
+
+<div class="card">
+  <div class="tags"><span class="tag t-amber">3.1 Exponents &amp; Polynomials</span><span class="tag t-lime">Core</span></div>
+  <div class="card-title">Laws of Exponents &amp; Polynomial Operations</div>
+  <div class="body">
+    <div class="formula-box">
+      <div class="fb-label">Laws of Exponents</div>
+      Product:      xᵃ · xᵇ = xᵃ⁺ᵇ
+      Quotient:     xᵃ / xᵇ = xᵃ⁻ᵇ
+      Power:        (xᵃ)ᵇ = xᵃᵇ
+      Zero:         x⁰ = 1   (x ≠ 0)
+      Negative:     x⁻ⁿ = 1/xⁿ
+    </div>
+    <p>FOIL for multiplying binomials: (a+b)(c+d) = ac + ad + bc + bd</p>
+    <div class="formula-box">
+      <div class="fb-label">Special Products</div>
+      (a+b)² = a² + 2ab + b²
+      (a−b)² = a² − 2ab + b²
+      (a+b)(a−b) = a² − b²
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag t-amber">3.3–3.7 Factoring</span><span class="tag t-lime">Core</span></div>
+  <div class="card-title">Factoring Decision Tree</div>
+  <div class="body">
+    <ol class="steps">
+      <li><strong>Always first:</strong> Factor out the GCF (Greatest Common Factor)</li>
+      <li><strong>2 terms:</strong> Difference of squares: a² − b² = (a+b)(a−b)<br>Sum of cubes: a³+b³ = (a+b)(a²−ab+b²)<br>Diff of cubes: a³−b³ = (a−b)(a²+ab+b²)</li>
+      <li><strong>3 terms (leading coeff = 1):</strong> Find two numbers that multiply to c and add to b in x²+bx+c</li>
+      <li><strong>3 terms (leading coeff ≠ 1):</strong> Use the AC method — multiply a·c, find factors of ac that add to b, split the middle term, factor by grouping</li>
+      <li><strong>4 terms:</strong> Factor by grouping — group in pairs</li>
+    </ol>
+    <div class="warn-box"><strong>Sum of squares</strong> (a² + b²) does NOT factor over the reals! Only difference of squares factors.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag t-amber">3.3–3.6 Quadratic Graphs</span></div>
+  <div class="card-title">Graphing Parabolas — Three Forms</div>
+  <div class="body">
+    <div class="formula-box">
+      <div class="fb-label">Standard / General Form</div>
+      f(x) = ax² + bx + c
+      Vertex x-coordinate: x = −b/(2a)
+    </div>
+    <div class="formula-box">
+      <div class="fb-label">Vertex Form</div>
+      f(x) = a(x − h)² + k
+      Vertex: (h, k) · Opens up if a &gt; 0, down if a &lt; 0
+    </div>
+    <div class="formula-box">
+      <div class="fb-label">Intercept / Factored Form</div>
+      f(x) = a(x − p)(x − q)
+      x-intercepts (zeros): x = p and x = q
+    </div>
+  </div>
+</div>
+
+<div class="sec-head sh-rose">Module 4 — Rational Expressions &amp; Equations</div>
+
+<div class="card">
+  <div class="tags"><span class="tag t-rose">4.1–4.4 Rational Expressions</span><span class="tag t-lime">Core</span></div>
+  <div class="card-title">Simplifying, Multiplying, Dividing, Adding &amp; Subtracting</div>
+  <div class="body">
+    <p><strong>Simplify:</strong> Factor numerator and denominator completely, then cancel common factors.</p>
+    <p><strong>Multiply:</strong> Factor everything first, cancel, then multiply straight across.</p>
+    <p><strong>Divide:</strong> Multiply by the RECIPROCAL of the second fraction (flip the second, then multiply).</p>
+    <p><strong>Add/Subtract:</strong> Find the LCD, convert each fraction, then add/subtract numerators.</p>
+    <div class="warn-box"><strong>Domain restrictions:</strong> Always state what values make the denominator zero — those are excluded from the domain. State them from the ORIGINAL (before simplification).</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag t-rose">4.5 Solving Rational Equations</span></div>
+  <div class="card-title">Solving Rational Equations — Check for Extraneous Solutions</div>
+  <div class="body">
+    <ol class="steps">
+      <li>Find the LCD of all fractions in the equation</li>
+      <li>Multiply BOTH SIDES by the LCD to clear all fractions</li>
+      <li>Solve the resulting polynomial equation</li>
+      <li>CHECK each solution in the original equation — any value that makes a denominator zero is EXTRANEOUS and must be rejected</li>
+    </ol>
+    <div class="warn-box"><strong>Extraneous solutions:</strong> Always check! When you multiply both sides by a variable expression, you may introduce false solutions.</div>
+  </div>
+</div>
+
+<div class="sec-head sh-violet">Module 5 — Radical Expressions &amp; Complex Numbers</div>
+
+<div class="card">
+  <div class="tags"><span class="tag t-violet">5.1–5.6 Radicals</span><span class="tag t-lime">Core</span></div>
+  <div class="card-title">Simplifying, Multiplying, Dividing &amp; Rationalizing Radicals</div>
+  <div class="body">
+    <div class="formula-box">
+      <div class="fb-label">Radical Rules</div>
+      √(ab) = √a · √b
+      √(a/b) = √a / √b
+      ⁿ√(aᵐ) = a^(m/n)
+    </div>
+    <p><strong>To simplify √N:</strong> Find the largest perfect square factor of N, then take the square root of that factor outside.</p>
+    <p><strong>Rationalizing:</strong> Multiply numerator and denominator by the radical (or conjugate for binomials) to eliminate radical from denominator.</p>
+    <div class="example-box">
+      <div class="ex-label">Rationalize</div>
+      <div class="ex-body">3/√5 · (√5/√5) = 3√5/5<br>1/(2+√3) · (2−√3)/(2−√3) = (2−√3)/(4−3) = 2−√3</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag t-violet">5.7 Radical Equations</span></div>
+  <div class="card-title">Solving Radical Equations — Isolate &amp; Square</div>
+  <div class="body">
+    <ol class="steps">
+      <li>Isolate the radical on one side of the equation</li>
+      <li>Square both sides (or raise to the nth power if nth root)</li>
+      <li>Solve the resulting equation</li>
+      <li>CHECK all solutions — squaring can introduce extraneous solutions!</li>
+    </ol>
+    <div class="warn-box"><strong>Always check!</strong> If √(x) = −2, squaring gives x = 4, but checking: √4 = 2 ≠ −2. This is extraneous — no solution.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag t-violet">5.9 Complex Numbers</span></div>
+  <div class="card-title">Imaginary &amp; Complex Numbers</div>
+  <div class="body">
+    <div class="formula-box">
+      <div class="fb-label">Imaginary Unit</div>
+      i = √(−1),  i² = −1,  i³ = −i,  i⁴ = 1  (repeating cycle)
+    </div>
+    <p>A <strong>complex number</strong> has the form a + bi where a is the real part and b is the imaginary part.</p>
+    <p><strong>Add/Subtract:</strong> Combine real parts and imaginary parts separately.</p>
+    <p><strong>Multiply:</strong> Use FOIL, then replace i² with −1.</p>
+    <p><strong>Divide:</strong> Multiply by the conjugate (a − bi) to get a real denominator.</p>
+  </div>
+</div>
+
+<div class="sec-head sh-blue">Module 6 — Quadratic Equations</div>
+
+<div class="card">
+  <div class="tags"><span class="tag t-cyan">6.1 Solving Quadratics</span><span class="tag t-lime">Core</span></div>
+  <div class="card-title">Four Methods for Solving Quadratic Equations</div>
+  <div class="body">
+    <p><strong>Method 1 — Factoring:</strong> Factor, set each factor = 0 (Zero Product Property)</p>
+    <p><strong>Method 2 — Square Root Property:</strong> If x² = k, then x = ±√k. Use when no middle term.</p>
+    <p><strong>Method 3 — Completing the Square:</strong></p>
+    <ol class="steps">
+      <li>Move constant to right side</li>
+      <li>Add (b/2)² to both sides</li>
+      <li>Left side is a perfect square trinomial: (x + b/2)²</li>
+      <li>Take square root of both sides (±)</li>
+      <li>Solve for x</li>
+    </ol>
+    <p><strong>Method 4 — Quadratic Formula:</strong></p>
+    <div class="formula-box">x = (−b ± √(b² − 4ac)) / (2a)  for ax² + bx + c = 0</div>
+    <div class="note-box"><strong>Discriminant b²−4ac:</strong> &gt;0 → 2 real solutions · =0 → 1 real solution · &lt;0 → 2 complex (imaginary) solutions</div>
+  </div>
+</div>
+
+<div class="sec-head sh-cyan">Module 7 — Exponential &amp; Logarithmic Functions</div>
+
+<div class="card">
+  <div class="tags"><span class="tag t-cyan">7.3 Exponential Functions</span><span class="tag t-lime">Core</span></div>
+  <div class="card-title">Exponential Functions — Growth &amp; Decay</div>
+  <div class="body">
+    <div class="formula-box">
+      <div class="fb-label">Exponential Function</div>
+      f(x) = bˣ  where b &gt; 0, b ≠ 1
+      Growth: b &gt; 1  |  Decay: 0 &lt; b &lt; 1
+    </div>
+    <p>Key features: domain = all real numbers, range = (0, ∞), y-intercept = 1 (always!), horizontal asymptote y = 0.</p>
+    <div class="formula-box">
+      <div class="fb-label">Applications</div>
+      Compound Interest:  A = P(1 + r/n)^(nt)
+      Continuous:         A = Pe^(rt)
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag t-cyan">7.4–7.5 Logarithms</span><span class="tag t-lime">Core</span></div>
+  <div class="card-title">Logarithms — Definition &amp; Properties</div>
+  <div class="body">
+    <div class="formula-box">
+      <div class="fb-label">Logarithm Definition</div>
+      log_b(x) = y  ↔  bʸ = x
+      ln(x) = log_e(x)  (natural log, base e ≈ 2.718)
+      log(x) = log_10(x)  (common log)
+    </div>
+    <div class="formula-box">
+      <div class="fb-label">Log Properties</div>
+      Product:    log_b(MN) = log_b(M) + log_b(N)
+      Quotient:   log_b(M/N) = log_b(M) − log_b(N)
+      Power:      log_b(Mⁿ) = n · log_b(M)
+      Change of Base: log_b(x) = log(x)/log(b) = ln(x)/ln(b)
+    </div>
+    <div class="note-box"><strong>To solve exponential equations:</strong> take log of both sides. <strong>To solve log equations:</strong> convert to exponential form and solve.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag t-cyan">7.1–7.2 Composite &amp; Inverse Functions</span></div>
+  <div class="card-title">Function Composition &amp; Inverse Functions</div>
+  <div class="body">
+    <div class="formula-box">
+      <div class="fb-label">Composition</div>
+      (f ∘ g)(x) = f(g(x))  — plug g(x) into f
+      (g ∘ f)(x) = g(f(x))  — plug f(x) into g
+      Note: f ∘ g ≠ g ∘ f in general!
+    </div>
+    <p><strong>Inverse function:</strong> Swap x and y, then solve for y. Notation: f⁻¹(x). The graph of f⁻¹ is the reflection of f over the line y = x.</p>
+    <div class="note-box">A function has an inverse only if it is <strong>one-to-one</strong> — passes the Horizontal Line Test. f(f⁻¹(x)) = x and f⁻¹(f(x)) = x.</div>
+  </div>
+</div>
+
+</div><!-- /study -->
+
+<!-- ══════════ SOLVER TAB ══════════ -->
+<div id="solver" class="section">
+
+<div class="sec-head sh-cyan" style="margin-top:.5rem">Step-by-Step Solvers</div>
+<p style="font-size:13px;color:var(--text3);margin-bottom:1rem">Pick a solver — enter your values and see every step worked out.</p>
+
+<div id="solver-menu">
+<div class="solver-grid">
+  <div class="solver-card" onclick="showCalc('linear')"><div class="sc-title">📏 Linear Equation</div><div class="sc-desc">Solve ax + b = c for x</div></div>
+  <div class="solver-card" onclick="showCalc('quad')"><div class="sc-title">📈 Quadratic Formula</div><div class="sc-desc">Solve ax² + bx + c = 0</div></div>
+  <div class="solver-card" onclick="showCalc('slope')"><div class="sc-title">📉 Slope &amp; Line</div><div class="sc-desc">Given two points, find slope &amp; equation</div></div>
+  <div class="solver-card" onclick="showCalc('system')"><div class="sc-title">🔢 2×2 System</div><div class="sc-desc">Solve a 2-equation linear system</div></div>
+  <div class="solver-card" onclick="showCalc('radical')"><div class="sc-title">√ Simplify Radical</div><div class="sc-desc">Simplify √N step by step</div></div>
+  <div class="solver-card" onclick="showCalc('log')"><div class="sc-title">📊 Exp / Log Equation</div><div class="sc-desc">Solve bˣ = N or log_b(x) = N</div></div>
+</div>
+</div>
+
+<!-- LINEAR -->
+<div class="solver-panel" id="calc-linear">
+  <button class="back-btn" onclick="hideCalc()">← Back</button>
+  <h3>📏 Linear Equation — ax + b = c</h3>
+  <div class="inp-row">
+    <div class="inp-group"><label>a (coeff of x)</label><input type="number" id="lin-a" value="2" step="any"></div>
+    <div class="inp-group"><label>b (constant left)</label><input type="number" id="lin-b" value="3" step="any"></div>
+    <div class="inp-group"><label>c (right side)</label><input type="number" id="lin-c" value="11" step="any"></div>
+    <button class="solve-btn" onclick="solveLinear()">Solve</button>
+  </div>
+  <div class="result-area" id="lin-result"></div>
+</div>
+
+<!-- QUADRATIC -->
+<div class="solver-panel" id="calc-quad">
+  <button class="back-btn" onclick="hideCalc()">← Back</button>
+  <h3>📈 Quadratic Formula — ax² + bx + c = 0</h3>
+  <div class="inp-row">
+    <div class="inp-group"><label>a</label><input type="number" id="q-a" value="1" step="any"></div>
+    <div class="inp-group"><label>b</label><input type="number" id="q-b" value="-5" step="any"></div>
+    <div class="inp-group"><label>c</label><input type="number" id="q-c" value="6" step="any"></div>
+    <button class="solve-btn" onclick="solveQuad()">Solve</button>
+  </div>
+  <div class="result-area" id="quad-result"></div>
+</div>
+
+<!-- SLOPE -->
+<div class="solver-panel" id="calc-slope">
+  <button class="back-btn" onclick="hideCalc()">← Back</button>
+  <h3>📉 Slope &amp; Line from Two Points</h3>
+  <div class="inp-row">
+    <div class="inp-group"><label>x₁</label><input type="number" id="s-x1" value="1" step="any"></div>
+    <div class="inp-group"><label>y₁</label><input type="number" id="s-y1" value="2" step="any"></div>
+    <div class="inp-group"><label>x₂</label><input type="number" id="s-x2" value="4" step="any"></div>
+    <div class="inp-group"><label>y₂</label><input type="number" id="s-y2" value="8" step="any"></div>
+    <button class="solve-btn" onclick="solveSlope()">Solve</button>
+  </div>
+  <div class="result-area" id="slope-result"></div>
+</div>
+
+<!-- SYSTEM -->
+<div class="solver-panel" id="calc-system">
+  <button class="back-btn" onclick="hideCalc()">← Back</button>
+  <h3>🔢 2×2 System of Linear Equations</h3>
+  <p style="font-size:12px;color:var(--text3);margin-bottom:.75rem">Equation 1: a₁x + b₁y = c₁ &nbsp;|&nbsp; Equation 2: a₂x + b₂y = c₂</p>
+  <div class="inp-row">
+    <div class="inp-group"><label>a₁</label><input type="number" id="sy-a1" value="2" step="any"></div>
+    <div class="inp-group"><label>b₁</label><input type="number" id="sy-b1" value="3" step="any"></div>
+    <div class="inp-group"><label>c₁</label><input type="number" id="sy-c1" value="12" step="any"></div>
+  </div>
+  <div class="inp-row">
+    <div class="inp-group"><label>a₂</label><input type="number" id="sy-a2" value="1" step="any"></div>
+    <div class="inp-group"><label>b₂</label><input type="number" id="sy-b2" value="-1" step="any"></div>
+    <div class="inp-group"><label>c₂</label><input type="number" id="sy-c2" value="1" step="any"></div>
+    <button class="solve-btn" onclick="solveSystem()">Solve</button>
+  </div>
+  <div class="result-area" id="sys-result"></div>
+</div>
+
+<!-- RADICAL -->
+<div class="solver-panel" id="calc-radical">
+  <button class="back-btn" onclick="hideCalc()">← Back</button>
+  <h3>√ Simplify a Square Root</h3>
+  <div class="inp-row">
+    <div class="inp-group"><label>N (radicand)</label><input type="number" id="rad-n" value="72" step="1" min="0"></div>
+    <button class="solve-btn" onclick="solveRadical()">Simplify</button>
+  </div>
+  <div class="result-area" id="rad-result"></div>
+</div>
+
+<!-- LOG/EXP -->
+<div class="solver-panel" id="calc-log">
+  <button class="back-btn" onclick="hideCalc()">← Back</button>
+  <h3>📊 Exponential / Logarithmic Equation</h3>
+  <div style="display:flex;gap:8px;margin-bottom:.75rem;flex-wrap:wrap">
+    <button class="mode-btn active" id="log-mode-exp" onclick="setLogMode('exp',this)">bˣ = N</button>
+    <button class="mode-btn" id="log-mode-log" onclick="setLogMode('log',this)">log_b(x) = N</button>
+  </div>
+  <div class="inp-row">
+    <div class="inp-group"><label>Base b</label><input type="number" id="log-b" value="2" step="any" min="0"></div>
+    <div class="inp-group"><label id="log-x-label">x (exponent)</label><input type="number" id="log-x" value="8" step="any"></div>
+    <button class="solve-btn" onclick="solveLog()">Solve</button>
+  </div>
+  <div class="result-area" id="log-result"></div>
+</div>
+
+</div><!-- /solver -->
+
+<!-- ══════════ QUIZ TAB ══════════ -->
+<div id="quiz" class="section">
+<div class="quiz-ctrl">
+  <div class="ctrl-row">
+    <span class="ctrl-lbl">Topic</span>
+    <button class="mode-btn active" id="qf-all" onclick="setQFilter('all',this)">All</button>
+    <button class="mode-btn" id="qf-linear" onclick="setQFilter('Linear',this)">Linear</button>
+    <button class="mode-btn" id="qf-systems" onclick="setQFilter('Systems',this)">Systems</button>
+    <button class="mode-btn" id="qf-poly" onclick="setQFilter('Poly',this)">Poly</button>
+    <button class="mode-btn" id="qf-quad" onclick="setQFilter('Quad',this)">Quad</button>
+    <button class="mode-btn" id="qf-explog" onclick="setQFilter('ExpLog',this)">Exp/Log</button>
+  </div>
+  <div class="score-row">
+    <div><div class="score-num" id="q-snum">0 / 0</div><div class="score-lbl">correct</div></div>
+    <div class="prog"><div class="prog-fill" id="q-pfill" style="width:0%"></div></div>
+    <button class="reset-btn" onclick="resetQuiz()">↺ Reset</button>
+  </div>
+  <div class="tracker-grid" id="q-tracker"></div>
+</div>
+<div id="quizbox"></div>
+</div>
+
+<!-- ══════════ CARDS TAB ══════════ -->
+<div id="cards" class="section">
+<div class="swipe-hint">← Swipe to navigate · Tap card to flip →</div>
+<div class="fc-counter" id="fc-counter">Card 1 of 30</div>
+<div class="flashcard-wrap" id="fc-wrap">
+  <div class="flashcard" id="fc-card" onclick="flipCard()">
+    <div class="fc-face">
+      <div class="fc-cat" id="fc-cat">Category</div>
+      <div class="fc-label">CONCEPT / TERM</div>
+      <div class="fc-text" id="fc-front">—</div>
+      <div class="fc-hint">TAP TO REVEAL</div>
+    </div>
+    <div class="fc-face fc-back">
+      <div class="fc-label">DEFINITION / METHOD</div>
+      <div class="fc-text" id="fc-back">—</div>
+      <div class="fc-formula" id="fc-formula" style="display:none"></div>
+      <div class="fc-hint">TAP TO FLIP</div>
+    </div>
+  </div>
+</div>
+<div class="confidence-row" style="margin-bottom:.875rem">
+  <div class="conf-label">Rate your confidence:</div>
+  <button class="conf-btn conf-again" onclick="fcRate(1)">Again</button>
+  <button class="conf-btn conf-hard" onclick="fcRate(2)">Hard</button>
+  <button class="conf-btn conf-good" onclick="fcRate(3)">Good</button>
+  <button class="conf-btn conf-easy" onclick="fcRate(4)">Easy</button>
+</div>
+<div class="fc-nav">
+  <button onclick="fcNav(-1)">← Prev</button>
+  <span class="fc-progress" id="fc-prog">1 / 30</span>
+  <button onclick="fcNav(1)">Next →</button>
+</div>
+</div>
+
+<!-- ══════════ FORMULAS TAB ══════════ -->
+<div id="formulas" class="section">
+<div class="sec-head sh-cyan" style="margin-top:.5rem">Quick Reference — All Key Formulas</div>
+<div class="formula-grid">
+
+<div class="fsheet">
+  <div class="fsheet-title"><span class="fs-dot" style="background:var(--cyan)"></span>Lines &amp; Slope</div>
+  <div class="frow"><span class="frow-label">Slope</span><span class="frow-formula">m = (y₂−y₁)/(x₂−x₁)</span></div>
+  <div class="frow"><span class="frow-label">Slope-Intercept</span><span class="frow-formula">y = mx + b</span></div>
+  <div class="frow"><span class="frow-label">Point-Slope</span><span class="frow-formula">y−y₁ = m(x−x₁)</span></div>
+  <div class="frow"><span class="frow-label">Standard</span><span class="frow-formula">Ax + By = C</span></div>
+  <div class="frow"><span class="frow-label">Horizontal</span><span class="frow-formula">y = k  (slope = 0)</span></div>
+  <div class="frow"><span class="frow-label">Vertical</span><span class="frow-formula">x = k  (slope undef.)</span></div>
+  <div class="frow"><span class="frow-label">Parallel</span><span class="frow-formula">m₁ = m₂</span></div>
+  <div class="frow"><span class="frow-label">Perpendicular</span><span class="frow-formula">m₁ · m₂ = −1</span></div>
+  <div class="frow"><span class="frow-label">Distance</span><span class="frow-formula">d = √[(Δx)²+(Δy)²]</span></div>
+  <div class="frow"><span class="frow-label">Midpoint</span><span class="frow-formula">M = ((x₁+x₂)/2,(y₁+y₂)/2)</span></div>
+</div>
+
+<div class="fsheet">
+  <div class="fsheet-title"><span class="fs-dot" style="background:var(--amber)"></span>Quadratic</div>
+  <div class="frow"><span class="frow-label">Formula</span><span class="frow-formula">x = (−b±√(b²−4ac))/(2a)</span></div>
+  <div class="frow"><span class="frow-label">Discriminant</span><span class="frow-formula">D = b²−4ac</span></div>
+  <div class="frow"><span class="frow-label">D &gt; 0</span><span class="frow-formula">2 real solutions</span></div>
+  <div class="frow"><span class="frow-label">D = 0</span><span class="frow-formula">1 real solution</span></div>
+  <div class="frow"><span class="frow-label">D &lt; 0</span><span class="frow-formula">2 complex solutions</span></div>
+  <div class="frow"><span class="frow-label">Vertex form</span><span class="frow-formula">f(x) = a(x−h)²+k</span></div>
+  <div class="frow"><span class="frow-label">Vertex x</span><span class="frow-formula">x = −b/(2a)</span></div>
+  <div class="frow"><span class="frow-label">Intercept form</span><span class="frow-formula">f(x) = a(x−p)(x−q)</span></div>
+  <div class="frow"><span class="frow-label">Complete Sq.</span><span class="frow-formula">add (b/2)² to both sides</span></div>
+</div>
+
+<div class="fsheet">
+  <div class="fsheet-title"><span class="fs-dot" style="background:var(--lime)"></span>Factoring Patterns</div>
+  <div class="frow"><span class="frow-label">Diff. of Sq.</span><span class="frow-formula">a²−b² = (a+b)(a−b)</span></div>
+  <div class="frow"><span class="frow-label">Sum of Cubes</span><span class="frow-formula">a³+b³=(a+b)(a²−ab+b²)</span></div>
+  <div class="frow"><span class="frow-label">Diff. of Cubes</span><span class="frow-formula">a³−b³=(a−b)(a²+ab+b²)</span></div>
+  <div class="frow"><span class="frow-label">Perf. Sq. +</span><span class="frow-formula">(a+b)²=a²+2ab+b²</span></div>
+  <div class="frow"><span class="frow-label">Perf. Sq. −</span><span class="frow-formula">(a−b)²=a²−2ab+b²</span></div>
+  <div class="frow"><span class="frow-label">GCF first</span><span class="frow-formula">Always factor GCF first!</span></div>
+  <div class="frow"><span class="frow-label">Sum of Sq.</span><span class="frow-formula">a²+b² → does NOT factor</span></div>
+</div>
+
+<div class="fsheet">
+  <div class="fsheet-title"><span class="fs-dot" style="background:var(--amber)"></span>Exponents</div>
+  <div class="frow"><span class="frow-label">Product</span><span class="frow-formula">xᵃ·xᵇ = xᵃ⁺ᵇ</span></div>
+  <div class="frow"><span class="frow-label">Quotient</span><span class="frow-formula">xᵃ/xᵇ = xᵃ⁻ᵇ</span></div>
+  <div class="frow"><span class="frow-label">Power</span><span class="frow-formula">(xᵃ)ᵇ = xᵃᵇ</span></div>
+  <div class="frow"><span class="frow-label">Zero</span><span class="frow-formula">x⁰ = 1 (x≠0)</span></div>
+  <div class="frow"><span class="frow-label">Negative</span><span class="frow-formula">x⁻ⁿ = 1/xⁿ</span></div>
+  <div class="frow"><span class="frow-label">Rational</span><span class="frow-formula">x^(m/n) = ⁿ√(xᵐ)</span></div>
+  <div class="frow"><span class="frow-label">Distributes</span><span class="frow-formula">(xy)ⁿ = xⁿyⁿ</span></div>
+  <div class="frow"><span class="frow-label">Fraction</span><span class="frow-formula">(x/y)ⁿ = xⁿ/yⁿ</span></div>
+</div>
+
+<div class="fsheet">
+  <div class="fsheet-title"><span class="fs-dot" style="background:var(--violet)"></span>Radicals</div>
+  <div class="frow"><span class="frow-label">Product rule</span><span class="frow-formula">√(ab) = √a·√b</span></div>
+  <div class="frow"><span class="frow-label">Quotient rule</span><span class="frow-formula">√(a/b) = √a/√b</span></div>
+  <div class="frow"><span class="frow-label">nth root</span><span class="frow-formula">ⁿ√a = a^(1/n)</span></div>
+  <div class="frow"><span class="frow-label">Rational exp.</span><span class="frow-formula">a^(m/n) = (ⁿ√a)ᵐ</span></div>
+  <div class="frow"><span class="frow-label">Rationalize</span><span class="frow-formula">Mult. by √b/√b or conjugate</span></div>
+  <div class="frow"><span class="frow-label">Imaginary</span><span class="frow-formula">√(−1) = i,  i²=−1</span></div>
+  <div class="frow"><span class="frow-label">Distance</span><span class="frow-formula">d = √[(Δx)²+(Δy)²]</span></div>
+  <div class="frow"><span class="frow-label">Pythagorean</span><span class="frow-formula">a²+b²=c²</span></div>
+</div>
+
+<div class="fsheet">
+  <div class="fsheet-title"><span class="fs-dot" style="background:var(--cyan)"></span>Logarithms</div>
+  <div class="frow"><span class="frow-label">Definition</span><span class="frow-formula">log_b(x)=y ↔ bʸ=x</span></div>
+  <div class="frow"><span class="frow-label">Product</span><span class="frow-formula">log(MN)=log(M)+log(N)</span></div>
+  <div class="frow"><span class="frow-label">Quotient</span><span class="frow-formula">log(M/N)=log(M)−log(N)</span></div>
+  <div class="frow"><span class="frow-label">Power</span><span class="frow-formula">log(Mⁿ) = n·log(M)</span></div>
+  <div class="frow"><span class="frow-label">Change base</span><span class="frow-formula">log_b(x) = ln(x)/ln(b)</span></div>
+  <div class="frow"><span class="frow-label">log_b(1)</span><span class="frow-formula">= 0  (always)</span></div>
+  <div class="frow"><span class="frow-label">log_b(b)</span><span class="frow-formula">= 1  (always)</span></div>
+  <div class="frow"><span class="frow-label">Inverse</span><span class="frow-formula">b^(log_b(x)) = x</span></div>
+</div>
+
+</div>
+</div><!-- /formulas -->
+
+<!-- ══════════ LECTURE TAB ══════════ -->
+<div id="lecture" class="section">
+
+<div class="lecture-player">
+  <div class="lp-title"><span class="lp-dot paused" id="lp-dot"></span><span id="lp-title-text">Math 1010 Lectures — 7 Modules</span></div>
+
+  <div class="lp-voice-row" id="lp-voice-row">
+    <span class="lp-voice-label">Voice</span>
+    <span style="font-size:11px;color:var(--text3)" id="lp-voice-loading">Loading voices…</span>
+  </div>
+
+  <div class="lp-controls" style="margin-bottom:.5rem">
+    <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:'Space Mono',monospace">Speed</span>
+    <button class="lp-speed" data-wpm="130" onclick="setSpeed(130,this)">Slow</button>
+    <button class="lp-speed active" data-wpm="145" onclick="setSpeed(145,this)">Normal</button>
+    <button class="lp-speed" data-wpm="165" onclick="setSpeed(165,this)">Fast</button>
+    <button class="lp-speed" data-wpm="185" onclick="setSpeed(185,this)">Rapid</button>
+  </div>
+
+  <div class="lp-controls">
+    <button class="lp-btn" onclick="lpPrev()">⏮</button>
+    <button class="lp-btn primary" id="lp-play-btn" onclick="lpToggle()">▶ Play</button>
+    <button class="lp-btn" onclick="lpStop()">⏹</button>
+    <button class="lp-btn" onclick="lpNext()">⏭</button>
+    <button class="lp-btn" id="lp-auto-btn" onclick="lpToggleAuto()">🔁 Auto</button>
+  </div>
+
+  <div class="lp-progress-wrap" onclick="lpSeekClick(event,this)">
+    <div class="lp-progress-fill" id="lp-pfill"></div>
+  </div>
+
+  <div class="lp-np">🎙️ <span class="lp-np-track" id="lp-np">Select a lecture below to begin</span></div>
+  <div class="lp-playlist" id="lp-playlist"></div>
+</div>
+
+<div class="lp-read-text" id="lp-read-text">
+  <p style="color:var(--text3);font-size:13px">Select a lecture from the playlist above. The text will appear here with word-by-word highlighting as it is read aloud.</p>
+</div>
+
+</div><!-- /lecture -->
+
+</div><!-- /container -->
+<div class="toast" id="toast"></div>
+
+<nav class="bottom-nav">
+  <button class="bnav-btn active" id="bnav-study" onclick="go('study')"><span class="bicon">📖</span>Study</button>
+  <button class="bnav-btn" id="bnav-solver" onclick="go('solver')"><span class="bicon">🔢</span>Solver</button>
+  <button class="bnav-btn" id="bnav-quiz" onclick="go('quiz')"><span class="bicon">🎯</span>Quiz</button>
+  <button class="bnav-btn" id="bnav-cards" onclick="go('cards')"><span class="bicon">🃏</span>Cards</button>
+  <button class="bnav-btn" id="bnav-formulas" onclick="go('formulas')"><span class="bicon">📐</span>Forms</button>
+  <button class="bnav-btn" id="bnav-lecture" onclick="go('lecture')"><span class="bicon">🎙️</span>Lect</button>
+</nav>
+
+<script>
+// ══ XP SYSTEM ══
+let xp = 0;
+function addXP(n){
+  xp+=n;
+  document.getElementById('xp-val').textContent=xp;
+  const pct=Math.min(100,(xp%200)/2);
+  document.getElementById('xp-bar').style.width=pct+'%';
+}
+
+// ══ NAV ══
+function go(t){
+  document.querySelectorAll('.tab,.bnav-btn').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
+  const dt=document.querySelector(`.tab[onclick="go('${t}')"]`);if(dt)dt.classList.add('active');
+  const bn=document.getElementById('bnav-'+t);if(bn)bn.classList.add('active');
+  document.getElementById(t).classList.add('active');
+  if(t==='quiz'&&qList.length===0)resetQuiz();
+  if(t==='cards'){renderFC();initSwipe();}
+  if(t!=='lecture')window.scrollTo({top:0,behavior:'instant'});
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._to);t._to=setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+// ══ SOLVER ══
+function showCalc(id){
+  document.getElementById('solver-menu').style.display='none';
+  document.querySelectorAll('.solver-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('calc-'+id).classList.add('active');
+  window.scrollTo({top:0,behavior:'instant'});
+}
+function hideCalc(){
+  document.querySelectorAll('.solver-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('solver-menu').style.display='';
+  document.querySelectorAll('.result-area').forEach(r=>{r.classList.remove('show');r.innerHTML='';});
+}
+
+function fmt(n){
+  if(Number.isInteger(n))return String(n);
+  const r=Math.round(n*10000)/10000;
+  return String(r);
+}
+
+function showResult(id,html){
+  const el=document.getElementById(id);
+  el.innerHTML=html;el.classList.add('show');
+  addXP(5);showToast('+5 XP — nice work!');
+}
+
+function solveLinear(){
+  const a=parseFloat(document.getElementById('lin-a').value);
+  const b=parseFloat(document.getElementById('lin-b').value);
+  const c=parseFloat(document.getElementById('lin-c').value);
+  if(isNaN(a)||isNaN(b)||isNaN(c)){showToast('Enter valid numbers');return;}
+  if(a===0){showResult('lin-result','<div class="r-step">a = 0, this is not a linear equation in x. Check your values.</div>');return;}
+  const rhs=c-b;
+  const x=rhs/a;
+  showResult('lin-result',`
+    <div class="r-step"><strong>Equation:</strong> ${fmt(a)}x + ${fmt(b)} = ${fmt(c)}</div>
+    <div class="r-step"><strong>Step 1</strong> — Subtract ${fmt(b)} from both sides:</div>
+    <div class="r-step">&nbsp;&nbsp;${fmt(a)}x = ${fmt(c)} − ${fmt(b)} = ${fmt(rhs)}</div>
+    <div class="r-step"><strong>Step 2</strong> — Divide both sides by ${fmt(a)}:</div>
+    <div class="r-step">&nbsp;&nbsp;x = ${fmt(rhs)} ÷ ${fmt(a)}</div>
+    <div class="r-answer">x = ${fmt(x)}</div>
+    <div class="r-step" style="color:var(--lime)">✓ Check: ${fmt(a)}(${fmt(x)}) + ${fmt(b)} = ${fmt(a*x+b)} = ${fmt(c)} ✓</div>
+  `);
+}
+
+function solveQuad(){
+  const a=parseFloat(document.getElementById('q-a').value);
+  const b=parseFloat(document.getElementById('q-b').value);
+  const c=parseFloat(document.getElementById('q-c').value);
+  if(isNaN(a)||isNaN(b)||isNaN(c)){showToast('Enter valid numbers');return;}
+  if(a===0){showResult('quad-result','<div class="r-step">a = 0 — not quadratic. Use the linear solver.</div>');return;}
+  const D=b*b-4*a*c;
+  let html=`
+    <div class="r-step"><strong>Equation:</strong> ${fmt(a)}x² + (${fmt(b)})x + (${fmt(c)}) = 0</div>
+    <div class="r-step"><strong>Quadratic Formula:</strong> x = (−b ± √(b²−4ac)) / (2a)</div>
+    <div class="r-step"><strong>Discriminant:</strong> D = (${fmt(b)})² − 4(${fmt(a)})(${fmt(c)}) = ${fmt(b*b)} − ${fmt(4*a*c)} = ${fmt(D)}</div>
+  `;
+  if(D>0){
+    const x1=(-b+Math.sqrt(D))/(2*a);
+    const x2=(-b-Math.sqrt(D))/(2*a);
+    html+=`<div class="r-step">D > 0 → two real solutions</div>
+    <div class="r-step">x = (${fmt(-b)} ± √${fmt(D)}) / ${fmt(2*a)}</div>
+    <div class="r-answer">x₁ = ${fmt(x1)},  x₂ = ${fmt(x2)}</div>`;
+  } else if(D===0){
+    const x=(-b)/(2*a);
+    html+=`<div class="r-step">D = 0 → one real solution (double root)</div>
+    <div class="r-answer">x = ${fmt(x)}</div>`;
+  } else {
+    const realPart=fmt(-b/(2*a));
+    const imagPart=fmt(Math.sqrt(-D)/(2*a));
+    html+=`<div class="r-step">D < 0 → two complex (imaginary) solutions</div>
+    <div class="r-answer">x = ${realPart} + ${imagPart}i  &nbsp;and&nbsp;  x = ${realPart} − ${imagPart}i</div>`;
+  }
+  showResult('quad-result',html);
+}
+
+function solveSlope(){
+  const x1=parseFloat(document.getElementById('s-x1').value);
+  const y1=parseFloat(document.getElementById('s-y1').value);
+  const x2=parseFloat(document.getElementById('s-x2').value);
+  const y2=parseFloat(document.getElementById('s-y2').value);
+  if([x1,y1,x2,y2].some(isNaN)){showToast('Enter valid numbers');return;}
+  if(x1===x2){
+    showResult('slope-result',`<div class="r-step">x₁ = x₂, so this is a <strong>vertical line</strong>.</div><div class="r-answer">x = ${fmt(x1)} (slope is undefined)</div>`);
+    return;
+  }
+  const m=(y2-y1)/(x2-x1);
+  const b=y1-m*x1;
+  const dist=Math.sqrt((x2-x1)**2+(y2-y1)**2);
+  const mx=(x1+x2)/2, my=(y1+y2)/2;
+  showResult('slope-result',`
+    <div class="r-step"><strong>Points:</strong> (${fmt(x1)}, ${fmt(y1)}) and (${fmt(x2)}, ${fmt(y2)})</div>
+    <div class="r-step"><strong>Slope:</strong> m = (${fmt(y2)}−${fmt(y1)}) / (${fmt(x2)}−${fmt(x1)}) = ${fmt(y2-y1)} / ${fmt(x2-x1)}</div>
+    <div class="r-answer">m = ${fmt(m)}</div>
+    <div class="r-step"><strong>y-intercept:</strong> b = y₁ − mx₁ = ${fmt(y1)} − (${fmt(m)})(${fmt(x1)}) = ${fmt(b)}</div>
+    <div class="r-answer">Slope-Intercept: y = ${fmt(m)}x + ${fmt(b)}</div>
+    <div class="r-step"><strong>Distance:</strong> d = √((${fmt(x2-x1)})²+(${fmt(y2-y1)})²) = ${fmt(Math.round(dist*10000)/10000)}</div>
+    <div class="r-step"><strong>Midpoint:</strong> M = (${fmt(mx)}, ${fmt(my)})</div>
+  `);
+}
+
+function solveSystem(){
+  const a1=parseFloat(document.getElementById('sy-a1').value);
+  const b1=parseFloat(document.getElementById('sy-b1').value);
+  const c1=parseFloat(document.getElementById('sy-c1').value);
+  const a2=parseFloat(document.getElementById('sy-a2').value);
+  const b2=parseFloat(document.getElementById('sy-b2').value);
+  const c2=parseFloat(document.getElementById('sy-c2').value);
+  if([a1,b1,c1,a2,b2,c2].some(isNaN)){showToast('Enter valid numbers');return;}
+  const D=a1*b2-a2*b1;
+  if(Math.abs(D)<1e-10){
+    showResult('sys-result','<div class="r-step">Determinant = 0 → system is <strong>dependent</strong> (infinite solutions) or <strong>inconsistent</strong> (no solution). Check if equations are multiples of each other.</div>');
+    return;
+  }
+  const x=(c1*b2-c2*b1)/D;
+  const y=(a1*c2-a2*c1)/D;
+  showResult('sys-result',`
+    <div class="r-step">EQ1: ${fmt(a1)}x + ${fmt(b1)}y = ${fmt(c1)}</div>
+    <div class="r-step">EQ2: ${fmt(a2)}x + ${fmt(b2)}y = ${fmt(c2)}</div>
+    <div class="r-step"><strong>Using Cramer's Rule:</strong></div>
+    <div class="r-step">D = (${fmt(a1)})(${fmt(b2)}) − (${fmt(a2)})(${fmt(b1)}) = ${fmt(D)}</div>
+    <div class="r-step">Dₓ = (${fmt(c1)})(${fmt(b2)}) − (${fmt(c2)})(${fmt(b1)}) = ${fmt(c1*b2-c2*b1)}</div>
+    <div class="r-step">D_y = (${fmt(a1)})(${fmt(c2)}) − (${fmt(a2)})(${fmt(c1)}) = ${fmt(a1*c2-a2*c1)}</div>
+    <div class="r-answer">x = ${fmt(x)},  y = ${fmt(y)}</div>
+    <div class="r-step" style="color:var(--lime)">✓ Check EQ1: ${fmt(a1*x+b1*y)} = ${fmt(c1)} ✓</div>
+    <div class="r-step" style="color:var(--lime)">✓ Check EQ2: ${fmt(a2*x+b2*y)} = ${fmt(c2)} ✓</div>
+  `);
+}
+
+function solveRadical(){
+  const N=parseInt(document.getElementById('rad-n').value);
+  if(isNaN(N)||N<0){showToast('Enter a non-negative integer');return;}
+  if(N===0){showResult('rad-result','<div class="r-answer">√0 = 0</div>');return;}
+  let largest=1;
+  for(let i=2;i*i<=N;i++){if(N%(i*i)===0)largest=i*i;}
+  const outside=Math.sqrt(largest);
+  const inside=N/largest;
+  let html=`<div class="r-step"><strong>Simplify:</strong> √${N}</div>`;
+  html+=`<div class="r-step"><strong>Step 1</strong> — Find largest perfect square factor of ${N}:</div>`;
+  if(largest===1){
+    html+=`<div class="r-step">&nbsp;&nbsp;No perfect square factors (other than 1) → already simplified</div>`;
+    html+=`<div class="r-answer">√${N} is already in simplest form</div>`;
+  } else {
+    html+=`<div class="r-step">&nbsp;&nbsp;${N} = ${largest} × ${inside} &nbsp;(${largest} = ${outside}²)</div>`;
+    html+=`<div class="r-step"><strong>Step 2</strong> — Apply product rule: √(${largest}·${inside}) = √${largest} · √${inside} = ${outside}√${inside}</div>`;
+    html+=`<div class="r-answer">${outside}√${inside}</div>`;
+  }
+  showResult('rad-result',html);
+}
+
+let logMode='exp';
+function setLogMode(m,btn){
+  logMode=m;
+  document.querySelectorAll('#calc-log .mode-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('log-x-label').textContent = m==='exp' ? 'Result N (bˣ=N)' : 'Result N (log_b(x)=N)';
+}
+
+function solveLog(){
+  const b=parseFloat(document.getElementById('log-b').value);
+  const N=parseFloat(document.getElementById('log-x').value);
+  if(isNaN(b)||isNaN(N)||b<=0||b===1){showToast('Base must be > 0 and ≠ 1');return;}
+  if(logMode==='exp'){
+    if(N<=0){showResult('log-result','<div class="r-step">bˣ = N requires N > 0. No real solution.</div>');return;}
+    const x=Math.log(N)/Math.log(b);
+    showResult('log-result',`
+      <div class="r-step"><strong>Equation:</strong> ${fmt(b)}ˣ = ${fmt(N)}</div>
+      <div class="r-step"><strong>Take log of both sides:</strong></div>
+      <div class="r-step">&nbsp;&nbsp;x · ln(${fmt(b)}) = ln(${fmt(N)})</div>
+      <div class="r-step">&nbsp;&nbsp;x = ln(${fmt(N)}) / ln(${fmt(b)})</div>
+      <div class="r-step">&nbsp;&nbsp;x = ${fmt(Math.log(N))} / ${fmt(Math.log(b))}</div>
+      <div class="r-answer">x = ${fmt(Math.round(x*100000)/100000)}</div>
+      <div class="r-step" style="color:var(--lime)">✓ Check: ${fmt(b)}^${fmt(Math.round(x*100000)/100000)} ≈ ${fmt(Math.round(Math.pow(b,x)*1000)/1000)} ✓</div>
+    `);
+  } else {
+    const x=Math.pow(b,N);
+    showResult('log-result',`
+      <div class="r-step"><strong>Equation:</strong> log_${fmt(b)}(x) = ${fmt(N)}</div>
+      <div class="r-step"><strong>Convert to exponential form:</strong></div>
+      <div class="r-step">&nbsp;&nbsp;log_b(x) = y  ↔  bʸ = x</div>
+      <div class="r-step">&nbsp;&nbsp;${fmt(b)}^(${fmt(N)}) = x</div>
+      <div class="r-answer">x = ${fmt(x)}</div>
+    `);
+  }
+}
+
+// ══ QUIZ DATA (25 questions) ══
+const QUESTIONS = [
+  {n:1,topic:'Linear',filter:'Linear',
+   q:'Solve for x: 3x − 7 = 14',
+   opts:['x = 7','x = 3','x = 21/3','x = 2⅓'],
+   a:0,exp:'Add 7 to both sides: 3x = 21. Divide by 3: x = 7.'},
+  {n:2,topic:'Linear',filter:'Linear',
+   q:'What is the slope of the line passing through (2, 5) and (6, 13)?',
+   opts:['m = 2','m = 4','m = 3','m = 1/2'],
+   a:0,exp:'m = (13−5)/(6−2) = 8/4 = 2.'},
+  {n:3,topic:'Linear',filter:'Linear',
+   q:'Which of the following is the slope-intercept form of a line with slope −3 and y-intercept 4?',
+   opts:['y = −3x + 4','y = 4x − 3','y = 3x − 4','y = −4x + 3'],
+   a:0,exp:'Slope-intercept form is y = mx + b. With m = −3 and b = 4: y = −3x + 4.'},
+  {n:4,topic:'Linear',filter:'Linear',
+   q:'A vertical line has:',
+   opts:['Undefined slope','Slope of zero','Slope of 1','Negative slope'],
+   a:0,exp:'A vertical line (x = k) has undefined slope because the run is 0, causing division by zero.'},
+  {n:5,topic:'Linear',filter:'Linear',
+   q:'Solve the inequality: 2x + 5 > 13',
+   opts:['x > 4','x > 9','x < 4','x ≥ 4'],
+   a:0,exp:'Subtract 5: 2x > 8. Divide by 2: x > 4. Sign does NOT flip because we divided by a positive.'},
+  {n:6,topic:'Linear',filter:'Linear',
+   q:'What is the y-intercept of the line 4x − 3y = 12?',
+   opts:['(0, −4)','(0, 4)','(3, 0)','(0, 12)'],
+   a:0,exp:'Set x = 0: −3y = 12, y = −4. Y-intercept is (0, −4).'},
+  {n:7,topic:'Linear',filter:'Linear',
+   q:'Two lines are perpendicular. One has slope 2/3. What is the slope of the other?',
+   opts:['m = −3/2','m = 2/3','m = 3/2','m = −2/3'],
+   a:0,exp:'Perpendicular slopes are negative reciprocals: flip and negate 2/3 → −3/2.'},
+  {n:8,topic:'Systems',filter:'Systems',
+   q:'Solve the system: x + y = 5  and  2x − y = 4',
+   opts:['(3, 2)','(2, 3)','(4, 1)','(1, 4)'],
+   a:0,exp:'Add equations: 3x = 9, x = 3. Then y = 5 − 3 = 2. Solution: (3, 2).'},
+  {n:9,topic:'Systems',filter:'Systems',
+   q:'A system of two linear equations has no solution. What does this mean geometrically?',
+   opts:['The lines are parallel','The lines are the same','The lines intersect once','The lines are perpendicular'],
+   a:0,exp:'No solution means the lines never intersect — they are parallel (same slope, different y-intercepts).'},
+  {n:10,topic:'Systems',filter:'Systems',
+   q:'Which method works best when one equation is already solved for y?',
+   opts:['Substitution','Elimination','Graphing','Cramer\'s Rule'],
+   a:0,exp:'When one equation is already solved for a variable, substitution is most efficient — just plug it directly into the other equation.'},
+  {n:11,topic:'Poly',filter:'Poly',
+   q:'Factor completely: x² − 9',
+   opts:['(x+3)(x−3)','(x−3)²','(x+3)²','Cannot be factored'],
+   a:0,exp:'This is a difference of squares: a² − b² = (a+b)(a−b). Here a = x, b = 3.'},
+  {n:12,topic:'Poly',filter:'Poly',
+   q:'Multiply: (2x + 3)(x − 5)',
+   opts:['2x² − 7x − 15','2x² + 7x − 15','2x² − 7x + 15','2x² + 13x − 15'],
+   a:0,exp:'FOIL: First 2x·x = 2x². Outer 2x·(−5) = −10x. Inner 3·x = 3x. Last 3·(−5) = −15. Combine: 2x² − 7x − 15.'},
+  {n:13,topic:'Poly',filter:'Poly',
+   q:'Factor: x² + 5x + 6',
+   opts:['(x+2)(x+3)','(x+1)(x+6)','(x−2)(x−3)','(x+6)(x+1)'],
+   a:0,exp:'Find two numbers that multiply to 6 and add to 5: 2 and 3. So (x+2)(x+3).'},
+  {n:14,topic:'Poly',filter:'Poly',
+   q:'What is x⁻³ written with a positive exponent?',
+   opts:['1/x³','x³','−x³','3/x'],
+   a:0,exp:'Negative exponent rule: x⁻ⁿ = 1/xⁿ. So x⁻³ = 1/x³.'},
+  {n:15,topic:'Poly',filter:'Poly',
+   q:'Simplify: (3x²)³',
+   opts:['27x⁶','9x⁶','27x⁵','9x⁵'],
+   a:0,exp:'Apply power of a product: 3³ = 27, (x²)³ = x⁶. Answer: 27x⁶.'},
+  {n:16,topic:'Quad',filter:'Quad',
+   q:'Use the quadratic formula to solve 2x² − 4x − 6 = 0',
+   opts:['x = 3 or x = −1','x = 2 or x = −3','x = 6 or x = −1','x = 1 or x = −3'],
+   a:0,exp:'a=2,b=−4,c=−6. D=16+48=64. x=(4±8)/4. x=12/4=3 or x=−4/4=−1.'},
+  {n:17,topic:'Quad',filter:'Quad',
+   q:'The discriminant of a quadratic is −16. What type of solutions does it have?',
+   opts:['Two complex (imaginary) solutions','Two real solutions','One real solution','No solution'],
+   a:0,exp:'Discriminant < 0 → two complex (imaginary) solutions involving i = √(−1).'},
+  {n:18,topic:'Quad',filter:'Quad',
+   q:'What is the vertex of f(x) = (x − 3)² + 5?',
+   opts:['(3, 5)','(−3, 5)','(3, −5)','(5, 3)'],
+   a:0,exp:'Vertex form f(x) = a(x−h)²+k has vertex at (h, k). Here h = 3, k = 5.'},
+  {n:19,topic:'Quad',filter:'Quad',
+   q:'Solve by completing the square: x² − 6x = 7',
+   opts:['x = 7 or x = −1','x = 3 or x = −3','x = 7 or x = 1','x = −7 or x = 1'],
+   a:0,exp:'Add (6/2)²=9 to both sides: x²−6x+9=16. (x−3)²=16. x−3=±4. x=7 or x=−1.'},
+  {n:20,topic:'ExpLog',filter:'ExpLog',
+   q:'Solve: 2ˣ = 32',
+   opts:['x = 5','x = 4','x = 6','x = 16'],
+   a:0,exp:'Write 32 = 2⁵. So 2ˣ = 2⁵, therefore x = 5.'},
+  {n:21,topic:'ExpLog',filter:'ExpLog',
+   q:'What is log₂(8)?',
+   opts:['3','2','4','8'],
+   a:0,exp:'log₂(8) = x means 2ˣ = 8 = 2³. So x = 3.'},
+  {n:22,topic:'ExpLog',filter:'ExpLog',
+   q:'Expand using log properties: log(x²y/z)',
+   opts:['2log(x)+log(y)−log(z)','2log(x)−log(y)+log(z)','log(2x)+log(y)−log(z)','log(x²)+log(y)−log(z)'],
+   a:0,exp:'Product rule: log(x²)+log(y)−log(z). Power rule: log(x²) = 2log(x). Answer: 2log(x)+log(y)−log(z).'},
+  {n:23,topic:'ExpLog',filter:'ExpLog',
+   q:'What is the domain restriction of f(x) = log(x − 3)?',
+   opts:['x > 3','x ≥ 3','x > 0','all real numbers'],
+   a:0,exp:'You can only take log of a positive number. So x−3 > 0, meaning x > 3.'},
+  {n:24,topic:'ExpLog',filter:'ExpLog',
+   q:'An investment of $1000 grows at 5% compounded annually. Which formula gives its value after t years?',
+   opts:['A = 1000(1.05)ᵗ','A = 1000 + 0.05t','A = 1000e^(0.05t)','A = 1000(0.05)ᵗ'],
+   a:0,exp:'Compound interest formula: A = P(1 + r)ᵗ. Here P=1000, r=0.05: A = 1000(1.05)ᵗ. (The e formula is for continuous compounding.)'},
+  {n:25,topic:'Mixed',filter:'all',
+   q:'Simplify √48',
+   opts:['4√3','6√2','2√12','12√4'],
+   a:0,exp:'Find largest perfect square factor: 48 = 16 × 3. √48 = √16 · √3 = 4√3.'},
+];
+
+// ══ QUIZ ENGINE ══
+let qFilter='all', qList=[], qAnswered={}, qCorrect=0;
+
+function setQFilter(f,btn){
+  qFilter=f;
+  document.querySelectorAll('#quiz .mode-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  resetQuiz();
+}
+
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+function getQList(){
+  if(qFilter==='all')return [...QUESTIONS];
+  return QUESTIONS.filter(q=>q.filter===qFilter);
+}
+
+function resetQuiz(){
+  qList=shuffle(getQList());
+  qAnswered={};qCorrect=0;
+  document.getElementById('q-snum').textContent='0 / 0';
+  document.getElementById('q-pfill').style.width='0%';
+  buildQTracker();
+  buildQuiz();
+}
+
+function buildQTracker(){
+  const g=document.getElementById('q-tracker');g.innerHTML='';
+  qList.forEach((q,i)=>{
+    const d=document.createElement('div');d.className='tq';d.id='qtq-'+i;
+    d.textContent=String(i+1);
+    d.onclick=()=>{const el=document.getElementById('qqcard-'+i);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});};
+    g.appendChild(d);
+  });
+}
+
+function buildQuiz(){
+  const box=document.getElementById('quizbox');box.innerHTML='';
+  const L=['A','B','C','D'];
+  qList.forEach((q,pos)=>{
+    const sOpts=shuffle(q.opts.map((o,i)=>({text:o,orig:i})));
+    const nc=sOpts.findIndex(x=>x.orig===q.a);
+    const div=document.createElement('div');div.className='qcard';div.id='qqcard-'+pos;
+    div.innerHTML=`<div class="qmeta"><span class="qnum">#${pos+1}</span><span class="qtopic">${q.topic}</span></div>
+      <div class="qtext">${q.q}</div>
+      ${sOpts.map((o,i)=>`<div class="opt" id="qopt-${pos}-${i}" onclick="qPick(${pos},${i},${nc})"><span class="ltr">${L[i]}</span>${o.text}<span class="opt-icon"></span></div>`).join('')}
+      <div class="exp" id="qexp-${pos}"><div class="exp-label">Explanation</div>${q.exp}</div>`;
+    box.appendChild(div);
+  });
+}
+
+function qPick(pos,oi,nc){
+  if(qAnswered[pos]!==undefined)return;
+  qAnswered[pos]=oi;
+  const ok=oi===nc;
+  for(let i=0;i<4;i++){const el=document.getElementById(`qopt-${pos}-${i}`);if(el){el.classList.add('locked');el.onclick=null;}}
+  const ch=document.getElementById(`qopt-${pos}-${oi}`);
+  const co=document.getElementById(`qopt-${pos}-${nc}`);
+  if(ok){ch.classList.add('correct');ch.querySelector('.opt-icon').textContent='✓';qCorrect++;addXP(10);}
+  else{ch.classList.add('wrong');ch.querySelector('.opt-icon').textContent='✗';if(co){co.classList.add('show-correct');co.querySelector('.opt-icon').textContent='✓';}}
+  document.getElementById(`qexp-${pos}`).style.display='block';
+  const tq=document.getElementById('qtq-'+pos);if(tq)tq.classList.add(ok?'tq-c':'tq-w');
+  const tot=Object.keys(qAnswered).length;
+  document.getElementById('q-snum').textContent=`${qCorrect} / ${tot}`;
+  document.getElementById('q-pfill').style.width=(tot?qCorrect/tot*100:0).toFixed(0)+'%';
+  if(tot===qList.length)setTimeout(()=>showQComplete(tot,qCorrect),600);
+}
+
+function showQComplete(tot,correct){
+  const pct=Math.round(correct/tot*100);
+  let grade,gc;
+  if(pct>=95){grade='Perfect! 🎯';gc='g-ex';}
+  else if(pct>=80){grade='Strong work!';gc='g-gd';}
+  else if(pct>=65){grade='Getting there';gc='g-nw';}
+  else{grade='Keep practicing';gc='g-fl';}
+  addXP(pct>=80?50:20);
+  const card=document.createElement('div');card.className='completion-card';card.id='qComplete';
+  card.innerHTML=`<h2>${grade}</h2><div class="big-score ${gc}">${pct}%</div>
+  <div class="completion-stats">
+    <div class="cstat"><strong style="color:var(--lime)">${correct}</strong>Correct</div>
+    <div class="cstat"><strong style="color:var(--rose)">${tot-correct}</strong>Wrong</div>
+    <div class="cstat"><strong>${pct}%</strong>Score</div>
+  </div>
+  <button class="retry-btn" onclick="resetQuiz();document.getElementById('qComplete').remove()">↺ Try Again</button>`;
+  document.getElementById('quizbox').prepend(card);card.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ══ FLASHCARDS (30 cards) ══
+const FC_DATA = [
+  {cat:'Linear',front:'What does the slope of a line represent?',back:'The rate of change: how much y changes for every 1 unit increase in x. Calculated as rise ÷ run = (y₂−y₁)/(x₂−x₁).',formula:'m = Δy / Δx'},
+  {cat:'Linear',front:'What is slope-intercept form and what do m and b represent?',back:'y = mx + b. m is the slope (steepness/direction). b is the y-intercept (where the line crosses the y-axis).',formula:'y = mx + b'},
+  {cat:'Linear',front:'How do you find the y-intercept of a line in standard form Ax + By = C?',back:'Set x = 0 and solve for y. Example: 3x + 2y = 6 → 2y = 6 → y = 3. Y-intercept is (0, 3).',formula:'Set x = 0 → solve for y'},
+  {cat:'Linear',front:'A line has slope 3/4. What is the slope of a perpendicular line?',back:'The negative reciprocal: flip and change sign. 3/4 → −4/3. Product of perpendicular slopes always equals −1.',formula:'m⊥ = −1/m'},
+  {cat:'Linear',front:'What is the domain restriction rule for rational functions?',back:'The denominator cannot equal zero. Set denominator = 0, solve, then EXCLUDE those values from the domain.',formula:'denominator ≠ 0'},
+  {cat:'Systems',front:'When does a 2×2 linear system have no solution?',back:'When the lines are parallel — same slope but different y-intercepts. The variable terms are proportional but the constants are not. You get a false statement like 0 = 5.',formula:'Same slope, different b → no solution'},
+  {cat:'Systems',front:'Describe the substitution method for systems of equations.',back:'1. Solve one equation for one variable. 2. Substitute that expression into the other equation. 3. Solve. 4. Back-substitute to find the other variable. 5. Check both equations.',formula:'Solve for x, sub into other eq.'},
+  {cat:'Systems',front:'What does it mean when a system has infinitely many solutions?',back:'The two equations represent the same line. When you try to solve, the variables cancel and you get a TRUE statement like 0 = 0.',formula:'Same line → ∞ solutions'},
+  {cat:'Polynomials',front:'State the difference of squares factoring pattern.',back:'a² − b² factors as (a + b)(a − b). The KEY: only works for DIFFERENCE (minus), not sum. a² + b² does NOT factor over the reals.',formula:'a² − b² = (a+b)(a−b)'},
+  {cat:'Polynomials',front:'How do you factor a trinomial x² + bx + c?',back:'Find two numbers that MULTIPLY to c and ADD to b. Those become the constants in (x + _)(x + _). If no such integers exist, use quadratic formula.',formula:'Find p,q: p·q=c and p+q=b'},
+  {cat:'Polynomials',front:'What is the AC method for factoring ax² + bx + c (a ≠ 1)?',back:'1. Multiply a·c. 2. Find two factors of ac that add to b. 3. Rewrite the middle term as two terms using those factors. 4. Factor by grouping.',formula:'Multiply a·c, split middle term'},
+  {cat:'Polynomials',front:'Expand (2x − 3)² using the perfect square pattern.',back:'(a−b)² = a² − 2ab + b². Here a=2x, b=3: (2x)² − 2(2x)(3) + 3² = 4x² − 12x + 9.',formula:'(a−b)² = a²−2ab+b²'},
+  {cat:'Quadratic',front:'State the Quadratic Formula.',back:'For ax² + bx + c = 0: x = (−b ± √(b²−4ac)) / (2a). Works for ALL quadratics — use when factoring is not obvious.',formula:'x = (−b ± √(b²−4ac)) / (2a)'},
+  {cat:'Quadratic',front:'What does the discriminant tell you?',back:'D = b²−4ac. If D > 0: two real solutions. If D = 0: one real solution (double root). If D < 0: two complex/imaginary solutions.',formula:'D = b²−4ac'},
+  {cat:'Quadratic',front:'How do you complete the square for x² + 8x = 3?',back:'Take half of 8 (which is 4), square it (16), add to both sides: x² + 8x + 16 = 19. Left side: (x+4)² = 19. So x+4 = ±√19, x = −4 ± √19.',formula:'Add (b/2)² to both sides'},
+  {cat:'Quadratic',front:'How do you find the vertex of f(x) = 2x² − 8x + 5?',back:'Use x = −b/(2a) = −(−8)/(2·2) = 8/4 = 2. Then f(2) = 2(4) − 8(2) + 5 = 8 − 16 + 5 = −3. Vertex: (2, −3).',formula:'Vertex x = −b/(2a)'},
+  {cat:'Radicals',front:'How do you simplify √72?',back:'Find the largest perfect square factor: 72 = 36 × 2. √72 = √36 · √2 = 6√2. Strategy: factor out perfect squares.',formula:'√(a·b) = √a · √b'},
+  {cat:'Radicals',front:'How do you rationalize the denominator of 5/√3?',back:'Multiply numerator and denominator by √3: (5/√3)(√3/√3) = 5√3/3. Goal: no radicals in the denominator.',formula:'Multiply by √b/√b'},
+  {cat:'Radicals',front:'What is i (imaginary unit) and what is i²?',back:'i = √(−1). i² = −1. This is the foundation of complex numbers. Powers cycle: i¹=i, i²=−1, i³=−i, i⁴=1, then repeats.',formula:'i = √(−1),  i² = −1'},
+  {cat:'Radicals',front:'How do you solve √(2x+1) = 5?',back:'1. Isolate the radical (already done). 2. Square both sides: 2x+1 = 25. 3. Solve: 2x = 24, x = 12. 4. Check: √(2·12+1) = √25 = 5 ✓',formula:'Isolate radical → square → check'},
+  {cat:'Exponents',front:'What does a rational exponent like x^(3/4) mean?',back:'x^(m/n) = (ⁿ√x)ᵐ = ⁿ√(xᵐ). So x^(3/4) = (⁴√x)³ = ⁴√(x³). The denominator is the root, the numerator is the power.',formula:'x^(m/n) = (ⁿ√x)ᵐ'},
+  {cat:'Exponents',front:'Simplify: (x⁵ · x⁻²) / x³',back:'Numerator: x⁵ · x⁻² = x^(5+(−2)) = x³. Then x³/x³ = x⁰ = 1. When exponents are equal in numerator and denominator, they cancel to 1.',formula:'xᵃ·xᵇ = xᵃ⁺ᵇ, xᵃ/xᵇ = xᵃ⁻ᵇ'},
+  {cat:'Logarithms',front:'Convert to exponential form: log₃(81) = 4',back:'log_b(x) = y ↔ bʸ = x. So log₃(81) = 4 means 3⁴ = 81. Always: base stays base, exponent and result swap.',formula:'log_b(x) = y  ↔  bʸ = x'},
+  {cat:'Logarithms',front:'Expand: ln(x³/y)',back:'Use quotient rule then power rule: ln(x³) − ln(y) = 3·ln(x) − ln(y). Log properties work the same for ln as for log.',formula:'ln(x³/y) = 3ln(x)−ln(y)'},
+  {cat:'Logarithms',front:'Solve: log₂(x) = 5',back:'Convert to exponential form: 2⁵ = x. Calculate: x = 32. Always convert log to exponential form first.',formula:'log_b(x) = N  →  x = bᴺ'},
+  {cat:'Functions',front:'What is function composition f(g(x))?',back:'Plug the entire g(x) into the formula for f. Example: if f(x)=2x+1 and g(x)=x², then f(g(x)) = 2(x²)+1 = 2x²+1. Work from inside out.',formula:'(f∘g)(x) = f(g(x))'},
+  {cat:'Functions',front:'How do you find the inverse of f(x) = 3x − 6?',back:'1. Replace f(x) with y: y = 3x−6. 2. Swap x and y: x = 3y−6. 3. Solve for y: 3y = x+6, y = (x+6)/3. 4. Write f⁻¹(x) = (x+6)/3.',formula:'Swap x and y, solve for y'},
+  {cat:'Functions',front:'What is the Vertical Line Test used for?',back:'To determine if a graph represents a function. If ANY vertical line crosses the graph MORE than once, it is NOT a function. Each x-value must map to exactly one y-value.',formula:'One x → one y only'},
+  {cat:'Rational',front:'What must you always do when solving rational equations?',back:'ALWAYS check solutions in the original equation. Solutions that make any denominator equal to zero are EXTRANEOUS and must be rejected — they are not valid solutions.',formula:'Check: denominator ≠ 0'},
+  {cat:'Rational',front:'How do you simplify (x²−9)/(x+3)?',back:'Factor the numerator: x²−9 = (x+3)(x−3). Then cancel (x+3): result is (x−3), with the restriction x ≠ −3 (from original denominator).',formula:'Factor first, then cancel'},
+];
+
+let fcIdx=0, fcTX=0, fcTY=0;
+function renderFC(){
+  const c=FC_DATA[fcIdx];
+  document.getElementById('fc-cat').textContent=c.cat;
+  document.getElementById('fc-front').textContent=c.front;
+  document.getElementById('fc-back').textContent=c.back;
+  const f=document.getElementById('fc-formula');
+  if(c.formula){f.textContent=c.formula;f.style.display='block';}else{f.style.display='none';}
+  document.getElementById('fc-prog').textContent=`${fcIdx+1} / ${FC_DATA.length}`;
+  document.getElementById('fc-counter').textContent=`Card ${fcIdx+1} of ${FC_DATA.length}`;
+  document.getElementById('fc-card').classList.remove('flipped');
+}
+function flipCard(){document.getElementById('fc-card').classList.toggle('flipped');addXP(2);}
+function fcNav(d){fcIdx=(fcIdx+d+FC_DATA.length)%FC_DATA.length;renderFC();}
+function fcRate(q){const l=['⏰ Review soon','📅 3 days','✅ Good','⭐ Mastered!'];addXP(q*3);showToast(l[q-1]);fcNav(1);}
+function initSwipe(){
+  const w=document.getElementById('fc-wrap');
+  w.addEventListener('touchstart',e=>{fcTX=e.touches[0].clientX;fcTY=e.touches[0].clientY;},{passive:true});
+  w.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-fcTX;
+    const dy=e.changedTouches[0].clientY-fcTY;
+    if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>40){if(dx<0)fcNav(1);else fcNav(-1);}
+  },{passive:true});
+}
+
+// ══ LECTURES (7 lectures — one per module) ══
+const LECTURES = [
+  {cat:'Module 1',title:'Graphs, Functions & Linear Equations',
+   text:`Welcome to Intermediate Algebra at Salt Lake Community College. This first lecture covers Module One, which includes graphs, functions, and linear equations — the foundation of everything that follows.
+
+Let us begin with the coordinate plane. Every point in two-dimensional space is described by an ordered pair: x comma y. The x-axis runs horizontally, and the y-axis runs vertically. Together they divide the plane into four quadrants. Quadrant One is upper right, where both x and y are positive. Quadrant Two is upper left, where x is negative and y is positive. Quadrant Three is lower left, where both are negative. Quadrant Four is lower right, where x is positive and y is negative.
+
+The distance between two points uses the distance formula: d equals the square root of the quantity x-two minus x-one squared plus y-two minus y-one squared. This comes directly from the Pythagorean Theorem. The midpoint between two points is found by averaging the x-coordinates and averaging the y-coordinates separately.
+
+Now let us talk about functions. A function is a rule that assigns exactly one output value to each input value. Think of it as a machine: you feed it an x-value, it produces exactly one y-value. The set of all allowed inputs is called the domain, and the set of all possible outputs is called the range.
+
+The Vertical Line Test tells you whether a graph represents a function: if any vertical line crosses the graph more than once, it is not a function.
+
+Function notation uses parentheses that do not mean multiplication. When you see f of x equals two x plus one, and you are asked to find f of three, you substitute three for every x: f of three equals two times three plus one, which is seven.
+
+Domain restrictions come from two sources. First, you cannot divide by zero — so if x appears in a denominator, set that denominator not equal to zero and exclude those x values. Second, you cannot take the square root of a negative number in the real number system — so if x appears under a radical, set that expression greater than or equal to zero.
+
+Now for linear functions. The slope of a line measures its steepness and direction. Slope equals rise over run, or y-two minus y-one divided by x-two minus x-one. A positive slope rises left to right. A negative slope falls. A slope of zero is a horizontal line. An undefined slope belongs to a vertical line.
+
+The three most useful forms of a linear equation are slope-intercept form y equals m x plus b, point-slope form y minus y-one equals m times x minus x-one, and standard form A x plus B y equals C.
+
+Two lines are parallel if they have the same slope. Two lines are perpendicular if their slopes are negative reciprocals of each other — meaning their product equals negative one.
+
+To solve a linear equation, there is a reliable six-step process. First, clear any fractions by multiplying both sides by the LCD. Second, distribute to remove parentheses. Third, combine like terms on each side. Fourth, move all variable terms to one side. Fifth, move all constant terms to the other side. Sixth, divide by the coefficient of the variable.
+
+Watch out for special cases. If the variable cancels and you get a true statement like zero equals zero, the equation has infinitely many solutions. If you get a false statement like three equals seven, there is no solution.`},
+
+  {cat:'Module 2',title:'Systems of Linear Equations',
+   text:`This lecture covers Module Two: systems of linear equations, including two-variable systems, three-variable systems, and systems of inequalities.
+
+A system of two linear equations asks: where do these two lines intersect? The solution is the ordered pair that satisfies both equations simultaneously.
+
+There are three possible outcomes. First, one unique solution: the lines cross at exactly one point. This is the typical case. Second, no solution: the lines are parallel — same slope, different y-intercepts — so they never meet. When you try to solve algebraically, the variables cancel and you get a false statement. Third, infinitely many solutions: the two equations represent the same line. The variables cancel and you get a true statement like zero equals zero.
+
+The substitution method works especially well when one equation is already solved for a variable. The steps are: solve one equation for one variable, substitute that expression into the other equation, solve for the remaining variable, then back-substitute to find the first variable. Always check your answer in both original equations.
+
+The elimination method, also called the addition method, works by multiplying one or both equations by constants so that the coefficients of one variable are opposites. When you add the equations, that variable is eliminated, leaving a simpler one-variable equation to solve.
+
+For three-by-three systems — three equations with three unknowns — you use Gaussian elimination. Pick any two pairs of equations and eliminate the same variable from each pair. This gives you a two-by-two system. Solve that system, then back-substitute to find all three variables. Check in all three original equations.
+
+Systems of linear inequalities require graphing. Graph each inequality separately, using a solid line for less-than-or-equal and a dashed line for strictly less-than. Shade the appropriate half-plane for each inequality. The solution to the system is the region where all shadings overlap. Test the point zero comma zero to determine which side to shade for each inequality, unless zero comma zero lies on the boundary line.`},
+
+  {cat:'Module 3',title:'Polynomials & Quadratic Functions',
+   text:`This lecture covers Module Three: properties of exponents, polynomial operations, factoring, and graphing quadratic functions.
+
+Let us start with the laws of exponents. When multiplying expressions with the same base, add the exponents. When dividing, subtract. When raising a power to a power, multiply. Any base raised to the power zero equals one, provided the base is not zero. A negative exponent means the reciprocal: x to the negative n equals one over x to the n.
+
+Polynomial operations follow these same rules plus the distributive property. To multiply two binomials, use FOIL: First, Outer, Inner, Last. The special products you must memorize are: a plus b squared equals a squared plus two a b plus b squared. A minus b squared equals a squared minus two a b plus b squared. And a plus b times a minus b equals a squared minus b squared — the difference of squares pattern.
+
+Factoring is the reverse of multiplying, and it follows a decision tree. The first step is always to factor out the Greatest Common Factor. Then look at the number of terms. With two terms, check for a difference of squares. Remember: sum of squares does not factor over the real numbers — this is a common mistake. With three terms where the leading coefficient is one, find two numbers that multiply to the constant and add to the middle coefficient. With three terms where the leading coefficient is not one, use the A-C method: multiply the leading coefficient by the constant, find two factors of that product that add to the middle coefficient, split the middle term into two terms, then factor by grouping. With four terms, try grouping directly.
+
+For quadratic functions, there are three useful forms. Standard or general form is f of x equals a x squared plus b x plus c. The vertex x-coordinate is found using x equals negative b over two a. Vertex form is f of x equals a times x minus h squared plus k, where the vertex is the point h comma k. Intercept or factored form is f of x equals a times x minus p times x minus q, where p and q are the x-intercepts.
+
+The parabola opens upward when a is positive and downward when a is negative. The vertex is the minimum point when it opens up and the maximum when it opens down.`},
+
+  {cat:'Module 4',title:'Rational Expressions & Equations',
+   text:`This lecture covers Module Four: rational expressions, rational functions, and rational equations.
+
+A rational expression is a fraction where the numerator and denominator are polynomials. The most important rule: the denominator can never equal zero. This determines the domain of any rational function.
+
+To simplify a rational expression, factor the numerator and denominator completely, then cancel any factors that appear in both. A critical habit: always state the domain restriction from the original expression, before any cancellation. For example, if you have x plus two in the denominator, you must state that x cannot equal negative two, even after it cancels.
+
+To multiply rational expressions, factor everything first, cancel common factors, then multiply the remaining numerators together and the remaining denominators together. Do not try to multiply first — factor first, cancel, then multiply.
+
+To divide rational expressions, multiply by the reciprocal of the second fraction. Keep the first fraction, change division to multiplication, flip the second fraction, then factor and cancel.
+
+To add or subtract rational expressions, you need a common denominator. Find the Least Common Denominator by factoring each denominator and taking the highest power of each factor. Convert each fraction to have the LCD, then add or subtract the numerators. Keep the denominator as is — do not add denominators.
+
+To solve a rational equation, find the LCD of all terms, multiply every term on both sides by the LCD to clear all fractions, then solve the resulting polynomial equation. The critical final step: check every solution in the original equation. A solution that makes any denominator equal to zero is called an extraneous solution and must be rejected. It is not valid.
+
+Rational equations and rational expressions are different! When simplifying expressions, you do not have an equation — you cannot multiply both sides. The clearing-denominator step only applies when you have an equation with an equals sign.`},
+
+  {cat:'Module 5',title:'Radical Expressions & Complex Numbers',
+   text:`This lecture covers Module Five: radical expressions, rational exponents, operations with radicals, and complex numbers.
+
+The square root of a number n is the value that, when squared, gives n. For square roots to produce real numbers, the radicand — the number under the radical — must be non-negative. For cube roots, the radicand can be any real number, including negative.
+
+The product rule for radicals says that the square root of a times b equals the square root of a times the square root of b. The quotient rule says the square root of a over b equals the square root of a divided by the square root of b. These rules only apply when the radicals have the same index.
+
+To simplify a square root, find the largest perfect square factor of the radicand, take the square root of that factor, and pull it out in front. For example, the square root of forty-eight: forty-eight equals sixteen times three. The square root of sixteen is four, so the square root of forty-eight simplifies to four square root three.
+
+To rationalize the denominator — which means eliminating any radical from the denominator — multiply both numerator and denominator by the appropriate expression. For a single radical in the denominator, multiply by that radical over itself. For a binomial denominator like two plus the square root of three, multiply by the conjugate: two minus the square root of three. This uses the difference of squares pattern to produce a rational denominator.
+
+Rational exponents connect exponents and radicals. The expression x to the m over n power equals the nth root of x raised to the m power. The denominator of the rational exponent is the root, and the numerator is the power.
+
+Complex numbers arise from taking the square root of negative numbers. The imaginary unit i equals the square root of negative one, and i squared equals negative one. The powers of i cycle in a pattern of four: i to the first power is i, i squared is negative one, i cubed is negative i, and i to the fourth power is one, then it repeats.
+
+A complex number has the form a plus b i, where a is the real part and b is the imaginary part. To add or subtract complex numbers, combine real parts and imaginary parts separately. To multiply, use FOIL and replace i squared with negative one. To divide, multiply numerator and denominator by the conjugate of the denominator.
+
+When solving radical equations, the key steps are: isolate the radical on one side, raise both sides to the appropriate power to eliminate the radical, solve the resulting equation, and then always check for extraneous solutions. Squaring both sides can introduce false solutions that do not satisfy the original equation.`},
+
+  {cat:'Module 6',title:'Solving Quadratic Equations',
+   text:`This lecture covers Module Six: all methods for solving quadratic equations, the discriminant, quadratic inequalities, and complex solutions.
+
+A quadratic equation has the standard form a x squared plus b x plus c equals zero, where a is not zero. There are four methods to solve it, and knowing which to use when is part of the skill.
+
+Method one is factoring. Factor the left side, then use the Zero Product Property: if the product of two factors is zero, at least one of them must be zero. Set each factor equal to zero and solve. Factoring works best when the equation has integer or simple rational solutions.
+
+Method two is the Square Root Property. If you have x squared equals k with no middle term, take the square root of both sides, remembering to include both the positive and negative square root. So x equals plus or minus the square root of k. If k is negative, the solutions are complex.
+
+Method three is completing the square. Move the constant to the right side. Take half of the coefficient of x, square it, and add it to both sides. The left side is now a perfect square trinomial that factors as x plus something, all squared. Take the square root of both sides, remembering the plus-or-minus, and solve for x.
+
+Method four is the quadratic formula, which works for every quadratic equation regardless of whether it factors nicely. The formula is: x equals negative b plus or minus the square root of b squared minus four a c, all divided by two a. Memorize this formula — it is on the final exam.
+
+The expression b squared minus four a c is called the discriminant. When it is positive, there are two distinct real solutions. When it is zero, there is exactly one real solution, called a double root. When it is negative, there are two complex conjugate solutions involving i.
+
+Quadratic inequalities are solved by first finding the zeros of the corresponding equation, then testing intervals between those zeros to determine where the inequality holds. Mark the zeros on a number line and test one value from each interval.`},
+
+  {cat:'Module 7',title:'Exponential & Logarithmic Functions',
+   text:`This lecture covers Module Seven: function composition, inverse functions, exponential functions, and logarithmic functions. This is the final module and it brings together much of what you have learned.
+
+Function composition combines two functions so that the output of one becomes the input of the other. The notation f composed with g of x means f of g of x — first apply g, then feed the result into f. Be careful: f composed with g is generally not the same as g composed with f. The order matters.
+
+An inverse function undoes what the original function does. To find the inverse, replace f of x with y, swap x and y in the equation, and solve for y. The notation for the inverse is f with a superscript negative one. The graph of an inverse function is the reflection of the original graph over the line y equals x. A function only has an inverse if it is one-to-one — meaning it passes the Horizontal Line Test.
+
+Exponential functions have the form f of x equals b to the x, where b is a positive number not equal to one. When b is greater than one, the function models exponential growth. When b is between zero and one, it models exponential decay. Every exponential function has a y-intercept of one, because any base to the power zero is one. The domain is all real numbers, and the range is all positive real numbers. The horizontal asymptote is the x-axis — the function gets close but never touches y equals zero.
+
+The natural exponential function uses the base e, approximately two point seven one eight. It appears in continuous growth and decay applications.
+
+Logarithmic functions are the inverses of exponential functions. The definition: log base b of x equals y if and only if b to the y power equals x. So taking a logarithm asks the question: to what power must I raise the base to get this result? The natural logarithm uses base e. The common logarithm uses base ten.
+
+The properties of logarithms parallel the properties of exponents. The product rule: log of m times n equals log of m plus log of n. The quotient rule: log of m over n equals log of m minus log of n. The power rule: log of m to the n equals n times log of m. The change-of-base formula: log base b of x equals ln of x divided by ln of b.
+
+To solve exponential equations, isolate the exponential expression and take the logarithm of both sides. To solve logarithmic equations, combine all logs into a single log, then convert to exponential form and solve. Always check solutions — the argument of a logarithm must be positive.
+
+Applications include compound interest: A equals P times one plus r over n, all raised to the n t power, where P is the principal, r is the annual interest rate, n is the number of compoundings per year, and t is time in years. Continuous compounding uses A equals P e to the r t.
+
+Remember Sandra Garcia-Sanchez's sixty percent final exam rule: if you score below sixty percent on the final, your total course grade is capped at a D regardless of your other grades. Plan accordingly, and prioritize understanding the concepts in every module rather than just getting through the homework. Good luck.`},
+];
+
+// ══ TTS ENGINE (British female voice preferred, same engine as D080 tool) ══
+const FEMALE_NAMES=['samantha','victoria','karen','tessa','moira','fiona','veena','allison','ava','susan','nicky','zoe','kate','serena','marie','hazel','sonia','libby','mia','clara','catherine','zira','jenny','aria','jane','neerja','raveena','lekha','heera','seren','catrin','gwenllian','angharad','wavenet-a','wavenet-c','wavenet-e','wavenet-f','female','woman','girl'];
+const MALE_NAMES=['daniel','alex','fred','jorge','ralph','diego','carlos','juan','pedro','thomas','oliver','arthur','aaron','felix','zac','rishi','luca','marco','wavenet-b','wavenet-d','male','man'];
+const ACCENT_DEFS=[
+  {id:'en-IE',flag:'🇮🇪',label:'Irish',   pitch:1.45,priority:['moira']},
+  {id:'en-AU',flag:'🇦🇺',label:'Aust.',   pitch:1.2, priority:['karen']},
+  {id:'en-ZA',flag:'🇿🇦',label:'S.Afr.',  pitch:1.2, priority:['tessa']},
+  {id:'en-GB',flag:'🇬🇧',label:'British', pitch:1.2, priority:['kate','hazel','sonia','libby']},
+  {id:'en-IN',flag:'🇮🇳',label:'Indian',  pitch:1.25,priority:['veena','neerja']},
+  {id:'en-US',flag:'🇺🇸',label:'US',      pitch:1.2, priority:['samantha','ava','victoria']},
+];
+const WPM_RATE={130:0.78,145:0.88,165:1.02,185:1.15};
+const IS_IOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+const IS_SAFARI=/^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+let voiceMap={},availableAccents=[],accentPitch={};
+let lpSelectedVoice=null,lpSelectedPitch=1.2,lpAccent='en-GB';
+let lpCurrent=-1,lpAuto=true,lpTargetWPM=145;
+let lpChunks=[],lpChunkIdx=0,lpIsPaused=false,lpIsPlaying=false,lpPausedAtChunk=0;
+let lpWords=[],lpWordIdx=0,lpSpokenWords=0,lpTotalWords=0;
+
+function isFemale(v){
+  const n=v.name.toLowerCase();
+  if(FEMALE_NAMES.some(k=>n.includes(k)))return true;
+  if(MALE_NAMES.some(k=>n.includes(k)))return false;
+  const wm=n.match(/wavenet-([a-z])/);if(wm&&['a','c','e','f'].includes(wm[1]))return true;
+  return null;
+}
+
+function resolveVoices(){
+  const all=speechSynthesis.getVoices();
+  const en=all.filter(v=>v.lang.startsWith('en'));
+  voiceMap={};availableAccents=[];accentPitch={};
+  ACCENT_DEFS.forEach(def=>{
+    const candidates=en.filter(v=>v.lang===def.id||v.lang.startsWith(def.id+'-'));
+    let chosen=null,isFallback=false;
+    for(const name of def.priority){const m=candidates.find(v=>v.name.toLowerCase().includes(name));if(m){chosen=m;break;}}
+    if(!chosen){const fem=candidates.filter(v=>isFemale(v)!==false);if(fem.length)chosen=fem[0];}
+    if(!chosen){const broad=en.filter(v=>isFemale(v)!==false);if(broad.length){chosen=broad[0];isFallback=true;}}
+    if(chosen){voiceMap[def.id]=chosen;accentPitch[def.id]=def.pitch;availableAccents.push({...def,fallback:isFallback,voice:chosen});}
+  });
+  buildVoiceButtons();
+}
+
+function buildVoiceButtons(){
+  const row=document.getElementById('lp-voice-row');
+  const loading=document.getElementById('lp-voice-loading');if(loading)loading.remove();
+  row.querySelectorAll('.voice-btn').forEach(b=>b.remove());
+  if(!availableAccents.length){const s=document.createElement('span');s.style.cssText='font-size:11px;color:var(--rose)';s.textContent='No TTS voices found.';row.appendChild(s);return;}
+  availableAccents.forEach((acc,i)=>{
+    const btn=document.createElement('button');btn.className='voice-btn'+(i===0?' active':'');
+    btn.dataset.accent=acc.id;
+    const shortName=acc.voice.name.replace(/^(com\.apple\.|Microsoft )/i,'').split(' ')[0];
+    btn.innerHTML=acc.flag+' <span style="font-size:11px;font-weight:700">'+shortName+'</span><br><span style="font-size:9px;opacity:.6">'+acc.label+'</span>';
+    btn.style.lineHeight='1.3';
+    if(acc.fallback)btn.style.opacity='0.65';
+    btn.title=acc.voice.name+' · '+acc.voice.lang+(acc.fallback?' (closest female)':'');
+    btn.onclick=()=>setAccent(acc.id,btn,acc.voice,acc.pitch);
+    row.appendChild(btn);
+    if(i===0){lpAccent=acc.id;lpSelectedVoice=acc.voice;lpSelectedPitch=acc.pitch||1.2;}
+  });
+}
+
+function getVoice(lang){
+  if(voiceMap[lang])return voiceMap[lang];
+  const all=speechSynthesis.getVoices();
+  return all.filter(v=>v.lang.startsWith('en')&&isFemale(v)!==false)[0]||all[0]||null;
+}
+
+function setAccent(lang,btn,voiceObj,pitch){
+  lpAccent=lang;
+  if(voiceObj)lpSelectedVoice=voiceObj;
+  lpSelectedPitch=pitch||accentPitch[lang]||1.2;
+  document.querySelectorAll('.voice-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(lpCurrent>=0&&lpIsPlaying){lpStop();lpLoad(lpCurrent,true);}
+}
+
+function setSpeed(wpm,btn){
+  lpTargetWPM=wpm;
+  document.querySelectorAll('.lp-speed').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(lpCurrent>=0&&lpIsPlaying){lpStop();lpPlayChunks();}
+}
+
+function chunkText(text){
+  const sentences=text.match(/[^.!?]+[.!?]+[\s]*/g)||[text];
+  if(IS_IOS||IS_SAFARI)return sentences.map(s=>s.trim()).filter(s=>s.length>0);
+  const chunks=[];
+  for(let i=0;i<sentences.length;i+=3)chunks.push(sentences.slice(i,i+3).join('').trim());
+  return chunks.filter(c=>c.length>0);
+}
+
+function buildPlaylist(){
+  const pl=document.getElementById('lp-playlist');pl.innerHTML='';
+  LECTURES.forEach((lc,idx)=>{
+    const d=document.createElement('div');d.className='lp-track';d.id='lpt-'+idx;d.onclick=()=>lpLoad(idx,true);
+    d.innerHTML=`<div class="lp-track-num">${idx+1}</div>
+      <div class="lp-track-body"><div class="lp-track-title">${lc.title}</div><div class="lp-track-cat">${lc.cat}</div></div>
+      <div class="lp-waveform"><div class="lp-bar"></div><div class="lp-bar"></div><div class="lp-bar"></div><div class="lp-bar"></div></div>`;
+    pl.appendChild(d);
+  });
+}
+
+function lpLoad(idx,autoplay){
+  speechSynthesis.cancel();
+  lpIsPaused=false;
+  lpCurrent=idx;lpWordIdx=0;lpSpokenWords=0;
+  document.querySelectorAll('.lp-track').forEach((t,i)=>t.classList.toggle('playing',i===idx));
+  const lc=LECTURES[idx];
+  document.getElementById('lp-np').textContent=lc.title;
+  document.getElementById('lp-title-text').textContent=lc.title;
+  document.getElementById('lp-pfill').style.width='0%';
+  renderLectureText(lc);
+  lpChunks=chunkText(lc.text);
+  lpChunkIdx=0;
+  lpTotalWords=lc.text.split(/\s+/).length;
+  if(autoplay){lpSetUI('playing');lpSpeakChunk();}else{lpSetUI('stopped');}
+}
+
+function renderLectureText(lc){
+  const el=document.getElementById('lp-read-text');
+  const paras=lc.text.split(/\n\n+/);
+  let wc=0,html='';
+  paras.forEach(p=>{
+    p=p.trim();if(!p)return;
+    const words=p.split(/\s+/);
+    const wrapped=words.map(w=>`<span class="word" data-wi="${wc++}">${w}</span>`).join(' ');
+    html+=`<p>${wrapped}</p>`;
+  });
+  el.innerHTML=html;
+  lpWords=[...el.querySelectorAll('.word')];
+}
+
+function lpSetUI(state){
+  const btn=document.getElementById('lp-play-btn');
+  const dot=document.getElementById('lp-dot');
+  if(state==='playing'){btn.textContent='⏸ Pause';dot.classList.remove('paused');lpIsPlaying=true;lpIsPaused=false;}
+  else if(state==='paused'){btn.textContent='▶ Resume';dot.classList.add('paused');lpIsPlaying=false;lpIsPaused=true;}
+  else{btn.textContent='▶ Play';dot.classList.add('paused');lpIsPlaying=false;lpIsPaused=false;}
+}
+
+function lpSpeakChunk(){
+  if(!('speechSynthesis' in window))return;
+  if(lpChunkIdx>=lpChunks.length){lpOnComplete();return;}
+  if(lpIsPaused)return;
+  const chunk=lpChunks[lpChunkIdx];
+  const u=new SpeechSynthesisUtterance(chunk);
+  u.rate=WPM_RATE[lpTargetWPM]||0.88;
+  u.pitch=lpSelectedPitch;u.volume=1.0;
+  const v=lpSelectedVoice||getVoice(lpAccent);
+  if(v){u.voice=v;u.lang=v.lang;}else{u.lang=lpAccent||'en-GB';}
+  u.onboundary=function(e){
+    if(e.name!=='word')return;
+    if(lpWordIdx>0&&lpWords[lpWordIdx-1])lpWords[lpWordIdx-1].classList.remove('highlight');
+    if(lpWords[lpWordIdx])lpWords[lpWordIdx].classList.add('highlight');
+    lpWordIdx++;lpSpokenWords++;
+    document.getElementById('lp-pfill').style.width=Math.min(99,lpSpokenWords/lpTotalWords*100).toFixed(1)+'%';
+  };
+  u.onend=function(){
+    if(lpIsPaused)return;
+    lpChunkIdx++;
+    if(IS_IOS||IS_SAFARI)lpSpeakChunk();else setTimeout(lpSpeakChunk,60);
+  };
+  u.onerror=function(e){
+    if(e.error==='interrupted'||e.error==='canceled')return;
+    if(lpIsPaused)return;
+    lpChunkIdx++;setTimeout(lpSpeakChunk,150);
+  };
+  speechSynthesis.speak(u);
+}
+
+function lpOnComplete(){
+  document.getElementById('lp-pfill').style.width='100%';
+  if(lpWords)lpWords.forEach(w=>w.classList.remove('highlight'));
+  lpSetUI('stopped');
+  if(lpAuto&&lpCurrent<LECTURES.length-1)lpLoad(lpCurrent+1,true);
+}
+
+function lpToggle(){
+  if(!('speechSynthesis' in window))return;
+  if(lpCurrent<0){lpLoad(0,true);return;}
+  if(lpIsPlaying){
+    speechSynthesis.cancel();
+    lpPausedAtChunk=lpChunkIdx;lpSetUI('paused');
+  } else if(lpIsPaused){
+    lpIsPlaying=true;lpIsPaused=false;
+    lpChunkIdx=lpPausedAtChunk;lpSetUI('playing');lpSpeakChunk();
+  } else {
+    const lc=LECTURES[lpCurrent];
+    lpChunkIdx=0;lpWordIdx=0;lpSpokenWords=0;
+    document.getElementById('lp-pfill').style.width='0%';
+    if(lpWords)lpWords.forEach(w=>w.classList.remove('highlight'));
+    renderLectureText(lc);
+    lpChunks=chunkText(lc.text);lpTotalWords=lc.text.split(/\s+/).length;
+    lpSetUI('playing');lpSpeakChunk();
+  }
+}
+
+function lpStop(){
+  speechSynthesis.cancel();lpIsPaused=false;lpIsPlaying=false;lpSetUI('stopped');
+  document.getElementById('lp-pfill').style.width='0%';
+  if(lpWords)lpWords.forEach(w=>w.classList.remove('highlight'));
+}
+
+function lpNext(){if(lpCurrent<LECTURES.length-1)lpLoad(lpCurrent+1,true);}
+function lpPrev(){lpLoad(lpCurrent>0?lpCurrent-1:0,true);}
+function lpToggleAuto(){
+  lpAuto=!lpAuto;
+  const btn=document.getElementById('lp-auto-btn');
+  btn.classList.toggle('lp-auto-on',lpAuto);
+  btn.textContent=lpAuto?'🔁 Auto':'➡ Manual';
+  showToast(lpAuto?'Auto-advance on':'Manual mode');
+}
+function lpSeekClick(e,wrap){
+  const pct=e.offsetX/wrap.offsetWidth;
+  document.getElementById('lp-pfill').style.width=(pct*100).toFixed(1)+'%';
+}
+
+// ── Voice loading ──
+if('speechSynthesis' in window){
+  function tryLoadVoices(){const v=speechSynthesis.getVoices();if(v.length>0){resolveVoices();return true;}return false;}
+  speechSynthesis.onvoiceschanged=resolveVoices;
+  if(!tryLoadVoices()){
+    setTimeout(tryLoadVoices,100);
+    setTimeout(()=>{if(!availableAccents.length)resolveVoices();},600);
+    setTimeout(()=>{if(!availableAccents.length)resolveVoices();},1800);
+  }
+}
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded',()=>{
+  buildPlaylist();
+  renderFC();
+  initSwipe();
+});
+</script>
+</body>
+</html>
