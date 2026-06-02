@@ -75,6 +75,7 @@ h1{font-family:'Outfit',sans-serif;font-size:20px;font-weight:800;color:#fff;lin
   display:grid;grid-template-columns:repeat(6,1fr);
   padding-bottom:var(--safe-bottom);
   height:calc(var(--nav-h) + var(--safe-bottom));
+  overscroll-behavior:none;
 }
 @media(min-width:600px){.bottom-nav{display:none}}
 .bnav-btn{
@@ -82,7 +83,10 @@ h1{font-family:'Outfit',sans-serif;font-size:20px;font-weight:800;color:#fff;lin
   gap:2px;padding:6px 2px;font-size:7px;font-weight:700;color:var(--text3);
   border:none;background:transparent;cursor:pointer;letter-spacing:.03em;
   font-family:'Outfit',sans-serif;text-transform:uppercase;
-  transition:color .15s;min-height:var(--nav-h);touch-action:manipulation;
+  transition:color .15s;min-height:var(--nav-h);
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;-webkit-user-select:none;
 }
 .bnav-btn .bicon{font-size:15px;line-height:1;display:block;margin-bottom:1px}
 .bnav-btn.active{color:var(--accent)}
@@ -310,15 +314,15 @@ h1{font-family:'Outfit',sans-serif;font-size:20px;font-weight:800;color:#fff;lin
 </div>
 
 <div class="tab-bar">
-  <button class="tab active" onclick="go('study')">📖 Study</button>
-  <button class="tab" onclick="go('drill')">🎯 Drill</button>
-  <button class="tab" onclick="go('flash')">🃏 Cards</button>
-  <button class="tab" onclick="go('traps')">⚠️ Traps</button>
-  <button class="tab" onclick="go('recall')">🧠 Recall</button>
-  <button class="tab" onclick="go('sql')">💻 SQL Lab</button>
-  <button class="tab" onclick="go('tree')">🌳 Decide</button>
-  <button class="tab" onclick="go('quickfire')">⚡ Quick-Fire</button>
-  <button class="tab" onclick="go('lecture')">🎙️ Lecture</button>
+  <button class="tab active" data-tab="study">📖 Study</button>
+  <button class="tab" data-tab="drill">🎯 Drill</button>
+  <button class="tab" data-tab="flash">🃏 Cards</button>
+  <button class="tab" data-tab="traps">⚠️ Traps</button>
+  <button class="tab" data-tab="recall">🧠 Recall</button>
+  <button class="tab" data-tab="sql">💻 SQL Lab</button>
+  <button class="tab" data-tab="tree">🌳 Decide</button>
+  <button class="tab" data-tab="quickfire">⚡ Quick-Fire</button>
+  <button class="tab" data-tab="lecture">🎙️ Lecture</button>
 </div>
 
 <!-- ════ STUDY ════ -->
@@ -614,6 +618,172 @@ threshold <span class="kw">&lt;-</span> 0.05  <span class="cm"># NOT: if (p_valu
   </div>
 </div>
 
+<div class="sec-head sh-gaps" style="--sh-color:#ffd166">📊 Google Analytics Course 5 — Core Concepts</div>
+
+<div class="card">
+  <div class="card-title">The 4 Phases of Data Analysis — most exam questions map to one of these</div>
+  <div class="tags"><span class="tag t-yellow">Course 5 Week 1</span><span class="tag t-red">HIGH PRIORITY</span></div>
+  <div class="body">
+    <p>The Google course organizes every analysis activity into four phases. The OA will describe a task and ask which phase it belongs to. Get these locked in precisely — they overlap and the wrong answers are always plausible adjacent phases.</p>
+    <div class="compare-grid" style="grid-template-columns:1fr 1fr">
+      <div class="compare-cell"><div class="label" style="color:var(--cyan)">1. Organize Data</div><div class="val">Sort and filter data to make it easier to work with. Deciding which data is relevant. Database organization. Example: sorting student athletes alphabetically.</div></div>
+      <div class="compare-cell"><div class="label" style="color:var(--green)">2. Format & Adjust Data</div><div class="val">Rearranging and converting data to make it usable. Sorting a list is also here. Example: sorting data alphabetically by last name to reformat for analysis.</div></div>
+      <div class="compare-cell"><div class="label" style="color:var(--purple)">3. Get Input from Others</div><div class="val">Soliciting information from other sources (people, data sets) to inform decisions. Example: asking volunteers which tasks they completed, then adding that to a spreadsheet.</div></div>
+      <div class="compare-cell"><div class="label" style="color:var(--accent5)">4. Transform Data</div><div class="val">Identifying relationships, patterns, and correlations. Making calculations. Finding correlations between two variables. Using formulas and functions on data. Example: using formulas to calculate voter turnout patterns.</div></div>
+    </div>
+    <div class="warn"><strong>The trap:</strong> Sorting appears in BOTH "Organize" and "Format & Adjust." The distinction: organizing is about deciding relevance and structure; formatting/adjusting is about physically rearranging for presentation. Calculations and correlations are always Transform — never Format.</div>
+    <div class="rule-box"><strong>Quick map:</strong> Sorting/filtering to narrow = Organize. Rearranging appearance = Format & Adjust. Asking people for info = Get Input. Math/correlations/calculations = Transform.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">=SORT() function syntax — ascending vs descending</div>
+  <div class="tags"><span class="tag t-yellow">Course 5 Week 1</span><span class="tag t-green">Spreadsheets</span></div>
+  <div class="body">
+    <p>The =SORT() function takes three arguments: the range, the column number to sort by, and TRUE or FALSE for sort order.</p>
+    <div class="code-block">= <span class="fn">SORT</span>(<span class="st">H1:K65</span>, 1, <span class="kw">TRUE</span>)   <span class="cm">// sort range H1:K65 by column 1, ASCENDING</span>
+= <span class="fn">SORT</span>(<span class="st">H1:K65</span>, 1, <span class="kw">FALSE</span>)  <span class="cm">// sort range H1:K65 by column 1, DESCENDING</span></div>
+    <p><strong>TRUE = ascending</strong> (A→Z, 0→9). <strong>FALSE = descending</strong> (Z→A, 9→0). This is the opposite of what feels natural — you might expect "DESC" but the =SORT() function uses TRUE/FALSE.</p>
+    <p>The column number (1, 2, 3...) refers to the column position within the selected range, not the spreadsheet column letter. If your range starts at H, column 1 in the function = column H.</p>
+    <div class="rule-box"><strong>Rule:</strong> =SORT(range, col_number, TRUE) = ascending. FALSE = descending. Not "DESC", not "DESCEND" — just FALSE.</div>
+    <p style="margin-top:.75rem"><strong>Sort Sheet vs Sort Range:</strong> "Sort Sheet" sorts ALL data in the spreadsheet by a column, keeping rows together. "Sort Range" sorts only the selected cells. When the question says "sort all data in a spreadsheet" = Sort Sheet.</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">SQL ORDER BY — default direction and chaining with WHERE</div>
+  <div class="tags"><span class="tag t-yellow">Course 5 Week 1</span><span class="tag t-cyan">SQL</span></div>
+  <div class="body">
+    <p><strong>ORDER BY defaults to ascending</strong> (ASC). You only need to specify DESC explicitly. So <span class="ec">ORDER BY column_name</span> = ascending automatically.</p>
+    <div class="code-block"><span class="cm">-- Ascending (default — no need to write ASC)</span>
+<span class="kw">ORDER BY</span> word_count
+
+<span class="cm">-- Descending (must specify)</span>
+<span class="kw">ORDER BY</span> word_count <span class="kw">DESC</span>
+
+<span class="cm">-- WHERE + ORDER BY chained (WHERE always comes before ORDER BY)</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> novels
+<span class="kw">WHERE</span> genre = <span class="st">'Action'</span>
+<span class="kw">ORDER BY</span> word_count <span class="kw">DESC</span></div>
+    <div class="rule-box"><strong>Clause order in SQL:</strong> SELECT → FROM → WHERE → GROUP BY → HAVING → ORDER BY. You cannot write ORDER BY before WHERE. WHERE filters first, then ORDER BY sorts the filtered results.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">SQL Aggregate Functions — SUM, AVG, COUNT with GROUP BY</div>
+  <div class="tags"><span class="tag t-yellow">Course 5 Week 3</span><span class="tag t-cyan">SQL</span></div>
+  <div class="body">
+    <p>Aggregate functions perform calculations across groups of rows. They're always used with GROUP BY when you want results per category.</p>
+    <div class="code-block"><span class="fn">SUM</span>(column)    <span class="cm">-- total of all values in column</span>
+<span class="fn">AVG</span>(column)    <span class="cm">-- average of all values in column</span>
+<span class="fn">COUNT</span>(*)       <span class="cm">-- count of all rows</span>
+<span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> col)  <span class="cm">-- count of unique values only</span>
+<span class="fn">MAX</span>(column)    <span class="cm">-- largest value</span>
+<span class="fn">MIN</span>(column)    <span class="cm">-- smallest value</span></div>
+    <div class="code-block"><span class="cm">-- Count orders per location (from Course 5 example)</span>
+<span class="kw">SELECT</span> location, <span class="fn">SUM</span>(customer_orders) <span class="kw">AS</span> total_orders
+<span class="kw">FROM</span> bulk_orders
+<span class="kw">GROUP BY</span> location</div>
+    <p><strong>WHERE vs HAVING:</strong> WHERE filters individual rows <em>before</em> grouping. HAVING filters groups <em>after</em> grouping. You can't use aggregate functions in a WHERE clause — use HAVING instead.</p>
+    <div class="code-block"><span class="cm">-- WRONG: can't use aggregate in WHERE</span>
+<span class="kw">WHERE</span> <span class="fn">COUNT</span>(*) > 10
+
+<span class="cm">-- RIGHT: use HAVING for aggregate filters</span>
+<span class="kw">GROUP BY</span> region
+<span class="kw">HAVING</span> <span class="fn">COUNT</span>(*) > 10</div>
+    <div class="rule-box"><strong>Rule:</strong> WHERE = filter rows (before grouping). HAVING = filter groups (after GROUP BY). Aggregate functions (SUM, COUNT, AVG) = always need GROUP BY when used per category.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">CAST — converting data types in SQL</div>
+  <div class="tags"><span class="tag t-yellow">Course 5 Week 2</span><span class="tag t-cyan">SQL</span></div>
+  <div class="body">
+    <p>CAST converts a value from one data type to another. Common conversions: text to number, number to string, date strings to actual DATE type.</p>
+    <div class="code-block"><span class="fn">CAST</span>(price <span class="kw">AS</span> INT)        <span class="cm">-- convert price to integer (drops decimals)</span>
+<span class="fn">CAST</span>(price <span class="kw">AS</span> FLOAT)      <span class="cm">-- convert to decimal number</span>
+<span class="fn">CAST</span>(order_date <span class="kw">AS</span> DATE)  <span class="cm">-- convert string to date type</span>
+<span class="fn">CAST</span>(id <span class="kw">AS</span> STRING)        <span class="cm">-- convert number to text</span></div>
+    <p>CAST does not filter, round, or create new columns. It only changes the data type of a value within the query. The original table is unchanged.</p>
+    <div class="note"><strong>The pre-assessment trap:</strong> The exam showed CAST as a wrong answer for "which command identifies which table." CAST = type conversion only. FROM = identifies the table.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Subqueries — queries inside queries</div>
+  <div class="tags"><span class="tag t-yellow">Course 5 Week 3</span><span class="tag t-cyan">SQL</span></div>
+  <div class="body">
+    <p>A subquery (or inner query) is a SQL query nested inside another query. It runs first and its result is used by the outer query. Think of it as a way to break a complex question into steps.</p>
+    <div class="code-block"><span class="cm">-- Subquery in WHERE: find customers who spent above average</span>
+<span class="kw">SELECT</span> customer_name, total_spent
+<span class="kw">FROM</span> orders
+<span class="kw">WHERE</span> total_spent > (
+  <span class="kw">SELECT</span> <span class="fn">AVG</span>(total_spent) <span class="kw">FROM</span> orders
+)</div>
+    <div class="code-block"><span class="cm">-- Subquery in FROM: treat result as a temp table</span>
+<span class="kw">SELECT</span> dept, total
+<span class="kw">FROM</span> (
+  <span class="kw">SELECT</span> dept, <span class="fn">SUM</span>(revenue) <span class="kw">AS</span> total
+  <span class="kw">FROM</span> sales
+  <span class="kw">GROUP BY</span> dept
+) <span class="kw">AS</span> dept_totals
+<span class="kw">WHERE</span> total > 10000</div>
+    <p>The WITH clause (CTE) achieves the same thing as a FROM subquery but is more readable — it defines the subquery at the top and gives it a name. Both create a "temporary table" effect.</p>
+    <div class="rule-box"><strong>Rule:</strong> Subquery = query inside a query. Runs inner first, outer uses the result. WITH = named subquery at the top (cleaner version of the same thing).</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Data calculations — SUMIF vs AVERAGEIF vs nested IF in Sheets</div>
+  <div class="tags"><span class="tag t-yellow">Course 5 Week 4</span><span class="tag t-green">Spreadsheets</span></div>
+  <div class="body">
+    <p>The Google course covers conditional calculation functions in detail. These all follow the same pattern: function(range to check, condition, range to calculate).</p>
+    <div class="code-block">= <span class="fn">SUMIF</span>(A:A, <span class="st">"Electronics"</span>, C:C)
+<span class="cm">// Sum column C where column A = "Electronics"</span>
+
+= <span class="fn">AVERAGEIF</span>(A:A, <span class="st">"Electronics"</span>, C:C)
+<span class="cm">// Average column C where column A = "Electronics"</span>
+
+= <span class="fn">COUNTIF</span>(A:A, <span class="st">"Electronics"</span>)
+<span class="cm">// Count rows where column A = "Electronics" (no sum range needed)</span>
+
+= <span class="fn">SUMIFS</span>(C:C, A:A, <span class="st">"Electronics"</span>, B:B, <span class="st">"Q1"</span>)
+<span class="cm">// Sum C where A=Electronics AND B=Q1 (multiple conditions)</span></div>
+    <p><strong>Key distinction:</strong> COUNTIF has no sum_range — you only need to count rows, not calculate values. SUMIF/AVERAGEIF need a range to calculate as the third argument.</p>
+    <div class="compare-grid" style="grid-template-columns:1fr 1fr">
+      <div class="compare-cell"><div class="label" style="color:var(--cyan)">One Condition</div><div class="val">SUMIF, COUNTIF, AVERAGEIF — all end in IF (singular)</div></div>
+      <div class="compare-cell"><div class="label" style="color:var(--green)">Multiple Conditions</div><div class="val">SUMIFS, COUNTIFS, AVERAGEIFS — all end in IFS (plural S)</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Temporary tables — 3 ways to create them in SQL</div>
+  <div class="tags"><span class="tag t-yellow">Course 5 Week 3</span><span class="tag t-cyan">SQL</span></div>
+  <div class="body">
+    <p>Temporary tables store query results so they can be referenced again without re-running the same query. The Google course covers three methods, all of which the exam may test conceptually.</p>
+    <div class="compare-grid">
+      <div class="compare-cell"><div class="label" style="color:var(--cyan)">WITH (CTE)</div><div class="val">Named temporary result at the top of the query. Most readable. Only lives for the duration of the query. Most likely answer on exam.</div></div>
+      <div class="compare-cell"><div class="label" style="color:var(--green)">Subquery in FROM</div><div class="val">Inline temporary table inside FROM (...) AS alias. Same effect as CTE but harder to read.</div></div>
+      <div class="compare-cell"><div class="label" style="color:var(--purple)">CREATE TEMP TABLE</div><div class="val">Creates an actual temporary table in the database session. Persists for the session, then auto-drops. More powerful but more complex.</div></div>
+    </div>
+    <div class="rule-box"><strong>OA signal:</strong> "Clause creating a specific set of rows/columns executing the same process as a temporary table" = WITH. "Query that creates a temporary table within another query" = subquery. Both are covered by knowing WITH/CTE.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Data validation — the full process, not just the function</div>
+  <div class="tags"><span class="tag t-yellow">Course 5 Week 2</span><span class="tag t-green">Spreadsheets</span></div>
+  <div class="body">
+    <p>The Google course defines data validation as "checking and rechecking the quality of your data so that it is complete, accurate, secure, and consistent." This is a PROCESS, not just a spreadsheet function. The two are related but distinct:</p>
+    <div class="compare-grid" style="grid-template-columns:1fr 1fr">
+      <div class="compare-cell"><div class="label" style="color:var(--cyan)">Validation Process</div><div class="val">Checking data quality — completeness, accuracy, consistency. Happens before analysis. Best practice = pre-process/validate data integrity before working with a dataset.</div></div>
+      <div class="compare-cell"><div class="label" style="color:var(--green)">Validation Function (Sheets)</div><div class="val">The data validation tool in Excel/Google Sheets that restricts what can be entered in a cell — dropdowns, number limits, date formats. Controls INPUT type.</div></div>
+    </div>
+    <p>When an exam question says "best practice to ensure data integrity BEFORE beginning analysis" — the answer is <strong>data validation</strong> (the process). When it says "control the type of data entered in a shared sheet" — the answer is also data validation (the function). Both answers are data validation, just different contexts.</p>
+  </div>
+</div>
+
 </div><!-- /study -->
 
 <!-- ════ DRILL ════ -->
@@ -621,7 +791,7 @@ threshold <span class="kw">&lt;-</span> 0.05  <span class="cm"># NOT: if (p_valu
 <div class="quiz-controls">
   <div class="controls-row">
     <span class="ctrl-label">Filter</span>
-    <button class="mode-btn active" onclick="setFilter('all',this)">All 70</button>
+    <button class="mode-btn active" onclick="setFilter('all',this)">All 120+</button>
     <button class="mode-btn" onclick="setFilter('Spreadsheets',this)">Sheets</button>
     <button class="mode-btn" onclick="setFilter('SQL',this)">SQL</button>
     <button class="mode-btn" onclick="setFilter('R',this)">R</button>
@@ -796,15 +966,15 @@ threshold <span class="kw">&lt;-</span> 0.05  <span class="cm"># NOT: if (p_valu
 <div class="toast" id="toast"></div>
 
 <nav class="bottom-nav" style="grid-template-columns:repeat(9,1fr)">
-  <button class="bnav-btn active" id="bnav-study" onclick="go('study')"><span class="bicon">📖</span>Study</button>
-  <button class="bnav-btn" id="bnav-drill" onclick="go('drill')"><span class="bicon">🎯</span>Drill</button>
-  <button class="bnav-btn" id="bnav-flash" onclick="go('flash')"><span class="bicon">🃏</span>Cards</button>
-  <button class="bnav-btn" id="bnav-traps" onclick="go('traps')"><span class="bicon">⚠️</span>Traps</button>
-  <button class="bnav-btn" id="bnav-recall" onclick="go('recall')"><span class="bicon">🧠</span>Recall</button>
-  <button class="bnav-btn" id="bnav-sql" onclick="go('sql')"><span class="bicon">💻</span>SQL</button>
-  <button class="bnav-btn" id="bnav-tree" onclick="go('tree')"><span class="bicon">🌳</span>Decide</button>
-  <button class="bnav-btn" id="bnav-quickfire" onclick="go('quickfire')"><span class="bicon">⚡</span>Quick</button>
-  <button class="bnav-btn" id="bnav-lecture" onclick="go('lecture')"><span class="bicon">🎙️</span>Lect</button>
+  <button class="bnav-btn active" id="bnav-study" data-tab="study"><span class="bicon">📖</span>Study</button>
+  <button class="bnav-btn" id="bnav-drill" data-tab="drill"><span class="bicon">🎯</span>Drill</button>
+  <button class="bnav-btn" id="bnav-flash" data-tab="flash"><span class="bicon">🃏</span>Cards</button>
+  <button class="bnav-btn" id="bnav-traps" data-tab="traps"><span class="bicon">⚠️</span>Traps</button>
+  <button class="bnav-btn" id="bnav-recall" data-tab="recall"><span class="bicon">🧠</span>Recall</button>
+  <button class="bnav-btn" id="bnav-sql" data-tab="sql"><span class="bicon">💻</span>SQL</button>
+  <button class="bnav-btn" id="bnav-tree" data-tab="tree"><span class="bicon">🌳</span>Decide</button>
+  <button class="bnav-btn" id="bnav-quickfire" data-tab="quickfire"><span class="bicon">⚡</span>Quick</button>
+  <button class="bnav-btn" id="bnav-lecture" data-tab="lecture"><span class="bicon">🎙️</span>Lect</button>
 </nav>
 
 <script>
@@ -1459,8 +1629,9 @@ if('speechSynthesis' in window){
 // ═══ NAVIGATION ═══
 function go(t){
   document.querySelectorAll('.tab,.bnav-btn').forEach(x=>x.classList.remove('active'));
-  document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
-  const dt=document.querySelector(`.tab[onclick="go('${t}')"]`);if(dt)dt.classList.add('active');
+  // only target true section divs, not .section-bars inside score banner
+  document.querySelectorAll('#study,#drill,#flash,#traps,#recall,#sql,#tree,#quickfire,#lecture').forEach(x=>x.classList.remove('active'));
+  const dt=document.querySelector(`.tab[data-tab="${t}"]`);if(dt)dt.classList.add('active');
   const bn=document.getElementById('bnav-'+t);if(bn)bn.classList.add('active');
   const sec=document.getElementById(t);if(sec)sec.classList.add('active');
   if(t==='drill'&&drillList.length===0)resetDrill();
@@ -1481,6 +1652,25 @@ window.addEventListener('DOMContentLoaded',()=>{
   resetDrill();
   renderFC();
   initSwipe();
+
+  // iOS Safari fix: delegate all navigation via touchend on the nav containers
+  // This bypasses the 300ms click delay and fixed-position ghost-click bug
+  function addTouchNav(container){
+    if(!container)return;
+    container.addEventListener('touchend',function(e){
+      const btn=e.target.closest('[data-tab]');
+      if(!btn)return;
+      e.preventDefault();
+      go(btn.dataset.tab);
+    },{passive:false});
+    // also keep click for desktop/non-iOS
+    container.addEventListener('click',function(e){
+      const btn=e.target.closest('[data-tab]');
+      if(btn)go(btn.dataset.tab);
+    });
+  }
+  addTouchNav(document.querySelector('.bottom-nav'));
+  addTouchNav(document.querySelector('.tab-bar'));
 });
 
 // ════════════════════════════════════════════════
@@ -2036,7 +2226,45 @@ const QQ_EXTRA=[
 
 // Append extra questions to QQ
 QQ.push(...QQ_EXTRA);
-// Note: drillList builds from QQ so extra questions will appear in drill after next reset
+
+// ═══ GOOGLE COURSE 5 QUESTIONS ═══
+const QQ_GOOGLE=[
+  {q:"You ask volunteers which tasks they completed, then add that information to a spreadsheet to figure out which tasks remain. Which phase of analysis is this?",o:["Organizing data","Transforming data","Formatting and adjusting data","Getting input from others"],a:3,t:"Spreadsheets",e:"<strong>Getting input from others</strong> = soliciting information from people or other data sources to inform decisions. You asked the volunteers — that's getting input."},
+  {q:"You identify relationships and patterns between voter turnout datasets, then use formulas to make calculations. Which phase of analysis?",o:["Organizing data","Getting input from others","Formatting and adjusting data","Transforming data"],a:3,t:"Spreadsheets",e:"<strong>Transforming data</strong> = identifying relationships, patterns, correlations, AND performing calculations. Both activities described (patterns + formulas) = Transform."},
+  {q:"You sort a list of students alphabetically by last name. Which phase of analysis is this?",o:["Organize data","Transform data","Get input from others","Format and adjust data"],a:3,t:"Spreadsheets",e:"<strong>Format and adjust data</strong> = rearranging data to make it easier to work with. Sorting a list into a new order = formatting/adjusting. Note: this is the Google course's framing — sorting can appear in both Organize AND Format depending on context."},
+  {q:"Typically, a data analyst uses filters when they want to _____ the amount of data they are working with.",o:["Expand","Duplicate","Multiply","Narrow down"],a:3,t:"Spreadsheets",e:"Filters <strong>narrow down</strong> data — they hide rows that don't meet criteria, reducing what's visible. Filters restrict, they don't expand."},
+  {q:"A data analyst sorts spreadsheet data and wants rows to stay together (not mix across rows). Which technique?",o:["Sort Column","Sort Range only","Sort Rows","Sort Sheet"],a:3,t:"Spreadsheets",e:"<strong>Sort Sheet</strong> keeps all data across rows together while sorting by a column. Sort Range would only sort selected cells and could break row relationships."},
+  {q:"An analyst uses =SORT to sort a range in descending order. What goes at the end of the function?",o:["TRUE","DESC","DESCEND","FALSE"],a:3,t:"Spreadsheets",e:"In the =SORT() function: <strong>FALSE = descending</strong>, TRUE = ascending. Not 'DESC' (that's SQL syntax), not 'DESCEND' — just the boolean FALSE."},
+  {q:"What is the syntax to sort H1:K65 by the first column in ascending order?",o:["=SORT(H1:K65, A, TRUE)","=SORT(H1:K65, 1, FALSE)","=SORT(H1:K65, 1, TRUE)","=SORT(H1:K65, A, FALSE)"],a:2,t:"Spreadsheets",e:"=SORT(range, column_number, is_ascending). <strong>=SORT(H1:K65, 1, TRUE)</strong> — column 1, TRUE = ascending. Column is a number (1), not a letter (A)."},
+  {q:"A data analyst queries a dental inventory database and wants only rows related to cleaning products. Which SQL section is correct?",o:["ORDER BY 'Cleaning'","WHERE 'Cleaning'","ORDER BY product = 'Cleaning'","WHERE product = 'Cleaning'"],a:3,t:"SQL",e:"<strong>WHERE product = 'Cleaning'</strong> — WHERE filters rows, the column name goes first, then = then the value in quotes."},
+  {q:"ORDER BY in SQL sorts in which direction by default?",o:["Descending","Random","Alphabetical reverse","Ascending"],a:3,t:"SQL",e:"<strong>ORDER BY defaults to ascending</strong> (ASC). You must explicitly write DESC to sort descending. ORDER BY column = same as ORDER BY column ASC."},
+  {q:"Which SQL clause do you add after FROM to organize/group rows by location?",o:["ORDER BY","HAVING","WHERE","GROUP BY"],a:3,t:"SQL",e:"<strong>GROUP BY</strong> groups rows with the same value in a column into summary rows, enabling aggregate calculations (SUM, COUNT) per group."},
+  {q:"Which phase of analysis involves finding a correlation between two variables?",o:["Format and adjust data","Get input from others","Organize data","Transform data"],a:3,t:"Spreadsheets",e:"Finding correlations = <strong>Transform data</strong>. This phase covers identifying relationships, patterns, and performing calculations on data."},
+  {q:"You perform a calculation during your analysis (e.g. computing revenue per region). Which phase?",o:["Get input from others","Organize data","Format and adjust data","Transform data"],a:3,t:"Spreadsheets",e:"Calculations = <strong>Transform data</strong>. Transforming involves using formulas and functions to derive new insights from existing data."},
+  {q:"CAST(order_date AS DATE) in SQL does what?",o:["Filters rows where order_date is null","Rounds order_date to nearest date","Converts order_date to a DATE data type","Creates a new column called DATE"],a:2,t:"SQL",e:"<strong>CAST converts data to a different type.</strong> CAST(value AS DATE) makes the value a proper date data type. It doesn't filter, round, or create columns."},
+  {q:"Which function calculates the average of a column where a condition is met (one condition)?",o:["AVERAGEIFS","AVERAGEIF","AVGIF","SUMIF"],a:1,t:"Spreadsheets",e:"<strong>AVERAGEIF</strong> calculates average where one condition is true. Syntax: =AVERAGEIF(range, criterion, average_range). AVERAGEIFS handles multiple conditions."},
+  {q:"You need to filter groups AFTER a GROUP BY in SQL — not individual rows. Which clause?",o:["WHERE","FILTER","ORDER BY","HAVING"],a:3,t:"SQL",e:"<strong>HAVING</strong> filters grouped results after GROUP BY. WHERE filters individual rows before grouping. You can't use aggregate functions (COUNT, SUM) in a WHERE clause."},
+  {q:"Which of the following is an example of 'organizing data' phase of analysis?",o:["Using formulas to calculate totals","Sorting data to decide which is relevant to the analysis","Asking a stakeholder which metrics matter","Finding a trend between two columns"],a:1,t:"Spreadsheets",e:"<strong>Organizing data</strong> = using sorts and filters to decide which data is relevant and structure it for analysis. Calculations = Transform. Asking people = Get Input."},
+  {q:"A subquery in SQL is best described as:",o:["A query that creates a permanent table","A query nested inside another query","A query that only uses GROUP BY","A shortcut for writing long WHERE clauses"],a:1,t:"SQL",e:"A <strong>subquery</strong> is a query nested inside another query. The inner query runs first and its result is used by the outer query. It's a way to break complex questions into steps."},
+  {q:"Which function sums values meeting multiple conditions simultaneously?",o:["SUMIF","COUNTIFS","SUMPRODUCT","SUMIFS"],a:3,t:"Spreadsheets",e:"<strong>SUMIFS</strong> (plural S) sums values meeting multiple conditions. Syntax: =SUMIFS(sum_range, range1, crit1, range2, crit2...). SUMIF (no S) handles only one condition."},
+];
+QQ.push(...QQ_GOOGLE);
+
+// Add Google course items to Quick-Fire pool
+QF.push(
+  {c:'Sheets',s:"A volunteer provides task completion data — you add it to your spreadsheet. Which analysis phase?",f:"Get Input from Others"},
+  {c:'Sheets',s:"You perform calculations to find correlations between datasets. Which analysis phase?",f:"Transform Data"},
+  {c:'Sheets',s:"You sort a dataset alphabetically to make it easier to work with. Which phase?",f:"Format & Adjust Data"},
+  {c:'Sheets',s:"Sort range H1:K65 by column 1, descending.",f:"=SORT(H1:K65, 1, FALSE)"},
+  {c:'Sheets',s:"Filter groups after GROUP BY based on an aggregate condition.",f:"HAVING"},
+  {c:'Sheets',s:"Calculate average revenue only for rows where region = 'West'.",f:"AVERAGEIF"},
+  {c:'SQL',s:"Order BY defaults to which direction without specifying?",f:"Ascending (ASC)"},
+  {c:'SQL',s:"Group rows by department and count how many are in each.",f:"GROUP BY + COUNT(*)"},
+  {c:'SQL',s:"Convert a text column to a DATE data type.",f:"CAST(col AS DATE)"},
+  {c:'SQL',s:"A query nested inside another query.",f:"Subquery"},
+  {c:'SQL',s:"Named temporary result set defined at the top of a query.",f:"WITH (CTE)"}
+);
+
 
 </script>
 </body>
