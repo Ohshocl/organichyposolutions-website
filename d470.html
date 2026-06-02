@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>D470 — Transportation, Logistics & Distribution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080c14;--surface:#0f1621;--surface2:#151e2d;--surface3:#1a2438;
+  --border:#1e2d42;--border2:#253550;
+  --text:#e8eef8;--text2:#8fa3bc;--text3:#4a6280;
+  --accent:#f4a018;--cyan:#00d4ff;--green:#3ddc97;--red:#ff4757;
+  --purple:#b06eff;--teal:#00e5cc;--orange:#ff6b35;--gold:#ffd166;
+  --radius:12px;--nav-h:56px;--safe-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;min-height:100vh;overscroll-behavior:none}
+body{padding-bottom:calc(var(--nav-h) + var(--safe-bottom) + 12px)}
+@media(min-width:600px){body{padding-bottom:16px}}
+
+.container{max-width:640px;margin:0 auto;padding:12px 12px 0}
+
+/* HEADER */
+.app-header{text-align:center;padding:1.2rem 0 .8rem}
+.hdr-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:rgba(244,160,24,.1);border:1px solid rgba(244,160,24,.25);border-radius:20px;padding:4px 12px;margin-bottom:.6rem}
+.app-header h1{font-family:'Syne',sans-serif;font-size:clamp(22px,5vw,30px);font-weight:800;color:#fff;line-height:1.1}
+.subtitle{font-size:12px;color:var(--text3);margin-top:.3rem;font-family:'JetBrains Mono',monospace}
+
+/* SCORE BANNER */
+.score-banner{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;margin-bottom:.875rem}
+.score-banner-row{display:flex;align-items:center;gap:12px;margin-bottom:.75rem;flex-wrap:wrap}
+.score-big{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#fff;line-height:1}
+.score-label{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.07em}
+.sbars{display:grid;gap:6px}
+.sbar-row{display:grid;grid-template-columns:110px 1fr 55px;align-items:center;gap:8px}
+.sbar-label{font-size:10px;font-weight:700;color:var(--text2);font-family:'JetBrains Mono',monospace}
+.sbar-wrap{background:rgba(255,255,255,.06);border-radius:4px;height:6px;overflow:hidden}
+.sbar-fill{height:100%;border-radius:4px;background:var(--green)}
+.sbar-status{font-size:9px;font-weight:700;color:var(--green);font-family:'JetBrains Mono',monospace;text-align:right}
+
+/* TABS */
+.tab-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.875rem}
+.tab{padding:7px 12px;border-radius:7px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:11px;font-weight:700;color:var(--text2);font-family:'Nunito',sans-serif;min-height:34px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;transition:all .15s}
+.tab.active{background:rgba(244,160,24,.12);border-color:rgba(244,160,24,.35);color:var(--accent)}
+@media(min-width:600px){.tab-bar{flex-wrap:nowrap}}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:300;background:rgba(8,12,20,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);display:grid;padding-bottom:var(--safe-bottom);height:calc(var(--nav-h) + var(--safe-bottom));overscroll-behavior:none}
+@media(min-width:600px){.bottom-nav{display:none}}
+.bnav-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:4px 2px;font-size:7px;font-weight:700;color:var(--text3);border:none;background:transparent;cursor:pointer;letter-spacing:.02em;font-family:'Nunito',sans-serif;text-transform:uppercase;transition:color .15s;min-height:var(--nav-h);touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+.bnav-btn .bicon{font-size:14px;line-height:1;display:block;margin-bottom:1px}
+.bnav-btn.active{color:var(--accent)}
+
+/* SECTIONS */
+.section{display:none}.section.active{display:block}
+
+/* SECTION HEADS */
+.sec-head{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;padding:.5rem 0 .5rem;margin:1rem 0 .6rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.sec-head::before{content:'';display:block;width:3px;height:14px;border-radius:2px;background:var(--accent)}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;margin-bottom:.75rem}
+.card-title{font-family:'Syne',sans-serif;font-size:13.5px;font-weight:700;color:#fff;margin-bottom:.4rem;line-height:1.35}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:.6rem}
+.tag{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;border:1px solid}
+.t-orange{color:var(--orange);background:rgba(255,107,53,.08);border-color:rgba(255,107,53,.2)}
+.t-cyan{color:var(--cyan);background:rgba(0,212,255,.08);border-color:rgba(0,212,255,.2)}
+.t-green{color:var(--green);background:rgba(61,220,151,.08);border-color:rgba(61,220,151,.2)}
+.t-purple{color:var(--purple);background:rgba(176,110,255,.08);border-color:rgba(176,110,255,.2)}
+.t-gold{color:var(--gold);background:rgba(255,209,102,.08);border-color:rgba(255,209,102,.2)}
+.t-teal{color:var(--teal);background:rgba(0,229,204,.08);border-color:rgba(0,229,204,.2)}
+.t-red{color:var(--red);background:rgba(255,71,87,.08);border-color:rgba(255,71,87,.2)}
+.body{font-size:13px;color:var(--text2);line-height:1.7}
+.body strong{color:#fff}
+.body p{margin-bottom:.6rem}.body p:last-child{margin-bottom:0}
+.body ul{padding-left:1.2rem;margin:.4rem 0}.body li{margin-bottom:.3rem}
+
+.rule-box{background:rgba(244,160,24,.07);border:1px solid rgba(244,160,24,.2);border-radius:8px;padding:.7rem .9rem;margin:.6rem 0;font-size:12px;color:#e8c88a;line-height:1.6}
+.warn{background:rgba(255,71,87,.07);border:1px solid rgba(255,71,87,.2);border-radius:8px;padding:.7rem .9rem;margin:.6rem 0;font-size:12px;color:#ff9ba4;line-height:1.6}
+.note{background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.2);border-radius:8px;padding:.7rem .9rem;margin:.6rem 0;font-size:12px;color:#7dd8ea;line-height:1.6}
+
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:.6rem 0}
+.cg-cell{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.6rem .75rem}
+.cg-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;text-transform:uppercase;margin-bottom:4px}
+.cg-val{font-size:11.5px;color:var(--text2);line-height:1.55}
+
+/* QUIZ CONTROLS */
+.quiz-controls{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.875rem 1rem;margin-bottom:.875rem}
+.ctrl-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:.6rem}
+.ctrl-label{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;font-family:'JetBrains Mono',monospace}
+.mode-btn{padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:11px;font-weight:700;color:var(--text2);font-family:'Nunito',sans-serif;min-height:30px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:all .12s}
+.mode-btn.active{background:rgba(244,160,24,.12);border-color:rgba(244,160,24,.35);color:var(--accent)}
+.score-row{display:flex;align-items:center;gap:10px;margin-bottom:.5rem;flex-wrap:wrap}
+.score-num{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#fff}
+.score-lbl{font-size:10px;color:var(--text3)}
+.prog{flex:1;min-width:60px;height:6px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--orange));transition:width .3s}
+.reset-btn{padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:11px;font-weight:700;color:var(--text2);font-family:'Nunito',sans-serif;min-height:30px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.stats-mini{display:flex;gap:14px;font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-bottom:.5rem}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:3px}
+.dot-green{background:var(--green)}.dot-red{background:var(--red)}.dot-gray{background:var(--text3)}
+.tracker-grid{display:flex;flex-wrap:wrap;gap:4px;margin-top:.5rem}
+.tq{width:24px;height:24px;border-radius:4px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:var(--text3);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;font-family:'JetBrains Mono',monospace;transition:all .15s}
+.tq.tq-ok{background:rgba(61,220,151,.15);border-color:rgba(61,220,151,.3);color:var(--green)}
+.tq.tq-wrong{background:rgba(255,71,87,.15);border-color:rgba(255,71,87,.3);color:var(--red)}
+
+/* QUESTION CARDS */
+.qcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;margin-bottom:.75rem}
+.qmeta{display:flex;align-items:center;gap:6px;margin-bottom:.5rem;flex-wrap:wrap}
+.qnum{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:var(--text3);background:var(--surface2);padding:2px 7px;border-radius:4px;border:1px solid var(--border)}
+.qtopic{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;border:1px solid;background:rgba(244,160,24,.08);color:var(--accent);border-color:rgba(244,160,24,.2)}
+.qtext{font-size:13.5px;font-weight:700;color:#fff;line-height:1.45;margin-bottom:.75rem}
+.opt{display:flex;align-items:flex-start;gap:9px;padding:10px;border:1.5px solid var(--border);border-radius:9px;margin-bottom:6px;cursor:pointer;font-size:12.5px;color:var(--text2);line-height:1.5;transition:all .12s;user-select:none;min-height:40px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.opt:hover{border-color:var(--border2);background:var(--surface2)}
+.opt.locked{pointer-events:none}
+.opt.correct{background:rgba(61,220,151,.1);border-color:rgba(61,220,151,.4);color:#3ddc97}
+.opt.wrong{background:rgba(255,71,87,.1);border-color:rgba(255,71,87,.35);color:#ff6b7a}
+.opt.show-correct{background:rgba(61,220,151,.08);border-color:rgba(61,220,151,.3);color:#7af3c5}
+.ltr{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 5px;min-width:20px;text-align:center;flex-shrink:0;margin-top:1px}
+.opt-icon{margin-left:auto;font-size:14px;flex-shrink:0}
+.exp{display:none;margin-top:.6rem;padding:.7rem .9rem;background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.15);border-radius:8px;font-size:12px;color:var(--text2);line-height:1.65}
+.exp-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--cyan);margin-bottom:.35rem}
+
+/* COMPLETION */
+.completion-card{text-align:center;padding:2rem 1rem}
+.completion-card h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;margin-bottom:.5rem}
+.big-score{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;margin:.5rem 0}
+.g-ex{color:var(--green)}.g-gd{color:var(--teal)}.g-nw{color:var(--accent)}.g-fl{color:var(--red)}
+.completion-stats{display:flex;justify-content:center;gap:2rem;margin:.75rem 0;font-size:12px;color:var(--text2)}
+.cstat strong{display:block;font-size:20px;font-family:'Syne',sans-serif}
+.retry-btn{padding:10px 24px;border-radius:8px;background:var(--accent);color:#000;border:none;cursor:pointer;font-size:13px;font-weight:800;font-family:'Nunito',sans-serif;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+
+/* FLASHCARDS */
+.fc-wrap{perspective:1000px;margin-bottom:.75rem}
+.flashcard{width:100%;min-height:220px;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.flashcard.flipped{transform:rotateY(180deg)}
+.fc-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--radius);display:flex;flex-direction:column;justify-content:center;align-items:center;padding:1.25rem;text-align:center;border:1.5px solid}
+.fc-front{background:var(--surface);border-color:var(--border)}
+.fc-back{background:var(--surface2);border-color:var(--border2);transform:rotateY(180deg)}
+.fc-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.6rem;opacity:.5}
+.fc-content{font-size:14px;font-weight:700;color:#fff;line-height:1.5}
+.fc-sub{font-size:11px;color:var(--text2);margin-top:.5rem;line-height:1.55}
+.fc-progress{text-align:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:.4rem}
+.fc-nav{display:flex;gap:8px;margin-top:.5rem}
+.fc-nav button{flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-size:12px;font-weight:700;color:var(--text2);font-family:'Nunito',sans-serif;min-height:38px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.fc-rate-row{display:flex;gap:6px;margin-top:.5rem}
+.conf-btn{flex:1;padding:6px 4px;border-radius:7px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:10px;font-weight:700;font-family:'Nunito',sans-serif;min-height:34px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.conf-btn:nth-child(1){color:var(--red);border-color:rgba(255,71,87,.3)}
+.conf-btn:nth-child(2){color:var(--accent);border-color:rgba(244,160,24,.3)}
+.conf-btn:nth-child(3){color:var(--green);border-color:rgba(61,220,151,.3)}
+
+/* TRAPS */
+.trap-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.9rem 1rem;margin-bottom:.65rem}
+.trap-head{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--accent);margin-bottom:.4rem}
+.trap-body{font-size:12px;color:var(--text2);line-height:1.65}
+.trap-body strong{color:#fff}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(var(--nav-h) + var(--safe-bottom) + 10px);left:50%;transform:translateX(-50%);background:var(--surface3);color:var(--text);border:1px solid var(--border2);padding:8px 16px;border-radius:9px;font-size:12px;font-weight:600;z-index:999;opacity:0;pointer-events:none;transition:opacity .25s;white-space:nowrap;max-width:calc(100vw - 28px)}
+.toast.show{opacity:1}
+@media(min-width:600px){.toast{bottom:1.5rem}}
+
+/* QUICK-FIRE */
+.qf-streak{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;padding:3px 9px;border-radius:6px;background:rgba(244,160,24,.12);color:var(--accent);border:1px solid rgba(244,160,24,.2);display:none}
+
+/* DECISION TREES */
+.tree-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;margin-bottom:.75rem}
+.tree-head{display:flex;align-items:center;gap:9px;margin-bottom:.875rem;padding-bottom:.6rem;border-bottom:1px solid var(--border)}
+.tree-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:#fff}
+.tree-q{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;margin-bottom:7px}
+.tree-qtext{font-size:12px;font-weight:700;color:#fff;line-height:1.5;margin-bottom:8px}
+.tree-btns{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.tree-btn{padding:8px 10px;border-radius:8px;border:1.5px solid;font-size:11px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;min-height:40px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;text-align:left;background:transparent}
+.tree-answer{border-radius:9px;padding:11px 13px}
+.tree-ans-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;font-family:'JetBrains Mono',monospace;margin-bottom:5px}
+.tree-ans-name{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#fff;margin-bottom:6px}
+.tree-ans-rule{font-size:12px;color:var(--text2);line-height:1.6}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="app-header">
+  <div class="hdr-badge">🚚 D470 · PVHO · PRE-ASSESSMENT PREP</div>
+  <h1>Transportation, Logistics &amp; Distribution</h1>
+  <p class="subtitle">70 Questions · 4 Sections · CLTD Aligned</p>
+</div>
+
+<div class="score-banner">
+  <div class="score-banner-row">
+    <div><div class="score-big">70</div><div class="score-label">Questions to Master</div></div>
+    <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(244,160,24,.1);color:var(--accent);border:1px solid rgba(244,160,24,.25);border-radius:8px;font-size:11px;font-weight:700;padding:4px 10px">📋 PREP MODE</div>
+  </div>
+  <div class="sbars">
+    <div class="sbar-row"><span class="sbar-label">Section 1</span><div class="sbar-wrap"><div class="sbar-fill" style="width:100%"></div></div><span class="sbar-status">Elements/Logistics</span></div>
+    <div class="sbar-row"><span class="sbar-label">Section 2</span><div class="sbar-wrap"><div class="sbar-fill" style="width:100%"></div></div><span class="sbar-status">Laws & Regs</span></div>
+    <div class="sbar-row"><span class="sbar-label">Section 3</span><div class="sbar-wrap"><div class="sbar-fill" style="width:100%"></div></div><span class="sbar-status">TCO / Ops Mgmt</span></div>
+    <div class="sbar-row"><span class="sbar-label">Section 4</span><div class="sbar-wrap"><div class="sbar-fill" style="width:100%"></div></div><span class="sbar-status">Warehouse/Dist</span></div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab active" data-tab="study">📖 Study</button>
+  <button class="tab" data-tab="drill">🎯 Drill</button>
+  <button class="tab" data-tab="flash">🃏 Cards</button>
+  <button class="tab" data-tab="traps">⚠️ Traps</button>
+  <button class="tab" data-tab="tree">🌳 Decide</button>
+  <button class="tab" data-tab="quickfire">⚡ Quick-Fire</button>
+</div>
+
+<!-- ════ STUDY ════ -->
+<div id="study" class="section active">
+
+<div class="sec-head">Section 1 — Elements of Distribution, Logistics &amp; Transportation</div>
+
+<div class="card">
+  <div class="card-title">Logistics vs Distribution vs Supply Chain — scope hierarchy</div>
+  <div class="tags"><span class="tag t-orange">S1 Core</span></div>
+  <div class="body">
+    <p><strong>Logistics</strong> = planning and managing the flow of goods, services, and information from origin to consumption. It's the broader discipline that encompasses transportation, warehousing, and inventory.</p>
+    <p><strong>Distribution</strong> = the subset of logistics focused specifically on getting finished goods from manufacturer/warehouse out to customers. Multiple distribution channels and alternate ways of delivering products exist.</p>
+    <p><strong>Supply Chain</strong> = the widest scope — includes all parties and processes from raw material suppliers through manufacturers to end customers. Logistics is one function within supply chain management.</p>
+    <div class="rule-box"><strong>Effective managers</strong> integrate logistics into the distribution system in relation to logistics management. Logistics strategy is derived from the corporate business plan — it doesn't exist independently.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Logistics design strategies — 4 characteristics of distribution system development</div>
+  <div class="tags"><span class="tag t-orange">S1 Core</span><span class="tag t-red">Q1 Q12</span></div>
+  <div class="body">
+    <p>There are <strong>four main characteristics</strong> of a product that affect distribution system development: product value, product density (volume-to-weight), product handling requirements, and demand risk.</p>
+    <p><strong>Operational decisions</strong> that affect a shipping company's functionality are decisions about day-to-day running — <strong>vehicle maintenance</strong> is an operational decision (not strategic). Location/size of depots = strategic/tactical. Fleet capacity management = tactical.</p>
+    <div class="cg">
+      <div class="cg-cell"><div class="cg-label" style="color:var(--orange)">Operational</div><div class="cg-val">Day-to-day: Vehicle maintenance, picking assignments, scheduling</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--cyan)">Strategic</div><div class="cg-val">Long-term: Location/size of depots, network design, fleet composition</div></div>
+    </div>
+    <div class="warn"><strong>Q1 Trap:</strong> "Which operational decision affects a shipping company's functionality?" Answer = Vehicle maintenance. "Location and size of depots" is strategic/tactical, not operational.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Logistics providers — 1PL, 2PL, 3PL, 4PL</div>
+  <div class="tags"><span class="tag t-orange">S1 Core</span><span class="tag t-red">Q2 Q3</span></div>
+  <div class="body">
+    <div class="cg">
+      <div class="cg-cell"><div class="cg-label" style="color:var(--green)">3PL</div><div class="cg-val">Third-party logistics: provides transportation, warehousing, specific parts of supply chain. Outsourcing specific functions.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--purple)">4PL</div><div class="cg-val">Fourth-party logistics: manages the ENTIRE supply chain. Orchestrates 3PLs. Solutions delivered <strong>across the entire supply chain</strong> — not just specific parts.</div></div>
+    </div>
+    <p><strong>Why outsource?</strong> Primary reason = <strong>to reduce logistics costs</strong>. Not to increase assets, not to make logistics a core competency (outsourcing does the opposite — it removes it from core).</p>
+    <div class="rule-box"><strong>3PL = specific parts. 4PL = entire supply chain.</strong> 4PL is NOT the same as LLP (Lead Logistics Provider) — though similar, they are distinct terms.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Transportation modes — choosing the right one</div>
+  <div class="tags"><span class="tag t-orange">S1 Core</span><span class="tag t-red">Q4 Q5 Q6</span></div>
+  <div class="body">
+    <p><strong>Air</strong> = optimal for high-value, time-sensitive, fragile items over long distances. An expensive antique vase shipped a very long distance = <strong>Air</strong>. Why: speed + security + handling standards for fragile items.</p>
+    <p><strong>Road transport selection factors:</strong> The two key factors for selecting the appropriate road transport type for a large shipment = <strong>weight and volume</strong> of cargo. Not length/breadth, not size/shape.</p>
+    <div class="cg">
+      <div class="cg-cell"><div class="cg-label" style="color:var(--cyan)">Air</div><div class="cg-val">High-value, fragile, time-sensitive, long distance. Fastest. Most expensive per kg.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--green)">Sea</div><div class="cg-val">Bulk, heavy, non-urgent. Cheapest per unit. Slowest.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--orange)">Rail</div><div class="cg-val">Heavy bulk inland. Cost-effective for large volumes overland.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--purple)">Road</div><div class="cg-val">Flexible, door-to-door, short-medium distance. Most common for last-mile.</div></div>
+    </div>
+    <p><strong>Marine fuel surcharge:</strong> Variations in marine (sea) fuel pricing are accounted for by the <strong>Bunker Adjustment Surcharge (BAS)</strong>. Not carrier security, not peak season, not currency adjustment.</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Volume-to-weight ratio — distribution efficiency</div>
+  <div class="tags"><span class="tag t-orange">S1 Core</span><span class="tag t-red">Q7</span></div>
+  <div class="body">
+    <p>Distribution efficiency is measured by the <strong>volume-to-weight ratio</strong>. A <strong>lower</strong> ratio means the product is dense and heavy relative to its size — it fills weight capacity before space capacity, making each trip more efficient.</p>
+    <p>Given ratios: A=100, B=600, C=1000, D=250 — <strong>Product A (ratio=100)</strong> is most efficient because you can load the most weight per unit of space. Low ratio = dense = efficient.</p>
+    <div class="rule-box"><strong>Rule:</strong> Lowest volume-to-weight ratio = most efficient for distribution. The product fits the most weight into the least space per trip.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Product Life Cycle (PLC) — stages and sales behavior</div>
+  <div class="tags"><span class="tag t-orange">S1 Core</span><span class="tag t-red">Q8 Q13 Q14</span></div>
+  <div class="body">
+    <div class="cg">
+      <div class="cg-cell"><div class="cg-label" style="color:var(--cyan)">Introductory</div><div class="cg-val">Sales increase at an <strong>increasing rate</strong> — market is discovering the product. Steep positive slope beginning.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--green)">Growth</div><div class="cg-val"><strong>Greatest positive slope</strong> — fastest rate of sales increase. Market adoption accelerating rapidly.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--gold)">Maturity</div><div class="cg-val">Sales increase at a decreasing rate — growth slowing. Competition peaks.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--red)">Decline</div><div class="cg-val">Sales decrease. Product becoming obsolete or replaced.</div></div>
+    </div>
+    <div class="warn"><strong>Q14 Trap:</strong> "What happens to sales in the INTRODUCTORY phase?" = They increase at an INCREASING rate. Students confuse this with Growth (which has the steepest slope). Growth = greatest positive slope. Introductory = increasing but not yet at peak slope.</div>
+    <p><strong>Own-brand substitution</strong> (supermarket producing its own identical products when branded stock runs low) = <strong>decreases logistics costs</strong>. It reduces supplier dependence and simplifies the supply chain.</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Operations strategies — the 4 Vs</div>
+  <div class="tags"><span class="tag t-orange">S1 Core</span><span class="tag t-red">Q9 Q11</span></div>
+  <div class="body">
+    <p>When a company faces large fluctuations in demand, it should use a <strong>Variability-based</strong> production strategy — designed specifically to handle demand uncertainty and variation.</p>
+    <div class="cg">
+      <div class="cg-cell"><div class="cg-label" style="color:var(--orange)">Volume-based</div><div class="cg-val">High-volume, standardized production. Economies of scale. Low variety.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--cyan)">Variety-based</div><div class="cg-val">Wide product range. High customization. Lower volumes per SKU.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--green)">Variability-based</div><div class="cg-val"><strong>High demand fluctuation.</strong> Agile production. Adjusts output to variable demand.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--purple)">Visibility-based</div><div class="cg-val">Customer can see/track their product being made. Services.</div></div>
+    </div>
+    <p><strong>Which performance type minimizes waste?</strong> = <strong>Quality performance</strong>. Quality-focused operations eliminate defects and rework, which are forms of waste. Not time (speed), not flexibility, not dependability.</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Manufacturing processes — matching process to product</div>
+  <div class="tags"><span class="tag t-orange">S1 Core</span><span class="tag t-red">Q10</span></div>
+  <div class="body">
+    <p>A large chemical company producing water treatment chemicals for municipal facilities should use <strong>Continuous production</strong> — because the product is identical, high-volume, non-stop, and requires a consistent uninterrupted process.</p>
+    <div class="cg">
+      <div class="cg-cell"><div class="cg-label" style="color:var(--orange)">Project</div><div class="cg-val">One-off unique items. Long duration. Ship, building, custom machine.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--cyan)">Batch</div><div class="cg-val">Groups of similar items. Bakery, pharmaceuticals in batches.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--green)">Mass</div><div class="cg-val">High volume, standardized. Automotive assembly.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--gold)">Continuous</div><div class="cg-val">Non-stop 24/7. Chemicals, oil refining, paper mills. <strong>Identical product, never stops.</strong></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Logistics network reengineering — cost vs service tradeoff</div>
+  <div class="tags"><span class="tag t-orange">S1 Core</span><span class="tag t-red">Q12</span></div>
+  <div class="body">
+    <p>When a company reengineers its logistics network by <strong>lowering costs</strong>, the consequence is that <strong>the number of facilities decreases</strong>. Fewer warehouses/distribution centers = lower fixed costs, but typically results in longer delivery lead times and lower responsiveness.</p>
+    <div class="rule-box"><strong>Cost-service tradeoff:</strong> Lowering costs → fewer facilities → lower service level (longer lead times, less responsiveness). Increasing service → more facilities → higher costs.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Logistics types — Inbound, Outbound, Reverse</div>
+  <div class="tags"><span class="tag t-orange">S1 Core</span><span class="tag t-red">Q15</span></div>
+  <div class="body">
+    <div class="cg">
+      <div class="cg-cell"><div class="cg-label" style="color:var(--cyan)">Inbound</div><div class="cg-val">Materials/goods coming INTO the organization from suppliers. Procurement logistics.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--green)">Outbound</div><div class="cg-val">Finished goods going OUT to customers. Distribution logistics.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--orange)">Reverse</div><div class="cg-val"><strong>Returns, recycling, waste management.</strong> Goods flowing backwards through supply chain. Company improving recycling = <strong>Reverse logistics.</strong></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Distribution operations — Break-bulk, Cross-docking, Postponement</div>
+  <div class="tags"><span class="tag t-orange">S1 Core</span><span class="tag t-red">Q16 Q37</span></div>
+  <div class="body">
+    <div class="cg">
+      <div class="cg-cell"><div class="cg-label" style="color:var(--orange)">Break-bulk</div><div class="cg-val">Receives large shipments, breaks them into smaller ones for distribution. <strong>Large in → small out.</strong></div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--cyan)">Cross-docking</div><div class="cg-val">Goods transferred directly from inbound to outbound with no storage. Minimizes warehouse time.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--green)">Postponement</div><div class="cg-val">Delaying final configuration/customization until closer to demand point.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--purple)">Echelon</div><div class="cg-val">Multi-level distribution: production → warehouse → local DCs → customers. Sequential layers.</div></div>
+    </div>
+    <p><strong>Distribution process moving goods from production → warehouse → local DCs → customers</strong> = <strong>Echelon</strong> distribution (multi-level sequential flow).</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Government transport actions — Incentive vs Regulation vs Control</div>
+  <div class="tags"><span class="tag t-orange">S1 Core</span><span class="tag t-red">Q17</span></div>
+  <div class="body">
+    <p>A government setting a <strong>road tax exemption for electric vehicles</strong> = <strong>Incentive</strong>. It encourages desired behavior through a benefit/reward, not by mandating compliance.</p>
+    <div class="cg">
+      <div class="cg-cell"><div class="cg-label" style="color:var(--green)">Incentive</div><div class="cg-val">Rewards desired behavior (tax exemptions, subsidies, grants). Voluntary. EV road tax exemption.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--red)">Regulation</div><div class="cg-val">Mandatory rules with penalties for non-compliance. Emissions standards, speed limits.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--orange)">Control</div><div class="cg-val">Direct government management/ownership of transport infrastructure.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--cyan)">Target</div><div class="cg-val">Policy goals/objectives without specific enforcement mechanism.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Empty miles — minimizing backhaul waste</div>
+  <div class="tags"><span class="tag t-orange">S1 Core</span><span class="tag t-red">Q18 Q36</span></div>
+  <div class="body">
+    <p>The most efficient way to minimize empty miles = <strong>Pick up lots from suppliers AFTER drop-off to customers</strong>. This eliminates the return trip being empty by using it productively.</p>
+    <p>Separately: A vehicle returning empty after every delivery can be optimized by <strong>collecting raw materials on the return trip</strong> — same principle, backhaul utilization.</p>
+    <div class="rule-box"><strong>Backhaul optimization:</strong> Never run empty. Use the return journey to collect from suppliers. Combines delivery and pickup into one trip = half the empty miles.</div>
+  </div>
+</div>
+
+<div class="sec-head">Section 2 — Laws, Regulations &amp; Cross-Border Operations</div>
+
+<div class="card">
+  <div class="card-title">Cross-border logistics decisions affecting customs tax liability</div>
+  <div class="tags"><span class="tag t-cyan">S2 Core</span><span class="tag t-red">Q19</span></div>
+  <div class="body">
+    <p>The cross-border decision that affects customs tax liabilities = <strong>Production location</strong>. Where goods are produced determines country of origin, which determines tariff rates and preferential trade agreements.</p>
+    <div class="rule-box"><strong>Country of origin</strong> is tied to production location → affects which tariff schedule applies → directly impacts customs tax liability. Production lot size = inventory decision. Production quality/reliability = operations decisions unrelated to customs.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Customs agencies — who does what</div>
+  <div class="tags"><span class="tag t-cyan">S2 Core</span><span class="tag t-red">Q20 Q31</span></div>
+  <div class="body">
+    <div class="cg">
+      <div class="cg-cell"><div class="cg-label" style="color:var(--orange)">Freight Forwarder</div><div class="cg-val">Prepares and submits customs declarations on behalf of importers/exporters. Acts as intermediary with customs authorities.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--cyan)">BEST</div><div class="cg-val">Border Enforcement Security Task Force — improves SAFETY in international trade and supply chain.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--green)">Terminal Operator</div><div class="cg-val">Manages port/terminal facilities. Loading/unloading of vessels.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--purple)">Payment Bank</div><div class="cg-val">Handles letters of credit and payment in international trade. Not customs.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">International trade laws — TFA, Kyoto Convention, FCPA</div>
+  <div class="tags"><span class="tag t-cyan">S2 Core</span><span class="tag t-red">Q21 Q22 Q26</span></div>
+  <div class="body">
+    <p><strong>Trade Facilitation Agreement (TFA)</strong> = the international law that focuses on <strong>harmonizing customs procedures throughout the world</strong>. WTO agreement streamlining global customs processes.</p>
+    <p><strong>Kyoto Customs Convention</strong> goal = to make <strong>customs procedures more predictable</strong>. It creates transparency, simplification, and standardization of customs procedures — NOT to control businesses or build opacity.</p>
+    <p><strong>Corrupt Practice Act / FCPA (1977)</strong> = involves the use of <strong>corporations making unsanctioned payments both inside AND outside the country</strong>. It prohibits bribing foreign government officials. Key point: applies to corporations AND individuals, and covers both domestic and international unsanctioned payments.</p>
+    <div class="warn"><strong>FCPA Trap:</strong> One wrong answer says "multinational corporations but not individuals" — WRONG. The FCPA applies to individuals too.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Customs tariff rates — commodity codes</div>
+  <div class="tags"><span class="tag t-cyan">S2 Core</span><span class="tag t-red">Q23</span></div>
+  <div class="body">
+    <p>The factor that helps <strong>define and categorize customs tariff rates</strong> = <strong>Commodity code</strong> (also called Harmonized System code or HS code). Every product gets a numerical code that determines its tariff rate.</p>
+    <div class="rule-box"><strong>Commodity code (HS code)</strong> = the universal numerical classification system for goods. The code determines tariff rates, not the transportation mode or customer code. Goods valuation also matters but commodity classification comes first.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Border clearance best practices</div>
+  <div class="tags"><span class="tag t-cyan">S2 Core</span><span class="tag t-red">Q24</span></div>
+  <div class="body">
+    <p>To assist international agencies at the border and ensure efficient clearance of products = <strong>Improving declarations and documentation</strong>. Accurate, complete paperwork is the primary enabler of smooth border crossings.</p>
+    <div class="note">Customs authorities need correct documentation to process shipments. Poor or incomplete declarations are the #1 cause of delays. "Improving declarations and documentation" directly addresses this.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Customs & Trade Compliance Manager — key skills</div>
+  <div class="tags"><span class="tag t-cyan">S2 Core</span><span class="tag t-red">Q25</span></div>
+  <div class="body">
+    <p>A customs and trade compliance manager needs = <strong>The ability to ensure successful systems deployment for vigorous trade operations</strong>. This role manages technology systems, processes, and regulatory compliance that enable efficient cross-border trade.</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Supply cost specific to international trade</div>
+  <div class="tags"><span class="tag t-cyan">S2 Core</span><span class="tag t-red">Q27</span></div>
+  <div class="body">
+    <p>The key supply cost component specific to international trade = <strong>Cross-border tariffs cost</strong>. Tariffs are unique to international trade — domestic trade has no equivalent. Rework cost, quality cost, and direct taxation exist in domestic operations too.</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Agile supply chain strategies — Quick Response, ECR</div>
+  <div class="tags"><span class="tag t-cyan">S2 Core</span><span class="tag t-red">Q28 Q29</span></div>
+  <div class="body">
+    <p>Supply chain strategy used to address demand changes using an <strong>agile method</strong> = <strong>Quick Response</strong>. Quick Response shortens replenishment lead times and increases responsiveness to actual demand.</p>
+    <p><strong>Efficient Consumer Response (ECR)</strong> benefit in global trade = <strong>Improved service level</strong>. ECR focuses on improving the efficiency of the entire supply chain from manufacturer to consumer, primarily measured by service level improvement.</p>
+    <div class="cg">
+      <div class="cg-cell"><div class="cg-label" style="color:var(--green)">Quick Response</div><div class="cg-val">Agile strategy. Short replenishment cycles. Fast reaction to demand signals. Apparel industry origin.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--cyan)">ECR</div><div class="cg-val">Efficient Consumer Response. Grocery industry origin. Focuses on supply chain efficiency + consumer service level.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Border control challenges for garment manufacturing</div>
+  <div class="tags"><span class="tag t-cyan">S2 Core</span><span class="tag t-red">Q30</span></div>
+  <div class="body">
+    <p>A country with poor border control mechanisms creates a challenge for garment manufacturers of = <strong>Increased product loss in the market</strong>. Weak border controls allow counterfeit goods, piracy, and unofficial imports to undermine legitimate products.</p>
+  </div>
+</div>
+
+<div class="sec-head">Section 3 — Total Cost of Ownership (TCO) &amp; Operations Management</div>
+
+<div class="card">
+  <div class="card-title">Inventory types — Cycle, Safety, Pipeline, In-process, Speculative</div>
+  <div class="tags"><span class="tag t-teal">S3 Core</span><span class="tag t-red">Q33 Q34 Q38 Q39</span></div>
+  <div class="body">
+    <div class="cg">
+      <div class="cg-cell"><div class="cg-label" style="color:var(--orange)">Cycle Stock</div><div class="cg-val">Stock equivalent to typical regular demand — meets frequent customer purchases for a set period. <strong>Q34: one quarter of regular demand = Cycle stock.</strong></div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--cyan)">Safety Stock</div><div class="cg-val">Buffer stock held to protect against demand uncertainty or supply delays. Extra above cycle stock.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--green)">In-process</div><div class="cg-val">Partially finished stock held close to production for rapid completion and dispatch. <strong>Q33: WIP held at nearby supplier for 1-hour delivery = In-process.</strong></div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--purple)">Pipeline</div><div class="cg-val">Stock in transit between locations. "On the way" inventory.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--gold)">Speculative</div><div class="cg-val">Stock bought in advance anticipating price rises or shortages.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--teal)">Seasonal</div><div class="cg-val">Built up ahead of predictable seasonal demand peaks.</div></div>
+    </div>
+    <p><strong>Inventory cost driver:</strong> A firm rapidly increasing its variety of goods (needing more SKUs) → rising inventory costs = <strong>Increased product proliferation</strong>. More product lines = more SKUs = more inventory to hold.</p>
+    <p><strong>Shortage cost:</strong> Penalty for not holding adequate stock = <strong>Shortage cost</strong> (element of inventory-holding cost).</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Forecasting methods — Moving Average, Exponential Smoothing, Causal</div>
+  <div class="tags"><span class="tag t-teal">S3 Core</span><span class="tag t-red">Q32</span></div>
+  <div class="body">
+    <p>Calculating average demand for the <strong>next period based on actual demand from the previous two years</strong> = <strong>Moving Average</strong>. It averages historical data over a defined time window.</p>
+    <div class="cg">
+      <div class="cg-cell"><div class="cg-label" style="color:var(--orange)">Moving Average</div><div class="cg-val">Average of actual demand over a fixed historical period. Simple, uses past data directly.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--cyan)">Exponential Smoothing</div><div class="cg-val">Weighted average giving more weight to recent data. Automatically adjusts for trends.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--green)">Causal</div><div class="cg-val">Uses external variables (weather, GDP, advertising spend) to predict demand.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--purple)">Experimental</div><div class="cg-val">Based on market testing / consumer research. Qualitative.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Pareto analysis — A/B/C line classification</div>
+  <div class="tags"><span class="tag t-teal">S3 Core</span><span class="tag t-red">Q35</span></div>
+  <div class="body">
+    <p>Products sold quickly at 90% availability across all DCs = <strong>A line</strong> in Pareto analysis.</p>
+    <div class="cg">
+      <div class="cg-cell"><div class="cg-label" style="color:var(--green)">A Line</div><div class="cg-val">Top 20% of products generating ~80% of revenue. Fastest moving. Highest availability target (90%+). Priority at all DCs.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--cyan)">B Line</div><div class="cg-val">Mid-tier. Regular movers. Moderate availability (75-85%).</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--orange)">C Line</div><div class="cg-val">Slow movers. 50% of SKUs, ~5% of revenue. Lower availability targets, fewer locations.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--purple)">D Line</div><div class="cg-val">Obsolete or nearly discontinued. Minimal stock.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Operations control systems — principles and benchmarking</div>
+  <div class="tags"><span class="tag t-teal">S3 Core</span><span class="tag t-red">Q40 Q41 Q42 Q43</span></div>
+  <div class="body">
+    <p><strong>Operating control system</strong> = evaluates KPIs related to cost centers and operations standards, compares actual vs planned. Tracks performance variance and drives corrective action.</p>
+    <p><strong>Validity</strong> = the principle that data covers ALL stages of production and distribution necessary for decisions. When data is missing stages = Validity is compromised.</p>
+    <p><strong>Measurement system best practice</strong> when managers at different decision levels contribute = <strong>Hierarchy of needs</strong>. Design the system around the decision-making levels.</p>
+    <p><strong>Benchmarking</strong> = comparing your performance against world-class standards from other industries to identify gaps and drive continuous improvement.</p>
+    <p><strong>Malcolm Baldridge National Quality Award criteria</strong> = the US framework based on productivity and operational performance excellence officially recognized in the United States.</p>
+    <div class="rule-box"><strong>Key benchmarking terms:</strong> Benchmarking = comparing vs best-in-class. Quality Function Deployment = benchmarking system focused on customer requirements and supplier performance.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Outsourcing logistics — 3PL decisions and impacts</div>
+  <div class="tags"><span class="tag t-teal">S3 Core</span><span class="tag t-red">Q52 Q53 Q54 Q55 Q56 Q57 Q58 Q59</span></div>
+  <div class="body">
+    <p><strong>Impact of outsourcing distribution/logistics:</strong> Focusing on core business = <strong>decreases logistics decision-making control</strong> (you give up control when you outsource). Investment freed up = <strong>investment opportunities in more profitable business areas</strong>.</p>
+    <p><strong>Multiuser 3PL advantage:</strong> Serves multiple clients = <strong>economies of scale</strong> can be achieved with other firms (shared assets reduce per-unit cost).</p>
+    <p><strong>Risk of outsourcing to unknown start-up:</strong> Strong-brand firm + unknown 3PL = <strong>the third-party brand could interfere with the firm's brand</strong>. Customer experience is affected by the 3PL's reputation.</p>
+    <p><strong>First step when outsourcing operations:</strong> = <strong>Identify service requirements and costs</strong>. Before selecting a provider, you must define what you need and what it should cost.</p>
+    <p><strong>Dedicated 3PL charges more because of:</strong> = <strong>Specialization of knowledge and expertise</strong>. When a provider serves one client exclusively, they develop deep specialized expertise worth a premium.</p>
+    <p><strong>Gainsharing:</strong> Provider gets % of profits when exceeding targets = <strong>Gainsharing-based activity incentive</strong>. Aligns provider incentives with client performance goals.</p>
+    <p><strong>Performance tracking in outsourcing:</strong> Monitoring targets via open-book audits with decision-makers = <strong>Performance tracking</strong>.</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Balanced scorecard — perspectives and metrics</div>
+  <div class="tags"><span class="tag t-teal">S3 Core</span><span class="tag t-red">Q47 Q49 Q50 Q51</span></div>
+  <div class="body">
+    <p><strong>Learning and innovation perspective + R&D impact on new products</strong> = metric is <strong>New product introduction</strong>.</p>
+    <p><strong>Distribution center cost variation by location (labor, rent)</strong> = <strong>Regional cost variations</strong> KPI.</p>
+    <p><strong>Benchmarking system considering customer requirements + supplier performance</strong> = <strong>Quality Function Deployment (QFD)</strong>.</p>
+    <p><strong>Digital freight exchange software</strong> = online trading platform for contracting transportation, hosted by third-party agency. Like an eBay for freight capacity.</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Humanitarian logistics — roles and delivery points</div>
+  <div class="tags"><span class="tag t-teal">S3 Core</span><span class="tag t-red">Q45 Q46</span></div>
+  <div class="body">
+    <p>When a firm donates materials and asks to be notified when they've reached final end users — the aid agency contacts them <strong>when materials are distributed</strong> (= reached final end users).</p>
+    <p>A community college raising funds for humanitarian aid = plays the role of <strong>Donor</strong> (provides money/resources). Not beneficiary (receives aid), not agency (delivers aid).</p>
+    <div class="cg">
+      <div class="cg-cell"><div class="cg-label" style="color:var(--orange)">Donor</div><div class="cg-val">Provides funding or materials. Government agencies, NGOs, companies, public.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--cyan)">Agency</div><div class="cg-val">Delivers the aid. UN, Red Cross, NGOs on the ground.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--green)">Beneficiary</div><div class="cg-val">Receives the aid. The affected population.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sec-head">Section 4 — Distribution &amp; Warehouse Management</div>
+
+<div class="card">
+  <div class="card-title">Warehouse management systems (WMS) — which system for which task</div>
+  <div class="tags"><span class="tag t-gold">S4 Core</span><span class="tag t-red">Q44 Q60 Q70</span></div>
+  <div class="body">
+    <div class="cg">
+      <div class="cg-cell"><div class="cg-label" style="color:var(--orange)">WMS</div><div class="cg-val">Controls all warehouse activities: automated equipment, RF communications, picking, put-away, inventory. <strong>Q44 and Q70.</strong></div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--cyan)">TMS</div><div class="cg-val">Transportation Management System. Plans and optimizes shipping routes, carrier selection, freight audit.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--green)">YMS</div><div class="cg-val">Yard Management System. Controls vehicle movements in the yard, dock assignments.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--purple)">OMS</div><div class="cg-val">Order Management System. Customer-facing order processing, multi-channel orders.</div></div>
+    </div>
+    <p><strong>Automated storage/retrieval system (AS/RS)</strong> = connects picking operations to WMS to eliminate human intervention. Fully automated storage and retrieval.</p>
+    <p><strong>Geofencing</strong> = automates the process of assigning bays for loading/unloading vehicles based on GPS location.</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Racking and storage systems — matching to requirement</div>
+  <div class="tags"><span class="tag t-gold">S4 Core</span><span class="tag t-red">Q61</span></div>
+  <div class="body">
+    <div class="cg">
+      <div class="cg-cell"><div class="cg-label" style="color:var(--orange)">Cantilevered Racking</div><div class="cg-val">For long, awkward items (timber, pipes, turbine blades). Arms extend from upright with no front column — accommodates length. <strong>Minimal investment cost.</strong></div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--cyan)">Powered Mobile Racking</div><div class="cg-val">High-density storage. Aisles on wheels. Highest cost, best space utilization.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--green)">Drive-in/Drive-through</div><div class="cg-val">Forklift drives into racking. LIFO (drive-in) or FIFO (drive-through). Bulk storage.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--purple)">AS/RS</div><div class="cg-val">Automated Storage/Retrieval. High capital cost. Fully automated with WMS.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Picking — most labor-intensive warehouse activity</div>
+  <div class="tags"><span class="tag t-gold">S4 Core</span><span class="tag t-red">Q62 Q63 Q64</span></div>
+  <div class="body">
+    <p><strong>Picking</strong> = the most labor-intensive and cost-intensive warehouse activity. A company wanting to reduce direct labor costs should focus on picking first.</p>
+    <p><strong>Why do two pickers have different productivity (100 vs 200 lines/hour)?</strong> = <strong>Picking method</strong>. Different methods (single order, batch, zone, wave picking) produce dramatically different productivity rates for individual pickers.</p>
+    <p><strong>Why do two WAREHOUSES have different average picking productivity (X vs 2X orders/picker/hour)?</strong> = <strong>Picking equipment usage</strong>. At warehouse level, equipment (conveyors, pick-to-light, voice-directed, automated systems) explains the gap, not individual method.</p>
+    <div class="warn"><strong>Trap:</strong> Pickers (individual level) → Picking method. Warehouses (facility level) → Picking equipment usage. Don't confuse the level of analysis.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Warehouse planning horizons and metrics</div>
+  <div class="tags"><span class="tag t-gold">S4 Core</span><span class="tag t-red">Q65 Q66 Q67</span></div>
+  <div class="body">
+    <p><strong>Short-term planning</strong> = <strong>Workload planning based on order receipts</strong>. Responding to actual orders received = short-term (daily/weekly). Budget planning = long-term. Capacity planning = medium-term. Demand planning = medium-term.</p>
+    <p><strong>Metric to improve warehouse employee safety</strong> = <strong>Days without an accident</strong>. Tracks safety performance directly. Stock integrity = accuracy metric. Customer service levels = service metric.</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Put-away cycle time and stock turnover ratio calculations</div>
+  <div class="tags"><span class="tag t-gold">S4 Core</span><span class="tag t-red">Q68 Q69</span></div>
+  <div class="body">
+    <p><strong>Put-away cycle time</strong> = time from stock RECEIPT to STORAGE LOCATION (not from order receipt). Stock received 12th, moved to storage 15th = <strong>3 days</strong> put-away cycle time. (15 - 12 = 3).</p>
+    <div class="warn"><strong>Q68 Trap:</strong> Don't include the order processing time (16th-17th). Put-away = receipt to storage only. Stock received day 12, stored day 15 = 3 days.</div>
+    <p><strong>Stock turnover ratio</strong> = how many times inventory is sold/used in a year. <strong>Higher ratio = lower inventory held</strong> (turns over faster). W=4, X=5, Y=8, Z=10 → <strong>Warehouse Z holds the lowest inventory</strong> (turns over 10x/year = very lean).</p>
+    <div class="rule-box"><strong>Higher stock turnover = lower inventory = leaner operation.</strong> Z turns over 10x = holds the least stock on hand at any time.</div>
+  </div>
+</div>
+
+</div><!-- /study -->
+
+<!-- ════ DRILL ════ -->
+<div id="drill" class="section">
+<div class="quiz-controls">
+  <div class="ctrl-row">
+    <span class="ctrl-label">Filter</span>
+    <button class="mode-btn active" onclick="setFilter('all',this)">All 70</button>
+    <button class="mode-btn" onclick="setFilter('S1',this)">Section 1</button>
+    <button class="mode-btn" onclick="setFilter('S2',this)">Section 2</button>
+    <button class="mode-btn" onclick="setFilter('S3',this)">Section 3</button>
+    <button class="mode-btn" onclick="setFilter('S4',this)">Section 4</button>
+  </div>
+  <div class="score-row">
+    <div><div class="score-num" id="d-snum">0 / 0</div><div class="score-lbl">correct</div></div>
+    <div class="prog"><div class="prog-fill" id="d-pfill" style="width:0%"></div></div>
+    <button class="reset-btn" onclick="resetDrill()">↺ Restart</button>
+  </div>
+  <div class="stats-mini">
+    <span><span class="dot dot-green"></span><span id="d-correct">0</span> correct</span>
+    <span><span class="dot dot-red"></span><span id="d-wrong">0</span> wrong</span>
+    <span><span class="dot dot-gray"></span><span id="d-remain">0</span> left</span>
+  </div>
+  <div class="tracker-grid" id="d-tracker"></div>
+</div>
+<div id="drillbox"></div>
+</div>
+
+<!-- ════ FLASHCARDS ════ -->
+<div id="flash" class="section">
+<div class="fc-progress" id="fc-prog">Card 1 of 1</div>
+<div class="fc-wrap"><div class="flashcard" id="fc-card" onclick="flipFC()">
+  <div class="fc-face fc-front"><div class="fc-label">Term / Scenario</div><div class="fc-content" id="fc-front-text"></div></div>
+  <div class="fc-face fc-back"><div class="fc-label">Answer</div><div class="fc-content" id="fc-back-text"></div><div class="fc-sub" id="fc-back-sub"></div></div>
+</div></div>
+<div class="fc-nav">
+  <button onclick="fcNav(-1)">← Prev</button>
+  <button onclick="flipFC()">Flip</button>
+  <button onclick="fcNav(1)">Next →</button>
+</div>
+<div class="fc-rate-row">
+  <button class="conf-btn" onclick="fcNav(1)">❌ Missed</button>
+  <button class="conf-btn" onclick="fcNav(1)">🔶 Review</button>
+  <button class="conf-btn" onclick="fcNav(1)">✅ Got it</button>
+</div>
+</div>
+
+<!-- ════ TRAPS ════ -->
+<div id="traps" class="section">
+<div id="traps-box"></div>
+</div>
+
+<!-- ════ DECISION TREES ════ -->
+<div id="tree" class="section">
+<div style="background:rgba(61,220,151,.06);border:1px solid rgba(61,220,151,.18);border-radius:var(--radius);padding:.875rem 1rem;margin-bottom:1rem;font-size:12px;color:#3ddc97;line-height:1.65">
+  <strong style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;display:block;margin-bottom:.3rem">🌳 Decision Trees</strong>
+  Click through to the right answer. These cover the most confused distinctions in D470.
+</div>
+<div id="tree-list"></div>
+</div>
+
+<!-- ════ QUICK-FIRE ════ -->
+<div id="quickfire" class="section">
+<div style="background:rgba(244,160,24,.06);border:1px solid rgba(244,160,24,.2);border-radius:var(--radius);padding:.875rem 1rem;margin-bottom:.9rem;font-size:12px;color:var(--accent);line-height:1.65">
+  <strong style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;display:block;margin-bottom:.3rem">⚡ Quick-Fire</strong>
+  Scenario → Answer. No reading, no context. Pure pattern recognition.
+</div>
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.8rem .9rem;margin-bottom:.9rem">
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <div style="font-family:'Syne',sans-serif;font-size:19px;font-weight:800;color:#fff" id="qf-score">0 / 0</div>
+    <div style="font-size:11px;color:var(--text3)">correct</div>
+    <div class="prog" style="flex:1;min-width:60px"><div class="prog-fill" id="qf-pfill" style="width:0%"></div></div>
+    <div class="qf-streak" id="qf-streak">🔥 0</div>
+    <button class="reset-btn" onclick="resetQF()">↺ Reset</button>
+  </div>
+</div>
+<div id="qf-box"></div>
+</div>
+
+</div><!-- /container -->
+<div class="toast" id="toast"></div>
+
+<nav class="bottom-nav" style="grid-template-columns:repeat(6,1fr)">
+  <button class="bnav-btn active" id="bnav-study" data-tab="study"><span class="bicon">📖</span>Study</button>
+  <button class="bnav-btn" id="bnav-drill" data-tab="drill"><span class="bicon">🎯</span>Drill</button>
+  <button class="bnav-btn" id="bnav-flash" data-tab="flash"><span class="bicon">🃏</span>Cards</button>
+  <button class="bnav-btn" id="bnav-traps" data-tab="traps"><span class="bicon">⚠️</span>Traps</button>
+  <button class="bnav-btn" id="bnav-tree" data-tab="tree"><span class="bicon">🌳</span>Decide</button>
+  <button class="bnav-btn" id="bnav-quickfire" data-tab="quickfire"><span class="bicon">⚡</span>Quick</button>
+</nav>
+
+<script>
+// ═══ DRILL DATA — all 70 pre-assessment questions with correct answers ═══
+const QQ=[
+ {q:"Which operational decision would affect a shipping company's functionality?",o:["The design and layout of depots","The location and size of depots","Fleet capacity management","Vehicle maintenance"],a:3,t:"S1",e:"<strong>Vehicle maintenance</strong> is an operational (day-to-day) decision. Location/size of depots and fleet capacity are strategic/tactical decisions about long-term structure."},
+ {q:"Why do companies outsource distribution operations?",o:["To increase logistical assets","To maintain its current logistics","To make logistics a core competency","To reduce logistics costs"],a:3,t:"S1",e:"The primary driver for outsourcing distribution = <strong>reducing logistics costs</strong>. Outsourcing removes it from core competency, not adds it."},
+ {q:"How are fourth-party logistics (4PL) provider solutions delivered?",o:["Same as third-party logistics (3PL) providers","Across specific parts of the supply chain","Across the entire supply chain","Same as lead logistics providers (LLP)"],a:2,t:"S1",e:"<strong>4PL = across the ENTIRE supply chain</strong>. 3PL covers specific parts. 4PL orchestrates all logistics including managing other 3PLs."},
+ {q:"Which type of transportation mode is optimal for shipping a package containing an expensive antique vase a very long distance?",o:["Rail","Air","Road","Sea"],a:1,t:"S1",e:"<strong>Air</strong> = optimal for high-value, fragile, long-distance shipments. It provides speed, security, and careful handling standards for delicate items."},
+ {q:"Which surcharge is used to account for variations in marine fuel pricing?",o:["Carrier security surcharge","Peak season surcharge","Currency adjustment surcharge","Bunker adjustment surcharge"],a:3,t:"S1",e:"<strong>Bunker Adjustment Surcharge (BAS)</strong> accounts for fluctuations in marine (bunker) fuel costs. 'Bunker' = ship fuel."},
+ {q:"What are the two key factors used in the selection of the most appropriate type of road transport for a large shipment?",o:["Length and breadth of cargo","Width and height of cargo","Weight and volume of cargo","Size and shape of cargo"],a:2,t:"S1",e:"<strong>Weight and volume</strong> are the two key factors for road transport selection — they determine vehicle type, load capacity, and cost."},
+ {q:"A company distributes products A(100), B(600), C(1000), D(250) by volume-to-weight ratio. Which is relatively most efficient for distribution?",o:["Product A","Product B","Product C","Product D"],a:0,t:"S1",e:"<strong>Product A (ratio=100)</strong> is most efficient. Lower volume-to-weight ratio = denser product = more weight per unit of space = more efficient distribution per trip."},
+ {q:"Which stage of the product life cycle (PLC) function has the greatest positive slope?",o:["Introductory","Growth","Maturity","Decline"],a:1,t:"S1",e:"<strong>Growth</strong> stage has the greatest positive slope — this is when sales accelerate fastest. Introductory starts the increase but Growth is where the steepest rise occurs."},
+ {q:"A skincare company faces large demand fluctuation. Which operational means of production strategy should it use?",o:["Volume-based","Variety-based","Variability-based","Visibility-based"],a:2,t:"S1",e:"<strong>Variability-based</strong> strategy is designed specifically for high demand fluctuation — agile production that adjusts to variable demand levels."},
+ {q:"A large chemical company produces water treatment chemicals for municipal facilities. Which manufacturing process should it use?",o:["Project production","Mass production","Continuous production","Batch production"],a:2,t:"S1",e:"<strong>Continuous production</strong> = non-stop, identical product, 24/7 operation. Chemicals for water treatment are produced continuously. Batch would require stopping and restarting."},
+ {q:"Which type of company performance ability minimizes waste in its production process?",o:["Time performance","Quality performance","Flexibility performance","Dependability performance"],a:1,t:"S1",e:"<strong>Quality performance</strong> minimizes waste — defects, rework, and scrap are all forms of waste. Quality-focused operations eliminate them at the source."},
+ {q:"A company reengineers its logistics network by lowering costs. How will this affect the network?",o:["Customer service level increases","The number of facilities decreases","Delivery lead time decreases","Responsiveness increases"],a:1,t:"S1",e:"Lowering costs through reengineering = <strong>fewer facilities</strong>. Consolidating facilities reduces fixed costs. It typically increases lead times and reduces responsiveness (cost-service tradeoff)."},
+ {q:"A supermarket produces its own brand as a replacement for branded items when stock is low. Products are essentially identical. What is the result?",o:["It decreases product quality","It increases lead time","It decreases logistics costs","It increases stockouts"],a:2,t:"S1",e:"Own-brand substitution = <strong>decreases logistics costs</strong>. The supermarket controls its own supply chain, reducing supplier dependency and simplifying logistics."},
+ {q:"What happens to product sales in the introductory phase of the product life cycle (PLC)?",o:["They decrease at an increasing rate","They increase at an increasing rate","They increase at a decreasing rate","They decrease at a decreasing rate"],a:1,t:"S1",e:"In the introductory phase, sales <strong>increase at an increasing rate</strong> — the product is gaining initial traction and growing its customer base. Momentum builds."},
+ {q:"Which type of logistics should a company interested in improving its recycling operations focus on?",o:["Outbound","Inbound","Manufacturing","Reverse"],a:3,t:"S1",e:"<strong>Reverse logistics</strong> handles returns, recycling, and waste — goods flowing backwards through the supply chain. Recycling improvement = Reverse logistics focus."},
+ {q:"A distribution center receives large shipments from plants, then ships them as smaller shipments to customers. Which type of operation?",o:["Postponement","Cross-docking","Break-bulk","Reengineering"],a:2,t:"S1",e:"<strong>Break-bulk</strong> = receives large consolidated shipments and breaks them into smaller shipments for distribution. Large in, small out."},
+ {q:"A government entity sets a road tax exemption for electric vehicles. What is this type of government action called?",o:["Incentive","Regulation","Target","Control"],a:0,t:"S1",e:"<strong>Incentive</strong> = government action that rewards desired behavior through benefits (tax exemptions, subsidies). It encourages but doesn't mandate compliance."},
+ {q:"What is the most efficient way of minimizing empty miles in transportation?",o:["Picking up large and infrequent lots from suppliers","Picking up lots from suppliers after drop-off to customers","Picking up small and frequent lots from suppliers","Picking up large lots from suppliers and dropping off small lots"],a:1,t:"S1",e:"<strong>Picking up from suppliers AFTER drop-off to customers</strong> eliminates the empty return trip. The vehicle is productive in both directions."},
+ {q:"Which cross-border logistics decision will affect an organization's customs tax liabilities?",o:["Production lot size","Production location","Production quality","Production reliability"],a:1,t:"S2",e:"<strong>Production location</strong> determines the country of origin, which determines applicable tariff schedules and trade agreement benefits — directly affecting customs tax."},
+ {q:"Which agency helps prepare and submit customs declarations on behalf of an importer or exporter?",o:["Freight forwarder","Terminal operator","Payment bank","Border control"],a:0,t:"S2",e:"<strong>Freight forwarder</strong> prepares and submits customs declarations. They act as the intermediary between shippers and customs authorities."},
+ {q:"Which international law focuses on harmonizing customs procedures throughout the world?",o:["Infringement and Amended Foreign Trade Act (IFTA)","Prevention of Corruption in Tariffs and Trade (PCTT)","Trade Facilitation Agreement (TFA)","Trade Aspects of Commercial (TAC)"],a:2,t:"S2",e:"<strong>Trade Facilitation Agreement (TFA)</strong> — WTO agreement specifically designed to harmonize and streamline customs procedures globally."},
+ {q:"What is one of the goals of the Kyoto customs convention?",o:["To build more opaque customs procedures","To control the business community","To discourage preferences for trusted organizations","To make customs procedures more predictable"],a:3,t:"S2",e:"The Kyoto Convention aims to make <strong>customs procedures more predictable</strong> through simplification, standardization, and transparency."},
+ {q:"Which factor helps define and categorize customs tariff rates?",o:["Goods valuation","Commodity code","Transportation mode","Customer code"],a:1,t:"S2",e:"<strong>Commodity code</strong> (HS code / Harmonized System) categorizes every traded good with a numerical code that determines applicable tariff rates."},
+ {q:"A small business needs to cross an international border in a delivery van. Which practice ensures efficient product clearance?",o:["Assuming tariff consistency for different countries","Consolidating and paying duties at one time","Improving declarations and documentation","Classifying all products as duty-free"],a:2,t:"S2",e:"<strong>Improving declarations and documentation</strong> — accurate, complete paperwork is the primary enabler of smooth, efficient border clearance."},
+ {q:"Which skill will a customs and trade compliance manager applicant need to be successful?",o:["The ability to ensure successful systems deployment for vigorous trade operations","The ability to implement best practices for lowering excise tax obligations","The ability to assist with customization and trading of finished goods","The ability to provide a strategy for lowering direct taxes"],a:0,t:"S2",e:"A customs & trade compliance manager needs <strong>systems deployment skills for vigorous trade operations</strong> — managing the technology and processes enabling compliant cross-border trade."},
+ {q:"What is a characteristic of the Corrupt Practice Act of 1977?",o:["It encourages diverse payment types used to retain business","It involves corporations making unsanctioned payments both inside and outside the country","It encourages diverse payment types to obtain original business","It involves unsanctioned payments made by multinational corporations but not individuals"],a:1,t:"S2",e:"The FCPA involves <strong>corporations making unsanctioned payments both inside AND outside the country</strong>. Applies to corporations and individuals. Prohibits bribery of foreign officials."},
+ {q:"What is a key component of the supply cost that is specific to international trade?",o:["Rework cost","Product quality cost","Cross-border tariffs cost","Direct taxation cost"],a:2,t:"S2",e:"<strong>Cross-border tariffs cost</strong> is unique to international trade. Domestic operations don't pay import tariffs — this cost only exists when crossing borders."},
+ {q:"Which supply chain strategy is used to address demand changes using an agile method?",o:["Quick response","Taguchi method","Forrester's model","5S concept"],a:0,t:"S2",e:"<strong>Quick Response</strong> = agile supply chain strategy that shortens replenishment lead times to respond rapidly to actual demand changes."},
+ {q:"What is one of the benefits of efficient consumer response (ECR) in global trade?",o:["Improved product quality","Improved machine reliability","Improved service level","Improved plant maintenance"],a:2,t:"S2",e:"ECR's primary benefit = <strong>Improved service level</strong>. ECR focuses on supply chain efficiency to improve availability and responsiveness to consumer demand."},
+ {q:"A country with poor border control mechanisms creates which challenge for a garment manufacturer?",o:["Increased production costs for the manufacturer","Increased financial risks for raw material suppliers","Increased competition from foreign brands","Increased product loss in the market"],a:3,t:"S2",e:"Weak border controls allow counterfeit/unauthorized goods = <strong>increased product loss in the market</strong>. The brand's legitimate products face unfair competition from cheap imitations."},
+ {q:"Which agency helps in improving safety in the international trade and supply chain?",o:["Border Enforcement Security Task Force (BEST)","Carrying and freight forwarders","World customs organizations","International trade organizations"],a:0,t:"S2",e:"<strong>BEST (Border Enforcement Security Task Force)</strong> specifically focuses on improving safety and security in international trade and supply chain operations."},
+ {q:"A manager calculates average demand for the next period based on actual demand from the previous two years. Which quantitative forecasting method?",o:["Causal","Experimental","Moving average","Exponential smoothing"],a:2,t:"S3",e:"<strong>Moving average</strong> = calculates the average of actual demand over a defined historical period (here: 2 years). Simple, uses historical data directly."},
+ {q:"A manufacturing company keeps partially finished stock at a nearby supplier's warehouse for 1-hour delivery and immediate completion. Which stock type?",o:["In-process","Spare parts","Pipeline","Obsolescent"],a:0,t:"S3",e:"<strong>In-process stock</strong> = partially finished goods held close to production for rapid completion. The 1-hour proximity and incomplete goods confirm this."},
+ {q:"A company holds stock equivalent to the typical demand for one quarter for frequent customer purchases. Which stock type?",o:["Cycle","Safety","Speculative","Seasonal"],a:0,t:"S3",e:"<strong>Cycle stock</strong> = stock equivalent to regular expected demand over a period. Meeting 'frequent customer purchases for one quarter' = cycle stock definition."},
+ {q:"Using Pareto analysis, product lines sold quickly have 90% availability at all DCs. Which category?",o:["A line","B line","C line","D line"],a:0,t:"S3",e:"<strong>A line</strong> = fast-moving, high-value products. In Pareto/ABC analysis, A items get highest availability targets (90%+) and widest distribution coverage."},
+ {q:"A manager discovers delivery vehicles return empty each time. How to decrease costs by optimizing the return journey?",o:["By visiting customers to discuss new products","By collecting raw materials on the return trip","By outsourcing delivery to a dedicated third party","By investing in more distribution facilities"],a:1,t:"S3",e:"<strong>Collecting raw materials on the return trip</strong> eliminates empty backhaul miles. The vehicle delivers products then loads raw materials for the return — full both ways."},
+ {q:"A company's distribution moves from production → warehouse → local DCs → customers. Which distribution process?",o:["Flexible","Fast moving","Pull","Echelon"],a:3,t:"S3",e:"<strong>Echelon distribution</strong> = multi-level sequential distribution through multiple tiers (production → warehouse → local DC → customer). Each level is an echelon."},
+ {q:"A manager learns the plant has half the required inventory for a customer order and calculates the penalty for not holding adequate stock. Which inventory-holding cost element?",o:["Shortage cost","Risk cost","Capital financing cost","Storage cost"],a:0,t:"S3",e:"<strong>Shortage cost</strong> = the penalty/cost incurred when insufficient stock is available to meet demand. Also called stockout cost."},
+ {q:"A firm rapidly increases its variety of goods, requiring a larger assortment of inventory. Which factor causes rising inventory costs?",o:["Increased customer-order cycle time","Increased product proliferation","Decreased customer expectations","Decreased demand volatility"],a:1,t:"S3",e:"<strong>Increased product proliferation</strong> = more product varieties = more SKUs = more inventory required. Each new product line requires its own safety stock and cycle stock."},
+ {q:"A manager evaluates KPIs related to cost centers, compares actual to performance standards, and takes corrective action. What is the manager evaluating?",o:["Supply chain operations reference model","Just-in-time process","Operating plan","Operating control system"],a:3,t:"S3",e:"<strong>Operating control system</strong> = monitors KPIs, compares actual vs standard performance data, and drives corrective action. Real-time management of operations."},
+ {q:"A manager evaluates an operations control system and discovers data doesn't include all stages of production/distribution needed for decisions. Which principle is the concern?",o:["Validity","Reactivity to changes","Timeliness","Ease of maintenance"],a:0,t:"S3",e:"<strong>Validity</strong> = the principle that data must cover all relevant stages and variables needed for decision-making. Missing stages = invalid data = concern about validity."},
+ {q:"A firm with different manager levels contributing to a measurement system should consider which best practice?",o:["Product proliferation","Validity","Hierarchy of needs","Reactivity to changes"],a:2,t:"S3",e:"<strong>Hierarchy of needs</strong> = design the measurement system to reflect the different information needs at each level of management decision-making authority."},
+ {q:"A company identifies world-class standards from other industries to compare operating efficiency and identify improvement gaps. Which process?",o:["Benchmarking","User ownership","Activity-based costing","Cost-to-serve"],a:0,t:"S3",e:"<strong>Benchmarking</strong> = comparing performance against world-class standards from other organizations/industries to identify performance gaps and drive continuous improvement."},
+ {q:"A company uses technology to control all activities, automated equipment, and RF communications with operators in finished-goods distribution centers. Which system?",o:["Warehouse management","Omnichannel fulfillment","Distributed order management","Integrated business planning"],a:0,t:"S4",e:"<strong>Warehouse Management System (WMS)</strong> controls all warehouse activities including automated equipment, RF communications, picking, put-away, and inventory management."},
+ {q:"A firm donates materials to an aid agency following a disaster and asks to be notified when materials have reached final end users. When will the agency contact the firm?",o:["When materials are distributed","When materials have been transported onsite","When materials have reached the extended delivery point","When the overall impact report is complete"],a:0,t:"S3",e:"<strong>When materials are distributed</strong> = when they've reached the final end users. 'Distributed' to end users is the final logistics stage the donor requested notification for."},
+ {q:"A community college raises funds to support humanitarian aid in a country experiencing famine. Which role does the college play?",o:["Beneficiary","Donor","Agency","End-user"],a:1,t:"S3",e:"<strong>Donor</strong> = provides funding or resources. The college raises and provides funds — it doesn't deliver aid (Agency) or receive it (Beneficiary/End-user)."},
+ {q:"A firm uses a balanced scorecard measuring learning and innovation perspective related to R&D impact on new-to-market goods. Which metric?",o:["New product introduction","Market share","Customer acquisition","Quality improvement"],a:0,t:"S3",e:"<strong>New product introduction</strong> = the metric for learning and innovation perspective when focused on R&D impact on bringing new products to market."},
+ {q:"A firm uses an online system to contract transportation similar to an online trading platform for logistics hosted by a third-party. Which platform?",o:["Procurement software","Supply-chain event-management system","Digital freight exchange software","Enterprise-wide information system"],a:2,t:"S4",e:"<strong>Digital freight exchange software</strong> = an online marketplace/trading platform for logistics services, hosted by third party. Like an exchange for freight capacity."},
+ {q:"A firm monitors distribution center expenses like labor and rent varying by location. Which performance indicator?",o:["Activity-based costing","Variability of daily throughput","Direct product profitability","Regional cost variations"],a:3,t:"S4",e:"<strong>Regional cost variations</strong> = tracking how costs differ across locations. Monitoring labor and rent differences between DCs = regional cost variation analysis."},
+ {q:"A firm uses a formal benchmarking system considering customer requirements and focusing on improving supplier performance for consumers. Which system?",o:["Inventory demand forecasting","Quality function deployment","Omnichannel fulfillment","Distributed order management"],a:1,t:"S3",e:"<strong>Quality Function Deployment (QFD)</strong> = customer-focused benchmarking system that captures customer requirements and deploys them to improve supplier/production performance."},
+ {q:"A firm uses a formal benchmarking framework applying standards based on productivity and operational performance excellence officially recognized in the United States. Which framework?",o:["Logmark Supply Chain Benchmarking Group criteria","Malcolm Baldridge National Quality Award criteria","International Organization for Standardization criteria","Quality function deployment criteria"],a:1,t:"S3",e:"<strong>Malcolm Baldridge National Quality Award</strong> = the US government-recognized framework for organizational performance excellence, productivity, and quality."},
+ {q:"A manufacturer outsources distribution/logistics to focus on core business. How will this impact the manufacturer?",o:["It will cause a decrease in direct product profitability","It will reduce flexibility of warehouse management","It will reduce effectiveness of inventory demand forecasting","It will cause a decrease in logistics decision-making control"],a:3,t:"S3",e:"Outsourcing logistics = <strong>decrease in logistics decision-making control</strong>. The manufacturer gives up direct control over logistics operations to the 3PL."},
+ {q:"A manufacturer outsources to a 3PL providing facilities, DCs, and transport vehicles. What is the impact?",o:["It will provide ability to reduce the product life cycle through innovation","It will increase product proliferation as a result of cost savings","It will decrease demand volatility as a result of business planning","It will provide investment opportunities in more profitable business areas"],a:3,t:"S3",e:"Outsourcing frees capital from logistics assets → <strong>investment opportunities in more profitable business areas</strong>. The manufacturer can redeploy capital to core competencies."},
+ {q:"A firm has decided to use a multiuser third-party distribution and logistics agency. Which advantage is gained?",o:["Economies of scale can be achieved with other firms","Benchmarking will be provided by the third party","Agency staff possesses general knowledge of operations management","Equipment will meet basic operations requirements"],a:0,t:"S3",e:"Multiuser 3PL = <strong>economies of scale</strong> achieved by sharing costs (vehicles, warehouses, staff) across multiple clients. Per-unit cost decreases with shared infrastructure."},
+ {q:"A firm with a strong reputation outsources to an unknown multiuser 3PL start-up. Which scenario is likely?",o:["The third-party firm will improve the end-user customer experience","The third-party brand could interfere with the firm's brand","Omnichannel fulfillment will improve through collaboration","Benchmarking with competitive logistics firms will be effective"],a:1,t:"S3",e:"<strong>The third-party brand could interfere with the firm's brand</strong>. Unknown/weak 3PL reputation affects customer experience and can damage the firm's brand perception."},
+ {q:"A firm decides to outsource its operations management functions. Which first step should it take?",o:["Make operational readjustments","Conduct open-book audits with the provider","Identify service requirements and costs","Pinpoint industry best practices"],a:2,t:"S3",e:"<strong>Identify service requirements and costs</strong> is the first step. Before selecting or approaching any provider, you must define what services you need and at what cost target."},
+ {q:"A 3PL scales back from multiuser to dedicated outsourcing. Which capability allows it to charge more?",o:["Reduced risk cost related to product obsolescence","Economies of scale with other firms","Consolidation of loads and higher delivery frequency","Specialization of knowledge and expertise"],a:3,t:"S3",e:"<strong>Specialization of knowledge and expertise</strong> = dedicated service = deep expertise in one client's specific requirements. This specialized capability commands a premium price."},
+ {q:"A firm monitors provider activity targets via open-book audits with different decision-maker levels. What is the firm engaged in?",o:["Performance tracking","Integrated business planning","Product life cycle optimization","Benchmarking program"],a:0,t:"S3",e:"<strong>Performance tracking</strong> = monitoring achievement of provider targets through structured reviews and open-book audits. This is formal 3PL relationship management."},
+ {q:"A firm writes a clause that the 3PL receives a % of profits when exceeding performance targets. Which approach?",o:["Experimental forecasting calculations","Gainsharing-based activity incentive","Exponential smoothing demand estimates","Efficient just-in-time operations system"],a:1,t:"S3",e:"<strong>Gainsharing-based activity incentive</strong> = sharing financial gains (profits above targets) with the provider. Aligns provider incentives with client performance objectives."},
+ {q:"A warehouse manager wants to connect picking operations to the WMS to eliminate human intervention. Which inventory management system can help?",o:["Push-back racking system","Automated storage/retrieval system","Drive-in and drive-through racking system","Block stacking system"],a:1,t:"S4",e:"<strong>Automated storage/retrieval system (AS/RS)</strong> connects directly to the WMS and automates both storage and retrieval of goods, eliminating human intervention in picking."},
+ {q:"A company evaluates storage options for long turbine blades with minimal investment costs. Which system?",o:["Powered mobile racking","Drive-in and drive-through racking","Cantilevered racking","Automated storage/retrieval racking"],a:2,t:"S4",e:"<strong>Cantilevered racking</strong> = designed for long, awkward items (lumber, pipes, turbine blades). Arms extend from uprights with no front column to accommodate length. Low cost."},
+ {q:"A home utensils company wants to reduce direct labor costs in warehouse operations. Which activity should it focus on for the biggest reduction?",o:["Storing","Housekeeping","Picking","Labeling"],a:2,t:"S4",e:"<strong>Picking</strong> = the most labor-intensive and cost-intensive warehouse activity. Focusing automation or efficiency improvements on picking drives the biggest labor cost reduction."},
+ {q:"Two pickers have productivity of 100 vs 200 lines/hour. What is the reason for the difference?",o:["Picking automation level","Measurement standards","Picking method","Stock replenishment accuracy"],a:2,t:"S4",e:"<strong>Picking method</strong> = at the individual picker level, the method used (single order, batch, zone, wave picking) determines productivity differences between individual pickers."},
+ {q:"Two warehouses have average picking productivity of X vs 2X orders/picker/hour. What is the reason?",o:["Measurement standards","Picking operation hours","Scale of warehouse","Picking equipment usage"],a:3,t:"S4",e:"<strong>Picking equipment usage</strong> = at the warehouse (facility) level, equipment differences (conveyors, pick-to-light, AS/RS, voice systems) explain 2x productivity differences between facilities."},
+ {q:"A large warehouse yard wants to automate the process of assigning bays for loading and unloading vehicles. Which technology?",o:["Autonomous mobile robots (AMR)","Automated guided vehicles (AGV)","Blockchain","Geofencing"],a:3,t:"S4",e:"<strong>Geofencing</strong> = uses GPS/location technology to automatically trigger actions (like bay assignment) when vehicles enter defined geographic zones in the yard."},
+ {q:"What is an example of short-term planning in warehouse management?",o:["Budget planning based on expansion projections","Demand planning based on market requirements","Capacity planning based on business growth","Workload planning based on order receipts"],a:3,t:"S4",e:"<strong>Workload planning based on order receipts</strong> = responding to actual orders = short-term (daily/weekly) planning. Budget and capacity planning are long-term."},
+ {q:"Which operational metric can help a corporation improve its warehouse employee safety statistics?",o:["Stock integrity","Days without an accident","Customer-service levels","Environmental-audit adherence"],a:1,t:"S4",e:"<strong>Days without an accident</strong> = directly measures and encourages safety performance. Tracking this metric creates visibility and accountability for workplace safety."},
+ {q:"Stock received 12th, moved to storage 15th. Order received 16th, dispatched 17th. What is the put-away cycle time?",o:["Two days","Three days","Four days","Five days"],a:1,t:"S4",e:"Put-away cycle time = receipt to storage location. <strong>15th - 12th = 3 days</strong>. The order processing (16th-17th) is NOT part of put-away time."},
+ {q:"Warehouses W=4, X=5, Y=8, Z=10 annual stock turnover ratios. Which holds the lowest inventory level?",o:["Warehouse W","Warehouse X","Warehouse Y","Warehouse Z"],a:3,t:"S4",e:"<strong>Warehouse Z (ratio=10)</strong> holds the lowest inventory. Higher turnover = inventory cycles through faster = less stock held at any time. Z turns over 10x/year = leanest."},
+ {q:"A company wants to improve put-away efficiency across its storage network using advanced systems. Which system?",o:["Transportation management system (TMS)","Yard management system (YMS)","Warehouse management system (WMS)","Order management system (OMS)"],a:2,t:"S4",e:"<strong>Warehouse Management System (WMS)</strong> = the system that controls and optimizes all warehouse operations including put-away, picking, and inventory management."},
+];
+
+// ═══ FLASHCARDS ═══
+const FC=[
+ {f:"4PL delivers solutions how?",b:"Across the ENTIRE supply chain",s:"4PL orchestrates all logistics. 3PL = specific parts only."},
+ {f:"Best mode for high-value fragile items over long distance?",b:"Air",s:"Speed + security + careful handling. Despite cost."},
+ {f:"Bunker Adjustment Surcharge accounts for what?",b:"Variations in marine (sea) fuel pricing",s:"'Bunker' = ship fuel. Not currency, not peak season."},
+ {f:"Two key road transport selection factors for large shipment?",b:"Weight and Volume",s:"Not length/breadth, not size/shape. Weight + volume determine vehicle type."},
+ {f:"Lowest volume-to-weight ratio = ?",b:"Most efficient for distribution",s:"Dense product = more weight per unit of space = fewer trips."},
+ {f:"Which PLC stage has greatest positive slope?",b:"Growth",s:"Growth = fastest sales acceleration. Introductory starts it, Growth peaks it."},
+ {f:"Introductory PLC phase: sales behavior?",b:"Increase at an increasing rate",s:"Not Growth (which has steepest slope). Introductory is early acceleration."},
+ {f:"Demand fluctuation → which production strategy?",b:"Variability-based",s:"Designed specifically for high demand variation. Agile adjustment."},
+ {f:"Water treatment chemicals non-stop → manufacturing process?",b:"Continuous production",s:"Non-stop, identical product, 24/7. Batch would require stopping."},
+ {f:"What minimizes waste in production?",b:"Quality performance",s:"Defects, rework, scrap = waste. Quality eliminates them at source."},
+ {f:"Lowering costs in logistics network reengineering results in?",b:"Number of facilities decreases",s:"Fewer facilities = lower costs. But longer lead times, less responsiveness."},
+ {f:"Improving recycling → which logistics type?",b:"Reverse logistics",s:"Returns, recycling, waste = backward flow through supply chain."},
+ {f:"Large in, small out distribution operation?",b:"Break-bulk",s:"Receives large consolidated shipments, distributes as smaller ones."},
+ {f:"Road tax exemption for EVs = government action type?",b:"Incentive",s:"Rewards desired behavior with a benefit. Not a mandate = not a regulation."},
+ {f:"Minimize empty return miles — best method?",b:"Pick up from suppliers AFTER drop-off to customers",s:"Backhaul utilization — productive both ways."},
+ {f:"Which decision affects customs tax liability?",b:"Production location (determines country of origin)",s:"Origin = tariff schedule. Not lot size, quality, or reliability."},
+ {f:"Who prepares/submits customs declarations for importers?",b:"Freight forwarder",s:"Intermediary between shippers and customs. Not terminal operator."},
+ {f:"International law harmonizing customs procedures worldwide?",b:"Trade Facilitation Agreement (TFA)",s:"WTO agreement. Streamlines global customs. Not IFTA, PCTT, or TAC."},
+ {f:"Kyoto Customs Convention goal?",b:"Make customs procedures more predictable",s:"Simplification, standardization, transparency. Not opacity or control."},
+ {f:"What categorizes customs tariff rates?",b:"Commodity code (HS code)",s:"Numerical classification of goods. Not transportation mode."},
+ {f:"FCPA (1977) characteristic?",b:"Corporations making unsanctioned payments inside AND outside the country",s:"Applies to corporations AND individuals. Both domestic and international."},
+ {f:"Supply cost specific to international trade?",b:"Cross-border tariffs cost",s:"Only exists when crossing borders. Domestic operations don't pay import tariffs."},
+ {f:"Agile supply chain demand strategy?",b:"Quick Response",s:"Shortens replenishment cycles. Fast reaction to actual demand."},
+ {f:"ECR benefit in global trade?",b:"Improved service level",s:"Efficient Consumer Response = supply chain efficiency → better consumer availability."},
+ {f:"Agency improving safety in international trade/supply chain?",b:"Border Enforcement Security Task Force (BEST)",s:"Not customs organizations — specifically safety and security focused."},
+ {f:"Average of past 2 years' actual demand = which forecasting?",b:"Moving average",s:"Fixed historical window, simple average of actual data."},
+ {f:"Partially finished stock at nearby supplier for 1-hour delivery?",b:"In-process stock",s:"WIP held close for rapid completion. Not pipeline (in transit)."},
+ {f:"Stock matching typical demand for one quarter?",b:"Cycle stock",s:"Regular expected demand for a period = cycle stock. Safety = buffer."},
+ {f:"Fast-moving products at 90% availability at all DCs = Pareto category?",b:"A line",s:"Top 20% of products, ~80% of revenue, highest availability."},
+ {f:"Penalty for not holding adequate stock?",b:"Shortage cost",s:"Also called stockout cost. Element of inventory-holding cost."},
+ {f:"More product varieties → rising inventory costs driver?",b:"Increased product proliferation",s:"More SKUs = more inventory types to hold = higher total inventory."},
+ {f:"KPI tracking, actual vs standard, corrective action system?",b:"Operating control system",s:"Not operating plan (future). Controls = current monitoring."},
+ {f:"Data missing stages of production = which measurement principle violated?",b:"Validity",s:"Validity = data covers all necessary variables for decision-making."},
+ {f:"Pareto A/B/C inventory: which turns over fastest?",b:"A line (highest velocity)",s:"A = fast movers. C = slow movers. Pareto 80/20."},
+ {f:"Community college raises funds for aid = which humanitarian role?",b:"Donor",s:"Provides resources. Agency = delivers. Beneficiary = receives."},
+ {f:"R&D impact on new-to-market goods = balanced scorecard metric?",b:"New product introduction",s:"Learning & innovation perspective. Not market share or quality improvement."},
+ {f:"Online trading platform for contracting transportation, hosted by 3rd party?",b:"Digital freight exchange software",s:"Like a stock exchange for freight. Not procurement software (internal)."},
+ {f:"Labor & rent varying by DC location = which KPI?",b:"Regional cost variations",s:"Monitoring geographic cost differences across distribution network."},
+ {f:"Customer-focused benchmarking improving supplier performance?",b:"Quality Function Deployment (QFD)",s:"Captures customer voice, deploys to supplier requirements."},
+ {f:"US framework for productivity and operational performance excellence?",b:"Malcolm Baldridge National Quality Award",s:"Officially recognized in US. Not ISO (global), not QFD."},
+ {f:"Outsourcing logistics = decrease in what?",b:"Logistics decision-making control",s:"You give up control when you outsource. Tradeoff for cost reduction."},
+ {f:"Outsourcing frees capital → enables what?",b:"Investment opportunities in more profitable business areas",s:"Capital redirected from logistics assets to core competencies."},
+ {f:"Multiuser 3PL primary advantage?",b:"Economies of scale with other firms",s:"Shared infrastructure reduces per-unit cost across multiple clients."},
+ {f:"First step when outsourcing operations management?",b:"Identify service requirements and costs",s:"Define needs before approaching any provider. Not audit first."},
+ {f:"Dedicated 3PL charges premium because of?",b:"Specialization of knowledge and expertise",s:"Serves one client = deep expertise = worth premium. Not economies of scale."},
+ {f:"Provider gets % of profits for exceeding targets = ?",b:"Gainsharing-based activity incentive",s:"Aligns provider incentives with client performance. Not exponential smoothing."},
+ {f:"Automate picking + connect to WMS to eliminate human intervention?",b:"Automated storage/retrieval system (AS/RS)",s:"Fully automated. Not push-back racking (passive storage)."},
+ {f:"Storage system for long turbine blades, minimal investment?",b:"Cantilevered racking",s:"Arms with no front column for long/awkward items. Low cost."},
+ {f:"Most labor-intensive warehouse activity?",b:"Picking",s:"Biggest target for automation to reduce labor costs."},
+ {f:"Individual picker productivity difference reason?",b:"Picking method",s:"Method (single order, batch, zone, wave) drives individual productivity."},
+ {f:"Facility-level picking productivity difference reason?",b:"Picking equipment usage",s:"Equipment (conveyors, pick-to-light, AS/RS) drives facility-level differences."},
+ {f:"Automate bay assignment for loading/unloading vehicles in yard?",b:"Geofencing",s:"GPS-triggered automation when vehicles enter defined zones."},
+ {f:"Short-term warehouse planning example?",b:"Workload planning based on order receipts",s:"Responding to actual orders = short-term (daily/weekly)."},
+ {f:"Metric to improve warehouse employee safety?",b:"Days without an accident",s:"Directly measures and incentivizes safety performance."},
+ {f:"Stock received day 12, moved to storage day 15 = put-away time?",b:"3 days",s:"Put-away = receipt to storage only. 15-12=3. Not order processing time."},
+ {f:"Higher stock turnover ratio = ?",b:"Lower inventory held",s:"Turns over faster = less stock on hand. Warehouse Z=10 = leanest."},
+ {f:"System for put-away efficiency across storage network?",b:"Warehouse Management System (WMS)",s:"Controls all warehouse ops including put-away optimization."},
+ {f:"Production → warehouse → local DCs → customers = which distribution type?",b:"Echelon distribution",s:"Multi-level sequential tiers. Not cross-docking (no storage), not break-bulk."},
+];
+
+// ═══ TRAPS DATA ═══
+const TRAPS=[
+ {h:"3PL vs 4PL — specific parts vs entire supply chain",b:"<strong>3PL</strong> delivers solutions across SPECIFIC PARTS of the supply chain. <strong>4PL</strong> delivers across the ENTIRE supply chain and orchestrates 3PLs. 4PL ≠ LLP (Lead Logistics Provider) — they are distinct terms. The exam will try to swap these."},
+ {h:"Operational vs Strategic depot decisions",b:"'Location and size of depots' = STRATEGIC (long-term structure). 'Vehicle maintenance' = OPERATIONAL (day-to-day running). Depot layout = tactical/strategic. Fleet capacity = tactical. Daily maintenance = operational."},
+ {h:"PLC: Introductory vs Growth — both have increasing sales",b:"<strong>Introductory</strong>: sales increase at an increasing rate (gaining momentum). <strong>Growth</strong>: GREATEST POSITIVE SLOPE — fastest acceleration. 'Greatest positive slope' always = Growth. 'What happens in introductory' = increasing at an increasing rate."},
+ {h:"Volume-to-weight ratio — lower = MORE efficient (counterintuitive)",b:"Students assume higher ratio = better. WRONG. Lower volume-to-weight = denser = more weight packed into less space = MORE efficient per trip. Product A (100) beats Product C (1000) for distribution efficiency."},
+ {h:"Bunker vs Currency vs Peak Season surcharge",b:"<strong>Marine fuel variation</strong> = Bunker Adjustment Surcharge (BAS). Currency fluctuation = Currency Adjustment Surcharge (CAS). Busy shipping periods = Peak Season Surcharge. 'Bunker' = ship fuel — this is the only one for fuel costs."},
+ {h:"Break-bulk vs Cross-docking vs Echelon",b:"<strong>Break-bulk</strong> = large in, small out (receives consolidated, redistributes as smaller). <strong>Cross-docking</strong> = no storage, straight transfer. <strong>Echelon</strong> = multi-tier sequential distribution (factory→warehouse→DC→customer). The echelon question describes a production→warehouse→localDC→customer flow."},
+ {h:"FCPA: corporations AND individuals, inside AND outside country",b:"Two common wrong answers: (1) 'corporations but not individuals' — WRONG, applies to individuals too. (2) 'only outside the country' — WRONG, applies inside AND outside. The FCPA covers unsanctioned payments (bribes) by both corps and individuals, domestically and internationally."},
+ {h:"Picking method (individual) vs Picking equipment (facility level)",b:"Q63: Two PICKERS with different rates → <strong>Picking method</strong>. Q64: Two WAREHOUSES with different rates → <strong>Picking equipment usage</strong>. Don't confuse the level of analysis. Individual = method. Facility = equipment."},
+ {h:"Put-away cycle time calculation — receipt to storage ONLY",b:"Put-away = from stock RECEIPT to STORAGE LOCATION. Not from order receipt to dispatch. Q68: Received 12th, stored 15th = <strong>3 days</strong>. The order processing (16th to 17th) is irrelevant to put-away time."},
+ {h:"Stock turnover ratio — higher = LOWER inventory (counterintuitive)",b:"Higher turnover ratio = inventory cycles through faster = LESS stock held. Warehouse Z (10) holds LESS than Warehouse W (4). Most students instinctively think higher ratio = more inventory. Opposite is true."},
+ {h:"Cycle vs Safety vs In-process vs Pipeline stock",b:"<strong>Cycle</strong> = regular demand for a period (one quarter). <strong>Safety</strong> = buffer for uncertainty. <strong>In-process</strong> = partially finished, near production, rapid completion. <strong>Pipeline</strong> = in transit. 'Partially finished at nearby supplier for 1-hour delivery' = In-process, NOT pipeline."},
+ {h:"Moving average vs Exponential smoothing",b:"<strong>Moving average</strong> = simple average of actual demand from a fixed historical period (previous 2 years). <strong>Exponential smoothing</strong> = weighted average giving more weight to recent data — automatically adjusts. 'Average of past 2 years' always = Moving average."},
+ {h:"Incentive vs Regulation — voluntary vs mandatory",b:"<strong>Incentive</strong> = reward for desired behavior (tax exemption, subsidy). <strong>Regulation</strong> = mandatory rule with penalties. Tax EXEMPTION = incentive. Emissions STANDARDS = regulation. The EV road tax exemption question: gives a benefit = Incentive."},
+ {h:"Shortage cost vs Risk cost vs Capital cost vs Storage cost",b:"<strong>Shortage cost</strong> = penalty for not having enough stock to fulfill orders. <strong>Risk cost</strong> = risk of obsolescence, damage, deterioration. <strong>Capital financing cost</strong> = cost of money tied up in inventory. <strong>Storage cost</strong> = space, handling. 'Penalty for inadequate stock' = Shortage."},
+ {h:"Dedicated 3PL (specialization) vs Multiuser 3PL (economies of scale)",b:"<strong>Multiuser 3PL</strong> advantage = economies of scale (shared across clients). <strong>Dedicated 3PL</strong> advantage = specialization of knowledge. Dedicated can charge MORE because of specialization. Multiuser is CHEAPER because of shared infrastructure."},
+ {h:"Humanitarian logistics: Donor vs Agency vs Beneficiary",b:"<strong>Donor</strong> = provides funds/resources (community college raising money). <strong>Agency</strong> = delivers the aid (NGO, Red Cross on the ground). <strong>Beneficiary</strong> = receives the aid (affected population). 'Raises funds' = Donor, not Agency."},
+ {h:"Geofencing vs AMR vs AGV for yard bay assignment",b:"<strong>Geofencing</strong> = GPS-triggered automation for yard management (bay assignment for vehicles). <strong>AMR</strong> = inside warehouse, autonomous navigation. <strong>AGV</strong> = inside warehouse, follows fixed paths. Bay ASSIGNMENT for VEHICLES in the YARD = Geofencing."},
+ {h:"WMS vs TMS vs YMS vs OMS — know all four",b:"<strong>WMS</strong> = warehouse operations (picking, put-away, inventory). <strong>TMS</strong> = transportation routing and carriers. <strong>YMS</strong> = vehicle movements in the yard. <strong>OMS</strong> = customer-facing order processing. 'RF communications with operators in distribution centers' and 'put-away efficiency' both = WMS."},
+];
+
+// ═══ DECISION TREES ═══
+const TREES=[
+ {title:"Which Logistics Provider Level?",icon:"🏭",color:"var(--green)",
+  root:{q:"Do you need management of the ENTIRE supply chain?",
+   yes:{label:"Entire supply chain management",answer:"4PL (Fourth-Party Logistics)",rule:"4PL orchestrates ALL logistics including managing 3PLs. Delivers solutions across the entire supply chain."},
+   no:{q:"Outsourcing SPECIFIC logistics functions (transport, warehouse)?",
+    yes:{label:"Specific logistics functions",answer:"3PL (Third-Party Logistics)",rule:"3PL provides transportation, warehousing, or other specific supply chain functions."},
+    no:{label:"Keeping logistics in-house",answer:"1PL/2PL (In-house or asset-based)",rule:"1PL = company owns all logistics assets. 2PL = asset-based carriers hired directly."}}}},
+ {title:"Which Distribution Operation Type?",icon:"📦",color:"var(--orange)",
+  root:{q:"Does the DC receive large shipments and send out SMALLER ones?",
+   yes:{label:"Large in, small out",answer:"Break-bulk",rule:"Break-bulk consolidates inbound freight then redistributes as smaller shipments to customers."},
+   no:{q:"Are goods transferred DIRECTLY from inbound to outbound with NO storage?",
+    yes:{label:"No storage, straight transfer",answer:"Cross-docking",rule:"Cross-docking minimizes handling by moving goods directly from receiving dock to outbound shipment."},
+    no:{q:"Does distribution flow through MULTIPLE TIERS (factory→warehouse→DC→customer)?",
+     yes:{label:"Multi-tier sequential flow",answer:"Echelon distribution",rule:"Echelon = multiple sequential distribution levels. Each level is a distinct layer in the network."},
+     no:{label:"Delaying final configuration",answer:"Postponement",rule:"Postponement delays final product configuration/labeling until closer to demand point."}}}},
+ {title:"Which Government Transport Action?",icon:"🏛️",color:"var(--cyan)",
+  root:{q:"Does it REWARD desired behavior (benefit, subsidy, exemption)?",
+   yes:{label:"Rewards/encourages behavior",answer:"Incentive",rule:"Incentive = tax exemption, subsidy, grant. Voluntary — companies choose whether to comply. EV tax exemption = Incentive."},
+   no:{q:"Is it a MANDATORY rule with penalties for non-compliance?",
+    yes:{label:"Mandatory rule with penalties",answer:"Regulation",rule:"Regulation = legally binding rules (emissions standards, speed limits, weight restrictions). Non-compliance = penalties."},
+    no:{label:"Government ownership/direct management",answer:"Control",rule:"Control = direct government management of transport infrastructure or operations."}}}},
+ {title:"Which Inventory Type?",icon:"📊",color:"var(--purple)",
+  root:{q:"Is it a BUFFER to protect against demand uncertainty or supply delays?",
+   yes:{label:"Buffer/protection stock",answer:"Safety Stock",rule:"Safety stock protects against stockouts from demand spikes or supply delays. Held ABOVE expected demand."},
+   no:{q:"Is it PARTIALLY FINISHED goods held close to production for quick completion?",
+    yes:{label:"Partially finished, near production",answer:"In-process Stock",rule:"In-process = WIP held at or near production for rapid completion and dispatch. Near supplier = in-process, not pipeline."},
+    no:{q:"Is it stock matching the TYPICAL REGULAR DEMAND for a period (cycle)?",
+     yes:{label:"Regular expected demand stock",answer:"Cycle Stock",rule:"Cycle stock = inventory equivalent to typical demand over a replenishment cycle (daily, weekly, quarterly)."},
+     no:{q:"Is it stock IN TRANSIT between locations?",
+      yes:{label:"In transit between locations",answer:"Pipeline Stock",rule:"Pipeline stock = inventory in the supply chain on the move. In transit, not yet at destination."},
+      no:{label:"Built ahead of seasonal peaks",answer:"Seasonal / Speculative Stock",rule:"Seasonal = built up for predictable peaks. Speculative = bought ahead anticipating price rises."}}}}}},
+ {title:"Which Warehouse System?",icon:"🏗️",color:"var(--gold)",
+  root:{q:"Are you managing ALL warehouse operations (picking, put-away, RF, inventory)?",
+   yes:{label:"All warehouse operations",answer:"WMS (Warehouse Management System)",rule:"WMS controls all warehouse activities: picking, put-away, inventory, automated equipment, RF communications."},
+   no:{q:"Are you managing TRANSPORTATION routes and carriers?",
+    yes:{label:"Transport routing and carriers",answer:"TMS (Transportation Management System)",rule:"TMS optimizes transportation: carrier selection, route planning, freight audit, tracking."},
+    no:{q:"Are you managing VEHICLE MOVEMENTS in the yard/docks?",
+     yes:{label:"Yard and dock management",answer:"YMS (Yard Management System)",rule:"YMS controls vehicle check-in, dock assignment, yard movement, and gate management."},
+     no:{label:"Customer-facing order processing",answer:"OMS (Order Management System)",rule:"OMS handles multi-channel order capture, promising, and routing to fulfillment locations."}}}}},
+];
+
+// ═══ QUICK-FIRE ═══
+const QF=[
+ {c:'S1',s:"Large shipments broken into smaller ones for distribution.",f:"Break-bulk"},
+ {c:'S1',s:"Fourth-party logistics scope.",f:"Entire supply chain"},
+ {c:'S1',s:"Primary reason companies outsource distribution.",f:"Reduce logistics costs"},
+ {c:'S1',s:"Best transport mode for expensive fragile item, very long distance.",f:"Air"},
+ {c:'S1',s:"Marine fuel pricing surcharge name.",f:"Bunker Adjustment Surcharge"},
+ {c:'S1',s:"Two key factors for selecting road transport for large shipment.",f:"Weight and volume"},
+ {c:'S1',s:"Lowest volume-to-weight ratio = most or least efficient?",f:"Most efficient"},
+ {c:'S1',s:"PLC stage with greatest positive slope.",f:"Growth"},
+ {c:'S1',s:"High demand fluctuation → which production strategy?",f:"Variability-based"},
+ {c:'S1',s:"Non-stop chemical production process type.",f:"Continuous production"},
+ {c:'S1',s:"Performance type that minimizes waste.",f:"Quality performance"},
+ {c:'S1',s:"Cost reduction reengineering → what decreases?",f:"Number of facilities"},
+ {c:'S1',s:"Recycling improvement → which logistics type?",f:"Reverse logistics"},
+ {c:'S1',s:"Government tax exemption for EVs = action type.",f:"Incentive"},
+ {c:'S1',s:"Minimize empty return miles strategy.",f:"Pick up from suppliers after drop-off"},
+ {c:'S1',s:"Production → warehouse → local DC → customer = distribution type.",f:"Echelon"},
+ {c:'S2',s:"Decision affecting customs tax liability.",f:"Production location"},
+ {c:'S2',s:"Who prepares customs declarations for exporters?",f:"Freight forwarder"},
+ {c:'S2',s:"International law harmonizing customs worldwide.",f:"Trade Facilitation Agreement (TFA)"},
+ {c:'S2',s:"Kyoto Convention goal.",f:"Predictable customs procedures"},
+ {c:'S2',s:"What categorizes customs tariff rates?",f:"Commodity code (HS code)"},
+ {c:'S2',s:"Supply cost unique to international trade.",f:"Cross-border tariffs"},
+ {c:'S2',s:"Agile demand-response supply chain strategy.",f:"Quick Response"},
+ {c:'S2',s:"Agency that improves safety in international trade.",f:"BEST (Border Enforcement Security Task Force)"},
+ {c:'S3',s:"Average of 2 years actual demand = which forecasting?",f:"Moving average"},
+ {c:'S3',s:"Partially finished stock held near production for rapid completion.",f:"In-process stock"},
+ {c:'S3',s:"Stock matching typical demand for one quarter.",f:"Cycle stock"},
+ {c:'S3',s:"Fast-moving products at 90% availability = Pareto category.",f:"A line"},
+ {c:'S3',s:"Penalty for inadequate stock to meet demand.",f:"Shortage cost"},
+ {c:'S3',s:"More SKUs driving rising inventory costs.",f:"Product proliferation"},
+ {c:'S3',s:"KPIs vs standards → corrective action system.",f:"Operating control system"},
+ {c:'S3',s:"Data missing stages of production = violated principle.",f:"Validity"},
+ {c:'S3',s:"Community college raising funds for famine relief = role.",f:"Donor"},
+ {c:'S3',s:"R&D impact on new products = balanced scorecard metric.",f:"New product introduction"},
+ {c:'S3',s:"Online freight trading platform hosted by third party.",f:"Digital freight exchange software"},
+ {c:'S3',s:"Labor/rent cost differences by DC location = KPI.",f:"Regional cost variations"},
+ {c:'S3',s:"Customer-focused benchmarking improving supplier performance.",f:"Quality Function Deployment (QFD)"},
+ {c:'S3',s:"US government-recognized operational excellence framework.",f:"Malcolm Baldridge National Quality Award"},
+ {c:'S3',s:"Outsourcing logistics → what decreases?",f:"Decision-making control"},
+ {c:'S3',s:"Multiuser 3PL primary advantage.",f:"Economies of scale"},
+ {c:'S3',s:"First step when outsourcing operations.",f:"Identify service requirements and costs"},
+ {c:'S3',s:"Dedicated 3PL premium justification.",f:"Specialization of knowledge and expertise"},
+ {c:'S3',s:"Provider gets % of profits for exceeding targets.",f:"Gainsharing-based incentive"},
+ {c:'S4',s:"System controlling all warehouse activities including RF and automation.",f:"WMS (Warehouse Management System)"},
+ {c:'S4',s:"Fully automated picking connected to WMS, no human intervention.",f:"Automated storage/retrieval system (AS/RS)"},
+ {c:'S4',s:"Storage for long turbine blades, minimal cost.",f:"Cantilevered racking"},
+ {c:'S4',s:"Most labor-intensive warehouse activity.",f:"Picking"},
+ {c:'S4',s:"Individual picker productivity difference cause.",f:"Picking method"},
+ {c:'S4',s:"Facility-level picking productivity difference cause.",f:"Picking equipment usage"},
+ {c:'S4',s:"GPS-triggered bay assignment for vehicles in yard.",f:"Geofencing"},
+ {c:'S4',s:"Short-term warehouse planning example.",f:"Workload planning based on order receipts"},
+ {c:'S4',s:"Metric to improve warehouse employee safety.",f:"Days without an accident"},
+ {c:'S4',s:"Stock received day 12, stored day 15 = put-away cycle time.",f:"3 days"},
+ {c:'S4',s:"Higher stock turnover ratio = more or less inventory?",f:"Less inventory held"},
+ {c:'S4',s:"System for put-away efficiency across storage network.",f:"WMS (Warehouse Management System)"},
+];
+
+// ════ DRILL ENGINE ════
+let drillFilter='all',drillList=[],drillAnswered={},drillCorrect=0;
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+function getFilteredQ(){if(drillFilter==='all')return QQ;return QQ.filter(q=>q.t===drillFilter);}
+function setFilter(f,btn){drillFilter=f;document.querySelectorAll('.ctrl-row .mode-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');resetDrill();}
+function resetDrill(){drillList=shuffle(getFilteredQ());drillAnswered={};drillCorrect=0;updateDrillStats();buildTracker();buildDrill();}
+function buildTracker(){const g=document.getElementById('d-tracker');g.innerHTML='';drillList.forEach((q,i)=>{const d=document.createElement('div');d.className='tq';d.id='tq'+i;d.textContent=i+1;d.onclick=()=>scrollToQ(i);g.appendChild(d);});}
+function scrollToQ(i){const el=document.getElementById('dq'+i);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});}
+function updateDrillStats(){const tot=Object.keys(drillAnswered).length;const wrong=tot-drillCorrect;const rem=drillList.length-tot;document.getElementById('d-snum').textContent=`${drillCorrect} / ${tot}`;document.getElementById('d-pfill').style.width=`${tot?(drillCorrect/tot*100):0}%`;document.getElementById('d-correct').textContent=drillCorrect;document.getElementById('d-wrong').textContent=wrong;document.getElementById('d-remain').textContent=rem;}
+function buildDrill(){
+  const box=document.getElementById('drillbox');box.innerHTML='';
+  const L=['A','B','C','D'];
+  drillList.forEach((q,pos)=>{
+    const shuffled=shuffle(q.o.map((o,i)=>({text:o,orig:i})));
+    const nc=shuffled.findIndex(x=>x.orig===q.a);
+    const div=document.createElement('div');div.className='qcard';div.id='dq'+pos;
+    div.innerHTML=`<div class="qmeta"><span class="qnum">Q${pos+1}</span><span class="qtopic">${q.t}</span></div>
+      <div class="qtext">${q.q}</div>
+      ${shuffled.map((o,i)=>`<div class="opt" id="opt-${pos}-${i}" onclick="pick(${pos},${i},${nc})"><span class="ltr">${L[i]}</span><span>${o.text}</span><span class="opt-icon"></span></div>`).join('')}
+      <div class="exp" id="exp-${pos}"><div class="exp-label">Explanation</div>${q.e}</div>`;
+    box.appendChild(div);
+  });
+}
+function pick(pos,oi,nc){
+  if(drillAnswered[pos]!==undefined)return;
+  drillAnswered[pos]=oi;
+  const ok=oi===nc;
+  for(let i=0;i<4;i++){const el=document.getElementById(`opt-${pos}-${i}`);if(el){el.classList.add('locked');el.onclick=null;}}
+  const ch=document.getElementById(`opt-${pos}-${oi}`);
+  const co=document.getElementById(`opt-${pos}-${nc}`);
+  if(ok){ch.classList.add('correct');ch.querySelector('.opt-icon').textContent='✓';drillCorrect++;}
+  else{ch.classList.add('wrong');ch.querySelector('.opt-icon').textContent='✗';if(co){co.classList.add('show-correct');co.querySelector('.opt-icon').textContent='✓';}}
+  document.getElementById(`exp-${pos}`).style.display='block';
+  const tq=document.getElementById('tq'+pos);if(tq)tq.classList.add(ok?'tq-ok':'tq-wrong');
+  updateDrillStats();
+}
+
+// ════ FLASHCARD ENGINE ════
+let fcIdx=0,fcFlipped=false,fcShuffle=[];
+function renderFC(){fcShuffle=shuffle([...FC]);fcIdx=0;fcFlipped=false;showFC();}
+function showFC(){const c=fcShuffle[fcIdx];document.getElementById('fc-front-text').textContent=c.f;document.getElementById('fc-back-text').textContent=c.b;document.getElementById('fc-back-sub').textContent=c.s||'';document.getElementById('fc-prog').textContent=`Card ${fcIdx+1} of ${fcShuffle.length}`;const card=document.getElementById('fc-card');card.classList.remove('flipped');fcFlipped=false;}
+function flipFC(){const card=document.getElementById('fc-card');fcFlipped=!fcFlipped;card.classList.toggle('flipped',fcFlipped);}
+function fcNav(d){fcIdx=(fcIdx+d+fcShuffle.length)%fcShuffle.length;showFC();}
+function initSwipe(){const el=document.getElementById('fc-card');let sx=0;el.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;},{passive:true});el.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50){fcNav(dx<0?1:-1);}else{flipFC();}},{passive:true});}
+
+// ════ TRAPS ENGINE ════
+function buildTraps(){const b=document.getElementById('traps-box');if(b.children.length>0)return;TRAPS.forEach(t=>{const d=document.createElement('div');d.className='trap-card';d.innerHTML=`<div class="trap-head">⚠️ ${t.h}</div><div class="trap-body">${t.b}</div>`;b.appendChild(d);});}
+
+// ════ DECISION TREE ENGINE ════
+function buildTrees(){const list=document.getElementById('tree-list');if(list.children.length>0)return;TREES.forEach((tree,ti)=>{const div=document.createElement('div');div.className='tree-card';div.innerHTML=`<div class="tree-head"><span style="font-size:20px">${tree.icon}</span><div class="tree-title">${tree.title}</div></div><div id="tr-${ti}-node"></div>`;list.appendChild(div);renderTreeNode(tree.root,`tr-${ti}-node`,tree.color);});}
+function renderTreeNode(node,cid,color){
+  const el=document.getElementById(cid);if(!el)return;
+  if(node.answer){el.innerHTML=`<div class="tree-answer" style="background:rgba(0,0,0,.3);border:1.5px solid ${color}"><div class="tree-ans-label" style="color:${color}">✓ ANSWER</div><div class="tree-ans-name">${node.answer}</div><div class="tree-ans-rule">${node.rule}</div></div>`;return;}
+  const uid=cid+'_'+Math.random().toString(36).slice(2,6);
+  el.innerHTML=`<div class="tree-q"><div class="tree-qtext">${node.q}</div><div class="tree-btns">
+    <button class="tree-btn" style="border-color:rgba(61,220,151,.3);color:var(--green)" onclick="treeChoose('${uid}','yes',this)">✓ ${node.yes.label||'Yes'}</button>
+    <button class="tree-btn" style="border-color:rgba(255,71,87,.3);color:var(--red)" onclick="treeChoose('${uid}','no',this)">✗ ${node.no.label||'No'}</button>
+  </div></div><div id="${uid}-result"></div>`;
+  window['_tn_'+uid]={yes:node.yes,no:node.no,color};
+}
+function treeChoose(uid,branch,btn){
+  const nd=window['_tn_'+uid];if(!nd)return;
+  btn.parentElement.querySelectorAll('button').forEach(b=>{b.style.opacity='.4';b.onclick=null;});
+  btn.style.opacity='1';btn.style.borderWidth='2px';
+  const next=nd[branch];const rid=uid+'-result';
+  const rel=document.getElementById(rid);if(!rel)return;
+  const nid=uid+'_'+branch;
+  rel.innerHTML=`<div style="padding-left:14px;border-left:2px solid ${nd.color}40;margin-top:4px"><div id="${nid}"></div></div>`;
+  renderTreeNode(next,nid,nd.color);
+}
+
+// ════ QUICK-FIRE ENGINE ════
+let qfList=[],qfIdx=0,qfCorrect=0,qfTotal=0,qfStreak=0,qfAnswered=false;
+function getQFDistractors(item){
+  const pool=QF.filter(x=>x!==item);
+  const same=shuffle(pool.filter(x=>x.c===item.c)).slice(0,2).map(x=>x.f);
+  const diff=shuffle(pool.filter(x=>x.c!==item.c&&!same.includes(x.f))).slice(0,1).map(x=>x.f);
+  const opts=[item.f,...same,...diff];
+  const extras=['Continuous production','Break-bulk','Moving average','WMS','A line','Picking','Echelon'];
+  while(opts.length<4){const e=extras.find(x=>!opts.includes(x));if(e)opts.push(e);else break;}
+  return shuffle(opts.slice(0,4));
+}
+function resetQF(){qfList=shuffle([...QF]);qfIdx=0;qfCorrect=0;qfTotal=0;qfStreak=0;qfAnswered=false;document.getElementById('qf-score').textContent='0 / 0';document.getElementById('qf-pfill').style.width='0%';document.getElementById('qf-streak').style.display='none';renderQFCard();}
+function renderQFCard(){
+  const box=document.getElementById('qf-box');
+  if(qfIdx>=qfList.length){const pct=qfTotal?Math.round(qfCorrect/qfTotal*100):0;const gc=pct>=90?'g-ex':pct>=75?'g-gd':pct>=60?'g-nw':'g-fl';const grade=pct>=90?'Locked in! 🎯':pct>=75?'Strong work!':pct>=60?'Getting there':'Keep drilling';box.innerHTML=`<div class="completion-card"><h2>${grade}</h2><div class="big-score ${gc}">${pct}%</div><p style="color:var(--text2)">${qfCorrect} / ${qfTotal} correct</p><div class="completion-stats"><div class="cstat"><strong style="color:var(--green)">${qfCorrect}</strong>Correct</div><div class="cstat"><strong style="color:var(--red)">${qfTotal-qfCorrect}</strong>Wrong</div></div><button class="retry-btn" onclick="resetQF()">↺ Again</button></div>`;return;}
+  const item=qfList[qfIdx];const opts=getQFDistractors(item);const nc=opts.indexOf(item.f);
+  const L=['A','B','C','D'];qfAnswered=false;
+  box.innerHTML=`<div class="qcard" id="qf-current">
+    <div class="qmeta"><span class="qnum">${qfIdx+1}/${qfList.length}</span><span class="qtopic" style="background:rgba(244,160,24,.1);color:var(--accent);border-color:rgba(244,160,24,.2)">${item.c}</span><span style="font-size:11px;color:var(--text3)">Which answer?</span></div>
+    <div class="qtext" style="font-size:14px">${item.s}</div>
+    ${opts.map((o,i)=>`<div class="opt" id="qfopt-${i}" onclick="qfPick(${i},${nc})" style="font-family:'JetBrains Mono',monospace;font-size:11px"><span class="ltr">${L[i]}</span>${o}<span class="opt-icon"></span></div>`).join('')}
+  </div>`;
+}
+function qfPick(oi,nc){
+  if(qfAnswered)return;qfAnswered=true;qfTotal++;
+  const ok=oi===nc;
+  for(let i=0;i<4;i++){const el=document.getElementById('qfopt-'+i);if(el){el.classList.add('locked');el.onclick=null;}}
+  const ch=document.getElementById('qfopt-'+oi);const co=document.getElementById('qfopt-'+nc);
+  if(ok){ch.classList.add('correct');ch.querySelector('.opt-icon').textContent='✓';qfCorrect++;qfStreak++;}
+  else{ch.classList.add('wrong');ch.querySelector('.opt-icon').textContent='✗';if(co){co.classList.add('show-correct');co.querySelector('.opt-icon').textContent='✓';}qfStreak=0;}
+  if(!ok){const item=qfList[qfIdx];const card=document.getElementById('qf-current');if(card){const h=document.createElement('div');h.style.cssText='margin-top:8px;padding:8px 12px;background:rgba(61,220,151,.08);border:1px solid rgba(61,220,151,.2);border-radius:8px;font-size:12px;color:var(--green);font-family:JetBrains Mono,monospace';h.textContent='✓ '+item.f;card.appendChild(h);}}
+  document.getElementById('qf-score').textContent=`${qfCorrect} / ${qfTotal}`;
+  document.getElementById('qf-pfill').style.width=(qfTotal?(qfCorrect/qfTotal*100):0).toFixed(0)+'%';
+  const sb=document.getElementById('qf-streak');if(qfStreak>=3){sb.style.display='inline-block';sb.textContent='🔥 '+qfStreak;}else sb.style.display='none';
+  setTimeout(()=>{qfIdx++;renderQFCard();},ok?600:1100);
+}
+
+// ════ NAVIGATION ════
+function go(t){
+  document.querySelectorAll('.tab,.bnav-btn').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('#study,#drill,#flash,#traps,#tree,#quickfire').forEach(x=>x.classList.remove('active'));
+  const dt=document.querySelector(`.tab[data-tab="${t}"]`);if(dt)dt.classList.add('active');
+  const bn=document.getElementById('bnav-'+t);if(bn)bn.classList.add('active');
+  const sec=document.getElementById(t);if(sec)sec.classList.add('active');
+  if(t==='drill'&&drillList.length===0)resetDrill();
+  if(t==='flash'){renderFC();initSwipe();}
+  if(t==='traps')buildTraps();
+  if(t==='tree')buildTrees();
+  if(t==='quickfire'&&qfList.length===0)resetQF();
+  window.scrollTo({top:0,behavior:'instant'});
+}
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._to);t._to=setTimeout(()=>t.classList.remove('show'),2200);}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  resetDrill();renderFC();initSwipe();
+  function addTouchNav(container){
+    if(!container)return;
+    container.addEventListener('touchend',function(e){const btn=e.target.closest('[data-tab]');if(!btn)return;e.preventDefault();go(btn.dataset.tab);},{passive:false});
+    container.addEventListener('click',function(e){const btn=e.target.closest('[data-tab]');if(btn)go(btn.dataset.tab);});
+  }
+  addTouchNav(document.querySelector('.bottom-nav'));
+  addTouchNav(document.querySelector('.tab-bar'));
+});
+</script>
+</body>
+</html>
