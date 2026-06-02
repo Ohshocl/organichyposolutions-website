@@ -177,6 +177,45 @@ body{padding-bottom:calc(var(--nav-h) + var(--safe-bottom) + 12px)}
 .tree-ans-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;font-family:'JetBrains Mono',monospace;margin-bottom:5px}
 .tree-ans-name{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#fff;margin-bottom:6px}
 .tree-ans-rule{font-size:12px;color:var(--text2);line-height:1.6}
+/* LECTURE */
+.lecture-player{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem;margin-bottom:.9rem}
+.lp-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:.7rem;display:flex;align-items:center;gap:7px}
+.lp-title-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;animation:lpblink 1.4s ease-in-out infinite}
+.lp-title-dot.paused{animation:none;background:var(--text3)}
+@keyframes lpblink{0%,100%{opacity:1}50%{opacity:.3}}
+.lp-progress-wrap{height:4px;background:var(--border);border-radius:2px;margin-bottom:.8rem;cursor:pointer;overflow:hidden}
+.lp-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:2px;transition:width .3s linear;width:0%}
+.lp-controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:.75rem}
+.lp-btn{padding:8px 13px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:11px;font-weight:700;color:var(--text2);font-family:'Nunito',sans-serif;min-height:38px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;gap:5px;transition:all .15s}
+.lp-btn.primary{background:var(--accent);color:#000;border-color:var(--accent);font-weight:800}
+.lp-btn.active{background:rgba(176,110,255,.15);border-color:rgba(176,110,255,.4);color:var(--purple)}
+.lp-speed{padding:6px 9px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:10px;font-weight:700;color:var(--text3);font-family:'JetBrains Mono',monospace;min-height:34px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.lp-speed.active{background:rgba(61,220,151,.12);border-color:rgba(61,220,151,.3);color:var(--green)}
+.lp-voice-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:.75rem;align-items:center}
+.lp-voice-label{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;min-width:44px;font-family:'JetBrains Mono',monospace}
+.voice-btn{padding:6px 11px;border-radius:20px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:11px;font-weight:600;color:var(--text3);font-family:'Nunito',sans-serif;min-height:32px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:all .15s}
+.voice-btn.active{background:var(--accent);color:#000;border-color:var(--accent)}
+.lp-now-playing{font-size:11px;color:var(--text3);margin-bottom:.2rem;min-height:14px;display:flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace}
+.lp-np-track{font-weight:600;color:var(--text2);max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lp-playlist{margin-top:.4rem;max-height:175px;overflow-y:auto;border:1px solid var(--border);border-radius:8px}
+.lp-track{display:flex;align-items:flex-start;gap:9px;padding:11px 13px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.lp-track:last-child{border-bottom:none}
+.lp-track:hover,.lp-track:active{background:var(--surface2)}
+.lp-track.playing{background:rgba(244,160,24,.06);border-left:2px solid var(--accent);padding-left:11px}
+.lp-track-num{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--text3);min-width:20px;flex-shrink:0;padding-top:1px}
+.lp-track.playing .lp-track-num{color:var(--accent)}
+.lp-track-body{flex:1;min-width:0}
+.lp-track-title{font-size:11px;font-weight:600;color:var(--text2);line-height:1.35;margin-bottom:2px}
+.lp-track.playing .lp-track-title{color:#fff}
+.lp-track-cat{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+.lp-waveform{display:flex;align-items:center;gap:2px;margin-left:auto;flex-shrink:0;padding-top:2px}
+.lp-bar{width:2px;border-radius:2px;background:var(--accent);transform-origin:bottom;display:none}
+.lp-track.playing .lp-bar{display:block;animation:lpwave .6s ease-in-out infinite alternate}
+.lp-bar:nth-child(1){height:7px}.lp-bar:nth-child(2){height:12px;animation-delay:.1s}.lp-bar:nth-child(3){height:5px;animation-delay:.2s}.lp-bar:nth-child(4){height:9px;animation-delay:.05s}
+@keyframes lpwave{from{transform:scaleY(.3)}to{transform:scaleY(1)}}
+.lp-read-text{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem;font-size:13.5px;line-height:2;color:var(--text2);margin-top:.4rem}
+.lp-read-text .word{display:inline;cursor:default;border-radius:3px;padding:0 1px;transition:background .1s}
+.lp-read-text .word.highlight{background:rgba(244,160,24,.22);color:#fff}
 </style>
 </head>
 <body>
@@ -208,6 +247,7 @@ body{padding-bottom:calc(var(--nav-h) + var(--safe-bottom) + 12px)}
   <button class="tab" data-tab="traps">⚠️ Traps</button>
   <button class="tab" data-tab="tree">🌳 Decide</button>
   <button class="tab" data-tab="quickfire">⚡ Quick-Fire</button>
+  <button class="tab" data-tab="lecture">🎙️ Lecture</button>
 </div>
 
 <!-- ════ STUDY ════ -->
@@ -632,6 +672,187 @@ body{padding-bottom:calc(var(--nav-h) + var(--safe-bottom) + 12px)}
   </div>
 </div>
 
+<div class="sec-head">Course Competencies &amp; Lesson Map</div>
+
+<div class="card">
+  <div class="card-title">The 4 Official Course Competencies (what the OA tests)</div>
+  <div class="tags"><span class="tag t-gold">CLTD Aligned</span></div>
+  <div class="body">
+    <div class="cg">
+      <div class="cg-cell"><div class="cg-label" style="color:var(--orange)">Competency 1</div><div class="cg-val">Describes key elements of distribution, logistics, and transportation management.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--cyan)">Competency 2</div><div class="cg-val">Identifies laws and regulations within operations and supply chain with respect to transportation, logistics, and distribution.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--green)">Competency 3</div><div class="cg-val">Explains how total cost of ownership (TCO) management affects operations.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--purple)">Competency 4</div><div class="cg-val">Describes key elements of distribution and warehouse management.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Section 1 Summary — Elements of Distribution, Logistics &amp; Transportation</div>
+  <div class="tags"><span class="tag t-orange">S1 Summary</span></div>
+  <div class="body">
+    <p>These are the key points WGU explicitly lists as what you must know from Section 1:</p>
+    <ul>
+      <li>There are different ways to define and describe the distribution, logistics, and supply chain scope.</li>
+      <li>Effective managers integrate logistics into the distribution system in relation to logistics management.</li>
+      <li>Managers utilize different ways to identify distribution channels and alternate ways of delivering products.</li>
+      <li>You recognize the key issues and challenges that affect logistics and distribution.</li>
+      <li>There are different ways to define and describe the roles, scopes, and modes of freight transportation.</li>
+      <li>You recognize the key issues and challenges freight transportation faces.</li>
+      <li>Businesses develop suitable logistics design strategies to be successful.</li>
+      <li>There are <strong>four main characteristics of a product</strong> that affect distribution system development.</li>
+      <li>Organizations benefit from having warehouses and distribution centers.</li>
+      <li>Managers derive a logistics strategy from a <strong>corporate business plan</strong>.</li>
+      <li>Sales and operations plans are an important part of the overall business strategy.</li>
+      <li>Successful businesses implement logistics integration into the distribution system.</li>
+      <li>There are different distribution channels and alternate ways of delivering products.</li>
+    </ul>
+    <div class="rule-box"><strong>Key exam signal:</strong> "Managers derive logistics strategy from a corporate business plan" — logistics does not exist independently. It flows from the corporate strategy down.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Section 1 — Lesson Structure (what each lesson covers)</div>
+  <div class="tags"><span class="tag t-orange">S1 Lessons</span></div>
+  <div class="body">
+    <p><strong>Lesson 1:</strong> Scope, Role, and Modes of Distribution and Logistics — Intro to Logistics and Distribution</p>
+    <p><strong>Lesson 2:</strong> Scope, Role, and Modes of Freight Transportation — Intro to Freight Transport</p>
+    <p><strong>Lesson 3:</strong> Logistics, Supply Chain, and Network Planning — Intro to Logistics and Planning</p>
+    <p><strong>Lesson 4:</strong> Forward, Reverse, and Sustainable Logistics — Forward and Reverse Logistics and the Environment</p>
+    <div class="note">Forward logistics = normal outbound flow. Reverse logistics = returns, recycling, waste. Sustainable logistics = minimizing environmental impact across both directions.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Section 2 Summary — Laws &amp; Regulations</div>
+  <div class="tags"><span class="tag t-cyan">S2 Summary</span></div>
+  <div class="body">
+    <p>These are the key points WGU explicitly lists as what you must know from Section 2:</p>
+    <ul>
+      <li>Cross-border logistics plays an important role in today's businesses.</li>
+      <li>There are different modes of freight transportation used in cross-border logistics.</li>
+      <li>International freight forwarders have many responsibilities in cross-border logistics operations.</li>
+      <li>Customs administration performs a specific role and scope of work.</li>
+      <li>Extensive rules and laws control cross-border goods and logistics.</li>
+      <li>Different types of tariffs and other taxes are associated with cross-border goods and logistics.</li>
+      <li>Understanding and identifying the role and responsibilities of a <strong>customs and trade compliance manager</strong> is essential.</li>
+      <li>Trade coordination work and agreements apply to cross-border trades.</li>
+      <li>Different cross-border compliances may disqualify businesses from favorable treatment by border authorities.</li>
+      <li>Businesses adopt logistics and supply chain management theories and practices to facilitate trade and border management.</li>
+    </ul>
+    <div class="warn"><strong>Key concept:</strong> "Different cross-border compliances may DISQUALIFY businesses from favorable treatment" — non-compliance has active negative consequences, not just neutral ones. This shows up in scenario questions.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Section 2 — Lesson Structure</div>
+  <div class="tags"><span class="tag t-cyan">S2 Lessons</span></div>
+  <div class="body">
+    <p><strong>Lesson 1:</strong> Requirements, Controls, and Challenges of Cross-Border Operations — Cross-Border Logistics</p>
+    <p><strong>Lesson 2:</strong> Trade Compliance, Custom Administrations, Tariffs, and Taxes — Customs Administration and Taxes</p>
+    <p><strong>Lesson 3:</strong> Border Control and Supply Chain Management — Border Management</p>
+    <div class="note">The three lessons map exactly to the three exam clusters: (1) cross-border operations mechanics, (2) compliance/tariffs/customs, (3) border control at the macro level.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Section 3 Summary — How Total Cost of Ownership (TCO) Affects Operations</div>
+  <div class="tags"><span class="tag t-teal">S3 Summary</span></div>
+  <div class="body">
+    <p>These are the key points WGU explicitly lists as what you must know from Section 3:</p>
+    <ul>
+      <li>The relationship between inventory costs, inventory planning, and stock systems has different definitions and descriptions.</li>
+      <li>Managing inventory requires an understanding of basic inventory concepts.</li>
+      <li>Managers recognize the difference between <strong>dependent and independent demand</strong> and the nature of demand in push and pull systems.</li>
+      <li>Successful business managers apply forecasting and inventory management to logistics.</li>
+      <li>The organization, transfer, and flow of information are essential parts of operational management.</li>
+      <li>Benchmarking is a necessary tool that helps businesses stay competitive.</li>
+      <li>There are key steps involved in completing a benchmarking project.</li>
+      <li>Communications systems constantly evolve and are an integral part of logistics.</li>
+      <li>Key facts, terms, and ideas relate humanitarian logistics to business operations.</li>
+      <li>Business managers analyze key criteria to decide if outsourcing is profitable for a company.</li>
+      <li>Business managers build relationships and monitor third-party logistics providers.</li>
+      <li>Businesses consider TCO and how it can affect profitability.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Dependent vs Independent Demand — Push vs Pull systems</div>
+  <div class="tags"><span class="tag t-teal">S3 Core</span></div>
+  <div class="body">
+    <div class="cg">
+      <div class="cg-cell"><div class="cg-label" style="color:var(--orange)">Independent Demand</div><div class="cg-val">Demand for finished goods — driven by external customers. Cannot be derived from other product demand. Forecasting required.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--cyan)">Dependent Demand</div><div class="cg-val">Demand for components/parts derived from independent demand. If you need 100 bikes, you need 200 wheels. Calculated, not forecasted.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--green)">Push System</div><div class="cg-val">Production/distribution based on forecast. Goods pushed downstream before demand occurs. Risk: overstock if forecast wrong.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--purple)">Pull System</div><div class="cg-val">Production/distribution triggered by actual demand. Goods pulled through supply chain by customer orders. Risk: stockout if demand spikes.</div></div>
+    </div>
+    <div class="rule-box"><strong>Just-in-time (JIT)</strong> is a pull system — production triggered by actual demand, minimizing inventory. <strong>MRP (Material Requirements Planning)</strong> uses dependent demand logic to calculate component needs from a production schedule.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Section 3 — Lesson Structure</div>
+  <div class="tags"><span class="tag t-teal">S3 Lessons</span></div>
+  <div class="body">
+    <p><strong>Lesson 1:</strong> Inventory Management — Inventory: The Basic Concepts</p>
+    <p><strong>Lesson 2:</strong> Operational Management — Introduction to Operational Management</p>
+    <p><strong>Lesson 3:</strong> Outsourcing — Introduction to Outsourcing</p>
+    <div class="note">Section 3 is the heaviest section for the OA — it covers both inventory types/costs AND all the outsourcing decision logic (first step, dedicated vs multiuser, gainsharing, performance tracking). Budget time accordingly.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Section 4 Summary — Key Elements of Distribution &amp; Warehouse Management</div>
+  <div class="tags"><span class="tag t-gold">S4 Summary</span></div>
+  <div class="body">
+    <p>These are the key points WGU explicitly lists as what you must know from Section 4:</p>
+    <ul>
+      <li>Inventory storage and management are important considerations in warehouse operations.</li>
+      <li>The picking process is one of the warehouse's most <strong>labor- and cost-intensive functions</strong>.</li>
+      <li>Warehouse processes are a critical part of business strategy and logistics operations.</li>
+      <li>Palletized and nonpalletized warehouse storage and handling have advantages and disadvantages, depending on warehouse size and product packaging.</li>
+      <li>Picking and yard management functions play a key role within a warehouse.</li>
+      <li>Different picking methods, tools, and systems have advantages and disadvantages.</li>
+      <li>Successful managers understand the functions and systems associated with warehouse yard management.</li>
+      <li>The best inventory strategies do not need to be standalone picking or yard management strategies. A warehouse manager may need to implement a combination of picking and yard management strategies and technologies to obtain optimal results.</li>
+      <li>Strategic plans impact warehouse design.</li>
+      <li>Specialized warehouse design focuses on business needs and product storage, including <strong>temperature-controlled warehouses</strong> and <strong>dangerous goods</strong>.</li>
+      <li>Warehouses use information management, including systems architecture, functionality, data capture and transmission, and planning tools, to run and monitor facility operations.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Section 4 — Lesson Structure &amp; Palletized vs Non-palletized Storage</div>
+  <div class="tags"><span class="tag t-gold">S4 Lessons</span></div>
+  <div class="body">
+    <p><strong>Lesson 1:</strong> Logistics of Warehousing and Storage — Introduction to Warehousing and Storage</p>
+    <p><strong>Lesson 2:</strong> Logistics of Picking and Yard Management — Picking, Receiving, and Yard Management</p>
+    <p><strong>Lesson 3:</strong> Warehouse Design and Management — Warehouse Design</p>
+    <div class="cg">
+      <div class="cg-cell"><div class="cg-label" style="color:var(--orange)">Palletized Storage</div><div class="cg-val">Goods stacked on pallets. Forklift accessible. Efficient for heavy/bulk goods. Higher storage density. Standard for most DCs.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--cyan)">Non-palletized Storage</div><div class="cg-val">Carton/case flow, shelving. Better for small/individual items. Easier for manual picking. More flexible for high SKU variety.</div></div>
+    </div>
+    <div class="note"><strong>Specialized warehouses:</strong> Temperature-controlled (cold chain — pharma, food) and dangerous goods (hazmat — flammables, chemicals) require specific design standards and regulatory compliance beyond standard warehousing.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Total Cost of Ownership (TCO) — the Section 3 anchor concept</div>
+  <div class="tags"><span class="tag t-teal">S3 Core</span></div>
+  <div class="body">
+    <p><strong>TCO</strong> = the complete cost of acquiring, using, and disposing of a product or service over its full lifecycle. Not just purchase price — includes all associated costs.</p>
+    <div class="cg">
+      <div class="cg-cell"><div class="cg-label" style="color:var(--orange)">Acquisition costs</div><div class="cg-val">Purchase price, ordering costs, transportation inbound, supplier qualification.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--cyan)">Possession costs</div><div class="cg-val">Storage, handling, insurance, capital tied up in inventory, obsolescence risk.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--green)">Usage costs</div><div class="cg-val">Maintenance, quality issues, downtime, rework, warranty.</div></div>
+      <div class="cg-cell"><div class="cg-label" style="color:var(--purple)">Disposal costs</div><div class="cg-val">End-of-life removal, recycling, environmental compliance.</div></div>
+    </div>
+    <div class="rule-box"><strong>TCO in outsourcing decisions:</strong> When deciding whether to outsource logistics, you compare the FULL TCO of in-house logistics (facilities, staff, equipment, systems, management time) against the 3PL contract cost. First step = identify service requirements and costs (your TCO baseline).</div>
+  </div>
+</div>
+
 </div><!-- /study -->
 
 <!-- ════ DRILL ════ -->
@@ -711,16 +932,51 @@ body{padding-bottom:calc(var(--nav-h) + var(--safe-bottom) + 12px)}
 <div id="qf-box"></div>
 </div>
 
+<!-- ════ LECTURE ════ -->
+<div id="lecture" class="section">
+<div class="lecture-player">
+  <div class="lp-title"><span class="lp-title-dot paused" id="lp-dot"></span><span id="lp-title-text">D470 Gap Lectures — Transportation, Logistics &amp; Distribution</span></div>
+  <div class="lp-voice-row" id="lp-voice-row">
+    <span class="lp-voice-label">Voice</span>
+    <span style="font-size:11px;color:var(--text3)" id="lp-voice-loading">Loading voices…</span>
+  </div>
+  <div class="lp-controls" style="margin-bottom:.5rem">
+    <span style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;font-family:'JetBrains Mono',monospace">Speed</span>
+    <button class="lp-speed" onclick="setSpeed(130,this)">130</button>
+    <button class="lp-speed active" onclick="setSpeed(145,this)">145</button>
+    <button class="lp-speed" onclick="setSpeed(165,this)">165</button>
+    <button class="lp-speed" onclick="setSpeed(175,this)">175</button>
+  </div>
+  <div class="lp-controls">
+    <button class="lp-btn" onclick="lpPrev()">⏮</button>
+    <button class="lp-btn primary" id="lp-play-btn" onclick="lpToggle()">▶ Play</button>
+    <button class="lp-btn" onclick="lpStop()">⏹</button>
+    <button class="lp-btn" onclick="lpNext()">⏭</button>
+    <button class="lp-btn" id="lp-auto-btn" onclick="lpToggleAuto()">🔁 Auto</button>
+  </div>
+  <div class="lp-progress-wrap" onclick="lpSeekClick(event,this)">
+    <div class="lp-progress-fill" id="lp-pfill"></div>
+  </div>
+  <div class="lp-now-playing">
+    <span id="lp-np-icon">🎙️</span>
+    <span class="lp-np-track" id="lp-np">Select a lecture below</span>
+  </div>
+  <div class="lp-playlist" id="lp-playlist"></div>
+</div>
+<div class="lp-read-text" id="lp-read-text"><p style="color:var(--text3);font-size:13px">Select a lecture from the playlist to begin. Text will appear here as it reads.</p></div>
+</div>
+
 </div><!-- /container -->
 <div class="toast" id="toast"></div>
 
-<nav class="bottom-nav" style="grid-template-columns:repeat(6,1fr)">
+<nav class="bottom-nav" style="grid-template-columns:repeat(7,1fr)">
   <button class="bnav-btn active" id="bnav-study" data-tab="study"><span class="bicon">📖</span>Study</button>
   <button class="bnav-btn" id="bnav-drill" data-tab="drill"><span class="bicon">🎯</span>Drill</button>
   <button class="bnav-btn" id="bnav-flash" data-tab="flash"><span class="bicon">🃏</span>Cards</button>
   <button class="bnav-btn" id="bnav-traps" data-tab="traps"><span class="bicon">⚠️</span>Traps</button>
   <button class="bnav-btn" id="bnav-tree" data-tab="tree"><span class="bicon">🌳</span>Decide</button>
   <button class="bnav-btn" id="bnav-quickfire" data-tab="quickfire"><span class="bicon">⚡</span>Quick</button>
+  <button class="bnav-btn" id="bnav-lecture" data-tab="lecture"><span class="bicon">🎙️</span>Lect</button>
 </nav>
 
 <script>
@@ -897,7 +1153,7 @@ const TREES=[
     yes:{label:"No storage, straight transfer",answer:"Cross-docking",rule:"Cross-docking minimizes handling by moving goods directly from receiving dock to outbound shipment."},
     no:{q:"Does distribution flow through MULTIPLE TIERS (factory→warehouse→DC→customer)?",
      yes:{label:"Multi-tier sequential flow",answer:"Echelon distribution",rule:"Echelon = multiple sequential distribution levels. Each level is a distinct layer in the network."},
-     no:{label:"Delaying final configuration",answer:"Postponement",rule:"Postponement delays final product configuration/labeling until closer to demand point."}}}},
+     no:{label:"Delaying final configuration",answer:"Postponement",rule:"Postponement delays final product configuration/labeling until closer to demand point."}}}}},
  {title:"Which Government Transport Action?",icon:"🏛️",color:"var(--cyan)",
   root:{q:"Does it REWARD desired behavior (benefit, subsidy, exemption)?",
    yes:{label:"Rewards/encourages behavior",answer:"Incentive",rule:"Incentive = tax exemption, subsidy, grant. Voluntary — companies choose whether to comply. EV tax exemption = Incentive."},
@@ -983,7 +1239,48 @@ const QF=[
  {c:'S4',s:"System for put-away efficiency across storage network.",f:"WMS (Warehouse Management System)"},
 ];
 
-// ════ DRILL ENGINE ════
+// ═══ BONUS QUESTIONS from section summaries and course structure ═══
+const QQ_BONUS=[
+ {q:"A manager derives the company's logistics strategy. From what should it originate?",o:["The warehouse manager's operational plan","The corporate business plan","The distribution center's cost targets","The transportation department's capacity"],a:1,t:"S1",e:"Logistics strategy is derived from the <strong>corporate business plan</strong>. Logistics does not exist independently — it flows down from corporate strategy."},
+ {q:"Which statement best describes the relationship between logistics and distribution?",o:["Distribution is broader than logistics","Logistics and distribution are the same thing","Distribution is a subset of logistics focused on getting finished goods to customers","Logistics only covers transportation"],a:2,t:"S1",e:"<strong>Distribution is a subset of logistics</strong> focused specifically on moving finished goods to customers. Logistics is the broader discipline covering transportation, warehousing, and inventory management."},
+ {q:"A company wants to minimize environmental impact across both its outbound delivery and its returns process. Which logistics approach covers both?",o:["Inbound logistics","Outbound logistics","Forward and reverse logistics","Cross-docking"],a:2,t:"S1",e:"<strong>Forward logistics</strong> = outbound delivery. <strong>Reverse logistics</strong> = returns, recycling. The question asks about BOTH directions = 'Forward and Reverse logistics' together, aligned with sustainable logistics."},
+ {q:"What is the key difference between dependent and independent demand?",o:["Independent demand is forecasted; dependent demand is calculated from production schedules","Dependent demand is forecasted; independent demand is calculated","Independent demand only applies to raw materials","Dependent demand applies to finished goods"],a:0,t:"S3",e:"<strong>Independent demand</strong> (finished goods from customers) must be forecasted. <strong>Dependent demand</strong> (components needed for production) is calculated — derived from the production plan, not forecasted separately."},
+ {q:"A manufacturer triggers production only when a customer order is received, not based on forecasts. Which type of system is this?",o:["Push system","Forecast-driven system","Pull system","Dependent demand system"],a:2,t:"S3",e:"<strong>Pull system</strong> — production/distribution is triggered by actual demand (the customer 'pulls' product through). Push systems produce based on forecasts and push inventory downstream."},
+ {q:"What makes picking the most important warehouse activity to target for labor cost reduction?",o:["It requires the most equipment","It is the most labor- and cost-intensive warehouse function","It has the highest error rate","It takes the most physical space"],a:1,t:"S4",e:"The WGU course explicitly states: 'The picking process is one of the warehouse's most <strong>labor- and cost-intensive functions</strong>.' This is why automation of picking drives the biggest labor savings."},
+ {q:"A warehouse stores temperature-sensitive pharmaceuticals. Which warehouse design category applies?",o:["Automated storage warehouse","Dangerous goods warehouse","Temperature-controlled warehouse","Palletized storage warehouse"],a:2,t:"S4",e:"<strong>Temperature-controlled warehouse</strong> = specialized design for cold chain storage (pharmaceuticals, food). The WGU course specifically calls out temperature-controlled warehouses and dangerous goods as specialized designs."},
+ {q:"A manager understands that picking and yard management strategies may need to be combined. What does this reflect?",o:["That all strategies are interchangeable","That no single strategy is optimal; combinations are often needed","That yard management replaces picking","That technology eliminates the need for strategy"],a:1,t:"S4",e:"The course summary states: 'The best inventory strategies do not need to be standalone — a manager may need to implement a <strong>combination of picking and yard management</strong> strategies to obtain optimal results.'"},
+ {q:"Which factor drives the design of a specialized warehouse according to Section 4 competencies?",o:["Warehouse age and location","Business needs and product storage requirements","Number of employees","Transportation mode used"],a:1,t:"S4",e:"Specialized warehouse design focuses on <strong>business needs and product storage requirements</strong> — including temperature-controlled and dangerous goods requirements specific to what's being stored."},
+ {q:"What is a key step in a benchmarking project according to Section 3?",o:["Only measuring internal performance","Comparing performance against world-class standards from other organizations","Setting targets without measuring current state","Eliminating all metrics that show poor performance"],a:1,t:"S3",e:"Benchmarking = <strong>comparing against world-class standards from other organizations and industries</strong>. The process involves measuring current state, identifying best-in-class benchmarks, finding gaps, and implementing improvements."},
+ {q:"What does non-compliance with cross-border regulations risk for a business?",o:["Higher transportation costs only","Disqualification from favorable treatment by border authorities","Mandatory use of freight forwarders","Increased product quality requirements"],a:1,t:"S2",e:"The Section 2 summary explicitly states: 'Different cross-border compliances may <strong>disqualify businesses from favorable treatment by border authorities</strong>.' Non-compliance = loss of trusted trader status, preferred clearance lanes, duty reductions."},
+ {q:"International freight forwarders play which role in cross-border logistics?",o:["They own and operate customs warehouses","They have many responsibilities in cross-border logistics operations","They set tariff rates for imported goods","They enforce customs regulations"],a:1,t:"S2",e:"<strong>International freight forwarders have many responsibilities</strong> in cross-border logistics — including preparing customs declarations, booking cargo space, arranging insurance, and acting as intermediaries between shippers and carriers/customs."},
+ {q:"Which statement about TCO (Total Cost of Ownership) and profitability is correct?",o:["TCO only considers purchase price","TCO has no impact on outsourcing decisions","Businesses must consider TCO and how it can affect profitability","TCO applies only to capital equipment"],a:2,t:"S3",e:"The Section 3 summary explicitly states: '<strong>Businesses consider TCO and how it can affect profitability.</strong>' TCO covers all costs across the full lifecycle — acquisition, possession, usage, and disposal — not just purchase price."},
+];
+QQ.push(...QQ_BONUS);
+
+// ═══ BONUS FLASHCARDS ═══
+const FC_BONUS=[
+ {f:"Logistics strategy derives from what?",b:"The corporate business plan",s:"Logistics flows down from corporate strategy — not set independently by the logistics department."},
+ {f:"Independent demand vs dependent demand: which is forecasted?",b:"Independent demand is forecasted; dependent is calculated",s:"Finished goods from external customers = independent = must forecast. Components needed = dependent = calculated from production plan."},
+ {f:"Pull system trigger?",b:"Actual customer demand",s:"Pull = demand triggers production/replenishment. Push = forecast triggers production ahead of demand."},
+ {f:"Section 4 explicitly calls picking what?",b:"Most labor- and cost-intensive warehouse function",s:"This is why automating picking = biggest labor cost reduction opportunity."},
+ {f:"Two specialized warehouse types called out by D470?",b:"Temperature-controlled and dangerous goods warehouses",s:"Both require specific design standards and regulatory compliance beyond standard warehousing."},
+ {f:"Non-compliance with cross-border regulations risks what?",b:"Disqualification from favorable treatment by border authorities",s:"Loss of trusted trader status, preferred clearance lanes, duty reductions."},
+ {f:"TCO includes which four cost categories?",b:"Acquisition + Possession + Usage + Disposal costs",s:"Not just purchase price. Full lifecycle cost including storage, maintenance, and end-of-life disposal."},
+ {f:"Palletized vs non-palletized: which is better for high SKU variety picking?",b:"Non-palletized (shelving/carton flow)",s:"Non-palletized suits small items and high variety. Palletized better for heavy/bulk goods."},
+ {f:"Combination of picking AND yard management strategies?",b:"Often needed — no single strategy is standalone optimal",s:"Course explicitly states the best approach often combines multiple strategies and technologies."},
+];
+FC.push(...FC_BONUS);
+
+// ═══ BONUS TRAPS ═══
+const TRAPS_BONUS=[
+ {h:"Logistics strategy source — corporate plan, NOT department plan",b:"Logistics strategy is derived from the <strong>corporate business plan</strong>, not set independently by the logistics or operations department. Exam may offer 'warehouse manager plan' or 'distribution cost targets' as distractors — both wrong."},
+ {h:"Pull vs Push — what triggers each",b:"<strong>Pull</strong> = triggered by actual customer demand (JIT, make-to-order). <strong>Push</strong> = triggered by forecast (make-to-stock). Pull minimizes inventory risk but can cause stockouts in demand spikes. Push builds inventory but risks overstock if forecast is wrong."},
+ {h:"Independent vs Dependent demand — forecasted vs calculated",b:"<strong>Independent demand</strong> (finished goods, customer-driven) = must be FORECASTED. <strong>Dependent demand</strong> (components, derived from production schedule) = CALCULATED, not forecasted. You never forecast how many wheels you need — you calculate it from bike production plans."},
+ {h:"Non-compliance consequence — DISQUALIFICATION, not just fines",b:"The D470 course specifically emphasizes: non-compliance with cross-border regulations can <strong>DISQUALIFY</strong> businesses from favorable treatment by border authorities. This is active harm (losing preferred status, clearance lanes, duty benefits) — not just a passive neutral outcome."},
+ {h:"TCO vs purchase price — TCO is MUCH broader",b:"TCO ≠ purchase price. TCO = ALL costs: acquisition (price + ordering + inbound transport), possession (storage + capital + obsolescence), usage (maintenance + rework + downtime), disposal (removal + recycling). Exam questions on 'why consider TCO' = it captures the full profitability impact, not just upfront cost."},
+];
+TRAPS.push(...TRAPS_BONUS);
+
 let drillFilter='all',drillList=[],drillAnswered={},drillCorrect=0;
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
 function getFilteredQ(){if(drillFilter==='all')return QQ;return QQ.filter(q=>q.t===drillFilter);}
@@ -1091,10 +1388,320 @@ function qfPick(oi,nc){
   setTimeout(()=>{qfIdx++;renderQFCard();},ok?600:1100);
 }
 
-// ════ NAVIGATION ════
+// ════ D470 LECTURES ════
+const LECTURES=[
+  {cat:"Section 1",title:"Logistics, Distribution & Transportation — Core Concepts",
+   text:`This lecture covers the foundational concepts from Section 1 of D470 — the elements of distribution, logistics, and transportation management.
+
+Let's begin with the scope hierarchy. Supply chain is the broadest concept, covering every party and process from raw material suppliers through to the end customer. Logistics sits inside supply chain management and covers the planning and management of the flow of goods, services, and information from origin to consumption. Distribution sits inside logistics and focuses specifically on getting finished goods from manufacturers or warehouses out to customers. Think of it as three nested circles: supply chain contains logistics, logistics contains distribution.
+
+Effective managers integrate logistics into the distribution system in relation to logistics management. Crucially, logistics strategy is derived from the corporate business plan — not set independently by the logistics department. This is a testable point: logistics flows down from corporate strategy.
+
+Now let's cover logistics providers. First-party logistics, or 1PL, is when a company handles all its own logistics with its own assets. Second-party logistics, or 2PL, involves hiring an asset-based carrier directly — a trucking company, for example. Third-party logistics, or 3PL, outsources specific functions like transportation and warehousing to a provider. The primary reason companies outsource distribution operations is to reduce logistics costs.
+
+Fourth-party logistics, or 4PL, is different in scope. While 3PL covers specific parts of the supply chain, 4PL delivers solutions across the ENTIRE supply chain. The 4PL orchestrates multiple 3PLs and manages end-to-end logistics on behalf of the client. This distinction — specific parts versus entire supply chain — is directly tested on your pre-assessment.
+
+Transportation mode selection: Air is optimal for high-value, fragile, or time-sensitive items over long distances. The exam gave you an expensive antique vase shipped a very long distance — the answer is Air. Sea is for bulk, heavy, non-urgent freight. It's the cheapest per unit but slowest. Rail handles heavy bulk inland freight cost-effectively. Road transport is the most flexible and is used for last-mile delivery.
+
+For road transport selection, the two key factors are weight and volume of cargo. Not length and breadth, not size and shape — weight and volume determine the right vehicle type.
+
+The marine fuel surcharge is called the Bunker Adjustment Surcharge. Bunker is the industry term for ship fuel. Variations in marine fuel pricing are offset by this surcharge specifically.
+
+Volume-to-weight ratio determines distribution efficiency. A LOWER ratio means a product is denser — it weighs more relative to its size. Lower ratio equals more efficient distribution because you can move more weight per trip. The pre-assessment showed Products A, B, C, and D with ratios of 100, 600, 1000, and 250. Product A with ratio 100 is the most efficient.
+
+Product Life Cycle: The Growth stage has the greatest positive slope — this is the fastest acceleration in sales. The Introductory stage begins the sales increase, but Growth is where it accelerates fastest. In the Introductory phase, sales increase at an increasing rate. In Maturity, they increase at a decreasing rate. In Decline, they decrease.
+
+Operations strategies — the four Vs. Volume-based strategy = high-volume standardized production. Variety-based = wide product range with high customization. Variability-based = designed for high demand fluctuation. This is the correct strategy when a company faces large swings in demand. Visibility-based = customer can see the product being made.
+
+Manufacturing processes: Project production handles one-off unique items. Batch production groups similar items together. Mass production is high-volume standardized output. Continuous production runs 24 hours a day, 7 days a week, producing identical products non-stop. A chemical company producing water treatment chemicals should use continuous production.
+
+Quality performance is the type that minimizes waste. Defects, rework, and scrap are all waste. A quality-focused operation eliminates them at the source.
+
+When a company lowers costs by reengineering its logistics network, the number of facilities decreases. Fewer warehouses means lower fixed costs — but also longer lead times and reduced responsiveness. This is the fundamental cost-service tradeoff in logistics network design.
+
+Logistics types: Outbound logistics moves finished goods to customers. Inbound logistics receives materials from suppliers. Reverse logistics covers returns, recycling, and waste — goods flowing backwards through the supply chain. A company improving its recycling operations should focus on reverse logistics.
+
+Distribution operations: Break-bulk receives large consolidated shipments and redistributes them as smaller shipments to customers. Cross-docking transfers goods directly from inbound to outbound with no storage time. Echelon distribution flows through multiple sequential tiers — production to warehouse to local distribution centers to customers. Postponement delays final product configuration until closer to the demand point.
+
+Government transport actions: An incentive rewards desired behavior through benefits like tax exemptions or subsidies. A regulation is a mandatory rule with penalties for non-compliance. The road tax exemption for electric vehicles is an incentive — it encourages behavior through a benefit, not a mandate.
+
+To minimize empty miles in transportation, the most efficient approach is to pick up lots from suppliers after the drop-off to customers. This eliminates the empty return trip. The vehicle delivers products forward, then loads raw materials for the return journey.`},
+
+  {cat:"Section 2",title:"Cross-Border Logistics — Laws, Regulations & Compliance",
+   text:`This lecture covers Section 2 of D470 — the laws, regulations, and cross-border operations that govern international logistics.
+
+Cross-border logistics plays an important role in today's businesses. Different modes of freight transportation are used for cross-border operations, from air cargo for high-value goods to sea freight for bulk shipments.
+
+The cross-border logistics decision that directly affects an organization's customs tax liabilities is production location. Where goods are produced determines the country of origin, which in turn determines which tariff schedule applies and which preferential trade agreements are available. Production lot size, quality, and reliability are operational decisions that don't directly drive customs tax liability.
+
+Freight forwarders are the agencies that prepare and submit customs declarations on behalf of importers and exporters. They act as intermediaries between shippers and customs authorities, handling the paperwork and regulatory requirements for cross-border movement. This is distinct from terminal operators, who manage port facilities, and payment banks, who handle letters of credit.
+
+The Trade Facilitation Agreement, known as the TFA, is the international law that focuses on harmonizing customs procedures throughout the world. It is a World Trade Organization agreement designed to streamline global customs processes. Other options on the exam — IFTA, PCTT, and TAC — are not real international trade agreements.
+
+The Kyoto Customs Convention aims to make customs procedures more predictable. Its goals include simplification, standardization, and transparency in customs operations. It does not aim to build opacity, control businesses, or discourage preferences for trusted organizations.
+
+Commodity codes, also called Harmonized System codes or HS codes, are the factor that defines and categorizes customs tariff rates. Every traded product is assigned a numerical code that determines applicable tariff rates. Transportation mode and customer code do not determine tariffs.
+
+To ensure efficient product clearance at a border crossing, the most important practice is improving declarations and documentation. Accurate, complete paperwork is the primary enabler of smooth border clearance. This is what allows customs authorities to process shipments quickly.
+
+The Corrupt Practice Act of 1977, commonly known as the Foreign Corrupt Practices Act or FCPA, involves corporations making unsanctioned payments both inside and outside the country. A critical trap on your pre-assessment: the FCPA applies to corporations AND individuals — not corporations only. And it covers both domestic and international unsanctioned payments.
+
+The supply cost that is specific to international trade is cross-border tariffs cost. Domestic operations don't pay import tariffs. Rework costs, quality costs, and direct taxation all exist in domestic operations as well. Cross-border tariffs are unique to international trade.
+
+Quick Response is the agile supply chain strategy used to address demand changes. It works by shortening replenishment lead times so companies can respond rapidly to actual demand signals rather than forecasts.
+
+Efficient Consumer Response, or ECR, has as its primary benefit in global trade the improvement of service level. ECR focuses on making the entire supply chain from manufacturer to consumer more efficient, measured primarily by service availability to consumers.
+
+Poor border control mechanisms in a country create a specific challenge for manufacturers: increased product loss in the market. Weak borders allow counterfeit goods and unauthorized imports to undermine legitimate products.
+
+The Border Enforcement Security Task Force, known as BEST, is the agency specifically focused on improving safety in the international trade and supply chain. This is distinct from customs organizations, which enforce trade rules, and freight forwarders, which handle documentation.
+
+Non-compliance with cross-border regulations can disqualify businesses from favorable treatment by border authorities. This is an active negative consequence — losing trusted trader status, preferred clearance lanes, and duty reductions. Non-compliance isn't just a neutral missed opportunity; it actively harms a company's position at the border.
+
+The customs and trade compliance manager role requires the ability to ensure successful systems deployment for vigorous trade operations. This role manages the technology systems and processes that enable compliant and efficient cross-border trade.`},
+
+  {cat:"Section 3",title:"TCO, Inventory, Operations Management & Outsourcing",
+   text:`This lecture covers Section 3 of D470 — how total cost of ownership management affects operations, including inventory, forecasting, operational management, and outsourcing decisions.
+
+Total Cost of Ownership, or TCO, is the complete cost of acquiring, using, and disposing of a product or service over its full lifecycle. It is much broader than just purchase price. TCO includes acquisition costs such as purchase price, ordering costs, and inbound transportation. It includes possession costs like storage, handling, insurance, and capital tied up in inventory. It includes usage costs like maintenance, quality issues, and downtime. And it includes disposal costs for end-of-life removal and recycling. When deciding whether to outsource logistics, comparing the full TCO of in-house operations against a 3PL contract cost is the correct approach.
+
+Let's cover inventory types, which are heavily tested. Cycle stock is inventory equivalent to the typical regular demand over a replenishment period. The exam described a company holding stock supplies equivalent to typical demand for one quarter of frequent customer purchases. That is cycle stock.
+
+Safety stock is buffer inventory held above expected demand to protect against demand uncertainty or supply delays. In-process stock is partially finished goods held close to production for rapid completion and dispatch. The exam described a manufacturing company keeping partially finished stock at a nearby supplier's warehouse for 1-hour delivery and immediate completion. That is in-process stock — not pipeline stock, which is inventory in transit between locations. Pipeline stock is on the move. In-process stock is near production, waiting to be finished.
+
+Seasonal stock is built up ahead of predictable seasonal demand peaks. Speculative stock is bought in advance anticipating price rises or shortages. Obsolescent stock is nearing the end of its useful life.
+
+Dependent versus independent demand: Independent demand applies to finished goods sold directly to customers. It is driven by external customer orders and must be forecasted. Dependent demand applies to components and raw materials needed to make finished goods. It is calculated from the production schedule — derived from independent demand, not forecasted separately.
+
+Push systems produce based on forecasts and push inventory downstream before demand occurs. The risk is overstock if forecasts are wrong. Pull systems, like just-in-time, trigger production and replenishment from actual customer demand. The risk is stockout if demand spikes unexpectedly.
+
+Forecasting methods: Moving average calculates the simple average of actual demand from a fixed historical period. The exam described a manager calculating average demand based on actual demand from the previous two years. That is moving average. Exponential smoothing uses a weighted average that gives more weight to recent data. Causal forecasting uses external variables like weather or economic indicators to predict demand. Experimental forecasting uses market research and qualitative data.
+
+Pareto analysis — the A-B-C-D classification: A-line products are the fast-moving items that generate approximately 80 percent of revenue. They warrant the highest availability targets — 90 percent or more — at all distribution centers. B-line products are mid-tier movers with moderate availability targets. C-line products are slow movers with lower targets and fewer stocking locations. D-line items are obsolete or nearly discontinued.
+
+Inventory holding cost elements: Shortage cost is the penalty for not holding adequate stock to fulfill orders. Also called stockout cost. Risk cost covers obsolescence, damage, and deterioration. Capital financing cost is the cost of money tied up in inventory. Storage cost covers physical space and handling.
+
+When a firm rapidly increases its product variety and requires a larger assortment of inventory, the factor driving rising inventory costs is increased product proliferation. More product lines equals more SKUs, which means more distinct inventory items to hold.
+
+The operating control system evaluates key performance indicators related to cost centers and operations standards, compares actual costs to performance data, and drives corrective action. This is the system for real-time operational monitoring.
+
+Validity is the principle that data must cover all necessary stages and variables for sound decision-making. When an operations control system's data is missing stages of production and distribution, validity is the violated principle.
+
+Hierarchy of needs is the best practice for a measurement system when managers at different levels of decision-making authority are contributing. Design the system to reflect the information needs at each management level.
+
+Benchmarking compares your performance against world-class standards from other organizations and industries to identify performance gaps and drive continuous improvement. Quality Function Deployment is a benchmarking system that considers customer requirements and focuses on improving supplier performance for consumers. The Malcolm Baldridge National Quality Award criteria is the United States government-recognized framework for productivity and operational performance excellence.
+
+Now outsourcing decisions. When a manufacturer outsources distribution and logistics to focus on its core business, the impact is a decrease in logistics decision-making control. Outsourcing transfers operational control to the 3PL provider.
+
+When outsourcing frees capital from logistics assets, the benefit is investment opportunities in more profitable business areas. The capital previously tied up in warehouses, vehicles, and logistics staff can be redirected to core competencies.
+
+A multiuser 3PL serves multiple clients with shared infrastructure, which creates economies of scale. A dedicated 3PL serves one client exclusively and charges more because it offers specialization of knowledge and expertise.
+
+When a firm with a strong brand outsources to an unknown 3PL startup, the likely risk is that the third-party brand could interfere with the firm's brand. Customer experience is delivered through the 3PL, and an unknown provider's reputation affects how customers perceive the brand.
+
+The first step when outsourcing operations management is to identify service requirements and costs. Before approaching any provider, you must define what services you need and at what cost target.
+
+Gainsharing-based activity incentive is when a 3PL contract gives the provider a percentage of profits when it exceeds performance targets. This aligns provider incentives with client performance goals.
+
+Performance tracking is when a firm monitors achievement of provider activity targets through structured review meetings that include open-book audits at different management levels.
+
+Humanitarian logistics roles: A donor provides funding or resources, like a community college raising funds for famine relief. An agency delivers the aid, like NGOs on the ground. A beneficiary receives the aid, like the affected population. The aid agency contacts the donor when materials are distributed to final end users — that is the last logistics stage.
+
+The digital freight exchange software is an online trading platform for contracting transportation, hosted by a third-party agency — essentially a marketplace for freight capacity.
+
+Regional cost variations is the performance indicator that monitors how expenses like labor and rent vary from location to location across distribution centers.`},
+
+  {cat:"Section 4",title:"Warehouse Management, Picking & Distribution Technology",
+   text:`This lecture covers Section 4 of D470 — the key elements of distribution and warehouse management that the exam tests most heavily.
+
+The Warehouse Management System, or WMS, controls all warehouse activities. This includes automated equipment, radio frequency communications with operators, picking operations, put-away, and inventory management. When the exam describes a company using technology to control all activities, automated equipment, and RF communications with operators in finished-goods distribution centers — that is a WMS. When the question asks which system helps improve put-away efficiency across a storage network — also a WMS.
+
+The Transportation Management System, or TMS, optimizes transportation operations: carrier selection, route planning, freight audit, and shipment tracking. The Yard Management System, or YMS, controls vehicle movements in the yard, dock assignments, gate management, and check-in processes. The Order Management System, or OMS, handles customer-facing order capture, promising, and routing to fulfillment.
+
+Geofencing uses GPS location technology to automatically trigger actions when vehicles enter defined geographic zones. When a large warehouse yard wants to automate the process of assigning bays for loading and unloading vehicles — the answer is geofencing. This is distinct from autonomous mobile robots, which navigate independently inside the warehouse, and automated guided vehicles, which follow fixed paths inside the warehouse.
+
+The Automated Storage and Retrieval System, or AS-RS, connects picking operations directly to the WMS to eliminate human intervention. When a warehouse manager wants to connect picking to the WMS and remove human operators from the process — the answer is AS-RS.
+
+Racking and storage systems: Cantilevered racking is designed specifically for long, awkward items like timber, pipes, and turbine blades. The arms extend from upright columns with no front column to obstruct the length of the item. It also has minimal investment cost relative to other systems. Drive-in and drive-through racking allows forklifts to drive directly into the rack structure. Drive-in uses last-in-first-out access. Drive-through enables first-in-first-out. Powered mobile racking achieves the highest storage density by mounting racks on motorized carriages that move to create aisles on demand. It has the highest capital cost.
+
+Palletized storage uses pallets and forklifts, which is efficient for heavy and bulk goods. Non-palletized storage uses shelving or carton flow systems, which suits smaller items and high variety picking where individual units need to be accessible.
+
+Specialized warehouse design covers temperature-controlled warehouses for cold chain requirements like pharmaceuticals and food, and dangerous goods warehouses for hazardous materials including flammables, corrosives, and chemicals. Both require specific design standards and regulatory compliance beyond standard warehousing.
+
+Picking is the most labor-intensive and cost-intensive warehouse function. This means that when a company wants to reduce direct labor costs in warehouse operations, it should focus on picking first — it offers the largest reduction opportunity.
+
+When two individual pickers have different productivity rates — say 100 lines per hour versus 200 lines per hour — the reason is picking method. Different picking methods like single-order picking, batch picking, zone picking, and wave picking produce dramatically different results at the individual level.
+
+When two warehouses have different average picking productivity — say X orders per picker per hour versus 2X orders per picker per hour — the reason is picking equipment usage. At the facility level, equipment differences like conveyors, pick-to-light systems, voice-directed picking, and automated systems explain the productivity gap. The level of analysis matters: individual picker equals method, facility equals equipment.
+
+Short-term planning in warehouse management is workload planning based on order receipts — responding to actual incoming orders on a daily or weekly basis. Budget planning based on expansion projections is long-term. Capacity planning based on business growth is medium-term. Demand planning based on market requirements is also medium-term.
+
+The operational metric that helps improve warehouse employee safety statistics is days without an accident. This directly measures and creates accountability for workplace safety performance.
+
+Put-away cycle time measures from stock receipt to storage location — not from order receipt to dispatch. The exam gave a scenario: stock received on the 12th, moved to storage on the 15th. Put-away cycle time equals 3 days. The order processing steps on the 16th and 17th are irrelevant to put-away time.
+
+Stock turnover ratio measures how many times inventory is sold or used in a year. A higher ratio means inventory cycles through faster, which means less stock is held on hand at any time. The exam gave warehouses W, X, Y, and Z with ratios of 4, 5, 8, and 10. Warehouse Z with ratio 10 holds the lowest level of inventory because it turns over most frequently.
+
+Warehouse planning horizons: Strategic planning covers 3 to 5 years, focusing on network design, major capital investments, and long-term distribution strategy. Tactical planning covers 1 to 3 years, addressing capacity, equipment, and major process changes. Operational planning covers days to months, including workload scheduling based on actual order receipts.
+
+The combination principle: the best inventory strategies do not need to be standalone picking or yard management strategies. A warehouse manager may need to implement a combination of picking and yard management strategies and technologies to obtain optimal results. No single approach is universally optimal — the specific business requirements determine the right mix.
+
+Warehouse systems architecture, functionality, data capture and transmission, and planning tools all work together to run and monitor facility operations. Strategic plans impact warehouse design. Specialized warehouse design focuses on the specific business needs and product storage requirements — including temperature-controlled and dangerous goods facilities.`},
+];
+
+// ════ LECTURE ENGINE ════
+let lpCurrent=-1,lpAuto=true,lpTargetWPM=145;
+let lpIsPlaying=false,lpIsPaused=false,lpSubQueue=[],lpChunks=[],lpChunkIdx=0,lpPausedAtChunk=0;
+let lpUtteranceRefs=[],lpWatchdogInterval=null,lpIdleCount=0;
+let lpSelectedVoice=null,lpSelectedPitch=1.2,availableAccents=[];
+const WPM_RATE={130:0.78,145:0.88,165:1.02,175:1.1};
+const FEMALE_NAMES=['samantha','victoria','karen','tessa','moira','fiona','veena','allison','ava','susan','nicky','hazel','sonia','libby','kate','serena'];
+const MALE_NAMES=['daniel','alex','fred','jorge','thomas','oliver','aaron'];
+function isFemale(v){const n=v.name.toLowerCase();if(FEMALE_NAMES.some(k=>n.includes(k)))return true;if(MALE_NAMES.some(k=>n.includes(k)))return false;return null;}
+const ACCENT_DEFS=[
+  {id:'en-IE',flag:'🇮🇪',label:'Irish',pitch:1.45,priority:['moira']},
+  {id:'en-AU',flag:'🇦🇺',label:'Australian',pitch:1.2,priority:['karen']},
+  {id:'en-ZA',flag:'🇿🇦',label:'S. African',pitch:1.2,priority:['tessa']},
+  {id:'en-GB',flag:'🇬🇧',label:'British',pitch:1.2,priority:['kate','hazel','sonia','libby']},
+  {id:'en-IN',flag:'🇮🇳',label:'Indian',pitch:1.25,priority:['veena']},
+  {id:'en-US',flag:'🇺🇸',label:'American',pitch:1.2,priority:['samantha','ava','victoria']},
+];
+function resolveVoices(){
+  const all=speechSynthesis.getVoices();const en=all.filter(v=>v.lang.startsWith('en'));
+  availableAccents=[];
+  ACCENT_DEFS.forEach(def=>{
+    const cands=en.filter(v=>v.lang===def.id||v.lang.startsWith(def.id+'-'));
+    let chosen=null;
+    for(const name of def.priority){const m=cands.find(v=>v.name.toLowerCase().includes(name));if(m){chosen=m;break;}}
+    if(!chosen){const fem=cands.filter(v=>isFemale(v)!==false);if(fem.length)chosen=fem[0];}
+    if(!chosen){const broad=en.filter(v=>isFemale(v)!==false);if(broad.length)chosen=broad[0];}
+    if(chosen)availableAccents.push({...def,voice:chosen});
+  });
+  buildVoiceButtons();
+}
+function buildVoiceButtons(){
+  const row=document.getElementById('lp-voice-row');if(!row)return;
+  const loading=document.getElementById('lp-voice-loading');if(loading)loading.remove();
+  row.querySelectorAll('.voice-btn').forEach(b=>b.remove());
+  if(!availableAccents.length){const s=document.createElement('span');s.style.cssText='font-size:11px;color:var(--red)';s.textContent='No speech voices found.';row.appendChild(s);return;}
+  availableAccents.forEach((acc,i)=>{
+    const btn=document.createElement('button');btn.className='voice-btn'+(i===0?' active':'');
+    const sn=acc.voice.name.replace(/^(com\.apple\.|Microsoft )/i,'').split(' ')[0];
+    btn.innerHTML=acc.flag+' <span style="font-size:11px;font-weight:700">'+sn+'</span><br><span style="font-size:9px;opacity:.6">'+acc.label+'</span>';
+    btn.style.lineHeight='1.3';btn.onclick=()=>{lpSelectedVoice=acc.voice;lpSelectedPitch=acc.pitch||1.2;document.querySelectorAll('.voice-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');};
+    row.appendChild(btn);
+    if(i===0){lpSelectedVoice=acc.voice;lpSelectedPitch=acc.pitch||1.2;}
+  });
+}
+function setSpeed(wpm,btn){lpTargetWPM=wpm;document.querySelectorAll('.lp-speed').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function getVoice(){return lpSelectedVoice||(()=>{const all=speechSynthesis.getVoices();return all.find(v=>v.lang.startsWith('en')&&isFemale(v)!==false)||all[0];})();}
+function chunkText(text){
+  const MAX=180,sentences=text.match(/[^.!?]+[.!?]+[\s]*/g)||[text],out=[];
+  for(const s of sentences){
+    if(s.trim().length<=MAX){out.push(s.trim());continue;}
+    let rem=s.trim();
+    while(rem.length>MAX){let cut=-1;for(const sep of[': ','; ',', ',' ']){const idx=rem.lastIndexOf(sep,MAX);if(idx>30){cut=idx+sep.length-1;break;}}if(cut<0)cut=MAX;out.push(rem.slice(0,cut).trim());rem=rem.slice(cut).trim();}
+    if(rem)out.push(rem);
+  }
+  return out.filter(s=>s.length>0);
+}
+function ttsMakeUtt(text,onDone){
+  const v=getVoice();const u=new SpeechSynthesisUtterance(text);
+  u.rate=WPM_RATE[lpTargetWPM]||0.88;u.pitch=lpSelectedPitch;u.volume=1.0;
+  if(v){u.voice=v;u.lang=v.lang;}else u.lang='en-GB';
+  u.onend=()=>{lpUtteranceRefs=lpUtteranceRefs.filter(x=>x!==u);onDone();};
+  u.onerror=(e)=>{lpUtteranceRefs=lpUtteranceRefs.filter(x=>x!==u);if(e.error!=='interrupted'&&e.error!=='canceled')onDone();};
+  lpUtteranceRefs.push(u);return u;
+}
+function startWatchdog(){
+  clearInterval(lpWatchdogInterval);lpIdleCount=0;
+  lpWatchdogInterval=setInterval(()=>{
+    if(!lpIsPlaying){clearInterval(lpWatchdogInterval);return;}
+    if(speechSynthesis.speaking){lpIdleCount=0;return;}
+    lpIdleCount++;if(lpIdleCount>=3){lpIdleCount=0;lpSpeakNext();}
+  },250);
+}
+function lpSpeakNext(){
+  if(!lpIsPlaying)return;
+  if(lpSubQueue.length===0){lpLoadChunk();return;}
+  const text=lpSubQueue.shift();if(!text||!text.trim()){lpSpeakNext();return;}
+  const u=ttsMakeUtt(text,()=>{if(lpIsPlaying)setTimeout(lpSpeakNext,180);});
+  speechSynthesis.speak(u);lpIdleCount=0;
+}
+function lpLoadChunk(){
+  if(!lpIsPlaying||lpChunkIdx>=lpChunks.length){lpOnComplete();return;}
+  const pct=Math.round((lpChunkIdx+1)/lpChunks.length*100);
+  const fill=document.getElementById('lp-pfill');if(fill)fill.style.width=pct+'%';
+  lpSubQueue=chunkText(lpChunks[lpChunkIdx]);lpChunkIdx++;
+  lpSpeakNext();
+}
+function lpLoad(idx,autoplay){
+  speechSynthesis.cancel();clearInterval(lpWatchdogInterval);lpIsPaused=false;
+  lpCurrent=idx;lpSubQueue=[];lpChunkIdx=0;
+  document.querySelectorAll('.lp-track').forEach((t,i)=>t.classList.toggle('playing',i===idx));
+  const lc=LECTURES[idx];
+  document.getElementById('lp-np').textContent=lc.title;
+  document.getElementById('lp-title-text').textContent=lc.title;
+  document.getElementById('lp-pfill').style.width='0%';
+  renderLectureText(lc);
+  lpChunks=lc.text.replace(/\n\n+/g,' ').split(/(?<=[.!?])\s+/).filter(s=>s.trim().length>0);
+  if(autoplay){lpIsPlaying=true;lpIsPaused=false;lpSetUI('playing');lpSpeakNext();startWatchdog();}
+  else lpSetUI('stopped');
+}
+function renderLectureText(lc){
+  const el=document.getElementById('lp-read-text');if(!el)return;
+  const paras=lc.text.split(/\n\n+/);let html='';
+  paras.forEach(p=>{p=p.trim();if(p)html+=`<p>${p}</p>`;});
+  el.innerHTML=html;
+}
+function lpOnComplete(){
+  clearInterval(lpWatchdogInterval);
+  const fill=document.getElementById('lp-pfill');if(fill)fill.style.width='100%';
+  lpSetUI('stopped');lpIsPlaying=false;
+  if(lpAuto&&lpCurrent<LECTURES.length-1)setTimeout(()=>lpLoad(lpCurrent+1,true),300);
+}
+function lpToggle(){
+  if(!('speechSynthesis' in window))return;
+  if(lpCurrent<0){lpLoad(0,true);return;}
+  if(lpIsPlaying){speechSynthesis.cancel();clearInterval(lpWatchdogInterval);lpPausedAtChunk=lpChunkIdx;lpSetUI('paused');lpIsPlaying=false;lpIsPaused=true;}
+  else if(lpIsPaused){lpIsPlaying=true;lpIsPaused=false;lpChunkIdx=lpPausedAtChunk;lpSubQueue=[];lpSetUI('playing');lpSpeakNext();startWatchdog();}
+  else{const lc=LECTURES[lpCurrent];lpChunkIdx=0;lpSubQueue=[];const fill=document.getElementById('lp-pfill');if(fill)fill.style.width='0%';renderLectureText(lc);lpChunks=lc.text.replace(/\n\n+/g,' ').split(/(?<=[.!?])\s+/).filter(s=>s.trim().length>0);lpIsPlaying=true;lpIsPaused=false;lpSetUI('playing');lpSpeakNext();startWatchdog();}
+}
+function lpStop(){
+  clearInterval(lpWatchdogInterval);speechSynthesis.cancel();lpUtteranceRefs=[];
+  lpIsPlaying=false;lpIsPaused=false;lpSubQueue=[];lpChunkIdx=0;lpSetUI('stopped');
+  const fill=document.getElementById('lp-pfill');if(fill)fill.style.width='0%';
+}
+function lpNext(){if(lpCurrent<LECTURES.length-1)lpLoad(lpCurrent+1,true);}
+function lpPrev(){lpLoad(lpCurrent>0?lpCurrent-1:0,true);}
+function lpToggleAuto(){lpAuto=!lpAuto;const btn=document.getElementById('lp-auto-btn');if(btn){btn.classList.toggle('active',lpAuto);btn.textContent=lpAuto?'🔁 Auto':'➡ Manual';}showToast(lpAuto?'Auto-advance on':'Manual mode');}
+function lpSeekClick(e,wrap){const pct=e.offsetX/wrap.offsetWidth;const fill=document.getElementById('lp-pfill');if(fill)fill.style.width=(pct*100).toFixed(0)+'%';}
+function lpSetUI(state){
+  const btn=document.getElementById('lp-play-btn');const dot=document.getElementById('lp-dot');
+  if(!btn||!dot)return;
+  if(state==='playing'){btn.textContent='⏸ Pause';dot.classList.remove('paused');}
+  else if(state==='paused'){btn.textContent='▶ Resume';dot.classList.add('paused');}
+  else{btn.textContent='▶ Play';dot.classList.add('paused');}
+}
+function buildPlaylist(){
+  const pl=document.getElementById('lp-playlist');if(!pl||pl.children.length>0)return;
+  LECTURES.forEach((lc,i)=>{
+    const d=document.createElement('div');d.className='lp-track';d.id='lpt-'+i;d.onclick=()=>lpLoad(i,true);
+    d.innerHTML=`<div class="lp-track-num">${i+1}</div>
+      <div class="lp-track-body"><div class="lp-track-title">${lc.title}</div><div class="lp-track-cat">${lc.cat}</div></div>
+      <div class="lp-waveform"><div class="lp-bar"></div><div class="lp-bar"></div><div class="lp-bar"></div><div class="lp-bar"></div></div>`;
+    pl.appendChild(d);
+  });
+}
+if('speechSynthesis' in window){
+  speechSynthesis.onvoiceschanged=resolveVoices;
+  if(speechSynthesis.getVoices().length>0)resolveVoices();
+  else{setTimeout(resolveVoices,100);setTimeout(()=>{if(!availableAccents.length)resolveVoices();},600);}
+}
+
 function go(t){
   document.querySelectorAll('.tab,.bnav-btn').forEach(x=>x.classList.remove('active'));
-  document.querySelectorAll('#study,#drill,#flash,#traps,#tree,#quickfire').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('#study,#drill,#flash,#traps,#tree,#quickfire,#lecture').forEach(x=>x.classList.remove('active'));
   const dt=document.querySelector(`.tab[data-tab="${t}"]`);if(dt)dt.classList.add('active');
   const bn=document.getElementById('bnav-'+t);if(bn)bn.classList.add('active');
   const sec=document.getElementById(t);if(sec)sec.classList.add('active');
@@ -1103,6 +1710,8 @@ function go(t){
   if(t==='traps')buildTraps();
   if(t==='tree')buildTrees();
   if(t==='quickfire'&&qfList.length===0)resetQF();
+  if(t==='lecture')buildPlaylist();
+  if(t!=='lecture')lpStop();
   window.scrollTo({top:0,behavior:'instant'});
 }
 
