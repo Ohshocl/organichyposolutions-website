@@ -1593,7 +1593,7 @@ function buildVoiceButtons(){
     if(i===0){lpSelectedVoice=acc.voice;lpSelectedPitch=acc.pitch||1.2;}
   });
 }
-function setSpeed(wpm,btn){lpTargetWPM=wpm;document.querySelectorAll('.lp-speed').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function setSpeed(wpm,btn){lpTargetWPM=wpm;document.querySelectorAll('.lp-speed').forEach(b=>b.classList.remove('active'));btn.classList.add('active');if(lpIsPlaying){speechSynthesis.cancel();lpUtteranceRefs=[];lpSubQueue=[];lpChunkIdx=Math.max(0,lpChunkIdx-1);setTimeout(lpSpeakNext,80);}}
 function getVoice(){return lpSelectedVoice||(()=>{const all=speechSynthesis.getVoices();return all.find(v=>v.lang.startsWith('en')&&isFemale(v)!==false)||all[0];})();}
 function chunkText(text){
   const MAX=180,sentences=text.match(/[^.!?]+[.!?]+[\s]*/g)||[text],out=[];
