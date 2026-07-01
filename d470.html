@@ -1235,25 +1235,23 @@ function qfPick(oi,nc){
 function go(t){
   document.querySelectorAll('.tab,.bnav-btn').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('#study,#drill,#flash,#traps,#tree,#quickfire,#lecture').forEach(x=>x.classList.remove('active'));
-  const dt=document.querySelector(`.tab[data-tab="${t}"]`);if(dt)dt.classList.add('active');
+  const dt=document.querySelector('.tab[data-tab="'+t+'"]');if(dt)dt.classList.add('active');
   const bn=document.getElementById('bnav-'+t);if(bn)bn.classList.add('active');
   const sec=document.getElementById(t);if(sec)sec.classList.add('active');
-  try{
-    if(t==='drill'&&drillList.length===0)resetDrill();
-    if(t==='flash'){renderFC();initSwipe();}
-    if(t==='traps')buildTraps();
-    if(t==='tree')buildTrees();
-    if(t==='quickfire'&&qfList.length===0)resetQF();
-    if(t==='lecture')buildPlaylist();
-    if(t!=='lecture')lpStop();
-  }catch(e){console.error('go() tab init error:',e);}
+  if(t!=='lecture')lpStop();
   window.scrollTo({top:0,behavior:'instant'});
 }
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._to);t._to=setTimeout(()=>t.classList.remove('show'),2200);}
 
 window.addEventListener('DOMContentLoaded',()=>{
-  resetDrill();renderFC();initSwipe();
+  resetDrill();
+  renderFC();
+  initSwipe();
+  buildTraps();
+  buildTrees();
+  resetQF();
+  buildPlaylist();
   function addTouchNav(container){
     if(!container)return;
     container.addEventListener('touchend',function(e){const btn=e.target.closest('[data-tab]');if(!btn)return;e.preventDefault();go(btn.dataset.tab);},{passive:false});
