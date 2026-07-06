@@ -60,7 +60,7 @@
                 wholesale: 15.99,
                 wholesaleSubscription: 14.39
             },
-            wholesaleThreshold: 25,
+            wholesaleThreshold: 24,
             shopifyVariants: {
                 retail: '41829068537927',
                 retailSubscription: '41829068570695',
@@ -157,7 +157,7 @@
                 wholesale: 13.99,
                 wholesaleSubscription: 12.59
             },
-            wholesaleThreshold: 25,
+            wholesaleThreshold: 24,
             shopifyVariants: {
                 retail: '42457056084039',
                 retailSubscription: '42457056116807',
@@ -298,7 +298,7 @@
                 wholesale: 10.99,
                 wholesaleSubscription: 9.89
             },
-            wholesaleThreshold: 25,
+            wholesaleThreshold: 24,
             shopifyVariants: {
                 retail: '41829064572999',
                 retailSubscription: '41829064605767',
