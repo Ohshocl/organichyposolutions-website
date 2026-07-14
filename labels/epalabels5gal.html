@@ -1,1 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5 Gallon Drum Hypochlorous Multi-Purpose Cleaner & Disinfectant - OHS Label</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
 
+        html {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background: white;
+            color: #000;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
+        /*
+         * BLEED: 0.125in on all sides.
+         * @page expanded to 18.5in x 5.625in. Die cut still at 18.25" x 5.375".
+         */
+        @page {
+            size: 18.5in 5.625in;
+            margin: 0;
+        }
+
+        .page {
+            width: 18.25in;
+            height: 5.375in;
+            margin: 0.125in auto;
+            background: white;
+            position: relative;
+            padding: 0.0625in; /* CUT TOLERANCE: 1/16in safe zone all sides */
+            overflow: hidden;
+            display: flex;
+            flex-direction: row;
+            gap: 0.4in;
+        }
+
+        @media screen {
+            body { background: #e0e0e0; padding: 20px; }
+            .page { margin: 20px auto; }
+        }
+
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            html, body {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            body { background: white !important; padding: 0; }
+            .page { margin: 0.125in; box-shadow: none; }
+            .front-panel { background: #5BBFC2 !important; }
+            .warning-box { background: #E8723A !important; }
+            .badge { background: #B8E8D0 !important; }
+            .main-claim, .sub-claim { background: #3DA8D5 !important; }
+            .section-title { background: #5BBFC2 !important; }
+            table th { background: #5BBFC2 !important; }
+            .footer { background: #5BBFC2 !important; }
+        }
+
+        /* ========================================
+           FRONT PANEL
+           ======================================== */
+        .front-panel {
+            background: #5BBFC2 !important; /* solid — gradient causes gray printing */
+            color: white;
+            padding: 5px 14px 5px 14px;
+            flex: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 0px;
+            position: relative;
+            border-radius: 6px;
+            overflow: hidden;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
+        .front-top-row {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 1px;
+        }
+
+        .warning-box {
+            background: #E8723A !important;
+            color: white;
+            padding: 5px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 8px;
+            max-width: 85px;
+            text-align: center;
+            /* box-shadow removed */
+            border: 2px solid white;
+            line-height: 1.2;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
+        .logo-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+
+        .logo-image {
+            max-width: 95%;
+            max-height: 240px;
+            height: auto;
+            background: white !important;
+            padding: 10px 12px;
+            border-radius: 6px;
+            /* box-shadow removed */
+        }
+
+        .badge-container {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin: 3px 0;
+            margin-top: auto;
+        }
+
+        .badge {
+            background: #B8E8D0 !important;
+            color: #2E7D32;
+            padding: 4px;
+            border-radius: 50%;
+            width: 65px;
+            height: 65px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            /* box-shadow removed */
+            border: 2px solid #4CAF50;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
+        .badge-large {
+            font-size: 9px;
+            margin-bottom: 1px;
+            line-height: 1;
+            text-align: center;
+        }
+
+        .badge-small {
+            font-size: 7px; /* bumped from 5.5px — was 4.125pt */
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .main-claim {
+            font-size: 14px;
+            font-weight: bold;
+            margin: 2px 0;
+            text-align: center;
+            /* text-shadow removed */
+            background: #3DA8D5 !important;
+            padding: 3px 10px;
+            border-radius: 5px;
+            color: white;
+            width: 100%;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
+        .sub-claim {
+            font-size: 9px;
+            margin: 2px 0;
+            text-align: center;
+            font-weight: 500;
+            background: #3DA8D5 !important;
+            padding: 3px 10px;
+            border-radius: 5px;
+            width: 100%;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
+        .active-ingredient-front {
+            background: white !important;
+            padding: 3px 8px;
+            border-radius: 3px;
+            width: 100%;
+            font-size: 7px; /* bumped from 6px — was 4.5pt */
+            line-height: 1.3;
+            color: #000;
+            margin-top: 3px;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
+        .active-ingredient-front .ai-title {
+            font-weight: bold;
+            font-size: 7px;
+            color: #000;
+            margin-bottom: 1px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .active-ingredient-front .ai-row {
+            font-size: 7px; /* bumped from 6px */
+            font-family: 'Courier New', monospace;
+            color: #000;
+        }
+
+        .active-ingredient-front .ai-row.bold { font-weight: bold; }
+
+        .active-ingredient-front .ai-total {
+            font-size: 7px; /* bumped from 6px */
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            border-top: 1px solid #333;
+            padding-top: 1px;
+            margin-top: 1px;
+            color: #000;
+        }
+
+        .active-ingredient-front .shelf-life-note {
+            font-size: 7px; /* bumped from 5.5px — was 4.125pt */
+            font-weight: bold;
+            margin-top: 2px;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+
+        .active-ingredient-front .epa-reg {
+            font-size: 7px; /* bumped from 5.5px — was 4.125pt */
+            color: #333;
+            margin-top: 2px;
+            font-weight: bold;
+        }
+
+        .front-bottom {
+            width: 100%;
+            text-align: center;
+            margin-top: 2px;
+        }
+
+        .front-size {
+            font-size: 9px;
+            padding: 3px 6px;
+            background: white !important; /* solid — rgba causes shadow artifact */
+            color: #333;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
+        /* ========================================
+           BACK PANEL
+           ======================================== */
+        .back-panel {
+            padding: 10px 14px 10px 14px;
+            background: white !important;
+            flex: 1;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border-radius: 6px;
+            border: 2px solid #5BBFC2;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
+        .section-compact { margin-bottom: 4px; }
+
+        .section-title {
+            background: #5BBFC2 !important; /* solid — gradient causes gray */
+            color: white;
+            padding: 3px 6px;
+            font-weight: bold;
+            font-size: 8px;
+            margin-bottom: 3px;
+            border-radius: 3px;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
+        .section-content {
+            padding: 0 3px;
+            line-height: 1.2;
+            font-size: 7px; /* bumped from 6.5px — was 4.875pt */
+        }
+
+        .section-content p { margin-bottom: 2px; }
+
+        .bold { font-weight: bold; }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2px 0;
+        }
+
+        table th {
+            background: #5BBFC2 !important;
+            color: white;
+            padding: 2px 3px;
+            text-align: left;
+            font-size: 7px;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
+        table td {
+            padding: 2px 3px;
+            border-bottom: 1px solid #ddd;
+            font-size: 7px; /* bumped from 6px — was 4.5pt */
+        }
+
+        ul {
+            margin-left: 10px;
+            margin-top: 1.5px;
+        }
+
+        li {
+            margin-bottom: 1px;
+            line-height: 1.2;
+            font-size: 7px; /* bumped from 6.5px — was 4.875pt */
+        }
+
+        .footnote {
+            font-size: 7px; /* bumped from 5.5px — was 4.125pt */
+            color: #333;
+            margin-top: 2px;
+            padding: 0 3px;
+            line-height: 1.3;
+        }
+
+        .footer {
+            background: #5BBFC2 !important; /* solid — gradient causes gray */
+            color: white;
+            padding: 4px 6px;
+            font-size: 7px; /* bumped from 6px — was 4.5pt */
+            margin-top: auto;
+            margin-bottom: 5px; /* CUT TOLERANCE FIX */
+            border-radius: 3px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
+        .footer p { margin: 0.5px 0; }
+        .footer-left { text-align: left; }
+        .footer-right { text-align: right; }
+
+        .footer-divider {
+            border-top: 0.5px solid rgba(255,255,255,0.4);
+            margin: 2px 0 1px 0;
+        }
+
+        .net-contents-back {
+            font-size: 9px;
+            padding: 4px;
+            background: #f5f5f5 !important;
+            color: #333;
+            border-radius: 3px;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 3px;
+            margin-bottom: 5px; /* CUT TOLERANCE FIX */
+            border: 1px solid #5BBFC2;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
+        .back-panel .section-content strong { font-size: 7px; } /* bumped from 6.5px */
+    </style>
+</head>
+<body>
+    <!-- SINGLE PAGE - 18.25" x 5.375" + 0.125in bleed all sides -->
+    <!-- COMPLIANCE: EPA Reg. No. 97801-1-105539 (OHS sub-registration)
+         Est. No. 97801-1-UT on front and back
+         No ppm listed. bacteria* single asterisk. virus** double asterisk.
+         Manufactured by Sani-TEST removed per 3/19 universal update. -->
+    <div class="page">
+
+        <!-- FRONT PANEL -->
+        <div class="front-panel">
+
+            <div class="front-top-row">
+                <div class="warning-box">
+                    KEEP OUT OF THE REACH OF CHILDREN
+                </div>
+            </div>
+
+            <div class="logo-row">
+                <img src="../assets/images/logos/epa OHS Brand Image.jpg" alt="OHS EPA Logo" class="logo-image">
+            </div>
+
+            <div class="badge-container">
+                <div class="badge">
+                    <div class="badge-large">All Natural</div>
+                    <div class="badge-small">Ingredients</div>
+                </div>
+                <div class="badge">
+                    <div class="badge-large">Kills 99.999%</div>
+                    <div class="badge-small">of HUMAN CORONAVIRUS**</div>
+                </div>
+            </div>
+
+            <div class="main-claim">
+                Kills 99.9% of Bacteria** &amp; Viruses**
+            </div>
+
+            <div class="sub-claim">
+                Ready to Use &bull; No Dilution Required &bull; No Rinsing Required
+            </div>
+
+            <div class="active-ingredient-front">
+                <div class="ai-title">ACTIVE INGREDIENT</div>
+                <div class="ai-row">Hypochlorous Acid ………………………………………… 0.0134%</div>
+                <div class="ai-row bold">OTHER INGREDIENTS………………………………………. 99.9866%</div>
+                <div class="ai-total">TOTAL …... 100.0000%</div>
+                <div class="shelf-life-note">
+                    Use within 120 days or test with chlorine test strip to verify minimum concentration of 163 ppm FAC before use.
+                </div>
+                <div class="epa-reg">EPA Reg. No. 97801-1-105539 &bull; Est. No. 97801-1-UT</div>
+            </div>
+
+            <div class="front-bottom">
+                <div class="front-size">NET CONTENTS: 5 GALLON DRUM (7,040 FL. OZ. / 208.2 L)</div>
+            </div>
+        </div>
+
+        <!-- BACK PANEL -->
+        <div class="back-panel">
+
+            <div class="section-compact">
+                <div class="section-title">PRECAUTIONARY STATEMENTS</div>
+                <div class="section-content">
+                    <p><strong>Do not use with other household chemicals.</strong> No Personal Protective Equipment such as gloves, goggles, masks or respirators are required for use.</p>
+                </div>
+            </div>
+
+            <div class="section-compact">
+                <div class="section-title">DIRECTIONS FOR USE</div>
+                <div class="section-content">
+                    <p class="bold">It is a violation of Federal law to use this product in a manner inconsistent with its labeling.</p>
+                    <p style="margin-top: 2px;"><span class="bold">HARD NON-POROUS SURFACE DISINFECTION:</span> Spray, Sponge, Wipe, Dip, Mop or Immerse on surface. Allow surface to remain visibly wet for 10 minutes. Allow to air dry or wipe dry with a clean microfiber cloth, dish towel, or paper towel. No rinsing necessary, even on food contact surfaces. For visibly soiled surfaces, pre-cleaning is required.</p>
+                    <p style="margin-top: 2px;"><span class="bold">ELECTRONIC EQUIPMENT, HARD, NON-POROUS SURFACES:</span> Completely power off electrical equipment prior to treatment. Pre-clean soils with a clean cloth slightly wetted with this product. Apply using cloth or spray. Avoid over soaking. Surfaces must remain visibly wet for 10 minutes. Do not restore power until thoroughly dry.</p>
+                    <p style="margin-top: 2px;"><span class="bold">GENERAL CLEANING AND DEODORIZING:</span> Spray until visibly wet. Let stand for ten minutes to kill odor causing microorganisms. Then wipe dry. For visibly soiled areas, preliminary cleaning is required.</p>
+                </div>
+            </div>
+
+            <div class="two-column">
+                <div class="section-compact">
+                    <div class="section-title">ORGANISM TABLE</div>
+                    <div class="section-content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Organism</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>*Staphylococcus aureus</strong> [ATCC 6538]</td>
+                                    <td>10 min</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>*Pseudomonas aeruginosa</strong> [ATCC 15442]</td>
+                                    <td>10 min</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>**Human Coronavirus 229E</strong> [VR-740]</td>
+                                    <td>10 min</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="footnote">
+                            **Bacteria kill claim &bull; **Coronavirus (virus) kill claim
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-compact">
+                    <div class="section-title">KEY FEATURES</div>
+                    <div class="section-content">
+                        <ul>
+                            <li>3-in-1: Disinfectant/Cleaner/Deodorizer</li>
+                            <li>Broad Spectrum Virucidal &amp; Bactericidal</li>
+                            <li>Hospital, Commercial &amp; Household use</li>
+                            <li>One-step cleaner &amp; disinfectant</li>
+                            <li>Derived from natural minerals &amp; pure water</li>
+                            <li>Turns into harmless dilute saline after use</li>
+                            <li>Non-abrasive, Non-greasy, Non-flammable</li>
+                            <li>Leaves no chemical residue</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-compact">
+                <div class="section-title">STORAGE AND DISPOSAL</div>
+                <div class="section-content">
+                    <p><strong>STORAGE:</strong> Store in a closed opaque plastic container in a cool, dry area away from direct sunlight.</p>
+                    <p style="margin-top: 2px;"><strong>DISPOSAL:</strong> After performing its disinfection function this product rapidly turns back into a dilute saline solution that may be used to water plants or may be safely poured down the drain or disposed at an approved waste disposal facility.</p>
+                    <p style="margin-top: 2px;"><strong>CONTAINER HANDLING:</strong> Container is refillable or may be disposed. To refill, transfer product from another container containing this same product to this empty, clean container. To dispose of container, empty remaining contents into application equipment, a drain receptacle, or use to water plants. Then offer for recycling if available, or puncture and dispose in a sanitary landfill, or by incineration, or by other procedures allowed by state and local authorities.</p>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div class="footer-left">
+                    <p><strong>DISTRIBUTED BY:</strong></p>
+                    <p>Organic HypoSolutions LLC</p>
+                    <p>Salt Lake City, UT &bull; Made in Utah, USA</p>
+                </div>
+                <div class="footer-right">
+                    <p>www.organichyposolutions.com</p>
+                    <p>&#79;&#72;&#83;&#64;&#79;&#114;&#103;&#97;&#110;&#105;&#99;&#72;&#121;&#112;&#111;&#83;&#111;&#108;&#117;&#116;&#105;&#111;&#110;&#115;&#46;&#99;&#111;&#109; | (801) 712-5663</p>
+                    <p style="margin-top:3px;"><strong>EPA Reg. No. 97
