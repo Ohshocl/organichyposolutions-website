@@ -505,8 +505,13 @@
             if (!inv) return { status: 'unknown', canPurchase: true, badgeClass: '', badgeText: '', quantity: null };
 
             const qty = inv.totalInventory;
-            if (!inv.availableForSale || qty <= 0) {
+
+            // availableForSale already reflects "continue selling when out of stock" on the
+            // wholesale/subscription variants — don't block purchasing on qty alone.
+            if (!inv.availableForSale) {
                 return { status: 'out-of-stock', canPurchase: false, badgeClass: 'bg-danger', badgeText: 'Out of Stock', quantity: 0 };
+            } else if (qty <= 0) {
+                return { status: 'in-stock', canPurchase: true, badgeClass: '', badgeText: '', quantity: null };
             } else if (qty <= 5) {
                 return { status: 'low-stock', canPurchase: true, badgeClass: 'bg-warning text-dark', badgeText: `Only ${qty} left!`, quantity: qty };
             } else if (qty <= 20) {
