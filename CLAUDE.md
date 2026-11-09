@@ -26,4 +26,5 @@
   "healing", "therapeutic", or "wound" language. EPA claims only on EPA products (Utah-only), and
   only wording that matches the approved label. Ask before writing ANY new product claim.
 - Don't delete files without listing them and getting approval.
-- The single source of truth is docs/OHS_Website_Update_Playbook.md (a copy of the Project doc).
+- The single source of truth is the OHS Website Update Playbook in the Claude Project. It is
+  attached to each session; never commit it to this repo (the repo is public).
