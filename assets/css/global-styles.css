@@ -219,6 +219,68 @@ a:hover {
     color: white !important;
 }
 
+/* Phone + Get a Quote in the menu (Change Request A4, A5, A7) */
+.navbar .nav-phone {
+    white-space: nowrap;
+}
+
+.navbar .nav-quote-btn {
+    white-space: nowrap;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+
+.navbar .nav-mobile-actions {
+    gap: 0.5rem;
+    align-items: center;
+    margin-left: auto;
+    margin-right: 0.5rem;
+}
+
+.navbar .nav-mobile-actions .btn {
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+/* Full menu shows from 1200px (navbar-expand-xl). Tighten spacing and drop the
+   small icons on the top-level links so every item, the phone number and
+   Get a Quote fit on one line (the menu was already too wide before A4/A5). */
+@media (min-width: 1200px) {
+    .navbar-brand {
+        font-size: 1.2rem !important;
+    }
+    .navbar-expand-xl .navbar-nav .nav-link {
+        padding: 0.5rem 0.45rem !important;
+        font-size: 0.95rem;
+    }
+    .navbar-expand-xl .navbar-nav > .nav-item > .nav-link:not(.nav-phone) > i {
+        display: none;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1399.98px) {
+    .navbar-brand {
+        font-size: 1.1rem !important;
+    }
+    .navbar .nav-phone > i {
+        display: none;
+    }
+    .navbar .nav-quote-btn {
+        padding: 0.3rem 0.7rem;
+        margin-left: 0.25rem;
+    }
+    .navbar .state-selector-nav {
+        padding: 0.35rem 0.6rem !important;
+    }
+}
+
+/* Small phones: keep the brand name from running off the screen */
+@media (max-width: 400px) {
+    .navbar-brand {
+        font-size: 1.15rem !important;
+    }
+}
+
 .navbar-toggler {
     border: 1px solid rgba(255, 255, 255, 0.3) !important;
     padding: var(--spacing-xs);
@@ -732,7 +794,7 @@ footer a:hover {
    RESPONSIVE — mobile nav & section adjustments
    ========================================================================== */
 
-@media (max-width: 991.98px) {
+@media (max-width: 1199.98px) {
     .navbar-nav .nav-link {
         padding: 0.5rem 0.75rem !important;
     }
