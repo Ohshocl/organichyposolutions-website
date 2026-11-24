@@ -25,10 +25,9 @@
  *  On pages that don't load cart.js, the fallback here provides toast alerts.
  *
  * CART WRITES:
- *  addItemToCart() here writes directly to localStorage.
- *  It is ONLY for pages that do NOT load cart.js (e.g. homepage quick-add).
- *  On any page that loads cart.js, use window.addToCart() instead —
- *  cart.js maintains an internal array that stays in sync with localStorage.
+ *  This file only READS the cart (for the menu badge). All adds, updates,
+ *  clears and checkout go through shop/js/cart.js (window.addToCart, etc.),
+ *  the one cart for the whole site.
  *
  * Last Updated: March 8, 2026
  */
@@ -184,104 +183,6 @@ function showNotification(message, type) {
         notification.classList.remove('show');
         setTimeout(function() { notification.remove(); }, 300);
     }, 4000);
-}
-
-// ==========================================================================
-// CART HELPERS
-// All cart writes use the Array format keyed by 'ohsCart'.
-// Higher-level add/update/checkout logic lives in shop/js/cart.js.
-//
-// ⚠️  addItemToCart() is ONLY for pages that do NOT load cart.js
-//     (e.g. homepage quick-add widget).
-//     On pages that load cart.js, use window.addToCart() instead so
-//     cart.js's internal cartItems array stays in sync.
-// ==========================================================================
-
-/**
- * Add a single item to the ohsCart array.
- * Merges quantity if the same variantId already exists.
- *
- * @param {Object} item - Must include: productId, variantId, name, price,
- *                        quantity, sku, tier, type, isSubscription, image
- */
-function addItemToCart(item) {
-    if (!item || !item.variantId) {
-        console.error('addItemToCart: item must have a variantId', item);
-        return false;
-    }
-
-    try {
-        const cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
-        if (!Array.isArray(cart)) {
-            throw new Error('ohsCart is not an array — localStorage may be corrupted.');
-        }
-
-        const idx = cart.findIndex(c => c.variantId === item.variantId);
-        if (idx >= 0) {
-            cart[idx].quantity += item.quantity || 1;
-        } else {
-            cart.push({
-                productId:      item.productId,
-                variantId:      item.variantId,
-                name:           item.name,
-                price:          item.price,
-                quantity:       item.quantity || 1,
-                sku:            item.sku            || '',
-                tier:           item.tier           || 'retail',
-                type:           item.type           || 'usda-only',
-                isSubscription: item.isSubscription || false,
-                image:          item.image          || ''
-            });
-        }
-
-        localStorage.setItem(CART_KEY, JSON.stringify(cart));
-        updateCartBadge();
-
-        // Notify other tabs / scripts
-        window.dispatchEvent(new CustomEvent('cartUpdated', {
-            detail: { item, cart }
-        }));
-
-        return true;
-    } catch (err) {
-        console.error('addItemToCart error:', err);
-        return false;
-    }
-}
-
-/**
- * Return total item quantity across the whole cart.
- * @returns {number}
- */
-function getCartTotalQuantity() {
-    try {
-        const cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
-        return Array.isArray(cart)
-            ? cart.reduce((sum, item) => sum + (item.quantity || 0), 0)
-            : 0;
-    } catch (err) {
-        console.error('getCartTotalQuantity error:', err);
-        return 0;
-    }
-}
-
-/**
- * Returns true when the cart's total quantity meets the given threshold.
- * @param {number} threshold
- * @returns {boolean}
- */
-function isWholesaleEligible(threshold) {
-    return getCartTotalQuantity() >= (threshold || 25);
-}
-
-/**
- * Redirect to the cart page (shop/cart.html).
- * Called from CTA buttons. Shopify checkout is initiated from cart.js.
- */
-function goToCart() {
-    const depth  = window.location.pathname.split('/').filter(p => p && !p.includes('.')).length;
-    const prefix = depth > 0 ? '../'.repeat(depth) : '';
-    window.location.href = prefix + 'shop/cart.html';
 }
 
 // ==========================================================================
@@ -503,17 +404,8 @@ document.addEventListener('visibilitychange', function() {
     if (!document.hidden) updateCartBadge();
 });
 
-// Internal cartUpdated event (fired by addItemToCart and cart.js)
+// Internal cartUpdated event (fired by cart.js)
 window.addEventListener('cartUpdated', function() { updateCartBadge(); });
-
-// Clear cart if returning from successful Shopify checkout
-window.addEventListener('focus', function() {
-    if (new URLSearchParams(window.location.search).get('checkout') === 'success') {
-        localStorage.removeItem(CART_KEY);
-        updateCartBadge();
-        showNotification('🎉 Order completed! Thank you.', 'success');
-    }
-});
 
 // ==========================================================================
 // PUBLIC API
@@ -521,10 +413,6 @@ window.addEventListener('focus', function() {
 
 window.OHS = {
     updateCartBadge:        updateCartBadge,
-    addItemToCart:           addItemToCart,
-    getCartTotalQuantity:   getCartTotalQuantity,
-    isWholesaleEligible:    isWholesaleEligible,
-    goToCart:                goToCart,
     closeBanner:            closeBanner,
     showNotification:       showNotification,
     bookResidentialService: bookResidentialService,
@@ -538,10 +426,6 @@ window.OHS = {
 
 // Flat globals for backward compat with inline onclick handlers
 window.updateCartBadge        = updateCartBadge;
-window.addItemToCart          = addItemToCart;
-window.getCartTotalQuantity   = getCartTotalQuantity;
-window.isWholesaleEligible    = isWholesaleEligible;
-window.goToCart               = goToCart;
 window.closeBanner            = closeBanner;
 window.showNotification       = showNotification;
 window.bookResidentialService = bookResidentialService;
