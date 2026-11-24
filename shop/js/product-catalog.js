@@ -68,10 +68,10 @@
                 wholesaleSubscription: '41829068636231'
             },
             skus: {
-                retail: 'OHS-32OZ-200PPM-RTU-RETAIL',
-                retailSubscription: 'OHS-32OZ-200PPM-RTU-RETAIL-SUB',
-                wholesale: 'OHS-32OZ-200PPM-RTU-WHOLESALE',
-                wholesaleSubscription: 'OHS-32OZ-200PPM-RTU-WHOLESALE-SUB'
+                retail: 'OHS-32OZ-RTU-RETAIL',
+                retailSubscription: 'OHS-32OZ-RTU-RETAIL-SUB',
+                wholesale: 'OHS-32OZ-RTU-WHOLESALE',
+                wholesaleSubscription: 'OHS-32OZ-RTU-WHOLESALE-SUB'
             },
             image: 'assets/images/products/epa-cleaner-32oz-200ppm.png',
             emoji: '🧴',
@@ -118,10 +118,10 @@
                 wholesaleSubscription: '41829068800071'
             },
             skus: {
-                retail: 'OHS-1GAL-200PPM-RTU-RETAIL',
-                retailSubscription: 'OHS-1GAL-200PPM-RTU-RETAIL-SUB',
-                wholesale: 'OHS-1GAL-200PPM-RTU-WHOLESALE',
-                wholesaleSubscription: 'OHS-1GAL-200PPM-RTU-WHOLESALE-SUB'
+                retail: 'OHS-1GAL-READY-RTU-RETAIL',
+                retailSubscription: 'OHS-1GAL-READY-RTU-RETAIL-SUB',
+                wholesale: 'OHS-1GAL-READY-RTU-WHOLESALE',
+                wholesaleSubscription: 'OHS-1GAL-READY-RTU-WHOLESALE-SUB'
             },
             image: 'assets/images/products/epa-solution-1gal-200ppm.png',
             emoji: '🪣',
@@ -212,10 +212,10 @@
                 wholesaleSubscription: '42457071616071'
             },
             skus: {
-                retail: 'USDA-OHS-1GAL-RTU-RETAIL',
-                retailSubscription: 'USDA-OHS-1GAL-RTU-RETAIL-SUB',
-                wholesale: 'USDA-OHS-1GAL-RTU-WHOLESALE',
-                wholesaleSubscription: 'USDA-OHS-1GAL-RTU-WHOLESALE-SUB'
+                retail: 'USDA-OHS-1GAL-READY-RTU-RETAIL',
+                retailSubscription: 'USDA-OHS-1GAL-READY-RTU-RETAIL-SUB',
+                wholesale: 'USDA-OHS-1GAL-READY-RTU-WHOLESALE',
+                wholesaleSubscription: 'USDA-OHS-1GAL-READY-RTU-WHOLESALE-SUB'
             },
             image: 'assets/images/products/organic-solution-1gal.png',
             emoji: '🪣',
@@ -259,8 +259,8 @@
                 wholesaleSubscription: '41829069717575'
             },
             skus: {
-                retail: 'OHS-ALL-IN-ONE-WIPES-RETAIL',
-                retailSubscription: 'OHS-ALL-IN-ONE-WIPES-RETAIL-SUB',
+                retail: 'OHS-ALL-IN-ONE-WIPES',
+                retailSubscription: 'OHS-ALL-IN-ONE-WIPES-SUB',
                 wholesale: 'OHS-ALL-IN-ONE-WIPES-WHOLESALE',
                 wholesaleSubscription: 'OHS-ALL-IN-ONE-WIPES-WHOLESALE-SUB'
             },
