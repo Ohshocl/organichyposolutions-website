@@ -158,12 +158,19 @@ function showNotification(message, type) {
     const notification = document.createElement('div');
     notification.className = 'notification ' + type;
 
-    notification.innerHTML =
-        '<i class="fas fa-' + (iconMap[type] || 'info-circle') + '"></i>' +
-        '<div style="flex:1;">' + message + '</div>' +
-        '<button onclick="this.parentElement.remove()" ' +
-        'style="background:none;border:none;color:white;font-size:1.2rem;cursor:pointer;padding:0;opacity:0.8;">' +
-        '&times;</button>';
+    // Build with DOM nodes; the message is shown as plain text (any HTML is stripped)
+    const icon = document.createElement('i');
+    icon.className = 'fas fa-' + (iconMap[type] || 'info-circle');
+    const text = document.createElement('div');
+    text.style.flex = '1';
+    text.textContent = String(message == null ? '' : message).replace(/<[^>]*>/g, '').trim();
+    const close = document.createElement('button');
+    close.type = 'button';
+    close.setAttribute('aria-label', 'Close');
+    close.style.cssText = 'background:none;border:none;color:white;font-size:1.2rem;cursor:pointer;padding:0;opacity:0.8;';
+    close.textContent = '\u00d7';
+    close.addEventListener('click', function() { notification.remove(); });
+    notification.append(icon, text, close);
 
     container.appendChild(notification);
 

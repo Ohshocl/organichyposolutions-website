@@ -206,7 +206,7 @@
                                 || localStorage.getItem('ohsUserState');
                 var hasEpa    = items.some(function(item) {
                     var p = window.findProduct(item.productId);
-                    return p && p.type === 'epa-usda';
+                    return p && (p.type === 'epa' || p.type === 'epa-usda');
                 });
 
                 if (hasEpa && userState && userState !== 'UT') {
@@ -258,9 +258,10 @@
             var pct       = product && product.pricing
                             ? Math.round(((retail - whl) / retail) * 100) : 0;
             var saved     = pricing.isWholesale ? (retail - whl) * item.quantity : 0;
-            var isEpa     = product && product.type === 'epa-usda';
-            var bCls      = isEpa ? 'bg-warning text-dark' : 'bg-success';
-            var bTxt      = isEpa ? 'EPA + USDA' : 'USDA Organic';
+            var isEpa     = product && (product.type === 'epa' || product.type === 'epa-usda');
+            var isUsda    = product && product.type === 'usda-only';
+            var bCls      = isEpa ? 'bg-warning text-dark' : isUsda ? 'bg-success' : 'bg-info text-dark';
+            var bTxt      = isEpa ? 'EPA Registered' : isUsda ? 'USDA Organic' : ((product && product.badgeType) || 'HOCl');
             // ROOT-LEVEL page — image path has no ../ prefix
             var imgSrc    = (product && product.image) ? product.image : '';
             var fallback  = item.emoji || (isEpa ? '🧴' : '🌿');
@@ -379,6 +380,20 @@
 async function handleCheckout() {
     var btn = document.getElementById('checkoutBtn');
     if (!btn) return;
+
+    // Open the checkout tab right away, during the click, so pop-up blockers allow it.
+    // cart.js points it at Shopify once the cart checks pass, or closes it if they don't.
+    var checkoutTab = null;
+    try {
+        checkoutTab = window.open('', '_blank');
+        if (checkoutTab) {
+            checkoutTab.document.title = 'Secure Checkout | Organic HypoSolutions';
+            checkoutTab.document.body.style.cssText = 'font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;color:#2E5EAA;';
+            checkoutTab.document.body.textContent = 'Opening secure checkout…';
+        }
+    } catch (e) { checkoutTab = null; }
+    var closeTab = function() { try { if (checkoutTab && !checkoutTab.closed) checkoutTab.close(); } catch (e) {} };
+
     btn.disabled  = true;
     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Checking availability…';
 
@@ -403,6 +418,7 @@ async function handleCheckout() {
         });
 
         if (violations.length > 0) {
+            closeTab();
             updateCartDisplay();
             if (window.showNotification) {
                 window.showNotification('Cart updated — ' + violations.join('; '), 'warning');
@@ -415,16 +431,19 @@ async function handleCheckout() {
         // All clear — proceed to Shopify checkout
         btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Preparing checkout…';
         if (window.proceedToCheckout) {
-            window.proceedToCheckout();
-        } else if (window.showNotification) {
-            window.showNotification('Checkout unavailable. Please try again.', 'error');
+            window.proceedToCheckout(checkoutTab);
+        } else {
+            closeTab();
+            if (window.showNotification) window.showNotification('Checkout unavailable. Please try again.', 'error');
         }
 
     } catch (err) {
         // API failure — don't block the customer, let Shopify catch it
         console.error('Checkout inventory check failed:', err);
         if (window.proceedToCheckout) {
-            window.proceedToCheckout();
+            window.proceedToCheckout(checkoutTab);
+        } else {
+            closeTab();
         }
     }
 
