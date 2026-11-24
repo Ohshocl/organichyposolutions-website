@@ -104,6 +104,7 @@
                             <input type="hidden" name="subject"      value="New Service Booking Request - Organic HypoSolutions">
                             <input type="hidden" name="from_name"    value="OHS Service Booking">
                             <input type="hidden" name="redirect"     value="https://organichyposolutions.com/book-service.html?success=true">
+                            <input type="checkbox" name="botcheck" class="d-none" tabindex="-1" autocomplete="off" aria-hidden="true">
                             <input type="hidden" id="hiddenServiceType" name="service_type"      value="">
                             <input type="hidden" id="hiddenEstimate"    name="price_estimate"    value="">
                             <input type="hidden" id="hiddenAddons"      name="selected_addons"   value="">
@@ -516,6 +517,7 @@
 
                             <!-- SUBMIT -->
                             <div class="submit-section">
+                                <div id="formErrors" class="alert alert-danger text-start d-none" role="alert" tabindex="-1"></div>
                                 <p class="text-muted small mb-3">By submitting this form you agree to be contacted by an OHS representative to confirm your appointment. No payment is collected at this stage.</p>
                                 <button type="submit" class="btn submit-btn text-white" id="submitBtn">
                                     <i class="fas fa-calendar-check me-2"></i>Submit Booking Request
@@ -778,10 +780,12 @@
         // ── Service type cards ──
         function selectServiceType(type) {
             selectedType = type;
+            var stErr = document.getElementById('serviceTypeError');
+            if (stErr) stErr.remove();
             document.getElementById('hiddenServiceType').value = type;
             ['residential', 'commercial'].forEach(function (t) {
                 var card = document.getElementById('card-' + t);
-                if (card) card.classList.toggle('selected', t === type);
+                if (card) { card.classList.toggle('selected', t === type); card.setAttribute('aria-pressed', t === type ? 'true' : 'false'); }
             });
             updateEstimate();
         }
@@ -982,26 +986,110 @@
             if (sb) { sb.style.display = ''; sb.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
         }
 
-        // ── Submit validation ──
+        // ── Submit validation (audit R16) ──
+        // Checks each field, shows the message under the field (linked with
+        // aria-describedby) plus a summary above the button, and moves focus to the
+        // first problem. No pop-up alerts.
         var form = document.getElementById('serviceBookingForm');
         if (form) {
+            var todayStr = (function () { var d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); })();
+            var dateEl = document.getElementById('preferredDate');
+            if (dateEl) dateEl.setAttribute('min', todayStr);
+            var FIELD_IDS = ['firstName', 'lastName', 'email', 'phone', 'address', 'preferredDate'];
+
+            function fieldError(el, msg) {
+                if (!el) return;
+                var errId = el.id + '-error';
+                var fb = document.getElementById(errId);
+                if (!fb) {
+                    fb = document.createElement('div');
+                    fb.id = errId;
+                    fb.className = 'invalid-feedback';
+                    el.insertAdjacentElement('afterend', fb);
+                }
+                fb.textContent = msg;
+                el.classList.add('is-invalid');
+                el.setAttribute('aria-invalid', 'true');
+                el.setAttribute('aria-describedby', errId);
+            }
+            function clearFieldError(el) {
+                if (!el) return;
+                el.classList.remove('is-invalid');
+                el.removeAttribute('aria-invalid');
+                var fb = document.getElementById(el.id + '-error');
+                if (fb) fb.textContent = '';
+            }
+            FIELD_IDS.forEach(function (id) {
+                var el = document.getElementById(id);
+                if (el) el.addEventListener('input', function () { clearFieldError(el); });
+            });
+
+            function validateBookingForm() {
+                var errors = [];   // { el, msg, card }
+                function el(id) { return document.getElementById(id); }
+                function val(id) { var e = el(id); return e ? e.value.trim() : ''; }
+
+                if (!val('hiddenServiceType')) {
+                    errors.push({ el: el('card-residential'), msg: 'Choose a service type: Residential or Commercial.', card: true });
+                }
+                if (!val('firstName')) errors.push({ el: el('firstName'), msg: 'Enter your first name.' });
+                if (!val('lastName'))  errors.push({ el: el('lastName'),  msg: 'Enter your last name.' });
+                var email = val('email');
+                if (!email) errors.push({ el: el('email'), msg: 'Enter your email address.' });
+                else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) errors.push({ el: el('email'), msg: 'Enter a valid email address, like name@example.com.' });
+                var phone = val('phone');
+                if (phone) {
+                    var digits = phone.replace(/\D/g, '');
+                    if (digits.length < 10 || digits.length > 11) errors.push({ el: el('phone'), msg: 'Enter a 10-digit phone number, or leave it blank.' });
+                }
+                var address = val('address');
+                if (!address) errors.push({ el: el('address'), msg: 'Enter the service address.' });
+                else if (address.length < 5) errors.push({ el: el('address'), msg: 'Enter the full service address.' });
+                var date = val('preferredDate');
+                if (date) {
+                    var maxDate = new Date(); maxDate.setFullYear(maxDate.getFullYear() + 1);
+                    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || isNaN(new Date(date).getTime())) errors.push({ el: el('preferredDate'), msg: 'Enter a valid date.' });
+                    else if (date < todayStr) errors.push({ el: el('preferredDate'), msg: 'Choose today or a later date.' });
+                    else if (new Date(date) > maxDate) errors.push({ el: el('preferredDate'), msg: 'Choose a date within the next year.' });
+                }
+                return errors;
+            }
+
             form.addEventListener('submit', function (e) {
-                var required = [
-                    { id: 'firstName', label: 'First Name'      },
-                    { id: 'lastName',  label: 'Last Name'       },
-                    { id: 'email',     label: 'Email Address'   },
-                    { id: 'address',   label: 'Service Address' }
-                ];
-                var missing = required.filter(function (f) {
-                    var el = document.getElementById(f.id);
-                    return !el || !el.value.trim();
-                });
-                if (missing.length) {
+                var summary = document.getElementById('formErrors');
+                FIELD_IDS.forEach(function (id) { clearFieldError(document.getElementById(id)); });
+                var cardMsg = document.getElementById('serviceTypeError');
+                if (cardMsg) cardMsg.remove();
+
+                var errors = validateBookingForm();
+                if (errors.length) {
                     e.preventDefault();
-                    alert('Please fill in: ' + missing.map(function (f) { return f.label; }).join(', '));
-                    document.getElementById(missing[0].id).focus();
+                    errors.forEach(function (err) {
+                        if (err.card) {
+                            var m = document.createElement('div');
+                            m.id = 'serviceTypeError';
+                            m.className = 'text-danger small text-center mt-2';
+                            m.textContent = err.msg;
+                            var sel = document.querySelector('.service-type-selector');
+                            if (sel) sel.appendChild(m);
+                        } else {
+                            fieldError(err.el, err.msg);
+                        }
+                    });
+                    if (summary) {
+                        summary.innerHTML = '';
+                        var h = document.createElement('strong');
+                        h.textContent = errors.length === 1 ? 'Please fix this before sending:' : 'Please fix these ' + errors.length + ' things before sending:';
+                        var ul = document.createElement('ul');
+                        ul.className = 'mb-0 mt-1';
+                        errors.forEach(function (err) { var li = document.createElement('li'); li.textContent = err.msg; ul.appendChild(li); });
+                        summary.append(h, ul);
+                        summary.classList.remove('d-none');
+                    }
+                    if (errors[0].el) errors[0].el.focus();
                     return;
                 }
+                if (summary) summary.classList.add('d-none');
                 var btn = document.getElementById('submitBtn');
                 if (btn) {
                     btn.disabled = true;
@@ -1009,6 +1097,16 @@
                 }
             });
         }
+
+        // Service type cards work with the keyboard (Tab, then Enter or Space)
+        document.querySelectorAll('.service-type-card').forEach(function (card) {
+            card.setAttribute('tabindex', '0');
+            card.setAttribute('role', 'button');
+            card.setAttribute('aria-pressed', card.classList.contains('selected') ? 'true' : 'false');
+            card.addEventListener('keydown', function (ev) {
+                if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); card.click(); }
+            });
+        });
 
         prefillFromCalculator();
     });
