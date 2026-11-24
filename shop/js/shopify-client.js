@@ -9,7 +9,6 @@
  * Exports (on window):
  *   window.SHOPIFY_DOMAIN            — store domain string
  *   window.SHOPIFY_CLIENT_READY      — boolean, true once this file loads
- *   window.createCheckout(lineItems) — returns checkout URL string or null
  *   window.fetchInventory([ids])     — returns inventory cache object
  *   window.getInventoryStatus(id)    — returns status object for one product
  *   window.refreshInventory()        — force-refresh, bypasses cache
@@ -23,9 +22,6 @@
  *
  * Load order on product pages:
  *   product-catalog.js → shopify-client.js
- *
- * Cart item format consumed by createCheckout:
- *   [{ variantId: 'gid://shopify/ProductVariant/XXXXXXX', quantity: N }, ...]
  *
  * Last Updated: 2026-03-08
  */
@@ -92,119 +88,11 @@
         });
     }
 
-    // =========================================================================
-    // CHECKOUT CREATION
-    // =========================================================================
-
-    /**
-     * Create a Shopify checkout via the Storefront API and return the
-     * checkout URL. The caller (cart.js → proceedToCheckout) redirects
-     * the browser to this URL.
-     *
-     * @param {Array} lineItems — array of { variantId, quantity }
-     *        variantId must be a full GID string:
-     *        'gid://shopify/ProductVariant/XXXXXXX'
-     * @returns {Promise<string|null>} — checkout web URL, or null on failure
-     */
-    window.createCheckout = function (lineItems) {
-        if (!lineItems || lineItems.length === 0) {
-            console.warn('shopify-client: createCheckout called with empty lineItems');
-            return Promise.resolve(null);
-        }
-
-        // Validate every line item has a proper GID
-        var validItems = lineItems.filter(function (item) {
-            return item.variantId &&
-                   item.variantId.indexOf('gid://shopify/ProductVariant/') === 0 &&
-                   item.quantity > 0;
-        });
-
-        if (validItems.length === 0) {
-            console.error('shopify-client: no valid line items after filtering', lineItems);
-            return Promise.resolve(null);
-        }
-
-        console.log('🛒 shopify-client: creating checkout with', validItems.length, 'line items');
-
-        var mutation = '\
-            mutation checkoutCreate($input: CheckoutCreateInput!) {\
-                checkoutCreate(input: $input) {\
-                    checkout {\
-                        id\
-                        webUrl\
-                        totalPriceV2 {\
-                            amount\
-                            currencyCode\
-                        }\
-                        lineItems(first: 25) {\
-                            edges {\
-                                node {\
-                                    title\
-                                    quantity\
-                                    variant {\
-                                        id\
-                                        title\
-                                        priceV2 {\
-                                            amount\
-                                            currencyCode\
-                                        }\
-                                    }\
-                                }\
-                            }\
-                        }\
-                    }\
-                    checkoutUserErrors {\
-                        code\
-                        field\
-                        message\
-                    }\
-                }\
-            }\
-        ';
-
-        var input = {
-            lineItems: validItems.map(function (item) {
-                return {
-                    variantId: item.variantId,
-                    quantity:  item.quantity
-                };
-            })
-        };
-
-        return storefrontFetch(mutation, { input: input })
-            .then(function (data) {
-                var result = data.data && data.data.checkoutCreate;
-
-                if (!result) {
-                    console.error('shopify-client: unexpected response shape', data);
-                    return null;
-                }
-
-                // Check for user errors (invalid variant, out of stock, etc.)
-                if (result.checkoutUserErrors && result.checkoutUserErrors.length > 0) {
-                    result.checkoutUserErrors.forEach(function (err) {
-                        console.error('Checkout error:', err.code, err.message, err.field);
-                    });
-                    // Surface the first error to the caller
-                    var firstErr = result.checkoutUserErrors[0];
-                    throw new Error('Checkout failed: ' + firstErr.message);
-                }
-
-                if (result.checkout && result.checkout.webUrl) {
-                    console.log('✅ Checkout created:', result.checkout.webUrl);
-                    console.log('💰 Total:', result.checkout.totalPriceV2.amount,
-                                result.checkout.totalPriceV2.currencyCode);
-                    return result.checkout.webUrl;
-                }
-
-                console.warn('shopify-client: checkout created but no webUrl returned');
-                return null;
-            })
-            .catch(function (err) {
-                console.error('shopify-client: createCheckout failed —', err);
-                return null;
-            });
-    };
+    // Checkout: the old window.createCheckout (Storefront "checkoutCreate") was
+    // removed Nov 2026 - Shopify retired that API in April 2025 and nothing calls
+    // it. Checkout uses Shopify's cart link, built in cart.js proceedToCheckout().
+    // Real subscriptions will need the Storefront Cart API (cartCreate) with
+    // selling plans once the Shopify Subscriptions app is installed.
 
     // =========================================================================
     // INVENTORY FETCHING
