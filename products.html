@@ -1040,10 +1040,10 @@
                             <div class="cart-item-details">$${item.price.toFixed(2)} each</div>
                         </div>
                         <div class="d-flex align-items-center">
-                            <button class="cart-qty-btn" onclick="updateCartQtyLocal('${item.productId}', -1)"><i class="fas fa-minus"></i></button>
+                            <button class="cart-qty-btn" onclick="updateCartQtyLocal('${item.lineId || item.variantId}', -1)"><i class="fas fa-minus"></i></button>
                             <span class="mx-2 fw-bold">${item.quantity}</span>
-                            <button class="cart-qty-btn" onclick="updateCartQtyLocal('${item.productId}', 1)"><i class="fas fa-plus"></i></button>
-                            <button class="cart-item-remove ms-1" onclick="removeFromCartLocal('${item.productId}')"><i class="fas fa-times"></i></button>
+                            <button class="cart-qty-btn" onclick="updateCartQtyLocal('${item.lineId || item.variantId}', 1)"><i class="fas fa-plus"></i></button>
+                            <button class="cart-item-remove ms-1" onclick="removeFromCartLocal('${item.lineId || item.variantId}')"><i class="fas fa-times"></i></button>
                         </div>
                     </div>
                 `;
@@ -1055,22 +1055,23 @@
             if (cartSummary) cartSummary.style.display = 'block';
         }
 
-        function updateCartQtyLocal(productId, change) {
+        // Drawer controls act on ONE cart line by its stable lineId (audit R12/R13)
+        function updateCartQtyLocal(lineId, change) {
             const cartItems = window.getCartItems ? window.getCartItems() : [];
-            const item = cartItems.find(i => i.productId === productId);
+            const item = cartItems.find(i => String(i.lineId || i.variantId) === String(lineId));
             if (!item) return;
             const newQty = item.quantity + change;
             if (newQty <= 0) {
-                if (window.removeFromCart) window.removeFromCart(productId);
+                if (window.removeCartLine) window.removeCartLine(lineId);
             } else {
-                if (window.updateCartItemQuantity) window.updateCartItemQuantity(productId, newQty);
+                if (window.updateCartItemQuantity) window.updateCartItemQuantity(lineId, newQty);
             }
             updateCartPreview();
             updateCartBadges();
         }
 
-        function removeFromCartLocal(productId) {
-            if (window.removeFromCart) window.removeFromCart(productId);
+        function removeFromCartLocal(lineId) {
+            if (window.removeCartLine) window.removeCartLine(lineId);
             updateCartPreview();
             updateCartBadges();
         }

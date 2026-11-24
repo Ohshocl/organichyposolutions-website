@@ -179,7 +179,7 @@
     <script>
         'use strict';
 
-        var mobileQtyTimer = null;
+        var mobileQtyTimers = {};   // one timer per cart line (audit R17)
 
         // ============================================================
         // CART DISPLAY
@@ -258,7 +258,8 @@
             var imgSrc    = (product && product.image) ? product.image : '';
             var fallback  = item.emoji || (isEpa ? '🧴' : '🌿');
 
-            return '<div class="cart-item" data-product-id="' + item.productId + '" data-index="' + idx + '">' +
+            var lid = String(item.lineId || item.variantId);   // stable line id (audit R01/R13)
+            return '<div class="cart-item" data-product-id="' + item.productId + '" data-line-id="' + lid + '" data-index="' + idx + '">' +
               '<div class="row align-items-center g-2">' +
 
                 '<div class="col-md-2 col-4 text-center">' +
@@ -284,9 +285,9 @@
 
                 '<div class="col-md-3 col-6">' +
                   '<div class="quantity-controls">' +
-                    '<button class="quantity-btn" onclick="handleQtyChange(' + idx + ',-1)"' + (item.quantity <= 1 ? ' disabled' : '') + '><i class="fas fa-minus"></i></button>' +
-                    '<input type="number" class="quantity-input" value="' + item.quantity + '" min="1" max="999" onchange="handleSetQty(' + idx + ',this.value)" oninput="handleMobileQty(' + idx + ',this.value)">' +
-                    '<button class="quantity-btn" onclick="handleQtyChange(' + idx + ',1)"><i class="fas fa-plus"></i></button>' +
+                    '<button class="quantity-btn" onclick="handleQtyChange(\'' + lid + '\',-1)"' + (item.quantity <= 1 ? ' disabled' : '') + '><i class="fas fa-minus"></i></button>' +
+                    '<input type="number" class="quantity-input" value="' + item.quantity + '" min="1" max="999" onchange="handleSetQty(\'' + lid + '\',this.value)" oninput="handleMobileQty(\'' + lid + '\',this.value)">' +
+                    '<button class="quantity-btn" onclick="handleQtyChange(\'' + lid + '\',1)"><i class="fas fa-plus"></i></button>' +
                   '</div>' +
                 '</div>' +
 
@@ -300,7 +301,7 @@
                 '</div>' +
 
                 '<div class="col-md-1 col-2 text-center">' +
-                  '<button class="btn btn-sm btn-outline-danger" onclick="handleRemove(' + idx + ')" title="Remove item"><i class="fas fa-trash"></i></button>' +
+                  '<button class="btn btn-sm btn-outline-danger" onclick="handleRemove(\'' + lid + '\')" title="Remove item"><i class="fas fa-trash"></i></button>' +
                 '</div>' +
 
               '</div></div>';
@@ -322,34 +323,38 @@
         }
 
         // ============================================================
-        // QUANTITY HANDLERS
-        // FIX: pass item.variantId (not item.productId) to
-        //      updateCartItemQuantity — cart.js looks up by variantId.
+        // QUANTITY HANDLERS — every action targets one cart line by its
+        // stable lineId (product + one-time/subscription), never by list
+        // position or product, so other lines are never touched.
         // ============================================================
-        function handleQtyChange(idx, delta) {
-            var items = window.getCartItems();
-            if (!items[idx]) return;
-            window.updateCartItemQuantity(items[idx].variantId, Math.max(1, items[idx].quantity + delta));
+        function findCartLine(lineId) {
+            return window.getCartItems().find(function(i) { return String(i.lineId || i.variantId) === String(lineId); });
+        }
+
+        function handleQtyChange(lineId, delta) {
+            var item = findCartLine(lineId);
+            if (!item) return;
+            window.updateCartItemQuantity(lineId, Math.max(1, Math.min(999, item.quantity + delta)));
             updateCartDisplay();
         }
 
-        function handleSetQty(idx, val) {
-            var items = window.getCartItems();
-            if (!items[idx]) return;
-            window.updateCartItemQuantity(items[idx].variantId, Math.max(1, Math.min(999, parseInt(val) || 1)));
+        function handleSetQty(lineId, val) {
+            if (mobileQtyTimers[lineId]) { clearTimeout(mobileQtyTimers[lineId]); delete mobileQtyTimers[lineId]; }
+            if (!findCartLine(lineId)) return;
+            var n = parseInt(val, 10);
+            if (!isFinite(n) || n < 1) n = 1;
+            window.updateCartItemQuantity(lineId, Math.min(999, n));
             updateCartDisplay();
         }
 
-        function handleMobileQty(idx, val) {
-            if (mobileQtyTimer) clearTimeout(mobileQtyTimer);
-            mobileQtyTimer = setTimeout(function() { handleSetQty(idx, val); }, 800);
+        function handleMobileQty(lineId, val) {
+            if (mobileQtyTimers[lineId]) clearTimeout(mobileQtyTimers[lineId]);
+            mobileQtyTimers[lineId] = setTimeout(function() { handleSetQty(lineId, val); }, 800);
         }
 
-        // removeFromCart accepts productId — this one was already correct.
-        function handleRemove(idx) {
-            var items = window.getCartItems();
-            if (items[idx] && confirm('Remove this item from your cart?')) {
-                window.removeFromCart(items[idx].productId);
+        function handleRemove(lineId) {
+            if (findCartLine(lineId) && confirm('Remove this item from your cart?')) {
+                window.removeCartLine(lineId);
                 updateCartDisplay();
             }
         }
