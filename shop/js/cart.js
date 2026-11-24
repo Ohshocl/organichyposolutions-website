@@ -118,6 +118,39 @@
     };
 
     // =============================================================================
+    // CART LINES — stable identity + quantity rules (audit R01, R07, R08)
+    // A cart line is one product in one purchase mode (one-time or subscription).
+    // Its lineId never changes; tier (retail/wholesale), variant and price are
+    // always derived from the line's total quantity. Before, lines were matched by
+    // variant ID, which changes when a wholesale threshold is crossed, so lines split
+    // (e.g. 20 + 4 + 1 gave 24 wholesale + 1 retail instead of 25 wholesale).
+    // =============================================================================
+
+    const MAX_LINE_QTY = 999;   // same cap the cart page input uses
+
+    function lineKey(productId, isSubscription) {
+        return String(productId) + ':' + (isSubscription ? 'sub' : 'once');
+    }
+
+    /** Whole number 1..MAX_LINE_QTY, or null if invalid (0, negative, fraction, NaN, Infinity, text) */
+    function parseQuantity(value) {
+        if (typeof value === 'string' && value.trim() === '') return null;
+        const n = Number(value);
+        if (!Number.isFinite(n) || !Number.isInteger(n) || n < 1) return null;
+        return n;
+    }
+
+    /** Find a line by lineId, then variantId, then productId (first line of that product) */
+    function findLine(id) {
+        if (id === undefined || id === null) return null;
+        const key = String(id);
+        return cartItems.find(item => item.lineId === key)
+            || cartItems.find(item => String(item.variantId) === key)
+            || cartItems.find(item => String(item.productId) === key)
+            || null;
+    }
+
+    // =============================================================================
     // CART PERSISTENCE
     // =============================================================================
 
@@ -133,15 +166,17 @@
                 ? parsed
                 : Object.entries(parsed).map(([productId, data]) => ({ productId, ...data }));
 
-            // Validate each item against the catalog, merge duplicates by variantId
+            // Validate each item against the catalog, merge duplicates by stable line key
+            // (product + one-time/subscription), so old carts split by tier are rejoined
             const mergedMap = new Map();
             rawItems.forEach(item => {
                 const valid = validateCartItem(item);
                 if (!valid) return;
-                const key = valid.variantId; // unique key = variant (handles sub vs non-sub)
+                const key = valid.lineId;
                 if (mergedMap.has(key)) {
-                    mergedMap.get(key).quantity += valid.quantity;
-                    recalculateItemPricing(mergedMap.get(key));
+                    const line = mergedMap.get(key);
+                    line.quantity = Math.min(MAX_LINE_QTY, line.quantity + valid.quantity);
+                    recalculateItemPricing(line);
                 } else {
                     mergedMap.set(key, valid);
                 }
@@ -189,23 +224,27 @@
             return null;
         }
 
-        const quantity       = Math.max(1, parseInt(item.quantity) || 1);
+        // Bad stored quantities are recovered safely: whole number 1..999, else 1
+        const parsedQty      = parseQuantity(Math.floor(Number(item.quantity)));
+        const quantity       = Math.min(MAX_LINE_QTY, parsedQty || 1);
         const isSubscription = item.isSubscription === true;
-        const pricingInfo    = window.getPricingTier(product.id, quantity, isSubscription);
+        return buildLine(product, quantity, isSubscription, item.addedAt);
+    }
 
-        return {
+    /** A complete cart line (every field set, so savings and badges work after reload) */
+    function buildLine(product, quantity, isSubscription, addedAt) {
+        const line = {
+            lineId:         lineKey(product.id, isSubscription),
             productId:      product.id,
-            variantId:      pricingInfo.variantId,
             name:           product.name,
-            price:          pricingInfo.price,
             quantity:       quantity,
-            sku:            product.skus[pricingInfo.tierKey],
-            tier:           pricingInfo.tier,             // 'retail' | 'wholesale'
-            type:           product.type,                 // 'epa-usda' | 'usda-only'
+            type:           product.type,                 // 'epa' | 'usda-only' | 'non-registered'
             isSubscription: isSubscription,
             image:          product.image,
-            addedAt:        item.addedAt || new Date().toISOString()
+            addedAt:        addedAt || new Date().toISOString()
         };
+        recalculateItemPricing(line);   // sets variantId, price, tier, tierKey, isWholesale, sku
+        return line;
     }
 
     /**
@@ -216,6 +255,7 @@
      */
     function recalculateItemPricing(cartItem) {
         const pricingInfo      = window.getPricingTier(cartItem.productId, cartItem.quantity, cartItem.isSubscription);
+        cartItem.lineId        = lineKey(cartItem.productId, cartItem.isSubscription);
         cartItem.price         = pricingInfo.price;
         cartItem.tier          = pricingInfo.tier;
         cartItem.tierKey       = pricingInfo.tierKey;
@@ -256,39 +296,44 @@
             return false;
         }
 
-        const pricingInfo = window.getPricingTier(product.id, quantity, isSubscription);
-
-        // Match on variantId so retail + subscription are stored separately
-        const existingIndex = cartItems.findIndex(item => item.variantId === pricingInfo.variantId);
-
-        if (existingIndex !== -1) {
-            const existing = cartItems[existingIndex];
-            const wasWholesale = existing.isWholesale;
-            existing.quantity += quantity;
-            recalculateItemPricing(existing);
-            if (!wasWholesale && existing.isWholesale) {
-                window.showNotification(`🎉 Wholesale pricing activated for ${product.name}!`, 'success');
-            }
-        } else {
-            cartItems.push({
-                productId:      product.id,
-                variantId:      pricingInfo.variantId,
-                name:           product.name,
-                price:          pricingInfo.price,
-                quantity:       quantity,
-                sku:            product.skus[pricingInfo.tierKey],
-                tier:           pricingInfo.tier,
-                type:           product.type,
-                isSubscription: isSubscription,
-                image:          product.image,
-                addedAt:        new Date().toISOString()
-            });
+        const qty = parseQuantity(quantity);
+        if (qty === null) {
+            window.showNotification('Please enter a quantity of 1 or more.', 'warning');
+            return false;
         }
+        isSubscription = isSubscription === true;
+
+        // One line per product + purchase mode; tier and variant follow the total quantity
+        const key  = lineKey(product.id, isSubscription);
+        let line   = cartItems.find(item => item.lineId === key);
+        let wasWholesale = false;
+
+        if (line) {
+            wasWholesale = line.isWholesale === true;
+            const total = line.quantity + qty;
+            if (total > MAX_LINE_QTY) {
+                window.showNotification(`The most we can take online is ${MAX_LINE_QTY} of one product. For larger orders, request a quote.`, 'warning');
+                return false;
+            }
+            line.quantity = total;
+            recalculateItemPricing(line);
+        } else {
+            if (qty > MAX_LINE_QTY) {
+                window.showNotification(`The most we can take online is ${MAX_LINE_QTY} of one product. For larger orders, request a quote.`, 'warning');
+                return false;
+            }
+            line = buildLine(product, qty, isSubscription);
+            cartItems.push(line);
+        }
+        quantity = qty;
 
         saveCart();
         updateCartBadge();
 
-        const tierLabel = pricingInfo.isWholesale ? ' at Wholesale Price' : '';
+        if (!wasWholesale && line.isWholesale && line.quantity > qty) {
+            window.showNotification(`🎉 Wholesale pricing activated for ${product.name}!`, 'success');
+        }
+        const tierLabel = line.isWholesale ? ' at Wholesale Price' : '';
         const subLabel  = isSubscription ? ' (Subscribe & Save)' : '';
         window.showNotification(`Added ${quantity}x ${product.name}${tierLabel}${subLabel} to cart!`, 'success');
 
@@ -316,20 +361,22 @@
     };
 
     /**
-     * Remove a specific variant line item (e.g. only the subscription entry).
-     *
-     * @param {string} variantId - Shopify variant ID
+     * Remove ONE cart line (audit R13). Accepts a lineId, or a variantId / productId
+     * for older callers. Other lines of the same product are kept.
      */
+    window.removeCartLine = function(lineIdOrVariant) {
+        const line = findLine(lineIdOrVariant);
+        if (!line) return false;
+        cartItems = cartItems.filter(item => item !== line);
+        saveCart();
+        updateCartBadge();
+        window.showNotification('Item removed from cart', 'info');
+        return true;
+    };
+
+    /** Older name, kept for compatibility: removes the one line matching the id */
     window.removeVariantFromCart = function(variantId) {
-        const before = cartItems.length;
-        cartItems = cartItems.filter(item => item.variantId !== variantId);
-        if (cartItems.length < before) {
-            saveCart();
-            updateCartBadge();
-            window.showNotification('Item removed from cart', 'info');
-            return true;
-        }
-        return false;
+        return window.removeCartLine(variantId);
     };
 
     /**
@@ -339,13 +386,20 @@
      * @param {string}  variantId - Shopify variant ID
      * @param {number}  quantity  - New total quantity
      */
-    window.updateCartItemQuantity = function(variantId, quantity) {
-        const item = cartItems.find(item => item.variantId === variantId);
+    window.updateCartItemQuantity = function(lineIdOrVariant, quantity) {
+        const item = findLine(lineIdOrVariant);
         if (!item) return false;
 
-        if (quantity <= 0) {
-            return window.removeVariantFromCart(variantId);
+        // 0 (or a negative whole number) removes the line; anything else must be 1..999
+        const n = Number(quantity);
+        if (Number.isInteger(n) && n <= 0) {
+            return window.removeCartLine(item.lineId);
         }
+        if (parseQuantity(quantity) === null || n > MAX_LINE_QTY) {
+            window.showNotification(`Please enter a quantity from 1 to ${MAX_LINE_QTY}.`, 'warning');
+            return false;
+        }
+        quantity = n;
 
         const wasWholesale = item.isWholesale;
         item.quantity = quantity;
@@ -374,12 +428,21 @@
      * @param {string}  variantId      - Current Shopify variant ID
      * @param {boolean} isSubscription - New subscription state
      */
-    window.updateCartItemSubscription = function(variantId, isSubscription) {
-        const item = cartItems.find(item => item.variantId === variantId);
+    window.updateCartItemSubscription = function(lineIdOrVariant, isSubscription) {
+        const item = findLine(lineIdOrVariant);
         if (!item) return false;
+        isSubscription = isSubscription === true;
 
-        item.isSubscription = isSubscription;
-        recalculateItemPricing(item);
+        // If a line already exists in the target mode, merge into it (one line per mode)
+        const target = cartItems.find(other => other !== item && other.lineId === lineKey(item.productId, isSubscription));
+        if (target) {
+            target.quantity = Math.min(MAX_LINE_QTY, target.quantity + item.quantity);
+            recalculateItemPricing(target);
+            cartItems = cartItems.filter(other => other !== item);
+        } else {
+            item.isSubscription = isSubscription;
+            recalculateItemPricing(item);
+        }
 
         saveCart();
         updateCartBadge();
@@ -538,6 +601,7 @@
         console.log('🛒 Checkout URL:', checkoutUrl);
 
         if (checkoutTab && !checkoutTab.closed) {
+            try { checkoutTab.opener = null; } catch (e) { /* ignore */ }   // audit R06
             checkoutTab.location.href = checkoutUrl;
             window.showNotification('Secure checkout opened in a new tab. Your cart is still here if you need it.', 'success');
         } else {
