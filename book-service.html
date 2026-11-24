@@ -884,19 +884,66 @@
             var params = new URLSearchParams(window.location.search);
             if (!params.get('source') || params.get('source').indexOf('calculator') === -1) return;
 
-            var svcType = params.get('serviceType') || '';
-            if (svcType === 'residential' || svcType === 'commercial') {
-                selectServiceType(svcType);
+            // Calculator handoff (audit R11): every value is checked against the
+            // allowed options; anything unknown is ignored. The estimate shown here is
+            // always recalculated on this page, never taken from the link.
+            function pick(name, allowed) { var v = params.get(name) || ''; return allowed.indexOf(v) !== -1 ? v : ''; }
+            var svcType  = pick('serviceType', ['residential', 'commercial', 'healthcare', 'education', 'food', 'fitness', 'mold']);
+            var mode     = svcType === 'mold' || params.get('mode') === 'mold' ? 'mold' : 'fogging';
+            var sqftIn   = parseInt(params.get('sqft'), 10);
+            var sqft     = isFinite(sqftIn) && sqftIn > 0 ? Math.min(sqftIn, 50000) : 0;
+            var complexityIn = pick('complexity', ['standard', 'moderate', 'complex']);
+            var frequencyIn  = pick('frequency',  ['monthly', 'biweekly', 'weekly', 'quarterly', 'onetime']);
+            var estimateIn   = parseInt(params.get('estimate'), 10);
+            var labels = {
+                residential: 'Residential', commercial: 'Commercial', healthcare: 'Healthcare',
+                education: 'Education', food: 'Food service', fitness: 'Fitness center',
+                weekly: 'Weekly', biweekly: 'Bi-weekly', monthly: 'Monthly', quarterly: 'Quarterly', onetime: 'One-time',
+                surface: 'Surface', moderate: 'Moderate', complex: 'Complex',
+                fixed: 'Source already fixed', active: 'Active or recently repaired', flood: 'Post-flood / water damage',
+                'multi-family': 'Multi-family'
+            };
+
+            if (mode === 'fogging' && svcType) {
+                // calculator service type -> booking card + facility option
+                var facilityFor = { residential: 'residential_home', commercial: 'commercial_office', healthcare: 'commercial_healthcare',
+                                    education: 'commercial_education', food: 'commercial_food', fitness: 'commercial_gym' };
+                selectServiceType(svcType === 'residential' ? 'residential' : 'commercial');
+                var fac = document.getElementById('facilityType');
+                if (fac) fac.value = facilityFor[svcType];
             }
 
-            var sqft = parseInt(params.get('sqft')) || 0;
             if (sqft) {
                 var sf = document.getElementById('squareFootage');
-                if (sf) sf.value = Math.min(Math.max(sqft, 0), 50000);
+                if (sf) sf.value = sqft;
             }
 
             var cEl = document.getElementById('complexity');
-            if (cEl && params.get('complexity')) cEl.value = params.get('complexity');
+            if (cEl && complexityIn) cEl.value = complexityIn;
+
+            // Everything from the calculator also goes into the notes, so nothing is lost
+            // (e.g. weekly/bi-weekly frequency, or mold details this form can't price)
+            var summary;
+            if (mode === 'mold') {
+                var moldC = pick('moldComplexity', ['surface', 'moderate', 'complex']);
+                var prop  = pick('propertyType', ['residential', 'commercial', 'healthcare', 'multi-family']);
+                var moist = pick('moisture', ['fixed', 'active', 'flood']);
+                summary = 'From the calculator: Mold remediation' +
+                    (sqft ? ', ' + sqft.toLocaleString() + ' sq ft' : '') +
+                    (prop ? ', ' + labels[prop] : '') +
+                    (moldC ? ', ' + labels[moldC] + ' severity' : '') +
+                    (moist ? ', moisture: ' + labels[moist] : '') +
+                    (isFinite(estimateIn) && estimateIn > 0 ? ', calculator estimate ~$' + estimateIn.toLocaleString() : '') +
+                    '. Final price after the free assessment.';
+                document.getElementById('hiddenServiceType').value = 'mold_remediation';
+            } else {
+                summary = 'From the calculator: ' + (labels[svcType] || 'Fogging') + ' fogging' +
+                    (sqft ? ', ' + sqft.toLocaleString() + ' sq ft' : '') +
+                    (complexityIn ? ', ' + labels[complexityIn] + ' complexity' : '') +
+                    (frequencyIn ? ', ' + labels[frequencyIn] + ' service' : '') + '.';
+            }
+            var notesEl = document.getElementById('notes');
+            if (notesEl && !notesEl.value) notesEl.value = summary;
 
             // Map contractType → tile id, then click
             var contractMap = {
@@ -921,7 +968,9 @@
             setTimeout(function () {
                 var banner = document.createElement('div');
                 banner.className = 'alert alert-info alert-dismissible fade show mx-3 mt-3';
-                banner.innerHTML = '<i class="fas fa-info-circle me-2"></i><strong>Form prefilled from calculator.</strong> Please complete your contact information and address. <button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
+                banner.innerHTML = mode === 'mold'
+                    ? '<i class="fas fa-info-circle me-2"></i><strong>Mold remediation request from the calculator.</strong> Your details are in the notes below; we confirm the price after a free assessment. Please add your contact information and address. <button type="button" class="btn-close" data-bs-dismiss="alert"></button>'
+                    : '<i class="fas fa-info-circle me-2"></i><strong>Form prefilled from calculator.</strong> Please complete your contact information and address. <button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
                 var fc = document.querySelector('.form-content');
                 if (fc) fc.insertBefore(banner, fc.firstChild);
             }, 400);
