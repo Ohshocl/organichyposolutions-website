@@ -147,6 +147,19 @@ a:hover {
     z-index: 1030;
 }
 
+/* Jump links (#section) stop below the sticky header instead of under it.
+   Header height: 120px desktop, 146px at 768px and below, 168px at 400px and below. */
+html { scroll-padding-top: 136px; }
+@media (max-width: 768px) { html { scroll-padding-top: 162px; } }
+@media (max-width: 400px) { html { scroll-padding-top: 184px; } }
+
+/* Stop sideways scrolling on phones and tablets:
+   - Bootstrap's widest row gutter (.g-5) is wider than the container padding, so rows
+     poke 12px past the screen edge until columns sit side by side (lg). Cap it below lg.
+   - The footer email address is longer than its column at ~768-800px; let it wrap. */
+@media (max-width: 991.98px) { .row.g-5 { --bs-gutter-x: 1.5rem; } }
+.footer-contact a { overflow-wrap: anywhere; }
+
 .navbar {
     background-color: var(--ohs-primary-blue) !important;
     padding: 0.3rem 0 !important;
