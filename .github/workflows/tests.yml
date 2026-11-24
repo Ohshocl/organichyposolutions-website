@@ -1,0 +1,40 @@
+# ================================================================
+# OHS WEBSITE TESTS — runs on every pull request (and on demand)
+# ================================================================
+# Serves the site from the repo and runs the browser test suite in
+# tests/ (see tests/README.md). A failing test marks the PR red.
+# Deploys are unaffected: deploy.yml does not run or ship tests/.
+# ================================================================
+
+name: Website tests
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Browser tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install test tools
+      working-directory: tests
+      run: |
+        npm install --no-audit --no-fund
+        npx playwright install --with-deps chromium
+
+    - name: Run tests
+      run: node tests/run-all.js

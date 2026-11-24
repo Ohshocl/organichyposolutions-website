@@ -113,7 +113,7 @@ jobs:
         # "2>/dev/null || true". api/ is the Vercel serverless functions
         # directory (deployed separately).
         find . -mindepth 1 -maxdepth 1 ! -name '.*' \
-          ! -name _site ! -name node_modules ! -name docs ! -name api \
+          ! -name _site ! -name node_modules ! -name docs ! -name api ! -name tests \
           ! -name README.md ! -name CLAUDE.md ! -name package.json ! -name package-lock.json \
           -exec cp -r -t _site/ {} +
 
@@ -176,6 +176,12 @@ jobs:
             sys.exit(1)
         PY
           then PASS=false; fi
+        fi
+
+        # The test suite (tests/) must never be published
+        if [ -e "_site/tests" ]; then
+          echo "FAIL: tests/ folder is in the build"
+          PASS=false
         fi
 
         # Internal pages removed in Change Request R1-R6 must not come back
