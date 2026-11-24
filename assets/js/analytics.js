@@ -31,15 +31,21 @@ const ANALYTICS_CONFIG = {
 // =============================================================================
 
 function initializeGA4() {
-    var gtagScript = document.createElement('script');
-    gtagScript.async = true;
-    gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + ANALYTICS_CONFIG.GA4_ID;
-    document.head.appendChild(gtagScript);
-
+    // gtag() only queues commands on this page. Google's script is loaded, and
+    // anything is sent to Google, only after the visitor accepts cookies
+    // (see COOKIE CONSENT below).
     window.dataLayer = window.dataLayer || [];
     window.gtag = function() {
         dataLayer.push(arguments);
     };
+
+    // Google Consent Mode: everything denied until the visitor accepts
+    gtag('consent', 'default', {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied'
+    });
 
     gtag('js', new Date());
 
@@ -62,6 +68,102 @@ function initializeGA4() {
         console.log('[OHS Analytics] GA4 initialized:', ANALYTICS_CONFIG.GA4_ID);
     }
 }
+
+// =============================================================================
+// COOKIE CONSENT (small banner)
+// Stored in localStorage 'analytics_consent': 'granted' or 'denied'.
+// No choice yet = no Google Analytics; the banner asks once.
+// window.OHSConsent.open() reopens the banner (footer "Cookie settings").
+// =============================================================================
+
+var CONSENT_KEY = 'analytics_consent';
+var googleTagLoaded = false;
+
+function getConsent() {
+    try {
+        var v = localStorage.getItem(CONSENT_KEY);
+        if (v === 'granted' || v === 'true') return 'granted';
+        if (v === 'denied' || v === 'false') return 'denied';
+    } catch (e) { /* storage blocked: treat as no choice */ }
+    return null;
+}
+
+function loadGoogleTag() {
+    if (googleTagLoaded) return;
+    googleTagLoaded = true;
+    var gtagScript = document.createElement('script');
+    gtagScript.async = true;
+    gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + ANALYTICS_CONFIG.GA4_ID;
+    document.head.appendChild(gtagScript);
+}
+
+function applyConsent(choice) {
+    var state = choice === 'granted' ? 'granted' : 'denied';
+    gtag('consent', 'update', {
+        analytics_storage: state,
+        ad_storage: state,
+        ad_user_data: state,
+        ad_personalization: state
+    });
+    if (state === 'granted') loadGoogleTag();
+}
+
+function setConsent(choice) {
+    try { localStorage.setItem(CONSENT_KEY, choice); } catch (e) { /* ignore */ }
+    applyConsent(choice);
+    hideCookieBanner();
+}
+
+function hideCookieBanner() {
+    var el = document.getElementById('cookieBanner');
+    if (el) el.remove();
+}
+
+function showCookieBanner() {
+    if (document.getElementById('cookieBanner')) return;
+    var build = function() {
+        if (document.getElementById('cookieBanner')) return;
+        var banner = document.createElement('div');
+        banner.id = 'cookieBanner';
+        banner.className = 'cookie-banner';
+        banner.setAttribute('role', 'region');
+        banner.setAttribute('aria-label', 'Cookie notice');
+
+        var text = document.createElement('p');
+        text.className = 'cookie-banner-text';
+        text.appendChild(document.createTextNode('We use cookies to see how our site is used and to measure our marketing. '));
+        var link = document.createElement('a');
+        link.href = '/legal-information.html#privacy-policy';
+        link.textContent = 'Learn more';
+        text.appendChild(link);
+
+        var actions = document.createElement('div');
+        actions.className = 'cookie-banner-actions';
+        var decline = document.createElement('button');
+        decline.type = 'button';
+        decline.className = 'btn btn-outline-secondary btn-sm';
+        decline.textContent = 'Decline';
+        decline.addEventListener('click', function() { setConsent('denied'); });
+        var accept = document.createElement('button');
+        accept.type = 'button';
+        accept.className = 'btn btn-success btn-sm';
+        accept.textContent = 'Accept';
+        accept.addEventListener('click', function() { setConsent('granted'); });
+        actions.append(decline, accept);
+
+        banner.append(text, actions);
+        document.body.appendChild(banner);
+    };
+    if (document.body) build();
+    else document.addEventListener('DOMContentLoaded', build);
+}
+
+window.OHSConsent = {
+    get: getConsent,
+    accept: function() { setConsent('granted'); },
+    decline: function() { setConsent('denied'); },
+    open: showCookieBanner
+};
 
 // =============================================================================
 // CART CONTEXT HELPER
@@ -873,14 +975,18 @@ function setupAutomaticTracking() {
 
 function initializeAnalytics() {
     try {
-        if (ANALYTICS_CONFIG.COOKIE_CONSENT) {
-            var hasConsent = localStorage.getItem('analytics_consent') !== 'false';
-            if (!hasConsent && ANALYTICS_CONFIG.DEBUG_MODE) {
-                console.log('[OHS Analytics] Consent not given — tracking limited');
-            }
-        }
-
         initializeGA4();
+
+        // Cookie consent: load Google only after the visitor accepts
+        var consent = ANALYTICS_CONFIG.COOKIE_CONSENT ? getConsent() : 'granted';
+        if (consent === 'granted') {
+            applyConsent('granted');
+        } else if (consent === null) {
+            showCookieBanner();
+        }
+        if (ANALYTICS_CONFIG.DEBUG_MODE) {
+            console.log('[OHS Analytics] Cookie consent:', consent || 'not chosen yet');
+        }
 
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', setupAutomaticTracking);
