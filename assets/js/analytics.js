@@ -23,8 +23,22 @@ const ANALYTICS_CONFIG = {
     DEBUG_MODE: false,
     COOKIE_CONSENT: true,
     SESSION_TIMEOUT: 30,
-    PRODUCT_COUNT: 10
+    // Live count from the catalog (was hardcoded 10; the store has 8)
+    get PRODUCT_COUNT() {
+        return window.PRODUCT_CATALOG ? Object.keys(window.PRODUCT_CATALOG).length : 0;
+    }
 };
+
+// Catalog product types: 'epa' (EPA Registered, Utah only), 'usda-only'
+// (USDA Certified Organic), 'non-registered' (skin care, wipes).
+// 'epa-usda' is an older name kept so old carts still classify correctly.
+function isEpaType(type) { return type === 'epa' || type === 'epa-usda'; }
+function categoryForType(type) {
+    if (isEpaType(type)) return 'EPA Registered';
+    if (type === 'usda-only') return 'USDA Organic';
+    if (type === 'non-registered') return 'Skin Care & Wipes';
+    return 'Other';
+}
 
 // =============================================================================
 // GA4 INITIALIZATION
@@ -193,7 +207,7 @@ function getCartContext() {
             totalValue += price * qty;
 
             if (item.isSubscription) hasSubscription = true;
-            if (item.type === 'epa-usda') hasEPA = true;
+            if (isEpaType(item.type)) hasEPA = true;
             if (item.type === 'usda-only') hasUSDA = true;
 
             // Check per-product wholesale threshold
@@ -250,7 +264,7 @@ function buildGA4Item(item, quantity, source) {
         item_id: item.variantId || item.productId || item.id,
         item_name: item.name || (product ? product.name : 'Unknown'),
         item_brand: 'Organic HypoSolutions',
-        item_category: certType === 'epa-usda' ? 'EPA+USDA Certified' : 'USDA Organic',
+        item_category: categoryForType(certType),
         item_category2: product ? product.category : '',
         item_category3: ppmLabel,
         item_category4: item.isSubscription ? 'subscription' : 'one-time',
@@ -893,7 +907,7 @@ function setupAutomaticTracking() {
 
         // Product line switching
         if (classes.includes('product-line-btn') || classes.includes('filter-btn')) {
-            var line = text.toLowerCase().includes('epa') ? 'EPA+USDA' :
+            var line = text.toLowerCase().includes('epa') ? 'EPA Registered' :
                        text.toLowerCase().includes('organic') ? 'USDA Organic' : text;
             ServiceTracking.productLineInterest(line, 'filter');
         }
@@ -1016,7 +1030,7 @@ function initializeAnalytics() {
         });
 
         if (ANALYTICS_CONFIG.DEBUG_MODE) {
-            console.log('[OHS Analytics] Initialized — 10 products, per-product thresholds, subscription + geo tracking');
+            console.log('[OHS Analytics] Initialized — ' + ANALYTICS_CONFIG.PRODUCT_COUNT + ' products, per-product thresholds, subscription + geo tracking');
         }
     } catch (error) {
         console.error('[OHS Analytics] Init error:', error);
