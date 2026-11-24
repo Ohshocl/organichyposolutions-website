@@ -89,7 +89,15 @@
      * Get user's state from cookie or localStorage (ohsUserState key)
      */
     window.getUserState = function() {
-        return getCookie(STATE_COOKIE_NAME) || localStorage.getItem(STATE_STORAGE_KEY) || null;
+        // Every state picker on the site (menu, homepage, products page) saves to
+        // localStorage, so it wins. The cookie is kept in sync and only used as a fallback.
+        let saved = null;
+        try { saved = localStorage.getItem(STATE_STORAGE_KEY); } catch (e) { /* storage blocked */ }
+        if (saved) {
+            if (getCookie(STATE_COOKIE_NAME) !== saved) setCookie(STATE_COOKIE_NAME, saved, COOKIE_EXPIRY_DAYS);
+            return saved;
+        }
+        return getCookie(STATE_COOKIE_NAME) || null;
     };
 
     /**
@@ -467,64 +475,76 @@
 
     /**
      * Proceed to Shopify checkout.
-     * Uses shopify-client.js createCheckout() if available,
-     * falls back to the direct /cart/ URL method.
+     *
+     * Opens Shopify's secure checkout in a NEW TAB so the OHS site stays open.
+     * Pass a tab opened earlier in the click handler (checkoutTab) so pop-up
+     * blockers allow it; if no tab can be opened, checkout opens in this tab.
+     *
+     * Uses Shopify's cart permalink (https://<store>/cart/<variant>:<qty>,...).
+     * The old Storefront checkoutCreate call was removed: Shopify retired that
+     * API in April 2025, so it always failed and fell back to this same link.
+     *
+     * @returns {boolean} true if checkout was opened
      */
-    window.proceedToCheckout = async function() {
+    window.proceedToCheckout = function(checkoutTab) {
+        const closeTab = () => { try { if (checkoutTab && !checkoutTab.closed) checkoutTab.close(); } catch (e) {} };
+
         if (cartItems.length === 0) {
             window.showNotification('Your cart is empty', 'warning');
-            return;
+            closeTab();
+            return false;
+        }
+
+        // Utah-only (EPA) items need a shipping state before checkout
+        const userState = window.getUserState();
+        const hasUtahOnly = cartItems.some(item => {
+            const product = window.findProduct(item.productId);
+            return product && product.type === 'epa';
+        });
+        if (!userState && hasUtahOnly) {
+            window.showNotification('Please choose your shipping state. Some items in your cart ship to Utah only.', 'warning');
+            if (typeof window.showStateModal === 'function') window.showStateModal();
+            closeTab();
+            return false;
         }
 
         // Geo-validate before checkout
-        const userState = window.getUserState();
         if (userState && !validateCartForState(userState)) {
             window.showNotification('Please review your cart — some items are not available in your state.', 'error');
-            return;
+            closeTab();
+            return false;
         }
 
         // Re-check cart still has items after geo-validation
         if (cartItems.length === 0) {
             window.showNotification('No eligible items remain in your cart.', 'warning');
-            return;
+            closeTab();
+            return false;
         }
 
-        try {
-            window.showNotification('Preparing your secure checkout…', 'info');
+        const domain     = window.SHOPIFY_DOMAIN || 'npmv1h-8e.myshopify.com';
+        const variantStr = cartItems
+            .filter(item => item.variantId && !String(item.variantId).includes('undefined'))
+            .map(item => `${item.variantId}:${item.quantity}`)
+            .join(',');
 
-            // Preferred: Storefront API via shopify-client.js
-            if (typeof window.createCheckout === 'function') {
-                const lineItems   = buildLineItems();
-                const checkoutUrl = await window.createCheckout(lineItems);
-
-                if (checkoutUrl) {
-                    console.log('🛒 Shopify Storefront checkout URL:', checkoutUrl);
-                    window.showNotification('Opening secure checkout…', 'success');
-                    setTimeout(() => { window.location.href = checkoutUrl; }, 600);
-                    return;
-                }
-                // Fall through to URL method if createCheckout returned nothing
-                console.warn('⚠️ createCheckout returned no URL — falling back to cart URL method');
-            }
-
-            // Fallback: direct Shopify cart URL (still passes correct variant IDs)
-            const domain    = window.SHOPIFY_DOMAIN || 'npmv1h-8e.myshopify.com';
-            const variantStr = cartItems
-                .filter(item => item.variantId && !item.variantId.includes('undefined'))
-                .map(item => `${item.variantId}:${item.quantity}`)
-                .join(',');
-
-            if (!variantStr) throw new Error('No valid variant IDs in cart');
-
-            const fallbackUrl = `https://${domain}/cart/${variantStr}`;
-            console.log('🛒 Fallback checkout URL:', fallbackUrl);
-            window.showNotification('Opening secure checkout…', 'success');
-            setTimeout(() => { window.location.href = fallbackUrl; }, 600);
-
-        } catch (error) {
-            console.error('Checkout error:', error);
+        if (!variantStr) {
             window.showNotification('Unable to proceed to checkout. Please try again.', 'error');
+            closeTab();
+            return false;
         }
+
+        const checkoutUrl = `https://${domain}/cart/${variantStr}`;
+        console.log('🛒 Checkout URL:', checkoutUrl);
+
+        if (checkoutTab && !checkoutTab.closed) {
+            checkoutTab.location.href = checkoutUrl;
+            window.showNotification('Secure checkout opened in a new tab. Your cart is still here if you need it.', 'success');
+        } else {
+            window.showNotification('Opening secure checkout…', 'success');
+            setTimeout(() => { window.location.href = checkoutUrl; }, 600);
+        }
+        return true;
     };
 
     // =============================================================================
@@ -583,14 +603,19 @@
             transform:translateX(450px);transition:transform 0.3s ease;
             display:flex;align-items:center;gap:10px;
         `;
-        notification.innerHTML = `
-            <i class="fas fa-${iconMap[type] || 'info-circle'}"></i>
-            <div style="flex:1;">${message}</div>
-            <button onclick="this.parentElement.remove()"
-                    style="background:none;border:none;color:white;cursor:pointer;padding:0;">
-                <i class="fas fa-times"></i>
-            </button>
-        `;
+        // Build with DOM nodes; the message is shown as plain text (any HTML is stripped)
+        const icon = document.createElement('i');
+        icon.className = `fas fa-${iconMap[type] || 'info-circle'}`;
+        const text = document.createElement('div');
+        text.style.flex = '1';
+        text.textContent = String(message == null ? '' : message).replace(/<[^>]*>/g, '').trim();
+        const close = document.createElement('button');
+        close.type = 'button';
+        close.setAttribute('aria-label', 'Close');
+        close.style.cssText = 'background:none;border:none;color:white;cursor:pointer;padding:0;';
+        close.innerHTML = '<i class="fas fa-times"></i>';
+        close.addEventListener('click', () => notification.remove());
+        notification.append(icon, text, close);
         container.appendChild(notification);
 
         setTimeout(() => { notification.style.transform = 'translateX(0)'; }, 10);
