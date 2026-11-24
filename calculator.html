@@ -1056,34 +1056,40 @@
         if (el) el.textContent = value;
     }
 
+    // Quote handoff to book-service.html (audit R11). One builder for both buttons,
+    // so every field travels: mode, service, size, complexity, frequency, contract,
+    // and for mold the property type, severity and moisture. The booking page
+    // validates every value and recalculates; the estimate is display-only.
+    function buildQuoteParams(contractType, source) {
+        if (!lastCalculation) updateCalculator();
+        const c = lastCalculation;
+        const params = new URLSearchParams({
+            v:            '1',
+            mode:         c.mode === 'mold' ? 'mold' : 'fogging',
+            serviceType:  c.mode === 'mold' ? 'mold' : (c.serviceType || 'commercial'),
+            sqft:         String(c.sqft),
+            contractType: contractType,
+            estimate:     String(contractType !== 'payPerService' && c.contractPrice ? c.contractPrice : c.totalPrice),
+            source:       source
+        });
+        if (c.mode === 'mold') {
+            params.set('moldComplexity', currentMoldComplexity);
+            params.set('propertyType',   c.propertyType || '');
+            params.set('moisture',       c.moisture || '');
+        } else {
+            params.set('complexity', c.complexity || 'standard');
+            params.set('frequency',  c.frequency || 'monthly');
+        }
+        return params;
+    }
+
     function requestQuote() {
         if (!lastCalculation) updateCalculator();
-        const params = new URLSearchParams({
-            serviceType:  lastCalculation.mode === 'mold' ? 'mold' : (lastCalculation.serviceType || 'commercial'),
-            sqft:         lastCalculation.sqft,
-            complexity:   lastCalculation.complexity || lastCalculation.complexityAdjustment || 'standard',
-            contractType: lastCalculation.contractType,
-            estimate:     lastCalculation.totalPrice,
-            source:       'calculator'
-        });
-        if (lastCalculation.mode === 'mold') {
-            params.set('moldComplexity', currentMoldComplexity);
-        } else {
-            params.set('frequency', lastCalculation.frequency || 'monthly');
-        }
-        window.location.href = 'book-service.html?' + params.toString();
+        window.location.href = 'book-service.html?' + buildQuoteParams(lastCalculation.contractType || 'payPerService', 'calculator').toString();
     }
 
     function requestContractQuote() {
-        if (!lastCalculation) updateCalculator();
-        const params = new URLSearchParams({
-            serviceType:  lastCalculation.mode === 'mold' ? 'mold' : (lastCalculation.serviceType || 'commercial'),
-            sqft:         lastCalculation.sqft,
-            contractType: currentSubscription,
-            estimate:     lastCalculation.contractPrice || lastCalculation.totalPrice,
-            source:       'calculator_contract'
-        });
-        window.location.href = 'book-service.html?' + params.toString();
+        window.location.href = 'book-service.html?' + buildQuoteParams(currentSubscription, 'calculator_contract').toString();
     }
 
     function callNow() {
