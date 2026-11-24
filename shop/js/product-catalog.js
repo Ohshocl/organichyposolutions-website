@@ -418,6 +418,27 @@
     };
 
     // =============================================================================
+    // COMING SOON — Skin Care and Pet Care lines (Change Request C4a, C4c, E2)
+    // Not in Shopify yet, so they are kept OUT of PRODUCT_CATALOG on purpose:
+    // the cart, inventory lookup and Quick Add never see them. products.html shows
+    // them as "Coming soon — contact us" cards (no price, no add-to-cart).
+    // Working names from Brandon's Change Request; final names, photos and copy
+    // are confirmed before launch. When a product is set up in Shopify, remove it
+    // here and add a full entry to PRODUCT_CATALOG with its Shopify IDs.
+    // No product claims here: see Change Request G6 and G11.
+    // =============================================================================
+
+    window.COMING_SOON_PRODUCTS = [
+        { key: 'skin-health-mist-3oz',     line: 'skin-care', name: 'OHS Skin Health Mist 3oz',     icon: 'spray-can' },
+        { key: 'skin-health-mist-8oz',     line: 'skin-care', name: 'OHS Skin Health Mist 8oz',     icon: 'spray-can' },
+        { key: 'diaper-rash-gel-100ml',    line: 'skin-care', name: 'OHS Diaper Rash Gel 100ml',    icon: 'pump-soap' },
+        { key: 'pet-cleaner-32oz',         line: 'pet-care',  name: 'OHS Pet Cleaner & Deodorizer 32oz', icon: 'paw' },
+        { key: 'pet-equine-spray-32oz',    line: 'pet-care',  name: 'OHS Pet+ & Equine Skin Spray 32oz (500ppm)', icon: 'horse' },
+        { key: 'pet-equine-spray-1gal',    line: 'pet-care',  name: 'OHS Pet+ & Equine Skin Spray 1 Gallon (500ppm)', icon: 'horse' },
+        { key: 'equine-skin-gel-16oz',     line: 'pet-care',  name: 'OHS Equine Skin Gel 16oz',     icon: 'horse' }
+    ];
+
+    // =============================================================================
     // PRODUCT ALIASES — For flexible lookups
     // =============================================================================
 
