@@ -53,5 +53,39 @@ const B = process.env.BASE_URL || 'http://localhost:8805';
     const r = await p.evaluate(() => ({ v: document.getElementById('hiddenServiceType').value, pressed: document.getElementById('card-commercial').getAttribute('aria-pressed'), tab: document.getElementById('card-commercial').tabIndex }));
     ok(r.v === 'commercial' && r.pressed === 'true' && r.tab === 0, `keyboard: Enter on the Commercial card selects it (${JSON.stringify(r)})`);
     await c.close(); }
+  // 5. phone rules (review follow-up)
+  { const [c, p] = await open();
+    const res = {};
+    for (const v of ['abc-defg-hijk', '801555O100', '28015550100', '12345', '(801) 555-0100', '1-801-555-0100', '801.555.0100']) {
+      await p.fill('#phone', v); await submit(p); await p.waitForTimeout(150);
+      res[v] = await p.evaluate(() => document.getElementById('phone').getAttribute('aria-invalid') === 'true');
+    }
+    const wantBad = ['abc-defg-hijk', '801555O100', '28015550100', '12345'], wantGood = ['(801) 555-0100', '1-801-555-0100', '801.555.0100'];
+    ok(wantBad.every(v => res[v]) && wantGood.every(v => !res[v]), `phone: letters and bad lengths rejected, 10 digits or 1+10 accepted ${JSON.stringify(res)}`);
+    await c.close(); }
+  // 6. summary updates as fields are fixed, without resubmitting (review follow-up)
+  { const [c, p] = await open();
+    await submit(p); await p.waitForTimeout(300);
+    const count = () => p.evaluate(() => { const s = document.getElementById('formErrors'); return s.classList.contains('d-none') ? 0 : s.querySelectorAll('li').length; });
+    const n0 = await count();
+    await p.fill('#firstName', 'Jane'); await p.waitForTimeout(100);
+    const n1 = await count();
+    await p.click('#card-residential'); await p.waitForTimeout(100);
+    const n2 = await count();
+    const cardMsgGone = await p.evaluate(() => !document.getElementById('serviceTypeError'));
+    await p.fill('#lastName', 'Smith'); await p.fill('#email', 'jane@example.com'); await p.fill('#address', '123 Main St, Provo UT'); await p.waitForTimeout(100);
+    const n3 = await count();
+    ok(n0 === 5 && n1 === 4 && n2 === 3 && cardMsgGone && n3 === 0, `summary updates live: 5 -> 4 (name) -> 3 (service card, its message gone: ${cardMsgGone}) -> ${n3} (all fixed, summary hidden)`);
+    await c.close(); }
+  // 7. service-type error is tied to the cards; existing descriptions are kept (review follow-up)
+  { const [c, p] = await open();
+    await p.evaluate(() => document.getElementById('email').setAttribute('aria-describedby', 'emailHelp'));
+    await p.fill('#email', 'bad'); await submit(p); await p.waitForTimeout(300);
+    const r1 = await p.evaluate(() => ({ card: document.getElementById('card-residential').getAttribute('aria-describedby'), email: document.getElementById('email').getAttribute('aria-describedby') }));
+    await p.fill('#email', 'jane@example.com'); await p.click('#card-commercial'); await p.waitForTimeout(150);
+    const r2 = await p.evaluate(() => ({ card: document.getElementById('card-residential').getAttribute('aria-describedby'), email: document.getElementById('email').getAttribute('aria-describedby') }));
+    ok(/serviceTypeError/.test(r1.card || '') && !r2.card, `service cards point to the service-type error while it shows (${r1.card}), and not after (${r2.card})`);
+    ok(r1.email === 'emailHelp email-error' && r2.email === 'emailHelp', `existing description kept: "${r1.email}" -> "${r2.email}"`);
+    await c.close(); }
   console.log(fails ? fails + ' FAILED' : 'ALL PASSED'); process.exitCode = fails ? 1 : 0; await b.close();
 })();
