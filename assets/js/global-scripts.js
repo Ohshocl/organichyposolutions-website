@@ -560,20 +560,23 @@ window.showStateModal = function () {
         modal = document.createElement('div');
         modal.id = 'globalStateModal';
         modal.className = 'state-modal';
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-modal', 'true');
+        modal.setAttribute('aria-labelledby', 'globalStateTitle');
         modal.innerHTML = `
             <div class="state-modal-content">
                 <div class="state-modal-icon">
                     <i class="fas fa-map-marker-alt"></i>
                 </div>
-                <h3>Select Your State</h3>
+                <h3 id="globalStateTitle">Select Your State</h3>
                 <p>Some products are only available in Utah due to EPA registration. USDA Organic products ship nationwide.</p>
-                <select class="state-select" id="globalStateSelect">
+                <select class="state-select" id="globalStateSelect" aria-label="Your shipping state">
                     <option value="">-- Select Your State --</option>
                 </select>
                 <button class="state-modal-btn" id="globalStateConfirmBtn" disabled>
                     <i class="fas fa-check me-2"></i>Confirm Location
                 </button>
-                <button onclick="document.getElementById('globalStateModal').classList.remove('show')"
+                <button type="button" id="globalStateCancelBtn"
                         style="background:none;border:none;color:#6c757d;margin-top:0.75rem;cursor:pointer;font-size:0.85rem;">
                     Cancel
                 </button>
@@ -613,6 +616,12 @@ window.showStateModal = function () {
         const saved = localStorage.getItem('ohsUserState');
         if (saved) { select.value = saved; document.getElementById('globalStateConfirmBtn').disabled = false; }
 
+        // Cancel button and Escape key close the dialog
+        document.getElementById('globalStateCancelBtn').addEventListener('click', closeGlobalStateModal);
+        modal.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') { e.preventDefault(); closeGlobalStateModal(); }
+        });
+
         // Events
         select.addEventListener('change', function () {
             document.getElementById('globalStateConfirmBtn').disabled = !this.value;
@@ -622,7 +631,7 @@ window.showStateModal = function () {
             const val = document.getElementById('globalStateSelect').value;
             if (!val) return;
             localStorage.setItem('ohsUserState', val);
-            document.getElementById('globalStateModal').classList.remove('show');
+            closeGlobalStateModal();
             updateNavStateName(val);
             // Let products.html pick it up if it's the current page
             window.dispatchEvent(new CustomEvent('stateChanged', { detail: { state: val } }));
@@ -634,8 +643,22 @@ window.showStateModal = function () {
         if (saved) { select.value = saved; document.getElementById('globalStateConfirmBtn').disabled = false; }
     }
 
+    // Remember what opened the dialog so focus can go back there, then focus the dropdown
+    stateModalOpener = document.activeElement;
     modal.classList.add('show');
+    setTimeout(function () {
+        const sel = document.getElementById('globalStateSelect');
+        if (sel) sel.focus();
+    }, 50);
 };
+
+let stateModalOpener = null;
+function closeGlobalStateModal() {
+    const modal = document.getElementById('globalStateModal');
+    if (modal) modal.classList.remove('show');
+    if (stateModalOpener && typeof stateModalOpener.focus === 'function') stateModalOpener.focus();
+    stateModalOpener = null;
+}
 
 function updateNavStateName(stateCode) {
     const el = document.getElementById('navStateName');
