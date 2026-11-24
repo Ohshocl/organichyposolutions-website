@@ -452,7 +452,7 @@
                             <!-- Dual Machine Notice -->
                             <div class="dual-machine-notice" id="dualMachineNotice">
                                 <h6 class="fw-bold mb-2">⚡ Large Facility Service</h6>
-                                <p class="mb-0">Facilities over 20,000 sq ft require dual machine service for optimal coverage and efficiency.</p>
+                                <p class="mb-0">Facilities over 20,000 sq ft get a second fogging machine (flat fee) and a lower rate on every square foot past 20,000.</p>
                             </div>
 
                         </div><!-- /foggingPanel -->
@@ -486,6 +486,10 @@
                                 <div class="d-flex justify-content-between mb-2" id="volumeDiscountRow" style="display:none !important;">
                                     <span>Volume Discount (20k+ sq ft):</span>
                                     <span id="volumeDiscount">-$0</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2" id="secondMachineRow" style="display:none !important;">
+                                    <span>Second Machine (20k+ sq ft):</span>
+                                    <span id="secondMachinePrice">+$0</span>
                                 </div>
                                 <hr class="border-light">
                                 <div class="d-flex justify-content-between fw-bold fs-5">
@@ -695,7 +699,8 @@
             food:        0.135,
             fitness:     0.13
         },
-        volumeRate: 0.08,   // large facility (>20k sqft) blended rate
+        volumeRate: 0.08,   // floor $/sf for square footage past 20,000 (see largeFacility)
+        largeFacility: { threshold: 20000, discountBeyond: 0.20 },
         frequencyMultipliers: {
             monthly:   1.0,
             biweekly:  1.8,
@@ -902,6 +907,28 @@
         updateContractResults(totalPrice);
     }
 
+    // ── LARGE FACILITY PRICING ────────────────────────────────
+    // Large facilities (over 20,000 sq ft), approved by Anthony 2026-11-24:
+    //   - the first 20,000 sq ft are charged at the service's normal rate
+    //   - every sq ft past 20,000 gets 20% off that rate, never below volumeRate ($0.08)
+    //   - the second fogging machine is a flat fee equal to the service's minimum job
+    //     charge (the cost of one more machine/crew setup), not a doubling of the price
+    // Before: past 20,000 sq ft the whole job was re-priced at $0.08 and then doubled
+    // ($0.16/sq ft, above every normal rate), so 20,001 sq ft cost ~60% more than 20,000.
+    function largeFacilityPricing(sqft, rate, minimum) {
+        const lf = PRICING.largeFacility;
+        const isLarge = sqft > lf.threshold;
+        const standardArea = sqft * rate;
+        let savings = 0, secondMachineFee = 0;
+        if (isLarge) {
+            const rateBeyond = Math.max(rate * (1 - lf.discountBeyond), PRICING.volumeRate);
+            savings = (sqft - lf.threshold) * (rate - rateBeyond);
+            secondMachineFee = minimum;
+        }
+        const discountedBase = Math.max(standardArea - savings, minimum);
+        return { isLarge, standardArea, savings, discountedBase, secondMachineFee };
+    }
+
     // ── FOGGING CALCULATION ───────────────────────────────────
     function calcFogging() {
         const sqft        = parseInt(document.getElementById('squareFootageFogging').value) || 3500;
@@ -924,14 +951,16 @@
             if (volumeRow)  volumeRow.style.setProperty('display', 'none', 'important');
         }
 
-        let baseRate   = sqft > 20000 ? PRICING.volumeRate : (PRICING.baseRates[serviceType] || 0.125);
-        let basePrice  = Math.max(sqft * baseRate, PRICING.minimums[serviceType] || 150);
+        const rate     = PRICING.baseRates[serviceType] || 0.125;
+        const minimum  = PRICING.minimums[serviceType] || 150;
+        const lfp      = largeFacilityPricing(sqft, rate, minimum);
+        // "Base Service" line shows the normal-rate price; the volume discount is its own line
+        const basePrice = lfp.isLarge ? lfp.standardArea : lfp.discountedBase;
 
         const complexityMultiplier  = PRICING.complexityAdjustments[complexity] || 1.0;
-        const complexityAdjustment  = basePrice * (complexityMultiplier - 1);
-        let adjustedPrice           = basePrice * complexityMultiplier;
-
-        if (sqft > 20000) adjustedPrice *= 2;  // dual machine
+        const complexityAdjustment  = lfp.discountedBase * (complexityMultiplier - 1);
+        const secondMachineFee      = lfp.secondMachineFee;
+        let adjustedPrice           = lfp.discountedBase * complexityMultiplier + secondMachineFee;
 
         const estimatedDistance = 30;
         let travelCosts = 0;
@@ -941,10 +970,7 @@
 
         const totalPrice = adjustedPrice + travelCosts;
 
-        let volumeDiscountAmount = 0;
-        if (sqft > 20000) {
-            volumeDiscountAmount = ((PRICING.baseRates[serviceType] || 0.125) - PRICING.volumeRate) * sqft;
-        }
+        const volumeDiscountAmount = lfp.savings;
 
         lastCalculation = {
             mode: 'fogging',
@@ -954,6 +980,7 @@
             complexityAdjustment: Math.round(complexityAdjustment),
             travelCosts:        Math.round(travelCosts),
             volumeDiscount:     Math.round(volumeDiscountAmount),
+            secondMachineFee:   Math.round(secondMachineFee),
             totalPrice:         Math.round(totalPrice),
             contractDiscount:   PRICING.contractDiscounts[currentSubscription],
             contractPrice:      Math.round(totalPrice * (1 - PRICING.contractDiscounts[currentSubscription]))
@@ -965,6 +992,12 @@
         updateElement('complexityPrice','$' + Math.round(complexityAdjustment).toLocaleString());
         updateElement('travelPrice',    '$' + Math.round(travelCosts).toLocaleString());
         updateElement('volumeDiscount', '-$' + Math.round(volumeDiscountAmount).toLocaleString());
+        updateElement('secondMachinePrice', '+$' + Math.round(secondMachineFee).toLocaleString());
+        const smRow = document.getElementById('secondMachineRow');
+        if (smRow) {
+            if (lfp.isLarge) smRow.style.removeProperty('display');
+            else smRow.style.setProperty('display', 'none', 'important');
+        }
         updateElement('breakdownTotal', '$' + Math.round(totalPrice).toLocaleString());
         updateElement('complexityLabel', 'Complexity Adjustment:');
 
