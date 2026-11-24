@@ -15,7 +15,8 @@
 #   - node_modules, .git, .github
 #   - api/ (Vercel serverless functions — deployed separately)
 #
-# Last Updated: 2026-03-08
+# Last Updated: 2026-11-24 (real sitemap dates, loud copy errors,
+#   JS/sitemap checks, one automatic retry of the Pages deploy)
 # ================================================================
 
 name: Deploy OHS Website
@@ -40,7 +41,7 @@ jobs:
 
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment_retry.outputs.page_url }}
 
     steps:
     # ----------------------------------------
@@ -48,6 +49,8 @@ jobs:
     # ----------------------------------------
     - name: Checkout Repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0   # full history, so sitemap dates can come from each page's last commit
 
     # ----------------------------------------
     # Node.js 20 (only needed if package.json exists)
@@ -67,43 +70,52 @@ jobs:
         fi
 
     # ----------------------------------------
-    # Update sitemap lastmod dates to today
+    # Sitemap lastmod = date each page last changed (from git)
+    # (Before: every date was reset to the deploy day, which tells search
+    #  engines every page changed on every deploy.)
     # ----------------------------------------
     - name: Update Sitemap Dates
       run: |
-        if [ -f "sitemap.xml" ]; then
-          TODAY=$(date -u +"%Y-%m-%d")
-          echo "Updating sitemap lastmod dates to ${TODAY}"
-          sed -i "s|<lastmod>[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}</lastmod>|<lastmod>${TODAY}</lastmod>|g" sitemap.xml
-          echo "Sitemap dates updated"
-        else
-          echo "No sitemap.xml found — skipping"
-        fi
+        if [ ! -f "sitemap.xml" ]; then echo "No sitemap.xml found — skipping"; exit 0; fi
+        python3 - <<'PY'
+        import re, subprocess
+        s = open('sitemap.xml', encoding='utf-8').read()
+        def last_changed(path):
+            r = subprocess.run(['git', 'log', '-1', '--format=%cs', '--', path],
+                               capture_output=True, text=True)
+            return r.stdout.strip()
+        def fix(m):
+            block = m.group(0)
+            loc = re.search(r'<loc>https?://[^/]+/([^<]*)</loc>', block)
+            if not loc:
+                return block
+            path = loc.group(1) or 'index.html'
+            d = last_changed(path)
+            if not d:
+                return block
+            return re.sub(r'<lastmod>[^<]*</lastmod>', '<lastmod>' + d + '</lastmod>', block)
+        out = re.sub(r'<url>.*?</url>', fix, s, flags=re.S)
+        open('sitemap.xml', 'w', encoding='utf-8').write(out)
+        print('Sitemap lastmod dates set from git history')
+        PY
 
     # ----------------------------------------
     # Prepare static site
     # ----------------------------------------
     - name: Prepare Static Site
       run: |
+        set -euo pipefail
         mkdir -p _site
 
-        # Copy everything into _site/
-        cp -r * _site/ 2>/dev/null || true
-
-        # ---- Remove dev/build files (NEVER deploy these) ----
-        rm -rf _site/node_modules
-        rm -rf _site/.git
-        rm -rf _site/_site
-        rm -rf _site/.github
-        rm -rf _site/.env.example
-        rm -rf _site/README.md
-        rm -rf _site/CLAUDE.md
-        rm -rf _site/docs
-        rm -rf _site/package.json
-        rm -rf _site/package-lock.json
-
-        # ---- Remove Vercel API directory (deployed separately) ----
-        rm -rf _site/api
+        # Copy everything except _site itself and dev-only files. Dotfiles
+        # (.git, .github, .env.example, .gitignore) are skipped, same as before.
+        # A real copy error now fails the deploy instead of being hidden by
+        # "2>/dev/null || true". api/ is the Vercel serverless functions
+        # directory (deployed separately).
+        find . -mindepth 1 -maxdepth 1 ! -name '.*' \
+          ! -name _site ! -name node_modules ! -name docs ! -name api \
+          ! -name README.md ! -name CLAUDE.md ! -name package.json ! -name package-lock.json \
+          -exec cp -r -t _site/ {} +
 
         # ---- DO NOT remove _site/templates/ ----
         # Nav and footer are fetched at runtime by global-scripts.js.
@@ -141,6 +153,39 @@ jobs:
           echo "WARN: templates/standard-footer.html missing (footer won't load)"
         fi
 
+        # JavaScript files must parse
+        for f in $(find _site/assets/js _site/shop/js -name '*.js' 2>/dev/null); do
+          if ! node --check "$f"; then
+            echo "FAIL: JavaScript syntax error in ${f#_site/}"
+            PASS=false
+          fi
+        done
+
+        # sitemap.xml must be valid XML and every URL must be a real page
+        if [ -f "_site/sitemap.xml" ]; then
+          if ! python3 - <<'PY'
+        import sys, os, xml.dom.minidom
+        doc = xml.dom.minidom.parse('_site/sitemap.xml')
+        bad = []
+        for loc in doc.getElementsByTagName('loc'):
+            path = loc.firstChild.data.split('://', 1)[-1].split('/', 1)[-1] or 'index.html'
+            if not os.path.isfile(os.path.join('_site', path)):
+                bad.append(path)
+        if bad:
+            print('FAIL: sitemap lists pages that do not exist: ' + ', '.join(bad))
+            sys.exit(1)
+        PY
+          then PASS=false; fi
+        fi
+
+        # Internal pages removed in Change Request R1-R6 must not come back
+        for f in moldplan.html salesguide.html pamphlets.html math1010sg.html d470.html studyguide.html; do
+          if [ -f "_site/$f" ]; then
+            echo "FAIL: internal page $f is in the build"
+            PASS=false
+          fi
+        done
+
         if [ "$PASS" = false ]; then
           echo ""
           echo "Build validation FAILED — aborting deploy"
@@ -160,10 +205,22 @@ jobs:
       with:
         path: '_site'
 
+    # GitHub sometimes fails this step with "Fetching artifact metadata
+    # failed ... re-run later" right after the upload. Retry once on its own.
     - name: Deploy to GitHub Pages
       id: deployment
+      continue-on-error: true
+      uses: actions/deploy-pages@v4
+
+    - name: Wait before retrying deploy
+      if: steps.deployment.outcome == 'failure'
+      run: sleep 45
+
+    - name: Deploy to GitHub Pages (retry)
+      id: deployment_retry
+      if: steps.deployment.outcome == 'failure'
       uses: actions/deploy-pages@v4
 
     - name: Deployment Summary
       run: |
-        echo "Deployment complete: ${{ steps.deployment.outputs.page_url }}"
+        echo "Deployment complete: ${{ steps.deployment.outputs.page_url || steps.deployment_retry.outputs.page_url }}"
