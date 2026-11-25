@@ -12,7 +12,7 @@ const EPA = '7249401053255', USDA = '7418569752647';
       window.__stateEvents = []; window.addEventListener('stateChanged', e => window.__stateEvents.push(e.detail && e.detail.state)); }, [seed || null]);
     return c;
   }
-  async function page(c, path) { const p = await c.newPage(); const errs = []; p.on('pageerror', e => errs.push(e.message)); await p.goto(B + path, { waitUntil: 'networkidle' }); await p.waitForTimeout(700); return [p, errs]; }
+  async function page(c, path) { const p = await c.newPage(); const errs = []; p.on('pageerror', e => errs.push(e.message)); await p.goto(B + path, { waitUntil: 'load' }); await p.waitForLoadState('networkidle', { timeout: 8000 }).catch(() => {}); await p.waitForTimeout(700); return [p, errs]; }
   const snap = p => p.evaluate(() => ({ ls: localStorage.getItem('ohsUserState'), ck: (document.cookie.match(/ohs_user_state=([^;]*)/) || [])[1] || null, ev: window.__stateEvents.slice(), nav: (document.getElementById('navStateName') || {}).textContent || '', cart: (window.getCartItems ? window.getCartItems() : JSON.parse(localStorage.getItem('ohsCart') || '[]')).map(i => i.productId) }));
 
   // 1. menu picker (global modal) on a page without cart.js

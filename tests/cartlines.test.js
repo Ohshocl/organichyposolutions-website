@@ -128,8 +128,10 @@ const SERUM = '7249401348167';
     // first navigation as a request event when it is blocked
     await c.route(/myshopify\.com\/cart\//, r => { if (!reqs.includes(r.request().url())) reqs.push(r.request().url()); return r.fulfill({ status: 200, contentType: 'text/html', body: '<p>checkout</p>' }); });
     let popup = null; c.on('page', pg => popup = pg);
+    const perrs = []; p.on('pageerror', e => perrs.push(e.message));
     await p.click('#checkoutBtn'); await p.waitForTimeout(2500);
-    ok(reqs.some(u => u.endsWith(`/cart/${expectV}:${th + 1}`)), `checkout link is one wholesale line ${expectV}:${th + 1} (${reqs[0] || 'none'})`);
+    const why = reqs.length ? '' : ` [new tab: ${popup ? popup.url() : 'none'}; errors: ${perrs.join(' | ') || 'none'}; messages: ${await p.evaluate(() => Array.from(document.querySelectorAll('#notificationContainer *')).map(n => n.textContent.trim()).filter(Boolean).slice(0, 3).join(' | ')).catch(() => '?') || 'none'}]`;
+    ok(reqs.some(u => u.endsWith(`/cart/${expectV}:${th + 1}`)), `checkout link is one wholesale line ${expectV}:${th + 1} (${reqs[0] || 'none'})` + why);
     const opener = popup ? await popup.evaluate(() => window.opener === null).catch(() => 'n/a') : 'no popup';
     ok(opener === true || opener === 'n/a', `checkout tab has no link back to the OHS page (opener null: ${opener})`);
     await c.close(); }
