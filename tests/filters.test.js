@@ -142,6 +142,35 @@ const SERUM = '7249401348167', LAUNDRY32 = '7249400004679', USDA32 = '7418569752
     ok((await shown(p)).length === 2, 'switching to Utah: the EPA filter now shows the 2 EPA products');
     await c.close(); }
 
+  // Two views: grouped by product line (default) and "All products" (one list)
+  { const [c] = await ctxFor('UT'); const [p, errs] = await open(c, '?sort=price-asc');
+    ok(/sorted within each product line/.test(await status(p)), `grouped view + price sort says it sorts within each line ("${await status(p)}")`);
+    await p.fill(`#qty-${LAUNDRY32}`, '7'); await p.dispatchEvent(`#qty-${LAUNDRY32}`, 'change');
+    await p.click('label[for="viewAll"]'); await p.waitForTimeout(200);
+    const flat = await p.evaluate(() => ({
+      ids: Array.from(document.querySelectorAll('#allProducts [data-card-for]')).filter(c => !c.hidden).map(c => c.getAttribute('data-card-for')),
+      linesHidden: Array.from(document.querySelectorAll('#productSections section')).filter(s => s.id !== 'allProducts').every(s => s.hidden),
+      allShown: !document.getElementById('allProducts').hidden }));
+    const prices = flat.ids.map(id => W.PRODUCT_CATALOG[id].pricing.retail);
+    ok(flat.ids.length === ACTIVE.length && flat.linesHidden && flat.allShown, 'All products view: every product in one list, line sections hidden');
+    ok(prices.every((v, i) => !i || prices[i - 1] <= v), `All products + price low-high sorts across every line (${prices.join(', ')})`);
+    ok(/view=all/.test(p.url()) && /sort=price-asc/.test(p.url()), 'view is kept in the URL');
+    const comp = await p.evaluate(() => { const t = id => { const e = document.querySelector(`[data-card-for="${id}"] .card-compliance`); return e && getComputedStyle(e).display !== 'none' ? e.textContent : ''; };
+      return { epa: t('7249401053255'), usda: t('7418569752647'), serum: t('7249401348167'), wipes: document.querySelector('[data-card-for="7249401315399"] .card-compliance') }; });
+    ok(/EPA Reg\. No\. 97801-1-105539/.test(comp.epa) && /USDA Certificate #Z-699995-2008/.test(comp.usda) && /not been evaluated by the Food and Drug Administration/.test(comp.serum) && !comp.wipes,
+       'All products view: each card shows its line statement (EPA Reg. No., USDA certificate, FDA note); wipes none');
+    ok(await p.inputValue(`#qty-${LAUNDRY32}`) === '7', 'switching view keeps a typed quantity');
+    await p.focus('#viewAll'); await p.keyboard.press('ArrowLeft'); await p.waitForTimeout(200);
+    const back = await p.evaluate(() => ({ lines: document.getElementById('viewLines').checked, allHidden: document.getElementById('allProducts').hidden,
+      homeOk: Array.from(document.querySelectorAll('[data-card-for]')).every(c => c.parentElement.getAttribute('data-line') === c.getAttribute('data-home')),
+      compHidden: Array.from(document.querySelectorAll('.card-compliance')).every(e => getComputedStyle(e).display === 'none') }));
+    ok(back.lines && back.allHidden && back.homeOk && back.compHidden, 'arrow key back to "By product line": every card returns to its own line, card statements hidden again (headers show them)');
+    await p.goBack(); await p.waitForTimeout(300);
+    ok(await p.evaluate(() => document.getElementById('viewAll').checked && !document.getElementById('allProducts').hidden), 'Back restores the All products view');
+    ok(!errs.length, 'no page errors' + (errs.length ? ': ' + errs.join('; ') : ''));
+    await c.close(); }
+  ok(CF.normalise({ view: 'weird' }).view === 'lines' && CF.toQuery({ view: 'lines' }) === '' && CF.toQuery({ view: 'all' }) === '?view=all', 'view: only "all" goes in the URL; anything else means grouped');
+
   // Phone
   { const c = await b.newContext({ viewport: { width: 375, height: 800 }, isMobile: true, hasTouch: true }); await route(c);
     await c.route('**/api/*/graphql.json', r => r.fulfill({ status: 503, body: 'x' }));

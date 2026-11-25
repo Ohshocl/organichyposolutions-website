@@ -171,7 +171,15 @@
                 </form>
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-2">
                     <p id="filterStatus" class="small text-muted mb-0" role="status" aria-live="polite"></p>
-                    <button type="button" id="filterClear" class="btn btn-link btn-sm p-0" hidden>Clear filters</button>
+                    <div class="d-flex align-items-center flex-wrap gap-3">
+                        <div class="btn-group btn-group-sm" role="radiogroup" aria-label="View">
+                            <input type="radio" class="btn-check" name="filterView" id="viewLines" value="lines" checked>
+                            <label class="btn btn-outline-primary" for="viewLines">By product line</label>
+                            <input type="radio" class="btn-check" name="filterView" id="viewAll" value="all">
+                            <label class="btn btn-outline-primary" for="viewAll">All products</label>
+                        </div>
+                        <button type="button" id="filterClear" class="btn btn-link btn-sm p-0" hidden>Clear filters</button>
+                    </div>
                 </div>
             </section>
 
@@ -303,6 +311,25 @@
         let productQuantities = {};   // by product ID: survives filtering, sorting and re-drawing
         let productSubscribe  = {};   // by product ID: Subscribe & Save switch
         let currentFilters    = null; // set on load from the URL (shop/js/catalog-filters.js)
+        const FDA_STATEMENT = 'These statements have not been evaluated by the Food and Drug Administration. Products are not intended to diagnose, treat, cure, or prevent any disease.';
+
+        // Which product-line section a card belongs to (its home in the grouped view)
+        function lineOf(p) {
+            if (p.type === 'epa') return 'epa';
+            if (p.type === 'usda-only') return 'usda';
+            if (p.category === 'Skincare') return 'skin';
+            if (p.productLine === 'pet-care' || p.category === 'Pet Care') return 'pet';
+            return 'wipes';
+        }
+        // The regulatory line each section header carries, shown on the card itself
+        // in the "All products" view (hidden in the grouped view, where the header shows it)
+        function complianceOf(p) {
+            const line = lineOf(p);
+            if (line === 'epa')  return 'EPA Reg. No. 97801-1-105539';
+            if (line === 'usda') return 'USDA Certificate #Z-699995-2008 &bull; Certified Organic by OTCO';
+            if (line === 'skin' || line === 'pet') return FDA_STATEMENT;
+            return '';
+        }
         // Stock comes from the shared client (shop/js/shopify-client.js): window.fetchInventory,
         // window.getInventoryStatus, window.getVariantStatus (audit R04). No second copy here.
         const INVENTORY_CACHE_DURATION = 300000; // how often the page refreshes stock badges
@@ -556,7 +583,7 @@
                             <p class="mb-1">Professional Disinfectants — Utah Exclusive</p>
                             <small class="text-muted">EPA Reg. No. 97801-1-105539</small>
                         </div>
-                        <div class="row">
+                        <div class="row" data-line="epa">
                 `;
                 epaProducts.forEach(p => { html += renderProductCard(p); });
                 html += '</div></section>';
@@ -581,14 +608,14 @@
                             <p class="mb-1">Family-safe USDA Certified Organic Products — Ships Nationwide</p>
                             <small class="text-muted">USDA Certificate #Z-699995-2008 &bull; Certified Organic by OTCO</small>
                         </div>
-                        <div class="row">
+                        <div class="row" data-line="usda">
                 `;
                 usdaProducts.forEach(p => { html += renderProductCard(p); });
                 html += '</div></section>';
             }
 
             // ── Skin Care, Pet Care, then Wipes (Change Request C4a, C4c) ─
-            const FDA_NOTE = '<p class="small text-muted text-center mb-0">These statements have not been evaluated by the Food and Drug Administration. Products are not intended to diagnose, treat, cure, or prevent any disease.</p>';
+            const FDA_NOTE = '<p class="small text-muted text-center mb-0">' + FDA_STATEMENT + '</p>';
             // Only products that are for sale are shown (window.isProductActive). Coming-soon
             // products stay listed in product-catalog.js but get no card; a section with no
             // products for sale isn't shown at all. A product appears here on its own once
@@ -606,7 +633,7 @@
                             <p class="mb-1">Gentle, fragrance-free HOCl for everyday skin care. Pure HOCl, pure water and natural minerals, with no alcohol, fragrance, dyes or parabens. Ships nationwide.</p>
                             <a href="#white-label" class="small">Also available white label &rarr;</a>
                         </div>
-                        <div class="row">
+                        <div class="row" data-line="skin">
                 `;
                 skinProducts.forEach(p => { html += renderProductCard(p); });
                 html += '</div>' + FDA_NOTE + '</section>';
@@ -620,7 +647,7 @@
                             <p class="mb-1">HOCl for pets and horses, plus odor control for pet areas. Fragrance-free, with no rinsing needed. Ships nationwide.</p>
                             <a href="#white-label" class="small">Also available white label &rarr;</a>
                         </div>
-                        <div class="row">
+                        <div class="row" data-line="pet">
                 `;
                 petProducts.forEach(p => { html += renderProductCard(p); });
                 html += '</div>' + FDA_NOTE + '</section>';
@@ -633,11 +660,14 @@
                             <h2><i class="fas fa-box-tissue me-2"></i>Wipes</h2>
                             <p class="mb-1">Ships nationwide.</p>
                         </div>
-                        <div class="row">
+                        <div class="row" data-line="wipes">
                 `;
                 otherGeneral.forEach(p => { html += renderProductCard(p); });
                 html += '</div></section>';
             }
+
+            // "All products" view: one list across every product line (cards move here)
+            html += `<section class="mb-5" id="allProducts" hidden aria-label="All products"><div class="row" data-line="all"></div></section>`;
 
             container.innerHTML = html;
 
@@ -719,12 +749,14 @@
         function setControlsFromFilters() {
             const els = filterEls(); if (!els.q) return;
             if (document.activeElement !== els.q) els.q.value = currentFilters.q;
+            const v = document.getElementById(currentFilters.view === 'all' ? 'viewAll' : 'viewLines'); if (v) v.checked = true;
             buildFilterOptions();
         }
 
         function readControls() {
             const els = filterEls();
-            return F().normalise({ q: els.q.value, category: els.category.value, cert: els.cert.value, size: els.size.value, sort: els.sort.value });
+            const view = document.querySelector('input[name="filterView"]:checked');
+            return F().normalise({ q: els.q.value, category: els.category.value, cert: els.cert.value, size: els.size.value, sort: els.sort.value, view: view ? view.value : 'lines' });
         }
 
         function applyFilters() {
@@ -732,21 +764,34 @@
             const eligible = eligibleProducts();
             const shown = F().apply(eligible, currentFilters);
             const order = new Map(shown.map((p, i) => [String(p.id), i]));
-            document.querySelectorAll('#productSections section').forEach(sec => {
-                const row = sec.querySelector(':scope > .row'); if (!row) return;
-                const cols = Array.from(row.children).filter(c => c.hasAttribute('data-card-for'));
-                if (!cols.length) return;
-                cols.forEach(c => { c.hidden = !order.has(c.getAttribute('data-card-for')); });
-                cols.slice().sort((a, b) => (order.get(a.getAttribute('data-card-for')) ?? 1e9) - (order.get(b.getAttribute('data-card-for')) ?? 1e9))
-                    .forEach(c => row.appendChild(c));
-                sec.hidden = cols.every(c => c.hidden);
-            });
+            const byOrder = (a, b) => (order.get(a.getAttribute('data-card-for')) ?? 1e9) - (order.get(b.getAttribute('data-card-for')) ?? 1e9);
+            const all = document.getElementById('allProducts');
+            const allRow = all ? all.querySelector('[data-line="all"]') : null;
+            const cards = Array.from(document.querySelectorAll('#productSections [data-card-for]'));
+            cards.forEach(c => { c.hidden = !order.has(c.getAttribute('data-card-for')); });
+            if (currentFilters.view === 'all' && allRow) {
+                // One list across every line, in the chosen order
+                cards.sort(byOrder).forEach(c => allRow.appendChild(c));
+                document.querySelectorAll('#productSections section').forEach(sec => { if (sec !== all) sec.hidden = true; });
+                all.hidden = cards.every(c => c.hidden);
+            } else {
+                // Grouped: each card back in its own product line, sorted within the line
+                if (all) all.hidden = true;
+                document.querySelectorAll('#productSections section').forEach(sec => {
+                    if (sec === all) return;
+                    const row = sec.querySelector(':scope > .row[data-line]'); if (!row) return;
+                    const mine = cards.filter(c => c.getAttribute('data-home') === row.getAttribute('data-line')).sort(byOrder);
+                    mine.forEach(c => row.appendChild(c));
+                    sec.hidden = !mine.some(c => !c.hidden);
+                });
+            }
 
             const filtered = !F().isDefault(currentFilters);
             const status = document.getElementById('filterStatus');
             if (status) status.textContent = shown.length === eligible.length && !currentFilters.q
                 ? `Showing all ${eligible.length} products`
                 : `Showing ${shown.length} of ${eligible.length} products` + (currentFilters.q ? ` matching “${currentFilters.q}”` : '');
+            if (status && currentFilters.sort !== 'featured' && currentFilters.view !== 'all' && shown.length) status.textContent += ' · sorted within each product line';
             const clear = document.getElementById('filterClear'); if (clear) clear.hidden = !filtered;
             const empty = document.getElementById('filterEmpty');
             if (empty) {
@@ -786,6 +831,7 @@
             });
             els.q.addEventListener('search', () => setFilters(Object.assign({}, currentFilters, { q: els.q.value }), true));
             ['category', 'cert', 'size', 'sort'].forEach(k => els[k].addEventListener('change', () => setFilters(readControls(), true)));
+            document.querySelectorAll('input[name="filterView"]').forEach(r => r.addEventListener('change', () => setFilters(readControls(), true)));
             const reset = () => { els.q.value = ''; setFilters(F().DEFAULTS, true); };
             document.getElementById('filterClear')?.addEventListener('click', reset);
             document.getElementById('filterEmptyReset')?.addEventListener('click', () => { reset(); els.q.focus(); });
@@ -823,7 +869,7 @@
                 : 'USDA Certified';
 
             return `
-                <div class="col-lg-4 col-md-6 mb-4" data-card-for="${product.id}" data-stock="${stockKey(invStatus)}">
+                <div class="col-lg-4 col-md-6 mb-4" data-card-for="${product.id}" data-home="${lineOf(product)}" data-stock="${stockKey(invStatus)}">
                     <div class="product-card ${isComingSoon ? 'coming-soon' : ''} ${isOutOfStock ? 'out-of-stock' : ''}" data-product-id="${product.id}">
 
                         ${isComingSoon ? `<div class="coming-soon-badge"><i class="fas fa-clock me-1"></i>COMING SOON</div>` : ''}
@@ -845,6 +891,7 @@
                             </div>
 
                             <h5 class="product-title">${product.name}</h5>
+                            ${complianceOf(product) ? `<p class="card-compliance small text-muted mb-2">${complianceOf(product)}</p>` : ''}
                             <p class="text-muted small mb-2">${product.description.substring(0, 150)}…</p>
 
                             ${isEpa ? `

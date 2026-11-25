@@ -13,7 +13,9 @@
  *   window.OHSCatalogFilters.parse(searchString)        -> filters from a URL (?q=&category=…)
  *   window.OHSCatalogFilters.toQuery(filters)           -> "?q=…" (defaults left out)
  *
- * Filters: { q, category, cert, size, sort }. Empty string = "All".
+ * Filters: { q, category, cert, size, sort, view }. Empty string = "All".
+ * View: 'lines' (grouped by product line, sorted within each line) or 'all'
+ * (one list, sorted across every product).
  * Sort: featured (catalog order) | price-asc | price-desc | name. Prices are always
  * the one-time RETAIL unit price, never wholesale or subscription.
  */
@@ -23,7 +25,7 @@
     var SORTS = ['featured', 'price-asc', 'price-desc', 'name'];
     var SORT_LABELS = { 'featured': 'Featured', 'price-asc': 'Price: low–high', 'price-desc': 'Price: high–low', 'name': 'Name: A–Z' };
     var CERTS = { epa: 'EPA Registered', usda: 'USDA Certified Organic' };
-    var DEFAULTS = { q: '', category: '', cert: '', size: '', sort: 'featured' };
+    var DEFAULTS = { q: '', category: '', cert: '', size: '', sort: 'featured', view: 'lines' };
 
     function slug(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
 
@@ -75,7 +77,8 @@
             category: slug(f.category),
             cert: CERTS[f.cert] ? f.cert : '',
             size: String(f.size || '').toLowerCase().replace(/[^a-z0-9.]/g, ''),
-            sort: SORTS.indexOf(f.sort) !== -1 ? f.sort : 'featured'
+            sort: SORTS.indexOf(f.sort) !== -1 ? f.sort : 'featured',
+            view: f.view === 'all' ? 'all' : 'lines'   // 'lines': grouped by product line; 'all': one list
         };
     }
 
@@ -124,7 +127,7 @@
 
     function parse(search) {
         var params = new URLSearchParams(search || '');
-        return normalise({ q: params.get('q'), category: params.get('category'), cert: params.get('cert'), size: params.get('size'), sort: params.get('sort') });
+        return normalise({ q: params.get('q'), category: params.get('category'), cert: params.get('cert'), size: params.get('size'), sort: params.get('sort'), view: params.get('view') });
     }
 
     function toQuery(filters) {
