@@ -809,7 +809,7 @@
             select.addEventListener('change', function() { btn.disabled = !select.value; });
             btn.addEventListener('click', function() {
                 if (!select.value) return;
-                localStorage.setItem('ohsUserState', select.value);
+                if (window.OHSState) window.OHSState.set(select.value); else localStorage.setItem('ohsUserState', select.value);
                 modal.classList.remove('show'); modal.style.display = 'none';
                 if (typeof showNotification === 'function') {
                     var msg = select.value === 'UT'

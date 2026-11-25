@@ -285,12 +285,12 @@
 
         function setUserStateLocal(stateCode) {
             if (window.setUserState) {
-                window.setUserState(stateCode);
+                window.setUserState(stateCode);   // shared module fires stateChanged -> listener below refreshes
             } else {
                 localStorage.setItem('ohsUserState', stateCode);
+                updateStateDisplay();
+                loadProducts();
             }
-            updateStateDisplay();
-            loadProducts();
         }
 
         function isUtahUser() {
@@ -1148,9 +1148,8 @@
             confirmBtn?.addEventListener('click', function () {
                 const selected = modalSelect.value;
                 if (selected) {
-                    setUserStateLocal(selected);
+                    setUserStateLocal(selected);   // fires stateChanged once (shared state module)
                     hideStateModal();
-                    window.dispatchEvent(new CustomEvent('stateChanged', { detail: { state: selected } }));
                 }
             });
 
@@ -1165,7 +1164,7 @@
             // Cross-tab sync
             window.addEventListener('storage', function (e) {
                 if (e.key === 'ohsCart')      { updateCartBadges(); updateCartPreview(); }
-                if (e.key === 'ohsUserState') { updateStateDisplay(); loadProducts(); }
+                // ohsUserState changes from other tabs arrive as 'stateChanged' (shared state module)
             });
 
             window.addEventListener('stateChanged', function () {

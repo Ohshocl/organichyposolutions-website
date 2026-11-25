@@ -482,7 +482,7 @@ async function handleCheckout() {
                 });
 
                 // Show state modal if not yet set
-                if (!localStorage.getItem('ohsUserState') && !document.cookie.includes('ohs_user_state')) {
+                if (!(window.getUserState && window.getUserState())) {
                     if (window.showStateModal) window.showStateModal();
                 }
 

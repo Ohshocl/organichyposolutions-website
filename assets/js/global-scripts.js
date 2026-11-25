@@ -443,6 +443,57 @@ console.log('🎉 OHS Global Scripts loaded.');
 // STATE SELECTOR — universal modal for all pages
 // ==========================================================================
 
+// ==========================================================================
+// VISITOR STATE (shipping state) — one shared module (audit R09)
+// Every state picker (menu, homepage, products page, cart) saves through
+// OHSState.set(), which validates the code, saves localStorage + cookie
+// together, and fires one 'stateChanged' event ({ state, previous }). cart.js
+// listens for it and re-checks the cart right away; the menu label updates.
+// A change in another tab fires the same event here.
+// ==========================================================================
+(function () {
+    var KEY = 'ohsUserState', COOKIE = 'ohs_user_state', DAYS = 365;
+    function readCookie() {
+        var m = document.cookie.match(/(?:^|;\s*)ohs_user_state=([^;]*)/);
+        return m ? decodeURIComponent(m[1]) : null;
+    }
+    function writeCookie(v) {
+        var d = new Date(); d.setTime(d.getTime() + DAYS * 864e5);
+        document.cookie = COOKIE + '=' + encodeURIComponent(v) + ';expires=' + d.toUTCString() + ';path=/;SameSite=Lax';
+    }
+    function normalize(v) {
+        var s = String(v == null ? '' : v).trim().toUpperCase();
+        return /^[A-Z]{2}$/.test(s) ? s : null;
+    }
+    function get() {
+        var saved = null;
+        try { saved = normalize(localStorage.getItem(KEY)); } catch (e) { /* storage blocked */ }
+        if (saved) { if (readCookie() !== saved) writeCookie(saved); return saved; }
+        return normalize(readCookie());
+    }
+    function set(value) {
+        var code = normalize(value);
+        if (!code) return null;
+        var previous = get();
+        try { localStorage.setItem(KEY, code); } catch (e) { /* storage blocked: cookie still set */ }
+        writeCookie(code);
+        window.dispatchEvent(new CustomEvent('stateChanged', { detail: { state: code, previous: previous } }));
+        return code;
+    }
+    window.OHSState = { get: get, set: set, isUtah: function () { return get() === 'UT'; } };
+
+    // Another tab changed the state: tell this page too
+    window.addEventListener('storage', function (e) {
+        if (e.key !== KEY) return;
+        var code = normalize(e.newValue);
+        if (code) { writeCookie(code); window.dispatchEvent(new CustomEvent('stateChanged', { detail: { state: code, previous: normalize(e.oldValue), fromOtherTab: true } })); }
+    });
+    // Keep the menu label in step with whichever picker changed it
+    window.addEventListener('stateChanged', function (e) {
+        if (e.detail && e.detail.state && typeof updateNavStateName === 'function') updateNavStateName(e.detail.state);
+    });
+})();
+
 window.showStateModal = function () {
     let modal = document.getElementById('globalStateModal');
 
@@ -521,11 +572,8 @@ window.showStateModal = function () {
         document.getElementById('globalStateConfirmBtn').addEventListener('click', function () {
             const val = document.getElementById('globalStateSelect').value;
             if (!val) return;
-            localStorage.setItem('ohsUserState', val);
+            window.OHSState.set(val);   // saves, updates the menu label, tells the page (stateChanged)
             closeGlobalStateModal();
-            updateNavStateName(val);
-            // Let products.html pick it up if it's the current page
-            window.dispatchEvent(new CustomEvent('stateChanged', { detail: { state: val } }));
         });
     } else {
         // Modal already exists — just sync the saved state and show
