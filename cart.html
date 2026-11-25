@@ -395,34 +395,32 @@ async function handleCheckout() {
     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Checking availability…';
 
     try {
-        // Force-refresh inventory at checkout time for accuracy
+        // Check stock for each cart line's own variant and quantity (audit R05).
+        // Known problems stop checkout and are explained; the cart is NOT changed
+        // behind the customer's back. Unknown stock never blocks: Shopify confirms.
+        var items = window.getCartItems();
         if (window.refreshInventory) {
-            await window.refreshInventory();
+            await window.refreshInventory(items.map(function (i) { return i.productId; }));
         }
 
-        var items      = window.getCartItems();
-        var violations = [];
-
-        items.forEach(function(item) {
-            var status = window.getInventoryStatus ? window.getInventoryStatus(item.productId) : null;
-            if (!status) return; // no inventory data — don't block
-            if (!status.canPurchase) {
-                violations.push(item.name + ' is out of stock');
-            } else if (status.quantity !== null && item.quantity > status.quantity) {
-                violations.push(item.name + ': only ' + status.quantity + ' available (you have ' + item.quantity + ')');
-                window.updateCartItemQuantity(item.variantId, status.quantity);
-            }
+        var problems = [], unconfirmed = [];
+        items.forEach(function (item) {
+            var s = window.getVariantStatus ? window.getVariantStatus(item.productId, item.variantId, item.quantity) : null;
+            if (!s || !s.known) { unconfirmed.push(item.name); return; }
+            if (s.state === 'unavailable') problems.push(item.name + ' is out of stock right now. Please remove it to continue.');
+            else if (!s.enough) problems.push(item.name + ': only ' + s.quantity + ' available (your cart has ' + item.quantity + '). Please lower the quantity to continue.');
         });
 
-        if (violations.length > 0) {
+        if (problems.length > 0) {
             closeTab();
             updateCartDisplay();
-            if (window.showNotification) {
-                window.showNotification('Cart updated — ' + violations.join('; '), 'warning');
-            }
+            if (window.showNotification) window.showNotification(problems.join(' '), 'warning');
             btn.disabled  = false;
             btn.innerHTML = '<i class="fas fa-lock me-2"></i>SECURE CHECKOUT';
             return;
+        }
+        if (unconfirmed.length && window.showNotification) {
+            window.showNotification("We couldn't confirm stock for " + unconfirmed.join(', ') + ' right now. Shopify will confirm availability at checkout.', 'info');
         }
 
         // All clear — proceed to Shopify checkout
