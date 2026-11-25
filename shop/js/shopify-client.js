@@ -43,6 +43,15 @@
 
     // Inventory cache — 5-minute TTL (per project instructions)
     var CACHE_TTL_MS = 5 * 60 * 1000;
+
+    // A Storefront request that hasn't answered after this long counts as failed,
+    // so the cart's stock check can never leave checkout stuck on
+    // "Checking availability…" (unknown stock never blocks; Shopify confirms).
+    var REQUEST_TIMEOUT_MS = 8000;
+    function requestTimeout() {
+        var t = Number(window.OHS_STOREFRONT_TIMEOUT_MS);   // test hook
+        return isFinite(t) && t > 0 ? t : REQUEST_TIMEOUT_MS;
+    }
     var inventoryCache = {};
 
     // Expose domain globally (cart.js fallback uses this)
@@ -64,15 +73,27 @@
             body.variables = variables;
         }
 
-        return fetch(ENDPOINT, {
+        var controller = typeof AbortController === 'function' ? new AbortController() : null;
+        var timer;
+        var timeout = new Promise(function (_, reject) {
+            timer = setTimeout(function () {
+                if (controller) { try { controller.abort(); } catch (e) { /* ignore */ } }
+                reject(new Error('Storefront API timed out after ' + requestTimeout() + ' ms'));
+            }, requestTimeout());
+        });
+        var request = fetch(ENDPOINT, {
             method: 'POST',
             headers: {
                 'Content-Type':                       'application/json',
                 'X-Shopify-Storefront-Access-Token':  CONFIG.token
             },
-            body: JSON.stringify(body)
-        })
+            body: JSON.stringify(body),
+            signal: controller ? controller.signal : undefined
+        });
+
+        return Promise.race([request, timeout])
         .then(function (response) {
+            clearTimeout(timer);
             if (!response.ok) {
                 throw new Error('Storefront API HTTP ' + response.status);
             }

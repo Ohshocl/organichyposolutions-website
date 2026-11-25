@@ -21,6 +21,7 @@ function mockShopify(ctx, scenario, opts = {}) {
     const ids = (body.variables && body.variables.ids) || [];
     calls.push(ids.map(g => g.split('/').pop()));
     if (opts.fail && opts.fail(calls.length)) return r.fulfill({ status: 503, body: 'down' });
+    if (opts.hang) return new Promise(() => {});   // Shopify never answers
     const nodes = ids.map(gid => {
       const id = gid.split('/').pop(); const p = CATALOG[id]; if (!p || (opts.omit || []).includes(id)) return null;
       const edges = Object.values(p.shopifyVariants).map(vid => { const s = scenario[String(vid)] || { available: true, quantity: 100 };
@@ -104,6 +105,22 @@ function mockShopify(ctx, scenario, opts = {}) {
     await p.click('#checkoutBtn'); await p.waitForTimeout(2500);
     const note = await p.evaluate(() => (document.getElementById('notificationContainer') || {}).textContent || '');
     ok(shop.length === 1 && /couldn't confirm stock/.test(note), `stock unknown: checkout still opens, with "couldn't confirm stock... Shopify will confirm" (${shop.length} checkout request)`);
+    await c.close(); }
+  // 7b. checkout: Shopify never answers -> stock check gives up (timeout), checkout
+  //     still opens. Regression: there was no time limit, so checkout could hang on
+  //     "Checking availability…" forever with a blank tab open.
+  { const c = await ctxFor(JSON.stringify([{ productId: SERUM, quantity: 2 }]));
+    await c.addInitScript(() => { window.OHS_STOREFRONT_TIMEOUT_MS = 1500; });
+    const p = await c.newPage(); await p.goto(B + '/cart.html', { waitUntil: 'load' }); await p.waitForTimeout(700);
+    await mockShopify(c, {}, { hang: true });
+    const shop = []; c.on('request', r => { if (r.url().includes('myshopify.com/cart/')) shop.push(r.url()); });
+    const t0 = Date.now(); await p.click('#checkoutBtn');
+    for (let i = 0; i < 40 && !shop.length; i++) await p.waitForTimeout(100);
+    const secs = ((Date.now() - t0) / 1000).toFixed(1);
+    const note = await p.evaluate(() => (document.getElementById('notificationContainer') || {}).textContent || '');
+    const btn = await p.locator('#checkoutBtn').textContent();
+    ok(shop.length === 1 && /couldn't confirm stock/.test(note), `Shopify not answering: checkout opens after the time limit (${secs}s, ${shop.length} checkout request), customer told stock is unconfirmed`);
+    ok(!/Checking availability/.test(btn), `checkout button doesn't stay stuck ("${btn.trim()}")`);
     await c.close(); }
   // 8. backorder line goes through
   { const c = await ctxFor(JSON.stringify([{ productId: WIPES, quantity: 3 }]));
