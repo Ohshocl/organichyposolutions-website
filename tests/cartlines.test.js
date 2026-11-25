@@ -129,7 +129,12 @@ const SERUM = '7249401348167';
     await c.route(/myshopify\.com\/cart\//, r => { if (!reqs.includes(r.request().url())) reqs.push(r.request().url()); return r.fulfill({ status: 200, contentType: 'text/html', body: '<p>checkout</p>' }); });
     let popup = null; c.on('page', pg => popup = pg);
     const perrs = []; p.on('pageerror', e => perrs.push(e.message));
-    await p.click('#checkoutBtn'); await p.waitForTimeout(2500);
+    const t0 = Date.now(); await p.click('#checkoutBtn');
+    // Wait for the checkout request (stock check first; it gives up after 8s if Shopify
+    // doesn't answer), instead of a fixed 2.5s that only Chromium always met
+    for (let i = 0; i < 120 && !reqs.length; i++) await p.waitForTimeout(100);
+    await p.waitForTimeout(300);
+    console.log(`INFO checkout request after ${((Date.now() - t0) / 1000).toFixed(1)}s`);
     const why = reqs.length ? '' : ` [new tab: ${popup ? popup.url() : 'none'}; errors: ${perrs.join(' | ') || 'none'}; messages: ${await p.evaluate(() => Array.from(document.querySelectorAll('#notificationContainer *')).map(n => n.textContent.trim()).filter(Boolean).slice(0, 3).join(' | ')).catch(() => '?') || 'none'}]`;
     ok(reqs.some(u => u.endsWith(`/cart/${expectV}:${th + 1}`)), `checkout link is one wholesale line ${expectV}:${th + 1} (${reqs[0] || 'none'})` + why);
     const opener = popup ? await popup.evaluate(() => window.opener === null).catch(() => 'n/a') : 'no popup';
