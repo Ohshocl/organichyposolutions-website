@@ -30,11 +30,15 @@ jobs:
       with:
         node-version: '20'
 
-    - name: Install test tools
+    - name: Install test tools (exact versions from tests/package-lock.json)
       working-directory: tests
       run: |
-        npm install --no-audit --no-fund
+        npm ci --no-fund
         npx playwright install --with-deps chromium
+
+    - name: Check test tools for known vulnerabilities
+      working-directory: tests
+      run: npm audit --audit-level=high
 
     - name: Run tests
       run: node tests/run-all.js
