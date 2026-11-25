@@ -16,6 +16,7 @@ are served from node_modules (same versions as the CDN links); all other outside
 | Suite | What it proves |
 |---|---|
 | inline-scripts | Every inline script and JSON-LD block in every page parses |
+| a11y | axe-core WCAG 2.1 A/AA check on every page; existing serious/critical problems listed per page in a11y-baseline.json (may only shrink), new ones fail |
 | links | Every local link/image/script in every page exists; pre-existing ones are listed in known-broken-links.json and may only shrink |
 | smoke | Every page loads with no JavaScript errors or missing local files |
 | checkout | Checkout opens Shopify in a new tab with the right cart link; Utah-only rules; cart labels |
