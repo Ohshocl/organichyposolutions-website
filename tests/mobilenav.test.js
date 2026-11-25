@@ -32,6 +32,7 @@ async function serveDeployed(ctx) {
   const b = await chromium.launch(); let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; };
   const device = { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: (process.env.OHS_BROWSER || 'chromium') !== 'firefox' };
   const CASES = [
+    ['Solutions', '.nav-item.dropdown > [data-page="services"]', 'a.dropdown-item[href="/services.html"]', '/services.html'],   // the Solutions hub
     ['Solutions', '.nav-item.dropdown > [data-page="services"]', 'a.dropdown-item[href="/mold-remediation.html"]', '/mold-remediation.html'],
     ['Solutions', '.nav-item.dropdown > [data-page="services"]', 'a.dropdown-item[href="/commercial-residential-disinfection.html"]', '/commercial-residential-disinfection.html'],
     ['About', '.nav-item.dropdown > [data-page="about"]', 'a.dropdown-item[href="/science-certifications.html"]', '/science-certifications.html'],
