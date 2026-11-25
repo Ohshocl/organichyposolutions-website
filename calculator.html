@@ -829,7 +829,45 @@
     // =========================================================
     // MAIN CALCULATOR
     // =========================================================
+    // ── CHOICE CARDS AS RADIO GROUPS ──────────────────────────
+    // Job Complexity and Service/Contract Option cards work like radio buttons
+    // for keyboard and screen-reader users: Tab reaches the selected card,
+    // arrow keys move and select, Space/Enter selects. Looks the same.
+    function syncChoiceCards() {
+        document.querySelectorAll('.mold-complexity-card, .subscription-option').forEach(c => {
+            const on = c.classList.contains('selected');
+            c.setAttribute('aria-checked', on ? 'true' : 'false');
+            c.tabIndex = on ? 0 : -1;
+        });
+    }
+    function initChoiceCards() {
+        document.querySelectorAll('.mold-complexity-grid, .subscription-options').forEach((group, n) => {
+            group.setAttribute('role', 'radiogroup');
+            const label = group.previousElementSibling;
+            if (label && label.tagName === 'LABEL') {
+                if (!label.id) label.id = 'choice-group-label-' + n;
+                group.setAttribute('aria-labelledby', label.id);
+            }
+            const cards = Array.from(group.children).filter(c => c.matches('.mold-complexity-card, .subscription-option'));
+            cards.forEach((card, i) => {
+                card.setAttribute('role', 'radio');
+                card.addEventListener('keydown', e => {
+                    let target = null;
+                    if (e.key === ' ' || e.key === 'Enter') target = card;
+                    else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') target = cards[(i + 1) % cards.length];
+                    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') target = cards[(i - 1 + cards.length) % cards.length];
+                    if (!target) return;
+                    e.preventDefault();
+                    target.click();
+                    target.focus();
+                });
+            });
+        });
+        syncChoiceCards();
+    }
+
     function updateCalculator() {
+        syncChoiceCards();
         try {
             if (currentMode === 'mold') {
                 calcMold();
@@ -1101,6 +1139,7 @@
         // Default state: mold panel visible, fogging hidden
         document.getElementById('moldPanel').style.display    = 'block';
         document.getElementById('foggingPanel').style.display = 'none';
+        initChoiceCards();
         setTimeout(() => updateCalculator(), 100);
     });
 
