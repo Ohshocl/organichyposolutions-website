@@ -89,6 +89,8 @@
      * Get user's state from cookie or localStorage (ohsUserState key)
      */
     window.getUserState = function() {
+        // Shared state module (global-scripts.js, audit R09) when the page has it
+        if (window.OHSState) return window.OHSState.get();
         // Every state picker on the site (menu, homepage, products page) saves to
         // localStorage, so it wins. The cookie is kept in sync and only used as a fallback.
         let saved = null;
@@ -104,14 +106,23 @@
      * Set user's state — persists to cookie + localStorage
      */
     window.setUserState = function(state) {
+        // Shared state module saves + fires 'stateChanged'; the listener below re-checks the cart
+        if (window.OHSState) return window.OHSState.set(state);
         const upperState = state?.toUpperCase();
         setCookie(STATE_COOKIE_NAME, upperState, COOKIE_EXPIRY_DAYS);
         localStorage.setItem(STATE_STORAGE_KEY, upperState);
-        console.log('📍 User state set to:', upperState);
         validateCartForState(upperState);
         window.dispatchEvent(new CustomEvent('stateChanged', { detail: { state: upperState } }));
         return upperState;
     };
+
+    // Whichever picker changed the state (menu, homepage, products page, another tab),
+    // re-check the cart right away so Utah-only items are flagged immediately (audit R09).
+    window.addEventListener('stateChanged', function(e) {
+        if (!window.OHSState) return;   // the fallback path above already validated
+        const state = e.detail && e.detail.state;
+        if (state) { validateCartForState(state); updateCartBadge(); }
+    });
 
     window.shouldShowStateSelector = function() {
         return !window.getUserState();
