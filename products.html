@@ -33,6 +33,7 @@
 
     <!-- Product Catalog (always load early for cart badge + product data) -->
     <script src="shop/js/product-catalog.js"></script>
+    <script src="shop/js/catalog-filters.js"></script>
 
 </head>
 <body class="page-products">
@@ -142,6 +143,43 @@
                     <p class="small text-muted mt-3 mb-0">These statements have not been evaluated by the Food and Drug Administration. Products are not intended to diagnose, treat, cure, or prevent any disease.</p>
                 </div>
             </section>
+
+            <!-- SEARCH, FILTER, SORT (sprint 2026-11-24). Options and counts come from the
+                 products for sale in the chosen state (shop/js/catalog-filters.js). -->
+            <section class="standard-card mb-4" id="productFilters" aria-label="Search and filter products">
+                <form id="filterForm" class="row g-2 align-items-end" role="search" onsubmit="return false;">
+                    <div class="col-12 col-lg-4">
+                        <label for="filterSearch" class="form-label small fw-semibold mb-1">Search products</label>
+                        <input type="search" id="filterSearch" class="form-control" placeholder="e.g. laundry, gallon, skin" autocomplete="off" maxlength="80">
+                    </div>
+                    <div class="col-6 col-lg-2">
+                        <label for="filterCategory" class="form-label small fw-semibold mb-1">Category</label>
+                        <select id="filterCategory" class="form-select"><option value="">All products</option></select>
+                    </div>
+                    <div class="col-6 col-lg-2">
+                        <label for="filterCert" class="form-label small fw-semibold mb-1">Certification</label>
+                        <select id="filterCert" class="form-select"><option value="">All</option></select>
+                    </div>
+                    <div class="col-6 col-lg-2">
+                        <label for="filterSize" class="form-label small fw-semibold mb-1">Size</label>
+                        <select id="filterSize" class="form-select"><option value="">All sizes</option></select>
+                    </div>
+                    <div class="col-6 col-lg-2">
+                        <label for="filterSort" class="form-label small fw-semibold mb-1">Sort by</label>
+                        <select id="filterSort" class="form-select"></select>
+                    </div>
+                </form>
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-2">
+                    <p id="filterStatus" class="small text-muted mb-0" role="status" aria-live="polite"></p>
+                    <button type="button" id="filterClear" class="btn btn-link btn-sm p-0" hidden>Clear filters</button>
+                </div>
+            </section>
+
+            <div id="filterEmpty" class="standard-card text-center mb-5" hidden>
+                <p class="fw-semibold mb-1">No products match these filters.</p>
+                <p id="filterEmptyHint" class="small text-muted mb-3"></p>
+                <button type="button" class="btn btn-primary" id="filterEmptyReset">Clear filters</button>
+            </div>
 
             <div id="productSections">
                 <!-- Loaded by JS -->
@@ -262,7 +300,9 @@
         // LOCAL STATE
         // ================================================================
         let cartVisible = false;
-        let productQuantities = {};
+        let productQuantities = {};   // by product ID: survives filtering, sorting and re-drawing
+        let productSubscribe  = {};   // by product ID: Subscribe & Save switch
+        let currentFilters    = null; // set on load from the URL (shop/js/catalog-filters.js)
         // Stock comes from the shared client (shop/js/shopify-client.js): window.fetchInventory,
         // window.getInventoryStatus, window.getVariantStatus (audit R04). No second copy here.
         const INVENTORY_CACHE_DURATION = 300000; // how often the page refreshes stock badges
@@ -443,6 +483,8 @@
 
             const qty = parseInt(quantity) || 1;
             const isSubscription = document.getElementById(`subscribe-${productId}`)?.checked || false;
+            productQuantities[productId] = qty;
+            productSubscribe[productId]  = isSubscription;
             const tier = window.getPricingTier(productId, qty, isSubscription);
             const priceEl = document.getElementById(`price-${productId}`);
 
@@ -493,15 +535,9 @@
         // PRODUCT DISPLAY
         // ================================================================
         async function loadProducts() {
+            // Products are drawn straight away from product-catalog.js; stock arrives
+            // later and only updates the cards it affects (updateStockOnCards).
             const container = document.getElementById('productSections');
-            container.innerHTML = `
-                <div class="text-center py-5">
-                    <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading…</span></div>
-                    <p class="mt-3 text-muted">Loading products &amp; inventory…</p>
-                </div>
-            `;
-
-            await fetchShopifyInventory();
 
             const userState   = getUserStateLocal();
             const isUtah      = userState === 'UT';
@@ -611,9 +647,153 @@
                 if (target && container.contains(target)) target.scrollIntoView();
             }
 
-            // Init quantities
-            Object.keys(window.PRODUCT_CATALOG).forEach(id => { productQuantities[id] = 1; });
+            // Keep each product's quantity / Subscribe choice (by product ID)
+            Object.keys(window.PRODUCT_CATALOG).forEach(id => { if (!productQuantities[id]) productQuantities[id] = 1; });
+            restoreCardChoices();
             updateProductCounts();
+            applyFilters();
+
+            // Stock: never holds up the page; failure leaves cards purchasable (Shopify confirms)
+            fetchShopifyInventory().then(updateStockOnCards).catch(() => {});
+        }
+
+        // Quantity and Subscribe choices shown again after a card is (re)drawn
+        function restoreCardChoices(onlyId) {
+            Object.keys(productQuantities).forEach(id => {
+                if (onlyId && id !== onlyId) return;
+                if ((productQuantities[id] || 1) > 1 || productSubscribe[id]) displayPricingInfo(id, productQuantities[id]);
+            });
+        }
+
+        // Re-draw only the cards whose stock state changed (out of stock, low stock…)
+        function updateStockOnCards() {
+            document.querySelectorAll('#productSections [data-card-for]').forEach(col => {
+                const id = col.getAttribute('data-card-for');
+                const product = window.PRODUCT_CATALOG[id];
+                if (!product) return;
+                const s = stockStatusFor(id);
+                if (col.getAttribute('data-stock') === stockKey(s)) return;
+                const tmp = document.createElement('div');
+                tmp.innerHTML = renderProductCard(product).trim();
+                const fresh = tmp.firstElementChild;
+                fresh.hidden = col.hidden;
+                col.replaceWith(fresh);
+                restoreCardChoices(id);
+            });
+        }
+        function stockKey(s) { return s.status + ':' + (s.quantity === null || s.quantity === undefined ? '' : s.quantity); }
+
+        // ================================================================
+        // SEARCH, FILTER, SORT (shop/js/catalog-filters.js does the matching)
+        // ================================================================
+        const F = () => window.OHSCatalogFilters;
+        const filterEls = () => ({
+            q: document.getElementById('filterSearch'), category: document.getElementById('filterCategory'),
+            cert: document.getElementById('filterCert'), size: document.getElementById('filterSize'), sort: document.getElementById('filterSort')
+        });
+
+        // Products that can be shown at all: for sale AND allowed in the shipping state.
+        // Filters only ever narrow this list (shipping state comes first).
+        function eligibleProducts() { return getAvailableProducts(); }
+
+        function fillSelect(el, allLabel, options, selected) {
+            const keep = selected || '';
+            el.innerHTML = '';
+            if (allLabel !== null) el.add(new Option(allLabel, ''));
+            options.forEach(o => {
+                if (o.count === 0 && o.value !== keep) return;   // nothing to show for it right now
+                el.add(new Option(o.count === undefined ? o.label : `${o.label} (${o.count})`, o.value));
+            });
+            el.value = keep;
+        }
+
+        function buildFilterOptions() {
+            const els = filterEls(); if (!els.category) return;
+            const fc = F().facets(eligibleProducts(), currentFilters);
+            fillSelect(els.category, 'All products', fc.category, currentFilters.category);
+            fillSelect(els.cert, 'All', fc.cert, currentFilters.cert);
+            fillSelect(els.size, 'All sizes', fc.size, currentFilters.size);
+            fillSelect(els.sort, null, fc.sort, currentFilters.sort);
+        }
+
+        function setControlsFromFilters() {
+            const els = filterEls(); if (!els.q) return;
+            if (document.activeElement !== els.q) els.q.value = currentFilters.q;
+            buildFilterOptions();
+        }
+
+        function readControls() {
+            const els = filterEls();
+            return F().normalise({ q: els.q.value, category: els.category.value, cert: els.cert.value, size: els.size.value, sort: els.sort.value });
+        }
+
+        function applyFilters() {
+            if (!F() || !currentFilters) return;
+            const eligible = eligibleProducts();
+            const shown = F().apply(eligible, currentFilters);
+            const order = new Map(shown.map((p, i) => [String(p.id), i]));
+            document.querySelectorAll('#productSections section').forEach(sec => {
+                const row = sec.querySelector(':scope > .row'); if (!row) return;
+                const cols = Array.from(row.children).filter(c => c.hasAttribute('data-card-for'));
+                if (!cols.length) return;
+                cols.forEach(c => { c.hidden = !order.has(c.getAttribute('data-card-for')); });
+                cols.slice().sort((a, b) => (order.get(a.getAttribute('data-card-for')) ?? 1e9) - (order.get(b.getAttribute('data-card-for')) ?? 1e9))
+                    .forEach(c => row.appendChild(c));
+                sec.hidden = cols.every(c => c.hidden);
+            });
+
+            const filtered = !F().isDefault(currentFilters);
+            const status = document.getElementById('filterStatus');
+            if (status) status.textContent = shown.length === eligible.length && !currentFilters.q
+                ? `Showing all ${eligible.length} products`
+                : `Showing ${shown.length} of ${eligible.length} products` + (currentFilters.q ? ` matching “${currentFilters.q}”` : '');
+            const clear = document.getElementById('filterClear'); if (clear) clear.hidden = !filtered;
+            const empty = document.getElementById('filterEmpty');
+            if (empty) {
+                empty.hidden = shown.length > 0;
+                const hint = document.getElementById('filterEmptyHint');
+                if (hint) hint.textContent = (currentFilters.cert === 'epa' && !isUtahUser())
+                    ? 'EPA registered products ship to Utah addresses only.'
+                    : 'Try a different search or fewer filters.';
+            }
+            setControlsFromFilters();
+        }
+
+        // Filters live in the address (?q=&category=&cert=&size=&sort=) so a filtered view
+        // can be shared, survives refresh, and Back/Forward step through filter changes.
+        function commitFilters(push) {
+            const url = location.pathname + F().toQuery(currentFilters) + location.hash;
+            if (url === location.pathname + location.search + location.hash) return;
+            try { history[push ? 'pushState' : 'replaceState']({ ohsFilters: true }, '', url); } catch (e) { /* ignore */ }
+        }
+
+        function setFilters(next, push) {
+            currentFilters = F().normalise(next);
+            applyFilters();
+            commitFilters(push);
+        }
+
+        function initFilters() {
+            if (!F()) return;
+            // Unknown or tampered values in the URL are dropped, not trusted
+            currentFilters = F().sanitize(F().parse(location.search), window.getActiveProducts());
+            commitFilters(false);
+            const els = filterEls(); if (!els.q) return;
+            let typing = null;
+            els.q.addEventListener('input', () => {
+                clearTimeout(typing);
+                typing = setTimeout(() => setFilters(Object.assign({}, currentFilters, { q: els.q.value }), false), 200);
+            });
+            els.q.addEventListener('search', () => setFilters(Object.assign({}, currentFilters, { q: els.q.value }), true));
+            ['category', 'cert', 'size', 'sort'].forEach(k => els[k].addEventListener('change', () => setFilters(readControls(), true)));
+            const reset = () => { els.q.value = ''; setFilters(F().DEFAULTS, true); };
+            document.getElementById('filterClear')?.addEventListener('click', reset);
+            document.getElementById('filterEmptyReset')?.addEventListener('click', () => { reset(); els.q.focus(); });
+            window.addEventListener('popstate', () => {
+                currentFilters = F().sanitize(F().parse(location.search), window.getActiveProducts());
+                els.q.value = currentFilters.q;
+                applyFilters();
+            });
         }
 
         function renderProductCard(product) {
@@ -643,7 +823,7 @@
                 : 'USDA Certified';
 
             return `
-                <div class="col-lg-4 col-md-6 mb-4">
+                <div class="col-lg-4 col-md-6 mb-4" data-card-for="${product.id}" data-stock="${stockKey(invStatus)}">
                     <div class="product-card ${isComingSoon ? 'coming-soon' : ''} ${isOutOfStock ? 'out-of-stock' : ''}" data-product-id="${product.id}">
 
                         ${isComingSoon ? `<div class="coming-soon-badge"><i class="fas fa-clock me-1"></i>COMING SOON</div>` : ''}
@@ -732,7 +912,7 @@
 
                                 <div class="form-check form-switch ohs-subscribe-option mb-2 d-flex align-items-center gap-2">
                                     <input class="form-check-input" type="checkbox" role="switch"
-                                           id="subscribe-${product.id}"
+                                           id="subscribe-${product.id}" ${productSubscribe[product.id] ? 'checked' : ''}
                                            onchange="displayPricingInfo('${product.id}', document.getElementById('qty-${product.id}').value)">
                                     <label class="form-check-label small" for="subscribe-${product.id}">
                                         <i class="fas fa-sync-alt me-1 text-success"></i>
@@ -745,7 +925,7 @@
                                         <i class="fas fa-minus"></i>
                                     </button>
                                     <input type="number" class="form-control form-control-sm text-center"
-                                           id="qty-${product.id}" value="1" min="1" aria-label="Quantity"
+                                           id="qty-${product.id}" value="${productQuantities[product.id] || 1}" min="1" aria-label="Quantity"
                                            max="${invStatus.quantity || 999}" style="max-width:70px;"
                                            onchange="validateQuantity('${product.id}', this.value); displayPricingInfo('${product.id}', this.value)"
                                            oninput="updateWholesaleIndicator('${product.id}', this.value)">
@@ -767,23 +947,10 @@
             `;
         }
 
+        // Periodic stock refresh (5-min cache in the shared client): updates cards in place
         async function refreshInventoryDisplay() {
             await fetchShopifyInventory();
-            getAvailableProducts().forEach(product => {
-                if (product.status === 'coming-soon') return;
-                const invStatus = stockStatusFor(product.id);
-                const card = document.querySelector(`[data-product-id="${product.id}"]`);
-                if (!card) return;
-
-                const badge = card.querySelector('.inventory-badge');
-                if (badge && invStatus.badgeText) {
-                    badge.className = `inventory-badge ${invStatus.badgeClass}`;
-                    const icon = invStatus.status === 'out-of-stock' ? 'times-circle'
-                               : invStatus.status === 'low-stock'    ? 'exclamation-triangle'
-                               : 'check-circle';
-                    badge.innerHTML = `<i class="fas fa-${icon} me-1"></i>${invStatus.badgeText}`;
-                }
-            });
+            updateStockOnCards();
         }
 
         function validateQuantity(productId, value) {
@@ -1025,6 +1192,7 @@
                 }
             });
 
+            initFilters();
             await loadProducts();
 
             updateCartBadges();
