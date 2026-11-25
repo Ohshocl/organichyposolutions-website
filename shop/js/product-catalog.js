@@ -585,7 +585,7 @@
      */
     window.getAvailableProducts = function(state) {
         return Object.values(window.PRODUCT_CATALOG).filter(function(product) {
-            return window.isProductAvailableInState(product.id, state);
+            return window.isProductActive(product) && window.isProductAvailableInState(product.id, state);
         });
     };
 
@@ -654,13 +654,27 @@
     };
 
     /**
-     * Get all active products
+     * THE visibility rule for shopping (sprint 2026-11-24, Priority 1).
+     * Only a product with status 'active' AND a complete purchase setup (Shopify
+     * product ID, retail price, retail variant) is shown, counted, added to the
+     * cart or sent to Shopify. Coming-soon, draft, discontinued or half-configured
+     * products stay defined here but are never shown. A future product appears on
+     * its own as soon as it is fully set up and its status is changed to 'active'.
+     * @param {Object|string} productOrId
+     * @returns {boolean}
+     */
+    window.isProductActive = function(productOrId) {
+        var p = (productOrId && typeof productOrId === 'object') ? productOrId : window.findProduct(productOrId);
+        return !!(p && p.status === 'active' && p.id && p.pricing && typeof p.pricing.retail === 'number' && p.pricing.retail > 0
+            && p.shopifyVariants && p.shopifyVariants.retail);
+    };
+
+    /**
+     * Get all active (shoppable) products
      * @returns {Array}
      */
     window.getActiveProducts = function() {
-        return Object.values(window.PRODUCT_CATALOG).filter(function(p) {
-            return p.status === 'active';
-        });
+        return Object.values(window.PRODUCT_CATALOG).filter(window.isProductActive);
     };
 
     /**
@@ -669,7 +683,7 @@
      */
     window.getEPAProducts = function() {
         return Object.values(window.PRODUCT_CATALOG).filter(function(p) {
-            return p.type === 'epa';
+            return p.type === 'epa' && window.isProductActive(p);
         });
     };
 
@@ -679,7 +693,7 @@
      */
     window.getUSDAOnlyProducts = function() {
         return Object.values(window.PRODUCT_CATALOG).filter(function(p) {
-            return p.type === 'usda-only';
+            return p.type === 'usda-only' && window.isProductActive(p);
         });
     };
 
@@ -689,7 +703,7 @@
      */
     window.getNonRegisteredProducts = function() {
         return Object.values(window.PRODUCT_CATALOG).filter(function(p) {
-            return p.type === 'non-registered';
+            return p.type === 'non-registered' && window.isProductActive(p);
         });
     };
 
