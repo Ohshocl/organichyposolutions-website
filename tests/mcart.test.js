@@ -11,7 +11,7 @@ const { chromium } = require('./engine'); const {route}=require('./lib'); const 
   const r=await p.evaluate(()=>{ const a=document.querySelector('.nav-mobile-actions a[href="/cart.html"]'); if(!a) return null; const bx=a.getBoundingClientRect(); const cs=getComputedStyle(a); const badge=a.querySelector('.cart-badge');
      return {vis: cs.display!=='none' && a.offsetParent!==null && bx.width>0, inView: bx.top>=0 && bx.bottom<=innerHeight && bx.right<=innerWidth, badge: badge && getComputedStyle(badge).display!=='none' ? badge.textContent : '(hidden)', over: document.documentElement.scrollWidth-document.documentElement.clientWidth, scrollY: Math.round(scrollY)}; });
   if (w<1200) {
-    ok(r && r.vis && r.inView && r.badge==='3' && r.over<=0 && r.scrollY>500, `${w}px: cart button visible after scrolling ${r&&r.scrollY}px, count ${r&&r.badge}, no sideways scroll`);
+    ok(r && r.vis && r.inView && r.badge==='3' && r.over<=0 && r.scrollY>500, `${w}px: cart button visible after scrolling ${r&&r.scrollY}px, count ${r&&r.badge}, no sideways scroll` + (r && !(r.vis && r.inView && r.badge==='3' && r.over<=0 && r.scrollY>500) ? ` [shown ${r.vis}, in view ${r.inView}, badge ${r.badge}, sideways overflow ${r.over}px]` : ''));
     if ([320,375].includes(w)) { await p.screenshot({path:`${OUT}/mcart_${w}.png`, clip:{x:0,y:0,width:w,height:190}}); }
     if (w===375) { await Promise.all([p.waitForNavigation(), p.click('.nav-mobile-actions a[href="/cart.html"]')]); ok(p.url().endsWith('/cart.html'),'tapping it opens the cart page'); }
   } else ok(r && !r.vis, `${w}px: desktop keeps its existing menu (mobile button hidden)`);

@@ -124,6 +124,9 @@ const SERUM = '7249401348167';
     await p.evaluate(([id, th]) => { window.addToCart(id, th - 4); window.addToCart(id, 4); window.addToCart(id, 1); }, [USDA, th]);
     const expectV = await p.evaluate(([id, th]) => String(window.getPricingTier(id, th + 1, false).variantId), [USDA, th]);
     const reqs = []; c.on('request', r => { if (r.url().includes('myshopify.com/cart/')) reqs.push(r.url()); });
+    // Also catch it at the network layer: Firefox doesn't always report a new tab's
+    // first navigation as a request event when it is blocked
+    await c.route(/myshopify\.com\/cart\//, r => { if (!reqs.includes(r.request().url())) reqs.push(r.request().url()); return r.fulfill({ status: 200, contentType: 'text/html', body: '<p>checkout</p>' }); });
     let popup = null; c.on('page', pg => popup = pg);
     await p.click('#checkoutBtn'); await p.waitForTimeout(2500);
     ok(reqs.some(u => u.endsWith(`/cart/${expectV}:${th + 1}`)), `checkout link is one wholesale line ${expectV}:${th + 1} (${reqs[0] || 'none'})`);
