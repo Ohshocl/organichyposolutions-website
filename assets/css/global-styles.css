@@ -294,6 +294,19 @@ html { scroll-padding-top: 136px; }
     }
 }
 
+/* Phones/tablets (below the full menu): if the phone's own font makes the brand
+   name too wide for the screen, let it wrap onto two lines instead of pushing
+   the whole page sideways. Where it already fits (most phones) nothing changes.
+   Found by the Firefox/WebKit tests: 26px of sideways scroll at 320px. */
+@media (max-width: 1199.98px) {
+    .navbar-brand {
+        min-width: 0;
+        max-width: 100%;
+        white-space: normal;
+        line-height: 1.15;
+    }
+}
+
 .navbar-toggler {
     border: 1px solid rgba(255, 255, 255, 0.3) !important;
     padding: var(--spacing-xs);

@@ -16,4 +16,14 @@ const { chromium } = require('playwright'); const {route}=require('./lib'); cons
     if (w===375) { await Promise.all([p.waitForNavigation(), p.click('.nav-mobile-actions a[href="/cart.html"]')]); ok(p.url().endsWith('/cart.html'),'tapping it opens the cart page'); }
   } else ok(r && !r.vis, `${w}px: desktop keeps its existing menu (mobile button hidden)`);
   ok(!errs.length, `${w}px no JS errors`); await c.close(); }
+ // Regression: a phone whose system font is wider than ours must not get sideways
+ // scrolling from the brand name (Firefox/WebKit showed 26px at 320px). Simulate it
+ // with a wide font on the brand.
+ for (const w of [320,360,375,414]) {
+  const c=await b.newContext({viewport:{width:w,height:800}}); await route(c);
+  await c.addInitScript(()=>{ localStorage.setItem('ohsUserState','UT'); localStorage.setItem('ohsUserIntent','shop'); localStorage.setItem('analytics_consent','denied'); });
+  const p=await c.newPage(); await p.goto((process.env.BASE_URL||'http://localhost:8805')+'/index.html',{waitUntil:'networkidle'}); await p.waitForTimeout(400);
+  await p.addStyleTag({content:'.navbar-brand{font-family:"DejaVu Sans Mono","Courier New",monospace !important; letter-spacing:0.04em !important;}'}); await p.waitForTimeout(150);
+  const over=await p.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+  ok(over<=0, `${w}px with a wide phone font: brand name doesn't cause sideways scroll (overflow ${over}px)`); await c.close(); }
  console.log(fails?fails+' FAILED':'ALL PASSED'); process.exitCode = fails ? 1 : 0; await b.close(); })();
