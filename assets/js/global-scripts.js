@@ -43,9 +43,13 @@ const ANIMATION_CONFIG = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
 
 // ==========================================================================
 // NAV / FOOTER DYNAMIC LOADER
-// Reads #nav-placeholder and #footer-placeholder on every page,
-// fetches templates/standard-nav.html and templates/standard-footer.html,
-// rewrites absolute paths for subdirectory pages, sets active nav state.
+// Reads #nav-placeholder and #footer-placeholder on every page.
+// On the live site the deploy has already put the templates into the page
+// (data-prerendered, see .github/scripts/prerender-templates.js), so nothing
+// is fetched. Otherwise (Vercel previews, local testing) it fetches
+// templates/standard-nav.html and templates/standard-footer.html and
+// rewrites absolute paths for subdirectory pages. Either way it then sets
+// the active nav link, cart badge, saved state name and closed promo banner.
 // ==========================================================================
 
 (function loadTemplates() {
@@ -57,9 +61,36 @@ const ANIMATION_CONFIG = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
     const basePath    = pathParts.length > 0 ? '../'.repeat(pathParts.length) : '';
     const currentPage = window.location.pathname.split('/').pop().replace('.html', '') || 'index';
 
+    // Runs once the nav/footer markup is in the page (pre-rendered or fetched)
+    function afterInsert(el) {
+        // Mark the current page's nav link as active
+        const activeLink = el.querySelector(`[data-page="${currentPage}"]`);
+        if (activeLink) activeLink.classList.add('active', 'fw-semibold');
+
+        // Update cart badge now that the badge element exists in the DOM
+        updateCartBadge();
+
+        // Saved state name and closed promo banner. These used to run only on
+        // DOMContentLoaded, which is usually before a fetched nav arrives, so the
+        // nav kept saying "Select State" and a closed banner came back.
+        if (el.querySelector('#promoBanner')) checkBanner();
+        if (el.querySelector('#navStateName')) {
+            let saved = null;
+            try { saved = localStorage.getItem('ohsUserState'); } catch (e) { /* storage blocked */ }
+            if (saved) updateNavStateName(saved);
+        }
+    }
+
     function loadTemplate(placeholderId, templateFile) {
         const el = document.getElementById(placeholderId);
         if (!el) return;
+
+        if (el.hasAttribute('data-prerendered')) {
+            // Already in the page (this script loads after it): set it up now, so a
+            // closed banner never flashes
+            afterInsert(el);
+            return;
+        }
 
         fetch(basePath + 'templates/' + templateFile)
             .then(r => {
@@ -75,13 +106,7 @@ const ANIMATION_CONFIG = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
                 }
 
                 el.innerHTML = html;
-
-                // Mark the current page's nav link as active
-                const activeLink = el.querySelector(`[data-page="${currentPage}"]`);
-                if (activeLink) activeLink.classList.add('active', 'fw-semibold');
-
-                // Update cart badge now that the badge element exists in the DOM
-                updateCartBadge();
+                afterInsert(el);
             })
             .catch(err => console.warn(`Template load failed (${templateFile}):`, err));
     }

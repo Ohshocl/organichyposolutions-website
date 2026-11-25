@@ -118,8 +118,11 @@ jobs:
           -exec cp -r -t _site/ {} +
 
         # ---- DO NOT remove _site/templates/ ----
-        # Nav and footer are fetched at runtime by global-scripts.js.
-        # Removing templates/ would break the entire site navigation.
+        # The templates are the one place the nav and footer are edited, and
+        # global-scripts.js still fetches them for any page that isn't pre-rendered.
+
+        # Put the shared nav and footer into every page (no fetch, no page jump)
+        node .github/scripts/prerender-templates.js _site
 
         echo "Static site prepared"
 
@@ -177,6 +180,16 @@ jobs:
         PY
           then PASS=false; fi
         fi
+
+        # Every page with a nav/footer placeholder must have it pre-rendered
+        for f in $(grep -l 'id="nav-placeholder"\|id="footer-placeholder"' _site/*.html); do
+          for slot in nav-placeholder footer-placeholder; do
+            if grep -q "id=\"$slot\"" "$f" && ! grep -q "id=\"$slot\" data-prerendered=\"true\"" "$f"; then
+              echo "FAIL: ${f#_site/} $slot was not pre-rendered"
+              PASS=false
+            fi
+          done
+        done
 
         # The test suite (tests/) must never be published
         if [ -e "_site/tests" ]; then
