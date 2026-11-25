@@ -399,6 +399,7 @@
             const userState = getUserStateLocal();
             const isUtah = userState === 'UT';
             return Object.values(window.PRODUCT_CATALOG).filter(p => {
+                if (!window.isProductActive(p)) return false;   // only products that are for sale
                 if (!userState) return true;
                 if (p.type === 'usda-only' || p.type === 'non-registered') return true;
                 if (p.type === 'epa') return isUtah;
@@ -419,9 +420,7 @@
         }
 
         function getGeneralProductsFiltered() {
-            return window.getNonRegisteredProducts
-                ? window.getNonRegisteredProducts().filter(p => p.status === 'active')
-                : [];
+            return window.getNonRegisteredProducts ? window.getNonRegisteredProducts() : [];   // active only
         }
 
         // ================================================================
@@ -554,13 +553,16 @@
 
             // ── Skin Care, Pet Care, then Wipes (Change Request C4a, C4c) ─
             const FDA_NOTE = '<p class="small text-muted text-center mb-0">These statements have not been evaluated by the Food and Drug Administration. Products are not intended to diagnose, treat, cure, or prevent any disease.</p>';
-            const comingSoon = window.COMING_SOON_PRODUCTS || [];
+            // Only products that are for sale are shown (window.isProductActive). Coming-soon
+            // products stay listed in product-catalog.js but get no card; a section with no
+            // products for sale isn't shown at all. A product appears here on its own once
+            // it is fully set up and marked active.
+            const isPet = p => p.productLine === 'pet-care' || p.category === 'Pet Care';
             const skinProducts  = generalProducts.filter(p => p.category === 'Skincare');
-            const otherGeneral  = generalProducts.filter(p => p.category !== 'Skincare');
-            const skinSoon = comingSoon.filter(p => p.line === 'skin-care');
-            const petSoon  = comingSoon.filter(p => p.line === 'pet-care');
+            const petProducts   = generalProducts.filter(isPet);
+            const otherGeneral  = generalProducts.filter(p => p.category !== 'Skincare' && !isPet(p));
 
-            if (skinProducts.length || skinSoon.length) {
+            if (skinProducts.length) {
                 html += `
                     <section class="mb-5" id="skin-care">
                         <div class="section-header organic text-center py-4 mb-4">
@@ -571,11 +573,10 @@
                         <div class="row">
                 `;
                 skinProducts.forEach(p => { html += renderProductCard(p); });
-                skinSoon.forEach(p => { html += renderComingSoonCard(p); });
                 html += '</div>' + FDA_NOTE + '</section>';
             }
 
-            if (petSoon.length) {
+            if (petProducts.length) {
                 html += `
                     <section class="mb-5" id="pet-care">
                         <div class="section-header organic text-center py-4 mb-4">
@@ -585,7 +586,7 @@
                         </div>
                         <div class="row">
                 `;
-                petSoon.forEach(p => { html += renderComingSoonCard(p); });
+                petProducts.forEach(p => { html += renderProductCard(p); });
                 html += '</div>' + FDA_NOTE + '</section>';
             }
 
@@ -613,33 +614,6 @@
             // Init quantities
             Object.keys(window.PRODUCT_CATALOG).forEach(id => { productQuantities[id] = 1; });
             updateProductCounts();
-        }
-
-        function renderComingSoonCard(item) {
-            const lineLabel = item.line === 'pet-care' ? 'Pet Care' : 'Skin Care';
-            const lineIcon  = item.line === 'pet-care' ? 'paw' : 'hand-holding-heart';
-            return `
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="product-card coming-soon" data-coming-soon="${item.key}">
-                        <div class="coming-soon-badge"><i class="fas fa-clock me-1"></i>COMING SOON</div>
-                        <div class="product-badge" style="background:#7DD3FC;color:#1e3a8a;">
-                            <i class="fas fa-${lineIcon} me-1"></i>${lineLabel}
-                        </div>
-                        <div class="card-body p-3 text-center" style="position:relative;z-index:2;">
-                            <div class="product-image-container d-flex align-items-center justify-content-center">
-                                <i class="fas fa-${item.icon} fa-4x" style="color:#2E5EAA;opacity:.35;" aria-hidden="true"></i>
-                            </div>
-                            <h5 class="product-title">${item.name}</h5>
-                            <div class="state-restriction-notice nationwide">
-                                <i class="fas fa-truck me-1"></i>
-                                <strong>Ships Nationwide</strong>
-                            </div>
-                            <div class="availability-notice"><i class="fas fa-hourglass-half me-2"></i><strong>Coming soon</strong></div>
-                            <a href="contact.html" class="btn btn-outline-primary w-100 mb-2"><i class="fas fa-envelope me-2"></i>Contact us</a>
-                        </div>
-                    </div>
-                </div>
-            `;
         }
 
         function renderProductCard(product) {
@@ -846,7 +820,7 @@
         // ================================================================
         function addToCartLocal(productId) {
             const product = window.PRODUCT_CATALOG?.[productId];
-            if (!product) return;
+            if (!product || !window.isProductActive(product)) return;
 
             if (product.pricing.retail === null) {
                 if (window.showNotification) window.showNotification('This product is not yet available for purchase.', 'error');

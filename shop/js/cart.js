@@ -40,6 +40,7 @@
     // =============================================================================
 
     let cartItems = [];  // Always an array of cart item objects
+    let removedInactive = [];  // names of saved-cart items dropped because they aren't for sale
 
     // =============================================================================
     // INITIALIZATION
@@ -195,6 +196,12 @@
 
             cartItems = Array.from(mergedMap.values());
             saveCart();
+            if (removedInactive.length) {
+                const names = removedInactive.splice(0);
+                setTimeout(() => {
+                    if (window.showNotification) window.showNotification(`${names.join(', ')} ${names.length > 1 ? 'are' : 'is'} not available right now and was removed from your cart.`, 'warning');
+                }, 0);
+            }
             console.log('📦 Loaded', cartItems.length, 'items from cart');
 
         } catch (error) {
@@ -232,6 +239,11 @@
         const product = window.findProduct(identifier);
         if (!product) {
             console.warn('Product not found in catalog:', identifier);
+            return null;
+        }
+        // A product that is no longer (or not yet) for sale is dropped from a saved cart
+        if (window.isProductActive && !window.isProductActive(product)) {
+            removedInactive.push(product.name);
             return null;
         }
 
@@ -294,6 +306,12 @@
         if (!product) {
             console.error('Product not found:', productId);
             window.showNotification('Product not found', 'error');
+            return false;
+        }
+
+        // Only products that are for sale (status active + fully set up)
+        if (window.isProductActive && !window.isProductActive(product)) {
+            window.showNotification(`${product.name} is not available yet.`, 'warning');
             return false;
         }
 

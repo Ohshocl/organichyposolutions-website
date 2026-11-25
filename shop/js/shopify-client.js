@@ -166,7 +166,7 @@
         if (!productIds || productIds.length === 0) {
             if (typeof window.PRODUCT_CATALOG === 'undefined') return Promise.resolve(inventoryCache);
             productIds = Object.values(window.PRODUCT_CATALOG)
-                .filter(function (p) { return p.id && p.status !== 'coming-soon'; })
+                .filter(function (p) { return window.isProductActive ? window.isProductActive(p) : (p.id && p.status === 'active'); })
                 .map(function (p) { return String(p.id); });
         }
         var wanted = productIds.map(String).filter(function (id) { return !isFresh(inventoryCache[id]); });
