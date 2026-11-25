@@ -621,3 +621,114 @@ document.addEventListener('DOMContentLoaded', function () {
     const saved = localStorage.getItem('ohsUserState');
     if (saved) updateNavStateName(saved);
 });
+
+// ==========================================================================
+// ACCESSIBLE POP-UPS (audit R18)
+// Watches every state pop-up (.state-modal) and cart drawer (.cart-preview).
+// Pages keep their own open/close code; this adds, whenever one is shown:
+//  - dialog semantics (role="dialog", aria-modal, title from its heading)
+//  - the rest of the page made unreachable (inert) while it's open
+//  - focus moved inside, and Tab / Shift+Tab kept inside
+//  - Escape to close (its close button if it has one; the homepage
+//    "What are you looking for?" pop-up uses "Take Me to the Homepage")
+//  - focus returned to whatever opened it when it closes
+// ==========================================================================
+(function () {
+    var SELECTOR = '.state-modal, .cart-preview';
+    var FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    var openStack = [];   // { el, opener, inerted: [] }
+
+    function isShown(el) {
+        if (!el.classList.contains('show')) return false;
+        var cs = getComputedStyle(el);
+        return cs.display !== 'none' && cs.visibility !== 'hidden';
+    }
+    function focusables(el) {
+        return Array.prototype.filter.call(el.querySelectorAll(FOCUSABLE), function (n) { return n.offsetParent !== null || n === document.activeElement; });
+    }
+
+    function label(el) {
+        if (!el.getAttribute('role')) el.setAttribute('role', 'dialog');
+        el.setAttribute('aria-modal', 'true');
+        if (!el.getAttribute('aria-labelledby') && !el.getAttribute('aria-label')) {
+            var h = el.querySelector('h1, h2, h3, h4, h5, h6');
+            if (h) { if (!h.id) h.id = (el.id || 'dialog') + '-title'; el.setAttribute('aria-labelledby', h.id); }
+        }
+        Array.prototype.forEach.call(el.querySelectorAll('.btn-close'), function (b) {
+            if (!b.getAttribute('aria-label')) b.setAttribute('aria-label', el.classList.contains('cart-preview') ? 'Close cart' : 'Close');
+            if (!b.getAttribute('type')) b.setAttribute('type', 'button');
+        });
+    }
+
+    function onOpen(el) {
+        if (openStack.some(function (o) { return o.el === el; })) return;
+        label(el);
+        var entry = { el: el, opener: document.activeElement, inerted: [] };
+        // Make everything else unreachable: the other top-level parts of the page
+        var top = el; while (top.parentElement && top.parentElement !== document.body) top = top.parentElement;
+        Array.prototype.forEach.call(document.body.children, function (n) {
+            if (n === top || n.contains(el) || n.id === 'cartOverlay' || n.id === 'notificationContainer' || n.tagName === 'SCRIPT' || n.hasAttribute('inert')) return;
+            n.setAttribute('inert', ''); entry.inerted.push(n);
+        });
+        openStack.push(entry);
+        setTimeout(function () {
+            if (!isShown(el) || el.contains(document.activeElement)) return;
+            var f = focusables(el);
+            if (f.length) f[0].focus(); else { el.setAttribute('tabindex', '-1'); el.focus(); }
+        }, 60);
+    }
+
+    function onClose(el) {
+        var i = -1; openStack.forEach(function (o, k) { if (o.el === el) i = k; });
+        if (i === -1) return;
+        var entry = openStack.splice(i, 1)[0];
+        entry.inerted.forEach(function (n) { n.removeAttribute('inert'); });
+        var opener = entry.opener;
+        if (opener && document.contains(opener) && typeof opener.focus === 'function' && !opener.closest('[inert]')) opener.focus();
+    }
+
+    function sync(el) { if (isShown(el)) onOpen(el); else onClose(el); }
+
+    function closeTop(entry) {
+        var el = entry.el;
+        if (el.id === 'intentModal') { var home = document.getElementById('intentHomeBtn'); if (home) { home.click(); return; } }
+        var btn = el.querySelector('.btn-close, #globalStateCancelBtn');
+        if (btn) { btn.click(); return; }
+        el.classList.remove('show');
+        if (el.id === 'stateModal' && el.style.display) el.style.display = 'none';
+    }
+
+    document.addEventListener('keydown', function (e) {
+        var entry = openStack[openStack.length - 1];
+        if (!entry || !isShown(entry.el)) return;
+        if (e.key === 'Escape') {
+            if (e.defaultPrevented) return;   // the pop-up handled Escape itself
+            e.preventDefault(); closeTop(entry); return;
+        }
+        if (e.key !== 'Tab') return;
+        var f = focusables(entry.el);
+        if (!f.length) { e.preventDefault(); return; }
+        var first = f[0], last = f[f.length - 1];
+        if (!entry.el.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+        else if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+
+    function watch(el) {
+        if (el.__ohsWatched) return; el.__ohsWatched = true;
+        new MutationObserver(function () { sync(el); }).observe(el, { attributes: true, attributeFilter: ['class', 'style'] });
+        sync(el);
+    }
+    function scan(root) {
+        if (!root || root.nodeType !== 1) return;
+        if (root.matches && root.matches(SELECTOR)) watch(root);
+        Array.prototype.forEach.call(root.querySelectorAll(SELECTOR), watch);
+    }
+    function start() {
+        scan(document.body);
+        // pop-ups added later (e.g. the menu's state picker) are picked up too
+        new MutationObserver(function (muts) { muts.forEach(function (m) { Array.prototype.forEach.call(m.addedNodes, scan); }); })
+            .observe(document.body, { childList: true, subtree: true });
+    }
+    if (document.body) start(); else document.addEventListener('DOMContentLoaded', start);
+})();
