@@ -259,22 +259,13 @@
          ================================================================ -->
     <script>
         // ================================================================
-        // SHOPIFY STOREFRONT API CONFIG
-        // ================================================================
-        const SHOPIFY_CONFIG = {
-            domain: 'npmv1h-8e.myshopify.com',
-            storefrontAccessToken: 'e12e77295aa67c71613b6c8fb8a64bcd',
-            apiVersion: '2024-01'
-        };
-
-        // ================================================================
         // LOCAL STATE
         // ================================================================
         let cartVisible = false;
         let productQuantities = {};
-        let inventoryCache = {};
-        let lastInventoryFetch = null;
-        const INVENTORY_CACHE_DURATION = 300000; // 5-minute cache (in-memory only, no localStorage)
+        // Stock comes from the shared client (shop/js/shopify-client.js): window.fetchInventory,
+        // window.getInventoryStatus, window.getVariantStatus (audit R04). No second copy here.
+        const INVENTORY_CACHE_DURATION = 300000; // how often the page refreshes stock badges
 
         // ================================================================
         // STATE MANAGEMENT
@@ -436,110 +427,17 @@
         // ================================================================
         // SHOPIFY INVENTORY (in-memory 5-min cache — no localStorage)
         // ================================================================
-        async function fetchShopifyInventory() {
-            if (lastInventoryFetch && (Date.now() - lastInventoryFetch) < INVENTORY_CACHE_DURATION) {
-                return inventoryCache;
-            }
-
-            const availableProducts = getAvailableProducts();
-            const productIds = availableProducts
-                .filter(p => p.id && p.status !== 'coming-soon')
-                .map(p => `gid://shopify/Product/${p.id}`);
-
-            if (productIds.length === 0) return {};
-
-            const query = `
-                query getProductsInventory($ids: [ID!]!) {
-                    nodes(ids: $ids) {
-                        ... on Product {
-                            id
-                            availableForSale
-                            totalInventory
-                            variants(first: 10) {
-                                edges {
-                                    node {
-                                        id
-                                        availableForSale
-                                        quantityAvailable
-                                        sku
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            `;
-
-            try {
-                const response = await fetch(
-                    `https://${SHOPIFY_CONFIG.domain}/api/${SHOPIFY_CONFIG.apiVersion}/graphql.json`,
-                    {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Shopify-Storefront-Access-Token': SHOPIFY_CONFIG.storefrontAccessToken
-                        },
-                        body: JSON.stringify({ query, variables: { ids: productIds } })
-                    }
-                );
-
-                if (!response.ok) throw new Error(`Shopify API ${response.status}`);
-                const data = await response.json();
-                if (data.errors) throw new Error('GraphQL error');
-
-                inventoryCache = {};
-                data.data.nodes.forEach(product => {
-                    if (!product) return;
-                    const shopifyId = product.id.replace('gid://shopify/Product/', '');
-                    const localProduct = Object.values(window.PRODUCT_CATALOG).find(p => p.id === shopifyId);
-                    if (!localProduct) return;
-
-                    const variantData = {};
-                    product.variants.edges.forEach(({ node: v }) => {
-                        const vid = v.id.replace('gid://shopify/ProductVariant/', '');
-                        variantData[vid] = { available: v.availableForSale, quantity: v.quantityAvailable, sku: v.sku };
-                    });
-
-                    inventoryCache[localProduct.id] = {
-                        totalInventory: product.totalInventory,
-                        availableForSale: product.availableForSale,
-                        variants: variantData
-                    };
-                });
-
-                lastInventoryFetch = Date.now();
-                return inventoryCache;
-
-            } catch (err) {
-                console.warn('Inventory fetch failed:', err);
-                return {};
-            }
+        // Shared stock client (shopify-client.js). Never rejects; unknown stock never blocks.
+        function fetchShopifyInventory() {
+            return window.fetchInventory ? window.fetchInventory() : Promise.resolve({});
+        }
+        // (named stockStatusFor, not getInventoryStatus: a page-level function with that
+        // name would replace the shared window.getInventoryStatus - the old R04 clash)
+        function stockStatusFor(productId) {
+            return window.getInventoryStatus ? window.getInventoryStatus(productId)
+                : { status: 'unknown', canPurchase: true, badgeClass: '', badgeText: '', quantity: null };
         }
 
-        function getInventoryStatus(productId) {
-            const inv = inventoryCache[productId];
-            if (!inv) return { status: 'unknown', canPurchase: true, badgeClass: '', badgeText: '', quantity: null };
-
-            const qty = inv.totalInventory;
-
-            // availableForSale already reflects "continue selling when out of stock" on the
-            // wholesale/subscription variants — don't block purchasing on qty alone.
-            if (!inv.availableForSale) {
-                return { status: 'out-of-stock', canPurchase: false, badgeClass: 'bg-danger', badgeText: 'Out of Stock', quantity: 0 };
-            } else if (qty <= 0) {
-                return { status: 'in-stock', canPurchase: true, badgeClass: '', badgeText: '', quantity: null };
-            } else if (qty <= 5) {
-                return { status: 'low-stock', canPurchase: true, badgeClass: 'bg-warning text-dark', badgeText: `Only ${qty} left!`, quantity: qty };
-            } else if (qty <= 20) {
-                return { status: 'limited', canPurchase: true, badgeClass: 'bg-info', badgeText: `${qty} in stock`, quantity: qty };
-            } else {
-                return { status: 'in-stock', canPurchase: true, badgeClass: 'bg-success', badgeText: 'In Stock', quantity: qty };
-            }
-        }
-
-        // ================================================================
-        // PRICING / WHOLESALE INDICATOR
-        // ================================================================
         function displayPricingInfo(productId, quantity) {
             const product = window.PRODUCT_CATALOG?.[productId];
             if (!product || product.pricing.retail === null) return;
@@ -747,7 +645,7 @@
         function renderProductCard(product) {
             const isComingSoon  = product.status === 'coming-soon';
             const retail        = product.pricing?.retail || 0;
-            const invStatus     = getInventoryStatus(product.id);
+            const invStatus     = stockStatusFor(product.id);
             const isOutOfStock  = invStatus.status === 'out-of-stock';
 
             // ── Correct type checks matching product-catalog.js types ──
@@ -899,7 +797,7 @@
             await fetchShopifyInventory();
             getAvailableProducts().forEach(product => {
                 if (product.status === 'coming-soon') return;
-                const invStatus = getInventoryStatus(product.id);
+                const invStatus = stockStatusFor(product.id);
                 const card = document.querySelector(`[data-product-id="${product.id}"]`);
                 if (!card) return;
 
@@ -915,7 +813,7 @@
         }
 
         function validateQuantity(productId, value) {
-            const invStatus = getInventoryStatus(productId);
+            const invStatus = stockStatusFor(productId);
             const input = document.getElementById(`qty-${productId}`);
             if (!input) return;
             let qty = parseInt(value) || 1;
@@ -931,7 +829,7 @@
         function changeQuantity(productId, change) {
             const input = document.getElementById(`qty-${productId}`);
             if (!input) return;
-            const invStatus = getInventoryStatus(productId);
+            const invStatus = stockStatusFor(productId);
             const maxQty = invStatus.quantity || 999;
             let newVal = Math.max(1, parseInt(input.value) + change);
             if (newVal > maxQty) {
@@ -961,7 +859,7 @@
                 return;
             }
 
-            const invStatus = getInventoryStatus(productId);
+            const invStatus = stockStatusFor(productId);
             if (!invStatus.canPurchase) {
                 if (window.showNotification) window.showNotification('Sorry, this product is currently out of stock.', 'error');
                 return;
