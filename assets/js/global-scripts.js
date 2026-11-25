@@ -255,7 +255,12 @@ function initMobileMenu() {
     var collapse = document.querySelector('.navbar-collapse');
     if (!collapse) return;
 
+    // Close the phone menu after a link is tapped, but NOT when the tap opens a
+    // dropdown (Solutions / About / Shop): that closed the menu before its items
+    // could be tapped. Latent since before Nov 2026; it only took effect once the
+    // nav was built into the page (#504) and this handler could find it.
     collapse.addEventListener('click', function(e) {
+        if (e.target.closest('[data-bs-toggle="dropdown"]')) return;
         if (e.target.classList.contains('nav-link') || e.target.closest('.nav-link')) {
             var bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapse);
             bsCollapse.hide();
