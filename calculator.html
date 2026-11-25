@@ -681,78 +681,14 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/global-scripts.js"></script>
     <script src="assets/js/analytics.js"></script>
+    <script src="shop/js/service-pricing.js"></script>
 
     <script>
     // =========================================================
     // UNIFIED PRICING CONFIGURATION — SOURCE OF TRUTH
     // Fogging rates must stay in sync with book-service.html
     // =========================================================
-    const PRICING = {
-        // ── FOGGING base rates ($/sf) ──
-        // NOTE: residential intentionally lower — open plan, fast access,
-        //       no compliance documentation overhead vs commercial.
-        baseRates: {
-            commercial:  0.125,
-            residential: 0.10,   // CORRECTED from 0.15 — simpler access, lower overhead
-            healthcare:  0.14,
-            education:   0.12,
-            food:        0.135,
-            fitness:     0.13
-        },
-        volumeRate: 0.08,   // floor $/sf for square footage past 20,000 (see largeFacility)
-        largeFacility: { threshold: 20000, discountBeyond: 0.20 },
-        frequencyMultipliers: {
-            monthly:   1.0,
-            biweekly:  1.8,
-            weekly:    3.5,
-            quarterly: 1.2,
-            onetime:   1.4
-        },
-        complexityAdjustments: {
-            standard: 1.0,
-            moderate: 1.15,
-            complex:  1.3
-        },
-        minimums: {
-            commercial:  200,
-            residential: 125,    // CORRECTED from 150 — matches lower rate
-            healthcare:  300,
-            education:   200,
-            food:        200,
-            fitness:     175
-        },
-
-        // ── MOLD REMEDIATION rates (midpoints of published bands) ──
-        // Surface: $2–$7  → midpoint $4.50
-        // Moderate: $8–$11 → midpoint $9.50
-        // Complex: $12–$15 → midpoint $13.50
-        moldRates: {
-            surface:  { low: 2,  high: 7,  mid: 4.50, label: 'Surface (hard surfaces, easy access)'  },
-            moderate: { low: 8,  high: 11, mid: 9.50, label: 'Moderate (drywall/framing penetration)' },
-            complex:  { low: 12, high: 15, mid: 13.50, label: 'Complex (attic/crawl, black mold)'     }
-        },
-        moldMinimums: {
-            residential:  300,
-            commercial:   400,
-            healthcare:   500,
-            'multi-family': 350
-        },
-        // Moisture surcharge multipliers
-        moistureMultipliers: {
-            fixed:  1.0,
-            active: 1.15,
-            flood:  1.30
-        },
-
-        contractDiscounts: {
-            payPerService:    0,
-            monthlyContract:  0.15,
-            bimonthlyContract: 0.10,
-            annualContract:   0.20
-        },
-        travelRate:       0.70,
-        baseTravelRadius: 25
-    };
+    const PRICING = window.OHSServicePricing.PRICING;   // the ONE pricing table: shop/js/service-pricing.js
 
     // ── State ──
     let currentMode          = 'mold';       // 'mold' | 'fogging'
@@ -892,23 +828,15 @@
         const sqftEl = document.getElementById('sqftDisplay');
         if (sqftEl) sqftEl.textContent = sqft.toLocaleString() + ' sq ft';
 
-        // Price range using mid-rate, then apply moisture surcharge
-        const basePrice = Math.max(sqft * rateData.mid, minimum);
-        const moistureAdjustment = basePrice * (moistMult - 1);
-        const adjustedPrice = basePrice * moistMult;
-
-        // Travel (assume avg ~30 mi for estimates; same as fogging logic)
-        const estimatedDistance = 30;
-        let travelCosts = 0;
-        if (estimatedDistance > PRICING.baseTravelRadius) {
-            travelCosts = (estimatedDistance - PRICING.baseTravelRadius) * PRICING.travelRate;
-        }
-
-        const totalPrice = adjustedPrice + travelCosts;
-
-        // Low/high range for the result panel (uses band, not just midpoint)
-        const lowTotal  = Math.max(sqft * rateData.low,  minimum) * moistMult + travelCosts;
-        const highTotal = Math.max(sqft * rateData.high, minimum) * moistMult + travelCosts;
+        // All the math lives in shop/js/service-pricing.js (mid-band rate, moisture
+        // surcharge, travel, low-high range)
+        const est = window.OHSServicePricing.moldEstimate(sqft, propertyType, moisture, currentMoldComplexity);
+        const basePrice          = est.basePrice;
+        const moistureAdjustment = est.moistureAdjustment;
+        const travelCosts        = est.travelCosts;
+        const totalPrice         = est.totalPrice;
+        const lowTotal           = est.lowTotal;
+        const highTotal          = est.highTotal;
 
         lastCalculation = {
             mode: 'mold',
@@ -954,17 +882,7 @@
     // Before: past 20,000 sq ft the whole job was re-priced at $0.08 and then doubled
     // ($0.16/sq ft, above every normal rate), so 20,001 sq ft cost ~60% more than 20,000.
     function largeFacilityPricing(sqft, rate, minimum) {
-        const lf = PRICING.largeFacility;
-        const isLarge = sqft > lf.threshold;
-        const standardArea = sqft * rate;
-        let savings = 0, secondMachineFee = 0;
-        if (isLarge) {
-            const rateBeyond = Math.max(rate * (1 - lf.discountBeyond), PRICING.volumeRate);
-            savings = (sqft - lf.threshold) * (rate - rateBeyond);
-            secondMachineFee = minimum;
-        }
-        const discountedBase = Math.max(standardArea - savings, minimum);
-        return { isLarge, standardArea, savings, discountedBase, secondMachineFee };
+        return window.OHSServicePricing.largeFacilityPricing(sqft, rate, minimum);   // rules + approval notes: shop/js/service-pricing.js
     }
 
     // ── FOGGING CALCULATION ───────────────────────────────────
@@ -989,26 +907,15 @@
             if (volumeRow)  volumeRow.style.setProperty('display', 'none', 'important');
         }
 
-        const rate     = PRICING.baseRates[serviceType] || 0.125;
-        const minimum  = PRICING.minimums[serviceType] || 150;
-        const lfp      = largeFacilityPricing(sqft, rate, minimum);
-        // "Base Service" line shows the normal-rate price; the volume discount is its own line
-        const basePrice = lfp.isLarge ? lfp.standardArea : lfp.discountedBase;
-
-        const complexityMultiplier  = PRICING.complexityAdjustments[complexity] || 1.0;
-        const complexityAdjustment  = lfp.discountedBase * (complexityMultiplier - 1);
-        const secondMachineFee      = lfp.secondMachineFee;
-        let adjustedPrice           = lfp.discountedBase * complexityMultiplier + secondMachineFee;
-
-        const estimatedDistance = 30;
-        let travelCosts = 0;
-        if (estimatedDistance > PRICING.baseTravelRadius) {
-            travelCosts = (estimatedDistance - PRICING.baseTravelRadius) * PRICING.travelRate;
-        }
-
-        const totalPrice = adjustedPrice + travelCosts;
-
-        const volumeDiscountAmount = lfp.savings;
+        // All the math lives in shop/js/service-pricing.js (shared with book-service.html)
+        const est = window.OHSServicePricing.foggingEstimate(serviceType, sqft, complexity);
+        const lfp = { isLarge: est.isLarge };
+        const basePrice            = est.basePrice;   // normal-rate price; volume discount is its own line
+        const complexityAdjustment = est.complexityAdjustment;
+        const secondMachineFee     = est.secondMachineFee;
+        const travelCosts          = est.travelCosts;
+        const totalPrice           = est.totalPrice;
+        const volumeDiscountAmount = est.volumeDiscount;
 
         lastCalculation = {
             mode: 'fogging',

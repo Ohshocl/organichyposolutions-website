@@ -77,84 +77,69 @@ function loadCatalog(state) {
 }
 
 // ================================================================ 2. SERVICE PRICING
-function extract(src, startRe) {
-  const m = startRe.exec(src); if (!m) return null;
-  let i = src.indexOf('{', m.index + m[0].length - 1), depth = 0;
-  for (let j = i; j < src.length; j++) {
-    if (src[j] === '{') depth++;
-    else if (src[j] === '}' && --depth === 0) return src.slice(m.index, j + 1);
-  }
-  return null;
-}
-function pricingFrom(page) {
-  const src = read(page);
-  const P = extract(src, /(?:const|var|let) PRICING = \{/);
-  const F = extract(src, /function largeFacilityPricing\(sqft, rate, minimum\) \{/);
-  if (!P || !F) return null;
-  const c = vm.createContext({ Math });
-  vm.runInContext(P.replace(/^(const|let) /, 'var ') + ';\n' + F + ';\nthis.lfp = largeFacilityPricing; this.P = PRICING;', c);
-  // Per-visit total exactly as both pages build it (standard complexity unless given)
-  c.total = (service, sqft, complexity) => {
-    const P = c.P, rate = P.baseRates[service], min = P.minimums[service];
-    const r = c.lfp(sqft, rate, min);
-    const travel = Math.max(0, 30 - P.baseTravelRadius) * P.travelRate;
-    return r.discountedBase * (P.complexityAdjustments[complexity || 'standard']) + r.secondMachineFee + travel;
-  };
-  return c;
-}
+// One engine: shop/js/service-pricing.js. Both pages must use it (no copies).
 {
-  const calc = pricingFrom('calculator.html'), book = pricingFrom('book-service.html');
-  ok(!!calc && !!book, 'pricing code found on calculator.html and book-service.html');
-  if (calc && book) {
-    // Approved rates and minimums (Anthony 2026-11-24; residential $0.10 / $125 min)
-    const approved = { commercial: [0.125, 200], residential: [0.10, 125], healthcare: [0.14, 300], education: [0.12, 200], food: [0.135, 200], fitness: [0.13, 175] };
-    for (const [name, c] of [['calculator', calc], ['book-service', book]]) {
-      const bad = Object.entries(approved).filter(([k, [r, m]]) => c.P.baseRates[k] !== r || c.P.minimums[k] !== m).map(([k]) => k);
-      ok(!bad.length, `${name}: approved rate and minimum for every service` + (bad.length ? ' (wrong: ' + bad.join(', ') + ')' : ''));
-      ok(c.P.volumeRate === 0.08 && c.P.largeFacility.threshold === 20000 && c.P.largeFacility.discountBeyond === 0.20 && c.P.travelRate === 0.70 && c.P.baseTravelRadius === 25,
-         `${name}: large-facility rules (20,000 sq ft, 20% off beyond, $0.08 floor) and travel ($0.70/mi past 25 mi)`);
-    }
-    const shared = ['baseRates', 'minimums', 'volumeRate', 'largeFacility', 'complexityAdjustments', 'contractDiscounts', 'travelRate', 'baseTravelRadius'];
-    const diff = shared.filter(k => JSON.stringify(calc.P[k]) !== JSON.stringify(book.P[k]));
-    ok(!diff.length, 'calculator and booking page use the same pricing table' + (diff.length ? ' (differ: ' + diff.join(', ') + ')' : ''));
-
-    // Hand-worked examples (standard complexity; travel = 5 mi x $0.70 = $3.50)
-    const cases = [
-      ['commercial', 1000, 200 + 3.5, 'below minimum -> $200 minimum'],
-      ['residential', 1000, 125 + 3.5, 'residential below minimum -> $125 minimum'],
-      ['residential', 2000, 200 + 3.5, 'residential 2,000 sq ft x $0.10'],
-      ['commercial', 10000, 1250 + 3.5, 'commercial 10,000 sq ft x $0.125'],
-      ['commercial', 20000, 2500 + 3.5, 'exactly 20,000 sq ft: no discount, no 2nd machine'],
-      ['commercial', 20001, 2500 + 0.1 + 200 + 3.5, '20,001 sq ft: extra foot at $0.10 + $200 2nd machine'],
-      ['commercial', 40000, 2500 + 20000 * 0.10 + 200 + 3.5, 'commercial 40,000 sq ft: 20,000 at $0.125 + 20,000 at $0.10 + $200'],
-      ['residential', 30000, 2000 + 10000 * 0.08 + 125 + 3.5, 'residential 30,000: beyond rate 20% off $0.10 = $0.08 (at the floor) + $125'],
-      ['healthcare', 50000, 2800 + 30000 * 0.112 + 300 + 3.5, 'healthcare 50,000: beyond rate $0.112 + $300 2nd machine']
-    ];
-    for (const [name, c] of [['calculator', calc], ['book-service', book]]) {
-      const bad = cases.filter(([s, q, want]) => !near(c.total(s, q), want)).map(([s, q, want, d]) => `${d}: want $${want}, got $${c.total(s, q)}`);
-      ok(!bad.length, `${name}: ${cases.length} hand-worked price examples` + (bad.length ? ':\n   ' + bad.join('\n   ') : ''));
-    }
-    ok(near(calc.total('commercial', 10000, 'complex'), 1250 * 1.3 + 3.5), 'complex job: base x 1.3');
-
-    // Properties over the whole range
-    let rising = true, floorOk = true, agree = true, jump = 0;
-    for (const s of Object.keys(approved)) {
-      let prev = 0;
-      for (let q = 100; q <= 200000; q += 100) {
-        const a = calc.total(s, q), b = book.total(s, q);
-        if (a < prev - 1e-9) rising = false;
-        if (!near(a, b)) agree = false;
-        const r = calc.lfp(q, calc.P.baseRates[s], calc.P.minimums[s]);
-        if (r.isLarge && (r.standardArea - r.savings) / q < calc.P.volumeRate - 1e-12) floorOk = false;
-        prev = a;
-      }
-      jump = Math.max(jump, calc.total(s, 20001) - calc.total(s, 20000) - calc.P.minimums[s]);
-    }
-    ok(rising, 'price never goes down as square footage goes up (100 to 200,000 sq ft, every service)');
-    ok(floorOk, 'average rate never below the $0.08 floor');
-    ok(jump < 1, 'crossing 20,000 sq ft adds only the 2nd machine fee (no jump in the per-foot price)');
-    ok(agree, 'calculator and booking page give the same price for every service and size');
+  const ctx = vm.createContext({ Math, Number }); ctx.window = ctx;
+  vm.runInContext(read('shop/js/service-pricing.js'), ctx, { filename: 'service-pricing.js' });
+  const SP = ctx.OHSServicePricing, P = SP.PRICING;
+  ok(!!SP && typeof SP.foggingEstimate === 'function' && typeof SP.moldEstimate === 'function', 'shared pricing engine loads');
+  for (const page of ['calculator.html', 'book-service.html']) {
+    const src = read(page);
+    const usesEngine = src.includes('<script src="shop/js/service-pricing.js"></script>') && /PRICING = window\.OHSServicePricing\.PRICING/.test(src);
+    const ownTable = /(?:const|var|let) PRICING = \{/.test(src) || /baseRates:\s*\{/.test(src);
+    const ownMath = /rate \* \(1 - lf\.discountBeyond\)/.test(src) || /estimatedDistance - PRICING\.baseTravelRadius/.test(src);
+    ok(usesEngine && !ownTable && !ownMath, `${page}: uses the shared engine, no pricing table or math of its own`);
   }
+  // Approved rates and minimums (Anthony 2026-11-24; residential $0.10 / $125 min)
+  const approved = { commercial: [0.125, 200], residential: [0.10, 125], healthcare: [0.14, 300], education: [0.12, 200], food: [0.135, 200], fitness: [0.13, 175] };
+  const bad = Object.entries(approved).filter(([k, [r, m]]) => P.baseRates[k] !== r || P.minimums[k] !== m).map(([k]) => k);
+  ok(!bad.length, 'approved rate and minimum for every service' + (bad.length ? ' (wrong: ' + bad.join(', ') + ')' : ''));
+  ok(P.volumeRate === 0.08 && P.largeFacility.threshold === 20000 && P.largeFacility.discountBeyond === 0.20 && P.travelRate === 0.70 && P.baseTravelRadius === 25 && P.estimatedDistance === 30,
+     'large-facility rules (20,000 sq ft, 20% off beyond, $0.08 floor) and travel ($0.70/mi past 25 mi, 30 mi assumed)');
+  ok(JSON.stringify(P.contractDiscounts) === JSON.stringify({ payPerService: 0, monthlyContract: 0.15, bimonthlyContract: 0.10, annualContract: 0.20 }), 'contract discounts 0 / 15% / 10% / 20%');
+  const total = (s, q, cx) => SP.foggingEstimate(s, q, cx).totalPrice;
+
+  // Hand-worked examples (standard complexity; travel = 5 mi x $0.70 = $3.50)
+  const cases = [
+    ['commercial', 1000, 200 + 3.5, 'below minimum -> $200 minimum'],
+    ['residential', 1000, 125 + 3.5, 'residential below minimum -> $125 minimum'],
+    ['residential', 2000, 200 + 3.5, 'residential 2,000 sq ft x $0.10'],
+    ['commercial', 10000, 1250 + 3.5, 'commercial 10,000 sq ft x $0.125'],
+    ['commercial', 20000, 2500 + 3.5, 'exactly 20,000 sq ft: no discount, no 2nd machine'],
+    ['commercial', 20001, 2500 + 0.1 + 200 + 3.5, '20,001 sq ft: extra foot at $0.10 + $200 2nd machine'],
+    ['commercial', 40000, 2500 + 20000 * 0.10 + 200 + 3.5, 'commercial 40,000 sq ft: 20,000 at $0.125 + 20,000 at $0.10 + $200'],
+    ['residential', 30000, 2000 + 10000 * 0.08 + 125 + 3.5, 'residential 30,000: beyond rate 20% off $0.10 = $0.08 (at the floor) + $125'],
+    ['healthcare', 50000, 2800 + 30000 * 0.112 + 300 + 3.5, 'healthcare 50,000: beyond rate $0.112 + $300 2nd machine']
+  ];
+  const wrong = cases.filter(([s, q, want]) => !near(total(s, q), want)).map(([s, q, want, d]) => `${d}: want $${want}, got $${total(s, q)}`);
+  ok(!wrong.length, `${cases.length} hand-worked fogging prices` + (wrong.length ? ':\n   ' + wrong.join('\n   ') : ''));
+  ok(near(total('commercial', 10000, 'complex'), 1250 * 1.3 + 3.5), 'complex job: base x 1.3');
+  const e40 = SP.foggingEstimate('commercial', 40000, 'standard');
+  ok(near(e40.basePrice, 5000) && near(e40.volumeDiscount, 500) && near(e40.secondMachineFee, 200) && e40.isLarge, 'breakdown lines: base at normal rate $5,000, volume discount $500, 2nd machine $200');
+
+  // Mold (hand-worked): residential 400 sq ft surface = max(400 x 4.50, 300) = 1,800; active moisture x1.15
+  const m = SP.moldEstimate(400, 'residential', 'active', 'surface');
+  ok(near(m.basePrice, 1800) && near(m.moistureAdjustment, 270) && near(m.totalPrice, 2070 + 3.5) && near(m.lowTotal, 920 + 3.5) && near(m.highTotal, 3220 + 3.5),
+     `mold: 400 sq ft surface, active moisture -> $2,073.50 (range $923.50-$3,223.50); got ${m.totalPrice}`);
+  ok(near(SP.moldEstimate(10, 'commercial', 'fixed', 'complex').totalPrice, 400 + 3.5), 'mold minimum: commercial $400');
+  ok(near(SP.contractPrice(1000, 'annualContract').price, 800) && near(SP.contractPrice(1000, 'bogus').price, 1000), 'contract price: annual 20% off; unknown contract = no discount');
+
+  // Properties over the whole range
+  let rising = true, floorOk = true, jump = 0;
+  for (const s of Object.keys(approved)) {
+    let prev = 0;
+    for (let q = 100; q <= 200000; q += 100) {
+      const t = total(s, q);
+      if (t < prev - 1e-9) rising = false;
+      const r = SP.largeFacilityPricing(q, P.baseRates[s], P.minimums[s]);
+      if (r.isLarge && (r.standardArea - r.savings) / q < P.volumeRate - 1e-12) floorOk = false;
+      prev = t;
+    }
+    jump = Math.max(jump, total(s, 20001) - total(s, 20000) - P.minimums[s]);
+  }
+  ok(rising, 'price never goes down as square footage goes up (100 to 200,000 sq ft, every service)');
+  ok(floorOk, 'average rate never below the $0.08 floor');
+  ok(jump < 1, 'crossing 20,000 sq ft adds only the 2nd machine fee (no jump in the per-foot price)');
 }
 
 // ================================================================ 3. CART RULES
