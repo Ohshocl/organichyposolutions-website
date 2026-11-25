@@ -5,7 +5,7 @@
 // results, shipping state, quantities kept, no extra Shopify requests, cart.
 const B = process.env.BASE_URL || 'http://localhost:8805';
 const fs = require('fs'), path = require('path'), vm = require('vm');
-const { chromium } = require('playwright'); const { route } = require('./lib');
+const { chromium } = require('./engine'); const { route } = require('./lib');
 const ROOT = process.env.SITE_ROOT || path.join(__dirname, '..');
 
 let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; };

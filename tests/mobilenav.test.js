@@ -7,7 +7,7 @@
 // so no solution page could be reached.
 const B = process.env.BASE_URL || 'http://localhost:8805';
 const fs = require('fs'), path = require('path'), os = require('os');
-const { chromium } = require('playwright');
+const { chromium } = require('./engine');
 const { route } = require('./lib');
 const ROOT = process.env.SITE_ROOT || path.join(__dirname, '..');
 const { prerenderSite } = require(path.join(ROOT, '.github/scripts/prerender-templates.js'));

@@ -5,7 +5,7 @@
 // never shown. A fully set-up product appears on its own once it is activated.
 const B = process.env.BASE_URL || 'http://localhost:8805';
 const fs = require('fs'), path = require('path'), vm = require('vm');
-const { chromium } = require('playwright'); const { route } = require('./lib');
+const { chromium } = require('./engine'); const { route } = require('./lib');
 const ROOT = process.env.SITE_ROOT || path.join(__dirname, '..');
 const CATALOG_SRC = fs.readFileSync(path.join(ROOT, 'shop/js/product-catalog.js'), 'utf8');
 

@@ -3,7 +3,7 @@
 // from the keyboard and tell screen readers which one is chosen (radio groups).
 // Regression: they used to be mouse-only <div>s.
 const B = process.env.BASE_URL || 'http://localhost:8805';
-const { chromium } = require('playwright'); const { route } = require('./lib');
+const { chromium } = require('./engine'); const { route } = require('./lib');
 
 (async () => {
   const b = await chromium.launch(); let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; };
