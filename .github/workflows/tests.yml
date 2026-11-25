@@ -42,3 +42,37 @@ jobs:
 
     - name: Run tests
       run: node tests/run-all.js
+
+  # Same browser suites on Firefox and WebKit (Safari's engine). Report-only
+  # for now (continue-on-error) while the first results are reviewed; the
+  # Chromium job above is the one that gates. Chromium-only suites are left
+  # out: a11y (axe results are engine-independent), prerender (uses Chrome's
+  # layout-shift API), and the plain-Node suites.
+  cross-browser:
+    name: Cross-browser tests (${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [ firefox, webkit ]
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install test tools (exact versions from tests/package-lock.json)
+      working-directory: tests
+      run: |
+        npm ci --no-fund
+        npx playwright install --with-deps ${{ matrix.browser }}
+
+    - name: Run browser suites on ${{ matrix.browser }}
+      env:
+        OHS_BROWSER: ${{ matrix.browser }}
+      run: node tests/run-all.js smoke checkout cartlines qa handoff bookform mcart consent state modal inventory

@@ -1,5 +1,5 @@
 // Part of the OHS browser test suite. Run all with: node tests/run-all.js
-const { chromium } = require('playwright'); const {route}=require('./lib'); const OUT=(process.env.TEST_OUT||require('os').tmpdir());
+const { chromium } = require('./engine'); const {route}=require('./lib'); const OUT=(process.env.TEST_OUT||require('os').tmpdir());
 (async () => { const b=await chromium.launch(); let fails=0; const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m); if(!c)fails++;};
  for (const w of [320,360,375,414,768,1024,1199,1280]) {
   const c=await b.newContext({viewport:{width:w,height:800}}); await route(c);

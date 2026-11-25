@@ -8,7 +8,7 @@
 //    modes (before, they ran on DOMContentLoaded, usually before the fetched nav existed)
 const B = process.env.BASE_URL || 'http://localhost:8805';
 const fs = require('fs'), path = require('path'), os = require('os');
-const { chromium } = require('playwright'); const { route } = require('./lib');
+const { chromium } = require('./engine'); const { route } = require('./lib');
 const ROOT = process.env.SITE_ROOT || path.join(__dirname, '..');
 const { prerenderPage, prerenderSite, rewriteForDepth } = require(path.join(ROOT, '.github/scripts/prerender-templates.js'));
 

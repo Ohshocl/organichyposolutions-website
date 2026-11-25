@@ -1,6 +1,6 @@
 // Part of the OHS browser test suite. Run all with: node tests/run-all.js
 // Calculator -> booking handoff tests (audit R11). Usage: node handoff.js <port>
-const { chromium } = require('playwright'); const {route}=require('./lib');
+const { chromium } = require('./engine'); const {route}=require('./lib');
 const B = process.env.BASE_URL || 'http://localhost:8805';
 (async () => {
   const b = await chromium.launch(); let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; };

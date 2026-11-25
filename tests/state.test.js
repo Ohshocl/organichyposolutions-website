@@ -2,7 +2,7 @@
 // Shared visitor-state module (audit R09): every picker saves the same way, fires one
 // 'stateChanged', updates the menu label, re-checks the cart, and syncs across tabs.
 const B = process.env.BASE_URL || 'http://localhost:8805';
-const { chromium } = require('playwright'); const { route } = require('./lib');
+const { chromium } = require('./engine'); const { route } = require('./lib');
 const EPA = '7249401053255', USDA = '7418569752647';
 (async () => {
   const b = await chromium.launch(); let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; };

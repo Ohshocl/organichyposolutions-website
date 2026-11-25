@@ -1,6 +1,6 @@
 // Part of the OHS browser test suite. Run all with: node tests/run-all.js
 // Every public page loads with no JavaScript errors and no missing local files.
-const { chromium } = require('playwright'); const {route}=require('./lib'); const fs=require('fs'); const path=require('path');
+const { chromium } = require('./engine'); const {route}=require('./lib'); const fs=require('fs'); const path=require('path');
 const B = process.env.BASE_URL || 'http://localhost:8805';
 const ROOT = process.env.SITE_ROOT || path.join(__dirname, '..');
 (async () => {

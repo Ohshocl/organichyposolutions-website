@@ -1,5 +1,5 @@
 // Part of the OHS browser test suite. Run all with: node tests/run-all.js
-const { chromium } = require('playwright'); const {route}=require('./lib'); const fs=require('fs'); const OUT=(process.env.TEST_OUT||require('os').tmpdir()), ROOT=(process.env.SITE_ROOT||'.');
+const { chromium } = require('./engine'); const {route}=require('./lib'); const fs=require('fs'); const OUT=(process.env.TEST_OUT||require('os').tmpdir()), ROOT=(process.env.SITE_ROOT||'.');
 const B = process.env.BASE_URL || 'http://localhost:8805';
 (async () => { const b=await chromium.launch(); let fails=0; const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m); if(!c)fails++;};
  const mk=async(w=1280,h=900)=>{ const ctx=await b.newContext({viewport:{width:w,height:h}}); await route(ctx); const g=[]; ctx.on('request',r=>{ if(/googletagmanager\.com|google-analytics\.com/.test(r.url())) g.push(r.url()); }); const p=await ctx.newPage(); const errs=[]; p.on('pageerror',e=>errs.push(e.message)); return [ctx,p,g,errs]; };

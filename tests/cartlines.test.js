@@ -1,7 +1,7 @@
 // Part of the OHS browser test suite. Run all with: node tests/run-all.js
 // Cart regression tests for audit R01, R06, R07, R08, R12, R13, R17 (section 6 scenarios).
 // Usage: node cartlines.js <port>
-const { chromium } = require('playwright'); const {route}=require('./lib');
+const { chromium } = require('./engine'); const {route}=require('./lib');
 const B = process.env.BASE_URL || 'http://localhost:8805';
 const USDA = '7418569752647';   // 32oz USDA cleaner
 const SERUM = '7249401348167';
