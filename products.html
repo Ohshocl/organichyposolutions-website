@@ -500,6 +500,7 @@
             }
 
             updateWholesaleIndicator(productId, qty);
+            updateVariantStock(productId, qty);
         }
 
         function updateWholesaleIndicator(productId, quantity) {
@@ -679,6 +680,11 @@
                 fresh.hidden = col.hidden;
                 col.replaceWith(fresh);
                 restoreCardChoices(id);
+            });
+            // Exact-variant stock line for every card, now that stock has arrived
+            document.querySelectorAll('#productSections [data-card-for]').forEach(col => {
+                const id = col.getAttribute('data-card-for');
+                updateVariantStock(id, productQuantities[id] || 1);
             });
         }
         function stockKey(s) { return s.status + ':' + (s.quantity === null || s.quantity === undefined ? '' : s.quantity); }
@@ -926,7 +932,7 @@
                                     </button>
                                     <input type="number" class="form-control form-control-sm text-center"
                                            id="qty-${product.id}" value="${productQuantities[product.id] || 1}" min="1" aria-label="Quantity"
-                                           max="${invStatus.quantity || 999}" style="max-width:70px;"
+                                           max="999" style="max-width:70px;"
                                            onchange="validateQuantity('${product.id}', this.value); displayPricingInfo('${product.id}', this.value)"
                                            oninput="updateWholesaleIndicator('${product.id}', this.value)">
                                     <button type="button" class="btn btn-outline-primary btn-sm" onclick="changeQuantity('${product.id}', 1)" aria-label="Increase quantity">
@@ -934,7 +940,8 @@
                                     </button>
                                 </div>
 
-                                <button class="btn btn-success w-100 mb-2" onclick="addToCartLocal('${product.id}')">
+                                <div class="variant-stock small mb-2" id="variant-stock-${product.id}" role="status" aria-live="polite" hidden></div>
+                                <button class="btn btn-success w-100 mb-2" id="add-${product.id}" onclick="addToCartLocal('${product.id}')">
                                     <i class="fas fa-cart-plus me-2"></i>Add to Cart
                                 </button>
                                 <a href="tel:+18017125663" class="btn btn-sm btn-outline-info">
@@ -953,16 +960,15 @@
             updateStockOnCards();
         }
 
+        // Quantity is a whole number 1..999. It is NOT capped at the retail variant's
+        // stock any more: a larger quantity may switch to the wholesale variant, which
+        // has its own stock. updateVariantStock() checks the exact variant instead.
+        const MAX_QTY = 999;
         function validateQuantity(productId, value) {
-            const invStatus = stockStatusFor(productId);
             const input = document.getElementById(`qty-${productId}`);
             if (!input) return;
             let qty = parseInt(value) || 1;
-            if (qty < 1) qty = 1;
-            if (invStatus.quantity !== null && qty > invStatus.quantity) {
-                qty = invStatus.quantity;
-                if (window.showNotification) window.showNotification(`Only ${invStatus.quantity} available in stock`, 'warning');
-            }
+            qty = Math.min(MAX_QTY, Math.max(1, qty));
             input.value = qty;
             productQuantities[productId] = qty;
         }
@@ -970,16 +976,34 @@
         function changeQuantity(productId, change) {
             const input = document.getElementById(`qty-${productId}`);
             if (!input) return;
-            const invStatus = stockStatusFor(productId);
-            const maxQty = invStatus.quantity || 999;
-            let newVal = Math.max(1, parseInt(input.value) + change);
-            if (newVal > maxQty) {
-                newVal = maxQty;
-                if (window.showNotification) window.showNotification(`Only ${maxQty} available in stock`, 'warning');
-            }
+            const newVal = Math.min(MAX_QTY, Math.max(1, (parseInt(input.value) || 1) + change));
             input.value = newVal;
             productQuantities[productId] = newVal;
             displayPricingInfo(productId, newVal);
+        }
+
+        // Stock for the EXACT option being bought: retail, wholesale (at the threshold),
+        // or a subscription variant. Unknown / loading / old stock never blocks
+        // (Shopify confirms at checkout); a known shortage disables Add to Cart.
+        function updateVariantStock(productId, quantity) {
+            const el  = document.getElementById(`variant-stock-${productId}`);
+            const btn = document.getElementById(`add-${productId}`);
+            if (!el || !window.getVariantStatus || !window.getPricingTier) return;
+            const qty = parseInt(quantity) || 1;
+            const isSub = document.getElementById(`subscribe-${productId}`)?.checked || false;
+            const tier = window.getPricingTier(productId, qty, isSub);
+            const s = window.getVariantStatus(productId, tier.variantId, qty);
+            const label = { wholesale: 'Wholesale', retailSubscription: 'Subscribe & Save', wholesaleSubscription: 'Wholesale subscription' }[tier.tierKey] || '';
+            let text = '', cls = '', block = false;
+            if (!s.known) { text = ''; }
+            else if (s.state === 'unavailable') { text = (label ? label + ' is' : 'This option is') + ' out of stock right now.'; cls = 'text-danger'; block = true; }
+            else if (!s.enough) { text = `Only ${s.quantity} available` + (label ? ` at ${label.toLowerCase()} pricing` : '') + '. Lower the quantity to add to cart.'; cls = 'text-danger'; block = true; }
+            else if (s.state === 'backorder') { text = 'Available to order' + (label ? ` (${label.toLowerCase()})` : '') + '.'; cls = 'text-info'; }
+            else if (s.state === 'low' && label) { text = `Only ${s.quantity} left at ${label.toLowerCase()} pricing.`; cls = 'text-warning'; }   // retail low stock: the card's own alert says it
+            el.textContent = text;
+            el.className = `variant-stock small mb-2 ${cls}`;
+            el.hidden = !text;
+            if (btn) { btn.disabled = block; btn.setAttribute('aria-disabled', block ? 'true' : 'false'); }
         }
 
         // ================================================================

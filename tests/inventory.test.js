@@ -25,7 +25,7 @@ function mockShopify(ctx, scenario, opts = {}) {
     const nodes = ids.map(gid => {
       const id = gid.split('/').pop(); const p = CATALOG[id]; if (!p || (opts.omit || []).includes(id)) return null;
       const edges = Object.values(p.shopifyVariants).map(vid => { const s = scenario[String(vid)] || { available: true, quantity: 100 };
-        return { node: { id: 'gid://shopify/ProductVariant/' + vid, title: 'x', availableForSale: s.available, quantityAvailable: s.quantity, currentlyNotInStock: false, sku: '' } }; });
+        return { node: { id: 'gid://shopify/ProductVariant/' + vid, title: 'x', availableForSale: s.available, quantityAvailable: s.quantity, currentlyNotInStock: s.notInStock === true, sku: '' } }; });
       return { id: gid, title: p.name, availableForSale: edges.some(e => e.node.availableForSale), totalInventory: 0, variants: { pageInfo: { hasNextPage: false }, edges } };
     });
     return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: { nodes } }) });
@@ -122,6 +122,45 @@ function mockShopify(ctx, scenario, opts = {}) {
     ok(shop.length === 1 && /couldn't confirm stock/.test(note), `Shopify not answering: checkout opens after the time limit (${secs}s, ${shop.length} checkout request), customer told stock is unconfirmed`);
     ok(!/Checking availability/.test(btn), `checkout button doesn't stay stuck ("${btn.trim()}")`);
     await c.close(); }
+  // 9. Exact-variant stock on the products page (sprint P2): the stock line follows the
+  //    tier being bought; the quantity is no longer capped at the RETAIL variant's stock
+  { const LAUNDRY = '7249400004679'; const th = CATALOG[LAUNDRY].wholesaleThreshold;
+    const c = await ctxFor();
+    await mockShopify(c, { [v(LAUNDRY, 'retail')]: { available: true, quantity: 10 }, [v(LAUNDRY, 'wholesale')]: { available: true, quantity: th + 5 },
+                           [v(USDA, 'wholesale')]: { available: false, quantity: 0 },
+                           [v(WIPES, 'retail')]: { available: true, quantity: null, notInStock: true } });
+    const p = await c.newPage(); const errs = []; p.on('pageerror', e => errs.push(e.message));
+    await p.goto(B + '/products.html', { waitUntil: 'networkidle' }); await p.waitForTimeout(900);
+    const line = id => p.evaluate(id => { const e = document.getElementById('variant-stock-' + id); const b = document.getElementById('add-' + id); return { text: e && !e.hidden ? e.textContent : '', disabled: !!(b && b.disabled) }; }, id);
+    const setQty = async (id, q) => { await p.fill('#qty-' + id, String(q)); await p.dispatchEvent('#qty-' + id, 'change'); await p.waitForTimeout(150); };
+    await setQty(LAUNDRY, th);
+    const lq = await p.inputValue('#qty-' + LAUNDRY);
+    ok(lq === String(th), `quantity ${th} allowed although retail has only 10 (wholesale is its own variant): kept ${lq}`);
+    let r = await line(LAUNDRY);
+    ok(!r.disabled, `wholesale variant has ${th + 5}: Add to Cart enabled ("${r.text}")`);
+    await setQty(LAUNDRY, th + 10); r = await line(LAUNDRY);
+    ok(r.disabled && new RegExp('Only ' + (th + 5) + ' available at wholesale pricing').test(r.text), `quantity ${th + 10} > wholesale stock: "${r.text}", Add to Cart disabled`);
+    await setQty(LAUNDRY, 2); r = await line(LAUNDRY);
+    ok(!r.disabled && r.text === '', 'back to 2 (retail, 10 in stock): no warning, enabled');
+    await setQty(USDA, CATALOG[USDA].wholesaleThreshold); r = await line(USDA);
+    ok(r.disabled && /Wholesale is out of stock/.test(r.text), `USDA cleaner at wholesale quantity, wholesale variant sold out: "${r.text}", disabled`);
+    await setQty(USDA, 1); r = await line(USDA);
+    ok(!r.disabled, 'same product at retail quantity: enabled again (retail variant in stock)');
+    const wb = await badge(p, WIPES);
+    ok(wb && /Available to order/.test(wb.badge) && wb.addEnabled, `Shopify "currentlyNotInStock" with no count shared -> "Available to order", can add ("${wb && wb.badge}")`);
+    ok(!errs.length, 'no page errors' + (errs.length ? ': ' + errs.join('; ') : ''));
+
+    // Requests asked for at the same moment are shared, not repeated
+    const calls = await mockShopify(c, {});
+    const r2 = await p.evaluate(async ([a, b2, c3]) => {
+      window.OHS_INVENTORY_TTL_MS = 0;               // everything counts as old: must be fetched
+      await Promise.all([window.fetchInventory([a, b2]), window.fetchInventory([a, b2]), window.fetchInventory([b2, c3])]);
+      window.OHS_INVENTORY_TTL_MS = undefined; return true; }, [USDA, SERUM, WIPES]);
+    const asked = calls.flat();
+    ok(r2 && calls.length === 2 && asked.filter(x => x === SERUM).length === 1 && asked.includes(WIPES),
+       `3 overlapping stock checks at once -> ${calls.length} requests, each product asked once (${JSON.stringify(calls)})`);
+    await c.close(); }
+
   // 8. backorder line goes through
   { const c = await ctxFor(JSON.stringify([{ productId: WIPES, quantity: 3 }]));
     await mockShopify(c, { [v(WIPES, 'retail')]: { available: true, quantity: -10 } });
