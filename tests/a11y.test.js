@@ -29,6 +29,25 @@ const AXE = require.resolve('axe-core/axe.min.js');
     });
     found[f] = {}; res.forEach(v => { found[f][v.id] = v.n; });
   }
+
+  // Keyboard: the "Safety Data Sheet" panels open and close with Enter / Space
+  // (they were mouse-only <div>s; regression check for the a11y fixes)
+  const sdsPages = pages.filter(f => /data-bs-target="#sds-embed-/.test(fs.readFileSync(path.join(ROOT, f), 'utf8')));
+  const sdsBad = [];
+  for (const f of sdsPages) {
+    await p.goto(`${B}/${f}`, { waitUntil: 'networkidle' }).catch(() => {});
+    const h = p.locator('[data-bs-target^="#sds-embed-"]').first();
+    const target = await h.getAttribute('data-bs-target');
+    await h.focus();
+    const focused = await h.evaluate(el => el === document.activeElement);
+    await p.keyboard.press('Enter'); await p.waitForTimeout(500);
+    const opened = await p.locator(target).evaluate(el => el.classList.contains('show'));
+    const expanded = await h.getAttribute('aria-expanded');
+    await p.keyboard.press(' '); await p.waitForTimeout(500);
+    const closed = await p.locator(target).evaluate(el => !el.classList.contains('show'));
+    if (!(focused && opened && expanded === 'true' && closed)) sdsBad.push(`${f} (focus ${focused}, Enter opens ${opened}, aria-expanded ${expanded}, Space closes ${closed})`);
+  }
+  ok(sdsPages.length > 0 && !sdsBad.length, `Safety Data Sheet panel opens/closes from the keyboard on ${sdsPages.length} pages` + (sdsBad.length ? ':\n   ' + sdsBad.join('\n   ') : ''));
   await b.close();
 
   if (process.env.A11Y_WRITE_BASELINE) {
