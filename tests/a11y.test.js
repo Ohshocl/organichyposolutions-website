@@ -6,7 +6,7 @@
 // Regenerate after a deliberate fix:  A11Y_WRITE_BASELINE=1 node tests/run-all.js a11y
 const B = process.env.BASE_URL || 'http://localhost:8805';
 const fs = require('fs'), path = require('path');
-const { chromium } = require('playwright'); const { route } = require('./lib');
+const { chromium } = require('./engine'); const { route } = require('./lib');
 const ROOT = process.env.SITE_ROOT || path.join(__dirname, '..');
 const BASELINE_FILE = path.join(__dirname, 'a11y-baseline.json');
 const AXE = require.resolve('axe-core/axe.min.js');

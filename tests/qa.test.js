@@ -1,6 +1,6 @@
 // Part of the OHS browser test suite. Run all with: node tests/run-all.js
 const B = process.env.BASE_URL || 'http://localhost:8805';
-const { chromium } = require('playwright'); const {route}=require('./lib'); 
+const { chromium } = require('./engine'); const {route}=require('./lib'); 
 const EPA='7249401053255', SERUM='7249401348167', USDA='7418569752647';
 (async () => { const b=await chromium.launch(); let fails=0; const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m); if(!c)fails++;};
  const mk=async(state)=>{ const c=await b.newContext({viewport:{width:1280,height:900}}); await route(c); await c.addInitScript(([st])=>{ if(!sessionStorage.getItem('s')){ localStorage.setItem('analytics_consent','denied'); if(st) localStorage.setItem('ohsUserState',st); localStorage.setItem('ohsCart','[]'); sessionStorage.setItem('s','1'); } },[state]); const p=await c.newPage(); const errs=[]; p.on('pageerror',e=>errs.push(e.message)); await p.goto(`${B}/index.html`,{waitUntil:'networkidle'}); await p.waitForTimeout(800); await p.evaluate(()=>document.querySelectorAll('#intentModal,.state-modal').forEach(m=>m.remove())); return [c,p,errs]; };

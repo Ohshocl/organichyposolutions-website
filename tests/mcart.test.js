@@ -1,5 +1,5 @@
 // Part of the OHS browser test suite. Run all with: node tests/run-all.js
-const { chromium } = require('playwright'); const {route}=require('./lib'); const OUT=(process.env.TEST_OUT||require('os').tmpdir());
+const { chromium } = require('./engine'); const {route}=require('./lib'); const OUT=(process.env.TEST_OUT||require('os').tmpdir());
 (async () => { const b=await chromium.launch(); let fails=0; const ok=(c,m)=>{console.log((c?'PASS ':'FAIL ')+m); if(!c)fails++;};
  for (const w of [320,360,375,414,768,1024,1199,1280]) {
   const c=await b.newContext({viewport:{width:w,height:800}}); await route(c);
@@ -9,9 +9,9 @@ const { chromium } = require('playwright'); const {route}=require('./lib'); cons
   await p.evaluate(()=>document.querySelectorAll('#intentModal,.state-modal').forEach(m=>m.remove()));
   await p.mouse.wheel(0,2500); await p.waitForTimeout(500);
   const r=await p.evaluate(()=>{ const a=document.querySelector('.nav-mobile-actions a[href="/cart.html"]'); if(!a) return null; const bx=a.getBoundingClientRect(); const cs=getComputedStyle(a); const badge=a.querySelector('.cart-badge');
-     return {vis: cs.display!=='none' && a.offsetParent!==null && bx.width>0, inView: bx.top>=0 && bx.bottom<=innerHeight && bx.right<=innerWidth, badge: badge && getComputedStyle(badge).display!=='none' ? badge.textContent : '(hidden)', over: document.documentElement.scrollWidth-document.documentElement.clientWidth, scrollY: Math.round(scrollY)}; });
+     return {vis: cs.display!=='none' && a.offsetParent!==null && bx.width>0, inView: bx.top>=0 && bx.bottom<=innerHeight && bx.right<=innerWidth, badge: badge && getComputedStyle(badge).display!=='none' ? badge.textContent : '(hidden)', wide: Array.from(document.querySelectorAll('body *')).filter(e=>{const b=e.getBoundingClientRect(); return b.width>0 && b.right>document.documentElement.clientWidth+1 && getComputedStyle(e).position!=='fixed';}).filter((e,i,all)=>!all.some(o=>o!==e && o.contains(e))).slice(0,4).map(e=>e.tagName.toLowerCase()+(e.id?'#'+e.id:'')+(e.className&&typeof e.className==='string'?'.'+e.className.trim().split(/\s+/).slice(0,3).join('.'):'')+' right='+Math.round(e.getBoundingClientRect().right)).join(', '), over: document.documentElement.scrollWidth-document.documentElement.clientWidth, scrollY: Math.round(scrollY)}; });
   if (w<1200) {
-    ok(r && r.vis && r.inView && r.badge==='3' && r.over<=0 && r.scrollY>500, `${w}px: cart button visible after scrolling ${r&&r.scrollY}px, count ${r&&r.badge}, no sideways scroll`);
+    ok(r && r.vis && r.inView && r.badge==='3' && r.over<=0 && r.scrollY>500, `${w}px: cart button visible after scrolling ${r&&r.scrollY}px, count ${r&&r.badge}, no sideways scroll` + (r && !(r.vis && r.inView && r.badge==='3' && r.over<=0 && r.scrollY>500) ? ` [shown ${r.vis}, in view ${r.inView}, badge ${r.badge}, sideways overflow ${r.over}px${r.wide ? '; sticking out: ' + r.wide : ''}]` : ''));
     if ([320,375].includes(w)) { await p.screenshot({path:`${OUT}/mcart_${w}.png`, clip:{x:0,y:0,width:w,height:190}}); }
     if (w===375) { await Promise.all([p.waitForNavigation(), p.click('.nav-mobile-actions a[href="/cart.html"]')]); ok(p.url().endsWith('/cart.html'),'tapping it opens the cart page'); }
   } else ok(r && !r.vis, `${w}px: desktop keeps its existing menu (mobile button hidden)`);

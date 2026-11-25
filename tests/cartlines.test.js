@@ -1,7 +1,7 @@
 // Part of the OHS browser test suite. Run all with: node tests/run-all.js
 // Cart regression tests for audit R01, R06, R07, R08, R12, R13, R17 (section 6 scenarios).
 // Usage: node cartlines.js <port>
-const { chromium } = require('playwright'); const {route}=require('./lib');
+const { chromium } = require('./engine'); const {route}=require('./lib');
 const B = process.env.BASE_URL || 'http://localhost:8805';
 const USDA = '7418569752647';   // 32oz USDA cleaner
 const SERUM = '7249401348167';
@@ -124,9 +124,14 @@ const SERUM = '7249401348167';
     await p.evaluate(([id, th]) => { window.addToCart(id, th - 4); window.addToCart(id, 4); window.addToCart(id, 1); }, [USDA, th]);
     const expectV = await p.evaluate(([id, th]) => String(window.getPricingTier(id, th + 1, false).variantId), [USDA, th]);
     const reqs = []; c.on('request', r => { if (r.url().includes('myshopify.com/cart/')) reqs.push(r.url()); });
+    // Also catch it at the network layer: Firefox doesn't always report a new tab's
+    // first navigation as a request event when it is blocked
+    await c.route(/myshopify\.com\/cart\//, r => { if (!reqs.includes(r.request().url())) reqs.push(r.request().url()); return r.fulfill({ status: 200, contentType: 'text/html', body: '<p>checkout</p>' }); });
     let popup = null; c.on('page', pg => popup = pg);
+    const perrs = []; p.on('pageerror', e => perrs.push(e.message));
     await p.click('#checkoutBtn'); await p.waitForTimeout(2500);
-    ok(reqs.some(u => u.endsWith(`/cart/${expectV}:${th + 1}`)), `checkout link is one wholesale line ${expectV}:${th + 1} (${reqs[0] || 'none'})`);
+    const why = reqs.length ? '' : ` [new tab: ${popup ? popup.url() : 'none'}; errors: ${perrs.join(' | ') || 'none'}; messages: ${await p.evaluate(() => Array.from(document.querySelectorAll('#notificationContainer *')).map(n => n.textContent.trim()).filter(Boolean).slice(0, 3).join(' | ')).catch(() => '?') || 'none'}]`;
+    ok(reqs.some(u => u.endsWith(`/cart/${expectV}:${th + 1}`)), `checkout link is one wholesale line ${expectV}:${th + 1} (${reqs[0] || 'none'})` + why);
     const opener = popup ? await popup.evaluate(() => window.opener === null).catch(() => 'n/a') : 'no popup';
     ok(opener === true || opener === 'n/a', `checkout tab has no link back to the OHS page (opener null: ${opener})`);
     await c.close(); }

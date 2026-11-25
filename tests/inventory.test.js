@@ -5,7 +5,7 @@
 // stock - that needs a check against Shopify itself.
 const B = process.env.BASE_URL || 'http://localhost:8805';
 const path = require('path');
-const { chromium } = require('playwright'); const { route } = require('./lib');
+const { chromium } = require('./engine'); const { route } = require('./lib');
 global.window = {}; const _log = console.log; console.log = () => {};
 require(path.join(process.env.SITE_ROOT || path.join(__dirname, '..'), 'shop/js/product-catalog.js'));
 console.log = _log;

@@ -2,7 +2,7 @@
 // Pop-up accessibility (audit R18): dialog semantics, page behind made unreachable,
 // focus moved inside and kept inside, Escape closes, focus returns to the opener.
 const B = process.env.BASE_URL || 'http://localhost:8805';
-const { chromium } = require('playwright'); const { route } = require('./lib');
+const { chromium } = require('./engine'); const { route } = require('./lib');
 (async () => {
   const b = await chromium.launch(); let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; };
   async function open(path, seed) {
