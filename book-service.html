@@ -780,14 +780,13 @@
         // ── Service type cards ──
         function selectServiceType(type) {
             selectedType = type;
-            var stErr = document.getElementById('serviceTypeError');
-            if (stErr) stErr.remove();
             document.getElementById('hiddenServiceType').value = type;
             ['residential', 'commercial'].forEach(function (t) {
                 var card = document.getElementById('card-' + t);
                 if (card) { card.classList.toggle('selected', t === type); card.setAttribute('aria-pressed', t === type ? 'true' : 'false'); }
             });
             updateEstimate();
+            if (typeof window.refreshBookingErrors === 'function') window.refreshBookingErrors();   // clears the service-type error
         }
 
         document.querySelectorAll('.service-type-card').forEach(function (card) {
@@ -986,17 +985,30 @@
             if (sb) { sb.style.display = ''; sb.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
         }
 
-        // ── Submit validation (audit R16) ──
-        // Checks each field, shows the message under the field (linked with
-        // aria-describedby) plus a summary above the button, and moves focus to the
-        // first problem. No pop-up alerts.
+        // ── Submit validation (audit R16; follow-ups from the Nov 24 review) ──
+        // Each problem is shown under its field (linked with aria-describedby, keeping
+        // any description the field already had) and in a summary above the button.
+        // After the first attempt, the summary and messages update as the visitor
+        // fixes things, not only on the next submit. No pop-up alerts.
         var form = document.getElementById('serviceBookingForm');
         if (form) {
             var todayStr = (function () { var d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); })();
             var dateEl = document.getElementById('preferredDate');
             if (dateEl) dateEl.setAttribute('min', todayStr);
             var FIELD_IDS = ['firstName', 'lastName', 'email', 'phone', 'address', 'preferredDate'];
+            var CARD_IDS = ['card-residential', 'card-commercial'];
+            var showingErrors = false;   // true after the first failed submit
 
+            function addDescribedBy(el, id) {
+                var ids = (el.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+                if (ids.indexOf(id) === -1) ids.push(id);
+                el.setAttribute('aria-describedby', ids.join(' '));
+            }
+            function removeDescribedBy(el, id) {
+                var ids = (el.getAttribute('aria-describedby') || '').split(/\s+/).filter(function (x) { return x && x !== id; });
+                if (ids.length) el.setAttribute('aria-describedby', ids.join(' '));
+                else el.removeAttribute('aria-describedby');
+            }
             function fieldError(el, msg) {
                 if (!el) return;
                 var errId = el.id + '-error';
@@ -1010,19 +1022,33 @@
                 fb.textContent = msg;
                 el.classList.add('is-invalid');
                 el.setAttribute('aria-invalid', 'true');
-                el.setAttribute('aria-describedby', errId);
+                addDescribedBy(el, errId);
             }
             function clearFieldError(el) {
                 if (!el) return;
                 el.classList.remove('is-invalid');
                 el.removeAttribute('aria-invalid');
+                removeDescribedBy(el, el.id + '-error');
                 var fb = document.getElementById(el.id + '-error');
                 if (fb) fb.textContent = '';
             }
-            FIELD_IDS.forEach(function (id) {
-                var el = document.getElementById(id);
-                if (el) el.addEventListener('input', function () { clearFieldError(el); });
-            });
+            function setServiceTypeError(msg) {
+                var m = document.getElementById('serviceTypeError');
+                if (msg) {
+                    if (!m) {
+                        m = document.createElement('div');
+                        m.id = 'serviceTypeError';
+                        m.className = 'text-danger small text-center mt-2';
+                        var sel = document.querySelector('.service-type-selector');
+                        if (sel) sel.appendChild(m);
+                    }
+                    m.textContent = msg;
+                    CARD_IDS.forEach(function (id) { var c = document.getElementById(id); if (c) addDescribedBy(c, 'serviceTypeError'); });
+                } else {
+                    if (m) m.remove();
+                    CARD_IDS.forEach(function (id) { var c = document.getElementById(id); if (c) removeDescribedBy(c, 'serviceTypeError'); });
+                }
+            }
 
             function validateBookingForm() {
                 var errors = [];   // { el, msg, card }
@@ -1040,7 +1066,8 @@
                 var phone = val('phone');
                 if (phone) {
                     var digits = phone.replace(/\D/g, '');
-                    if (digits.length < 10 || digits.length > 11) errors.push({ el: el('phone'), msg: 'Enter a 10-digit phone number, or leave it blank.' });
+                    if (/[^0-9()+.\-\s]/.test(phone)) errors.push({ el: el('phone'), msg: 'Use numbers only for the phone number, like (801) 555-0100.' });
+                    else if (!(digits.length === 10 || (digits.length === 11 && digits.charAt(0) === '1'))) errors.push({ el: el('phone'), msg: 'Enter a 10-digit phone number (or 11 digits starting with 1), or leave it blank.' });
                 }
                 var address = val('address');
                 if (!address) errors.push({ el: el('address'), msg: 'Enter the service address.' });
@@ -1055,41 +1082,42 @@
                 return errors;
             }
 
-            form.addEventListener('submit', function (e) {
-                var summary = document.getElementById('formErrors');
+            /** Show the current errors everywhere (fields, service cards, summary). */
+            function renderErrors(errors) {
                 FIELD_IDS.forEach(function (id) { clearFieldError(document.getElementById(id)); });
-                var cardMsg = document.getElementById('serviceTypeError');
-                if (cardMsg) cardMsg.remove();
+                setServiceTypeError('');
+                errors.forEach(function (err) { if (err.card) setServiceTypeError(err.msg); else fieldError(err.el, err.msg); });
+                var summary = document.getElementById('formErrors');
+                if (!summary) return;
+                if (!errors.length) { summary.classList.add('d-none'); summary.innerHTML = ''; return; }
+                summary.innerHTML = '';
+                var h = document.createElement('strong');
+                h.textContent = errors.length === 1 ? 'Please fix this before sending:' : 'Please fix these ' + errors.length + ' things before sending:';
+                var ul = document.createElement('ul');
+                ul.className = 'mb-0 mt-1';
+                errors.forEach(function (err) { var li = document.createElement('li'); li.textContent = err.msg; ul.appendChild(li); });
+                summary.append(h, ul);
+                summary.classList.remove('d-none');
+            }
 
+            // After a failed submit, keep everything in sync as the visitor types or picks
+            window.refreshBookingErrors = function () { if (showingErrors) renderErrors(validateBookingForm()); };
+            FIELD_IDS.forEach(function (id) {
+                var el = document.getElementById(id);
+                if (!el) return;
+                el.addEventListener('input', window.refreshBookingErrors);
+                el.addEventListener('change', window.refreshBookingErrors);
+            });
+
+            form.addEventListener('submit', function (e) {
                 var errors = validateBookingForm();
+                showingErrors = true;
+                renderErrors(errors);
                 if (errors.length) {
                     e.preventDefault();
-                    errors.forEach(function (err) {
-                        if (err.card) {
-                            var m = document.createElement('div');
-                            m.id = 'serviceTypeError';
-                            m.className = 'text-danger small text-center mt-2';
-                            m.textContent = err.msg;
-                            var sel = document.querySelector('.service-type-selector');
-                            if (sel) sel.appendChild(m);
-                        } else {
-                            fieldError(err.el, err.msg);
-                        }
-                    });
-                    if (summary) {
-                        summary.innerHTML = '';
-                        var h = document.createElement('strong');
-                        h.textContent = errors.length === 1 ? 'Please fix this before sending:' : 'Please fix these ' + errors.length + ' things before sending:';
-                        var ul = document.createElement('ul');
-                        ul.className = 'mb-0 mt-1';
-                        errors.forEach(function (err) { var li = document.createElement('li'); li.textContent = err.msg; ul.appendChild(li); });
-                        summary.append(h, ul);
-                        summary.classList.remove('d-none');
-                    }
                     if (errors[0].el) errors[0].el.focus();
                     return;
                 }
-                if (summary) summary.classList.add('d-none');
                 var btn = document.getElementById('submitBtn');
                 if (btn) {
                     btn.disabled = true;
