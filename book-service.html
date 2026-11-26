@@ -539,6 +539,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/global-scripts.js"></script>
     <script src="assets/js/analytics.js"></script>
+    <script src="shop/js/service-pricing.js"></script>
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -551,40 +552,7 @@
         // are NOT applied to the per-visit price (calculator.html does
         // not apply them in updateCalculator either).
         // =========================================================
-        var PRICING = {
-            baseRates: {
-                commercial:  0.125,
-                residential: 0.10,   // matches calculator.html (corrected from 0.15)
-                healthcare:  0.14,
-                education:   0.12,
-                food:        0.135,
-                fitness:     0.13
-            },
-            volumeRate: 0.08,   // floor $/sf for square footage past 20,000
-            largeFacility: { threshold: 20000, discountBeyond: 0.20 },
-            minimums: {
-                commercial:  200,
-                residential: 125,    // matches calculator.html (corrected from 150)
-                healthcare:  300,
-                education:   200,
-                food:        200,
-                fitness:     175
-            },
-            complexityAdjustments: {
-                standard: 1.0,
-                moderate: 1.15,
-                complex:  1.3
-            },
-            contractDiscounts: {
-                payPerService:     0,
-                monthlyContract:   0.15,
-                bimonthlyContract: 0.10,
-                annualContract:    0.20
-            },
-            travelRate:        0.70,
-            baseTravelRadius:  25,
-            estimatedDistance: 30
-        };
+        var PRICING = window.OHSServicePricing.PRICING;   // the ONE pricing table: shop/js/service-pricing.js
 
         var selectedType    = null;  // 'residential' | 'commercial'
         var currentContract = 'payPerService';
@@ -635,17 +603,7 @@
         // Before: past 20,000 sq ft the whole job was re-priced at $0.08 and then doubled
         // ($0.16/sq ft, above every normal rate), so 20,001 sq ft cost ~60% more than 20,000.
         function largeFacilityPricing(sqft, rate, minimum) {
-            var lf = PRICING.largeFacility;
-            var isLarge = sqft > lf.threshold;
-            var standardArea = sqft * rate;
-            var savings = 0, secondMachineFee = 0;
-            if (isLarge) {
-                var rateBeyond = Math.max(rate * (1 - lf.discountBeyond), PRICING.volumeRate);
-                savings = (sqft - lf.threshold) * (rate - rateBeyond);
-                secondMachineFee = minimum;
-            }
-            var discountedBase = Math.max(standardArea - savings, minimum);
-            return { isLarge: isLarge, standardArea: standardArea, savings: savings, discountedBase: discountedBase, secondMachineFee: secondMachineFee };
+            return window.OHSServicePricing.largeFacilityPricing(sqft, rate, minimum);   // rules + approval notes: shop/js/service-pricing.js
         }
 
         function updateEstimate() {
@@ -676,29 +634,17 @@
             document.getElementById('dualMachineNotice').style.display = dualMachine ? 'block' : 'none';
 
             // 4. Base price
-            var rate      = PRICING.baseRates[serviceKey] || 0.125;
-            var lfp       = largeFacilityPricing(sqft > 0 ? sqft : 0, rate, minimum);
-            // Base line shows the normal-rate price; the volume discount is its own line
-            var basePrice = lfp.isLarge ? lfp.standardArea : lfp.discountedBase;
-
-            // 5. Complexity (matches calculator.html)
-            var complexity      = document.getElementById('complexity').value || 'standard';
-            var complexityMult  = PRICING.complexityAdjustments[complexity] || 1.0;
-            var complexityAdj   = lfp.discountedBase * (complexityMult - 1);
-            var secondMachineFee = lfp.secondMachineFee;
-            var adjustedPrice   = lfp.discountedBase * complexityMult + secondMachineFee;
-
-            // 7. Travel (matches calculator.html fixed 30-mile estimate)
-            var travelCosts = 0;
-            if (PRICING.estimatedDistance > PRICING.baseTravelRadius) {
-                travelCosts = (PRICING.estimatedDistance - PRICING.baseTravelRadius) * PRICING.travelRate;
-            }
-
-            // 8. Per-visit total (NO frequency multiplier — matches calculator.html)
-            var totalPrice = adjustedPrice + travelCosts;
-
-            // 9. Volume discount display amount (matches calculator.html volumeDiscountRow)
-            var volumeDiscountAmount = lfp.savings;
+            // 4-9. The per-visit estimate comes from shop/js/service-pricing.js, the same
+            // engine calculator.html uses (large facility, complexity, travel; no
+            // frequency multiplier)
+            var complexity       = document.getElementById('complexity').value || 'standard';
+            var est              = window.OHSServicePricing.foggingEstimate(serviceKey, sqft > 0 ? sqft : 0, complexity);
+            var basePrice        = est.basePrice;
+            var complexityAdj    = est.complexityAdjustment;
+            var secondMachineFee = est.secondMachineFee;
+            var travelCosts      = est.travelCosts;
+            var totalPrice       = est.totalPrice;
+            var volumeDiscountAmount = est.volumeDiscount;
 
             // 10. Book-service extras (priority + add-ons added on top)
             var priorityEl        = document.querySelector('input[name="urgency"][value="priority"]');
