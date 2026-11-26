@@ -134,7 +134,7 @@
     //          refresh failed)
     // Unknown or stale never blocks a purchase; Shopify confirms at checkout.
 
-    var inventoryState = { inFlight: null, lastError: null };
+    var inventoryState = { inFlight: null, lastError: null, pending: {} };   // pending: product ID -> its in-flight request
 
     function ttl() {
         var t = Number(window.OHS_INVENTORY_TTL_MS);   // test hook; normally 5 min
@@ -169,8 +169,17 @@
                 .filter(function (p) { return window.isProductActive ? window.isProductActive(p) : (p.id && p.status === 'active'); })
                 .map(function (p) { return String(p.id); });
         }
-        var wanted = productIds.map(String).filter(function (id) { return !isFresh(inventoryCache[id]); });
-        if (!wanted.length) return Promise.resolve(inventoryCache);
+        var stale = productIds.map(String).filter(function (id) { return !isFresh(inventoryCache[id]); });
+        if (!stale.length) return Promise.resolve(inventoryCache);
+        // Products already being fetched share that request (no duplicate requests when
+        // the page and the cart ask at the same moment); only the rest are requested now
+        var waiting = [];
+        var wanted = stale.filter(function (id) {
+            var p = inventoryState.pending[id];
+            if (p && waiting.indexOf(p) === -1) waiting.push(p);
+            return !p;
+        });
+        if (!wanted.length) return Promise.all(waiting).then(function () { return inventoryCache; });
 
         var gids = wanted.map(function (id) { return 'gid://shopify/Product/' + id; });
         var request = storefrontFetch(variantsQuery(), { ids: gids })
@@ -184,9 +193,12 @@
                     ((product.variants && product.variants.edges) || []).forEach(function (edge) {
                         var v = edge && edge.node; if (!v || !v.id) return;
                         variants[v.id.replace('gid://shopify/ProductVariant/', '')] = {
-                            available: v.availableForSale === true,
-                            quantity:  typeof v.quantityAvailable === 'number' ? v.quantityAvailable : null,
-                            sku:       v.sku || ''
+                            available:  v.availableForSale === true,
+                            quantity:   typeof v.quantityAvailable === 'number' ? v.quantityAvailable : null,
+                            // Shopify's own "out of stock but still sold" flag: tells us it's a
+                            // backorder even when the exact count isn't shared (quantity null)
+                            notInStock: v.currentlyNotInStock === true,
+                            sku:        v.sku || ''
                         };
                     });
                     inventoryCache[id] = {
@@ -211,9 +223,14 @@
                 wanted.forEach(function (id) { if (inventoryCache[id]) inventoryCache[id].failed = true; });
                 return inventoryCache;
             })
-            .then(function (cache) { inventoryState.inFlight = null; return cache; });
+            .then(function (cache) {
+                wanted.forEach(function (id) { if (inventoryState.pending[id] === request) delete inventoryState.pending[id]; });
+                if (inventoryState.inFlight === request) inventoryState.inFlight = null;
+                return cache;
+            });
         inventoryState.inFlight = request;
-        return request;
+        wanted.forEach(function (id) { inventoryState.pending[id] = request; });
+        return waiting.length ? Promise.all(waiting.concat([request])).then(function () { return inventoryCache; }) : request;
     };
 
     /** Force a fresh fetch of everything (or the given IDs), ignoring the 5-minute cache. */
@@ -224,8 +241,8 @@
         return window.fetchInventory(productIds);
     };
 
-    function certainty(entry) {
-        if (!entry) return inventoryState.inFlight ? 'loading' : 'unknown';
+    function certainty(entry, productId) {
+        if (!entry) return (productId !== undefined ? inventoryState.pending[String(productId)] : inventoryState.inFlight) ? 'loading' : 'unknown';
         if (entry.missing) return 'unknown';
         if (entry.failed || (Date.now() - entry.fetchedAt) >= ttl()) return 'stale';
         return 'fresh';
@@ -239,14 +256,14 @@
      */
     window.getVariantStatus = function (productId, variantId, requestedQty) {
         var entry = inventoryCache[String(productId)];
-        var sure = certainty(entry);
+        var sure = certainty(entry, productId);
         var v = entry && entry.variants ? entry.variants[String(variantId)] : null;
         var want = Number(requestedQty) || 1;
         if (sure === 'loading' || sure === 'unknown' || !v) {
             return { state: sure === 'loading' ? 'loading' : 'unknown', known: false, available: null, quantity: null, backorder: false, enough: true, message: '' };
         }
         var stale = sure === 'stale';
-        var backorder = v.available && v.quantity !== null && v.quantity <= 0;
+        var backorder = v.available && (v.notInStock === true || (v.quantity !== null && v.quantity <= 0));
         var state, enough = true, message = '';
         if (!v.available) { state = 'unavailable'; enough = false; message = 'Out of stock'; }
         else if (backorder) { state = 'backorder'; message = 'Available to order'; }
