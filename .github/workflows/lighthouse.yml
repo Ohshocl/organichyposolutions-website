@@ -1,10 +1,12 @@
 # ================================================================
-# OHS PERFORMANCE CHECK — Lighthouse on the LIVE site
+# OHS PERFORMANCE CHECKS — Lighthouse
 # ================================================================
-# Measures key pages (mobile, median of 3 runs) and compares them to
-# tests/perf-baseline.json. Runs weekly, on demand, and on pull
-# requests that change this check. Results are in the job summary.
-# Does not deploy or change anything.
+# 1. "Lighthouse" (weekly + on demand): the LIVE site vs
+#    tests/perf-baseline.json.
+# 2. "Lighthouse (this PR vs base)" (every pull request): builds the PR
+#    and its base branch the way deploy.yml does, serves both on this
+#    machine and fails if the PR scores >10 points worse on any page.
+# Results are in the job summaries. Nothing is deployed or changed.
 # ================================================================
 
 name: Performance (Lighthouse)
@@ -15,10 +17,6 @@ on:
   workflow_dispatch:
   pull_request:
     branches: [ main ]
-    paths:
-      - '.github/workflows/lighthouse.yml'
-      - 'tests/lighthouse.js'
-      - 'tests/perf-baseline.json'
 
 permissions:
   contents: read
@@ -26,6 +24,7 @@ permissions:
 jobs:
   lighthouse:
     name: Lighthouse
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -44,3 +43,48 @@ jobs:
 
     - name: Measure the live site
       run: node tests/lighthouse.js
+
+  lighthouse-pr:
+    name: Lighthouse (this PR vs base)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      LIGHTHOUSE_VERSION: '12.2.1'
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install Lighthouse (pinned)
+      run: npm install --global --no-fund --no-audit lighthouse@${LIGHTHOUSE_VERSION}
+
+    - name: Build the PR and its base the way deploy.yml does
+      env:
+        BASE_REF: ${{ github.base_ref }}
+      run: |
+        set -euo pipefail
+        build() {
+          mkdir -p "$2"
+          (cd "$1" && find . -mindepth 1 -maxdepth 1 ! -name '.*' \
+            ! -name _site ! -name node_modules ! -name docs ! -name api ! -name tests \
+            ! -name README.md ! -name CLAUDE.md ! -name package.json ! -name package-lock.json \
+            -exec cp -r -t "$2" {} +)
+          if [ -f "$1/.github/scripts/prerender-templates.js" ]; then node "$1/.github/scripts/prerender-templates.js" "$2"; fi
+        }
+        git worktree add "$RUNNER_TEMP/base" "origin/$BASE_REF"
+        build "$GITHUB_WORKSPACE" "$RUNNER_TEMP/site-pr"
+        build "$RUNNER_TEMP/base" "$RUNNER_TEMP/site-base"
+
+    - name: Compare (same machine, same server)
+      run: |
+        (cd "$RUNNER_TEMP/site-pr"   && python3 -m http.server 8101 --bind 127.0.0.1 >/dev/null 2>&1 &)
+        (cd "$RUNNER_TEMP/site-base" && python3 -m http.server 8102 --bind 127.0.0.1 >/dev/null 2>&1 &)
+        sleep 2
+        SITE_URL=http://127.0.0.1:8101 SITE_URL_BASE=http://127.0.0.1:8102 node tests/lighthouse-compare.js
