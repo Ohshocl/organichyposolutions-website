@@ -196,7 +196,6 @@ function getCartContext() {
         var hasSubscription = false;
         var hasEPA = false;
         var hasUSDA = false;
-        var has500ppm = false;
         var wholesaleItemCount = 0;
 
         for (var i = 0; i < cart.length; i++) {
@@ -215,7 +214,6 @@ function getCartContext() {
             if (product) {
                 var threshold = product.wholesaleThreshold || 25;
                 if (qty >= threshold) wholesaleItemCount++;
-                if (product.ppm === 500) has500ppm = true;
             } else {
                 if (item.tier === 'wholesale') wholesaleItemCount++;
             }
@@ -229,8 +227,7 @@ function getCartContext() {
             wholesaleItemCount: wholesaleItemCount,
             hasSubscription: hasSubscription,
             hasEPA: hasEPA,
-            hasUSDA: hasUSDA,
-            has500ppm: has500ppm
+            hasUSDA: hasUSDA
         };
     } catch (error) {
         if (ANALYTICS_CONFIG.DEBUG_MODE) {
@@ -244,8 +241,7 @@ function getCartContext() {
             wholesaleItemCount: 0,
             hasSubscription: false,
             hasEPA: false,
-            hasUSDA: false,
-            has500ppm: false
+            hasUSDA: false
         };
     }
 }
@@ -291,8 +287,7 @@ function trackPageView(pagePath, pageTitle, customParams) {
         cart_value: ctx.totalValue,
         has_wholesale_items: ctx.hasWholesaleItems,
         has_subscription_items: ctx.hasSubscription,
-        has_epa_products: ctx.hasEPA,
-        has_500ppm: ctx.has500ppm
+        has_epa_products: ctx.hasEPA
     });
 
     if (ANALYTICS_CONFIG.DEBUG_MODE) {
@@ -430,7 +425,6 @@ var EcommerceTracking = {
             customer_type: ctx.hasWholesaleItems ? 'wholesale' : 'retail',
             has_subscription: ctx.hasSubscription,
             has_epa_products: ctx.hasEPA,
-            has_500ppm: ctx.has500ppm,
             total_items: ctx.totalItems,
             unique_products: ctx.uniqueProducts
         });

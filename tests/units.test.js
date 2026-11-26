@@ -213,4 +213,15 @@ function pricingFrom(page) {
      'saved cart on load: split lines rejoined, capped at 999, bad quantity -> 1, unknown products dropped');
 }
 
+// ================================================================ 4. GOOGLE MERCHANT FEED
+// One row per product for sale; nothing that isn't sold (e.g. 500 ppm retail,
+// removed 2026-11-25: "We don't sell 500 ppm retail").
+{
+  const { ctx } = loadCatalog();
+  const forSale = Object.values(ctx.window.PRODUCT_CATALOG).filter(p => p.status === 'active');
+  const rows = read('google-merchant-feed.txt').split('\n').slice(1).filter(l => l.trim());
+  ok(rows.length === forSale.length, `merchant feed: one row per product for sale (${rows.length} rows, ${forSale.length} products)`);
+  ok(!rows.some(r => /500\s*ppm/i.test(r)), 'merchant feed: no 500 ppm products');
+}
+
 console.log(fails ? fails + ' FAILED' : 'ALL PASSED'); process.exitCode = fails ? 1 : 0;
