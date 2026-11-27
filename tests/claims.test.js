@@ -23,7 +23,7 @@ const RULES = {
   },
   'unlisted-organism': {
     why: 'EPA label organisms: Staphylococcus aureus, Pseudomonas aeruginosa, Human Coronavirus 229E only.',
-    re: /\b(?:MRSA|VRE|C\.? ?diff(?:icile)?|noroviru\w*|influenza|avian flu|bird flu|hepatitis|E\.? ?coli|salmonella|listeria|superbugs?|(?<!insecticide, )fung(?:i|al)\b|fungicid\w*|sporicid\w*|aspergillus|penicillium|fusarium|ringworm|dermatophytes?|SARS-CoV-2|COVID(?:-19)?|mycotoxins?|aflatoxins?|RSV|strep(?:tococc\w*)?|campylobacter|toxoplasma|pasteurella|giardia|enterococc\w*|botrytis|pythium|powdery mildew|fire blight|newcastle disease|mastitis|BRD|tuberculosis|legionella|klebsiella|acinetobacter|candida|rhinovirus|rotavirus|measles|HPAI|PEDv|parvo\w*)\b|\bspores?\b/i
+    re: /\b(?:MRSA|VRE|C\.? ?diff(?:icile)?|noroviru\w*|influenza|avian flu|bird flu|hepatitis|E\.? ?coli|salmonella|listeria|superbugs?|(?<!insecticide, )fung(?:i|al)\b|(?<!insecticide, )fungicid\w*|sporicid\w*|aspergillus|penicillium|fusarium|ringworm|dermatophytes?|SARS-CoV-2|COVID(?:-19)?|mycotoxins?|aflatoxins?|RSV|strep(?:tococc\w*)?|campylobacter|toxoplasma|pasteurella|giardia|enterococc\w*|botrytis|pythium|powdery mildew|fire blight|newcastle disease|mastitis|BRD|tuberculosis|legionella|klebsiella|acinetobacter|candida|rhinovirus|rotavirus|measles|HPAI|PEDv|parvo\w*|biofilms?|wild yeast)\b|\bspores?\b/i
   },
   'kills-mold': {
     why: 'No mold-killing claims. Allowed: "cleans mold and mildew stains" (EPA label cleaning directions).',
@@ -67,11 +67,16 @@ const FILES = fs.readdirSync(ROOT).filter(f => f.endsWith('.html') && f !== 'hoc
   .concat(['templates/standard-nav.html', 'templates/standard-footer.html', 'shop/js/product-catalog.js', 'google-merchant-feed.txt'])
   .filter(f => fs.existsSync(path.join(ROOT, f)));
 
+// Reviewed exceptions (tests/claims-allow.json): sentences that look like a claim but aren't
+const ALLOW_FILE = path.join(__dirname, 'claims-allow.json');
+const ALLOW = fs.existsSync(ALLOW_FILE) ? JSON.parse(fs.readFileSync(ALLOW_FILE, 'utf8')).allow || [] : [];
+const allowed = (rule, sentence) => ALLOW.some(a => a.rule === rule && sentence.includes(a.contains));
+
 const found = {};   // file -> rule -> [sentences]
 for (const f of FILES) {
   const sentences = textOf(f).split(/(?<=[.!?|])\s+/);
   for (const [rule, { re }] of Object.entries(RULES)) {
-    const hits = sentences.filter(x => re.test(x)).map(x => x.trim().slice(0, 200));
+    const hits = sentences.filter(x => re.test(x) && !allowed(rule, x)).map(x => x.trim().slice(0, 200));
     if (hits.length) (found[f] = found[f] || {})[rule] = hits;
   }
 }
@@ -95,6 +100,7 @@ for (const f of new Set([...Object.keys(found), ...Object.keys(base)])) {
 }
 let fails = 0; const ok = (c, m) => { console.log((c ? 'PASS ' : 'FAIL ') + m); if (!c) fails++; };
 ok(FILES.length > 30, `scanned ${FILES.length} files`);
+ok(ALLOW.every(a => a.rule in RULES && a.contains && a.reason), `every reviewed exception names a rule, a sentence and a reason (${ALLOW.length})`);
 ok(!added.length, 'no new disallowed claims' + (added.length ? ':\n   ' + added.join('\n   ') : ''));
 ok(!fixed.length, 'claims-baseline.json is up to date' + (fixed.length ? ' — fixed now, re-record the baseline:\n   ' + fixed.join('\n   ') : ''));
 const remaining = {}; for (const rules of Object.values(base)) for (const [r, n] of Object.entries(rules)) remaining[r] = (remaining[r] || 0) + n;
