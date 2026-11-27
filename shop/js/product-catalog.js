@@ -49,7 +49,7 @@
             certifications: ['EPA #97801-1-105539'],
             epaNumber: '97801-1-105539',
             usdaNumber: null,
-            description: 'Professional-strength ready-to-use hypochlorous acid cleaner and disinfectant. Kills 99.9% of bacteria and viruses on hard, non-porous surfaces in 10 minutes. Safe for food contact surfaces, toys, and skin. Perfect for homes, offices, restaurants, and healthcare facilities. No harsh chemicals, no toxic fumes. Simply spray and wipe. EPA registered (#97801-1-105539). Made in Utah, USA.',
+            description: 'Professional-strength ready-to-use hypochlorous acid cleaner and disinfectant. Kills 99.9% of bacteria and viruses on hard, non-porous surfaces in 10 minutes. No rinsing necessary, even on food contact surfaces. Perfect for homes, offices, restaurants, and healthcare facilities. No harsh chemicals, no toxic fumes. Simply spray and wipe. EPA registered (#97801-1-105539). Made in Utah, USA.',
             restrictions: {
                 states: ['UT'],
                 reason: 'EPA registration limited to Utah'
@@ -99,7 +99,7 @@
             certifications: ['EPA #97801-1-105539'],
             epaNumber: '97801-1-105539',
             usdaNumber: null,
-            description: 'Bulk premium professional-grade hypochlorous acid cleaner and disinfectant for large-scale applications. Kills 99.9% of bacteria and viruses on hard, non-porous surfaces in 10 minutes. Perfect for commercial facilities, restaurants, and high-volume cleaning needs. Safe for food contact surfaces and skin. EPA registered (#97801-1-105539). Made in Utah, USA.',
+            description: 'Bulk premium professional-grade hypochlorous acid cleaner and disinfectant for large-scale applications. Kills 99.9% of bacteria and viruses on hard, non-porous surfaces in 10 minutes. Perfect for commercial facilities, restaurants, and high-volume cleaning needs. No rinsing necessary, even on food contact surfaces. EPA registered (#97801-1-105539). Made in Utah, USA.',
             restrictions: {
                 states: ['UT'],
                 reason: 'EPA registration limited to Utah'
@@ -149,7 +149,7 @@
             certifications: ['USDA Organic', 'Certified Organic by OTCO'],
             epaNumber: null,
             usdaNumber: 'Z-699995-2008',
-            description: 'Professional-strength ready-to-use hypochlorous acid cleaner. Safe for food contact surfaces, toys, and skin. Perfect for homes, offices, restaurants, and healthcare facilities. No harsh chemicals, no toxic fumes. Simply spray and wipe. USDA Certified Organic. Certified Organic by OTCO. Ships nationwide. Made in Utah, USA.',
+            description: 'Professional-strength ready-to-use hypochlorous acid cleaner. No rinsing necessary, even on food contact surfaces. Perfect for homes, offices, restaurants, and healthcare facilities. No harsh chemicals, no toxic fumes. Simply spray and wipe. USDA Certified Organic. Certified Organic by OTCO. Ships nationwide. Made in Utah, USA.',
             restrictions: null,
             pricing: {
                 retail: 19.99,
@@ -196,7 +196,7 @@
             certifications: ['USDA Organic', 'Certified Organic by OTCO'],
             epaNumber: null,
             usdaNumber: 'Z-699995-2008',
-            description: 'Bulk premium professional-grade hypochlorous acid cleaner for large-scale applications. Safe for food contact surfaces and skin. Perfect for commercial facilities and high-volume cleaning needs. Cost-effective bulk solution. USDA Certified Organic. Certified Organic by OTCO. Ships nationwide. Made in Utah, USA.',
+            description: 'Bulk premium professional-grade hypochlorous acid cleaner for large-scale applications. No rinsing necessary, even on food contact surfaces. Perfect for commercial facilities and high-volume cleaning needs. Cost-effective bulk solution. USDA Certified Organic. Certified Organic by OTCO. Ships nationwide. Made in Utah, USA.',
             restrictions: null,
             pricing: {
                 retail: 32.99,
@@ -243,7 +243,7 @@
             certifications: [],
             epaNumber: null,
             usdaNumber: null,
-            description: 'Convenient pre-moistened hypochlorous acid wipes for quick cleaning on-the-go. Safe for all surfaces including food contact. Ideal for homes, offices, travel, and healthcare. Non-toxic, alcohol-free formula. Recyclable packaging. Net weight 1 lb 2 oz, 100 wipes. Ships nationwide. Made in Utah, USA.',
+            description: 'Convenient pre-moistened hypochlorous acid wipes for quick cleaning on-the-go. For hard surfaces, including food contact surfaces. Ideal for homes, offices, travel, and healthcare. Alcohol-free formula. Recyclable packaging. Net weight 1 lb 2 oz, 100 wipes. Ships nationwide. Made in Utah, USA.',
             restrictions: null,
             pricing: {
                 retail: 15.99,
@@ -290,7 +290,7 @@
             certifications: ['USDA Organic', 'Certified Organic by OTCO'],
             epaNumber: null,
             usdaNumber: 'Z-699995-2008',
-            description: 'Premium laundry enhancement solution using hypochlorous acid technology. Eliminates odors, brightens whites, and provides protection for fabrics. Safe for all fabric types and colors. Perfect for households and commercial laundries. Non-toxic, eco-friendly alternative to harsh chemicals. USDA Certified Organic. Certified Organic by OTCO. Ships nationwide. Made in Utah, USA.',
+            description: 'Premium laundry enhancement solution using hypochlorous acid technology. Eliminates odors, brightens whites, and provides protection for fabrics. Color-safe on all fabric types. Perfect for households and commercial laundries. Eco-friendly alternative to harsh chemicals. USDA Certified Organic. Certified Organic by OTCO. Ships nationwide. Made in Utah, USA.',
             restrictions: null,
             pricing: {
                 retail: 15.99,
@@ -337,7 +337,7 @@
             certifications: ['USDA Organic', 'Certified Organic by OTCO'],
             epaNumber: null,
             usdaNumber: 'Z-699995-2008',
-            description: 'Bulk premium laundry enhancement solution using hypochlorous acid technology. Eliminates odors, brightens whites, and provides protection for fabrics. Perfect for commercial laundries, hotels, and professional cleaning services. Safe for all fabric types and colors. Eco-friendly alternative to harsh chemicals. USDA Certified Organic. Certified Organic by OTCO. Ships nationwide. Made in Utah, USA.',
+            description: 'Bulk premium laundry enhancement solution using hypochlorous acid technology. Eliminates odors, brightens whites, and provides protection for fabrics. Perfect for commercial laundries, hotels, and professional cleaning services. Color-safe on all fabric types. Eco-friendly alternative to harsh chemicals. USDA Certified Organic. Certified Organic by OTCO. Ships nationwide. Made in Utah, USA.',
             restrictions: null,
             pricing: {
                 retail: 28.99,
