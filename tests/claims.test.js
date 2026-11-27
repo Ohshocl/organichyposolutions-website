@@ -23,7 +23,7 @@ const RULES = {
   },
   'unlisted-organism': {
     why: 'EPA label organisms: Staphylococcus aureus, Pseudomonas aeruginosa, Human Coronavirus 229E only.',
-    re: /\b(?:MRSA|VRE|C\.? ?diff(?:icile)?|noroviru\w*|influenza|avian flu|bird flu|hepatitis|E\.? ?coli|salmonella|listeria|superbugs?|(?<!insecticide, )fung(?:i|al)\b|fungicid\w*|sporicid\w*|aspergillus|penicillium|fusarium|ringworm|dermatophytes?|SARS-CoV-2|COVID(?:-19)?|mycotoxins?)\b|\bspores?\b/i
+    re: /\b(?:MRSA|VRE|C\.? ?diff(?:icile)?|noroviru\w*|influenza|avian flu|bird flu|hepatitis|E\.? ?coli|salmonella|listeria|superbugs?|(?<!insecticide, )fung(?:i|al)\b|fungicid\w*|sporicid\w*|aspergillus|penicillium|fusarium|ringworm|dermatophytes?|SARS-CoV-2|COVID(?:-19)?|mycotoxins?|aflatoxins?|RSV|strep(?:tococc\w*)?|campylobacter|toxoplasma|pasteurella|giardia|enterococc\w*|botrytis|pythium|powdery mildew|fire blight|newcastle disease|mastitis|BRD|tuberculosis|legionella|klebsiella|acinetobacter|candida|rhinovirus|rotavirus|measles|HPAI|PEDv|parvo\w*)\b|\bspores?\b/i
   },
   'kills-mold': {
     why: 'No mold-killing claims. Allowed: "cleans mold and mildew stains" (EPA label cleaning directions).',
