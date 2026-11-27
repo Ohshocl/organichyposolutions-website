@@ -209,4 +209,21 @@ function loadCatalog(state) {
   ok(!rows.some(r => /500\s*ppm/i.test(r)), 'merchant feed: no 500 ppm products');
 }
 
+// ================================================================ 5. SITE FACTS
+// Facts on the pages must match reality (fixed 2026-11-27).
+{
+  const { ctx } = loadCatalog();
+  const forSale = Object.values(ctx.window.PRODUCT_CATALOG).filter(p => ctx.window.isProductActive ? ctx.window.isProductActive(p) : p.status === 'active');
+  const m = read('index.html').match(/(\d+) professional-grade solutions/);
+  ok(!m || Number(m[1]) === forSale.length, `homepage product count matches the products for sale (${m ? m[1] : 'no number'} vs ${forSale.length})`);
+  // FCN 1811 is an FDA Food Contact Notification, not an "approval" (SDS page excluded: kept as issued)
+  const pages = require('fs').readdirSync(ROOT).filter(f => f.endsWith('.html') && f !== 'hoclsds.html');
+  const bad = [];
+  for (const f of pages) read(f).split('\n').forEach((line, i) => {
+    if (/FCN/.test(line) && /approv/i.test(line)) bad.push(`${f}:${i + 1}`);
+    if (/FDA approved(,|\.|\s*<\/li>|, USDA)/.test(line) && !/wound/i.test(line)) bad.push(`${f}:${i + 1}`);
+  });
+  ok(!bad.length, 'food-contact FCN 1811 is described as a Notification, never "FDA approved"' + (bad.length ? ': ' + bad.join(', ') : ''));
+}
+
 console.log(fails ? fails + ' FAILED' : 'ALL PASSED'); process.exitCode = fails ? 1 : 0;
