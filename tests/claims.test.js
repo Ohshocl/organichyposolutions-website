@@ -39,7 +39,7 @@ const RULES = {
   },
   'comparison': {
     why: 'No efficacy comparisons with bleach or other products, star ratings, or resistance claims (not on the EPA label).',
-    re: /\b\d+\s?[-–]?\s?\d*\s?x (?:more|faster|stronger|superior|better)\b|\b\d+ times (?:more|faster|stronger)|(?:more effective|faster|stronger|safer) than (?:bleach|traditional|conventional)|cannot develop resistance|no resistance|resistance development|★/i
+    re: /\b\d+\s?[-–]?\s?\d*\s?x (?:more|faster|stronger|superior|better)\b|\b\d+ times (?:more|faster|stronger)|(?:more effective|faster|stronger|safer) than (?:bleach|traditional|conventional)|cannot develop resistance|no (?:antimicrobial )?resistance|resistance development|growing resistance|cannot adapt|★/i
   },
   'organic-pesticidal': {
     why: 'The USDA Certified Organic line is not EPA-registered: no disinfectant / antimicrobial / sanitizer / germ-killing claims for it.',
@@ -58,8 +58,14 @@ const RULES = {
 function textOf(file) {
   let s = fs.readFileSync(path.join(ROOT, file), 'utf8');
   if (file.endsWith('.html')) {
+    // Text search engines and social cards show: <title>, meta descriptions, alt text, JSON-LD.
+    const extra = [];
+    s.replace(/<meta\b[^>]*\bcontent="([^"]*)"[^>]*>/gi, (m, c) => { if (/name="(?:description|keywords|twitter:[a-z]+)"|property="og:[a-z]+"/i.test(m)) extra.push(c + '.'); return m; });
+    s.replace(/\balt="([^"]+)"/gi, (m, c) => { extra.push(c + '.'); return m; });
+    s.replace(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/gi, (m, c) => { extra.push(c.replace(/[{}\[\]"]/g, ' ').replace(/,\s/g, '. ')); return m; });
     s = s.replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<style[\s\S]*?<\/style>/gi, ' ')
          .replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&#8217;|&rsquo;/g, "'").replace(/&mdash;/g, '—');
+    s += ' ' + extra.join(' ').replace(/&amp;/g, '&').replace(/&mdash;/g, '—');
   }
   return s.replace(/\s+/g, ' ');
 }
