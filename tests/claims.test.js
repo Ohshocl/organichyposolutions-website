@@ -35,7 +35,7 @@ const RULES = {
   },
   'safety-absolute': {
     why: '40 CFR 156.10(a)(5): no "safe", "non-toxic", "harmless" claims. Use label phrases: "Contains no toxic chemicals", "No harsh fumes", "Mild", "Use without gloves", "Worry free use in baby rooms and nurseries".',
-    re: /\b100% safe|completely safe|\bsafe (?:for|to|around|in)\b(?! surfaces? (?:of|that))|\bnon-?toxic\b|zero risk|\bno (?:health )?risk\b|chemical-free|(?:food|pet|family|child|baby|kid)[- ]safe\b|safety rating|safe for inhalation/i
+    re: /\b100% safe|completely safe|\bsafe (?:for|to|around|in)\b(?! surfaces? (?:of|that))|\bnon-?toxic\b|zero risk|\bno (?:health )?risk\b|chemical-free|(?:food|pet|family|child|baby|kid)[- ]safe\b|safety rating|safe for inhalation|food[- ]contact[- ]safe/i
   },
   'comparison': {
     why: 'No efficacy comparisons with bleach or other products, star ratings, or resistance claims (not on the EPA label).',
