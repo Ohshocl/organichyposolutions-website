@@ -85,9 +85,18 @@ intended to diagnose, treat, cure, or prevent any disease."
 - Presenting one product as both EPA-registered and USDA organic ("dual-certified").
 - WHO, FSIS or FCN 1811 credentials until verified (FCN 1811's notifier is IET, Inc. /
   EcoloxTech; FSIS use depends on product, concentration and process).
+- Unverified research citations or health outcomes (asthma, eczema, allergy relief).
+
+The scan reads visible text **and** what search engines show: `<title>`, meta descriptions and
+keywords, Open Graph / Twitter tags, image alt text and JSON-LD.
+
+Comparison tables may state facts about our own product from its label. For other products,
+name the chemical class (not a brand) and send readers to that product's own EPA label.
 
 ## Open questions (Brandon / Sani-TEST)
 Fogging, misting and HVAC/air-duct application are not in the label's directions (EPA guidance:
 surface directions don't cover internal HVAC components). Re-entry times after fogging.
 Whether OHS product is made under FCN 1811. Supplemental distributor paperwork (EPA Form
 8570-5). Utah registration/licensing. Current USDA certificate number(s).
+"No withdrawal period" on the agriculture pages (withdrawal periods apply to veterinary drugs,
+not surface disinfectants; not on the label).
