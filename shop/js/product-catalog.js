@@ -49,7 +49,7 @@
             certifications: ['EPA #97801-1-105539'],
             epaNumber: '97801-1-105539',
             usdaNumber: null,
-            description: 'Professional-strength ready-to-use hypochlorous acid cleaner and disinfectant. Kills 99.9% of pathogens including bacteria, viruses, and fungi. Safe for food contact surfaces, toys, and skin. Perfect for homes, offices, restaurants, and healthcare facilities. No harsh chemicals, no toxic fumes. Simply spray and wipe. EPA registered (#97801-1-105539). Made in Utah, USA.',
+            description: 'Professional-strength ready-to-use hypochlorous acid cleaner and disinfectant. Kills 99.9% of bacteria and viruses on hard, non-porous surfaces in 10 minutes. Safe for food contact surfaces, toys, and skin. Perfect for homes, offices, restaurants, and healthcare facilities. No harsh chemicals, no toxic fumes. Simply spray and wipe. EPA registered (#97801-1-105539). Made in Utah, USA.',
             restrictions: {
                 states: ['UT'],
                 reason: 'EPA registration limited to Utah'
@@ -99,7 +99,7 @@
             certifications: ['EPA #97801-1-105539'],
             epaNumber: '97801-1-105539',
             usdaNumber: null,
-            description: 'Bulk premium professional-grade hypochlorous acid cleaner and disinfectant for large-scale applications. Kills 99.9% of pathogens including bacteria, viruses, and fungi. Perfect for commercial facilities, restaurants, and high-volume cleaning needs. Safe for food contact surfaces and skin. EPA registered (#97801-1-105539). Made in Utah, USA.',
+            description: 'Bulk premium professional-grade hypochlorous acid cleaner and disinfectant for large-scale applications. Kills 99.9% of bacteria and viruses on hard, non-porous surfaces in 10 minutes. Perfect for commercial facilities, restaurants, and high-volume cleaning needs. Safe for food contact surfaces and skin. EPA registered (#97801-1-105539). Made in Utah, USA.',
             restrictions: {
                 states: ['UT'],
                 reason: 'EPA registration limited to Utah'
